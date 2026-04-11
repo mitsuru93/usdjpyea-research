@@ -1,0 +1,32 @@
+run_dir: research/reports/smoke_test_candidate_run
+output_dir: research/reports/smoke_test_analysis_run
+quantile_bucket_count: 5
+selected_features:
+  - dist_from_ema_pips
+  - pre10_change_pips
+  - pre30_change_pips
+  - pre60_change_pips
+  - net10_change_pips
+  - rsi14
+  - atr5_pips
+  - atr14_pips
+  - atr_ratio_5_14
+  - macd_line
+  - macd_hist
+  - bb_width_ratio_to_close
+selected_feature_pairs:
+  - [pre60_change_pips, net10_change_pips]
+  - [dist_from_ema_pips, atr_ratio_5_14]
+  - [pre60_change_pips, rsi14]
+  - [net10_change_pips, rsi14]
+  - [dist_from_ema_pips, macd_hist]
+slice_modes:
+  - overall
+  - by_family
+  - by_direction
+  - by_session
+# Optional:
+# bucket_mode: quantile
+# fixed_bins_by_feature:
+#   rsi14: [0, 30, 45, 55, 70, 100]
+notes: "Template for post-run zone/bucket diagnostics on feature-enriched candidates."

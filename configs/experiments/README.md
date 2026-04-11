@@ -11,3 +11,13 @@ Use with:
 ```bash
 python tools/run_experiment.py --config <config_path>
 ```
+
+## Post-run analysis configs
+- `analysis_run_template.yaml`: template for feature bucket/joint diagnostics over completed runs.
+- `smoke_test_analysis_run.yaml`: tiny-sample analysis config paired with smoke test run outputs.
+
+Use with:
+
+```bash
+python tools/analyze_run.py --config <config_path>
+```

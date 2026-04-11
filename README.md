@@ -54,8 +54,10 @@ A first practical simulator layer is available for pre-MT4 screening:
 - Evaluates outcomes with conservative assumptions (same-bar ambiguity => SL first).
 - Produces summaries by overall, month, session, and family.
 - Supports YAML config-driven runs via `tools/run_experiment.py`.
+- Adds post-run bucket/joint analysis via `tools/analyze_run.py` to inspect favorable/danger zones by feature ranges.
 
 Important: simulator v1 is **not** full MT4 parity and does not replace MT4 validation.
+Run-level feature zone diagnostics are research-only and do not imply live profitability.
 
 ## CI
 
