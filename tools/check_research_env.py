@@ -9,8 +9,6 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import yaml
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
@@ -48,6 +46,7 @@ def _resolve(path_text: str | Path) -> Path:
 
 def _load_yaml(path_text: str | Path) -> dict[str, Any]:
     path = _resolve(path_text)
+    yaml = importlib.import_module("yaml")
     with path.open("r", encoding="utf-8") as f:
         payload = yaml.safe_load(f) or {}
     if not isinstance(payload, dict):
@@ -84,7 +83,11 @@ def _check_experiment_config(runner: CheckRunner, path_text: str) -> None:
     if not cfg_path.exists():
         return
 
-    cfg = _load_yaml(cfg_path)
+    try:
+        cfg = _load_yaml(cfg_path)
+    except Exception as exc:  # noqa: BLE001
+        runner.check(False, "", f"Experiment config could not be loaded: {cfg_path} ({exc})")
+        return
     required = ["input_csv", "output_dir", "input_timezone_mode", "max_holding_bars", "symbol", "timeframe"]
     missing = [key for key in required if key not in cfg]
     runner.check(not missing, "Experiment config required top-level fields present", f"Experiment config missing fields: {missing}")
@@ -102,7 +105,11 @@ def _check_analysis_config(runner: CheckRunner, path_text: str) -> None:
     if not cfg_path.exists():
         return
 
-    cfg = _load_yaml(cfg_path)
+    try:
+        cfg = _load_yaml(cfg_path)
+    except Exception as exc:  # noqa: BLE001
+        runner.check(False, "", f"Analysis config could not be loaded: {cfg_path} ({exc})")
+        return
     required = ["run_dir", "output_dir"]
     missing = [key for key in required if key not in cfg]
     runner.check(not missing, "Analysis config required top-level fields present", f"Analysis config missing fields: {missing}")
@@ -120,7 +127,11 @@ def _check_compare_config(runner: CheckRunner, path_text: str) -> None:
     if not cfg_path.exists():
         return
 
-    cfg = _load_yaml(cfg_path)
+    try:
+        cfg = _load_yaml(cfg_path)
+    except Exception as exc:  # noqa: BLE001
+        runner.check(False, "", f"Compare config could not be loaded: {cfg_path} ({exc})")
+        return
     required = ["output_dir", "runs"]
     missing = [key for key in required if key not in cfg]
     runner.check(not missing, "Compare config required top-level fields present", f"Compare config missing fields: {missing}")
@@ -152,7 +163,11 @@ def _check_study_config(runner: CheckRunner, path_text: str) -> None:
     if not cfg_path.exists():
         return
 
-    cfg = _load_yaml(cfg_path)
+    try:
+        cfg = _load_yaml(cfg_path)
+    except Exception as exc:  # noqa: BLE001
+        runner.check(False, "", f"Study config could not be loaded: {cfg_path} ({exc})")
+        return
     required = ["study_name", "output_root", "shared_defaults", "runs"]
     missing = [key for key in required if key not in cfg]
     runner.check(not missing, "Study config required top-level fields present", f"Study config missing fields: {missing}")
