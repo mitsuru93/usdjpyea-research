@@ -70,6 +70,7 @@ def _build_run_experiment_config(
 ) -> dict[str, Any]:
     merged = dict(shared_defaults)
     merged.update(run_cfg)
+    _normalize_policy_override_fields(merged=merged, run_cfg=run_cfg)
 
     merged["output_dir"] = str(run_output_dir)
     merged["input_csv"] = str(resolve_local_path(str(merged["input_csv"]), base_dir=repo_root))
@@ -80,6 +81,34 @@ def _build_run_experiment_config(
 
     passthrough_keys = [*RUN_REQUIRED_KEYS, "input_csv", "output_dir", "notes", "policy", "policy_file"]
     return {key: merged[key] for key in passthrough_keys if key in merged}
+
+
+def _normalize_policy_override_fields(*, merged: dict[str, Any], run_cfg: dict[str, Any]) -> None:
+    """Normalize run-level policy overrides against shared defaults.
+
+    Rules:
+    - run-level `policy` override removes inherited `policy_file` unless run explicitly also defines `policy_file`.
+    - run-level `policy_file` override removes inherited `policy` unless run explicitly also defines `policy`.
+    - explicit null/empty values clear that field deterministically.
+    - if run explicitly provides both as non-empty, keep both so downstream validation can fail clearly.
+    """
+
+    run_sets_policy = "policy" in run_cfg
+    run_sets_policy_file = "policy_file" in run_cfg
+
+    if run_sets_policy:
+        if run_cfg.get("policy") in (None, {}):
+            merged.pop("policy", None)
+        if not run_sets_policy_file:
+            merged.pop("policy_file", None)
+
+    if run_sets_policy_file:
+        raw_policy_file = run_cfg.get("policy_file")
+        policy_file_is_empty = raw_policy_file is None or str(raw_policy_file).strip() == ""
+        if policy_file_is_empty:
+            merged.pop("policy_file", None)
+        if not run_sets_policy:
+            merged.pop("policy", None)
 
 
 def _build_analysis_config(

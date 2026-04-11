@@ -107,6 +107,25 @@ def _check_policy_reference(
         runner.check(False, "", f"{context_label} policy_file could not be loaded: {resolved} ({exc})")
 
 
+def _normalize_merged_policy_fields(*, merged: dict[str, Any], run_cfg: dict[str, Any]) -> None:
+    run_sets_policy = "policy" in run_cfg
+    run_sets_policy_file = "policy_file" in run_cfg
+
+    if run_sets_policy:
+        if run_cfg.get("policy") in (None, {}):
+            merged.pop("policy", None)
+        if not run_sets_policy_file:
+            merged.pop("policy_file", None)
+
+    if run_sets_policy_file:
+        raw_policy_file = run_cfg.get("policy_file")
+        policy_file_is_empty = raw_policy_file is None or str(raw_policy_file).strip() == ""
+        if policy_file_is_empty:
+            merged.pop("policy_file", None)
+        if not run_sets_policy:
+            merged.pop("policy", None)
+
+
 def _check_imports(runner: CheckRunner) -> None:
     for mod in ["pandas", "yaml"]:
         try:
@@ -274,6 +293,21 @@ def _check_study_config(runner: CheckRunner, path_text: str) -> None:
             context_label="Study shared_defaults",
             config_dir=cfg_path.parent,
         )
+
+        if isinstance(runs, list):
+            for idx, run in enumerate(runs):
+                if not isinstance(run, dict):
+                    continue
+                merged = dict(shared_defaults)
+                merged.update(run)
+                _normalize_merged_policy_fields(merged=merged, run_cfg=run)
+                _check_policy_reference(
+                    runner,
+                    policy=merged.get("policy"),
+                    policy_file=merged.get("policy_file"),
+                    context_label=f"Study merged runs[{idx}]",
+                    config_dir=cfg_path.parent,
+                )
 
 
 def main() -> None:

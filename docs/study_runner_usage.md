@@ -79,6 +79,10 @@ Runtime-generated temporary configs are stored in:
 - `shared_defaults` are merged first, then per-run overrides are applied.
 - `policy_file` can be placed in `shared_defaults` or per-run overrides.
 - Per run, use either `policy` or `policy_file` (not both).
+- Policy override normalization is explicit during merge:
+  - run-level `policy` removes inherited `policy_file` (unless the run also explicitly sets `policy_file`).
+  - run-level `policy_file` removes inherited `policy` (unless the run also explicitly sets `policy`).
+  - explicit null/empty values (`policy: null`, `policy: {}`, `policy_file: null`, `policy_file: ""`) clear that field.
 - `analyze_after_run` can be set in `shared_defaults` and overridden per run.
 - Compare runs only if `compare.enabled: true` and at least two runs complete successfully.
 - Compare also requires the configured baseline run (the first run label) to complete successfully; otherwise compare is skipped with an explicit warning.

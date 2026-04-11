@@ -16,6 +16,7 @@ runs:
     input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
     policy_file: configs/policies/trend_bias_example.yaml
     notes: variant run using reusable policy preset
+    # Tip: setting inline `policy` here overrides inherited `policy_file` from shared_defaults.
 
 compare:
   enabled: true
