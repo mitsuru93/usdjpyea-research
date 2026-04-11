@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run simulator v1 candidate pipeline on OHLC CSV input."""
+"""Config-driven experiment runner for simulator v1 + feature snapshots."""
 
 from __future__ import annotations
 
@@ -18,38 +18,43 @@ from research.simulator.session import INPUT_TIMEZONE_MODES, add_session_columns
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run pre-MT4 simulator v1 candidate engine.")
-    parser.add_argument("--input-csv", required=True, help="Path to OHLC CSV input.")
-    parser.add_argument("--output-dir", required=True, help="Directory for output CSV/YAML files.")
-    parser.add_argument(
-        "--input-timezone-mode",
-        default="UTC",
-        choices=sorted(INPUT_TIMEZONE_MODES),
-        help="Input datetime timeline mode. UTC => derive JST by +9h; JST => raw datetime is JST.",
-    )
-    parser.add_argument(
-        "--max-holding-bars",
-        type=int,
-        default=DEFAULT_MAX_HOLDING_BARS,
-        help=f"Maximum holding bars for outcome evaluation (default: {DEFAULT_MAX_HOLDING_BARS}).",
-    )
+    parser = argparse.ArgumentParser(description="Run config-driven pre-MT4 candidate experiment.")
+    parser.add_argument("--config", required=True, help="Path to YAML experiment config.")
     return parser.parse_args()
+
+
+def _load_config(path: str | Path) -> dict:
+    with Path(path).open("r", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f) or {}
+
+    required = ["input_csv", "output_dir", "input_timezone_mode", "max_holding_bars", "symbol", "timeframe"]
+    missing = [k for k in required if k not in cfg]
+    if missing:
+        raise ValueError(f"Experiment config missing required fields: {missing}")
+
+    tz_mode = str(cfg["input_timezone_mode"]).upper()
+    if tz_mode not in INPUT_TIMEZONE_MODES:
+        raise ValueError(f"Unsupported input_timezone_mode='{tz_mode}'. Allowed: {sorted(INPUT_TIMEZONE_MODES)}")
+    cfg["input_timezone_mode"] = tz_mode
+    return cfg
 
 
 def main() -> None:
     args = parse_args()
-    output_dir = Path(args.output_dir)
+    cfg = _load_config(args.config)
+
+    output_dir = Path(cfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    ohlc_df = load_ohlc_csv(args.input_csv)
-    tagged_df = add_session_columns(ohlc_df, input_timezone_mode=args.input_timezone_mode)
+    ohlc_df = load_ohlc_csv(cfg["input_csv"])
+    tagged_df = add_session_columns(ohlc_df, input_timezone_mode=cfg["input_timezone_mode"])
     env_df = add_envelope_columns(tagged_df)
     feature_df = build_feature_frame(env_df)
 
     base_candidates = build_candidates(env_df)
     candidates_df = attach_features_to_candidates(base_candidates, feature_df)
 
-    outcomes_df = evaluate_candidates(env_df, candidates_df, max_holding_bars=args.max_holding_bars)
+    outcomes_df = evaluate_candidates(env_df, candidates_df, max_holding_bars=int(cfg["max_holding_bars"]))
     summaries = summarize_outcomes(outcomes_df)
 
     candidates_df.to_csv(output_dir / "candidates.csv", index=False)
@@ -62,12 +67,13 @@ def main() -> None:
         "simulator_version": "v1",
         "feature_set_version": FEATURE_SET_VERSION,
         "assumption_version": ASSUMPTION_VERSION,
-        "input_csv": str(Path(args.input_csv).resolve()),
-        "symbol_timeframe_baseline": "USDJPY_M1",
+        "input_csv": str(Path(cfg["input_csv"]).resolve()),
+        "symbol": str(cfg["symbol"]),
+        "timeframe": str(cfg["timeframe"]),
         "pip_size": PIP_SIZE,
         "timeline_handling": {
             "raw_datetime_column": "datetime",
-            "input_timezone_mode": args.input_timezone_mode,
+            "input_timezone_mode": cfg["input_timezone_mode"],
             "jst_derivation": "UTC mode => raw +9h; JST mode => raw used directly",
             "session_and_month_source": "jst_datetime",
         },
@@ -75,31 +81,25 @@ def main() -> None:
             "ema_span": EMA_SPAN,
             "deviation_rate": DEVIATION_RATE,
         },
-        "tp_sl_defaults": {
-            "rev": {"tp_pips": 10, "sl_pips": 30},
-            "trend": {"tp_pips": 10, "sl_pips": 20},
+        "assumption_notes": {
+            "same_bar_ambiguity_rule": "SL-first conservative",
+            "entry_evaluation_rule": "Evaluate from next bar after signal bar",
+            "entry_price_definition": "Signal reference price from touch-bar close, not broker fill price",
+            "mt4_parity": "Not MT4 parity; MT4 remains final source of truth",
         },
-        "same_bar_ambiguity_rule": "SL-first conservative",
-        "entry_evaluation_rule": "Evaluate from next bar after signal bar",
-        "entry_price_definition": "Signal reference price from touch-bar close, not broker fill price",
-        "max_holding_bars": args.max_holding_bars,
-        "notes": [
-            "Candidate labeling engine only (not full MT4 backtester)",
-            "No trend-environment gating implemented in v1",
-            "No full position-lock/live execution semantics in v1",
-            "MT4 remains final source of truth",
-        ],
+        "max_holding_bars": int(cfg["max_holding_bars"]),
+        "notes": cfg.get("notes", ""),
     }
     with (output_dir / "run_metadata.yaml").open("w", encoding="utf-8") as f:
         yaml.safe_dump(metadata, f, sort_keys=False)
 
     print(
-        "Simulator v1 completed:",
+        "Experiment run completed:",
         f"cand={len(candidates_df)}",
         f"wins={(outcomes_df['outcome_status'] == 'win').sum() if not outcomes_df.empty else 0}",
         f"losses={(outcomes_df['outcome_status'] == 'loss').sum() if not outcomes_df.empty else 0}",
         f"timeouts={(outcomes_df['outcome_status'] == 'timeout').sum() if not outcomes_df.empty else 0}",
-        f"tz_mode={args.input_timezone_mode}",
+        f"tz_mode={cfg['input_timezone_mode']}",
         f"feature_set={FEATURE_SET_VERSION}",
         f"out={output_dir}",
     )

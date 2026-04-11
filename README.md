@@ -50,8 +50,10 @@ Excluded:
 
 A first practical simulator layer is available for pre-MT4 screening:
 - Generates Rev/Trend candidates from EMA20 envelope touch events.
+- Attaches compact decision-time feature snapshots to candidate rows for research filtering.
 - Evaluates outcomes with conservative assumptions (same-bar ambiguity => SL first).
 - Produces summaries by overall, month, session, and family.
+- Supports YAML config-driven runs via `tools/run_experiment.py`.
 
 Important: simulator v1 is **not** full MT4 parity and does not replace MT4 validation.
 

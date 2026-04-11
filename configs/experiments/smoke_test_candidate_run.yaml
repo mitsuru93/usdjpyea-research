@@ -1,0 +1,7 @@
+input_csv: research/data_sample/usdjpy_m1_tiny_sample.csv
+output_dir: research/reports/smoke_test_candidate_run
+input_timezone_mode: UTC
+max_holding_bars: 20
+symbol: USDJPY
+timeframe: M1
+notes: "Small sample smoke test for config-driven candidate run."
