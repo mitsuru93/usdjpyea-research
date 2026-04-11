@@ -20,7 +20,9 @@ python tools/run_study.py --config configs/studies/smoke_test_study.yaml
 
 For local/private data workflows, start from:
 - `configs/local/local_study_template.example.yaml`
+- `configs/local/local_study_variant_pack.example.yaml` (compact multi-variant baseline-vs-preset example)
 - `docs/local_first_run_checklist.md`
+- `docs/local_study_pack_usage.md`
 
 ## Study Config Shape
 

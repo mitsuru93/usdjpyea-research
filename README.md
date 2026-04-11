@@ -60,6 +60,7 @@ A first practical simulator layer is available for pre-MT4 screening:
 - Adds `tools/check_research_env.py` for lightweight local preflight checks (imports + config/path sanity).
 - Adds research-side policy screening (YAML rules) to filter candidate rows before outcome evaluation for baseline-vs-screened experiments.
 - Supports reusable policy preset files (`policy_file`) to reduce repetition in local/private study authoring.
+- Includes a compact multi-variant local study pack example for faster baseline-vs-variant comparison setup.
 
 Important: simulator v1 is **not** full MT4 parity and does not replace MT4 validation.
 Run-level feature zone diagnostics are research-only and do not imply live profitability.

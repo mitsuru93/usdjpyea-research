@@ -1,0 +1,37 @@
+enabled: true
+name: rev_danger_plus_trend_bias_example
+semantics: last_match_wins
+rules:
+  - name: deny_rev_sell_danger_zone
+    type: deny
+    candidate_family: rev
+    direction: sell
+    conditions:
+      - feature: pre60_change_pips
+        op: ">="
+        value: 20
+      - feature: net10_change_pips
+        op: "<="
+        value: -14
+
+  - name: deny_rev_buy_danger_zone
+    type: deny
+    candidate_family: rev
+    direction: buy
+    conditions:
+      - feature: pre60_change_pips
+        op: "<="
+        value: -20
+      - feature: net10_change_pips
+        op: ">="
+        value: 14
+
+  - name: deny_all_by_default
+    type: deny
+
+  - name: allow_trend_london_or_ny
+    type: allow
+    candidate_family: trend
+    session:
+      - london
+      - ny

@@ -12,6 +12,7 @@ python -m pip install -r requirements.txt
 
 Start from:
 - `configs/local/local_study_template.example.yaml`
+- `configs/local/local_study_variant_pack.example.yaml` (multi-variant baseline-vs-preset pack)
 
 Copy it to a local-only file (kept out of git by `.gitignore`), for example:
 
@@ -23,6 +24,9 @@ Then edit:
 - `input_csv` to your private absolute/local CSV path
 - `output_root` to your local output location
 - run labels / policy settings as needed (`policy` inline or `policy_file` preset)
+
+If you want a ready-made baseline-vs-variant pack, see:
+- `docs/local_study_pack_usage.md`
 
 ## 3) Run lightweight environment checks first
 
