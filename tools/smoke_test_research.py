@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lightweight smoke test for simulator v1 pipeline."""
+"""Lightweight smoke test for config-driven candidate experiment pipeline."""
 
 from __future__ import annotations
 
@@ -9,8 +9,8 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SAMPLE_CSV = REPO_ROOT / "research" / "data_sample" / "usdjpy_m1_tiny_sample.csv"
-OUTPUT_DIR = REPO_ROOT / "research" / "reports" / "smoke_test_v1"
+CONFIG_PATH = REPO_ROOT / "configs" / "experiments" / "smoke_test_candidate_run.yaml"
+OUTPUT_DIR = REPO_ROOT / "research" / "reports" / "smoke_test_candidate_run"
 
 
 def main() -> None:
@@ -18,13 +18,9 @@ def main() -> None:
 
     cmd = [
         sys.executable,
-        str(REPO_ROOT / "tools" / "run_candidate_sim.py"),
-        "--input-csv",
-        str(SAMPLE_CSV),
-        "--output-dir",
-        str(OUTPUT_DIR),
-        "--max-holding-bars",
-        "20",
+        str(REPO_ROOT / "tools" / "run_experiment.py"),
+        "--config",
+        str(CONFIG_PATH),
     ]
     subprocess.run(cmd, check=True)
 

@@ -1,0 +1,7 @@
+input_csv: research/data_sample/usdjpy_m1_tiny_sample.csv
+output_dir: research/reports/experiment_candidate_run
+input_timezone_mode: UTC
+max_holding_bars: 30
+symbol: USDJPY
+timeframe: M1
+notes: "Template for feature-enriched candidate simulation runs (pre-MT4 research only)."
