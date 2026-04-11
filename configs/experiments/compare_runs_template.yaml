@@ -1,0 +1,19 @@
+output_dir: research/reports/compare_baseline_vs_variants
+runs:
+  - label: baseline
+    run_dir: research/reports/run_baseline
+    analysis_dir: research/reports/analysis_baseline
+  - label: variant_a
+    run_dir: research/reports/run_variant_a
+    analysis_dir: research/reports/analysis_variant_a
+compare_sections:
+  - overall
+  - by_month
+  - by_session
+  - by_family
+  - by_direction
+selected_bucket_features:
+  - dist_from_ema_pips
+  - pre60_change_pips
+  - net10_change_pips
+notes: "Template for deterministic side-by-side multi-run comparison (pre-MT4 research only)."

@@ -1,0 +1,18 @@
+output_dir: research/reports/smoke_test_compare_runs
+runs:
+  - label: smoke_baseline
+    run_dir: research/reports/smoke_test_candidate_run
+    analysis_dir: research/reports/smoke_test_analysis_run
+  - label: smoke_variant_same_run
+    run_dir: research/reports/smoke_test_candidate_run
+    analysis_dir: research/reports/smoke_test_analysis_run
+compare_sections:
+  - overall
+  - by_month
+  - by_session
+  - by_family
+  - by_direction
+selected_bucket_features:
+  - dist_from_ema_pips
+  - pre60_change_pips
+notes: "Smoke-test compare config reusing same run twice with different labels for pipeline validation."

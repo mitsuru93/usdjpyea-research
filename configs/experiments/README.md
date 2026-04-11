@@ -21,3 +21,14 @@ Use with:
 ```bash
 python tools/analyze_run.py --config <config_path>
 ```
+
+
+## Multi-run compare configs
+- `compare_runs_template.yaml`: template for side-by-side compare across completed runs.
+- `smoke_test_compare_runs.yaml`: smoke-test compare config (can reuse same run with two labels).
+
+Use with:
+
+```bash
+python tools/compare_runs.py --config <config_path>
+```
