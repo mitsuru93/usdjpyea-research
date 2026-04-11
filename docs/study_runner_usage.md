@@ -14,8 +14,13 @@ This stays pre-MT4 and research-only.
 ## Quick Start
 
 ```bash
+python tools/check_research_env.py --study-config configs/studies/smoke_test_study.yaml
 python tools/run_study.py --config configs/studies/smoke_test_study.yaml
 ```
+
+For local/private data workflows, start from:
+- `configs/local/local_study_template.example.yaml`
+- `docs/local_first_run_checklist.md`
 
 ## Study Config Shape
 
@@ -82,4 +87,5 @@ Runtime-generated temporary configs are stored in:
 
 - Keep this layer orchestration-only; simulator and analysis internals are unchanged.
 - Do not commit private CSV datasets.
+- Run `tools/check_research_env.py` before local real-data study execution.
 - Keep MT4 as final source of truth; this repository remains pre-MT4 research.

@@ -6,6 +6,10 @@ Lightweight research utilities.
 - `run_experiment.py`: YAML config-driven experiment runner.
 - `smoke_test_research.py`: tiny-sample smoke test for the config-driven runner.
 - `analyze_run.py`: config-driven post-run feature bucket/joint analysis for completed experiment outputs.
-
 - `compare_runs.py`: config-driven multi-run comparison for completed run + optional analysis artifacts.
 - `run_study.py`: study-level orchestration CLI for multi-run experiment + optional analysis + optional compare.
+- `check_research_env.py`: lightweight local environment/config checker before private-data runs.
+
+Notes:
+- Tool entrypoints are repo-root-safe for imports (no manual `PYTHONPATH` tweak needed).
+- Keep real datasets local/private; do not commit local CSVs or local non-example config files.

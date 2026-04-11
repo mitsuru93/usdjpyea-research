@@ -1,0 +1,34 @@
+study_name: local_usdjpy_policy_screen
+output_root: research/reports/studies/local_usdjpy_policy_screen
+shared_defaults:
+  input_timezone_mode: UTC
+  max_holding_bars: 30
+  symbol: USDJPY
+  timeframe: M1
+  analyze_after_run: true
+
+runs:
+  - label: baseline
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    notes: baseline local run
+
+  - label: policy_screened
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    policy:
+      enabled: true
+      name: conservative_session_screen
+      semantics: last_match_wins
+      rules:
+        - type: deny
+          session: asia
+        - type: allow
+          candidate_family: trend
+    notes: policy-screened local run
+
+compare:
+  enabled: true
+  selected_bucket_features:
+    - dist_from_ema_pips
+    - pre60_change_pips
+
+notes: "Local/private study template for operator-ready preflight + study execution."
