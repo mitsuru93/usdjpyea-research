@@ -1,0 +1,33 @@
+input_csv: /ABSOLUTE/OR/LOCAL/PATH/usdjpy.csv
+output_dir: research/reports/policy_run_template
+input_timezone_mode: UTC
+max_holding_bars: 30
+symbol: USDJPY
+timeframe: M1
+
+policy:
+  enabled: true
+  name: rev_danger_zone_template
+  semantics: last_match_wins
+  rules:
+    - name: deny_rev_danger_sell
+      type: deny
+      candidate_family: rev
+      direction: sell
+      conditions:
+        - feature: pre60_change_pips
+          op: ">="
+          value: 20
+        - feature: net10_change_pips
+          op: "<="
+          value: -14
+        - feature: rsi14
+          op: "<="
+          value: 40
+
+    - name: allow_london_trend
+      type: allow
+      candidate_family: trend
+      session: london
+
+notes: "Template for research-side policy screening over candidate rows (pre-MT4 only)."

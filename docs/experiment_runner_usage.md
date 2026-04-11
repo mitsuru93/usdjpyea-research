@@ -32,7 +32,8 @@ python tools/run_experiment.py --config configs/experiments/smoke_test_candidate
 ## 3) Outputs
 
 The runner writes:
-- `candidates.csv` (feature-enriched candidate rows)
+- `candidates.csv` (feature-enriched candidate rows used for outcome evaluation; policy-screened if enabled)
+- `candidates_policy_audit.csv` (all pre-evaluation candidates with policy decision audit fields)
 - `summary_overall.csv`
 - `summary_by_month.csv`
 - `summary_by_session.csv`
@@ -54,3 +55,15 @@ This runner is for public pre-MT4 research only:
 - no `.mq4` / `.mqh`
 - no live broker logic
 - no claim of full MT4 behavior parity
+
+## 5) Optional policy screening
+
+You can add a `policy` block in experiment YAML to filter candidate rows after feature attachment and before outcome evaluation.
+
+Use:
+- `configs/experiments/policy_run_template.yaml`
+- `configs/experiments/smoke_test_policy_run.yaml`
+
+Semantics are deterministic (`last_match_wins`) and run metadata records base/included/excluded counts.
+
+See `docs/policy_layer_usage.md` for schema and examples.
