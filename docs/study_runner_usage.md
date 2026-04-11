@@ -74,7 +74,9 @@ Runtime-generated temporary configs are stored in:
 - `shared_defaults` are merged first, then per-run overrides are applied.
 - `analyze_after_run` can be set in `shared_defaults` and overridden per run.
 - Compare runs only if `compare.enabled: true` and at least two runs complete successfully.
+- Compare also requires the configured baseline run (the first run label) to complete successfully; otherwise compare is skipped with an explicit warning.
 - Failed runs are recorded in metadata and summary with error text.
+- Run labels must remain unique after sanitization (for example, avoid pairs like `a/b` and `a b`).
 
 ## Safety / Scope
 

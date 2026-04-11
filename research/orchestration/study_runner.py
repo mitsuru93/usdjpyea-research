@@ -147,6 +147,20 @@ def run_study(config_path: str | Path) -> dict[str, Any]:
     run_records: list[dict[str, Any]] = []
     warnings: list[str] = []
     errors: list[str] = []
+    baseline_label = str(cfg["runs"][0]["label"])
+
+    seen_safe_labels: dict[str, str] = {}
+    for run in cfg["runs"]:
+        raw_label = str(run["label"])
+        safe_label = sanitize_label(raw_label)
+        existing = seen_safe_labels.get(safe_label)
+        if existing is not None and existing != raw_label:
+            raise ValueError(
+                "Run label collision after sanitization: "
+                f"'{existing}' and '{raw_label}' both map to '{safe_label}'. "
+                "Use unique labels that remain unique after sanitization."
+            )
+        seen_safe_labels[safe_label] = raw_label
 
     for run in cfg["runs"]:
         label = str(run["label"])
@@ -219,10 +233,19 @@ def run_study(config_path: str | Path) -> dict[str, Any]:
     compare_enabled = bool(compare_cfg.get("enabled", False))
 
     completed_runs = [record for record in run_records if record["status"] == "completed"]
+    baseline_completed = any(record["label"] == baseline_label and record["status"] == "completed" for record in run_records)
+    compare_skipped_reason: str | None = None
 
     if compare_enabled:
         if len(completed_runs) < 2:
+            compare_skipped_reason = "fewer_than_two_completed_runs"
             warnings.append("Compare was enabled but skipped because fewer than two completed runs were available.")
+        elif not baseline_completed:
+            compare_skipped_reason = "configured_baseline_not_completed"
+            warnings.append(
+                "Compare was enabled but skipped because the configured baseline run "
+                f"'{baseline_label}' did not complete successfully."
+            )
         else:
             compare_output_dir = ensure_directory(output_root / "compare")
             compare_payload = _build_compare_config(cfg=cfg, run_records=run_records, compare_output_dir=compare_output_dir)
@@ -241,13 +264,15 @@ def run_study(config_path: str | Path) -> dict[str, Any]:
         "study_name": str(cfg["study_name"]),
         "study_config": str(config_path.resolve()),
         "output_root": str(output_root.resolve()),
-        "baseline_run_label": str(cfg["runs"][0]["label"]),
+        "baseline_run_label": baseline_label,
         "run_labels": [str(run.get("label", "")) for run in cfg.get("runs", [])],
         "runs": run_records,
         "compare": {
             "enabled": compare_enabled,
             "generated": compare_generated,
             "output_dir": compare_dir,
+            "baseline_completed": baseline_completed,
+            "skipped_reason": compare_skipped_reason,
             "selected_bucket_features": list(compare_cfg.get("selected_bucket_features", [])),
         },
         "warnings": warnings,
@@ -281,6 +306,8 @@ def run_study(config_path: str | Path) -> dict[str, Any]:
     summary_lines.append(f"- enabled: {compare_enabled}")
     summary_lines.append(f"- generated: {compare_generated}")
     summary_lines.append(f"- output_dir: {compare_dir}")
+    summary_lines.append(f"- baseline_completed: {baseline_completed}")
+    summary_lines.append(f"- skipped_reason: {compare_skipped_reason}")
 
     summary_lines.extend(["", "## Warnings", ""])
     if warnings:
