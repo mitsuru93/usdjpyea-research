@@ -4,6 +4,7 @@ These files are **research-side templates** for pre-MT4 screening experiments.
 
 They are convenience presets to reduce repeated inline `policy` blocks in local/private study configs.
 They are **not production truth** and do not change policy semantics.
+They are intended to speed up baseline-vs-variant comparison in research workflows.
 
 ## Usage
 
@@ -25,3 +26,4 @@ Semantics remain `last_match_wins`.
 - `rev_danger_zone_example.yaml`: deny rev entries in a simple danger-zone feature pattern.
 - `session_ban_rev_example.yaml`: deny rev entries in selected sessions.
 - `trend_bias_example.yaml`: allow trend entries under a compact selector pattern.
+- `rev_danger_plus_trend_bias_example.yaml`: compact combined preset example (danger-zone rev veto + trend bias allow pattern).

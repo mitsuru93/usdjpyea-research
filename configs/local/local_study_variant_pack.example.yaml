@@ -1,0 +1,43 @@
+study_name: local_usdjpy_variant_pack
+output_root: research/reports/studies/local_usdjpy_variant_pack
+shared_defaults:
+  input_timezone_mode: UTC
+  max_holding_bars: 30
+  symbol: USDJPY
+  timeframe: M1
+  analyze_after_run: true
+
+runs:
+  - label: baseline
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    notes: baseline run with no policy filter preset
+
+  - label: trend_bias_variant
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    policy_file: configs/policies/trend_bias_example.yaml
+    notes: trend-oriented filter preset variant
+
+  - label: session_ban_rev_variant
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    policy_file: configs/policies/session_ban_rev_example.yaml
+    notes: session-based rev suppression variant
+
+  - label: rev_danger_zone_variant
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    policy_file: configs/policies/rev_danger_zone_example.yaml
+    notes: feature danger-zone rev veto variant
+
+  # Optional combined-idea example (uncomment when needed):
+  # - label: rev_danger_plus_trend_bias_variant
+  #   input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+  #   policy_file: configs/policies/rev_danger_plus_trend_bias_example.yaml
+  #   notes: compact combined preset for local ranking experiments
+
+compare:
+  enabled: true
+  selected_bucket_features:
+    - dist_from_ema_pips
+    - pre60_change_pips
+    - net10_change_pips
+
+notes: "Local/private variant pack template for baseline-vs-preset screening (research-only, pre-MT4)."
