@@ -45,6 +45,16 @@ Excluded:
 - Prefer robust behavior over peak in-sample performance.
 - Compare performance by month, session, and volatility/trend buckets.
 
+
+## Simulator v1 (Conservative Candidate Engine)
+
+A first practical simulator layer is available for pre-MT4 screening:
+- Generates Rev/Trend candidates from EMA20 envelope touch events.
+- Evaluates outcomes with conservative assumptions (same-bar ambiguity => SL first).
+- Produces summaries by overall, month, session, and family.
+
+Important: simulator v1 is **not** full MT4 parity and does not replace MT4 validation.
+
 ## CI
 
 A minimal GitHub Actions workflow validates Python syntax by compiling `research/` and `tools/`.

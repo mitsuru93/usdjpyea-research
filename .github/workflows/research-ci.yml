@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  compile:
+  smoke-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,8 +18,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Python version
-        run: python -V
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Compile research and tools
         run: python -m compileall research tools
+
+      - name: Run smoke test
+        run: python tools/smoke_test_research.py
