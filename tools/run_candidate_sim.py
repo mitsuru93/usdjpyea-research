@@ -13,13 +13,19 @@ from research.scoring.summary import summarize_outcomes
 from research.simulator.candidate_engine import ASSUMPTION_VERSION, build_candidates
 from research.simulator.envelope import DEVIATION_RATE, EMA_SPAN, add_envelope_columns
 from research.simulator.outcome_engine import DEFAULT_MAX_HOLDING_BARS, evaluate_candidates
-from research.simulator.session import add_session_columns
+from research.simulator.session import INPUT_TIMEZONE_MODES, add_session_columns
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run pre-MT4 simulator v1 candidate engine.")
     parser.add_argument("--input-csv", required=True, help="Path to OHLC CSV input.")
     parser.add_argument("--output-dir", required=True, help="Directory for output CSV/YAML files.")
+    parser.add_argument(
+        "--input-timezone-mode",
+        default="UTC",
+        choices=sorted(INPUT_TIMEZONE_MODES),
+        help="Input datetime timeline mode. UTC => derive JST by +9h; JST => raw datetime is JST.",
+    )
     parser.add_argument(
         "--max-holding-bars",
         type=int,
@@ -35,7 +41,7 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     ohlc_df = load_ohlc_csv(args.input_csv)
-    tagged_df = add_session_columns(ohlc_df)
+    tagged_df = add_session_columns(ohlc_df, input_timezone_mode=args.input_timezone_mode)
     env_df = add_envelope_columns(tagged_df)
     candidates_df = build_candidates(env_df)
     outcomes_df = evaluate_candidates(env_df, candidates_df, max_holding_bars=args.max_holding_bars)
@@ -52,6 +58,12 @@ def main() -> None:
         "assumption_version": ASSUMPTION_VERSION,
         "input_csv": str(Path(args.input_csv).resolve()),
         "symbol_timeframe_baseline": "USDJPY_M1",
+        "timeline_handling": {
+            "raw_datetime_column": "datetime",
+            "input_timezone_mode": args.input_timezone_mode,
+            "jst_derivation": "UTC mode => raw +9h; JST mode => raw used directly",
+            "session_and_month_source": "jst_datetime",
+        },
         "envelope": {
             "ema_span": EMA_SPAN,
             "deviation_rate": DEVIATION_RATE,
@@ -62,11 +74,13 @@ def main() -> None:
         },
         "same_bar_ambiguity_rule": "SL-first conservative",
         "entry_evaluation_rule": "Evaluate from next bar after signal bar",
+        "entry_price_definition": "Signal reference price from touch-bar close, not broker fill price",
         "max_holding_bars": args.max_holding_bars,
         "notes": [
             "Candidate labeling engine only (not full MT4 backtester)",
             "No trend-environment gating implemented in v1",
             "No full position-lock/live execution semantics in v1",
+            "MT4 remains final source of truth",
         ],
     }
     with (output_dir / "run_metadata.yaml").open("w", encoding="utf-8") as f:
@@ -78,6 +92,7 @@ def main() -> None:
         f"wins={(outcomes_df['outcome_status'] == 'win').sum() if not outcomes_df.empty else 0}",
         f"losses={(outcomes_df['outcome_status'] == 'loss').sum() if not outcomes_df.empty else 0}",
         f"timeouts={(outcomes_df['outcome_status'] == 'timeout').sum() if not outcomes_df.empty else 0}",
+        f"tz_mode={args.input_timezone_mode}",
         f"out={output_dir}",
     )
 

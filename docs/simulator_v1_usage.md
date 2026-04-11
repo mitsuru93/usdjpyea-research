@@ -35,6 +35,21 @@ MT4 validation remains the final source of truth before any production decisions
 - Anti-lookahead convention:
   - Candidate evaluation starts on the **next bar** after the signal bar.
 
+## Timeline handling (explicit)
+
+Raw input `datetime` is treated as the source timeline and is not overwritten.
+JST session labels are derived explicitly using `--input-timezone-mode`:
+
+- `UTC` (default): `jst_datetime = datetime + 9h`
+- `JST`: `jst_datetime = datetime` (raw already JST)
+
+This keeps timeline assumptions auditable for MT4 comparisons.
+
+## Entry price meaning
+
+`entry_price` in `candidates.csv` is a **signal reference price** (touch-bar close).
+It is not a true broker fill price and should not be interpreted as MT4 execution parity.
+
 ## Input expectations
 
 Input is a simple OHLC CSV containing at least datetime/open/high/low/close.
@@ -62,12 +77,22 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Run simulator v1:
+Run simulator v1 (raw timeline interpreted as UTC):
 
 ```bash
 python tools/run_candidate_sim.py \
   --input-csv path/to/usdjpy_m1.csv \
-  --output-dir research/reports/my_run_v1
+  --output-dir research/reports/my_run_v1 \
+  --input-timezone-mode UTC
+```
+
+If your input is already JST:
+
+```bash
+python tools/run_candidate_sim.py \
+  --input-csv path/to/usdjpy_m1.csv \
+  --output-dir research/reports/my_run_v1 \
+  --input-timezone-mode JST
 ```
 
 Optional:

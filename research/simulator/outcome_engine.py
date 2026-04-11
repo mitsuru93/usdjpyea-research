@@ -20,13 +20,14 @@ def evaluate_candidates(
 
     Entry convention for v1:
     - candidate entry timestamp uses source signal bar timestamp.
+    - candidate entry_price is a signal reference price (not broker fill).
     - evaluation starts from the NEXT bar to avoid same-bar lookahead.
     """
     if candidates_df.empty:
         return candidates_df.copy()
 
     bars = ohlc_df.reset_index(drop=True).copy()
-    time_to_idx = {ts: i for i, ts in enumerate(bars["datetime"]) }
+    time_to_idx = {ts: i for i, ts in enumerate(bars["datetime"])}
 
     evaluated_rows = []
     for row in candidates_df.itertuples(index=False):

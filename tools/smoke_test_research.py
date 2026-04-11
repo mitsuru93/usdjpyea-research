@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import subprocess
+import sys
 from pathlib import Path
 
 
@@ -16,7 +17,7 @@ def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     cmd = [
-        "python",
+        sys.executable,
         str(REPO_ROOT / "tools" / "run_candidate_sim.py"),
         "--input-csv",
         str(SAMPLE_CSV),

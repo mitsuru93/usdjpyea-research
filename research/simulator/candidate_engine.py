@@ -2,6 +2,8 @@
 
 This module intentionally labels candidates conservatively and does NOT
 attempt to reproduce full MT4 entry gating/position semantics.
+
+`entry_price` is a signal reference price (touch-bar close), not a broker fill.
 """
 
 from __future__ import annotations
@@ -53,6 +55,7 @@ def _make_candidate(row: object, touch_side: str, family: str, direction: str) -
         "candidate_family": family,
         "direction": direction,
         "entry_price": float(row.close),
+        "entry_price_type": "signal_reference_price",
         "tp_pips": levels["tp_pips"],
         "sl_pips": levels["sl_pips"],
         "assumption_version": ASSUMPTION_VERSION,
