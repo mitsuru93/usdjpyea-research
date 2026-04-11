@@ -51,7 +51,7 @@ runs:
     input_csv: /ABSOLUTE/OR/LOCAL/PATH/usdjpy.csv
   - label: variant_a
     input_csv: /ABSOLUTE/OR/LOCAL/PATH/usdjpy.csv
-    max_holding_bars: 40
+    policy_file: configs/policies/trend_bias_example.yaml
 
 compare:
   enabled: true
@@ -77,6 +77,16 @@ Runtime-generated temporary configs are stored in:
 
 - The first run is the baseline run label for summary/compare context.
 - `shared_defaults` are merged first, then per-run overrides are applied.
+- `policy_file` can be placed in `shared_defaults` or per-run overrides.
+- Per run, use either `policy` or `policy_file` (not both).
+- Policy override normalization is explicit during merge:
+  - run-level `policy` removes inherited `policy_file` (unless the run also explicitly sets `policy_file`).
+  - run-level `policy_file` removes inherited `policy` (unless the run also explicitly sets `policy`).
+  - explicit null/empty values (`policy: null`, `policy: {}`, `policy_file: null`, `policy_file: ""`) clear that field.
+- For study runs, relative `policy_file` values are normalized before runtime config write:
+  - first against the original study config directory
+  - then against repo root as fallback
+  - runtime config stores the resolved absolute path for stable execution
 - `analyze_after_run` can be set in `shared_defaults` and overridden per run.
 - Compare runs only if `compare.enabled: true` and at least two runs complete successfully.
 - Compare also requires the configured baseline run (the first run label) to complete successfully; otherwise compare is skipped with an explicit warning.

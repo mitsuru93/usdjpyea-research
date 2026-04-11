@@ -30,7 +30,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def _load_config(path: str | Path) -> dict:
-    with Path(path).open("r", encoding="utf-8") as f:
+    config_path = Path(path).resolve()
+    with config_path.open("r", encoding="utf-8") as f:
         cfg = yaml.safe_load(f) or {}
 
     required = ["input_csv", "output_dir", "input_timezone_mode", "max_holding_bars", "symbol", "timeframe"]
@@ -42,8 +43,52 @@ def _load_config(path: str | Path) -> dict:
     if tz_mode not in INPUT_TIMEZONE_MODES:
         raise ValueError(f"Unsupported input_timezone_mode='{tz_mode}'. Allowed: {sorted(INPUT_TIMEZONE_MODES)}")
     cfg["input_timezone_mode"] = tz_mode
-    cfg["policy"] = cfg.get("policy", {}) or {}
+
+    has_inline_policy = "policy" in cfg and cfg.get("policy") not in (None, {})
+    has_policy_file = "policy_file" in cfg and str(cfg.get("policy_file", "")).strip() != ""
+
+    if has_inline_policy and has_policy_file:
+        raise ValueError("Use either 'policy' or 'policy_file' in an experiment config, not both.")
+
+    if has_policy_file:
+        policy_file_path = _resolve_policy_file_path(
+            raw_path=str(cfg["policy_file"]),
+            config_dir=config_path.parent,
+        )
+        cfg["policy"] = _load_policy_preset(policy_file_path)
+    else:
+        cfg["policy"] = cfg.get("policy", {}) or {}
+
     return cfg
+
+
+def _resolve_policy_file_path(*, raw_path: str, config_dir: Path) -> Path:
+    policy_path = Path(raw_path)
+    if policy_path.is_absolute():
+        if not policy_path.exists():
+            raise FileNotFoundError(f"Policy preset file not found: {policy_path}")
+        return policy_path.resolve()
+
+    candidate_from_config_dir = (config_dir / policy_path).resolve()
+    if candidate_from_config_dir.exists():
+        return candidate_from_config_dir
+
+    candidate_from_repo_root = (REPO_ROOT / policy_path).resolve()
+    if candidate_from_repo_root.exists():
+        return candidate_from_repo_root
+
+    raise FileNotFoundError(
+        "Policy preset file not found. Tried config-relative and repo-root-relative paths: "
+        f"'{candidate_from_config_dir}' and '{candidate_from_repo_root}'."
+    )
+
+
+def _load_policy_preset(path: Path) -> dict:
+    with path.open("r", encoding="utf-8") as f:
+        payload = yaml.safe_load(f) or {}
+    if not isinstance(payload, dict):
+        raise ValueError(f"Policy preset must be a mapping-style YAML config: {path}")
+    return payload
 
 
 def main() -> None:

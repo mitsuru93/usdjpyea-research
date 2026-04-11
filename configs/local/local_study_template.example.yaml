@@ -12,18 +12,11 @@ runs:
     input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
     notes: baseline local run
 
-  - label: policy_screened
+  - label: trend_bias_variant
     input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
-    policy:
-      enabled: true
-      name: conservative_session_screen
-      semantics: last_match_wins
-      rules:
-        - type: deny
-          session: asia
-        - type: allow
-          candidate_family: trend
-    notes: policy-screened local run
+    policy_file: configs/policies/trend_bias_example.yaml
+    notes: variant run using reusable policy preset
+    # Tip: setting inline `policy` here overrides inherited `policy_file` from shared_defaults.
 
 compare:
   enabled: true

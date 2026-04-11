@@ -1,0 +1,19 @@
+enabled: true
+name: rev_danger_zone_example
+semantics: last_match_wins
+rules:
+  - name: deny_rev_sell_danger_zone
+    type: deny
+    candidate_family: rev
+    direction: sell
+    conditions:
+      - feature: pre60_change_pips
+        op: ">="
+        value: 20
+      - feature: net10_change_pips
+        op: "<="
+        value: -14
+
+  - name: allow_trend_override
+    type: allow
+    candidate_family: trend

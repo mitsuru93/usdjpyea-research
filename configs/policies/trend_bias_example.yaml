@@ -1,0 +1,13 @@
+enabled: true
+name: trend_bias_example
+semantics: last_match_wins
+rules:
+  - name: deny_all_by_default
+    type: deny
+
+  - name: allow_trend_london_or_ny
+    type: allow
+    candidate_family: trend
+    session:
+      - london
+      - ny

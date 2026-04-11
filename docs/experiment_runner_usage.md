@@ -58,7 +58,7 @@ This runner is for public pre-MT4 research only:
 
 ## 5) Optional policy screening
 
-You can add a `policy` block in experiment YAML to filter candidate rows after feature attachment and before outcome evaluation.
+You can add either a `policy` block or a `policy_file` path in experiment YAML to filter candidate rows after feature attachment and before outcome evaluation.
 
 Use:
 - `configs/experiments/policy_run_template.yaml`
