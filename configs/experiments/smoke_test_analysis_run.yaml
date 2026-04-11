@@ -1,0 +1,17 @@
+run_dir: research/reports/smoke_test_candidate_run
+output_dir: research/reports/smoke_test_analysis_run
+quantile_bucket_count: 3
+selected_features:
+  - dist_from_ema_pips
+  - pre60_change_pips
+  - net10_change_pips
+  - rsi14
+  - atr_ratio_5_14
+  - macd_hist
+selected_feature_pairs:
+  - [pre60_change_pips, net10_change_pips]
+  - [net10_change_pips, rsi14]
+slice_modes:
+  - overall
+  - by_family
+notes: "Tiny-sample smoke test analysis config."
