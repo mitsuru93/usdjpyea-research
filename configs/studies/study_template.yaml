@@ -6,6 +6,15 @@ shared_defaults:
   symbol: USDJPY
   timeframe: M1
   analyze_after_run: true
+  # Optional policy defaults applied to all runs unless overridden per run.
+  # policy:
+  #   enabled: true
+  #   name: baseline_policy
+  #   semantics: last_match_wins
+  #   rules:
+  #     - type: deny
+  #       candidate_family: rev
+  #       session: asia
 
 runs:
   - label: baseline
@@ -15,6 +24,9 @@ runs:
     input_csv: /ABSOLUTE/OR/LOCAL/PATH/usdjpy.csv
     max_holding_bars: 40
     notes: variant run
+    # Optional run-level policy override:
+    # policy:
+    #   enabled: false
 
 compare:
   enabled: true

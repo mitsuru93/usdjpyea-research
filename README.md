@@ -57,6 +57,7 @@ A first practical simulator layer is available for pre-MT4 screening:
 - Adds post-run bucket/joint analysis via `tools/analyze_run.py` to inspect favorable/danger zones by feature ranges.
 - Adds multi-run comparison via `tools/compare_runs.py` to rank completed runs side by side (research-only, pre-MT4).
 - Adds study-level orchestration via `tools/run_study.py` to run multiple experiments with optional analysis + compare in one config.
+- Adds research-side policy screening (YAML rules) to filter candidate rows before outcome evaluation for baseline-vs-screened experiments.
 
 Important: simulator v1 is **not** full MT4 parity and does not replace MT4 validation.
 Run-level feature zone diagnostics are research-only and do not imply live profitability.

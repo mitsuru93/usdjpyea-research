@@ -10,6 +10,7 @@ import yaml
 
 from research.features import FEATURE_SET_VERSION, attach_features_to_candidates, build_feature_frame
 from research.io.csv_loader import load_ohlc_csv
+from research.policy import POLICY_SEMANTICS, apply_policy_to_candidates, parse_policy_config
 from research.scoring.summary import summarize_outcomes
 from research.simulator.candidate_engine import ASSUMPTION_VERSION, build_candidates
 from research.simulator.envelope import DEVIATION_RATE, EMA_SPAN, add_envelope_columns
@@ -36,6 +37,7 @@ def _load_config(path: str | Path) -> dict:
     if tz_mode not in INPUT_TIMEZONE_MODES:
         raise ValueError(f"Unsupported input_timezone_mode='{tz_mode}'. Allowed: {sorted(INPUT_TIMEZONE_MODES)}")
     cfg["input_timezone_mode"] = tz_mode
+    cfg["policy"] = cfg.get("policy", {}) or {}
     return cfg
 
 
@@ -52,12 +54,18 @@ def main() -> None:
     feature_df = build_feature_frame(env_df)
 
     base_candidates = build_candidates(env_df)
-    candidates_df = attach_features_to_candidates(base_candidates, feature_df)
+    candidate_feature_df = attach_features_to_candidates(base_candidates, feature_df)
 
-    outcomes_df = evaluate_candidates(env_df, candidates_df, max_holding_bars=int(cfg["max_holding_bars"]))
+    policy_cfg = parse_policy_config(cfg.get("policy"))
+    policy_result = apply_policy_to_candidates(candidate_feature_df, policy_cfg)
+    screened_candidates_df = policy_result["included_df"]
+    candidates_audit_df = policy_result["audit_df"]
+
+    outcomes_df = evaluate_candidates(env_df, screened_candidates_df, max_holding_bars=int(cfg["max_holding_bars"]))
     summaries = summarize_outcomes(outcomes_df)
 
-    candidates_df.to_csv(output_dir / "candidates.csv", index=False)
+    outcomes_df.to_csv(output_dir / "candidates.csv", index=False)
+    candidates_audit_df.to_csv(output_dir / "candidates_policy_audit.csv", index=False)
     summaries["overall"].to_csv(output_dir / "summary_overall.csv", index=False)
     summaries["by_month"].to_csv(output_dir / "summary_by_month.csv", index=False)
     summaries["by_session"].to_csv(output_dir / "summary_by_session.csv", index=False)
@@ -88,6 +96,16 @@ def main() -> None:
             "mt4_parity": "Not MT4 parity; MT4 remains final source of truth",
         },
         "max_holding_bars": int(cfg["max_holding_bars"]),
+        "policy": {
+            "enabled": bool(policy_cfg.enabled),
+            "name": str(policy_cfg.name) if policy_cfg.enabled else "",
+            "semantics": policy_cfg.semantics if policy_cfg.enabled else POLICY_SEMANTICS,
+            "rule_count": len(policy_cfg.rules),
+            "matched_rule_rows": int(policy_result["matched_rule_rows"]),
+            "base_candidate_count": int(len(candidate_feature_df)),
+            "included_candidate_count": int(len(screened_candidates_df)),
+            "excluded_candidate_count": int(len(candidates_audit_df) - len(screened_candidates_df)),
+        },
         "notes": cfg.get("notes", ""),
     }
     with (output_dir / "run_metadata.yaml").open("w", encoding="utf-8") as f:
@@ -95,7 +113,8 @@ def main() -> None:
 
     print(
         "Experiment run completed:",
-        f"cand={len(candidates_df)}",
+        f"cand_base={len(candidate_feature_df)}",
+        f"cand_included={len(screened_candidates_df)}",
         f"wins={(outcomes_df['outcome_status'] == 'win').sum() if not outcomes_df.empty else 0}",
         f"losses={(outcomes_df['outcome_status'] == 'loss').sum() if not outcomes_df.empty else 0}",
         f"timeouts={(outcomes_df['outcome_status'] == 'timeout').sum() if not outcomes_df.empty else 0}",

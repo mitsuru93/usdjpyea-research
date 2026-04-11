@@ -1,0 +1,19 @@
+input_csv: research/data_sample/usdjpy_m1_tiny_sample.csv
+output_dir: research/reports/smoke_test_policy_run
+input_timezone_mode: UTC
+max_holding_bars: 20
+symbol: USDJPY
+timeframe: M1
+
+policy:
+  enabled: true
+  name: smoke_policy
+  semantics: last_match_wins
+  rules:
+    - name: deny_rev_asia_buy
+      type: deny
+      candidate_family: rev
+      session: asia
+      direction: buy
+
+notes: "Smoke test for policy-screened candidate run on tiny sample."
