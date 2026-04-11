@@ -1,0 +1,13 @@
+# Copy this file to configs/local/dataset_registry.yaml for local-only use.
+# Keep real/private paths out of version control.
+
+datasets:
+  usdjpy_m1_recent:
+    path: /ABSOLUTE/LOCAL/PATH/usdjpy_m1_recent.csv
+    timezone_mode: UTC
+    source_note: "local export; server-aligned raw timeline"
+
+  usdjpy_m1_archive:
+    path: /ABSOLUTE/LOCAL/PATH/usdjpy_m1_archive.csv
+    timezone_mode: UTC
+    source_note: "local archive"

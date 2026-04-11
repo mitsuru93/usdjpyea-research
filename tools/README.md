@@ -8,3 +8,4 @@ Lightweight research utilities.
 - `analyze_run.py`: config-driven post-run feature bucket/joint analysis for completed experiment outputs.
 
 - `compare_runs.py`: config-driven multi-run comparison for completed run + optional analysis artifacts.
+- `run_study.py`: study-level orchestration CLI for multi-run experiment + optional analysis + optional compare.
