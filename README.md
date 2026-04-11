@@ -1,53 +1,47 @@
-# USDJPY EA Research
+# USDJPY EA Research (Pre-MT4)
 
-Public repository for pre-MT4 research and simulation.
+This repository is dedicated to **pre-MT4 research and simulation** for a USDJPY Expert Advisor (EA).
 
-## Purpose
-This repository is used to evaluate trading ideas before they are implemented and validated in MT4.
+It is intended for:
+- feature engineering and signal research
+- simulation under conservative assumptions
+- robustness testing across regimes and market conditions
+- candidate strategy screening before MT4 validation
 
 ## Scope
-- Python-based simulation
-- Feature engineering
-- Robustness testing
-- Experiment configs
-- Scoring and comparison logic
-- Sample data and reproducible research utilities
 
-## Out of Scope
-- Private MT4 production code
-- Broker-specific settings
-- Final production thresholds
-- Full private datasets
-- Live trading or account-related information
+This repo contains research artifacts only.
 
-## Goals
-- Reject weak ideas before MT4 testing
-- Prefer robustness over peak backtest profit
-- Compare candidates by month, session, and strategy bucket
-- Reduce wasted MT4 testing time
+Included:
+- lightweight research modules (`research/`)
+- configuration placeholders (`configs/`)
+- basic CI checks for Python source integrity
 
-## Repository Structure
-- `research/data_sample/` : small public sample datasets
-- `research/features/` : feature generation code
-- `research/simulator/` : pre-MT4 simulation logic
-- `research/scoring/` : evaluation and ranking logic
-- `research/experiments/` : experiment definitions
-- `research/reports/` : generated summaries and reports
-- `configs/strategy/` : strategy-related configs
-- `configs/experiments/` : experiment configs
-- `tools/` : helper scripts
+Excluded:
+- MT4 production code (`.mq4`, `.mqh`)
+- broker-specific implementation details
+- live-trading operational setup
+- secrets and production credentials
 
-## Workflow
-1. Define a hypothesis.
-2. Simulate it under conservative assumptions.
-3. Score it by robustness, not only total profit.
-4. Promote only strong candidates to the private core repository for MT4 validation.
+## Repository Layout
 
-## Principles
-- No lookahead bias
-- Conservative handling when execution order is ambiguous
-- Reproducible outputs
-- Clear comparison across periods and conditions
+- `research/data_sample/` — placeholder for small, sanitized sample data
+- `research/features/` — feature engineering package
+- `research/simulator/` — simulation logic package
+- `research/scoring/` — scoring and candidate evaluation package
+- `research/experiments/` — experiment outputs/tracking placeholders
+- `research/reports/` — report placeholders
+- `configs/strategy/` — strategy configuration notes
+- `configs/experiments/` — experiment configuration notes
+- `tools/` — utility scripts and supporting tooling notes
 
-## Status
-Initial repository setup for the USDJPY EA pre-MT4 research workflow.
+## Development Notes
+
+- Keep assumptions conservative when execution order is ambiguous.
+- Avoid lookahead bias in all research and simulations.
+- Prefer robust behavior over peak in-sample performance.
+- Compare performance by month, session, and volatility/trend buckets.
+
+## CI
+
+A minimal GitHub Actions workflow validates Python syntax by compiling `research/` and `tools/`.
