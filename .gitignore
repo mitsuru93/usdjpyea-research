@@ -1,0 +1,12 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Local-only data/config
+configs/local/*.yaml
+!configs/local/*.example.yaml
+local_data/
+
+# Local runtime research outputs
+research/reports/studies/
+research/reports/smoke_test_study/

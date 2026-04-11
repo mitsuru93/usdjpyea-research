@@ -1,0 +1,36 @@
+study_name: smoke_test_study
+output_root: research/reports/studies/smoke_test_study
+shared_defaults:
+  input_timezone_mode: UTC
+  max_holding_bars: 20
+  symbol: USDJPY
+  timeframe: M1
+  analyze_after_run: true
+  quantile_bucket_count: 3
+  selected_features:
+    - dist_from_ema_pips
+    - pre60_change_pips
+    - net10_change_pips
+    - rsi14
+  selected_feature_pairs:
+    - [pre60_change_pips, net10_change_pips]
+  slice_modes:
+    - overall
+    - by_family
+
+runs:
+  - label: baseline
+    input_csv: research/data_sample/usdjpy_m1_tiny_sample.csv
+    notes: smoke baseline
+  - label: variant_same_input
+    input_csv: research/data_sample/usdjpy_m1_tiny_sample.csv
+    max_holding_bars: 25
+    notes: smoke variant with holding override
+
+compare:
+  enabled: true
+  selected_bucket_features:
+    - dist_from_ema_pips
+    - pre60_change_pips
+
+notes: "Smoke-study config for structural validation of study orchestration."

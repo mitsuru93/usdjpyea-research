@@ -1,0 +1,26 @@
+study_name: dc18ab5s_baseline_screen
+output_root: research/reports/studies/dc18ab5s_baseline_screen
+shared_defaults:
+  input_timezone_mode: UTC
+  max_holding_bars: 30
+  symbol: USDJPY
+  timeframe: M1
+  analyze_after_run: true
+
+runs:
+  - label: baseline
+    input_csv: /ABSOLUTE/OR/LOCAL/PATH/usdjpy.csv
+    notes: baseline run
+  - label: variant_a
+    input_csv: /ABSOLUTE/OR/LOCAL/PATH/usdjpy.csv
+    max_holding_bars: 40
+    notes: variant run
+
+compare:
+  enabled: true
+  selected_bucket_features:
+    - dist_from_ema_pips
+    - pre60_change_pips
+    - net10_change_pips
+
+notes: "Template for deterministic study-level orchestration (pre-MT4 research only)."
