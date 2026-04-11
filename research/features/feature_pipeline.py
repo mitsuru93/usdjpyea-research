@@ -15,11 +15,20 @@ def build_feature_frame(tagged_env_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def attach_features_to_candidates(candidates_df: pd.DataFrame, feature_df: pd.DataFrame) -> pd.DataFrame:
-    """Attach decision-time features to candidate rows by candidate timestamp."""
+    """Attach decision-time features to candidate rows by candidate timestamp.
+
+    Candidate columns are canonical when names overlap (e.g. session/month),
+    so merge output remains stable with no _x/_y suffix columns.
+    """
     if candidates_df.empty:
         return candidates_df.copy()
 
-    merged = candidates_df.merge(feature_df, on="timestamp", how="left", validate="many_to_one")
+    overlapping_cols = [
+        col for col in feature_df.columns if col != "timestamp" and col in candidates_df.columns
+    ]
+    feature_cols = feature_df.drop(columns=overlapping_cols, errors="ignore")
+
+    merged = candidates_df.merge(feature_cols, on="timestamp", how="left", validate="many_to_one")
     return merged
 
 

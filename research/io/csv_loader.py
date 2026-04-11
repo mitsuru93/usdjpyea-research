@@ -60,7 +60,7 @@ def load_ohlc_csv(path: str | Path) -> pd.DataFrame:
     """Load OHLC CSV into a normalized DataFrame.
 
     Returns DataFrame with standardized columns:
-    - datetime (UTC-naive timestamp as parsed from input)
+    - datetime (source timeline timestamp parsed from input)
     - open, high, low, close (float)
     """
     csv_path = Path(path)
