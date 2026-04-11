@@ -67,6 +67,7 @@ def _build_run_experiment_config(
     run_cfg: dict[str, Any],
     run_output_dir: Path,
     repo_root: Path,
+    study_config_dir: Path,
 ) -> dict[str, Any]:
     merged = dict(shared_defaults)
     merged.update(run_cfg)
@@ -74,6 +75,7 @@ def _build_run_experiment_config(
 
     merged["output_dir"] = str(run_output_dir)
     merged["input_csv"] = str(resolve_local_path(str(merged["input_csv"]), base_dir=repo_root))
+    _normalize_policy_file_path(merged=merged, study_config_dir=study_config_dir, repo_root=repo_root)
 
     missing = [key for key in RUN_REQUIRED_KEYS if key not in merged]
     if missing:
@@ -109,6 +111,32 @@ def _normalize_policy_override_fields(*, merged: dict[str, Any], run_cfg: dict[s
             merged.pop("policy_file", None)
         if not run_sets_policy:
             merged.pop("policy", None)
+
+
+def _normalize_policy_file_path(*, merged: dict[str, Any], study_config_dir: Path, repo_root: Path) -> None:
+    raw_policy_file = merged.get("policy_file")
+    if raw_policy_file is None:
+        return
+
+    policy_file = Path(str(raw_policy_file))
+    if policy_file.is_absolute():
+        merged["policy_file"] = str(policy_file.resolve())
+        return
+
+    candidate_from_study_dir = (study_config_dir / policy_file).resolve()
+    if candidate_from_study_dir.exists():
+        merged["policy_file"] = str(candidate_from_study_dir)
+        return
+
+    candidate_from_repo_root = (repo_root / policy_file).resolve()
+    if candidate_from_repo_root.exists():
+        merged["policy_file"] = str(candidate_from_repo_root)
+        return
+
+    raise FileNotFoundError(
+        "Policy preset file not found for study run. Tried study-config-relative and repo-root-relative paths: "
+        f"'{candidate_from_study_dir}' and '{candidate_from_repo_root}'."
+    )
 
 
 def _build_analysis_config(
@@ -214,6 +242,7 @@ def run_study(config_path: str | Path) -> dict[str, Any]:
                 run_cfg=run,
                 run_output_dir=run_output_dir,
                 repo_root=repo_root,
+                study_config_dir=config_path.parent.resolve(),
             )
             run_cfg_path = runtime_config_dir / f"run_{safe_label}.yaml"
             _write_yaml(run_cfg_path, run_payload)

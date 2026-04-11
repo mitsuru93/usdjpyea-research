@@ -64,6 +64,10 @@ Path resolution for relative `policy_file` is deterministic:
 2. if not found, resolve relative to repository root
 3. if still missing/unloadable, raise a clear error
 
+When using `tools/run_study.py`, generated runtime experiment configs normalize
+`policy_file` to a resolved absolute path based on the original study config directory
+(then repo-root fallback), so execution remains consistent with study-config validation.
+
 ## Supported rule fields
 
 ### Rule action (`type`)

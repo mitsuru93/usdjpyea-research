@@ -83,6 +83,10 @@ Runtime-generated temporary configs are stored in:
   - run-level `policy` removes inherited `policy_file` (unless the run also explicitly sets `policy_file`).
   - run-level `policy_file` removes inherited `policy` (unless the run also explicitly sets `policy`).
   - explicit null/empty values (`policy: null`, `policy: {}`, `policy_file: null`, `policy_file: ""`) clear that field.
+- For study runs, relative `policy_file` values are normalized before runtime config write:
+  - first against the original study config directory
+  - then against repo root as fallback
+  - runtime config stores the resolved absolute path for stable execution
 - `analyze_after_run` can be set in `shared_defaults` and overridden per run.
 - Compare runs only if `compare.enabled: true` and at least two runs complete successfully.
 - Compare also requires the configured baseline run (the first run label) to complete successfully; otherwise compare is skipped with an explicit warning.
