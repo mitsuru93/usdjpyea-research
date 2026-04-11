@@ -108,7 +108,7 @@ def evaluate_rule_mask(df: pd.DataFrame, rule: PolicyRule, rule_index: int) -> p
 
 
 def _build_in_mask(series: pd.Series, values: list[Any]) -> pd.Series:
-    if series.dtype == "object":
+    if series.dtype == "object" or pd.api.types.is_string_dtype(series):
         lowered = {str(v).lower() for v in values}
         return series.astype(str).str.lower().isin(lowered)
     return series.isin(values)
@@ -127,9 +127,9 @@ def _evaluate_condition(series: pd.Series, cond: PolicyCondition) -> pd.Series:
     if op == "<=":
         return series <= value
     if op == "==":
-        return series == value
+        return _evaluate_equality(series, value)
     if op == "!=":
-        return series != value
+        return ~_evaluate_equality(series, value)
     if op == "between":
         if not isinstance(value, (list, tuple)) or len(value) != 2:
             raise ValueError("'between' requires two-element list/tuple value [lower, upper]")
@@ -143,3 +143,12 @@ def _evaluate_condition(series: pd.Series, cond: PolicyCondition) -> pd.Series:
         return ~_build_in_mask(series, values)
 
     raise ValueError(f"Unsupported operator: {op}")
+
+
+def _evaluate_equality(series: pd.Series, value: Any) -> pd.Series:
+    """Case-insensitive equality for object/string-like columns, exact for numeric columns."""
+    if series.dtype == "object" or pd.api.types.is_string_dtype(series):
+        lhs = series.astype(str).str.lower()
+        rhs = str(value).lower()
+        return lhs == rhs
+    return series == value

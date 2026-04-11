@@ -101,7 +101,7 @@ def main() -> None:
             "name": str(policy_cfg.name) if policy_cfg.enabled else "",
             "semantics": policy_cfg.semantics if policy_cfg.enabled else POLICY_SEMANTICS,
             "rule_count": len(policy_cfg.rules),
-            "matched_rule_rows": int(policy_result["matched_rule_rows"]),
+            "matched_rule_events": int(policy_result["matched_rule_events"]),
             "base_candidate_count": int(len(candidate_feature_df)),
             "included_candidate_count": int(len(screened_candidates_df)),
             "excluded_candidate_count": int(len(candidates_audit_df) - len(screened_candidates_df)),

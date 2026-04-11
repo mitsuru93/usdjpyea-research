@@ -43,16 +43,16 @@ def apply_policy_to_candidates(candidates_df: pd.DataFrame, policy: PolicyConfig
         return {
             "included_df": audit_df[audit_df["excluded_by_policy"] == False].copy(),  # noqa: E712
             "audit_df": audit_df,
-            "matched_rule_rows": 0,
+            "matched_rule_events": 0,
         }
 
-    matched_rule_rows = 0
+    matched_rule_events = 0  # Counts rule-row match events across ordered rules (not unique candidates).
     for idx, rule in enumerate(policy.rules):
         rule_mask = evaluate_rule_mask(audit_df, rule, idx)
         if not rule_mask.any():
             continue
 
-        matched_rule_rows += int(rule_mask.sum())
+        matched_rule_events += int(rule_mask.sum())
         audit_df.loc[rule_mask, "matched_rule_index"] = idx
         audit_df.loc[rule_mask, "matched_rule_name"] = rule.name
 
@@ -67,5 +67,5 @@ def apply_policy_to_candidates(candidates_df: pd.DataFrame, policy: PolicyConfig
     return {
         "included_df": included_df,
         "audit_df": audit_df,
-        "matched_rule_rows": matched_rule_rows,
+        "matched_rule_events": matched_rule_events,
     }

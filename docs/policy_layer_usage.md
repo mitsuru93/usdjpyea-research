@@ -118,6 +118,7 @@ Policy audit columns:
 - `name`
 - `semantics`
 - `rule_count`
+- `matched_rule_events` (total rule-row matches across rules; not unique candidates)
 - `base_candidate_count`
 - `included_candidate_count`
 - `excluded_candidate_count`
