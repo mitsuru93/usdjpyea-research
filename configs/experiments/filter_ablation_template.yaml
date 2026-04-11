@@ -1,0 +1,73 @@
+# Filter ablation experiment template
+# Goal: test one filter family at a time against baseline assumptions.
+
+template:
+  id: filter_ablation_template
+  version: 0.1.0
+  purpose: single_family_ablation_vs_baseline
+
+baseline_reference:
+  strategy_config: configs/strategy/dc18ab5s_baseline.yaml
+  run_label: baseline_control
+
+ablation_setup:
+  mode: single_family_toggle
+  families:
+    - DeepChase
+    - DeepChaseV2
+    - TrendBoost
+    - RevZoneC
+    - DriveNoEntry
+    - TrendDistFilter
+    - Shock
+    - SurpriseShock
+    - BCore
+    - ACoreBandWalk
+    - BBWChopVetoRev
+    - TokyoTRPre60Veto
+    - RVBWTRForce
+  toggle_logic:
+    enabled_case: "family enabled under baseline assumptions"
+    disabled_case: "same run with only target family disabled"
+  interaction_policy: "Do not co-ablate multiple families in this template"
+
+data_window:
+  dataset_id: "TBD"
+  symbol: USDJPY
+  timeframe: M1
+  start: "TBD"
+  end: "TBD"
+
+evaluation:
+  compare_against: baseline_control
+  slices:
+    - global
+    - monthly
+    - session
+    - rev_vs_trend_bucket
+  metrics:
+    - delta_net_pnl
+    - delta_profit_factor
+    - delta_win_rate
+    - delta_drawdown_proxy
+    - delta_trade_count
+  significance_checks:
+    method: "TBD / to be verified against EA research standard"
+    min_sample_constraints: "TBD"
+
+reject_or_keep_logic:
+  keep_family_if:
+    - "improves robustness without unacceptable activity collapse"
+    - "does not introduce strong month/session fragility"
+  reject_family_if:
+    - "benefit appears only in narrow period/session"
+    - "risk worsens beyond threshold (TBD)"
+
+notes:
+  assumption_controls:
+    same_bar_policy: conservative
+    touch_model_consistency: required
+    session_tagging_consistency: required
+  unknowns:
+    - "Exact internal parameter mappings per family are TBD / to be verified against EA"
+    - "Family precedence and interaction order are TBD / to be verified against EA"

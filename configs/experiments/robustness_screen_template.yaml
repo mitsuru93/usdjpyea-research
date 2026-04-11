@@ -1,0 +1,80 @@
+# Robustness screening template (research-side)
+# Reusable template for month/session stability checks before MT4 validation.
+
+template:
+  id: robustness_screen_template
+  version: 0.1.0
+  purpose: baseline_and_variant_robustness_screen
+
+data_window:
+  dataset_id: "TBD"
+  symbol: USDJPY
+  timeframe: M1
+  start: "TBD"
+  end: "TBD"
+  warmup_bars: "TBD"
+  include_spread_proxy: true
+  notes:
+    - "Data quality rules TBD / to be verified against EA alignment needs."
+
+session_split:
+  timezone: JST
+  buckets:
+    ASIA: "03:00-08:59"
+    TOKYO: "09:00-15:59"
+    LONDON: "16:00-20:59"
+    NY: "21:00-02:59"
+  report_per_session: true
+
+monthly_split:
+  enabled: true
+  grouping: calendar_month
+  min_trades_per_month: "TBD"
+  min_months_required: "TBD"
+
+metrics:
+  primary:
+    - net_pnl
+    - profit_factor
+    - win_rate
+    - expectancy_per_trade
+  risk:
+    - max_drawdown_proxy
+    - loss_streak_max
+    - pnl_volatility_monthly
+  stability:
+    - positive_month_ratio
+    - session_concentration_index
+    - month_to_month_dispersion
+  activity:
+    - total_trades
+    - trades_per_month
+    - trades_per_session
+
+reject_rules:
+  # Keep rules explicit and conservative. Final thresholds are TBD.
+  - id: insufficient_activity
+    condition: "total_trades < TBD"
+    action: reject
+  - id: unstable_monthly_profile
+    condition: "positive_month_ratio < TBD"
+    action: reject
+  - id: risk_too_high
+    condition: "max_drawdown_proxy > TBD"
+    action: reject
+  - id: session_overconcentration
+    condition: "session_concentration_index > TBD"
+    action: review_or_reject
+
+notes:
+  assumptions:
+    same_bar_policy: conservative
+    touch_model:
+      reverse: real_touch
+      trend: virtual_spread_clipped_touch
+  traceability:
+    require_assumption_version: true
+    require_tbd_log: true
+  mt4_alignment:
+    status: "pre-validation"
+    source_of_truth: "MT4 EA"

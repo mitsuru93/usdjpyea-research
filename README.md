@@ -15,6 +15,8 @@ This repo contains research artifacts only.
 Included:
 - lightweight research modules (`research/`)
 - configuration placeholders (`configs/`)
+- baseline documentation (`docs/`)
+- experiment templates and research-side config skeletons
 - basic CI checks for Python source integrity
 
 Excluded:
@@ -31,8 +33,9 @@ Excluded:
 - `research/scoring/` — scoring and candidate evaluation package
 - `research/experiments/` — experiment outputs/tracking placeholders
 - `research/reports/` — report placeholders
-- `configs/strategy/` — strategy configuration notes
-- `configs/experiments/` — experiment configuration notes
+- `docs/` — current baseline and simulator-scope documentation
+- `configs/strategy/` — strategy configuration skeletons
+- `configs/experiments/` — experiment templates
 - `tools/` — utility scripts and supporting tooling notes
 
 ## Development Notes
