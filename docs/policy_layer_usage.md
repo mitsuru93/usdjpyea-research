@@ -22,7 +22,11 @@ This allows deterministic, YAML-driven screening tests without changing Python c
 
 ## Config shape
 
-Add an optional `policy` block inside an experiment config:
+Add either:
+- an inline `policy` block (existing behavior), or
+- a top-level `policy_file` reference (preset file).
+
+### Inline policy (existing)
 
 ```yaml
 policy:
@@ -45,6 +49,20 @@ policy:
           op: "<="
           value: 40
 ```
+
+### Policy preset file (new convenience)
+
+```yaml
+policy_file: configs/policies/rev_danger_zone_example.yaml
+```
+
+Preset files use the exact same policy schema (`enabled`, `name`, `semantics`, `rules`).
+After loading, inline and file-based policies are normalized identically.
+
+Path resolution for relative `policy_file` is deterministic:
+1. resolve relative to the current config file directory
+2. if not found, resolve relative to repository root
+3. if still missing/unloadable, raise a clear error
 
 ## Supported rule fields
 

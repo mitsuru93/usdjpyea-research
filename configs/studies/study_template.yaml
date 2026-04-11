@@ -15,6 +15,8 @@ shared_defaults:
   #     - type: deny
   #       candidate_family: rev
   #       session: asia
+  # Optional alternative:
+  # policy_file: configs/policies/rev_danger_zone_example.yaml
 
 runs:
   - label: baseline
@@ -27,6 +29,8 @@ runs:
     # Optional run-level policy override:
     # policy:
     #   enabled: false
+    # Or policy preset:
+    # policy_file: configs/policies/trend_bias_example.yaml
 
 compare:
   enabled: true

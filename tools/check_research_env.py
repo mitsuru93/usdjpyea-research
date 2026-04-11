@@ -54,6 +54,59 @@ def _load_yaml(path_text: str | Path) -> dict[str, Any]:
     return payload
 
 
+def _resolve_policy_preset_path(raw_path: str | Path, *, config_dir: Path) -> Path:
+    path = Path(raw_path)
+    if path.is_absolute():
+        return path.resolve()
+
+    config_relative = (config_dir / path).resolve()
+    if config_relative.exists():
+        return config_relative
+
+    return (REPO_ROOT / path).resolve()
+
+
+def _check_policy_reference(
+    runner: CheckRunner,
+    *,
+    policy: Any,
+    policy_file: Any,
+    context_label: str,
+    config_dir: Path,
+) -> None:
+    has_inline = policy not in (None, {})
+    has_file = policy_file is not None and str(policy_file).strip() != ""
+
+    runner.check(
+        not (has_inline and has_file),
+        f"{context_label} policy reference uses either inline policy or policy_file (not both)",
+        f"{context_label} policy reference cannot define both 'policy' and 'policy_file'",
+    )
+
+    if not has_file:
+        return
+
+    resolved = _resolve_policy_preset_path(str(policy_file), config_dir=config_dir)
+    runner.check(
+        resolved.exists(),
+        f"{context_label} policy_file exists: {resolved}",
+        f"{context_label} policy_file missing: {resolved}",
+    )
+    if not resolved.exists():
+        return
+
+    try:
+        payload = _load_yaml(resolved)
+        is_mapping = isinstance(payload, dict)
+        runner.check(
+            is_mapping,
+            f"{context_label} policy_file loads as mapping YAML: {resolved}",
+            f"{context_label} policy_file must be mapping-style YAML: {resolved}",
+        )
+    except Exception as exc:  # noqa: BLE001
+        runner.check(False, "", f"{context_label} policy_file could not be loaded: {resolved} ({exc})")
+
+
 def _check_imports(runner: CheckRunner) -> None:
     for mod in ["pandas", "yaml"]:
         try:
@@ -97,6 +150,13 @@ def _check_experiment_config(runner: CheckRunner, path_text: str) -> None:
         runner.check(input_csv.exists(), f"Experiment input CSV found: {input_csv}", f"Experiment input CSV missing: {input_csv}")
     if "output_dir" in cfg:
         _check_output_parent(runner, str(cfg["output_dir"]), "Experiment")
+    _check_policy_reference(
+        runner,
+        policy=cfg.get("policy"),
+        policy_file=cfg.get("policy_file"),
+        context_label="Experiment config",
+        config_dir=cfg_path.parent,
+    )
 
 
 def _check_analysis_config(runner: CheckRunner, path_text: str) -> None:
@@ -197,6 +257,23 @@ def _check_study_config(runner: CheckRunner, path_text: str) -> None:
                     f"Study runs[{idx}] input CSV found: {input_csv}",
                     f"Study runs[{idx}] input CSV missing: {input_csv}",
                 )
+            _check_policy_reference(
+                runner,
+                policy=run.get("policy"),
+                policy_file=run.get("policy_file"),
+                context_label=f"Study runs[{idx}]",
+                config_dir=cfg_path.parent,
+            )
+
+    shared_defaults = cfg.get("shared_defaults", {})
+    if isinstance(shared_defaults, dict):
+        _check_policy_reference(
+            runner,
+            policy=shared_defaults.get("policy"),
+            policy_file=shared_defaults.get("policy_file"),
+            context_label="Study shared_defaults",
+            config_dir=cfg_path.parent,
+        )
 
 
 def main() -> None:

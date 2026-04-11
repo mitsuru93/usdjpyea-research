@@ -14,6 +14,12 @@ Use with:
 python tools/run_experiment.py --config <config_path>
 ```
 
+Policy configs can be supplied either inline (`policy`) or via reusable preset reference (`policy_file`), e.g.:
+
+```yaml
+policy_file: configs/policies/rev_danger_zone_example.yaml
+```
+
 ## Post-run analysis configs
 - `analysis_run_template.yaml`: template for feature bucket/joint diagnostics over completed runs.
 - `smoke_test_analysis_run.yaml`: tiny-sample analysis config paired with smoke test run outputs.

@@ -22,7 +22,7 @@ cp configs/local/local_study_template.example.yaml configs/local/local_study.yam
 Then edit:
 - `input_csv` to your private absolute/local CSV path
 - `output_root` to your local output location
-- run labels / policy rules as needed
+- run labels / policy settings as needed (`policy` inline or `policy_file` preset)
 
 ## 3) Run lightweight environment checks first
 
