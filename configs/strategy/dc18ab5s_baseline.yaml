@@ -1,0 +1,130 @@
+# Baseline strategy skeleton (research-side)
+# IMPORTANT: MT4 EA remains source of truth.
+# Unknown mappings are marked TBD / to be verified against EA.
+
+meta:
+  strategy_id: dc18ab5s_baseline
+  version: 0.1.0-draft
+  scope: pre_mt4_research
+  notes:
+    - "Do not assume undocumented EA behavior."
+    - "Use conservative handling for ambiguous same-bar outcomes."
+
+market:
+  symbol: USDJPY
+  timeframe: M1
+  timezone_reference: JST
+  price_source: "TBD / to be verified against EA"
+
+signal:
+  core_model: ema_envelope
+  ema_period: 20
+  deviation_pct:
+    upper: 0.070
+    lower: -0.070
+  candidate_logic: "TBD / to be verified against EA"
+
+# Touch behavior is intentionally split by mode.
+touch_model:
+  reverse:
+    trigger_type: real_touch
+    spread_adjustment: none
+    tie_break_rules: "TBD / to be verified against EA"
+  trend:
+    trigger_type: virtual_spread_clipped_touch
+    spread_adjustment: virtual_clip
+    clip_formula: "TBD / to be verified against EA"
+
+# Default TP/SL only. Any conditional overrides remain TBD.
+tp_sl:
+  reverse:
+    tp_pips: 10
+    sl_pips: 30
+    overrides: "TBD / to be verified against EA"
+  trend:
+    tp_pips: 10
+    sl_pips: 20
+    overrides: "TBD / to be verified against EA"
+
+session_model:
+  timezone: JST
+  buckets:
+    ASIA: "03:00-08:59"
+    TOKYO: "09:00-15:59"
+    LONDON: "16:00-20:59"
+    NY: "21:00-02:59"
+  parameter_binding: "TBD / to be verified against EA"
+
+trend_env:
+  enabled: true
+  bb_atr_environment_logic: "present (details TBD / to be verified against EA)"
+  m5_slope_filter: "present (details TBD / to be verified against EA)"
+  hook_confirmation: "present (details TBD / to be verified against EA)"
+
+filter_families:
+  deep_chase:
+    enabled: "TBD"
+    role: "TBD / to be verified against EA"
+  deep_chase_v2:
+    enabled: "TBD"
+    role: "TBD / to be verified against EA"
+  trend_boost:
+    enabled: "TBD"
+    session_params: true
+    role: "TBD / to be verified against EA"
+  rev_zone_c:
+    enabled: "TBD"
+    role: "TBD / to be verified against EA"
+  drive_no_entry:
+    enabled: "TBD"
+    role: "entry veto (tentative)"
+  trend_dist_filter:
+    enabled: "TBD"
+    role: "TBD / to be verified against EA"
+  shock:
+    enabled: "TBD"
+    role: "TBD / to be verified against EA"
+  surprise_shock:
+    enabled: "TBD"
+    role: "TBD / to be verified against EA"
+  b_core:
+    enabled: "TBD"
+    role: "TBD / to be verified against EA"
+  a_core_band_walk:
+    enabled: "TBD"
+    role: "TBD / to be verified against EA"
+  bbw_chop_veto_rev:
+    enabled: "TBD"
+    role: "reverse entry veto (tentative)"
+  tokyo_tr_pre60_veto:
+    enabled: "TBD"
+    role: "session-linked veto (tentative)"
+  rvbwtr_force:
+    enabled: "TBD"
+    role: "TBD / to be verified against EA"
+
+risk_and_execution:
+  split_order_execution:
+    enabled: true
+    details: "TBD / to be verified against EA"
+  lot_leverage_max_units:
+    lot_model: "TBD / to be verified against EA"
+    leverage_limits: "TBD / to be verified against EA"
+    max_units: "TBD / to be verified against EA"
+  locks:
+    cooldown_lock: "present (details TBD / to be verified against EA)"
+    error_lock: "present (details TBD / to be verified against EA)"
+  news_filter:
+    enabled: "TBD"
+    schedule_source: "TBD / to be verified against EA"
+
+logging:
+  runtime_logs: true
+  official_trade_history_export: true
+  schema: "TBD / to be verified against EA"
+  assumption_audit:
+    required: true
+    fields:
+      - assumption_version
+      - fill_policy
+      - unresolved_tbd_items
