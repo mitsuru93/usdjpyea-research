@@ -26,5 +26,8 @@ jobs:
       - name: Compile research and tools
         run: python -m compileall research tools
 
+      - name: Check env tool help
+        run: python tools/check_research_env.py --help
+
       - name: Run smoke test
         run: python tools/smoke_test_research.py
