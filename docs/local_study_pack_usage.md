@@ -65,6 +65,15 @@ For first-real timing packs, prioritize in this order:
 - `compare_timing_by_family_reject_reason.csv`
 - `compare_timing_by_still_touch_status.csv`
 
+Optional compact readout first:
+
+```bash
+python tools/review_timing_study.py --study-dir <output_root>
+```
+
+This writes `<output_root>/compare/timing_study_review.md` from existing compare CSVs.
+It is a convenience review layer only (not MT4 validation).
+
 Interpretation details are in `docs/first_timing_study_reading_guide.md`.
 
 Use baseline vs variant comparison as **pre-MT4 candidate ranking only**.

@@ -80,3 +80,11 @@ Delta columns are baseline-relative (first run in config). Column names are expl
 - generated sections
 - top positive/negative `total_pnl_pips` deltas by section where available
 - warnings for missing files/sections
+
+Optional post-run convenience helper (especially for first timing studies):
+
+```bash
+python tools/review_timing_study.py --compare-dir <compare_output_dir>
+```
+
+This writes `timing_study_review.md` in the compare directory as a compact, deterministic readout from existing compare CSVs.
