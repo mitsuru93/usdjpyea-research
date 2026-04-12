@@ -35,6 +35,13 @@ def _write_yaml(path: Path, payload: dict[str, Any]) -> None:
         yaml.safe_dump(payload, f, sort_keys=False)
 
 
+def _repo_relpath(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return path.resolve().as_posix()
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Expand batch spec into shard study configs for matrix execution.")
     parser.add_argument("--batch-spec", required=True, help="Path to batch spec YAML")
@@ -188,6 +195,7 @@ def main() -> None:
         shard_id = f"shard_{shard_index:03d}"
         shard_dir = ensure_directory(shards_dir / shard_id)
         shard_runtime_relpath = f"shards/{shard_id}/study"
+        study_config_relpath = f"shards/{shard_id}/study_config.yaml"
         shard_artifact_name = f"batch-shard-{sanitize_label(batch_id)}-{shard_id}"
         study_output = (output_root / "shards" / shard_id / "study").resolve()
         study_cfg_path = (shard_dir / "study_config.yaml").resolve()
@@ -234,7 +242,9 @@ def main() -> None:
                 "shard_id": shard_id,
                 "shard_index": shard_index,
                 "study_config": str(study_cfg_path),
+                "study_config_relpath": study_config_relpath,
                 "study_output": str(study_output),
+                "study_output_relpath": shard_runtime_relpath,
                 "shard_runtime_relpath": shard_runtime_relpath,
                 "shard_output_relpath": shard_runtime_relpath,
                 "shard_artifact_name": shard_artifact_name,
@@ -258,6 +268,8 @@ def main() -> None:
         "shard_size": shard_size,
         "shard_count": shard_count,
         "variant_count": len(variants),
+        "runtime_bundle_relroot": _repo_relpath(runtime_dir),
+        "batch_manifest_relpath": f"{_repo_relpath(runtime_dir)}/batch_manifest.yaml",
         "shards": shard_records,
         "notes": str(spec.get("notes", "")),
     }
@@ -269,7 +281,9 @@ def main() -> None:
         {
             "shard_id": rec["shard_id"],
             "study_config": rec["study_config"],
+            "study_config_relpath": rec["study_config_relpath"],
             "study_output": rec["study_output"],
+            "study_output_relpath": rec["study_output_relpath"],
             "shard_runtime_relpath": rec["shard_runtime_relpath"],
             "shard_artifact_name": rec["shard_artifact_name"],
         }
@@ -294,7 +308,9 @@ def main() -> None:
         github_output = Path(github_output_raw)
         with github_output.open("a", encoding="utf-8") as out:
             out.write(f"batch_runtime_dir={runtime_dir.as_posix()}\n")
+            out.write(f"runtime_bundle_relroot={_repo_relpath(runtime_dir)}\n")
             out.write(f"batch_manifest={manifest_path.as_posix()}\n")
+            out.write(f"batch_manifest_relpath={_repo_relpath(manifest_path)}\n")
             out.write(f"batch_output_root={output_root.as_posix()}\n")
             out.write(f"batch_id={batch_id}\n")
             out.write(f"dataset_id={dataset_id}\n")
