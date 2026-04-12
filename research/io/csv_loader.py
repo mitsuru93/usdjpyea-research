@@ -14,7 +14,7 @@ import pandas as pd
 
 REQUIRED_FIELDS = ("datetime", "open", "high", "low", "close")
 COLUMN_ALIASES = {
-    "datetime": ["datetime", "timestamp", "time", "date", "datestamp"],
+    "datetime": ["datetime", "timestamp", "time", "date", "datestamp", "dt"],
     "open": ["open", "o"],
     "high": ["high", "h"],
     "low": ["low", "l"],
