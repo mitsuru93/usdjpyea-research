@@ -28,6 +28,15 @@ Start from `<output_root>/compare/`:
 
 Then drill into month/session splits if needed.
 
+Optional convenience step first:
+
+```bash
+python tools/review_timing_study.py --study-dir <output_root>
+```
+
+This writes `<output_root>/compare/timing_study_review.md` as a compact first-pass readout.
+Use it as a convenience layer only, then inspect raw compare CSVs directly.
+
 ## How to interpret key files
 
 ### `compare_overall.csv`

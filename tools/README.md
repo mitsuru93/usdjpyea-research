@@ -7,6 +7,7 @@ Lightweight research utilities.
 - `smoke_test_research.py`: tiny-sample smoke test for the config-driven runner.
 - `analyze_run.py`: config-driven post-run feature bucket/joint analysis for completed experiment outputs.
 - `compare_runs.py`: config-driven multi-run comparison for completed run + optional analysis artifacts.
+- `review_timing_study.py`: post-run helper that reads timing-study compare CSVs and writes one compact markdown review.
 - `run_study.py`: study-level orchestration CLI for multi-run experiment + optional analysis + optional compare.
 - `check_research_env.py`: lightweight local environment/config checker before private-data runs.
 

@@ -28,6 +28,7 @@ For local/private data workflows, start from:
 
 For timing interpretation on first private runs, use:
 - `docs/first_timing_study_reading_guide.md`
+- `tools/review_timing_study.py` (compact post-run markdown helper over compare outputs)
 
 ## Study Config Shape
 
@@ -105,4 +106,7 @@ Runtime-generated temporary configs are stored in:
 - Keep this layer orchestration-only; simulator and analysis internals are unchanged.
 - Do not commit private CSV datasets.
 - Run `tools/check_research_env.py` before local real-data study execution.
+- For timing-study packs, you can generate a compact first-pass review after compare completes:
+  - `python tools/review_timing_study.py --study-dir <output_root>`
+  - Output: `<output_root>/compare/timing_study_review.md`
 - Keep MT4 as final source of truth; this repository remains pre-MT4 research.
