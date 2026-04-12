@@ -10,6 +10,7 @@ from typing import Any
 
 import yaml
 
+from research.io.dataset_resolver import resolve_dataset_to_local_csv
 from research.orchestration.path_utils import ensure_directory, resolve_local_path, sanitize_label
 
 RUN_REQUIRED_KEYS = ["input_csv", "input_timezone_mode", "max_holding_bars", "symbol", "timeframe"]
@@ -84,6 +85,7 @@ def _resolve_dataset_input_csv(
     dataset_registry_path: Path | None,
     study_label: str,
     repo_root: Path,
+    dataset_cache_dir: Path,
 ) -> str:
     input_csv = str(merged.get("input_csv", "")).strip()
     if input_csv:
@@ -99,11 +101,13 @@ def _resolve_dataset_input_csv(
         registry_display = str(dataset_registry_path) if dataset_registry_path else "<none>"
         raise KeyError(f"run '{study_label}' dataset_id '{dataset_id}' not found in registry: {registry_display}")
 
-    dataset_path = str(dataset_entry.get("path", "")).strip()
-    if not dataset_path:
-        raise ValueError(f"run '{study_label}' dataset '{dataset_id}' has empty 'path' in dataset registry")
-
-    return str(resolve_local_path(dataset_path, base_dir=repo_root))
+    resolved = resolve_dataset_to_local_csv(
+        dataset_id=dataset_id,
+        entry=dataset_entry,
+        repo_root=repo_root,
+        cache_dir=dataset_cache_dir,
+    )
+    return str(resolved)
 
 
 def _build_run_experiment_config(
@@ -115,6 +119,7 @@ def _build_run_experiment_config(
     study_config_dir: Path,
     dataset_registry: dict[str, Any],
     dataset_registry_path: Path | None,
+    dataset_cache_dir: Path,
 ) -> dict[str, Any]:
     merged = dict(shared_defaults)
     merged.update(run_cfg)
@@ -127,6 +132,7 @@ def _build_run_experiment_config(
         dataset_registry_path=dataset_registry_path,
         study_label=str(run_cfg.get("label", "")),
         repo_root=repo_root,
+        dataset_cache_dir=dataset_cache_dir,
     )
     _normalize_policy_file_path(merged=merged, study_config_dir=study_config_dir, repo_root=repo_root)
 
@@ -274,6 +280,7 @@ def run_study(
     else:
         output_root = ensure_directory(base_output_root)
     runtime_config_dir = ensure_directory(output_root / "runtime_configs")
+    dataset_cache_dir = ensure_directory(output_root / "dataset_cache")
 
     run_tool_path = repo_root / "tools" / "run_experiment.py"
     analyze_tool_path = repo_root / "tools" / "analyze_run.py"
@@ -323,6 +330,7 @@ def run_study(
                 study_config_dir=config_path.parent.resolve(),
                 dataset_registry=dataset_registry,
                 dataset_registry_path=dataset_registry_path,
+                dataset_cache_dir=dataset_cache_dir,
             )
             run_cfg_path = runtime_config_dir / f"run_{safe_label}.yaml"
             _write_yaml(run_cfg_path, run_payload)

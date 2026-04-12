@@ -39,6 +39,20 @@ jobs:
       - name: Check study config
         run: python tools/check_research_env.py --study-config "${{ inputs.study_config }}"
 
+      - name: Log dataset selection
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          cfg_path = Path("${{ inputs.study_config }}")
+          cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
+          selected = "${{ inputs.dataset_id }}".strip()
+          print(f"study_config={cfg_path}")
+          print(f"dataset_id_override={selected or '<none>'}")
+          print(f"dataset_registry={cfg.get('dataset_registry', '<none>')}")
+          PY
+
       - name: Run study
         run: |
           DATASET_ARGS=""

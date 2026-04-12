@@ -13,6 +13,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from research.io.dataset_resolver import validate_dataset_entry
+
 TIMING_MODE_VALUES = {"baseline_touch", "rv_close_confirm", "all_close"}
 
 
@@ -346,19 +348,28 @@ def _check_study_config(runner: CheckRunner, path_text: str) -> None:
                     f"Study runs[{idx}] dataset_id missing in registry: {dataset_id}",
                 )
                 if isinstance(dataset_entry, dict):
-                    dataset_path = str(dataset_entry.get("path", "")).strip()
-                    runner.check(
-                        dataset_path != "",
-                        f"Study runs[{idx}] dataset registry path provided for '{dataset_id}'",
-                        f"Study runs[{idx}] dataset registry path missing for '{dataset_id}'",
+                    _check_dataset_entry(
+                        runner,
+                        dataset_id=dataset_id,
+                        dataset_entry=dataset_entry,
+                        context_label=f"Study runs[{idx}]",
                     )
-                    if dataset_path != "":
-                        resolved_dataset_path = _resolve(dataset_path)
-                        runner.check(
-                            resolved_dataset_path.exists(),
-                            f"Study runs[{idx}] dataset registry CSV found: {resolved_dataset_path}",
-                            f"Study runs[{idx}] dataset registry CSV missing: {resolved_dataset_path}",
-                        )
+            elif not has_input_csv and shared_has_dataset_id:
+                dataset_id = str(shared_defaults.get("dataset_id", "")).strip()
+                dataset_map = dataset_registry.get("datasets", {})
+                dataset_entry = dataset_map.get(dataset_id) if isinstance(dataset_map, dict) else None
+                runner.check(
+                    isinstance(dataset_entry, dict),
+                    f"Study runs[{idx}] shared dataset_id found in registry: {dataset_id}",
+                    f"Study runs[{idx}] shared dataset_id missing in registry: {dataset_id}",
+                )
+                if isinstance(dataset_entry, dict):
+                    _check_dataset_entry(
+                        runner,
+                        dataset_id=dataset_id,
+                        dataset_entry=dataset_entry,
+                        context_label=f"Study runs[{idx}]",
+                    )
             _check_policy_reference(
                 runner,
                 policy=run.get("policy"),
@@ -390,6 +401,26 @@ def _check_study_config(runner: CheckRunner, path_text: str) -> None:
                     context_label=f"Study merged runs[{idx}]",
                     config_dir=cfg_path.parent,
                 )
+
+
+def _check_dataset_entry(runner: CheckRunner, *, dataset_id: str, dataset_entry: dict[str, Any], context_label: str) -> None:
+    errors = validate_dataset_entry(dataset_id, dataset_entry)
+    runner.check(
+        not errors,
+        f"{context_label} dataset entry for '{dataset_id}' passes provider validation",
+        f"{context_label} dataset entry invalid for '{dataset_id}': {'; '.join(errors)}",
+    )
+    if errors:
+        return
+
+    provider = str(dataset_entry.get("provider", "repo_path")).strip() or "repo_path"
+    if provider == "repo_path":
+        dataset_path = _resolve(str(dataset_entry["path"]))
+        runner.check(
+            dataset_path.exists(),
+            f"{context_label} repo_path dataset file found: {dataset_path}",
+            f"{context_label} repo_path dataset file missing: {dataset_path}",
+        )
 
 
 def main() -> None:
