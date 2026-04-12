@@ -1,0 +1,45 @@
+batch_id: batch_band_model_screen_v1
+dataset_registry: configs/datasets/dataset_registry.yaml
+dataset_id: usdjpy_m1_tiny_sample
+output_root: research/reports/batches/batch_band_model_screen_v1
+shard_size: 6
+output_tag_default: mobile_dispatch
+blackout_windows_jst:
+  - start: '2024-01-01 06:55:00'
+    end: '2024-01-01 07:10:00'
+    label: tokyo_preopen_guard
+  - start: '2024-01-01 23:55:00'
+    end: '2024-01-02 00:10:00'
+    label: daily_rollover_guard
+spread_mode: audit_only
+band_model_sweep:
+  percent_envelope: [0.05, 0.06, 0.07, 0.08]
+  fixed_pip_envelope: [8, 9, 10, 11]
+  atr_k_envelope: [0.8, 1.0, 1.2]
+timing_modes: [baseline_touch]
+compare_sections:
+  - overall
+  - by_month
+  - by_session
+  - by_family
+  - timing_overall
+  - timing_by_month
+  - timing_by_session
+  - timing_by_family
+  - timing_by_decision_event
+  - timing_by_reject_reason
+  - timing_by_family_decision_event
+  - timing_by_family_reject_reason
+  - timing_by_still_touch_status
+ranking_profile:
+  primary_metric: kept_total_pnl_pips
+  secondary_metric: kept_avg_pnl_pips
+  tertiary_metric: kept_trade_count
+  shortlist_top_n: 8
+  require_spread_column: false
+review_sink:
+  issue_number: 1
+  comment_marker: BATCH_REVIEW_BATCH_BAND_MODEL_SCREEN_V1
+notes: >-
+  Pre-MT4 candidate screening batch for deterministic band-model comparison.
+  MT4 remains final source of truth; spread is audited only in this phase.

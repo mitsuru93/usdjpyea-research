@@ -24,7 +24,14 @@ from research.simulator.candidate_engine import (
     apply_timing_mode,
     build_candidates,
 )
-from research.simulator.envelope import DEVIATION_RATE, EMA_SPAN, add_envelope_columns
+from research.simulator.envelope import (
+    DEFAULT_ATR_PERIOD,
+    DEFAULT_BAND_MODEL,
+    DEFAULT_PIP_SIZE,
+    DEVIATION_RATE,
+    EMA_SPAN,
+    add_envelope_columns,
+)
 from research.simulator.outcome_engine import DEFAULT_MAX_HOLDING_BARS, PIP_SIZE, evaluate_candidates
 from research.simulator.session import INPUT_TIMEZONE_MODES, add_session_columns
 
@@ -108,9 +115,24 @@ def main() -> None:
     output_dir = Path(cfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    band_model = str(cfg.get("band_model", DEFAULT_BAND_MODEL)).strip().lower()
+    band_percent = float(cfg.get("band_percent", DEVIATION_RATE))
+    band_pips = float(cfg.get("band_pips", 10.0))
+    band_atr_k = float(cfg.get("band_atr_k", 1.0))
+    band_atr_period = int(cfg.get("band_atr_period", DEFAULT_ATR_PERIOD))
+    pip_size = float(cfg.get("pip_size", DEFAULT_PIP_SIZE))
+
     ohlc_df = load_ohlc_csv(cfg["input_csv"])
     tagged_df = add_session_columns(ohlc_df, input_timezone_mode=cfg["input_timezone_mode"])
-    env_df = add_envelope_columns(tagged_df)
+    env_df = add_envelope_columns(
+        tagged_df,
+        band_model=band_model,
+        band_percent=band_percent,
+        band_pips=band_pips,
+        band_atr_k=band_atr_k,
+        band_atr_period=band_atr_period,
+        pip_size=pip_size,
+    )
     feature_df = build_feature_frame(env_df)
 
     base_candidates = build_candidates(env_df)
@@ -169,6 +191,12 @@ def main() -> None:
         "envelope": {
             "ema_span": EMA_SPAN,
             "deviation_rate": DEVIATION_RATE,
+            "band_model": band_model,
+            "band_percent": band_percent,
+            "band_pips": band_pips,
+            "band_atr_k": band_atr_k,
+            "band_atr_period": band_atr_period,
+            "pip_size": pip_size,
         },
         "assumption_notes": {
             "same_bar_ambiguity_rule": "SL-first conservative",

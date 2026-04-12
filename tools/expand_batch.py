@@ -1,0 +1,288 @@
+#!/usr/bin/env python3
+"""Expand batch research spec into deterministic shard study configs."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import os
+import sys
+from pathlib import Path
+from typing import Any
+
+import yaml
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from research.orchestration.path_utils import ensure_directory, sanitize_label
+
+SPREAD_MODES = {"ignore", "audit_only", "column_proxy"}
+
+
+def _load_yaml(path: Path) -> dict[str, Any]:
+    with path.open("r", encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+    if not isinstance(data, dict):
+        raise ValueError(f"Expected mapping-style YAML config at {path}")
+    return data
+
+
+def _write_yaml(path: Path, payload: dict[str, Any]) -> None:
+    with path.open("w", encoding="utf-8") as f:
+        yaml.safe_dump(payload, f, sort_keys=False)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Expand batch spec into shard study configs for matrix execution.")
+    parser.add_argument("--batch-spec", required=True, help="Path to batch spec YAML")
+    parser.add_argument("--dataset-id", default=None, help="Optional dataset_id override")
+    parser.add_argument("--output-tag", default=None, help="Optional output tag override")
+    parser.add_argument("--runtime-dir", default="research/reports/batches/runtime", help="Batch runtime output root")
+    parser.add_argument(
+        "--write-github-output",
+        action="store_true",
+        help="When set, write core paths + matrix JSON to GITHUB_OUTPUT",
+    )
+    return parser.parse_args()
+
+
+def _validate_batch_spec(spec: dict[str, Any]) -> None:
+    required = [
+        "batch_id",
+        "dataset_registry",
+        "dataset_id",
+        "output_root",
+        "shard_size",
+        "blackout_windows_jst",
+        "spread_mode",
+        "band_model_sweep",
+        "timing_modes",
+        "compare_sections",
+        "ranking_profile",
+        "review_sink",
+        "notes",
+    ]
+    missing = [k for k in required if k not in spec]
+    if missing:
+        raise ValueError(f"Batch spec missing required fields: {missing}")
+
+    shard_size = int(spec["shard_size"])
+    if shard_size <= 0:
+        raise ValueError("shard_size must be > 0")
+
+    spread_mode = str(spec.get("spread_mode", "")).strip()
+    if spread_mode not in SPREAD_MODES:
+        raise ValueError(f"spread_mode must be one of {sorted(SPREAD_MODES)}")
+
+
+def _band_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
+    sweep = spec.get("band_model_sweep", {}) or {}
+    pct_values = [float(v) for v in sweep.get("percent_envelope", [])]
+    pip_values = [float(v) for v in sweep.get("fixed_pip_envelope", [])]
+    atr_values = [float(v) for v in sweep.get("atr_k_envelope", [])]
+
+    variants: list[dict[str, Any]] = []
+    for value in pct_values:
+        token = f"PCT{int(round(value * 1000)):03d}"
+        variants.append(
+            {
+                "band_model": "percent",
+                "band_value": value,
+                "band_token": token,
+                "cfg": {"band_model": "percent", "band_percent": value},
+            }
+        )
+    for value in pip_values:
+        token = f"PIP{int(round(value)):02d}"
+        variants.append(
+            {
+                "band_model": "fixed_pips",
+                "band_value": value,
+                "band_token": token,
+                "cfg": {"band_model": "fixed_pips", "band_pips": value},
+            }
+        )
+    for value in atr_values:
+        token = f"ATR{int(round(value * 10)):02d}"
+        variants.append(
+            {
+                "band_model": "atr",
+                "band_value": value,
+                "band_token": token,
+                "cfg": {"band_model": "atr", "band_atr_k": value},
+            }
+        )
+    if not variants:
+        raise ValueError("band_model_sweep produced zero variants")
+    return variants
+
+
+def _build_variant_label(*, band_token: str, timing_mode: str) -> str:
+    timing_token = {
+        "baseline_touch": "TRGBASE",
+        "rv_close_confirm": "TRGRV",
+        "all_close": "TRGALL",
+    }.get(timing_mode, f"TRG{sanitize_label(timing_mode).upper()}")
+    return f"FAMBASE__BAND{band_token}__{timing_token}__HG30__DECBASE__EXNONE__V1"
+
+
+def main() -> None:
+    args = parse_args()
+    batch_spec_path = Path(args.batch_spec).resolve()
+    spec = _load_yaml(batch_spec_path)
+    _validate_batch_spec(spec)
+
+    dataset_id = str(args.dataset_id).strip() if args.dataset_id else str(spec["dataset_id"]).strip()
+    output_tag = str(args.output_tag).strip() if args.output_tag else str(spec.get("output_tag_default", "")).strip()
+
+    batch_id = str(spec["batch_id"]).strip()
+    runtime_root = ensure_directory(Path(args.runtime_dir).resolve())
+    runtime_dir = ensure_directory(runtime_root / sanitize_label(batch_id))
+
+    output_root = Path(str(spec["output_root"]))
+    if not output_root.is_absolute():
+        output_root = (REPO_ROOT / output_root).resolve()
+    if output_tag:
+        output_root = output_root / sanitize_label(output_tag)
+    output_root = output_root.resolve()
+
+    variants: list[dict[str, Any]] = []
+    for timing_mode in [str(x).strip() for x in spec.get("timing_modes", []) if str(x).strip()]:
+        for band_variant in _band_variants(spec):
+            variants.append(
+                {
+                    "label": _build_variant_label(band_token=band_variant["band_token"], timing_mode=timing_mode),
+                    "timing_mode": timing_mode,
+                    "band_model": band_variant["band_model"],
+                    "band_value": band_variant["band_value"],
+                    **band_variant["cfg"],
+                }
+            )
+
+    if not variants:
+        raise ValueError("No variants produced from timing_modes x band_model_sweep")
+
+    shard_size = int(spec["shard_size"])
+    shard_count = math.ceil(len(variants) / shard_size)
+    shards_dir = ensure_directory(runtime_dir / "shards")
+
+    shard_records: list[dict[str, Any]] = []
+    for shard_index in range(shard_count):
+        start = shard_index * shard_size
+        end = min((shard_index + 1) * shard_size, len(variants))
+        shard_variants = variants[start:end]
+        shard_id = f"shard_{shard_index:03d}"
+        shard_dir = ensure_directory(shards_dir / shard_id)
+        study_output = (output_root / "shards" / shard_id / "study").resolve()
+        study_cfg_path = (shard_dir / "study_config.yaml").resolve()
+
+        runs = []
+        for variant in shard_variants:
+            runs.append(
+                {
+                    "label": variant["label"],
+                    "dataset_id": dataset_id,
+                    "timing_mode": variant["timing_mode"],
+                    "band_model": variant["band_model"],
+                    "band_percent": variant.get("band_percent"),
+                    "band_pips": variant.get("band_pips"),
+                    "band_atr_k": variant.get("band_atr_k"),
+                    "notes": f"batch_variant {variant['band_model']}={variant['band_value']}",
+                }
+            )
+
+        study_cfg = {
+            "study_name": f"{batch_id}__{shard_id}",
+            "output_root": str(study_output),
+            "dataset_registry": spec["dataset_registry"],
+            "shared_defaults": {
+                "input_timezone_mode": "UTC",
+                "max_holding_bars": 30,
+                "symbol": "USDJPY",
+                "timeframe": "M1",
+                "analyze_after_run": True,
+            },
+            "runs": runs,
+            "compare": {
+                "enabled": True,
+                "compare_sections": list(spec.get("compare_sections", [])),
+                "selected_bucket_features": [],
+                "notes": f"batch shard compare for {batch_id} {shard_id}",
+            },
+            "notes": f"Batch-generated shard config ({batch_id}/{shard_id}); pre-MT4 research-only.",
+        }
+        _write_yaml(study_cfg_path, study_cfg)
+
+        shard_records.append(
+            {
+                "shard_id": shard_id,
+                "shard_index": shard_index,
+                "study_config": str(study_cfg_path),
+                "study_output": str(study_output),
+                "run_count": len(shard_variants),
+                "runs": shard_variants,
+            }
+        )
+
+    manifest = {
+        "batch_id": batch_id,
+        "batch_spec": str(batch_spec_path),
+        "dataset_registry": str(spec["dataset_registry"]),
+        "dataset_id": dataset_id,
+        "output_tag": output_tag,
+        "output_root": str(output_root),
+        "spread_mode": str(spec["spread_mode"]),
+        "blackout_windows_jst": list(spec.get("blackout_windows_jst", [])),
+        "ranking_profile": dict(spec.get("ranking_profile", {})),
+        "review_sink": dict(spec.get("review_sink", {})),
+        "compare_sections": list(spec.get("compare_sections", [])),
+        "shard_size": shard_size,
+        "shard_count": shard_count,
+        "variant_count": len(variants),
+        "shards": shard_records,
+        "notes": str(spec.get("notes", "")),
+    }
+
+    manifest_path = (runtime_dir / "batch_manifest.yaml").resolve()
+    _write_yaml(manifest_path, manifest)
+
+    matrix_rows = [
+        {
+            "shard_id": rec["shard_id"],
+            "study_config": rec["study_config"],
+            "study_output": rec["study_output"],
+        }
+        for rec in shard_records
+    ]
+    matrix_payload = {"include": matrix_rows}
+    matrix_json = json.dumps(matrix_payload)
+
+    print(
+        "Batch expansion completed:",
+        f"batch_id={batch_id}",
+        f"dataset_id={dataset_id}",
+        f"variants={len(variants)}",
+        f"shards={shard_count}",
+        f"runtime_dir={runtime_dir}",
+    )
+
+    if args.write_github_output:
+        github_output_raw = os.environ.get("GITHUB_OUTPUT", "").strip()
+        if not github_output_raw:
+            raise RuntimeError("--write-github-output was provided but GITHUB_OUTPUT is not set")
+        github_output = Path(github_output_raw)
+        with github_output.open("a", encoding="utf-8") as out:
+            out.write(f"batch_runtime_dir={runtime_dir.as_posix()}\n")
+            out.write(f"batch_manifest={manifest_path.as_posix()}\n")
+            out.write(f"batch_output_root={output_root.as_posix()}\n")
+            out.write(f"batch_id={batch_id}\n")
+            out.write(f"dataset_id={dataset_id}\n")
+            out.write(f"output_tag={output_tag}\n")
+            out.write(f"matrix={matrix_json}\n")
+
+
+if __name__ == "__main__":
+    main()

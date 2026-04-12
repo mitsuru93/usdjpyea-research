@@ -1,0 +1,207 @@
+name: Run Research Batch
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch_spec:
+        description: Batch spec YAML path
+        required: true
+        default: configs/batches/batch_band_model_screen_v1.yaml
+        type: string
+      dataset_id:
+        description: Optional dataset_id override
+        required: false
+        default: ''
+        type: string
+      output_tag:
+        description: Optional output_tag override
+        required: false
+        default: ''
+        type: string
+      review_issue_number:
+        description: Optional review issue number override
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.expand.outputs.matrix }}
+      batch_manifest: ${{ steps.expand.outputs.batch_manifest }}
+      batch_output_root: ${{ steps.expand.outputs.batch_output_root }}
+      batch_id: ${{ steps.expand.outputs.batch_id }}
+      dataset_id: ${{ steps.expand.outputs.dataset_id }}
+      output_tag: ${{ steps.expand.outputs.output_tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Expand batch spec
+        id: expand
+        run: |
+          DATASET_ARGS=""
+          if [ -n "${{ inputs.dataset_id }}" ]; then
+            DATASET_ARGS="--dataset-id ${{ inputs.dataset_id }}"
+          fi
+
+          TAG_ARGS=""
+          if [ -n "${{ inputs.output_tag }}" ]; then
+            TAG_ARGS="--output-tag ${{ inputs.output_tag }}"
+          fi
+
+          python tools/expand_batch.py \
+            --batch-spec "${{ inputs.batch_spec }}" \
+            $DATASET_ARGS \
+            $TAG_ARGS \
+            --write-github-output
+
+  run-shards:
+    runs-on: ubuntu-latest
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run shard study
+        run: |
+          python tools/run_study.py --config "${{ matrix.study_config }}"
+          python tools/review_timing_study.py --study-dir "${{ matrix.study_output }}"
+
+      - name: Upload shard artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-shard-${{ matrix.shard_id }}-${{ github.run_id }}
+          path: |
+            ${{ matrix.study_output }}
+
+  aggregate:
+    runs-on: ubuntu-latest
+    needs: [prepare, run-shards]
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: batch-shard-*
+          path: .
+          merge-multiple: true
+
+      - name: Aggregate batch review
+        run: |
+          ISSUE_ARGS=""
+          if [ -n "${{ inputs.review_issue_number }}" ]; then
+            ISSUE_ARGS="--review-issue-number ${{ inputs.review_issue_number }}"
+          fi
+
+          python tools/review_batch.py \
+            --batch-manifest "${{ needs.prepare.outputs.batch_manifest }}" \
+            $ISSUE_ARGS
+
+      - name: Upload batch artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-review-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}
+          path: |
+            ${{ needs.prepare.outputs.batch_output_root }}/batch_metadata.yaml
+            ${{ needs.prepare.outputs.batch_output_root }}/batch_manifest.yaml
+            ${{ needs.prepare.outputs.batch_output_root }}/batch_ranking.csv
+            ${{ needs.prepare.outputs.batch_output_root }}/batch_shortlist.csv
+            ${{ needs.prepare.outputs.batch_output_root }}/batch_review.md
+            ${{ needs.prepare.outputs.batch_output_root }}/batch_review_machine.yaml
+
+      - name: Resolve review sink metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import os
+          import yaml
+
+          machine = yaml.safe_load(Path("${{ needs.prepare.outputs.batch_output_root }}/batch_review_machine.yaml").read_text(encoding="utf-8")) or {}
+          issue_override = "${{ inputs.review_issue_number }}".strip()
+          issue = issue_override or str(machine.get("issue_number", "")).strip()
+          marker = str(machine.get("comment_marker", "BATCH_REVIEW")).strip() or "BATCH_REVIEW"
+
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as env:
+              env.write(f"REVIEW_ISSUE_NUMBER={issue}\n")
+              env.write(f"REVIEW_COMMENT_MARKER={marker}\n")
+              env.write(f"REVIEW_MD_PATH=${{ needs.prepare.outputs.batch_output_root }}/batch_review.md\n")
+          PY
+
+      - name: Publish/update review sink comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const issueNumber = Number(process.env.REVIEW_ISSUE_NUMBER || 0);
+            if (!issueNumber) {
+              core.info('No review issue configured; skipping comment publish.');
+              return;
+            }
+            const marker = `<!-- ${process.env.REVIEW_COMMENT_MARKER || 'BATCH_REVIEW'} -->`;
+            const body = fs.readFileSync(process.env.REVIEW_MD_PATH, 'utf8');
+            const { owner, repo } = context.repo;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: issueNumber,
+              per_page: 100,
+            });
+            const target = comments.find(c => typeof c.body === 'string' && c.body.includes(marker));
+            if (target) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: target.id, body });
+              core.info(`Updated existing review comment ${target.id}.`);
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number: issueNumber, body });
+              core.info(`Created review comment on issue #${issueNumber}.`);
+            }
+
+      - name: Write summary
+        run: |
+          {
+            echo "## Research Batch Summary"
+            echo "- batch id: \`${{ needs.prepare.outputs.batch_id }}\`"
+            echo "- dataset id: \`${{ needs.prepare.outputs.dataset_id }}\`"
+            echo "- output tag: \`${{ needs.prepare.outputs.output_tag || '<none>' }}\`"
+            echo "- manifest: \`${{ needs.prepare.outputs.batch_manifest }}\`"
+            echo "- review artifact: \`${{ needs.prepare.outputs.batch_output_root }}/batch_review.md\`"
+          } >> "$GITHUB_STEP_SUMMARY"
