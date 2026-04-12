@@ -1,4 +1,5 @@
-# Copy this file to configs/local/dataset_registry.yaml for local-only use.
+# Local fallback registry example (ignored by git).
+# Cloud-first studies should use configs/datasets/dataset_registry.yaml.
 # Keep real/private paths out of version control.
 
 datasets:

@@ -56,6 +56,28 @@ def _load_yaml(path_text: str | Path) -> dict[str, Any]:
     return payload
 
 
+def _load_dataset_registry(cfg: dict[str, Any], cfg_dir: Path) -> tuple[dict[str, Any], Path | None]:
+    raw_path = cfg.get("dataset_registry")
+    if raw_path is None or str(raw_path).strip() == "":
+        return {"datasets": {}}, None
+
+    path = Path(str(raw_path))
+    if not path.is_absolute():
+        cfg_relative = (cfg_dir / path).resolve()
+        if cfg_relative.exists():
+            path = cfg_relative
+        else:
+            path = (REPO_ROOT / path).resolve()
+    else:
+        path = path.resolve()
+
+    payload = _load_yaml(path)
+    datasets = payload.get("datasets", {})
+    if not isinstance(datasets, dict):
+        raise ValueError(f"Dataset registry must define mapping-style 'datasets': {path}")
+    return payload, path
+
+
 def _resolve_policy_preset_path(raw_path: str | Path, *, config_dir: Path) -> Path:
     path = Path(raw_path)
     if path.is_absolute():
@@ -148,7 +170,12 @@ def _check_imports(runner: CheckRunner) -> None:
 
 def _check_output_parent(runner: CheckRunner, output_dir: str, label: str) -> None:
     out = _resolve(output_dir)
-    runner.check(out.parent.exists(), f"{label} output parent exists: {out.parent}", f"{label} output parent missing: {out.parent}")
+    parent_ready = out.parent.exists() or out.parent.parent.exists()
+    runner.check(
+        parent_ready,
+        f"{label} output parent path is creatable from repo context: {out.parent}",
+        f"{label} output parent path missing (non-creatable): {out.parent}",
+    )
 
 
 def _check_experiment_config(runner: CheckRunner, path_text: str) -> None:
@@ -256,35 +283,82 @@ def _check_study_config(runner: CheckRunner, path_text: str) -> None:
     except Exception as exc:  # noqa: BLE001
         runner.check(False, "", f"Study config could not be loaded: {cfg_path} ({exc})")
         return
+
+    dataset_registry: dict[str, Any] = {"datasets": {}}
+    try:
+        dataset_registry, dataset_registry_path = _load_dataset_registry(cfg, cfg_path.parent)
+        if dataset_registry_path is not None:
+            runner.check(
+                dataset_registry_path.exists(),
+                f"Study dataset registry exists: {dataset_registry_path}",
+                f"Study dataset registry missing: {dataset_registry_path}",
+            )
+    except Exception as exc:  # noqa: BLE001
+        runner.check(False, "", f"Study dataset registry invalid: {exc}")
+        dataset_registry = {"datasets": {}}
     required = ["study_name", "output_root", "shared_defaults", "runs"]
     missing = [key for key in required if key not in cfg]
     runner.check(not missing, "Study config required top-level fields present", f"Study config missing fields: {missing}")
 
     if "output_root" in cfg:
         output_root = _resolve(str(cfg["output_root"]))
+        output_parent_ready = output_root.parent.exists() or output_root.parent.parent.exists()
         runner.check(
-            output_root.parent.exists(),
-            f"Study output_root parent exists: {output_root.parent}",
-            f"Study output_root parent missing: {output_root.parent}",
+            output_parent_ready,
+            f"Study output_root parent path is creatable: {output_root.parent}",
+            f"Study output_root parent missing (non-creatable): {output_root.parent}",
         )
 
     runs = cfg.get("runs", [])
     runner.check(isinstance(runs, list) and bool(runs), "Study config has non-empty runs list", "Study config requires non-empty runs list")
+    shared_defaults = cfg.get("shared_defaults", {})
+    shared_has_input_csv = isinstance(shared_defaults, dict) and str(shared_defaults.get("input_csv", "")).strip() != ""
+    shared_has_dataset_id = isinstance(shared_defaults, dict) and str(shared_defaults.get("dataset_id", "")).strip() != ""
     if isinstance(runs, list):
         for idx, run in enumerate(runs):
             is_map = isinstance(run, dict)
             runner.check(is_map, f"Study runs[{idx}] is a mapping", f"Study runs[{idx}] must be a mapping")
             if not is_map:
                 continue
-            has_fields = "label" in run and "input_csv" in run
-            runner.check(has_fields, f"Study runs[{idx}] has label + input_csv", f"Study runs[{idx}] missing label/input_csv")
-            if "input_csv" in run:
+            has_label = "label" in run
+            has_input_csv = str(run.get("input_csv", "")).strip() != ""
+            has_dataset_id = str(run.get("dataset_id", "")).strip() != ""
+            runner.check(has_label, f"Study runs[{idx}] has label", f"Study runs[{idx}] missing label")
+            runner.check(
+                has_input_csv or has_dataset_id or shared_has_input_csv or shared_has_dataset_id,
+                f"Study runs[{idx}] has input_csv or dataset_id",
+                f"Study runs[{idx}] missing both input_csv and dataset_id",
+            )
+            if has_input_csv:
                 input_csv = _resolve(str(run["input_csv"]))
                 runner.check(
                     input_csv.exists(),
                     f"Study runs[{idx}] input CSV found: {input_csv}",
                     f"Study runs[{idx}] input CSV missing: {input_csv}",
                 )
+            if has_dataset_id:
+                dataset_id = str(run["dataset_id"]).strip()
+                dataset_map = dataset_registry.get("datasets", {})
+                dataset_entry = dataset_map.get(dataset_id) if isinstance(dataset_map, dict) else None
+                runner.check(
+                    isinstance(dataset_entry, dict),
+                    f"Study runs[{idx}] dataset_id found in registry: {dataset_id}",
+                    f"Study runs[{idx}] dataset_id missing in registry: {dataset_id}",
+                )
+                if isinstance(dataset_entry, dict):
+                    dataset_path = str(dataset_entry.get("path", "")).strip()
+                    runner.check(
+                        dataset_path != "",
+                        f"Study runs[{idx}] dataset registry path provided for '{dataset_id}'",
+                        f"Study runs[{idx}] dataset registry path missing for '{dataset_id}'",
+                    )
+                    if dataset_path != "":
+                        resolved_dataset_path = _resolve(dataset_path)
+                        runner.check(
+                            resolved_dataset_path.exists(),
+                            f"Study runs[{idx}] dataset registry CSV found: {resolved_dataset_path}",
+                            f"Study runs[{idx}] dataset registry CSV missing: {resolved_dataset_path}",
+                        )
             _check_policy_reference(
                 runner,
                 policy=run.get("policy"),
@@ -293,7 +367,6 @@ def _check_study_config(runner: CheckRunner, path_text: str) -> None:
                 config_dir=cfg_path.parent,
             )
 
-    shared_defaults = cfg.get("shared_defaults", {})
     if isinstance(shared_defaults, dict):
         _check_policy_reference(
             runner,

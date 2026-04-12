@@ -36,6 +36,14 @@ def _write_yaml(path: Path, payload: dict[str, Any]) -> None:
         yaml.safe_dump(payload, f, sort_keys=False)
 
 
+def _load_dataset_registry(path: Path) -> dict[str, Any]:
+    data = _load_yaml(path)
+    datasets = data.get("datasets", {})
+    if not isinstance(datasets, dict):
+        raise ValueError(f"Dataset registry must define mapping-style 'datasets' at {path}")
+    return data
+
+
 def _run_cli(cli_path: Path, config_path: Path, repo_root: Path) -> subprocess.CompletedProcess[str]:
     cmd = [sys.executable, str(cli_path), "--config", str(config_path)]
     env = dict(os.environ)
@@ -54,11 +62,48 @@ def _validate_study_config(cfg: dict[str, Any]) -> None:
     if not isinstance(runs, list) or not runs:
         raise ValueError("Study config requires a non-empty 'runs' list")
 
+    shared_defaults = cfg.get("shared_defaults", {}) if isinstance(cfg.get("shared_defaults", {}), dict) else {}
+    shared_has_input_csv = str(shared_defaults.get("input_csv", "")).strip() != ""
+    shared_has_dataset_id = str(shared_defaults.get("dataset_id", "")).strip() != ""
+
     for idx, run in enumerate(runs):
         if not isinstance(run, dict):
             raise ValueError(f"runs[{idx}] must be a mapping")
-        if "label" not in run or "input_csv" not in run:
-            raise ValueError(f"runs[{idx}] must include at least 'label' and 'input_csv'")
+        if "label" not in run:
+            raise ValueError(f"runs[{idx}] must include at least 'label'")
+        has_input_csv = str(run.get("input_csv", "")).strip() != ""
+        has_dataset_id = str(run.get("dataset_id", "")).strip() != ""
+        if not (has_input_csv or has_dataset_id or shared_has_input_csv or shared_has_dataset_id):
+            raise ValueError(f"runs[{idx}] must include 'input_csv' or 'dataset_id'")
+
+
+def _resolve_dataset_input_csv(
+    *,
+    merged: dict[str, Any],
+    dataset_registry: dict[str, Any],
+    dataset_registry_path: Path | None,
+    study_label: str,
+    repo_root: Path,
+) -> str:
+    input_csv = str(merged.get("input_csv", "")).strip()
+    if input_csv:
+        return str(resolve_local_path(input_csv, base_dir=repo_root))
+
+    dataset_id = str(merged.get("dataset_id", "")).strip()
+    if not dataset_id:
+        raise ValueError(f"run '{study_label}' must define 'input_csv' or 'dataset_id'")
+
+    datasets = dataset_registry.get("datasets", {})
+    dataset_entry = datasets.get(dataset_id)
+    if not isinstance(dataset_entry, dict):
+        registry_display = str(dataset_registry_path) if dataset_registry_path else "<none>"
+        raise KeyError(f"run '{study_label}' dataset_id '{dataset_id}' not found in registry: {registry_display}")
+
+    dataset_path = str(dataset_entry.get("path", "")).strip()
+    if not dataset_path:
+        raise ValueError(f"run '{study_label}' dataset '{dataset_id}' has empty 'path' in dataset registry")
+
+    return str(resolve_local_path(dataset_path, base_dir=repo_root))
 
 
 def _build_run_experiment_config(
@@ -68,13 +113,21 @@ def _build_run_experiment_config(
     run_output_dir: Path,
     repo_root: Path,
     study_config_dir: Path,
+    dataset_registry: dict[str, Any],
+    dataset_registry_path: Path | None,
 ) -> dict[str, Any]:
     merged = dict(shared_defaults)
     merged.update(run_cfg)
     _normalize_policy_override_fields(merged=merged, run_cfg=run_cfg)
 
     merged["output_dir"] = str(run_output_dir)
-    merged["input_csv"] = str(resolve_local_path(str(merged["input_csv"]), base_dir=repo_root))
+    merged["input_csv"] = _resolve_dataset_input_csv(
+        merged=merged,
+        dataset_registry=dataset_registry,
+        dataset_registry_path=dataset_registry_path,
+        study_label=str(run_cfg.get("label", "")),
+        repo_root=repo_root,
+    )
     _normalize_policy_file_path(merged=merged, study_config_dir=study_config_dir, repo_root=repo_root)
 
     missing = [key for key in RUN_REQUIRED_KEYS if key not in merged]
@@ -187,14 +240,39 @@ def _build_compare_config(
     return payload
 
 
-def run_study(config_path: str | Path) -> dict[str, Any]:
+def run_study(
+    config_path: str | Path,
+    *,
+    dataset_id_override: str | None = None,
+    output_tag: str | None = None,
+) -> dict[str, Any]:
     config_path = Path(config_path)
     cfg = _load_yaml(config_path)
     _validate_study_config(cfg)
 
     repo_root = Path(__file__).resolve().parents[2]
+    dataset_registry_cfg = cfg.get("dataset_registry")
+    dataset_registry_path: Path | None = None
+    dataset_registry: dict[str, Any] = {"datasets": {}}
+    if dataset_registry_cfg is not None and str(dataset_registry_cfg).strip() != "":
+        raw_registry_path = Path(str(dataset_registry_cfg))
+        if raw_registry_path.is_absolute():
+            dataset_registry_path = raw_registry_path.resolve()
+        else:
+            from_study_dir = (config_path.parent / raw_registry_path).resolve()
+            dataset_registry_path = from_study_dir if from_study_dir.exists() else (repo_root / raw_registry_path).resolve()
+        dataset_registry = _load_dataset_registry(dataset_registry_path)
 
-    output_root = ensure_directory(resolve_local_path(str(cfg["output_root"]), base_dir=repo_root))
+    for run in cfg.get("runs", []):
+        if isinstance(run, dict) and dataset_id_override:
+            run["dataset_id"] = dataset_id_override
+
+    base_output_root = resolve_local_path(str(cfg["output_root"]), base_dir=repo_root)
+    if output_tag and str(output_tag).strip():
+        tag = sanitize_label(str(output_tag).strip())
+        output_root = ensure_directory(base_output_root / tag)
+    else:
+        output_root = ensure_directory(base_output_root)
     runtime_config_dir = ensure_directory(output_root / "runtime_configs")
 
     run_tool_path = repo_root / "tools" / "run_experiment.py"
@@ -243,6 +321,8 @@ def run_study(config_path: str | Path) -> dict[str, Any]:
                 run_output_dir=run_output_dir,
                 repo_root=repo_root,
                 study_config_dir=config_path.parent.resolve(),
+                dataset_registry=dataset_registry,
+                dataset_registry_path=dataset_registry_path,
             )
             run_cfg_path = runtime_config_dir / f"run_{safe_label}.yaml"
             _write_yaml(run_cfg_path, run_payload)
@@ -322,6 +402,8 @@ def run_study(config_path: str | Path) -> dict[str, Any]:
     metadata = {
         "study_name": str(cfg["study_name"]),
         "study_config": str(config_path.resolve()),
+        "dataset_registry": str(dataset_registry_path) if dataset_registry_path else None,
+        "dataset_id_override": str(dataset_id_override) if dataset_id_override else None,
         "output_root": str(output_root.resolve()),
         "baseline_run_label": baseline_label,
         "run_labels": [str(run.get("label", "")) for run in cfg.get("runs", [])],

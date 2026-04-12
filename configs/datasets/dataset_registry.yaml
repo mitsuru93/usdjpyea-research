@@ -1,0 +1,7 @@
+# Cloud-first dataset registry for study orchestration.
+# Keep this deterministic and repo-resolvable for public research use.
+datasets:
+  usdjpy_m1_tiny_sample:
+    path: research/data_sample/usdjpy_m1_tiny_sample.csv
+    source_ref: repo://research/data_sample/usdjpy_m1_tiny_sample.csv
+    note: "Tiny sample for smoke tests and workflow validation only."
