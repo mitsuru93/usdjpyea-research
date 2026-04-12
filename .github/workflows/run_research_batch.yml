@@ -31,7 +31,8 @@ jobs:
       matrix: ${{ steps.expand.outputs.matrix }}
       batch_manifest: ${{ steps.expand.outputs.batch_manifest }}
       batch_runtime_dir: ${{ steps.expand.outputs.batch_runtime_dir }}
-      batch_runtime_relpath: ${{ steps.runtime_artifact_meta.outputs.batch_runtime_relpath }}
+      batch_runtime_relpath: ${{ steps.expand.outputs.runtime_bundle_relroot }}
+      batch_manifest_relpath: ${{ steps.expand.outputs.batch_manifest_relpath }}
       batch_runtime_artifact_name: ${{ steps.runtime_artifact_meta.outputs.batch_runtime_artifact_name }}
       batch_output_root: ${{ steps.expand.outputs.batch_output_root }}
       batch_id: ${{ steps.expand.outputs.batch_id }}
@@ -73,11 +74,8 @@ jobs:
       - name: Resolve runtime artifact metadata
         id: runtime_artifact_meta
         run: |
-          runtime_dir="${{ steps.expand.outputs.batch_runtime_dir }}"
-          runtime_relpath="${runtime_dir#${GITHUB_WORKSPACE}/}"
           artifact_name="batch-runtime-${{ steps.expand.outputs.batch_id }}-${{ github.run_id }}"
 
-          echo "batch_runtime_relpath=${runtime_relpath}" >> "$GITHUB_OUTPUT"
           echo "batch_runtime_artifact_name=${artifact_name}" >> "$GITHUB_OUTPUT"
 
       - name: Upload batch runtime bundle
@@ -85,7 +83,7 @@ jobs:
         with:
           name: ${{ steps.runtime_artifact_meta.outputs.batch_runtime_artifact_name }}
           path: |
-            ${{ github.workspace }}/${{ steps.runtime_artifact_meta.outputs.batch_runtime_relpath }}
+            ${{ github.workspace }}/${{ steps.expand.outputs.runtime_bundle_relroot }}
 
   run-shards:
     runs-on: ubuntu-latest
@@ -115,13 +113,15 @@ jobs:
 
       - name: Run shard study
         run: |
-          python tools/run_study.py --config "${{ matrix.study_config }}"
-          python tools/review_timing_study.py --study-dir "${{ matrix.study_output }}"
+          STUDY_CONFIG_PATH="${{ github.workspace }}/${{ needs.prepare.outputs.batch_runtime_relpath }}/${{ matrix.study_config_relpath }}"
+          STUDY_OUTPUT_PATH="${{ needs.prepare.outputs.batch_output_root }}/${{ matrix.study_output_relpath }}"
+          python tools/run_study.py --config "${STUDY_CONFIG_PATH}"
+          python tools/review_timing_study.py --study-dir "${STUDY_OUTPUT_PATH}"
 
       - name: Upload shard artifacts
         run: |
           mkdir -p ".batch_artifacts/${{ matrix.shard_runtime_relpath }}"
-          cp -R "${{ matrix.study_output }}/." ".batch_artifacts/${{ matrix.shard_runtime_relpath }}/"
+          cp -R "${{ needs.prepare.outputs.batch_output_root }}/${{ matrix.study_output_relpath }}/." ".batch_artifacts/${{ matrix.shard_runtime_relpath }}/"
 
       - name: Upload shard artifacts bundle
         uses: actions/upload-artifact@v4
@@ -170,7 +170,7 @@ jobs:
             ISSUE_ARGS="--review-issue-number ${{ inputs.review_issue_number }}"
           fi
 
-          BATCH_MANIFEST_PATH="${{ github.workspace }}/${{ needs.prepare.outputs.batch_runtime_relpath }}/batch_manifest.yaml"
+          BATCH_MANIFEST_PATH="${{ github.workspace }}/${{ needs.prepare.outputs.batch_manifest_relpath }}"
           python tools/review_batch.py \
             --batch-manifest "${BATCH_MANIFEST_PATH}" \
             --artifact-staging-root ".batch_artifacts" \
@@ -241,6 +241,6 @@ jobs:
             echo "- batch id: \`${{ needs.prepare.outputs.batch_id }}\`"
             echo "- dataset id: \`${{ needs.prepare.outputs.dataset_id }}\`"
             echo "- output tag: \`${{ needs.prepare.outputs.output_tag || '<none>' }}\`"
-            echo "- manifest: \`${{ github.workspace }}/${{ needs.prepare.outputs.batch_runtime_relpath }}/batch_manifest.yaml\`"
+            echo "- manifest: \`${{ github.workspace }}/${{ needs.prepare.outputs.batch_manifest_relpath }}\`"
             echo "- review artifact: \`${{ needs.prepare.outputs.batch_output_root }}/batch_review.md\`"
           } >> "$GITHUB_STEP_SUMMARY"
