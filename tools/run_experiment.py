@@ -16,7 +16,7 @@ if str(REPO_ROOT) not in sys.path:
 from research.features import FEATURE_SET_VERSION, attach_features_to_candidates, build_feature_frame
 from research.io.csv_loader import load_ohlc_csv
 from research.policy import POLICY_SEMANTICS, apply_policy_to_candidates, parse_policy_config
-from research.scoring.summary import summarize_outcomes, summarize_timing_audit
+from research.scoring.summary import summarize_outcomes, summarize_timing_audit, summarize_timing_diagnostics
 from research.simulator.candidate_engine import (
     ASSUMPTION_VERSION,
     DEFAULT_TIMING_MODE,
@@ -127,6 +127,7 @@ def main() -> None:
     outcomes_df = evaluate_candidates(env_df, screened_candidates_df, max_holding_bars=int(cfg["max_holding_bars"]))
     summaries = summarize_outcomes(outcomes_df)
     timing_summaries = summarize_timing_audit(timing_audit_df)
+    timing_diagnostics = summarize_timing_diagnostics(timing_audit_df)
 
     outcomes_df.to_csv(output_dir / "candidates.csv", index=False)
     timing_audit_df.to_csv(output_dir / "candidates_timing_audit.csv", index=False)
@@ -139,6 +140,17 @@ def main() -> None:
     timing_summaries["by_month"].to_csv(output_dir / "summary_timing_by_month.csv", index=False)
     timing_summaries["by_session"].to_csv(output_dir / "summary_timing_by_session.csv", index=False)
     timing_summaries["by_family"].to_csv(output_dir / "summary_timing_by_family.csv", index=False)
+    timing_diagnostics["timing_by_decision_event"].to_csv(output_dir / "summary_timing_by_decision_event.csv", index=False)
+    timing_diagnostics["timing_by_reject_reason"].to_csv(output_dir / "summary_timing_by_reject_reason.csv", index=False)
+    timing_diagnostics["timing_by_family_decision_event"].to_csv(
+        output_dir / "summary_timing_by_family_decision_event.csv", index=False
+    )
+    timing_diagnostics["timing_by_family_reject_reason"].to_csv(
+        output_dir / "summary_timing_by_family_reject_reason.csv", index=False
+    )
+    timing_diagnostics["timing_by_still_touch_status"].to_csv(
+        output_dir / "summary_timing_by_still_touch_status.csv", index=False
+    )
 
     metadata = {
         "simulator_version": "v1",

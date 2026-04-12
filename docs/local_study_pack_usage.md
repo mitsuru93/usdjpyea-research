@@ -46,5 +46,12 @@ Review side-by-side ranking outputs under:
 
 - `<output_root>/compare/`
 
+For timing packs, prioritize:
+- `compare_timing_by_decision_event.csv`
+- `compare_timing_by_reject_reason.csv`
+- `compare_timing_by_family_decision_event.csv`
+- `compare_timing_by_family_reject_reason.csv`
+- `compare_timing_by_still_touch_status.csv`
+
 Use baseline vs variant comparison as **pre-MT4 candidate ranking only**.
 MT4 remains the final source of truth.

@@ -24,7 +24,7 @@ Required fields:
 - `runs` (list of `{label, run_dir, analysis_dir?}`)
 
 Common optional fields:
-- `compare_sections` (`overall`, `by_month`, `by_session`, `by_family`, `by_direction`, `timing_overall`, `timing_by_month`, `timing_by_session`, `timing_by_family`)
+- `compare_sections` (`overall`, `by_month`, `by_session`, `by_family`, `by_direction`, `timing_overall`, `timing_by_month`, `timing_by_session`, `timing_by_family`, `timing_by_decision_event`, `timing_by_reject_reason`, `timing_by_family_decision_event`, `timing_by_family_reject_reason`, `timing_by_still_touch_status`)
 - `selected_bucket_features` (for optional bucket comparisons)
 - `notes`
 
@@ -52,6 +52,11 @@ Core compare outputs:
 - `compare_timing_by_month.csv` (if selected and available)
 - `compare_timing_by_session.csv` (if selected and available)
 - `compare_timing_by_family.csv` (if selected and available)
+- `compare_timing_by_decision_event.csv` (if selected and available)
+- `compare_timing_by_reject_reason.csv` (if selected and available)
+- `compare_timing_by_family_decision_event.csv` (if selected and available)
+- `compare_timing_by_family_reject_reason.csv` (if selected and available)
+- `compare_timing_by_still_touch_status.csv` (if selected and available)
 - `compare_metadata.yaml`
 - `compare_summary.md`
 

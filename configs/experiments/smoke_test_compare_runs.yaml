@@ -12,6 +12,8 @@ compare_sections:
   - by_session
   - by_family
   - by_direction
+  - timing_by_decision_event
+  - timing_by_reject_reason
 selected_bucket_features:
   - dist_from_ema_pips
   - pre60_change_pips

@@ -60,8 +60,38 @@ Timing summaries are emitted for compare-ready analysis:
 - `summary_timing_by_month.csv`
 - `summary_timing_by_session.csv`
 - `summary_timing_by_family.csv`
+- `summary_timing_by_decision_event.csv`
+- `summary_timing_by_reject_reason.csv`
+- `summary_timing_by_family_decision_event.csv`
+- `summary_timing_by_family_reject_reason.csv`
+- `summary_timing_by_still_touch_status.csv`
 
 Use these with existing PnL/trade summaries to compare:
 - trade count, avg pnl, total pnl, win rate
 - timing candidate created/confirmed/rejected counts
 - session/month/family splits where available.
+
+## How to read timing diagnostics
+
+The timing diagnostics stay narrow and operational:
+
+- `candidate created`: row exists in `candidates_timing_audit.csv`; this is the timing-candidate universe before timing confirmation/rejection filtering.
+- `close confirmed`: close-decision candidate passed close-time rule and entered (`timing_decision_event=close_confirmed`).
+- `close rejected`: close-decision candidate failed close-time rule (`timing_decision_event=close_rejected`).
+- `reject reason`: deterministic reason currently in `timing_close_reject_reason`:
+  - `ambiguous_dual_touch_same_bar`
+  - `close_not_back_inside_band`
+- `still-touch-at-close`: `timing_still_touch_at_close` status from source bar close.
+
+Diagnostic CSV metric columns are intentionally compact:
+- `candidate_count`
+- `close_confirmed_count`
+- `close_rejected_count`
+- `still_touch_at_close_true_count`
+- `still_touch_at_close_false_count`
+
+Interpretation reminders:
+- `timing_still_touch_at_close` is informational only.
+- `rv_close_confirm` does **not** require still-touch-at-close.
+- This is research-side screening only; not a claim of MT4 parity.
+- MT4 remains the final source of truth.

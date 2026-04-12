@@ -12,6 +12,11 @@ compare_sections:
   - by_session
   - by_family
   - by_direction
+  - timing_by_decision_event
+  - timing_by_reject_reason
+  - timing_by_family_decision_event
+  - timing_by_family_reject_reason
+  - timing_by_still_touch_status
 selected_bucket_features:
   - dist_from_ema_pips
   - pre60_change_pips

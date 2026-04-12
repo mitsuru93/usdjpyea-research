@@ -47,6 +47,11 @@ The runner writes:
 - `summary_timing_by_month.csv`
 - `summary_timing_by_session.csv`
 - `summary_timing_by_family.csv`
+- `summary_timing_by_decision_event.csv`
+- `summary_timing_by_reject_reason.csv`
+- `summary_timing_by_family_decision_event.csv`
+- `summary_timing_by_family_reject_reason.csv`
+- `summary_timing_by_still_touch_status.csv`
 - `run_metadata.yaml`
 
 ## 4) Metadata notes
