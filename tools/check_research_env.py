@@ -344,8 +344,10 @@ def _check_study_config(runner: CheckRunner, path_text: str, dataset_id_override
                 continue
             has_label = "label" in run
             has_input_csv = str(run.get("input_csv", "")).strip() != ""
-            has_dataset_id = str(run.get("dataset_id", "")).strip() != ""
-            effective_dataset_id = override_dataset_id or str(run.get("dataset_id", "")).strip()
+            run_dataset_id = str(run.get("dataset_id", "")).strip()
+            effective_dataset_id = override_dataset_id or run_dataset_id
+            if not effective_dataset_id and not has_input_csv and shared_has_dataset_id:
+                effective_dataset_id = str(shared_defaults.get("dataset_id", "")).strip()
             runner.check(has_label, f"Study runs[{idx}] has label", f"Study runs[{idx}] missing label")
             runner.check(
                 has_input_csv or bool(effective_dataset_id) or shared_has_input_csv or shared_has_dataset_id,
@@ -367,22 +369,6 @@ def _check_study_config(runner: CheckRunner, path_text: str, dataset_id_override
                     isinstance(dataset_entry, dict),
                     f"Study runs[{idx}] effective dataset_id found in registry: {dataset_id}",
                     f"Study runs[{idx}] effective dataset_id missing in registry: {dataset_id}",
-                )
-                if isinstance(dataset_entry, dict):
-                    _check_dataset_entry(
-                        runner,
-                        dataset_id=dataset_id,
-                        dataset_entry=dataset_entry,
-                        context_label=f"Study runs[{idx}]",
-                    )
-            elif not has_input_csv and shared_has_dataset_id:
-                dataset_id = str(shared_defaults.get("dataset_id", "")).strip()
-                dataset_map = dataset_registry.get("datasets", {})
-                dataset_entry = dataset_map.get(dataset_id) if isinstance(dataset_map, dict) else None
-                runner.check(
-                    isinstance(dataset_entry, dict),
-                    f"Study runs[{idx}] shared dataset_id found in registry: {dataset_id}",
-                    f"Study runs[{idx}] shared dataset_id missing in registry: {dataset_id}",
                 )
                 if isinstance(dataset_entry, dict):
                     _check_dataset_entry(

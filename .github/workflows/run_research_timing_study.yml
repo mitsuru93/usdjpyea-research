@@ -65,7 +65,8 @@ jobs:
           tag_part = sanitize_label(output_tag) if output_tag else "none"
           dataset_part = dataset_part or "default"
           tag_part = tag_part or "none"
-          artifact_name = f"timing-{cfg_basename}-{dataset_part}-{tag_part}-${{{{ github.run_id }}}}"
+          run_id = os.environ.get("GITHUB_RUN_ID", "").strip() or "unknown_run_id"
+          artifact_name = f"timing-{cfg_basename}-{dataset_part}-{tag_part}-{run_id}"
 
           github_env = Path(os.environ["GITHUB_ENV"])
           with github_env.open("a", encoding="utf-8") as env:
