@@ -13,6 +13,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+TIMING_MODE_VALUES = {"baseline_touch", "rv_close_confirm", "all_close"}
+
 
 class CheckRunner:
     def __init__(self) -> None:
@@ -176,6 +178,13 @@ def _check_experiment_config(runner: CheckRunner, path_text: str) -> None:
         context_label="Experiment config",
         config_dir=cfg_path.parent,
     )
+    if "timing_mode" in cfg:
+        timing_mode = str(cfg.get("timing_mode", "")).strip().lower()
+        runner.check(
+            timing_mode in TIMING_MODE_VALUES,
+            f"Experiment timing_mode is supported: {timing_mode}",
+            f"Experiment timing_mode unsupported: {timing_mode}; allowed={sorted(TIMING_MODE_VALUES)}",
+        )
 
 
 def _check_analysis_config(runner: CheckRunner, path_text: str) -> None:

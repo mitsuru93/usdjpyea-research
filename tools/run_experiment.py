@@ -16,8 +16,14 @@ if str(REPO_ROOT) not in sys.path:
 from research.features import FEATURE_SET_VERSION, attach_features_to_candidates, build_feature_frame
 from research.io.csv_loader import load_ohlc_csv
 from research.policy import POLICY_SEMANTICS, apply_policy_to_candidates, parse_policy_config
-from research.scoring.summary import summarize_outcomes
-from research.simulator.candidate_engine import ASSUMPTION_VERSION, build_candidates
+from research.scoring.summary import summarize_outcomes, summarize_timing_audit
+from research.simulator.candidate_engine import (
+    ASSUMPTION_VERSION,
+    DEFAULT_TIMING_MODE,
+    TIMING_MODES,
+    apply_timing_mode,
+    build_candidates,
+)
 from research.simulator.envelope import DEVIATION_RATE, EMA_SPAN, add_envelope_columns
 from research.simulator.outcome_engine import DEFAULT_MAX_HOLDING_BARS, PIP_SIZE, evaluate_candidates
 from research.simulator.session import INPUT_TIMEZONE_MODES, add_session_columns
@@ -43,6 +49,10 @@ def _load_config(path: str | Path) -> dict:
     if tz_mode not in INPUT_TIMEZONE_MODES:
         raise ValueError(f"Unsupported input_timezone_mode='{tz_mode}'. Allowed: {sorted(INPUT_TIMEZONE_MODES)}")
     cfg["input_timezone_mode"] = tz_mode
+    timing_mode = str(cfg.get("timing_mode", DEFAULT_TIMING_MODE)).strip().lower()
+    if timing_mode not in TIMING_MODES:
+        raise ValueError(f"Unsupported timing_mode='{timing_mode}'. Allowed: {sorted(TIMING_MODES)}")
+    cfg["timing_mode"] = timing_mode
 
     has_inline_policy = "policy" in cfg and cfg.get("policy") not in (None, {})
     has_policy_file = "policy_file" in cfg and str(cfg.get("policy_file", "")).strip() != ""
@@ -104,7 +114,10 @@ def main() -> None:
     feature_df = build_feature_frame(env_df)
 
     base_candidates = build_candidates(env_df)
-    candidate_feature_df = attach_features_to_candidates(base_candidates, feature_df)
+    timing_result = apply_timing_mode(base_candidates, env_df, timing_mode=cfg["timing_mode"])
+    timing_audit_df = timing_result["timing_audit_df"]
+    timing_entered_df = timing_result["entered_df"]
+    candidate_feature_df = attach_features_to_candidates(timing_entered_df, feature_df)
 
     policy_cfg = parse_policy_config(cfg.get("policy"))
     policy_result = apply_policy_to_candidates(candidate_feature_df, policy_cfg)
@@ -113,13 +126,19 @@ def main() -> None:
 
     outcomes_df = evaluate_candidates(env_df, screened_candidates_df, max_holding_bars=int(cfg["max_holding_bars"]))
     summaries = summarize_outcomes(outcomes_df)
+    timing_summaries = summarize_timing_audit(timing_audit_df)
 
     outcomes_df.to_csv(output_dir / "candidates.csv", index=False)
+    timing_audit_df.to_csv(output_dir / "candidates_timing_audit.csv", index=False)
     candidates_audit_df.to_csv(output_dir / "candidates_policy_audit.csv", index=False)
     summaries["overall"].to_csv(output_dir / "summary_overall.csv", index=False)
     summaries["by_month"].to_csv(output_dir / "summary_by_month.csv", index=False)
     summaries["by_session"].to_csv(output_dir / "summary_by_session.csv", index=False)
     summaries["by_family"].to_csv(output_dir / "summary_by_family.csv", index=False)
+    timing_summaries["overall"].to_csv(output_dir / "summary_timing_overall.csv", index=False)
+    timing_summaries["by_month"].to_csv(output_dir / "summary_timing_by_month.csv", index=False)
+    timing_summaries["by_session"].to_csv(output_dir / "summary_timing_by_session.csv", index=False)
+    timing_summaries["by_family"].to_csv(output_dir / "summary_timing_by_family.csv", index=False)
 
     metadata = {
         "simulator_version": "v1",
@@ -144,8 +163,23 @@ def main() -> None:
             "entry_evaluation_rule": "Evaluate from next bar after signal bar",
             "entry_price_definition": "Signal reference price from touch-bar close, not broker fill price",
             "mt4_parity": "Not MT4 parity; MT4 remains final source of truth",
+            "timing_mode": cfg["timing_mode"],
+            "timing_mode_semantics": {
+                "baseline_touch": "Touch evidence enters immediately (baseline behavior).",
+                "rv_close_confirm": (
+                    "RV uses touch-created candidate and close-time entry decision; "
+                    "still-touch-at-close is not required."
+                ),
+                "all_close": "Research comparison mode only: all families use close-time decision.",
+            },
         },
         "max_holding_bars": int(cfg["max_holding_bars"]),
+        "timing_audit_counts": {
+            "candidate_created_count": int(len(timing_audit_df)),
+            "touch_entered_immediately_count": int((timing_audit_df["timing_decision_event"] == "touch_entered_immediately").sum()),
+            "close_confirmed_count": int((timing_audit_df["timing_decision_event"] == "close_confirmed").sum()),
+            "close_rejected_count": int((timing_audit_df["timing_decision_event"] == "close_rejected").sum()),
+        },
         "policy": {
             "enabled": bool(policy_cfg.enabled),
             "name": str(policy_cfg.name) if policy_cfg.enabled else "",
@@ -165,6 +199,7 @@ def main() -> None:
         "Experiment run completed:",
         f"cand_base={len(candidate_feature_df)}",
         f"cand_included={len(screened_candidates_df)}",
+        f"timing_mode={cfg['timing_mode']}",
         f"wins={(outcomes_df['outcome_status'] == 'win').sum() if not outcomes_df.empty else 0}",
         f"losses={(outcomes_df['outcome_status'] == 'loss').sum() if not outcomes_df.empty else 0}",
         f"timeouts={(outcomes_df['outcome_status'] == 'timeout').sum() if not outcomes_df.empty else 0}",

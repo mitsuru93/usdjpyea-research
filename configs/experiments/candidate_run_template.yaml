@@ -4,4 +4,5 @@ input_timezone_mode: UTC
 max_holding_bars: 30
 symbol: USDJPY
 timeframe: M1
+timing_mode: baseline_touch
 notes: "Template for feature-enriched candidate simulation runs (pre-MT4 research only)."

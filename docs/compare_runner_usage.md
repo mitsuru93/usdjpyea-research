@@ -24,7 +24,7 @@ Required fields:
 - `runs` (list of `{label, run_dir, analysis_dir?}`)
 
 Common optional fields:
-- `compare_sections` (`overall`, `by_month`, `by_session`, `by_family`, `by_direction`)
+- `compare_sections` (`overall`, `by_month`, `by_session`, `by_family`, `by_direction`, `timing_overall`, `timing_by_month`, `timing_by_session`, `timing_by_family`)
 - `selected_bucket_features` (for optional bucket comparisons)
 - `notes`
 
@@ -48,6 +48,10 @@ Core compare outputs:
 - `compare_by_session.csv`
 - `compare_by_family.csv`
 - `compare_by_direction.csv`
+- `compare_timing_overall.csv` (if selected and available)
+- `compare_timing_by_month.csv` (if selected and available)
+- `compare_timing_by_session.csv` (if selected and available)
+- `compare_timing_by_family.csv` (if selected and available)
 - `compare_metadata.yaml`
 - `compare_summary.md`
 

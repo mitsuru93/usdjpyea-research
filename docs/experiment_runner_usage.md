@@ -17,6 +17,10 @@ Required fields:
 - `timeframe`
 - `notes` (optional but recommended)
 
+Optional:
+- `timing_mode` (`baseline_touch`, `rv_close_confirm`, `all_close`)
+  - default is `baseline_touch` for backward-compatible behavior.
+
 ## 2) Run
 
 ```bash
@@ -33,11 +37,16 @@ python tools/run_experiment.py --config configs/experiments/smoke_test_candidate
 
 The runner writes:
 - `candidates.csv` (feature-enriched candidate rows used for outcome evaluation; policy-screened if enabled)
+- `candidates_timing_audit.csv` (all timing candidates with created/confirmed/rejected audit fields)
 - `candidates_policy_audit.csv` (all pre-evaluation candidates with policy decision audit fields)
 - `summary_overall.csv`
 - `summary_by_month.csv`
 - `summary_by_session.csv`
 - `summary_by_family.csv`
+- `summary_timing_overall.csv`
+- `summary_timing_by_month.csv`
+- `summary_timing_by_session.csv`
+- `summary_timing_by_family.csv`
 - `run_metadata.yaml`
 
 ## 4) Metadata notes

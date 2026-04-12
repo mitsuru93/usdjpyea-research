@@ -2,6 +2,10 @@
 
 Use this when you want a compact baseline-vs-variants study setup without writing every run block from scratch.
 
+If you want the first timing-only pack (`baseline_touch` vs `rv_close_confirm` vs `all_close`), use:
+
+- `configs/local/local_study_rv_close_confirm_pack.example.yaml`
+
 ## 1) Copy the example to a local ignored file
 
 ```bash
@@ -9,6 +13,12 @@ cp configs/local/local_study_variant_pack.example.yaml configs/local/local_study
 ```
 
 The copied file path (`configs/local/local_study_variant_pack.yaml`) is git-ignored for local/private use.
+
+Timing pack option:
+
+```bash
+cp configs/local/local_study_rv_close_confirm_pack.example.yaml configs/local/local_study_rv_close_confirm_pack.yaml
+```
 
 ## 2) Replace private CSV path
 

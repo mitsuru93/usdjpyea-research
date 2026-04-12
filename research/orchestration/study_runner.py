@@ -81,7 +81,7 @@ def _build_run_experiment_config(
     if missing:
         raise ValueError(f"run '{run_cfg.get('label', '')}' missing required run fields after merge: {missing}")
 
-    passthrough_keys = [*RUN_REQUIRED_KEYS, "input_csv", "output_dir", "notes", "policy", "policy_file"]
+    passthrough_keys = [*RUN_REQUIRED_KEYS, "input_csv", "output_dir", "notes", "policy", "policy_file", "timing_mode"]
     return {key: merged[key] for key in passthrough_keys if key in merged}
 
 
