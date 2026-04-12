@@ -3,6 +3,9 @@
 Research in this repository is **cloud-first**: prefer GitHub Actions / Codex Cloud execution for candidate timing studies.
 Local configs under `configs/local/` remain fallback/debug tools.
 
+For quick mobile operation, start with:
+- `docs/cloud_timing_study_playbook.md`
+
 ## Default Cloud Study Config
 
 - `configs/studies/cloud_timing_rv_close_confirm_first.yaml`
@@ -36,13 +39,14 @@ Inputs:
 
 Dispatch flow:
 1. Trigger workflow (from desktop or mobile).
-2. Optionally set `dataset_id` override.
-3. Wait for completion.
-4. Download artifact and review `timing_study_review.md` first.
+2. Optionally set `dataset_id` override (leave blank for normal config-driven datasets).
+3. Optionally set `output_tag` to isolate this run under output root.
+4. Wait for completion and read the Actions job summary.
+5. Download artifact and review `compare/timing_study_review.md` first.
 
 ## Artifacts
 
-The workflow uploads a single artifact containing:
+The workflow uploads a single artifact (name includes config + dataset/tag + run id) containing:
 - study run outputs (`runs/`)
 - compare outputs (`compare/`)
 - `study_metadata.yaml`

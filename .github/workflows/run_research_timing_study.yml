@@ -37,7 +37,44 @@ jobs:
           pip install -r requirements.txt
 
       - name: Check study config
-        run: python tools/check_research_env.py --study-config "${{ inputs.study_config }}"
+        run: |
+          DATASET_ARGS=""
+          if [ -n "${{ inputs.dataset_id }}" ]; then
+            DATASET_ARGS="--dataset-id ${{ inputs.dataset_id }}"
+          fi
+          python tools/check_research_env.py --study-config "${{ inputs.study_config }}" $DATASET_ARGS
+
+      - name: Resolve run metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import os
+          import yaml
+          from research.orchestration.path_utils import sanitize_label
+
+          cfg_path = Path("${{ inputs.study_config }}")
+          cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
+          cfg_basename = cfg_path.stem
+          dataset_id = "${{ inputs.dataset_id }}".strip()
+          output_tag = "${{ inputs.output_tag }}".strip()
+          output_root = Path(cfg["output_root"])
+          if output_tag:
+              output_root = output_root / sanitize_label(output_tag)
+
+          dataset_part = sanitize_label(dataset_id) if dataset_id else "default"
+          tag_part = sanitize_label(output_tag) if output_tag else "none"
+          dataset_part = dataset_part or "default"
+          tag_part = tag_part or "none"
+          artifact_name = f"timing-{cfg_basename}-{dataset_part}-{tag_part}-${{{{ github.run_id }}}}"
+
+          github_env = Path(os.environ["GITHUB_ENV"])
+          with github_env.open("a", encoding="utf-8") as env:
+              env.write(f"STUDY_CONFIG_PATH={cfg_path.as_posix()}\n")
+              env.write(f"DATASET_ID_OVERRIDE={dataset_id}\n")
+              env.write(f"OUTPUT_TAG_VALUE={output_tag}\n")
+              env.write(f"STUDY_DIR={output_root.as_posix()}\n")
+              env.write(f"ARTIFACT_NAME={artifact_name}\n")
+          PY
 
       - name: Log dataset selection
         run: |
@@ -69,30 +106,38 @@ jobs:
 
       - name: Generate timing review
         run: |
-          STUDY_DIR=$(python - <<'PY'
-          from pathlib import Path
-          import yaml
-          from research.orchestration.path_utils import sanitize_label
-
-          cfg_path = Path("${{ inputs.study_config }}")
-          cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
-          output_root = Path(cfg["output_root"])
-          tag = "${{ inputs.output_tag }}".strip()
-          if tag:
-              output_root = output_root / sanitize_label(tag)
-          print(output_root)
-          PY
-          )
-
-          python tools/review_timing_study.py --study-dir "$STUDY_DIR"
-          echo "STUDY_DIR=$STUDY_DIR" >> "$GITHUB_ENV"
+          python tools/review_timing_study.py --study-dir "${{ env.STUDY_DIR }}"
 
       - name: Upload study artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: timing-study-${{ github.run_id }}
+          name: ${{ env.ARTIFACT_NAME }}
           path: |
             ${{ env.STUDY_DIR }}/runs
             ${{ env.STUDY_DIR }}/compare
             ${{ env.STUDY_DIR }}/study_metadata.yaml
             ${{ env.STUDY_DIR }}/study_summary.md
+
+      - name: Write run summary
+        run: |
+          DATASET_DISPLAY="${{ env.DATASET_ID_OVERRIDE }}"
+          if [ -z "$DATASET_DISPLAY" ]; then
+            DATASET_DISPLAY="<none>"
+          fi
+          TAG_DISPLAY="${{ env.OUTPUT_TAG_VALUE }}"
+          if [ -z "$TAG_DISPLAY" ]; then
+            TAG_DISPLAY="<none>"
+          fi
+
+          {
+            echo "## Timing Study Run Summary"
+            echo "- study config: \`${{ env.STUDY_CONFIG_PATH }}\`"
+            echo "- dataset_id override: \`$DATASET_DISPLAY\`"
+            echo "- output tag: \`$TAG_DISPLAY\`"
+            echo "- study output root: \`${{ env.STUDY_DIR }}\`"
+            echo "- artifact name: \`${{ env.ARTIFACT_NAME }}\`"
+            echo ""
+            echo "Inspect first:"
+            echo "- \`compare/timing_study_review.md\`"
+            echo "- compare CSVs under \`compare/\`"
+          } >> "$GITHUB_STEP_SUMMARY"

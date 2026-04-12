@@ -28,6 +28,14 @@ python tools/run_study.py \
   --output-tag manual_test
 ```
 
+Override-aware preflight validation:
+
+```bash
+python tools/check_research_env.py \
+  --study-config configs/studies/cloud_timing_rv_close_confirm_first.yaml \
+  --dataset-id usdjpy_m1_tiny_sample
+```
+
 ## Dataset Input Resolution
 
 A run can define either:

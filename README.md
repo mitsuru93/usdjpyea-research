@@ -26,6 +26,9 @@ Excluded:
 
 ## Cloud-First Study Flow
 
+For iPhone/mobile operation, use:
+- `docs/cloud_timing_study_playbook.md`
+
 1. Choose a cloud study config (default):
    - `configs/studies/cloud_timing_rv_close_confirm_first.yaml`
 2. Ensure dataset IDs map in:
@@ -38,6 +41,7 @@ Excluded:
    - compare CSVs
 
 See:
+- `docs/cloud_timing_study_playbook.md`
 - `docs/cloud_timing_study_usage.md`
 - `docs/dataset_registry_usage.md`
 - `docs/study_runner_usage.md`
