@@ -40,9 +40,12 @@ The workflow performs:
 3. shard artifact aggregation
 4. batch review generation
 5. artifact upload
-6. fixed-marker review issue comment update
+6. fixed-marker review issue comment update (Issue comment sink)
 
 During aggregation, run outputs are deterministically re-resolved from downloaded artifact staging paths.
+
+`review_sink` is designed for standard GitHub **Issue** comments (`issue_number` + `comment_marker`).
+If the configured target is a PR number, the workflow now grants `pull-requests: write` as a compatibility fallback for integrations that require PR-scoped permission on PR-backed threads.
 
 ## CLI tools
 

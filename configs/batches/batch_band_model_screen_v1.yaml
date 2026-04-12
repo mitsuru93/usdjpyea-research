@@ -38,6 +38,7 @@ ranking_profile:
   shortlist_top_n: 8
   require_spread_column: false
 review_sink:
+  # review_sink is intended for GitHub Issue comments.
   issue_number: 1
   comment_marker: BATCH_REVIEW_BATCH_BAND_MODEL_SCREEN_V1
 notes: >-
