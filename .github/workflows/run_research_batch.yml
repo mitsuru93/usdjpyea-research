@@ -30,6 +30,9 @@ jobs:
     outputs:
       matrix: ${{ steps.expand.outputs.matrix }}
       batch_manifest: ${{ steps.expand.outputs.batch_manifest }}
+      batch_runtime_dir: ${{ steps.expand.outputs.batch_runtime_dir }}
+      batch_runtime_relpath: ${{ steps.runtime_artifact_meta.outputs.batch_runtime_relpath }}
+      batch_runtime_artifact_name: ${{ steps.runtime_artifact_meta.outputs.batch_runtime_artifact_name }}
       batch_output_root: ${{ steps.expand.outputs.batch_output_root }}
       batch_id: ${{ steps.expand.outputs.batch_id }}
       dataset_id: ${{ steps.expand.outputs.dataset_id }}
@@ -67,6 +70,23 @@ jobs:
             $TAG_ARGS \
             --write-github-output
 
+      - name: Resolve runtime artifact metadata
+        id: runtime_artifact_meta
+        run: |
+          runtime_dir="${{ steps.expand.outputs.batch_runtime_dir }}"
+          runtime_relpath="${runtime_dir#${GITHUB_WORKSPACE}/}"
+          artifact_name="batch-runtime-${{ steps.expand.outputs.batch_id }}-${{ github.run_id }}"
+
+          echo "batch_runtime_relpath=${runtime_relpath}" >> "$GITHUB_OUTPUT"
+          echo "batch_runtime_artifact_name=${artifact_name}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload batch runtime bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.runtime_artifact_meta.outputs.batch_runtime_artifact_name }}
+          path: |
+            ${{ github.workspace }}/${{ steps.runtime_artifact_meta.outputs.batch_runtime_relpath }}
+
   run-shards:
     runs-on: ubuntu-latest
     needs: prepare
@@ -86,6 +106,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Download batch runtime bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.prepare.outputs.batch_runtime_artifact_name }}
+          path: ${{ github.workspace }}
 
       - name: Run shard study
         run: |
@@ -131,6 +157,12 @@ jobs:
           path: .batch_artifacts
           merge-multiple: true
 
+      - name: Download batch runtime bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.prepare.outputs.batch_runtime_artifact_name }}
+          path: ${{ github.workspace }}
+
       - name: Aggregate batch review
         run: |
           ISSUE_ARGS=""
@@ -138,8 +170,9 @@ jobs:
             ISSUE_ARGS="--review-issue-number ${{ inputs.review_issue_number }}"
           fi
 
+          BATCH_MANIFEST_PATH="${{ github.workspace }}/${{ needs.prepare.outputs.batch_runtime_relpath }}/batch_manifest.yaml"
           python tools/review_batch.py \
-            --batch-manifest "${{ needs.prepare.outputs.batch_manifest }}" \
+            --batch-manifest "${BATCH_MANIFEST_PATH}" \
             --artifact-staging-root ".batch_artifacts" \
             $ISSUE_ARGS
 
@@ -208,6 +241,6 @@ jobs:
             echo "- batch id: \`${{ needs.prepare.outputs.batch_id }}\`"
             echo "- dataset id: \`${{ needs.prepare.outputs.dataset_id }}\`"
             echo "- output tag: \`${{ needs.prepare.outputs.output_tag || '<none>' }}\`"
-            echo "- manifest: \`${{ needs.prepare.outputs.batch_manifest }}\`"
+            echo "- manifest: \`${{ github.workspace }}/${{ needs.prepare.outputs.batch_runtime_relpath }}/batch_manifest.yaml\`"
             echo "- review artifact: \`${{ needs.prepare.outputs.batch_output_root }}/batch_review.md\`"
           } >> "$GITHUB_STEP_SUMMARY"
