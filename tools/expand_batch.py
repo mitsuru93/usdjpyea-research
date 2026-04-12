@@ -77,6 +77,17 @@ def _validate_batch_spec(spec: dict[str, Any]) -> None:
     if spread_mode not in SPREAD_MODES:
         raise ValueError(f"spread_mode must be one of {sorted(SPREAD_MODES)}")
 
+    blackout_windows = spec.get("blackout_windows_jst", [])
+    if not isinstance(blackout_windows, list):
+        raise ValueError("blackout_windows_jst must be a list")
+    for idx, window in enumerate(blackout_windows):
+        if not isinstance(window, dict):
+            raise ValueError(f"blackout_windows_jst[{idx}] must be a mapping")
+        if str(window.get("start_hhmmss", "")).strip() == "" or str(window.get("end_hhmmss", "")).strip() == "":
+            raise ValueError(
+                f"blackout_windows_jst[{idx}] must define daily recurring 'start_hhmmss' and 'end_hhmmss'"
+            )
+
 
 def _band_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
     sweep = spec.get("band_model_sweep", {}) or {}
@@ -176,6 +187,8 @@ def main() -> None:
         shard_variants = variants[start:end]
         shard_id = f"shard_{shard_index:03d}"
         shard_dir = ensure_directory(shards_dir / shard_id)
+        shard_runtime_relpath = f"shards/{shard_id}/study"
+        shard_artifact_name = f"batch-shard-{sanitize_label(batch_id)}-{shard_id}"
         study_output = (output_root / "shards" / shard_id / "study").resolve()
         study_cfg_path = (shard_dir / "study_config.yaml").resolve()
 
@@ -222,6 +235,9 @@ def main() -> None:
                 "shard_index": shard_index,
                 "study_config": str(study_cfg_path),
                 "study_output": str(study_output),
+                "shard_runtime_relpath": shard_runtime_relpath,
+                "shard_output_relpath": shard_runtime_relpath,
+                "shard_artifact_name": shard_artifact_name,
                 "run_count": len(shard_variants),
                 "runs": shard_variants,
             }
@@ -254,6 +270,8 @@ def main() -> None:
             "shard_id": rec["shard_id"],
             "study_config": rec["study_config"],
             "study_output": rec["study_output"],
+            "shard_runtime_relpath": rec["shard_runtime_relpath"],
+            "shard_artifact_name": rec["shard_artifact_name"],
         }
         for rec in shard_records
     ]

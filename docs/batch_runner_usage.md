@@ -62,8 +62,20 @@ Batch spread handling is explicit:
 
 `blackout_windows_jst` are deterministic hard exclusion windows used at batch review ranking time.
 
-Current implementation excludes candidates whose timestamps map into those JST windows when calculating `kept_*` ranking metrics.
+Semantics in this PR are **daily recurring JST windows**:
+
+```yaml
+blackout_windows_jst:
+  - start_hhmmss: "23:55:00"
+    end_hhmmss: "00:10:00"
+    label: daily_rollover_guard
+```
+
+Midnight crossing windows are supported (`23:55:00 -> 00:10:00`).
+
+Current implementation excludes candidates whose timestamps map into those recurring JST windows when calculating `kept_*` ranking metrics.
 The excluded counts are shown in ranking/review outputs for auditability.
+This is an explicit safety guard for current non-spread-aware runtime screening (not spread-aware execution).
 
 ## Batch outputs
 
@@ -87,3 +99,6 @@ This batch screens envelope band models across:
 - ATR*k envelope: `0.8, 1.0, 1.2`
 
 Variant naming is compact/stable, centered on band dimension in this phase.
+
+`batch_band_model_screen_v1` is configured for the canonical public main dataset.
+For smoke-only validation, create/use a separate `*_smoke_*` batch spec.

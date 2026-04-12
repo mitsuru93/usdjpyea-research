@@ -1,15 +1,15 @@
 batch_id: batch_band_model_screen_v1
 dataset_registry: configs/datasets/dataset_registry.yaml
-dataset_id: usdjpy_m1_tiny_sample
+dataset_id: usdjpy_m1_2024_01_02_to_2026_02_18_public_main
 output_root: research/reports/batches/batch_band_model_screen_v1
 shard_size: 6
 output_tag_default: mobile_dispatch
 blackout_windows_jst:
-  - start: '2024-01-01 06:55:00'
-    end: '2024-01-01 07:10:00'
+  - start_hhmmss: '06:55:00'
+    end_hhmmss: '07:10:00'
     label: tokyo_preopen_guard
-  - start: '2024-01-01 23:55:00'
-    end: '2024-01-02 00:10:00'
+  - start_hhmmss: '23:55:00'
+    end_hhmmss: '00:10:00'
     label: daily_rollover_guard
 spread_mode: audit_only
 band_model_sweep:

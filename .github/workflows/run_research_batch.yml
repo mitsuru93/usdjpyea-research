@@ -93,11 +93,16 @@ jobs:
           python tools/review_timing_study.py --study-dir "${{ matrix.study_output }}"
 
       - name: Upload shard artifacts
+        run: |
+          mkdir -p ".batch_artifacts/${{ matrix.shard_runtime_relpath }}"
+          cp -R "${{ matrix.study_output }}/." ".batch_artifacts/${{ matrix.shard_runtime_relpath }}/"
+
+      - name: Upload shard artifacts bundle
         uses: actions/upload-artifact@v4
         with:
-          name: batch-shard-${{ matrix.shard_id }}-${{ github.run_id }}
+          name: ${{ matrix.shard_artifact_name }}
           path: |
-            ${{ matrix.study_output }}
+            .batch_artifacts/${{ matrix.shard_runtime_relpath }}
 
   aggregate:
     runs-on: ubuntu-latest
@@ -123,7 +128,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: batch-shard-*
-          path: .
+          path: .batch_artifacts
           merge-multiple: true
 
       - name: Aggregate batch review
@@ -135,6 +140,7 @@ jobs:
 
           python tools/review_batch.py \
             --batch-manifest "${{ needs.prepare.outputs.batch_manifest }}" \
+            --artifact-staging-root ".batch_artifacts" \
             $ISSUE_ARGS
 
       - name: Upload batch artifacts

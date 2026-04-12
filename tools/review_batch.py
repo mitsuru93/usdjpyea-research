@@ -35,6 +35,11 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Aggregate completed batch shard outputs into review artifacts.")
     p.add_argument("--batch-manifest", required=True, help="Path to batch manifest YAML from expand_batch.py")
     p.add_argument("--review-issue-number", default=None, help="Optional override issue number")
+    p.add_argument(
+        "--artifact-staging-root",
+        default=None,
+        help="Optional artifact staging root used in cloud aggregate jobs to resolve shard outputs.",
+    )
     return p.parse_args()
 
 
@@ -111,6 +116,20 @@ def _spread_audit(manifest: dict[str, Any], manifest_path: Path) -> dict[str, An
     return result
 
 
+def _parse_hms_to_seconds(value: str) -> int | None:
+    text = str(value).strip()
+    parts = text.split(":")
+    if len(parts) != 3:
+        return None
+    try:
+        hh, mm, ss = [int(p) for p in parts]
+    except ValueError:
+        return None
+    if hh < 0 or hh > 23 or mm < 0 or mm > 59 or ss < 0 or ss > 59:
+        return None
+    return hh * 3600 + mm * 60 + ss
+
+
 def _in_blackout_jst(timestamp: pd.Series, windows: list[dict[str, Any]]) -> pd.Series:
     if timestamp.empty:
         return pd.Series(False, index=timestamp.index)
@@ -118,21 +137,47 @@ def _in_blackout_jst(timestamp: pd.Series, windows: list[dict[str, Any]]) -> pd.
     ts = pd.to_datetime(timestamp, errors="coerce", utc=True)
     ts_jst = ts.dt.tz_convert("Asia/Tokyo")
     mask = pd.Series(False, index=timestamp.index)
+    seconds_of_day = ts_jst.dt.hour * 3600 + ts_jst.dt.minute * 60 + ts_jst.dt.second
     for window in windows:
-        start = pd.to_datetime(str(window.get("start", "")), utc=False)
-        end = pd.to_datetime(str(window.get("end", "")), utc=False)
-        if pd.isna(start) or pd.isna(end):
+        start_sec = _parse_hms_to_seconds(str(window.get("start_hhmmss", "")))
+        end_sec = _parse_hms_to_seconds(str(window.get("end_hhmmss", "")))
+        if start_sec is None or end_sec is None:
             continue
-        start_jst = start.tz_localize("Asia/Tokyo") if start.tzinfo is None else start.tz_convert("Asia/Tokyo")
-        end_jst = end.tz_localize("Asia/Tokyo") if end.tzinfo is None else end.tz_convert("Asia/Tokyo")
-        mask = mask | ((ts_jst >= start_jst) & (ts_jst < end_jst))
+        if start_sec == end_sec:
+            window_mask = pd.Series(True, index=timestamp.index)
+        elif start_sec < end_sec:
+            window_mask = (seconds_of_day >= start_sec) & (seconds_of_day < end_sec)
+        else:
+            # midnight crossing window, e.g. 23:55:00 -> 00:10:00
+            window_mask = (seconds_of_day >= start_sec) | (seconds_of_day < end_sec)
+        mask = mask | window_mask
     return mask.fillna(False)
+
+
+def _resolve_study_output(shard: dict[str, Any], artifact_staging_root: Path | None) -> Path:
+    abs_output = Path(str(shard.get("study_output", ""))).resolve()
+    if abs_output.exists():
+        return abs_output
+    if artifact_staging_root is None:
+        return abs_output
+    runtime_rel = str(shard.get("shard_runtime_relpath", "")).strip()
+    if runtime_rel:
+        staged = (artifact_staging_root / runtime_rel).resolve()
+        if staged.exists():
+            return staged
+    output_rel = str(shard.get("shard_output_relpath", "")).strip()
+    if output_rel:
+        staged = (artifact_staging_root / output_rel).resolve()
+        if staged.exists():
+            return staged
+    return abs_output
 
 
 def main() -> None:
     args = parse_args()
     manifest_path = Path(args.batch_manifest).resolve()
     manifest = _load_yaml(manifest_path)
+    artifact_staging_root = Path(args.artifact_staging_root).resolve() if args.artifact_staging_root else None
     output_root = Path(str(manifest["output_root"])).resolve()
     batch_output = output_root
     batch_output.mkdir(parents=True, exist_ok=True)
@@ -143,9 +188,16 @@ def main() -> None:
 
     blackout_windows = list(manifest.get("blackout_windows_jst", []))
 
+    run_meta_lookup: dict[tuple[str, str], dict[str, Any]] = {}
     for shard in manifest.get("shards", []):
         shard_id = str(shard.get("shard_id", ""))
-        study_output = Path(str(shard.get("study_output", ""))).resolve()
+        for run_meta in shard.get("runs", []):
+            if isinstance(run_meta, dict):
+                run_meta_lookup[(shard_id, str(run_meta.get("label", "")))] = run_meta
+
+    for shard in manifest.get("shards", []):
+        shard_id = str(shard.get("shard_id", ""))
+        study_output = _resolve_study_output(shard, artifact_staging_root=artifact_staging_root)
         study_metadata_path = study_output / "study_metadata.yaml"
         if not study_metadata_path.exists():
             shard_status_rows.append({"shard_id": shard_id, "status": "missing_study_metadata", "completed_runs": 0})
@@ -171,6 +223,7 @@ def main() -> None:
             total_pnl = float(row.get("total_pnl_pips", 0.0) or 0.0)
             avg_pnl = float(row.get("avg_pnl_pips", 0.0) or 0.0)
             win_rate = float(row.get("win_rate", 0.0) or 0.0)
+            meta = run_meta_lookup.get((shard_id, label), {})
 
             blackout_excluded = 0
             kept_trade_count = trade_count
@@ -190,7 +243,9 @@ def main() -> None:
                     "dataset_id": manifest.get("dataset_id"),
                     "shard_id": shard_id,
                     "variant_label": label,
-                    "timing_mode": "rv_close_confirm" if "TRGRV" in label else ("all_close" if "TRGALL" in label else "baseline_touch"),
+                    "timing_mode": str(meta.get("timing_mode", "")),
+                    "band_model": str(meta.get("band_model", "")),
+                    "band_value": meta.get("band_value"),
                     "trade_count": trade_count,
                     "total_pnl_pips": total_pnl,
                     "avg_pnl_pips": avg_pnl,
@@ -270,7 +325,9 @@ def main() -> None:
     lines.extend(["", "## Blackout windows (JST)"])
     if blackout_windows:
         for w in blackout_windows:
-            lines.append(f"- {w.get('start')} -> {w.get('end')} ({w.get('label', 'window')})")
+            lines.append(
+                f"- {w.get('start_hhmmss')} -> {w.get('end_hhmmss')} ({w.get('label', 'window')}, recurring daily JST)"
+            )
     else:
         lines.append("- none")
 
@@ -280,7 +337,8 @@ def main() -> None:
     else:
         for _, row in shortlist_df.iterrows():
             lines.append(
-                f"- {row['variant_label']}: kept_total_pnl_pips={row['kept_total_pnl_pips']:.3f}, "
+                f"- {row['variant_label']} ({row.get('timing_mode')}/{row.get('band_model')}={row.get('band_value')}): "
+                f"kept_total_pnl_pips={row['kept_total_pnl_pips']:.3f}, "
                 f"kept_avg_pnl_pips={row['kept_avg_pnl_pips']:.3f}, kept_trade_count={int(row['kept_trade_count'])}, "
                 f"blackout_excluded={int(row['blackout_excluded_count'])}"
             )
