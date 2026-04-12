@@ -2,6 +2,15 @@
 # Keep this deterministic and repo-resolvable for public research use.
 datasets:
   usdjpy_m1_tiny_sample:
+    provider: repo_path
     path: research/data_sample/usdjpy_m1_tiny_sample.csv
     source_ref: repo://research/data_sample/usdjpy_m1_tiny_sample.csv
     note: "Tiny sample for smoke tests and workflow validation only."
+
+  usdjpy_m1_tiny_sample_url_example:
+    provider: url
+    url: https://raw.githubusercontent.com/mitsuru93/usdjpyea-research/1397e7591c798c85a5b95d568bc438b037b82ae9/research/data_sample/usdjpy_m1_tiny_sample.csv
+    filename: usdjpy_m1_tiny_sample.csv
+    sha256: 1b1fcf4f3e70444fb4eab6517b5b27361bc2bc9a76fc6c4e6ec29d16ef254c69
+    source_ref: url://raw.githubusercontent.com/mitsuru93/usdjpyea-research/1397e7591c798c85a5b95d568bc438b037b82ae9/research/data_sample/usdjpy_m1_tiny_sample.csv
+    note: "URL-provider example pinned to immutable Git commit for deterministic resolver behavior."

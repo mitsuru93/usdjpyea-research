@@ -9,6 +9,21 @@ Local configs under `configs/local/` remain fallback/debug tools.
 - modes: `baseline_touch`, `rv_close_confirm`, `all_close`
 - compare sections include overall/month/session/family and timing breakdowns.
 
+## Dataset input model
+
+Preferred path:
+- use `dataset_id` linked through `configs/datasets/dataset_registry.yaml`
+
+Fallback path:
+- direct `input_csv` remains supported for local/debug use
+
+Registry providers:
+- `repo_path`: repo-local file
+- `url`: HTTP(S) download staged to deterministic local cache
+
+Downloaded URL datasets are staged under:
+- `<study_output_root>/dataset_cache/url/<dataset_id>/<filename>`
+
 ## Run from GitHub Actions
 
 Workflow:
@@ -19,20 +34,22 @@ Inputs:
 - `dataset_id` (optional override for all runs)
 - `output_tag` (optional extra folder suffix under study output root)
 
+Dispatch flow:
+1. Trigger workflow (from desktop or mobile).
+2. Optionally set `dataset_id` override.
+3. Wait for completion.
+4. Download artifact and review `timing_study_review.md` first.
+
 ## Artifacts
 
 The workflow uploads a single artifact containing:
 - study run outputs (`runs/`)
 - compare outputs (`compare/`)
-- `compare/timing_study_review.md`
 - `study_metadata.yaml`
 - `study_summary.md`
 
-Practical next step after dispatch:
-1. Wait for workflow completion.
-2. Download artifacts.
-3. Read `timing_study_review.md` first.
-4. Inspect compare CSVs for detailed breakdown.
+## Scope reminder
 
 Research outputs are pre-MT4 candidate evaluation only.
+This repository does not claim MT4 parity.
 MT4 remains the final source of truth.

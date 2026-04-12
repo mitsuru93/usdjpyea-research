@@ -30,6 +30,7 @@ Excluded:
    - `configs/studies/cloud_timing_rv_close_confirm_first.yaml`
 2. Ensure dataset IDs map in:
    - `configs/datasets/dataset_registry.yaml`
+   - provider types: `repo_path` (repo-local) and `url` (downloaded/cache-staged)
 3. Trigger workflow:
    - `.github/workflows/run_research_timing_study.yml`
 4. Download artifacts and review:
@@ -40,6 +41,9 @@ See:
 - `docs/cloud_timing_study_usage.md`
 - `docs/dataset_registry_usage.md`
 - `docs/study_runner_usage.md`
+
+URL-backed datasets are staged deterministically under each study output root:
+- `<output_root>/dataset_cache/url/<dataset_id>/<filename>`
 
 ## Local Fallback Flow
 
