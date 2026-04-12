@@ -30,7 +30,10 @@ Set `timing_mode` in experiment/study run config.
 
 For close-time decision candidates (`rv_close_confirm` RV rows and all rows in `all_close`):
 - reject when both upper and lower envelope touches happened in the same source bar (`ambiguous_dual_touch_same_bar`).
-- otherwise confirm.
+- otherwise, require close to be back inside the touched envelope side:
+  - upper-touch candidate confirms only when `close < upper_env`
+  - lower-touch candidate confirms only when `close > lower_env`
+  - else reject with `close_not_back_inside_band`
 
 This keeps same-bar ambiguity conservative and deterministic.
 
@@ -48,6 +51,7 @@ This keeps same-bar ambiguity conservative and deterministic.
 
 `timing_still_touch_at_close` is informational only.
 It is **not** an entry requirement in `rv_close_confirm`.
+Close-time state now affects close-decision confirm/reject via the inside-band rule above.
 
 ## Comparison artifacts
 

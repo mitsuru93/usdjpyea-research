@@ -68,6 +68,10 @@ def apply_timing_mode(
     Conservative close decision in this research approximation:
     - reject close-time candidates when both upper/lower were touched in the same
       source bar (ambiguous intrabar path).
+    - otherwise confirm only if close is back inside the touched envelope side:
+      - upper-touch candidate => close < upper_env
+      - lower-touch candidate => close > lower_env
+      - else reject with close_not_back_inside_band
     """
     mode = str(timing_mode).strip().lower()
     if mode not in TIMING_MODES:
@@ -104,15 +108,18 @@ def apply_timing_mode(
 
     close_mask = _build_close_decision_mask(merged, mode)
     if bool(close_mask.any()):
-        reject_mask = close_mask & merged["close_decision_reject_ambiguous_touch"]
-        confirm_mask = close_mask & ~merged["close_decision_reject_ambiguous_touch"]
+        ambiguous_reject_mask = close_mask & merged["close_decision_reject_ambiguous_touch"]
+        close_not_inside_reject_mask = close_mask & ~merged["close_decision_reject_ambiguous_touch"] & ~_is_back_inside_band(merged)
+        reject_mask = ambiguous_reject_mask | close_not_inside_reject_mask
+        confirm_mask = close_mask & ~reject_mask
 
         merged.loc[close_mask, "timing_decision_event"] = "close_confirmed"
         merged.loc[confirm_mask, "timing_close_confirmed"] = True
         merged.loc[reject_mask, "timing_decision_event"] = "close_rejected"
         merged.loc[reject_mask, "timing_close_rejected"] = True
         merged.loc[reject_mask, "timing_entered"] = False
-        merged.loc[reject_mask, "timing_close_reject_reason"] = "ambiguous_dual_touch_same_bar"
+        merged.loc[ambiguous_reject_mask, "timing_close_reject_reason"] = "ambiguous_dual_touch_same_bar"
+        merged.loc[close_not_inside_reject_mask, "timing_close_reject_reason"] = "close_not_back_inside_band"
 
     audit_cols_to_drop = [
         "touch_upper",
@@ -143,6 +150,12 @@ def _compute_still_touch_at_close(df: pd.DataFrame) -> pd.Series:
     upper_still_touch = (df["touch_side"] == "upper") & (df["bar_close_price"] >= df["upper_env"])
     lower_still_touch = (df["touch_side"] == "lower") & (df["bar_close_price"] <= df["lower_env"])
     return upper_still_touch | lower_still_touch
+
+
+def _is_back_inside_band(df: pd.DataFrame) -> pd.Series:
+    upper_back_inside = (df["touch_side"] == "upper") & (df["bar_close_price"] < df["upper_env"])
+    lower_back_inside = (df["touch_side"] == "lower") & (df["bar_close_price"] > df["lower_env"])
+    return upper_back_inside | lower_back_inside
 
 
 def _make_candidate(row: object, touch_side: str, family: str, direction: str) -> dict:
