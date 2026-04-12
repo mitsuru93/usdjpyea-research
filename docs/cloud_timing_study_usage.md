@@ -6,9 +6,18 @@ Local configs under `configs/local/` remain fallback/debug tools.
 For quick mobile operation, start with:
 - `docs/cloud_timing_study_playbook.md`
 
-## Default Cloud Study Config
+## Cloud Study Configs (Smoke vs Main)
+
+### Smoke / validation / workflow sanity check (default)
 
 - `configs/studies/cloud_timing_rv_close_confirm_first.yaml`
+- dataset: `usdjpy_m1_tiny_sample`
+- use this for fast checks that cloud workflow + artifacts + compare wiring are healthy.
+
+### Main 2024 timing research
+
+- `configs/studies/cloud_timing_rv_close_confirm_main_2024.yaml`
+- dataset: `usdjpy_m1_2024_public_main`
 - modes: `baseline_touch`, `rv_close_confirm`, `all_close`
 - compare sections include overall/month/session/family and timing breakdowns.
 

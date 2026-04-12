@@ -1,6 +1,13 @@
 # Cloud-first dataset registry for study orchestration.
 # Keep this deterministic and repo-resolvable for public research use.
 datasets:
+  usdjpy_m1_2024_public_main:
+    provider: url
+    url: https://www.histdata.com/download-free-forex-historical-data/?/ascii/1-minute-bar-quotes/USDJPY
+    filename: usdjpy_m1_2024_public_main.csv
+    source_ref: url://www.histdata.com/download-free-forex-historical-data/?/ascii/1-minute-bar-quotes/USDJPY
+    note: "Main 2024 public dataset target for cloud timing research. URL provider is used to avoid committing a very large yearly M1 CSV into git history; keep this pinned to a deterministic exported CSV snapshot in CI/ops."
+
   usdjpy_m1_tiny_sample:
     provider: repo_path
     path: research/data_sample/usdjpy_m1_tiny_sample.csv

@@ -29,10 +29,13 @@ Excluded:
 For iPhone/mobile operation, use:
 - `docs/cloud_timing_study_playbook.md`
 
-1. Choose a cloud study config (default):
-   - `configs/studies/cloud_timing_rv_close_confirm_first.yaml`
+1. Choose a cloud study config:
+   - smoke/validation default: `configs/studies/cloud_timing_rv_close_confirm_first.yaml`
+   - main 2024 research: `configs/studies/cloud_timing_rv_close_confirm_main_2024.yaml`
 2. Ensure dataset IDs map in:
    - `configs/datasets/dataset_registry.yaml`
+   - smoke dataset_id: `usdjpy_m1_tiny_sample`
+   - main dataset_id: `usdjpy_m1_2024_public_main`
    - provider types: `repo_path` (repo-local) and `url` (downloaded/cache-staged)
 3. Trigger workflow:
    - `.github/workflows/run_research_timing_study.yml`

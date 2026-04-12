@@ -1,5 +1,5 @@
-study_name: cloud_timing_rv_close_confirm_first
-output_root: research/reports/studies/cloud_timing_rv_close_confirm_first
+study_name: cloud_timing_rv_close_confirm_main_2024
+output_root: research/reports/studies/cloud_timing_rv_close_confirm_main_2024
 dataset_registry: configs/datasets/dataset_registry.yaml
 shared_defaults:
   input_timezone_mode: UTC
@@ -10,19 +10,19 @@ shared_defaults:
 
 runs:
   - label: baseline_touch
-    dataset_id: usdjpy_m1_tiny_sample
+    dataset_id: usdjpy_m1_2024_public_main
     timing_mode: baseline_touch
-    notes: cloud baseline touch reference
+    notes: cloud baseline touch reference (main 2024 public dataset)
 
   - label: rv_close_confirm
-    dataset_id: usdjpy_m1_tiny_sample
+    dataset_id: usdjpy_m1_2024_public_main
     timing_mode: rv_close_confirm
-    notes: cloud RV close-confirm timing candidate
+    notes: cloud RV close-confirm timing candidate (main 2024 public dataset)
 
   - label: all_close
-    dataset_id: usdjpy_m1_tiny_sample
+    dataset_id: usdjpy_m1_2024_public_main
     timing_mode: all_close
-    notes: cloud all-close timing comparison reference
+    notes: cloud all-close timing comparison reference (main 2024 public dataset)
 
 compare:
   enabled: true
@@ -46,4 +46,4 @@ compare:
     - timing_by_family_reject_reason
     - timing_by_still_touch_status
 
-notes: "Cloud-first smoke/validation timing study scaffold (workflow sanity check only; research-only, pre-MT4; MT4 remains final source of truth)."
+notes: "Main cloud timing study for public 2024 candidate-screening research only (pre-MT4; MT4 remains final source of truth)."
