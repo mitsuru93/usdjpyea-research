@@ -42,6 +42,8 @@ The workflow performs:
 5. artifact upload
 6. fixed-marker review issue comment update
 
+During aggregation, run outputs are deterministically re-resolved from downloaded artifact staging paths.
+
 ## CLI tools
 
 - `tools/expand_batch.py`: validates and expands one batch spec into shard study configs + manifest.

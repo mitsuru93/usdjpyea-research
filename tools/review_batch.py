@@ -16,6 +16,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from research.io.dataset_resolver import resolve_dataset_to_local_csv
+from research.orchestration.path_utils import sanitize_label
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -173,6 +174,22 @@ def _resolve_study_output(shard: dict[str, Any], artifact_staging_root: Path | N
     return abs_output
 
 
+def _resolve_run_output_dir(*, study_output: Path, run_record: dict[str, Any]) -> Path | None:
+    label = str(run_record.get("label", ""))
+    safe_label = sanitize_label(label)
+    staged_run_dir = (study_output / "runs" / safe_label).resolve()
+    if staged_run_dir.exists():
+        return staged_run_dir
+
+    legacy_run_dir_raw = str(run_record.get("run_dir", "")).strip()
+    if not legacy_run_dir_raw:
+        return None
+    legacy_run_dir = Path(legacy_run_dir_raw).resolve()
+    if legacy_run_dir.exists():
+        return legacy_run_dir
+    return None
+
+
 def main() -> None:
     args = parse_args()
     manifest_path = Path(args.batch_manifest).resolve()
@@ -211,7 +228,10 @@ def main() -> None:
 
         for run in completed:
             label = str(run.get("label", ""))
-            run_dir = Path(str(run.get("run_dir", "")))
+            run_dir = _resolve_run_output_dir(study_output=study_output, run_record=run)
+            if run_dir is None:
+                warnings.append(f"{shard_id}/{label}: run_dir unresolved in aggregate staging")
+                continue
             overall = _safe_read_csv(run_dir / "summary_overall.csv")
             candidates = _safe_read_csv(run_dir / "candidates.csv")
             if overall.empty:
