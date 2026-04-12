@@ -25,6 +25,8 @@ runs:
   - label: variant_a
     input_csv: /ABSOLUTE/OR/LOCAL/PATH/usdjpy.csv
     max_holding_bars: 40
+    # Optional timing override:
+    # timing_mode: rv_close_confirm
     notes: variant run
     # Optional run-level policy override:
     # policy:

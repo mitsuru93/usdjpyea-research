@@ -21,6 +21,10 @@ SECTION_TO_FILE = {
     "by_month": "summary_by_month.csv",
     "by_session": "summary_by_session.csv",
     "by_family": "summary_by_family.csv",
+    "timing_overall": "summary_timing_overall.csv",
+    "timing_by_month": "summary_timing_by_month.csv",
+    "timing_by_session": "summary_timing_by_session.csv",
+    "timing_by_family": "summary_timing_by_family.csv",
 }
 
 SECTION_KEYS = {
@@ -29,6 +33,10 @@ SECTION_KEYS = {
     "by_session": ["session"],
     "by_family": ["candidate_family"],
     "by_direction": ["direction"],
+    "timing_overall": [],
+    "timing_by_month": ["month"],
+    "timing_by_session": ["session"],
+    "timing_by_family": ["candidate_family"],
 }
 
 DEFAULT_COMPARE_SECTIONS = ["overall", "by_month", "by_session", "by_family", "by_direction"]
@@ -82,7 +90,7 @@ def compare_runs_from_config(cfg: dict) -> dict:
             continue
 
         key_cols = SECTION_KEYS[section]
-        if section == "overall":
+        if section in {"overall", "timing_overall"}:
             for idx, (label, frame) in enumerate(run_frames):
                 if frame.empty:
                     run_frames[idx] = (label, pd.DataFrame([{}]))

@@ -1,0 +1,38 @@
+study_name: local_usdjpy_rv_timing_pack
+output_root: research/reports/studies/local_usdjpy_rv_timing_pack
+shared_defaults:
+  input_timezone_mode: UTC
+  max_holding_bars: 30
+  symbol: USDJPY
+  timeframe: M1
+  analyze_after_run: true
+
+runs:
+  - label: baseline_touch
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    timing_mode: baseline_touch
+    notes: baseline touch-timing behavior
+
+  - label: rv_close_confirm
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    timing_mode: rv_close_confirm
+    notes: RV candidate created on touch, entry decision confirmed/rejected at bar close
+
+  - label: all_close
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    timing_mode: all_close
+    notes: research comparison mode with close-time decision for all families
+
+compare:
+  enabled: true
+  compare_sections:
+    - overall
+    - by_month
+    - by_session
+    - by_family
+    - timing_overall
+    - timing_by_month
+    - timing_by_session
+    - timing_by_family
+
+notes: "Local/private timing-mode study pack for research-side screening only (MT4 remains final source of truth)."

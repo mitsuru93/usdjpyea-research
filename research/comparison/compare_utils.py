@@ -96,6 +96,8 @@ def merge_section_frames(
     merged: pd.DataFrame | None = None
     baseline_token = safe_label(baseline_label)
     variant_tokens: list[str] = []
+    metric_cols_union: list[str] = []
+    has_standard_metrics = False
 
     for label, frame in run_frames:
         token = safe_label(label)
@@ -103,9 +105,19 @@ def merge_section_frames(
             variant_tokens.append(token)
 
         work = ensure_columns(frame, FULL_METRIC_COLUMNS)
-        keep_cols = key_cols + FULL_METRIC_COLUMNS
+        has_current_standard_metrics = any(col in frame.columns for col in FULL_METRIC_COLUMNS)
+        has_standard_metrics = has_standard_metrics or has_current_standard_metrics
+        dynamic_metrics = [
+            col for col in frame.columns if col not in key_cols and pd.api.types.is_numeric_dtype(frame[col])
+        ]
+        for metric in dynamic_metrics:
+            if metric not in metric_cols_union:
+                metric_cols_union.append(metric)
+
+        metric_cols = FULL_METRIC_COLUMNS if has_standard_metrics else dynamic_metrics
+        keep_cols = key_cols + metric_cols
         work = work[[c for c in keep_cols if c in work.columns]].copy()
-        work = work.rename(columns={metric: f"{token}_{metric}" for metric in FULL_METRIC_COLUMNS if metric in work.columns})
+        work = work.rename(columns={metric: f"{token}_{metric}" for metric in metric_cols if metric in work.columns})
 
         if merged is None:
             merged = work
@@ -117,8 +129,9 @@ def merge_section_frames(
     if merged is None:
         return pd.DataFrame(columns=key_cols)
 
+    metric_cols_for_delta = REQUIRED_METRIC_COLUMNS if has_standard_metrics else metric_cols_union
     primary_variant = variant_tokens[0] if variant_tokens else None
-    for metric in REQUIRED_METRIC_COLUMNS:
+    for metric in metric_cols_for_delta:
         baseline_col = f"{baseline_token}_{metric}"
         if baseline_col not in merged.columns:
             merged[baseline_col] = 0.0

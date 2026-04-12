@@ -4,4 +4,5 @@ input_timezone_mode: UTC
 max_holding_bars: 20
 symbol: USDJPY
 timeframe: M1
+timing_mode: baseline_touch
 notes: "Small sample smoke test for config-driven candidate run."
