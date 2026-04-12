@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 from typing import Any
 
@@ -52,6 +53,38 @@ def _fmt_intlike(value: float | None) -> str:
     if abs(value - round(value)) < 1e-9:
         return str(int(round(value)))
     return f"{value:.3f}"
+
+
+TUPLE_LIKE_SINGLETON_RE = re.compile(r"""^\(\s*['"]([^'"]+)['"]\s*,\s*\)$""")
+
+
+def _normalize_tuple_like_label(value: Any) -> str:
+    text = "" if value is None else str(value).strip()
+    if not text:
+        return ""
+    match = TUPLE_LIKE_SINGLETON_RE.match(text)
+    if match:
+        return match.group(1)
+    return text
+
+
+def _pick_prefixed_metric_col(df: pd.DataFrame, token: str, metric_candidates: list[str]) -> str | None:
+    for metric in metric_candidates:
+        prefixed = f"{token}_{metric}"
+        if prefixed in df.columns:
+            return prefixed
+    return None
+
+
+def _pick_delta_metric_col(df: pd.DataFrame, token: str, metric_candidates: list[str]) -> str | None:
+    for metric in metric_candidates:
+        prefixed = f"delta_{token}_{metric}_vs_baseline"
+        if prefixed in df.columns:
+            return prefixed
+        generic = f"delta_{metric}_vs_baseline"
+        if generic in df.columns:
+            return generic
+    return None
 
 
 def resolve_compare_dir(study_dir: str | None, compare_dir: str | None) -> Path:
@@ -145,12 +178,16 @@ def dominant_delta_row(df: pd.DataFrame, key_col: str, delta_col: str) -> tuple[
 
 def summarize_decision_events(df: pd.DataFrame, variant_label: str) -> list[str]:
     token = safe_label(variant_label)
-    count_col = f"{token}_trade_count"
-    if "timing_decision_event" not in df.columns or count_col not in df.columns:
+    count_col = _pick_prefixed_metric_col(
+        df,
+        token,
+        ["candidate_count", "candidate_created_count", "close_confirmed_count", "close_rejected_count", "trade_count"],
+    )
+    if "timing_decision_event" not in df.columns or count_col is None:
         return [f"- {variant_label}: timing decision-event columns unavailable."]
 
     work = df.copy()
-    work["timing_decision_event"] = work["timing_decision_event"].fillna("").astype(str)
+    work["timing_decision_event"] = work["timing_decision_event"].map(_normalize_tuple_like_label)
     work[count_col] = pd.to_numeric(work[count_col], errors="coerce").fillna(0.0)
 
     def count_for(event: str) -> float:
@@ -169,12 +206,12 @@ def summarize_decision_events(df: pd.DataFrame, variant_label: str) -> list[str]
 
 def summarize_reject_reasons(df: pd.DataFrame, variant_label: str) -> list[str]:
     token = safe_label(variant_label)
-    count_col = f"{token}_trade_count"
-    if "timing_close_reject_reason" not in df.columns or count_col not in df.columns:
+    count_col = _pick_prefixed_metric_col(df, token, ["candidate_count", "close_rejected_count", "trade_count"])
+    if "timing_close_reject_reason" not in df.columns or count_col is None:
         return [f"- {variant_label}: reject-reason columns unavailable."]
 
     work = df.copy()
-    work["timing_close_reject_reason"] = work["timing_close_reject_reason"].fillna("").astype(str)
+    work["timing_close_reject_reason"] = work["timing_close_reject_reason"].map(_normalize_tuple_like_label)
     work[count_col] = pd.to_numeric(work[count_col], errors="coerce").fillna(0.0)
     work = work[work["timing_close_reject_reason"].str.len() > 0]
     if work.empty:
@@ -282,9 +319,14 @@ def build_review(compare_dir: Path) -> tuple[str, Path]:
         lines.append("- compare_timing_by_family_reject_reason.csv unavailable or empty.")
     else:
         for variant in variant_labels:
-            delta_col = f"delta_{safe_label(variant)}_trade_count_vs_baseline"
-            if delta_col not in timing_family_reject.columns:
-                delta_col = "delta_trade_count_vs_baseline"
+            delta_col = _pick_delta_metric_col(
+                timing_family_reject, safe_label(variant), ["candidate_count", "close_rejected_count", "trade_count"]
+            )
+            timing_family_reject = timing_family_reject.copy()
+            if "timing_close_reject_reason" in timing_family_reject.columns:
+                timing_family_reject["timing_close_reject_reason"] = timing_family_reject["timing_close_reject_reason"].map(
+                    _normalize_tuple_like_label
+                )
             hit = dominant_delta_row(timing_family_reject, key_col="timing_close_reject_reason", delta_col=delta_col)
             if hit is None:
                 lines.append(f"- {variant}: unable to derive dominant family reject reason delta.")
@@ -301,10 +343,14 @@ def build_review(compare_dir: Path) -> tuple[str, Path]:
         if key_col not in still_touch.columns:
             lines.append("- timing_still_touch_status column unavailable.")
         else:
+            still_touch = still_touch.copy()
+            still_touch[key_col] = still_touch[key_col].map(_normalize_tuple_like_label)
             for variant in variant_labels:
-                delta_col = f"delta_{safe_label(variant)}_trade_count_vs_baseline"
-                if delta_col not in still_touch.columns:
-                    delta_col = "delta_trade_count_vs_baseline"
+                delta_col = _pick_delta_metric_col(
+                    still_touch,
+                    safe_label(variant),
+                    ["candidate_count", "still_touch_at_close_true_count", "still_touch_at_close_false_count", "trade_count"],
+                )
                 hit = dominant_delta_row(still_touch, key_col=key_col, delta_col=delta_col)
                 if hit is None:
                     lines.append(f"- {variant}: still-touch delta unavailable.")
@@ -334,11 +380,12 @@ def build_review(compare_dir: Path) -> tuple[str, Path]:
 
     if rv_label and timing_reject is not None and not timing_reject.empty:
         token = safe_label(rv_label)
-        count_col = f"{token}_trade_count"
-        if count_col in timing_reject.columns and "timing_close_reject_reason" in timing_reject.columns:
+        count_col = _pick_prefixed_metric_col(timing_reject, token, ["candidate_count", "close_rejected_count", "trade_count"])
+        if count_col and "timing_close_reject_reason" in timing_reject.columns:
             work = timing_reject.copy()
             work[count_col] = pd.to_numeric(work[count_col], errors="coerce").fillna(0.0)
-            work = work[work["timing_close_reject_reason"].fillna("").astype(str).str.len() > 0]
+            work["timing_close_reject_reason"] = work["timing_close_reject_reason"].map(_normalize_tuple_like_label)
+            work = work[work["timing_close_reject_reason"].str.len() > 0]
             if not work.empty:
                 top = work.sort_values(count_col, ascending=False).iloc[0]
                 lines.append(
