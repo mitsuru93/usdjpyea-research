@@ -1,0 +1,48 @@
+study_name: local_usdjpy_rv_close_confirm_first_real
+output_root: research/reports/studies/local_usdjpy_rv_close_confirm_first_real
+shared_defaults:
+  input_timezone_mode: UTC
+  max_holding_bars: 30
+  symbol: USDJPY
+  timeframe: M1
+  analyze_after_run: true
+
+runs:
+  - label: baseline_touch
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    timing_mode: baseline_touch
+    notes: baseline touch reference
+
+  - label: rv_close_confirm
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    timing_mode: rv_close_confirm
+    notes: RV intrabar-touch candidate, close-time entry decision (still-touch at close not required)
+
+  - label: all_close
+    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    timing_mode: all_close
+    notes: all-close comparison reference only
+
+compare:
+  enabled: true
+  selected_bucket_features:
+    - dist_from_ema_pips
+    - pre60_change_pips
+    - net10_change_pips
+    - rsi14
+  compare_sections:
+    - overall
+    - by_month
+    - by_session
+    - by_family
+    - timing_overall
+    - timing_by_month
+    - timing_by_session
+    - timing_by_family
+    - timing_by_decision_event
+    - timing_by_reject_reason
+    - timing_by_family_decision_event
+    - timing_by_family_reject_reason
+    - timing_by_still_touch_status
+
+notes: "First real private-data timing study template (research-only, pre-MT4; MT4 remains final source of truth)."

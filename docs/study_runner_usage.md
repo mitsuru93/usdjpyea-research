@@ -22,8 +22,12 @@ For local/private data workflows, start from:
 - `configs/local/local_study_template.example.yaml`
 - `configs/local/local_study_variant_pack.example.yaml` (compact multi-variant baseline-vs-preset example)
 - `configs/local/local_study_rv_close_confirm_pack.example.yaml` (timing-only pack for `baseline_touch` vs `rv_close_confirm` vs `all_close`)
+- `configs/local/local_study_rv_close_confirm_first_real.example.yaml` (first real private-data timing run template with practical compare defaults)
 - `docs/local_first_run_checklist.md`
 - `docs/local_study_pack_usage.md`
+
+For timing interpretation on first private runs, use:
+- `docs/first_timing_study_reading_guide.md`
 
 ## Study Config Shape
 

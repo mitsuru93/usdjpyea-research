@@ -95,3 +95,15 @@ Interpretation reminders:
 - `rv_close_confirm` does **not** require still-touch-at-close.
 - This is research-side screening only; not a claim of MT4 parity.
 - MT4 remains the final source of truth.
+
+## First practical local timing study template
+
+For the first real private-data timing pass, start from:
+
+- `configs/local/local_study_rv_close_confirm_first_real.example.yaml`
+- `docs/first_timing_study_reading_guide.md`
+
+Template intent:
+- compare `baseline_touch`, `rv_close_confirm`, and `all_close` on one shared local CSV path placeholder
+- keep compare outputs focused on first interpretation
+- keep `rv_close_confirm` semantics explicit: intrabar touch creates RV candidate, bar close decides, still-touch at close is not required
