@@ -14,10 +14,11 @@ For quick mobile operation, start with:
 - dataset: `usdjpy_m1_tiny_sample`
 - use this for fast checks that cloud workflow + artifacts + compare wiring are healthy.
 
-### Main 2024 timing research
+### Main public timing research
 
-- `configs/studies/cloud_timing_rv_close_confirm_main_2024.yaml`
-- dataset: `usdjpy_m1_2024_public_main`
+- `configs/studies/cloud_timing_rv_close_confirm_main_public.yaml`
+- dataset: `usdjpy_m1_2024_01_02_to_2026_02_18_public_main`
+- canonical file: `USDJPY_M1_2024-01-02_2026-02-18.csv` (via deterministic GitHub Release asset URL)
 - modes: `baseline_touch`, `rv_close_confirm`, `all_close`
 - compare sections include overall/month/session/family and timing breakdowns.
 
