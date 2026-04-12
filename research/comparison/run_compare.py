@@ -25,6 +25,11 @@ SECTION_TO_FILE = {
     "timing_by_month": "summary_timing_by_month.csv",
     "timing_by_session": "summary_timing_by_session.csv",
     "timing_by_family": "summary_timing_by_family.csv",
+    "timing_by_decision_event": "summary_timing_by_decision_event.csv",
+    "timing_by_reject_reason": "summary_timing_by_reject_reason.csv",
+    "timing_by_family_decision_event": "summary_timing_by_family_decision_event.csv",
+    "timing_by_family_reject_reason": "summary_timing_by_family_reject_reason.csv",
+    "timing_by_still_touch_status": "summary_timing_by_still_touch_status.csv",
 }
 
 SECTION_KEYS = {
@@ -37,6 +42,11 @@ SECTION_KEYS = {
     "timing_by_month": ["month"],
     "timing_by_session": ["session"],
     "timing_by_family": ["candidate_family"],
+    "timing_by_decision_event": ["timing_decision_event"],
+    "timing_by_reject_reason": ["timing_close_reject_reason"],
+    "timing_by_family_decision_event": ["candidate_family", "timing_decision_event"],
+    "timing_by_family_reject_reason": ["candidate_family", "timing_close_reject_reason"],
+    "timing_by_still_touch_status": ["timing_still_touch_status"],
 }
 
 DEFAULT_COMPARE_SECTIONS = ["overall", "by_month", "by_session", "by_family", "by_direction"]
