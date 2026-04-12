@@ -9,9 +9,19 @@ Use this runbook when you want to launch a timing study quickly from GitHub mobi
 
 ## Recommended defaults
 
-- `study_config`: `configs/studies/cloud_timing_rv_close_confirm_first.yaml`
+- `study_config`: `configs/studies/cloud_timing_rv_close_confirm_first.yaml` (smoke/validation path)
 - `dataset_id`: leave blank unless you intentionally want to force one dataset across all runs
 - `output_tag`: optional short label (example: `apr12-mobile-check`)
+
+## Smoke vs main run choice
+
+- Smoke run (workflow sanity check):
+  - `study_config`: `configs/studies/cloud_timing_rv_close_confirm_first.yaml`
+  - dataset path: tiny sample via `usdjpy_m1_tiny_sample`
+- Main research run (broader public timing study):
+  - `study_config`: `configs/studies/cloud_timing_rv_close_confirm_main_public.yaml`
+  - dataset path: `usdjpy_m1_2024_01_02_to_2026_02_18_public_main`
+  - canonical dataset file: `USDJPY_M1_2024-01-02_2026-02-18.csv`
 
 ## Input guidance
 

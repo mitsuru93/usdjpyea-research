@@ -1,6 +1,14 @@
 # Cloud-first dataset registry for study orchestration.
 # Keep this deterministic and repo-resolvable for public research use.
 datasets:
+  usdjpy_m1_2024_01_02_to_2026_02_18_public_main:
+    provider: url
+    url: https://github.com/mitsuru93/usdjpyea-research/releases/download/research-datasets-v1/USDJPY_M1_2024-01-02_2026-02-18.csv
+    filename: USDJPY_M1_2024-01-02_2026-02-18.csv
+    sha256: 16dc2cab7d46504082be01520c6d5b95fa7bfa9089947afb6f22e4cb1edde6ac
+    source_ref: url://github.com/mitsuru93/usdjpyea-research/releases/download/research-datasets-v1/USDJPY_M1_2024-01-02_2026-02-18.csv
+    note: "Canonical public main dataset for cloud timing research (2024-01-02 through 2026-02-18); release-asset URL avoids large-file git-history bloat while keeping cloud execution deterministic. Pre-MT4 candidate screening only."
+
   usdjpy_m1_tiny_sample:
     provider: repo_path
     path: research/data_sample/usdjpy_m1_tiny_sample.csv

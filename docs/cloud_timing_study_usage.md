@@ -6,9 +6,19 @@ Local configs under `configs/local/` remain fallback/debug tools.
 For quick mobile operation, start with:
 - `docs/cloud_timing_study_playbook.md`
 
-## Default Cloud Study Config
+## Cloud Study Configs (Smoke vs Main)
+
+### Smoke / validation / workflow sanity check (default)
 
 - `configs/studies/cloud_timing_rv_close_confirm_first.yaml`
+- dataset: `usdjpy_m1_tiny_sample`
+- use this for fast checks that cloud workflow + artifacts + compare wiring are healthy.
+
+### Main public timing research
+
+- `configs/studies/cloud_timing_rv_close_confirm_main_public.yaml`
+- dataset: `usdjpy_m1_2024_01_02_to_2026_02_18_public_main`
+- canonical file: `USDJPY_M1_2024-01-02_2026-02-18.csv` (via deterministic GitHub Release asset URL)
 - modes: `baseline_touch`, `rv_close_confirm`, `all_close`
 - compare sections include overall/month/session/family and timing breakdowns.
 

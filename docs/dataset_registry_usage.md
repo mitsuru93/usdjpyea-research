@@ -28,6 +28,11 @@ datasets:
 Backward compatibility:
 - If `provider` is omitted, resolver treats the entry as `repo_path`.
 
+Current cloud study split:
+- Smoke dataset: `usdjpy_m1_tiny_sample` (tiny, fast validation path)
+- Main dataset: `usdjpy_m1_2024_01_02_to_2026_02_18_public_main` (broader public research path (2024-01-02 to 2026-02-18))
+- Main dataset file: `USDJPY_M1_2024-01-02_2026-02-18.csv` resolved from GitHub Release asset URL for deterministic cloud download.
+
 ### 2) `provider: url`
 
 Use an HTTP(S) URL downloaded to a deterministic local cache path.
@@ -70,3 +75,11 @@ The resolved local path is passed into run configs as `input_csv`.
 
 This registry is for pre-MT4 research execution convenience only.
 MT4 remains the final source of truth.
+
+
+## Smoke vs Main guidance
+
+- Use smoke (`cloud_timing_rv_close_confirm_first.yaml`) for validation, CI sanity checks, and quick workflow verification.
+- Use main (`cloud_timing_rv_close_confirm_main_public.yaml`) for actual main public timing research comparisons.
+- Keep cloud-first execution as the primary operating mode.
+- This remains pre-MT4 candidate screening only; MT4 is still the final source of truth.
