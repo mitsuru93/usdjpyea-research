@@ -9,6 +9,9 @@ Lightweight research utilities.
 - `compare_runs.py`: config-driven multi-run comparison for completed run + optional analysis artifacts.
 - `review_timing_study.py`: post-run helper that reads timing-study compare CSVs and writes one compact markdown review.
 - `run_study.py`: study-level orchestration CLI for multi-run experiment + optional analysis + optional compare.
+- `expand_batch.py`: batch-spec expander that compiles one batch into shard-level study configs.
+- `review_batch.py`: shard-output aggregator that writes deterministic batch review artifacts and review-sink payloads.
+- `run_batch.py`: sequential convenience wrapper for expand + run shard studies + aggregate review.
 - `check_research_env.py`: lightweight local environment/config checker before private-data runs.
 
 Notes:

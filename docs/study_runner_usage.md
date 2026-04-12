@@ -12,6 +12,8 @@ Fallback/debug path:
 
 This remains pre-MT4 research-only.
 
+For batch dispatch above this layer, see `docs/batch_runner_usage.md`.
+
 ## Quick Start (Cloud-First config, local invocation example)
 
 ```bash
