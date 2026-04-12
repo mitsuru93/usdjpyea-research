@@ -83,7 +83,7 @@ jobs:
         with:
           name: ${{ steps.runtime_artifact_meta.outputs.batch_runtime_artifact_name }}
           path: |
-            ${{ github.workspace }}/${{ steps.expand.outputs.runtime_bundle_relroot }}
+            ${{ github.workspace }}/${{ steps.expand.outputs.runtime_bundle_relroot }}/*
 
   run-shards:
     runs-on: ubuntu-latest
@@ -109,11 +109,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.prepare.outputs.batch_runtime_artifact_name }}
-          path: ${{ github.workspace }}
+          path: ${{ github.workspace }}/.batch_runtime
 
       - name: Run shard study
         run: |
-          STUDY_CONFIG_PATH="${{ github.workspace }}/${{ needs.prepare.outputs.batch_runtime_relpath }}/${{ matrix.study_config_relpath }}"
+          STUDY_CONFIG_PATH="${{ github.workspace }}/.batch_runtime/${{ matrix.study_config_relpath }}"
           STUDY_OUTPUT_PATH="${{ needs.prepare.outputs.batch_output_root }}/${{ matrix.study_output_relpath }}"
           python tools/run_study.py --config "${STUDY_CONFIG_PATH}"
           python tools/review_timing_study.py --study-dir "${STUDY_OUTPUT_PATH}"
@@ -161,7 +161,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.prepare.outputs.batch_runtime_artifact_name }}
-          path: ${{ github.workspace }}
+          path: ${{ github.workspace }}/.batch_runtime
 
       - name: Aggregate batch review
         run: |
@@ -170,7 +170,7 @@ jobs:
             ISSUE_ARGS="--review-issue-number ${{ inputs.review_issue_number }}"
           fi
 
-          BATCH_MANIFEST_PATH="${{ github.workspace }}/${{ needs.prepare.outputs.batch_manifest_relpath }}"
+          BATCH_MANIFEST_PATH="${{ github.workspace }}/.batch_runtime/batch_manifest.yaml"
           python tools/review_batch.py \
             --batch-manifest "${BATCH_MANIFEST_PATH}" \
             --artifact-staging-root ".batch_artifacts" \
@@ -241,6 +241,6 @@ jobs:
             echo "- batch id: \`${{ needs.prepare.outputs.batch_id }}\`"
             echo "- dataset id: \`${{ needs.prepare.outputs.dataset_id }}\`"
             echo "- output tag: \`${{ needs.prepare.outputs.output_tag || '<none>' }}\`"
-            echo "- manifest: \`${{ github.workspace }}/${{ needs.prepare.outputs.batch_manifest_relpath }}\`"
+            echo "- manifest: \`${{ github.workspace }}/.batch_runtime/batch_manifest.yaml\`"
             echo "- review artifact: \`${{ needs.prepare.outputs.batch_output_root }}/batch_review.md\`"
           } >> "$GITHUB_STEP_SUMMARY"
