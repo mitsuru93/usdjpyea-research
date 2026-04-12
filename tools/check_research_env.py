@@ -35,6 +35,10 @@ class CheckRunner:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Lightweight environment + config checks for local research runs.")
     parser.add_argument("--study-config", help="Optional study config YAML path.")
+    parser.add_argument(
+        "--dataset-id",
+        help="Optional dataset_id override to validate against a study config (matches run_study override behavior).",
+    )
     parser.add_argument("--experiment-config", help="Optional experiment config YAML path.")
     parser.add_argument("--analysis-config", help="Optional analysis config YAML path.")
     parser.add_argument("--compare-config", help="Optional compare config YAML path.")
@@ -274,7 +278,7 @@ def _check_compare_config(runner: CheckRunner, path_text: str) -> None:
         _check_output_parent(runner, str(cfg["output_dir"]), "Compare")
 
 
-def _check_study_config(runner: CheckRunner, path_text: str) -> None:
+def _check_study_config(runner: CheckRunner, path_text: str, dataset_id_override: str | None = None) -> None:
     cfg_path = _resolve(path_text)
     runner.check(cfg_path.exists(), f"Study config exists: {cfg_path}", f"Study config missing: {cfg_path}")
     if not cfg_path.exists():
@@ -314,6 +318,22 @@ def _check_study_config(runner: CheckRunner, path_text: str) -> None:
     runs = cfg.get("runs", [])
     runner.check(isinstance(runs, list) and bool(runs), "Study config has non-empty runs list", "Study config requires non-empty runs list")
     shared_defaults = cfg.get("shared_defaults", {})
+    override_dataset_id = str(dataset_id_override or "").strip()
+    if override_dataset_id:
+        dataset_map = dataset_registry.get("datasets", {})
+        dataset_entry = dataset_map.get(override_dataset_id) if isinstance(dataset_map, dict) else None
+        runner.check(
+            isinstance(dataset_entry, dict),
+            f"Study dataset_id override found in registry: {override_dataset_id}",
+            f"Study dataset_id override missing in registry: {override_dataset_id}",
+        )
+        if isinstance(dataset_entry, dict):
+            _check_dataset_entry(
+                runner,
+                dataset_id=override_dataset_id,
+                dataset_entry=dataset_entry,
+                context_label="Study dataset_id override",
+            )
     shared_has_input_csv = isinstance(shared_defaults, dict) and str(shared_defaults.get("input_csv", "")).strip() != ""
     shared_has_dataset_id = isinstance(shared_defaults, dict) and str(shared_defaults.get("dataset_id", "")).strip() != ""
     if isinstance(runs, list):
@@ -324,10 +344,13 @@ def _check_study_config(runner: CheckRunner, path_text: str) -> None:
                 continue
             has_label = "label" in run
             has_input_csv = str(run.get("input_csv", "")).strip() != ""
-            has_dataset_id = str(run.get("dataset_id", "")).strip() != ""
+            run_dataset_id = str(run.get("dataset_id", "")).strip()
+            effective_dataset_id = override_dataset_id or run_dataset_id
+            if not effective_dataset_id and not has_input_csv and shared_has_dataset_id:
+                effective_dataset_id = str(shared_defaults.get("dataset_id", "")).strip()
             runner.check(has_label, f"Study runs[{idx}] has label", f"Study runs[{idx}] missing label")
             runner.check(
-                has_input_csv or has_dataset_id or shared_has_input_csv or shared_has_dataset_id,
+                has_input_csv or bool(effective_dataset_id) or shared_has_input_csv or shared_has_dataset_id,
                 f"Study runs[{idx}] has input_csv or dataset_id",
                 f"Study runs[{idx}] missing both input_csv and dataset_id",
             )
@@ -338,30 +361,14 @@ def _check_study_config(runner: CheckRunner, path_text: str) -> None:
                     f"Study runs[{idx}] input CSV found: {input_csv}",
                     f"Study runs[{idx}] input CSV missing: {input_csv}",
                 )
-            if has_dataset_id:
-                dataset_id = str(run["dataset_id"]).strip()
+            if effective_dataset_id:
+                dataset_id = effective_dataset_id
                 dataset_map = dataset_registry.get("datasets", {})
                 dataset_entry = dataset_map.get(dataset_id) if isinstance(dataset_map, dict) else None
                 runner.check(
                     isinstance(dataset_entry, dict),
-                    f"Study runs[{idx}] dataset_id found in registry: {dataset_id}",
-                    f"Study runs[{idx}] dataset_id missing in registry: {dataset_id}",
-                )
-                if isinstance(dataset_entry, dict):
-                    _check_dataset_entry(
-                        runner,
-                        dataset_id=dataset_id,
-                        dataset_entry=dataset_entry,
-                        context_label=f"Study runs[{idx}]",
-                    )
-            elif not has_input_csv and shared_has_dataset_id:
-                dataset_id = str(shared_defaults.get("dataset_id", "")).strip()
-                dataset_map = dataset_registry.get("datasets", {})
-                dataset_entry = dataset_map.get(dataset_id) if isinstance(dataset_map, dict) else None
-                runner.check(
-                    isinstance(dataset_entry, dict),
-                    f"Study runs[{idx}] shared dataset_id found in registry: {dataset_id}",
-                    f"Study runs[{idx}] shared dataset_id missing in registry: {dataset_id}",
+                    f"Study runs[{idx}] effective dataset_id found in registry: {dataset_id}",
+                    f"Study runs[{idx}] effective dataset_id missing in registry: {dataset_id}",
                 )
                 if isinstance(dataset_entry, dict):
                     _check_dataset_entry(
@@ -432,7 +439,7 @@ def main() -> None:
 
     try:
         if args.study_config:
-            _check_study_config(runner, args.study_config)
+            _check_study_config(runner, args.study_config, dataset_id_override=args.dataset_id)
         if args.experiment_config:
             _check_experiment_config(runner, args.experiment_config)
         if args.analysis_config:
