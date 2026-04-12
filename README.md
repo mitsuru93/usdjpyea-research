@@ -62,6 +62,7 @@ A first practical simulator layer is available for pre-MT4 screening:
 - Supports reusable policy preset files (`policy_file`) to reduce repetition in local/private study authoring.
 - Includes a compact multi-variant local study pack example for faster baseline-vs-variant comparison setup.
 - Adds timing-mode research experiments (`baseline_touch`, `rv_close_confirm`, `all_close`) with timing audit outputs for pre-MT4 screening only.
+- Adds a first-real local timing study template (`configs/local/local_study_rv_close_confirm_first_real.example.yaml`) for private CSV execution with focused compare outputs and reading guide.
 
 Important: simulator v1 is **not** full MT4 parity and does not replace MT4 validation.
 Run-level feature zone diagnostics are research-only and do not imply live profitability.
