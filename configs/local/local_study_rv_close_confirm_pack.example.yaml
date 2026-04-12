@@ -35,4 +35,4 @@ compare:
     - timing_by_session
     - timing_by_family
 
-notes: "Local/private timing-mode study pack for research-side screening only (MT4 remains final source of truth)."
+notes: "Fallback/debug local-private timing pack (cloud study workflow is preferred main path; MT4 remains final source of truth)."

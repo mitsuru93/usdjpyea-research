@@ -1,5 +1,6 @@
-study_name: local_usdjpy_rv_close_confirm_first_real
-output_root: research/reports/studies/local_usdjpy_rv_close_confirm_first_real
+study_name: cloud_timing_rv_close_confirm_first
+output_root: research/reports/studies/cloud_timing_rv_close_confirm_first
+dataset_registry: configs/datasets/dataset_registry.yaml
 shared_defaults:
   input_timezone_mode: UTC
   max_holding_bars: 30
@@ -9,19 +10,19 @@ shared_defaults:
 
 runs:
   - label: baseline_touch
-    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    dataset_id: usdjpy_m1_tiny_sample
     timing_mode: baseline_touch
-    notes: baseline touch reference
+    notes: cloud baseline touch reference
 
   - label: rv_close_confirm
-    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    dataset_id: usdjpy_m1_tiny_sample
     timing_mode: rv_close_confirm
-    notes: RV intrabar-touch candidate, close-time entry decision (still-touch at close not required)
+    notes: cloud RV close-confirm timing candidate
 
   - label: all_close
-    input_csv: /ABSOLUTE/LOCAL/PATH/TO/usdjpy_m1_private.csv
+    dataset_id: usdjpy_m1_tiny_sample
     timing_mode: all_close
-    notes: all-close comparison reference only
+    notes: cloud all-close timing comparison reference
 
 compare:
   enabled: true
@@ -45,4 +46,4 @@ compare:
     - timing_by_family_reject_reason
     - timing_by_still_touch_status
 
-notes: "Fallback/debug first-real private-data timing template (cloud study workflow is preferred main path; MT4 remains final source of truth)."
+notes: "Cloud-first timing study scaffold (research-only, pre-MT4; MT4 remains final source of truth)."
