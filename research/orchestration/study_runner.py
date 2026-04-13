@@ -155,6 +155,8 @@ def _build_run_experiment_config(
         "band_atr_period",
         "pip_size",
         "ema_period",
+        "decision_policy",
+        "score_bundle",
     ]
     return {key: merged[key] for key in passthrough_keys if key in merged}
 
