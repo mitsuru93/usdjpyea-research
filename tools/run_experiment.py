@@ -7,6 +7,7 @@ import argparse
 import sys
 from pathlib import Path
 
+import pandas as pd
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -115,17 +116,25 @@ def main() -> None:
     output_dir = Path(cfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    band_model = str(cfg.get("band_model", DEFAULT_BAND_MODEL)).strip().lower()
-    band_percent = float(cfg.get("band_percent", DEVIATION_RATE))
-    band_pips = float(cfg.get("band_pips", 10.0))
-    band_atr_k = float(cfg.get("band_atr_k", 1.0))
-    band_atr_period = int(cfg.get("band_atr_period", DEFAULT_ATR_PERIOD))
-    pip_size = float(cfg.get("pip_size", DEFAULT_PIP_SIZE))
+    effective_defaults_used: dict[str, bool] = {}
+
+    def _cfg_value(key: str, default: object) -> object:
+        effective_defaults_used[key] = key not in cfg
+        return cfg.get(key, default)
+
+    band_model = str(_cfg_value("band_model", DEFAULT_BAND_MODEL)).strip().lower()
+    ema_period = int(_cfg_value("ema_period", EMA_SPAN))
+    band_percent = float(_cfg_value("band_percent", DEVIATION_RATE))
+    band_pips = float(_cfg_value("band_pips", 10.0))
+    band_atr_k = float(_cfg_value("band_atr_k", 1.0))
+    band_atr_period = int(_cfg_value("band_atr_period", DEFAULT_ATR_PERIOD))
+    pip_size = float(_cfg_value("pip_size", DEFAULT_PIP_SIZE))
 
     ohlc_df = load_ohlc_csv(cfg["input_csv"])
     tagged_df = add_session_columns(ohlc_df, input_timezone_mode=cfg["input_timezone_mode"])
     env_df = add_envelope_columns(
         tagged_df,
+        ema_span=ema_period,
         band_model=band_model,
         band_percent=band_percent,
         band_pips=band_pips,
@@ -151,6 +160,17 @@ def main() -> None:
     timing_summaries = summarize_timing_audit(timing_audit_df)
     timing_diagnostics = summarize_timing_diagnostics(timing_audit_df)
 
+    candidate_count = int(len(base_candidates))
+    touched_upper_count = int(pd.to_numeric(env_df.get("touch_upper"), errors="coerce").fillna(False).astype(bool).sum())
+    touched_lower_count = int(pd.to_numeric(env_df.get("touch_lower"), errors="coerce").fillna(False).astype(bool).sum())
+    first_candidate_time = ""
+    last_candidate_time = ""
+    if candidate_count > 0 and "timestamp" in base_candidates.columns:
+        ts = pd.to_datetime(base_candidates["timestamp"], errors="coerce", utc=True).dropna().sort_values()
+        if not ts.empty:
+            first_candidate_time = ts.iloc[0].isoformat()
+            last_candidate_time = ts.iloc[-1].isoformat()
+
     outcomes_df.to_csv(output_dir / "candidates.csv", index=False)
     timing_audit_df.to_csv(output_dir / "candidates_timing_audit.csv", index=False)
     candidates_audit_df.to_csv(output_dir / "candidates_policy_audit.csv", index=False)
@@ -173,6 +193,29 @@ def main() -> None:
     timing_diagnostics["timing_by_still_touch_status"].to_csv(
         output_dir / "summary_timing_by_still_touch_status.csv", index=False
     )
+    pd.DataFrame(
+        [
+            {
+                "candidate_count": candidate_count,
+                "first_candidate_time": first_candidate_time,
+                "last_candidate_time": last_candidate_time,
+                "touched_upper_count": touched_upper_count,
+                "touched_lower_count": touched_lower_count,
+            }
+        ]
+    ).to_csv(output_dir / "candidate_summary.csv", index=False)
+    effective_band_config = {
+        "band_model": band_model,
+        "band_percent": band_percent,
+        "band_pips": band_pips,
+        "band_atr_k": band_atr_k,
+        "band_atr_period": band_atr_period,
+        "pip_size": pip_size,
+        "ema_period": ema_period,
+        "defaults_used": effective_defaults_used,
+    }
+    with (output_dir / "effective_band_config.yaml").open("w", encoding="utf-8") as f:
+        yaml.safe_dump(effective_band_config, f, sort_keys=False)
 
     metadata = {
         "simulator_version": "v1",
@@ -190,6 +233,7 @@ def main() -> None:
         },
         "envelope": {
             "ema_span": EMA_SPAN,
+            "effective_ema_period": ema_period,
             "deviation_rate": DEVIATION_RATE,
             "band_model": band_model,
             "band_percent": band_percent,

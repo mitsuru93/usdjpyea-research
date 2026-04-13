@@ -17,6 +17,7 @@ def add_envelope_columns(
     high_col: str = "high",
     low_col: str = "low",
     *,
+    ema_span: int = EMA_SPAN,
     band_model: str = DEFAULT_BAND_MODEL,
     band_percent: float = DEVIATION_RATE,
     band_pips: float = 10.0,
@@ -31,7 +32,7 @@ def add_envelope_columns(
     - touch_lower: bar low <= lower_envelope
     """
     result = df.copy()
-    result["ema20"] = result[close_col].ewm(span=EMA_SPAN, adjust=False).mean()
+    result["ema20"] = result[close_col].ewm(span=max(int(ema_span), 1), adjust=False).mean()
     normalized_model = str(band_model).strip().lower()
     if normalized_model == "percent":
         deviation = result["ema20"] * float(band_percent)
