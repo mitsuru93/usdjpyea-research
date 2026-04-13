@@ -190,6 +190,59 @@ def _resolve_run_output_dir(*, study_output: Path, run_record: dict[str, Any]) -
     return None
 
 
+def _find_variant_by_band(
+    candidates: list[dict[str, Any]],
+    *,
+    band_model: str,
+    band_value: float,
+    tolerance: float = 1e-9,
+) -> dict[str, Any] | None:
+    for item in candidates:
+        if str(item.get("band_model", "")).strip().lower() != band_model:
+            continue
+        raw = item.get("band_value")
+        if raw is None:
+            continue
+        if abs(float(raw) - band_value) <= tolerance:
+            return item
+    return None
+
+
+def _build_variant_compare_rows(variant_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if len(variant_rows) < 2:
+        return []
+    preferred_pairs = [
+        (("percent", 0.05), ("fixed_pips", 11.0)),
+        (("percent", 0.05), ("atr", 1.2)),
+    ]
+    selected: tuple[dict[str, Any], dict[str, Any]] | None = None
+    for (model_a, value_a), (model_b, value_b) in preferred_pairs:
+        a = _find_variant_by_band(variant_rows, band_model=model_a, band_value=value_a)
+        b = _find_variant_by_band(variant_rows, band_model=model_b, band_value=value_b)
+        if a is not None and b is not None:
+            selected = (a, b)
+            break
+    if selected is None:
+        sorted_rows = sorted(variant_rows, key=lambda x: str(x.get("variant_label", "")))
+        selected = (sorted_rows[0], sorted_rows[1])
+
+    a, b = selected
+    ts_a = set(a.get("candidate_timestamps", set()))
+    ts_b = set(b.get("candidate_timestamps", set()))
+    overlap = len(ts_a & ts_b)
+    return [
+        {
+            "variant_a": a.get("variant_label", ""),
+            "variant_b": b.get("variant_label", ""),
+            "candidate_count_a": int(a.get("candidate_count", 0)),
+            "candidate_count_b": int(b.get("candidate_count", 0)),
+            "candidate_timestamp_overlap_count": overlap,
+            "candidate_timestamp_only_a": len(ts_a - ts_b),
+            "candidate_timestamp_only_b": len(ts_b - ts_a),
+        }
+    ]
+
+
 def main() -> None:
     args = parse_args()
     manifest_path = Path(args.batch_manifest).resolve()
@@ -200,6 +253,7 @@ def main() -> None:
     batch_output.mkdir(parents=True, exist_ok=True)
 
     ranking_rows: list[dict[str, Any]] = []
+    variant_diag_rows: list[dict[str, Any]] = []
     shard_status_rows: list[dict[str, Any]] = []
     warnings: list[str] = []
 
@@ -234,6 +288,7 @@ def main() -> None:
                 continue
             overall = _safe_read_csv(run_dir / "summary_overall.csv")
             candidates = _safe_read_csv(run_dir / "candidates.csv")
+            candidate_summary = _safe_read_csv(run_dir / "candidate_summary.csv")
             if overall.empty:
                 warnings.append(f"{shard_id}/{label}: summary_overall.csv missing or empty")
                 continue
@@ -257,6 +312,14 @@ def main() -> None:
                 kept_total_pnl = float(pd.to_numeric(kept.get("pnl_pips", pd.Series([], dtype=float)), errors="coerce").fillna(0.0).sum())
                 kept_avg_pnl = (kept_total_pnl / kept_trade_count) if kept_trade_count else 0.0
 
+            candidate_count = int(len(candidates))
+            if not candidate_summary.empty and "candidate_count" in candidate_summary.columns:
+                candidate_count = int(candidate_summary.iloc[0].get("candidate_count", candidate_count) or candidate_count)
+            candidate_timestamps: set[str] = set()
+            if not candidates.empty and "timestamp" in candidates.columns:
+                ts = pd.to_datetime(candidates["timestamp"], errors="coerce", utc=True).dropna()
+                candidate_timestamps = set(ts.dt.strftime("%Y-%m-%dT%H:%M:%SZ").tolist())
+
             ranking_rows.append(
                 {
                     "batch_id": manifest.get("batch_id"),
@@ -274,6 +337,16 @@ def main() -> None:
                     "kept_trade_count": kept_trade_count,
                     "kept_total_pnl_pips": kept_total_pnl,
                     "kept_avg_pnl_pips": kept_avg_pnl,
+                    "candidate_count": candidate_count,
+                }
+            )
+            variant_diag_rows.append(
+                {
+                    "variant_label": label,
+                    "band_model": str(meta.get("band_model", "")),
+                    "band_value": meta.get("band_value"),
+                    "candidate_count": candidate_count,
+                    "candidate_timestamps": candidate_timestamps,
                 }
             )
 
@@ -282,6 +355,7 @@ def main() -> None:
         ranking_df = ranking_df.sort_values(["kept_total_pnl_pips", "kept_avg_pnl_pips", "kept_trade_count"], ascending=[False, False, False])
     shortlist_n = int((manifest.get("ranking_profile", {}) or {}).get("shortlist_top_n", 8) or 8)
     shortlist_df = ranking_df.head(shortlist_n).copy() if not ranking_df.empty else ranking_df.copy()
+    variant_compare_df = pd.DataFrame(_build_variant_compare_rows(variant_diag_rows))
 
     spread_audit = _spread_audit(manifest, manifest_path)
     spread_required = bool((manifest.get("ranking_profile", {}) or {}).get("require_spread_column", False))
@@ -310,11 +384,13 @@ def main() -> None:
             "batch_shortlist": "batch_shortlist.csv",
             "batch_review": "batch_review.md",
             "batch_review_machine": "batch_review_machine.yaml",
+            "band_variant_compare": "band_variant_compare.csv",
         },
     }
 
     ranking_df.to_csv(batch_output / "batch_ranking.csv", index=False)
     shortlist_df.to_csv(batch_output / "batch_shortlist.csv", index=False)
+    variant_compare_df.to_csv(batch_output / "band_variant_compare.csv", index=False)
     _write_yaml(batch_output / "batch_metadata.yaml", batch_metadata)
     _write_yaml(batch_output / "batch_manifest.yaml", batch_manifest)
 
@@ -362,6 +438,17 @@ def main() -> None:
                 f"kept_avg_pnl_pips={row['kept_avg_pnl_pips']:.3f}, kept_trade_count={int(row['kept_trade_count'])}, "
                 f"blackout_excluded={int(row['blackout_excluded_count'])}"
             )
+    lines.extend(["", "## Band variant compare"])
+    if variant_compare_df.empty:
+        lines.append("- no comparable variant pair found")
+    else:
+        c = variant_compare_df.iloc[0]
+        lines.append(
+            f"- {c['variant_a']} vs {c['variant_b']}: "
+            f"candidate_count=({int(c['candidate_count_a'])}, {int(c['candidate_count_b'])}), "
+            f"overlap={int(c['candidate_timestamp_overlap_count'])}, "
+            f"only_a={int(c['candidate_timestamp_only_a'])}, only_b={int(c['candidate_timestamp_only_b'])}"
+        )
 
     lines.extend(["", "## Shortlist artifact", "- `batch_shortlist.csv`", "", "## Warnings"])
     if warnings:
@@ -379,6 +466,7 @@ def main() -> None:
             "- `batch_shortlist.csv`",
             "- `batch_review.md`",
             "- `batch_review_machine.yaml`",
+            "- `band_variant_compare.csv`",
         ]
     )
     review_md = "\n".join(lines) + "\n"
