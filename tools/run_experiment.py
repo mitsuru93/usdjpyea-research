@@ -119,8 +119,10 @@ def main() -> None:
     effective_defaults_used: dict[str, bool] = {}
 
     def _cfg_value(key: str, default: object) -> object:
-        effective_defaults_used[key] = key not in cfg
-        return cfg.get(key, default)
+        raw_value = cfg.get(key)
+        use_default = key not in cfg or raw_value is None or raw_value == ""
+        effective_defaults_used[key] = use_default
+        return default if use_default else raw_value
 
     band_model = str(_cfg_value("band_model", DEFAULT_BAND_MODEL)).strip().lower()
     ema_period = int(_cfg_value("ema_period", EMA_SPAN))
@@ -159,6 +161,11 @@ def main() -> None:
     summaries = summarize_outcomes(outcomes_df)
     timing_summaries = summarize_timing_audit(timing_audit_df)
     timing_diagnostics = summarize_timing_diagnostics(timing_audit_df)
+
+    def _count_timing_event(event_name: str) -> int:
+        if "timing_decision_event" not in timing_audit_df.columns:
+            return 0
+        return int((timing_audit_df["timing_decision_event"] == event_name).sum())
 
     candidate_count = int(len(base_candidates))
     touched_upper_count = int(pd.to_numeric(env_df.get("touch_upper"), errors="coerce").fillna(False).astype(bool).sum())
@@ -260,9 +267,9 @@ def main() -> None:
         "max_holding_bars": int(cfg["max_holding_bars"]),
         "timing_audit_counts": {
             "candidate_created_count": int(len(timing_audit_df)),
-            "touch_entered_immediately_count": int((timing_audit_df["timing_decision_event"] == "touch_entered_immediately").sum()),
-            "close_confirmed_count": int((timing_audit_df["timing_decision_event"] == "close_confirmed").sum()),
-            "close_rejected_count": int((timing_audit_df["timing_decision_event"] == "close_rejected").sum()),
+            "touch_entered_immediately_count": _count_timing_event("touch_entered_immediately"),
+            "close_confirmed_count": _count_timing_event("close_confirmed"),
+            "close_rejected_count": _count_timing_event("close_rejected"),
         },
         "policy": {
             "enabled": bool(policy_cfg.enabled),
