@@ -243,6 +243,52 @@ def _build_variant_compare_rows(variant_rows: list[dict[str, Any]]) -> list[dict
     ]
 
 
+def _build_policy_compare_rows(variant_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    policy_rows = [row for row in variant_rows if str(row.get("decision_policy", "")).strip()]
+    if len(policy_rows) < 2:
+        return []
+
+    selected: tuple[dict[str, Any], dict[str, Any]] | None = None
+    by_anchor: dict[tuple[str, Any, str], list[dict[str, Any]]] = {}
+    for row in policy_rows:
+        key = (str(row.get("band_model", "")), row.get("band_value"), str(row.get("score_bundle", "")))
+        by_anchor.setdefault(key, []).append(row)
+    for rows in by_anchor.values():
+        families = {str(row.get("decision_policy", "")) for row in rows}
+        if len(rows) >= 2 and len(families) >= 2:
+            sorted_rows = sorted(rows, key=lambda x: str(x.get("decision_policy", "")))
+            selected = (sorted_rows[0], sorted_rows[1])
+            break
+    if selected is None:
+        sorted_rows = sorted(policy_rows, key=lambda x: str(x.get("variant_label", "")))
+        selected = (sorted_rows[0], sorted_rows[1])
+
+    a, b = selected
+    ts_a = set(a.get("candidate_timestamps", set()))
+    ts_b = set(b.get("candidate_timestamps", set()))
+    return [
+        {
+            "variant_a": a.get("variant_label", ""),
+            "variant_b": b.get("variant_label", ""),
+            "decision_policy_a": a.get("decision_policy", ""),
+            "decision_policy_b": b.get("decision_policy", ""),
+            "score_bundle_a": a.get("score_bundle", ""),
+            "score_bundle_b": b.get("score_bundle", ""),
+            "candidate_count_a": int(a.get("candidate_count", 0)),
+            "candidate_count_b": int(b.get("candidate_count", 0)),
+            "rv_selected_count_a": int(a.get("rv_selected_count", 0)),
+            "rv_selected_count_b": int(b.get("rv_selected_count", 0)),
+            "tr_selected_count_a": int(a.get("tr_selected_count", 0)),
+            "tr_selected_count_b": int(b.get("tr_selected_count", 0)),
+            "no_entry_group_count_a": int(a.get("no_entry_group_count", 0)),
+            "no_entry_group_count_b": int(b.get("no_entry_group_count", 0)),
+            "candidate_timestamp_overlap_count": len(ts_a & ts_b),
+            "candidate_timestamp_only_a": len(ts_a - ts_b),
+            "candidate_timestamp_only_b": len(ts_b - ts_a),
+        }
+    ]
+
+
 def main() -> None:
     args = parse_args()
     manifest_path = Path(args.batch_manifest).resolve()
@@ -254,6 +300,7 @@ def main() -> None:
 
     ranking_rows: list[dict[str, Any]] = []
     variant_diag_rows: list[dict[str, Any]] = []
+    policy_diag_rows: list[dict[str, Any]] = []
     shard_status_rows: list[dict[str, Any]] = []
     warnings: list[str] = []
 
@@ -289,6 +336,7 @@ def main() -> None:
             overall = _safe_read_csv(run_dir / "summary_overall.csv")
             candidates = _safe_read_csv(run_dir / "candidates.csv")
             candidate_summary = _safe_read_csv(run_dir / "candidate_summary.csv")
+            policy_summary = _safe_read_csv(run_dir / "policy_candidate_summary.csv")
             if overall.empty:
                 warnings.append(f"{shard_id}/{label}: summary_overall.csv missing or empty")
                 continue
@@ -319,6 +367,22 @@ def main() -> None:
             if not candidates.empty and "timestamp" in candidates.columns:
                 ts = pd.to_datetime(candidates["timestamp"], errors="coerce", utc=True).dropna()
                 candidate_timestamps = set(ts.dt.strftime("%Y-%m-%dT%H:%M:%SZ").tolist())
+            decision_policy = str(meta.get("decision_policy", "") or "")
+            score_bundle = str(meta.get("score_bundle", "") or "")
+            rv_selected_count = 0
+            tr_selected_count = 0
+            no_entry_group_count = 0
+            if not policy_summary.empty:
+                policy_row = policy_summary.iloc[0].to_dict()
+                decision_policy = str(policy_row.get("decision_policy_family", decision_policy) or decision_policy)
+                score_bundle = str(policy_row.get("score_bundle", score_bundle) or score_bundle)
+                rv_selected_count = int(policy_row.get("rv_selected_count", 0) or 0)
+                tr_selected_count = int(policy_row.get("tr_selected_count", 0) or 0)
+                no_entry_group_count = int(policy_row.get("no_entry_group_count", 0) or 0)
+                base_candidate_count = int(policy_row.get("base_candidate_count", candidate_count) or candidate_count)
+                candidate_count = int(policy_row.get("selected_candidate_count", candidate_count) or candidate_count)
+            else:
+                base_candidate_count = candidate_count
 
             ranking_rows.append(
                 {
@@ -329,6 +393,8 @@ def main() -> None:
                     "timing_mode": str(meta.get("timing_mode", "")),
                     "band_model": str(meta.get("band_model", "")),
                     "band_value": meta.get("band_value"),
+                    "decision_policy": decision_policy,
+                    "score_bundle": score_bundle,
                     "trade_count": trade_count,
                     "total_pnl_pips": total_pnl,
                     "avg_pnl_pips": avg_pnl,
@@ -338,6 +404,10 @@ def main() -> None:
                     "kept_total_pnl_pips": kept_total_pnl,
                     "kept_avg_pnl_pips": kept_avg_pnl,
                     "candidate_count": candidate_count,
+                    "base_candidate_count": base_candidate_count,
+                    "rv_selected_count": rv_selected_count,
+                    "tr_selected_count": tr_selected_count,
+                    "no_entry_group_count": no_entry_group_count,
                 }
             )
             variant_diag_rows.append(
@@ -349,6 +419,20 @@ def main() -> None:
                     "candidate_timestamps": candidate_timestamps,
                 }
             )
+            policy_diag_rows.append(
+                {
+                    "variant_label": label,
+                    "band_model": str(meta.get("band_model", "")),
+                    "band_value": meta.get("band_value"),
+                    "decision_policy": decision_policy,
+                    "score_bundle": score_bundle,
+                    "candidate_count": candidate_count,
+                    "rv_selected_count": rv_selected_count,
+                    "tr_selected_count": tr_selected_count,
+                    "no_entry_group_count": no_entry_group_count,
+                    "candidate_timestamps": candidate_timestamps,
+                }
+            )
 
     ranking_df = pd.DataFrame(ranking_rows)
     if not ranking_df.empty:
@@ -356,6 +440,7 @@ def main() -> None:
     shortlist_n = int((manifest.get("ranking_profile", {}) or {}).get("shortlist_top_n", 8) or 8)
     shortlist_df = ranking_df.head(shortlist_n).copy() if not ranking_df.empty else ranking_df.copy()
     variant_compare_df = pd.DataFrame(_build_variant_compare_rows(variant_diag_rows))
+    policy_compare_df = pd.DataFrame(_build_policy_compare_rows(policy_diag_rows))
 
     spread_audit = _spread_audit(manifest, manifest_path)
     spread_required = bool((manifest.get("ranking_profile", {}) or {}).get("require_spread_column", False))
@@ -385,12 +470,14 @@ def main() -> None:
             "batch_review": "batch_review.md",
             "batch_review_machine": "batch_review_machine.yaml",
             "band_variant_compare": "band_variant_compare.csv",
+            "policy_variant_compare": "policy_variant_compare.csv",
         },
     }
 
     ranking_df.to_csv(batch_output / "batch_ranking.csv", index=False)
     shortlist_df.to_csv(batch_output / "batch_shortlist.csv", index=False)
     variant_compare_df.to_csv(batch_output / "band_variant_compare.csv", index=False)
+    policy_compare_df.to_csv(batch_output / "policy_variant_compare.csv", index=False)
     _write_yaml(batch_output / "batch_metadata.yaml", batch_metadata)
     _write_yaml(batch_output / "batch_manifest.yaml", batch_manifest)
 
@@ -433,7 +520,8 @@ def main() -> None:
     else:
         for _, row in shortlist_df.iterrows():
             lines.append(
-                f"- {row['variant_label']} ({row.get('timing_mode')}/{row.get('band_model')}={row.get('band_value')}): "
+                f"- {row['variant_label']} ({row.get('timing_mode')}/{row.get('band_model')}={row.get('band_value')}, "
+                f"policy={row.get('decision_policy') or '<default>'}, score={row.get('score_bundle') or '<default>'}): "
                 f"kept_total_pnl_pips={row['kept_total_pnl_pips']:.3f}, "
                 f"kept_avg_pnl_pips={row['kept_avg_pnl_pips']:.3f}, kept_trade_count={int(row['kept_trade_count'])}, "
                 f"blackout_excluded={int(row['blackout_excluded_count'])}"
@@ -448,6 +536,20 @@ def main() -> None:
             f"candidate_count=({int(c['candidate_count_a'])}, {int(c['candidate_count_b'])}), "
             f"overlap={int(c['candidate_timestamp_overlap_count'])}, "
             f"only_a={int(c['candidate_timestamp_only_a'])}, only_b={int(c['candidate_timestamp_only_b'])}"
+        )
+    lines.extend(["", "## Policy variant compare"])
+    if policy_compare_df.empty:
+        lines.append("- no comparable policy variant pair found")
+    else:
+        c = policy_compare_df.iloc[0]
+        lines.append(
+            f"- {c['variant_a']} ({c['decision_policy_a']}/{c['score_bundle_a']}) vs "
+            f"{c['variant_b']} ({c['decision_policy_b']}/{c['score_bundle_b']}): "
+            f"candidate_count=({int(c['candidate_count_a'])}, {int(c['candidate_count_b'])}), "
+            f"rv=({int(c['rv_selected_count_a'])}, {int(c['rv_selected_count_b'])}), "
+            f"tr=({int(c['tr_selected_count_a'])}, {int(c['tr_selected_count_b'])}), "
+            f"no_entry=({int(c['no_entry_group_count_a'])}, {int(c['no_entry_group_count_b'])}), "
+            f"overlap={int(c['candidate_timestamp_overlap_count'])}"
         )
 
     lines.extend(["", "## Shortlist artifact", "- `batch_shortlist.csv`", "", "## Warnings"])
@@ -467,6 +569,7 @@ def main() -> None:
             "- `batch_review.md`",
             "- `batch_review_machine.yaml`",
             "- `band_variant_compare.csv`",
+            "- `policy_variant_compare.csv`",
         ]
     )
     review_md = "\n".join(lines) + "\n"

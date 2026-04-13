@@ -16,7 +16,13 @@ if str(REPO_ROOT) not in sys.path:
 
 from research.features import FEATURE_SET_VERSION, attach_features_to_candidates, build_feature_frame
 from research.io.csv_loader import load_ohlc_csv
-from research.policy import POLICY_SEMANTICS, apply_policy_to_candidates, parse_policy_config
+from research.policy import (
+    POLICY_SEMANTICS,
+    apply_decision_policy_to_candidates,
+    apply_policy_to_candidates,
+    parse_decision_policy_config,
+    parse_policy_config,
+)
 from research.scoring.summary import summarize_outcomes, summarize_timing_audit, summarize_timing_diagnostics
 from research.simulator.candidate_engine import (
     ASSUMPTION_VERSION,
@@ -152,8 +158,14 @@ def main() -> None:
     timing_entered_df = timing_result["entered_df"]
     candidate_feature_df = attach_features_to_candidates(timing_entered_df, feature_df)
 
+    decision_policy_cfg = parse_decision_policy_config(cfg.get("decision_policy"), cfg.get("score_bundle"))
+    decision_policy_result = apply_decision_policy_to_candidates(candidate_feature_df, decision_policy_cfg)
+    decision_candidates_df = decision_policy_result["included_df"]
+    decision_policy_audit_df = decision_policy_result["audit_df"]
+    decision_policy_summary = decision_policy_result["summary"]
+
     policy_cfg = parse_policy_config(cfg.get("policy"))
-    policy_result = apply_policy_to_candidates(candidate_feature_df, policy_cfg)
+    policy_result = apply_policy_to_candidates(decision_candidates_df, policy_cfg)
     screened_candidates_df = policy_result["included_df"]
     candidates_audit_df = policy_result["audit_df"]
 
@@ -180,6 +192,7 @@ def main() -> None:
 
     outcomes_df.to_csv(output_dir / "candidates.csv", index=False)
     timing_audit_df.to_csv(output_dir / "candidates_timing_audit.csv", index=False)
+    decision_policy_audit_df.to_csv(output_dir / "candidates_decision_policy_audit.csv", index=False)
     candidates_audit_df.to_csv(output_dir / "candidates_policy_audit.csv", index=False)
     summaries["overall"].to_csv(output_dir / "summary_overall.csv", index=False)
     summaries["by_month"].to_csv(output_dir / "summary_by_month.csv", index=False)
@@ -223,6 +236,17 @@ def main() -> None:
     }
     with (output_dir / "effective_band_config.yaml").open("w", encoding="utf-8") as f:
         yaml.safe_dump(effective_band_config, f, sort_keys=False)
+    effective_decision_policy = {
+        "decision_policy_family": decision_policy_cfg.family,
+        "score_bundle": decision_policy_cfg.score_bundle,
+        "decision_policy_version": decision_policy_cfg.version,
+        "margin_threshold": decision_policy_cfg.margin_threshold,
+        "no_entry_threshold": decision_policy_cfg.no_entry_threshold,
+        "notes": "Research-only RV/TR/no-entry selection. MT4 remains final source of truth.",
+    }
+    with (output_dir / "effective_decision_policy.yaml").open("w", encoding="utf-8") as f:
+        yaml.safe_dump(effective_decision_policy, f, sort_keys=False)
+    pd.DataFrame([decision_policy_summary]).to_csv(output_dir / "policy_candidate_summary.csv", index=False)
 
     metadata = {
         "simulator_version": "v1",
@@ -271,13 +295,17 @@ def main() -> None:
             "close_confirmed_count": _count_timing_event("close_confirmed"),
             "close_rejected_count": _count_timing_event("close_rejected"),
         },
+        "decision_policy": {
+            **effective_decision_policy,
+            **decision_policy_summary,
+        },
         "policy": {
             "enabled": bool(policy_cfg.enabled),
             "name": str(policy_cfg.name) if policy_cfg.enabled else "",
             "semantics": policy_cfg.semantics if policy_cfg.enabled else POLICY_SEMANTICS,
             "rule_count": len(policy_cfg.rules),
             "matched_rule_events": int(policy_result["matched_rule_events"]),
-            "base_candidate_count": int(len(candidate_feature_df)),
+            "base_candidate_count": int(len(decision_candidates_df)),
             "included_candidate_count": int(len(screened_candidates_df)),
             "excluded_candidate_count": int(len(candidates_audit_df) - len(screened_candidates_df)),
         },
@@ -289,7 +317,10 @@ def main() -> None:
     print(
         "Experiment run completed:",
         f"cand_base={len(candidate_feature_df)}",
+        f"cand_decision={len(decision_candidates_df)}",
         f"cand_included={len(screened_candidates_df)}",
+        f"decision_policy={decision_policy_cfg.family}",
+        f"score_bundle={decision_policy_cfg.score_bundle}",
         f"timing_mode={cfg['timing_mode']}",
         f"wins={(outcomes_df['outcome_status'] == 'win').sum() if not outcomes_df.empty else 0}",
         f"losses={(outcomes_df['outcome_status'] == 'loss').sum() if not outcomes_df.empty else 0}",

@@ -147,6 +147,55 @@ def _build_variant_label(*, band_token: str, timing_mode: str) -> str:
     return f"FAMBASE__BAND{band_token}__{timing_token}__HG30__DECBASE__EXNONE__V1"
 
 
+def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, str]]:
+    sweep = spec.get("decision_policy_sweep")
+    if not sweep:
+        return [{"decision_policy": "", "score_bundle": "", "decision_token": "DECBASE", "score_token": "SFBASE"}]
+
+    policies = [str(x).strip() for x in (sweep.get("families", []) or []) if str(x).strip()]
+    bundles = [str(x).strip() for x in (sweep.get("score_bundles", []) or []) if str(x).strip()]
+    if not policies:
+        raise ValueError("decision_policy_sweep.families must define at least one policy")
+    if not bundles:
+        raise ValueError("decision_policy_sweep.score_bundles must define at least one score bundle")
+
+    variants: list[dict[str, str]] = []
+    policy_tokens = {
+        "bin_env_v1": "DENV",
+        "bin_forceflip_v1": "DFF",
+        "two_stage_margin_v1": "D2M",
+        "tri_score_rvtrno_v1": "D3S",
+    }
+    score_tokens = {
+        "sf_ctx_base_v1": "SBAS",
+        "sf_ctx_momo_v1": "SMOM",
+        "sf_timing_micro_v1": "STIM",
+        "sf_zone_risk_v1": "SZON",
+    }
+    for policy in policies:
+        for bundle in bundles:
+            policy_key = policy.lower()
+            bundle_key = bundle.lower()
+            variants.append(
+                {
+                    "decision_policy": policy,
+                    "score_bundle": bundle,
+                    "decision_token": policy_tokens.get(policy_key, f"D{sanitize_label(policy).upper()}"),
+                    "score_token": score_tokens.get(bundle_key, f"S{sanitize_label(bundle).upper()}"),
+                }
+            )
+    return variants
+
+
+def _build_policy_variant_label(*, band_token: str, timing_mode: str, decision_token: str, score_token: str) -> str:
+    timing_token = {
+        "baseline_touch": "TRGBASE",
+        "rv_close_confirm": "TRGRV",
+        "all_close": "TRGALL",
+    }.get(timing_mode, f"TRG{sanitize_label(timing_mode).upper()}")
+    return f"FAMBASE__BAND{band_token}__{timing_token}__HG30__{decision_token}__{score_token}__V1"
+
+
 def main() -> None:
     args = parse_args()
     batch_spec_path = Path(args.batch_spec).resolve()
@@ -170,15 +219,30 @@ def main() -> None:
     variants: list[dict[str, Any]] = []
     for timing_mode in [str(x).strip() for x in spec.get("timing_modes", []) if str(x).strip()]:
         for band_variant in _band_variants(spec):
-            variants.append(
-                {
-                    "label": _build_variant_label(band_token=band_variant["band_token"], timing_mode=timing_mode),
-                    "timing_mode": timing_mode,
-                    "band_model": band_variant["band_model"],
-                    "band_value": band_variant["band_value"],
-                    **band_variant["cfg"],
-                }
-            )
+            for decision_variant in _decision_policy_variants(spec):
+                if decision_variant["decision_policy"]:
+                    label = _build_policy_variant_label(
+                        band_token=band_variant["band_token"],
+                        timing_mode=timing_mode,
+                        decision_token=decision_variant["decision_token"],
+                        score_token=decision_variant["score_token"],
+                    )
+                else:
+                    label = _build_variant_label(band_token=band_variant["band_token"], timing_mode=timing_mode)
+                variants.append(
+                    {
+                        "label": label,
+                        "timing_mode": timing_mode,
+                        "band_model": band_variant["band_model"],
+                        "band_value": band_variant["band_value"],
+                        **band_variant["cfg"],
+                        **{
+                            key: value
+                            for key, value in decision_variant.items()
+                            if key in {"decision_policy", "score_bundle"}
+                        },
+                    }
+                )
 
     if not variants:
         raise ValueError("No variants produced from timing_modes x band_model_sweep")
@@ -211,7 +275,13 @@ def main() -> None:
                     "band_percent": variant.get("band_percent"),
                     "band_pips": variant.get("band_pips"),
                     "band_atr_k": variant.get("band_atr_k"),
-                    "notes": f"batch_variant {variant['band_model']}={variant['band_value']}",
+                    "decision_policy": variant.get("decision_policy"),
+                    "score_bundle": variant.get("score_bundle"),
+                    "notes": (
+                        f"batch_variant {variant['band_model']}={variant['band_value']} "
+                        f"decision_policy={variant.get('decision_policy') or 'bin_env_v1'} "
+                        f"score_bundle={variant.get('score_bundle') or 'sf_ctx_base_v1'}"
+                    ),
                 }
             )
 
