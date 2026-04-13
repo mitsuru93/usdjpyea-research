@@ -243,8 +243,8 @@ def _build_variant_compare_rows(variant_rows: list[dict[str, Any]]) -> list[dict
     if len(variant_rows) < 2:
         return []
     preferred_pairs = [
-        (("percent", 0.05), ("fixed_pips", 11.0)),
-        (("percent", 0.05), ("atr", 1.2)),
+        (("percent", 0.0005), ("fixed_pips", 11.0)),
+        (("percent", 0.0005), ("atr", 1.2)),
     ]
     selected: tuple[dict[str, Any], dict[str, Any]] | None = None
     for (model_a, value_a), (model_b, value_b) in preferred_pairs:
@@ -275,6 +275,8 @@ def _build_variant_compare_rows(variant_rows: list[dict[str, Any]]) -> list[dict
         {
             "variant_a": a.get("variant_label", ""),
             "variant_b": b.get("variant_label", ""),
+            "band_model_family_a": a.get("band_model_family", ""),
+            "band_model_family_b": b.get("band_model_family", ""),
             "candidate_count_a": int(a.get("candidate_count", 0)),
             "candidate_count_b": int(b.get("candidate_count", 0)),
             "candidate_timestamp_overlap_count": overlap,
@@ -391,6 +393,7 @@ def main() -> None:
             avg_pnl = float(row.get("avg_pnl_pips", 0.0) or 0.0)
             win_rate = float(row.get("win_rate", 0.0) or 0.0)
             meta = run_meta_lookup.get((shard_id, label), {})
+            effective_band = _load_yaml(run_dir / "effective_band_config.yaml") if (run_dir / "effective_band_config.yaml").exists() else {}
 
             blackout_excluded = 0
             kept_trade_count = trade_count
@@ -405,8 +408,16 @@ def main() -> None:
                 kept_avg_pnl = (kept_total_pnl / kept_trade_count) if kept_trade_count else 0.0
 
             candidate_count = int(len(candidates))
+            touched_upper_count = 0
+            touched_lower_count = 0
+            first_candidate_time = ""
+            last_candidate_time = ""
             if not candidate_summary.empty and "candidate_count" in candidate_summary.columns:
                 candidate_count = int(candidate_summary.iloc[0].get("candidate_count", candidate_count) or candidate_count)
+                touched_upper_count = int(candidate_summary.iloc[0].get("touched_upper_count", 0) or 0)
+                touched_lower_count = int(candidate_summary.iloc[0].get("touched_lower_count", 0) or 0)
+                first_candidate_time = str(candidate_summary.iloc[0].get("first_candidate_time", "") or "")
+                last_candidate_time = str(candidate_summary.iloc[0].get("last_candidate_time", "") or "")
             candidate_timestamps: set[str] = set()
             if not candidates.empty and "timestamp" in candidates.columns:
                 ts = pd.to_datetime(candidates["timestamp"], errors="coerce", utc=True).dropna()
@@ -440,8 +451,13 @@ def main() -> None:
                     "shard_id": shard_id,
                     "variant_label": label,
                     "timing_mode": str(meta.get("timing_mode", "")),
+                    "band_model_family": str(meta.get("band_model_family", meta.get("band_model", ""))),
                     "band_model": str(meta.get("band_model", "")),
                     "band_value": meta.get("band_value"),
+                    "band_params": yaml.safe_dump(
+                        {k: v for k, v in effective_band.items() if str(k).startswith("band_")},
+                        sort_keys=True,
+                    ).strip(),
                     "decision_policy": decision_policy,
                     "score_bundle": score_bundle,
                     "trade_count": trade_count,
@@ -454,6 +470,10 @@ def main() -> None:
                     "kept_avg_pnl_pips": kept_avg_pnl,
                     "candidate_count": candidate_count,
                     "base_candidate_count": base_candidate_count,
+                    "first_candidate_time": first_candidate_time,
+                    "last_candidate_time": last_candidate_time,
+                    "touched_upper_count": touched_upper_count,
+                    "touched_lower_count": touched_lower_count,
                     "rv_selected_count": rv_selected_count,
                     "tr_selected_count": tr_selected_count,
                     "no_entry_group_count": no_entry_group_count,
@@ -467,6 +487,7 @@ def main() -> None:
                     "shard_id": shard_id,
                     "variant_label": label,
                     "timing_mode": str(meta.get("timing_mode", "")),
+                    "band_model_family": str(meta.get("band_model_family", meta.get("band_model", ""))),
                     "band_model": str(meta.get("band_model", "")),
                     "band_value": meta.get("band_value"),
                     "decision_policy": decision_policy,
@@ -476,6 +497,10 @@ def main() -> None:
                     "kept_avg_pnl_pips": kept_avg_pnl,
                     "candidate_count": candidate_count,
                     "base_candidate_count": base_candidate_count,
+                    "first_candidate_time": first_candidate_time,
+                    "last_candidate_time": last_candidate_time,
+                    "touched_upper_count": touched_upper_count,
+                    "touched_lower_count": touched_lower_count,
                     "rv_selected_count": rv_selected_count,
                     "tr_selected_count": tr_selected_count,
                     "no_entry_group_count": no_entry_group_count,
@@ -485,6 +510,7 @@ def main() -> None:
             variant_diag_rows.append(
                 {
                     "variant_label": label,
+                    "band_model_family": str(meta.get("band_model_family", meta.get("band_model", ""))),
                     "band_model": str(meta.get("band_model", "")),
                     "band_value": meta.get("band_value"),
                     "candidate_count": candidate_count,
@@ -494,6 +520,7 @@ def main() -> None:
             policy_diag_rows.append(
                 {
                     "variant_label": label,
+                    "band_model_family": str(meta.get("band_model_family", meta.get("band_model", ""))),
                     "band_model": str(meta.get("band_model", "")),
                     "band_value": meta.get("band_value"),
                     "decision_policy": decision_policy,
@@ -525,6 +552,19 @@ def main() -> None:
     shortlist_robustness_df = robustness_df.head(shortlist_n).copy() if not robustness_df.empty else robustness_df.copy()
     variant_compare_df = pd.DataFrame(_build_variant_compare_rows(variant_diag_rows))
     policy_compare_df = pd.DataFrame(_build_policy_compare_rows(policy_diag_rows))
+    family_summary_df = pd.DataFrame()
+    if not ranking_df.empty and "band_model_family" in ranking_df.columns:
+        family_summary_df = (
+            ranking_df.groupby("band_model_family", dropna=False)
+            .agg(
+                variant_count=("variant_label", "count"),
+                avg_candidate_count=("candidate_count", "mean"),
+                avg_kept_total_pnl_pips=("kept_total_pnl_pips", "mean"),
+                best_kept_total_pnl_pips=("kept_total_pnl_pips", "max"),
+            )
+            .reset_index()
+            .sort_values(["best_kept_total_pnl_pips", "avg_kept_total_pnl_pips"], ascending=[False, False])
+        )
 
     spread_audit = _spread_audit(manifest, manifest_path)
     spread_required = bool((manifest.get("ranking_profile", {}) or {}).get("require_spread_column", False))
@@ -557,6 +597,8 @@ def main() -> None:
             "policy_variant_compare": "policy_variant_compare.csv",
             "policy_variant_robustness": "policy_variant_robustness.csv",
             "shortlist_robustness": "shortlist_robustness.csv",
+            "band_family_summary": "band_family_summary.csv",
+            "band_variant_robustness": "band_variant_robustness.csv",
         },
     }
 
@@ -566,6 +608,8 @@ def main() -> None:
     shortlist_robustness_df.to_csv(batch_output / "shortlist_robustness.csv", index=False)
     variant_compare_df.to_csv(batch_output / "band_variant_compare.csv", index=False)
     policy_compare_df.to_csv(batch_output / "policy_variant_compare.csv", index=False)
+    family_summary_df.to_csv(batch_output / "band_family_summary.csv", index=False)
+    robustness_df.to_csv(batch_output / "band_variant_robustness.csv", index=False)
     _write_yaml(batch_output / "batch_metadata.yaml", batch_metadata)
     _write_yaml(batch_output / "batch_manifest.yaml", batch_manifest)
 
@@ -607,8 +651,10 @@ def main() -> None:
         lines.append("- none")
     else:
         for _, row in shortlist_df.iterrows():
+            band_value = row.get("band_value")
+            band_value_display = f"{float(band_value) * 100.0:.5f}%" if row.get("band_model") == "percent" else band_value
             lines.append(
-                f"- {row['variant_label']} ({row.get('timing_mode')}/{row.get('band_model')}={row.get('band_value')}, "
+                f"- {row['variant_label']} ({row.get('timing_mode')}/{row.get('band_model_family')}/{row.get('band_model')}={band_value_display}, "
                 f"policy={row.get('decision_policy') or '<default>'}, score={row.get('score_bundle') or '<default>'}): "
                 f"kept_total_pnl_pips={row['kept_total_pnl_pips']:.3f}, "
                 f"kept_avg_pnl_pips={row['kept_avg_pnl_pips']:.3f}, kept_trade_count={int(row['kept_trade_count'])}, "
@@ -620,7 +666,7 @@ def main() -> None:
     else:
         for _, row in shortlist_robustness_df.iterrows():
             lines.append(
-                f"- {row['variant_label']} ({row.get('timing_mode')}/{row.get('band_model')}={row.get('band_value')}, "
+                f"- {row['variant_label']} ({row.get('timing_mode')}/{row.get('band_model_family')}/{row.get('band_model')}={row.get('band_value')}, "
                 f"policy={row.get('decision_policy') or '<default>'}, score={row.get('score_bundle') or '<default>'}): "
                 f"worst_month_pnl_pips={row['worst_month_pnl_pips']:.3f}, "
                 f"profitable_month_count={int(row['profitable_month_count'])}, "
@@ -636,10 +682,22 @@ def main() -> None:
         c = variant_compare_df.iloc[0]
         lines.append(
             f"- {c['variant_a']} vs {c['variant_b']}: "
+            f"family=({c.get('band_model_family_a')}, {c.get('band_model_family_b')}), "
             f"candidate_count=({int(c['candidate_count_a'])}, {int(c['candidate_count_b'])}), "
             f"overlap={int(c['candidate_timestamp_overlap_count'])}, "
             f"only_a={int(c['candidate_timestamp_only_a'])}, only_b={int(c['candidate_timestamp_only_b'])}"
         )
+    lines.extend(["", "## Band family compare"])
+    if family_summary_df.empty:
+        lines.append("- none")
+    else:
+        for _, row in family_summary_df.head(shortlist_n).iterrows():
+            lines.append(
+                f"- {row['band_model_family']}: variants={int(row['variant_count'])}, "
+                f"avg_candidate_count={row['avg_candidate_count']:.2f}, "
+                f"avg_kept_total_pnl_pips={row['avg_kept_total_pnl_pips']:.3f}, "
+                f"best_kept_total_pnl_pips={row['best_kept_total_pnl_pips']:.3f}"
+            )
     lines.extend(["", "## Policy variant compare"])
     if policy_compare_df.empty:
         lines.append("- no comparable policy variant pair found")
@@ -707,6 +765,8 @@ def main() -> None:
             "- `band_variant_compare.csv`",
             "- `policy_variant_compare.csv`",
             "- `policy_variant_robustness.csv`",
+            "- `band_family_summary.csv`",
+            "- `band_variant_robustness.csv`",
             "- `shortlist_robustness.csv`",
         ]
     )

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import itertools
 import math
 import os
 import sys
@@ -98,6 +99,76 @@ def _validate_batch_spec(spec: dict[str, Any]) -> None:
 
 def _band_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
     sweep = spec.get("band_model_sweep", {}) or {}
+    if sweep.get("families"):
+        variants: list[dict[str, Any]] = []
+        families = sweep.get("families", {}) or {}
+        for family_name, family_cfg_raw in families.items():
+            family_cfg = family_cfg_raw or {}
+            models = [str(x).strip().lower() for x in family_cfg.get("models", []) if str(x).strip()]
+            if not models:
+                models = [str(family_name).strip().lower()]
+            grid_cfg = family_cfg.get("grid", {}) or {}
+            ordered_keys = [str(k) for k in grid_cfg.keys()]
+            value_lists: list[list[Any]] = []
+            for key in ordered_keys:
+                raw_values = grid_cfg.get(key, [])
+                values = list(raw_values) if isinstance(raw_values, list) else [raw_values]
+                value_lists.append(values)
+            if not value_lists:
+                value_lists = [[]]
+            for model in models:
+                for combo in itertools.product(*value_lists) if ordered_keys else [tuple()]:
+                    cfg = {"band_model": model}
+                    combo_tokens: list[str] = []
+                    band_value = ""
+                    for idx, key in enumerate(ordered_keys):
+                        value = combo[idx]
+                        cfg[key] = value
+                        if key in {"band_percent", "band_pips", "band_atr_k", "band_std_k", "band_vol_k"} and band_value == "":
+                            band_value = value
+                        token_val = sanitize_label(str(value)).upper()[:8]
+                        combo_tokens.append(f"{sanitize_label(key).upper()[:4]}{token_val}")
+                    token_base = sanitize_label(family_name).upper()[:5] or "BAND"
+                    token = f"{token_base}{len(variants):03d}" if not combo_tokens else f"{token_base}_{'_'.join(combo_tokens)}"
+                    variants.append(
+                        {
+                            "band_model_family": str(family_name).strip().lower(),
+                            "band_model": model,
+                            "band_value": band_value,
+                            "band_token": token[:40],
+                            "cfg": cfg,
+                        }
+                    )
+        if not variants:
+            raise ValueError("band_model_sweep.families produced zero variants")
+        return variants
+
+    if sweep.get("variants"):
+        variants: list[dict[str, Any]] = []
+        for idx, raw in enumerate(sweep.get("variants", [])):
+            item = dict(raw or {})
+            band_model = str(item.get("band_model", "")).strip().lower()
+            if not band_model:
+                raise ValueError(f"band_model_sweep.variants[{idx}] missing band_model")
+            family = str(item.get("band_model_family", band_model)).strip().lower()
+            token = str(item.get("band_token", "")).strip() or f"V{idx:03d}"
+            band_cfg = {"band_model": band_model}
+            for key, value in item.items():
+                if key.startswith("band_") and key not in {"band_model_family", "band_token"}:
+                    band_cfg[key] = value
+            variants.append(
+                {
+                    "band_model_family": family,
+                    "band_model": band_model,
+                    "band_value": item.get("band_value", ""),
+                    "band_token": token,
+                    "cfg": band_cfg,
+                }
+            )
+        if not variants:
+            raise ValueError("band_model_sweep.variants produced zero variants")
+        return variants
+
     pct_values = [float(v) for v in sweep.get("percent_envelope", [])]
     pip_values = [float(v) for v in sweep.get("fixed_pip_envelope", [])]
     atr_values = [float(v) for v in sweep.get("atr_k_envelope", [])]
@@ -107,6 +178,7 @@ def _band_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
         token = f"PCT{int(round(value * 1000)):03d}"
         variants.append(
             {
+                "band_model_family": "percent",
                 "band_model": "percent",
                 "band_value": value,
                 "band_token": token,
@@ -117,6 +189,7 @@ def _band_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
         token = f"PIP{int(round(value)):02d}"
         variants.append(
             {
+                "band_model_family": "fixed_pips",
                 "band_model": "fixed_pips",
                 "band_value": value,
                 "band_token": token,
@@ -127,6 +200,7 @@ def _band_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
         token = f"ATR{int(round(value * 10)):02d}"
         variants.append(
             {
+                "band_model_family": "atr",
                 "band_model": "atr",
                 "band_value": value,
                 "band_token": token,
@@ -138,13 +212,13 @@ def _band_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
     return variants
 
 
-def _build_variant_label(*, band_token: str, timing_mode: str) -> str:
+def _build_variant_label(*, family_token: str, band_token: str, timing_mode: str) -> str:
     timing_token = {
         "baseline_touch": "TRGBASE",
         "rv_close_confirm": "TRGRV",
         "all_close": "TRGALL",
     }.get(timing_mode, f"TRG{sanitize_label(timing_mode).upper()}")
-    return f"FAMBASE__BAND{band_token}__{timing_token}__HG30__DECBASE__EXNONE__V1"
+    return f"FAM{family_token}__BAND{band_token}__{timing_token}__HG30__DECBASE__EXNONE__V1"
 
 
 def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, str]]:
@@ -187,13 +261,15 @@ def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, str]]:
     return variants
 
 
-def _build_policy_variant_label(*, band_token: str, timing_mode: str, decision_token: str, score_token: str) -> str:
+def _build_policy_variant_label(
+    *, family_token: str, band_token: str, timing_mode: str, decision_token: str, score_token: str
+) -> str:
     timing_token = {
         "baseline_touch": "TRGBASE",
         "rv_close_confirm": "TRGRV",
         "all_close": "TRGALL",
     }.get(timing_mode, f"TRG{sanitize_label(timing_mode).upper()}")
-    return f"FAMBASE__BAND{band_token}__{timing_token}__HG30__{decision_token}__{score_token}__V1"
+    return f"FAM{family_token}__BAND{band_token}__{timing_token}__HG30__{decision_token}__{score_token}__V1"
 
 
 def main() -> None:
@@ -220,19 +296,24 @@ def main() -> None:
     for timing_mode in [str(x).strip() for x in spec.get("timing_modes", []) if str(x).strip()]:
         for band_variant in _band_variants(spec):
             for decision_variant in _decision_policy_variants(spec):
+                family_token = sanitize_label(str(band_variant.get("band_model_family", "base")).upper())[:12] or "BASE"
                 if decision_variant["decision_policy"]:
                     label = _build_policy_variant_label(
+                        family_token=family_token,
                         band_token=band_variant["band_token"],
                         timing_mode=timing_mode,
                         decision_token=decision_variant["decision_token"],
                         score_token=decision_variant["score_token"],
                     )
                 else:
-                    label = _build_variant_label(band_token=band_variant["band_token"], timing_mode=timing_mode)
+                    label = _build_variant_label(
+                        family_token=family_token, band_token=band_variant["band_token"], timing_mode=timing_mode
+                    )
                 variants.append(
                     {
                         "label": label,
                         "timing_mode": timing_mode,
+                        "band_model_family": band_variant.get("band_model_family", band_variant["band_model"]),
                         "band_model": band_variant["band_model"],
                         "band_value": band_variant["band_value"],
                         **band_variant["cfg"],
@@ -266,23 +347,25 @@ def main() -> None:
 
         runs = []
         for variant in shard_variants:
+            run_item = {
+                "label": variant["label"],
+                "dataset_id": dataset_id,
+                "timing_mode": variant["timing_mode"],
+                "band_model": variant["band_model"],
+                "decision_policy": variant.get("decision_policy"),
+                "score_bundle": variant.get("score_bundle"),
+                "notes": (
+                    f"batch_variant family={variant.get('band_model_family')} "
+                    f"model={variant['band_model']} "
+                    f"decision_policy={variant.get('decision_policy') or 'bin_env_v1'} "
+                    f"score_bundle={variant.get('score_bundle') or 'sf_ctx_base_v1'}"
+                ),
+            }
+            for key, value in variant.items():
+                if key.startswith("band_") and key not in {"band_model_family", "band_token"}:
+                    run_item[key] = value
             runs.append(
-                {
-                    "label": variant["label"],
-                    "dataset_id": dataset_id,
-                    "timing_mode": variant["timing_mode"],
-                    "band_model": variant["band_model"],
-                    "band_percent": variant.get("band_percent"),
-                    "band_pips": variant.get("band_pips"),
-                    "band_atr_k": variant.get("band_atr_k"),
-                    "decision_policy": variant.get("decision_policy"),
-                    "score_bundle": variant.get("score_bundle"),
-                    "notes": (
-                        f"batch_variant {variant['band_model']}={variant['band_value']} "
-                        f"decision_policy={variant.get('decision_policy') or 'bin_env_v1'} "
-                        f"score_bundle={variant.get('score_bundle') or 'sf_ctx_base_v1'}"
-                    ),
-                }
+                run_item
             )
 
         study_cfg = {
