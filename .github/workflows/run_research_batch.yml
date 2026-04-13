@@ -128,6 +128,7 @@ jobs:
         with:
           name: ${{ matrix.shard_artifact_name }}
           path: |
+            .batch_artifacts
             .batch_artifacts/shards/${{ matrix.shard_id }}
 
   aggregate:
