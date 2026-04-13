@@ -50,6 +50,37 @@ def _safe_read_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def _pnl_stats(summary_df: pd.DataFrame, prefix: str) -> dict[str, Any]:
+    result: dict[str, Any] = {
+        f"profitable_{prefix}_count": 0,
+        f"losing_{prefix}_count": 0,
+        f"worst_{prefix}_pnl_pips": 0.0,
+        f"best_{prefix}_pnl_pips": 0.0,
+    }
+    if summary_df.empty or "total_pnl_pips" not in summary_df.columns:
+        return result
+
+    pnl = pd.to_numeric(summary_df["total_pnl_pips"], errors="coerce").dropna()
+    if pnl.empty:
+        return result
+
+    result[f"profitable_{prefix}_count"] = int((pnl > 0.0).sum())
+    result[f"losing_{prefix}_count"] = int((pnl < 0.0).sum())
+    result[f"worst_{prefix}_pnl_pips"] = float(pnl.min())
+    result[f"best_{prefix}_pnl_pips"] = float(pnl.max())
+    return result
+
+
+def _top_session_share(summary_df: pd.DataFrame) -> float:
+    if summary_df.empty or "trade_count" not in summary_df.columns:
+        return 0.0
+    trade_counts = pd.to_numeric(summary_df["trade_count"], errors="coerce").fillna(0.0)
+    total = float(trade_counts.sum())
+    if total <= 0.0:
+        return 0.0
+    return float(trade_counts.max() / total)
+
+
 def _load_dataset_path(manifest: dict[str, Any], manifest_path: Path) -> Path | None:
     registry_path = Path(str(manifest.get("dataset_registry", "")))
     if not registry_path.is_absolute():
@@ -224,7 +255,17 @@ def _build_variant_compare_rows(variant_rows: list[dict[str, Any]]) -> list[dict
             break
     if selected is None:
         sorted_rows = sorted(variant_rows, key=lambda x: str(x.get("variant_label", "")))
-        selected = (sorted_rows[0], sorted_rows[1])
+        for idx, a in enumerate(sorted_rows):
+            band_a = (str(a.get("band_model", "")), a.get("band_value"))
+            for b in sorted_rows[idx + 1 :]:
+                band_b = (str(b.get("band_model", "")), b.get("band_value"))
+                if band_a != band_b:
+                    selected = (a, b)
+                    break
+            if selected is not None:
+                break
+        if selected is None:
+            selected = (sorted_rows[0], sorted_rows[1])
 
     a, b = selected
     ts_a = set(a.get("candidate_timestamps", set()))
@@ -301,6 +342,7 @@ def main() -> None:
     ranking_rows: list[dict[str, Any]] = []
     variant_diag_rows: list[dict[str, Any]] = []
     policy_diag_rows: list[dict[str, Any]] = []
+    robustness_rows: list[dict[str, Any]] = []
     shard_status_rows: list[dict[str, Any]] = []
     warnings: list[str] = []
 
@@ -337,6 +379,8 @@ def main() -> None:
             candidates = _safe_read_csv(run_dir / "candidates.csv")
             candidate_summary = _safe_read_csv(run_dir / "candidate_summary.csv")
             policy_summary = _safe_read_csv(run_dir / "policy_candidate_summary.csv")
+            month_summary = _safe_read_csv(run_dir / "summary_by_month.csv")
+            session_summary = _safe_read_csv(run_dir / "summary_by_session.csv")
             if overall.empty:
                 warnings.append(f"{shard_id}/{label}: summary_overall.csv missing or empty")
                 continue
@@ -384,6 +428,11 @@ def main() -> None:
             else:
                 base_candidate_count = candidate_count
 
+            robustness = {
+                **_pnl_stats(month_summary, "month"),
+                **_pnl_stats(session_summary, "session"),
+                "top_session_share": _top_session_share(session_summary),
+            }
             ranking_rows.append(
                 {
                     "batch_id": manifest.get("batch_id"),
@@ -408,6 +457,29 @@ def main() -> None:
                     "rv_selected_count": rv_selected_count,
                     "tr_selected_count": tr_selected_count,
                     "no_entry_group_count": no_entry_group_count,
+                    **robustness,
+                }
+            )
+            robustness_rows.append(
+                {
+                    "batch_id": manifest.get("batch_id"),
+                    "dataset_id": manifest.get("dataset_id"),
+                    "shard_id": shard_id,
+                    "variant_label": label,
+                    "timing_mode": str(meta.get("timing_mode", "")),
+                    "band_model": str(meta.get("band_model", "")),
+                    "band_value": meta.get("band_value"),
+                    "decision_policy": decision_policy,
+                    "score_bundle": score_bundle,
+                    "kept_trade_count": kept_trade_count,
+                    "kept_total_pnl_pips": kept_total_pnl,
+                    "kept_avg_pnl_pips": kept_avg_pnl,
+                    "candidate_count": candidate_count,
+                    "base_candidate_count": base_candidate_count,
+                    "rv_selected_count": rv_selected_count,
+                    "tr_selected_count": tr_selected_count,
+                    "no_entry_group_count": no_entry_group_count,
+                    **robustness,
                 }
             )
             variant_diag_rows.append(
@@ -439,6 +511,18 @@ def main() -> None:
         ranking_df = ranking_df.sort_values(["kept_total_pnl_pips", "kept_avg_pnl_pips", "kept_trade_count"], ascending=[False, False, False])
     shortlist_n = int((manifest.get("ranking_profile", {}) or {}).get("shortlist_top_n", 8) or 8)
     shortlist_df = ranking_df.head(shortlist_n).copy() if not ranking_df.empty else ranking_df.copy()
+    robustness_df = pd.DataFrame(robustness_rows)
+    if not robustness_df.empty:
+        robustness_df = robustness_df.sort_values(
+            [
+                "worst_month_pnl_pips",
+                "profitable_month_count",
+                "worst_session_pnl_pips",
+                "kept_total_pnl_pips",
+            ],
+            ascending=[False, False, False, False],
+        )
+    shortlist_robustness_df = robustness_df.head(shortlist_n).copy() if not robustness_df.empty else robustness_df.copy()
     variant_compare_df = pd.DataFrame(_build_variant_compare_rows(variant_diag_rows))
     policy_compare_df = pd.DataFrame(_build_policy_compare_rows(policy_diag_rows))
 
@@ -471,11 +555,15 @@ def main() -> None:
             "batch_review_machine": "batch_review_machine.yaml",
             "band_variant_compare": "band_variant_compare.csv",
             "policy_variant_compare": "policy_variant_compare.csv",
+            "policy_variant_robustness": "policy_variant_robustness.csv",
+            "shortlist_robustness": "shortlist_robustness.csv",
         },
     }
 
     ranking_df.to_csv(batch_output / "batch_ranking.csv", index=False)
     shortlist_df.to_csv(batch_output / "batch_shortlist.csv", index=False)
+    robustness_df.to_csv(batch_output / "policy_variant_robustness.csv", index=False)
+    shortlist_robustness_df.to_csv(batch_output / "shortlist_robustness.csv", index=False)
     variant_compare_df.to_csv(batch_output / "band_variant_compare.csv", index=False)
     policy_compare_df.to_csv(batch_output / "policy_variant_compare.csv", index=False)
     _write_yaml(batch_output / "batch_metadata.yaml", batch_metadata)
@@ -514,7 +602,7 @@ def main() -> None:
     else:
         lines.append("- none")
 
-    lines.extend(["", "## Top ranked variants"])
+    lines.extend(["", "## Top ranked variants by kept_total_pnl_pips"])
     if shortlist_df.empty:
         lines.append("- none")
     else:
@@ -525,6 +613,21 @@ def main() -> None:
                 f"kept_total_pnl_pips={row['kept_total_pnl_pips']:.3f}, "
                 f"kept_avg_pnl_pips={row['kept_avg_pnl_pips']:.3f}, kept_trade_count={int(row['kept_trade_count'])}, "
                 f"blackout_excluded={int(row['blackout_excluded_count'])}"
+            )
+    lines.extend(["", "## Top robust variants"])
+    if shortlist_robustness_df.empty:
+        lines.append("- none")
+    else:
+        for _, row in shortlist_robustness_df.iterrows():
+            lines.append(
+                f"- {row['variant_label']} ({row.get('timing_mode')}/{row.get('band_model')}={row.get('band_value')}, "
+                f"policy={row.get('decision_policy') or '<default>'}, score={row.get('score_bundle') or '<default>'}): "
+                f"worst_month_pnl_pips={row['worst_month_pnl_pips']:.3f}, "
+                f"profitable_month_count={int(row['profitable_month_count'])}, "
+                f"losing_month_count={int(row['losing_month_count'])}, "
+                f"worst_session_pnl_pips={row['worst_session_pnl_pips']:.3f}, "
+                f"top_session_share={row['top_session_share']:.3f}, "
+                f"kept_total_pnl_pips={row['kept_total_pnl_pips']:.3f}"
             )
     lines.extend(["", "## Band variant compare"])
     if variant_compare_df.empty:
@@ -551,8 +654,41 @@ def main() -> None:
             f"no_entry=({int(c['no_entry_group_count_a'])}, {int(c['no_entry_group_count_b'])}), "
             f"overlap={int(c['candidate_timestamp_overlap_count'])}"
         )
+    lines.extend(["", "## No-entry-heavy variants"])
+    if ranking_df.empty or "no_entry_group_count" not in ranking_df.columns:
+        lines.append("- none")
+    else:
+        no_entry_df = ranking_df.sort_values(
+            ["no_entry_group_count", "base_candidate_count", "kept_total_pnl_pips"],
+            ascending=[False, False, False],
+        ).head(shortlist_n)
+        if no_entry_df.empty or int(no_entry_df["no_entry_group_count"].max()) <= 0:
+            lines.append("- none")
+        else:
+            for _, row in no_entry_df.iterrows():
+                base_count = int(row.get("base_candidate_count", 0) or 0)
+                no_entry_count = int(row.get("no_entry_group_count", 0) or 0)
+                no_entry_share = (no_entry_count / base_count) if base_count else 0.0
+                lines.append(
+                    f"- {row['variant_label']} (policy={row.get('decision_policy') or '<default>'}, "
+                    f"score={row.get('score_bundle') or '<default>'}): "
+                    f"no_entry_group_count={no_entry_count}, base_candidate_count={base_count}, "
+                    f"no_entry_share={no_entry_share:.3f}, "
+                    f"rv={int(row.get('rv_selected_count', 0) or 0)}, "
+                    f"tr={int(row.get('tr_selected_count', 0) or 0)}, "
+                    f"kept_total_pnl_pips={row['kept_total_pnl_pips']:.3f}"
+                )
 
-    lines.extend(["", "## Shortlist artifact", "- `batch_shortlist.csv`", "", "## Warnings"])
+    lines.extend(
+        [
+            "",
+            "## Shortlist artifacts",
+            "- `batch_shortlist.csv`",
+            "- `shortlist_robustness.csv`",
+            "",
+            "## Warnings",
+        ]
+    )
     if warnings:
         lines.extend([f"- {w}" for w in warnings])
     else:
@@ -570,6 +706,8 @@ def main() -> None:
             "- `batch_review_machine.yaml`",
             "- `band_variant_compare.csv`",
             "- `policy_variant_compare.csv`",
+            "- `policy_variant_robustness.csv`",
+            "- `shortlist_robustness.csv`",
         ]
     )
     review_md = "\n".join(lines) + "\n"
