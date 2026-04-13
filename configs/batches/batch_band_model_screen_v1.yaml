@@ -13,7 +13,7 @@ blackout_windows_jst:
     label: daily_rollover_guard
 spread_mode: audit_only
 band_model_sweep:
-  percent_envelope: [0.05, 0.06, 0.07, 0.08]
+  percent_envelope: [0.0005, 0.0006, 0.0007, 0.0008]
   fixed_pip_envelope: [8, 9, 10, 11]
   atr_k_envelope: [0.8, 1.0, 1.2]
 timing_modes: [baseline_touch]

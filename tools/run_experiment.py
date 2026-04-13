@@ -35,8 +35,12 @@ from research.simulator.envelope import (
     DEFAULT_ATR_PERIOD,
     DEFAULT_BAND_MODEL,
     DEFAULT_PIP_SIZE,
+    DEFAULT_RANGE_PERIOD,
+    DEFAULT_STD_PERIOD,
+    DEFAULT_VOL_PERIOD,
     DEVIATION_RATE,
     EMA_SPAN,
+    SUPPORTED_BAND_MODELS,
     add_envelope_columns,
 )
 from research.simulator.outcome_engine import DEFAULT_MAX_HOLDING_BARS, PIP_SIZE, evaluate_candidates
@@ -131,11 +135,23 @@ def main() -> None:
         return default if use_default else raw_value
 
     band_model = str(_cfg_value("band_model", DEFAULT_BAND_MODEL)).strip().lower()
+    if band_model not in SUPPORTED_BAND_MODELS:
+        raise ValueError(f"Unsupported band_model='{band_model}'. Allowed: {sorted(SUPPORTED_BAND_MODELS)}")
     ema_period = int(_cfg_value("ema_period", EMA_SPAN))
     band_percent = float(_cfg_value("band_percent", DEVIATION_RATE))
     band_pips = float(_cfg_value("band_pips", 10.0))
     band_atr_k = float(_cfg_value("band_atr_k", 1.0))
     band_atr_period = int(_cfg_value("band_atr_period", DEFAULT_ATR_PERIOD))
+    band_std_k = float(_cfg_value("band_std_k", 1.0))
+    band_std_period = int(_cfg_value("band_std_period", DEFAULT_STD_PERIOD))
+    band_std_source = str(_cfg_value("band_std_source", "returns")).strip().lower()
+    band_range_period = int(_cfg_value("band_range_period", DEFAULT_RANGE_PERIOD))
+    band_range_k = float(_cfg_value("band_range_k", 1.0))
+    band_range_percentile = float(_cfg_value("band_range_percentile", 0.75))
+    band_vol_period = int(_cfg_value("band_vol_period", DEFAULT_VOL_PERIOD))
+    band_vol_k = float(_cfg_value("band_vol_k", 1.0))
+    band_fixed_floor_pips = float(_cfg_value("band_fixed_floor_pips", 8.0))
+    band_fixed_cap_pips = float(_cfg_value("band_fixed_cap_pips", 15.0))
     pip_size = float(_cfg_value("pip_size", DEFAULT_PIP_SIZE))
 
     ohlc_df = load_ohlc_csv(cfg["input_csv"])
@@ -148,6 +164,16 @@ def main() -> None:
         band_pips=band_pips,
         band_atr_k=band_atr_k,
         band_atr_period=band_atr_period,
+        band_std_k=band_std_k,
+        band_std_period=band_std_period,
+        band_std_source=band_std_source,
+        band_range_period=band_range_period,
+        band_range_k=band_range_k,
+        band_range_percentile=band_range_percentile,
+        band_vol_period=band_vol_period,
+        band_vol_k=band_vol_k,
+        band_fixed_floor_pips=band_fixed_floor_pips,
+        band_fixed_cap_pips=band_fixed_cap_pips,
         pip_size=pip_size,
     )
     feature_df = build_feature_frame(env_df)
@@ -230,6 +256,17 @@ def main() -> None:
         "band_pips": band_pips,
         "band_atr_k": band_atr_k,
         "band_atr_period": band_atr_period,
+        "band_std_k": band_std_k,
+        "band_std_period": band_std_period,
+        "band_std_source": band_std_source,
+        "band_range_period": band_range_period,
+        "band_range_k": band_range_k,
+        "band_range_percentile": band_range_percentile,
+        "band_vol_period": band_vol_period,
+        "band_vol_k": band_vol_k,
+        "band_fixed_floor_pips": band_fixed_floor_pips,
+        "band_fixed_cap_pips": band_fixed_cap_pips,
+        "band_percent_display": f"{band_percent * 100.0:.5f}%",
         "pip_size": pip_size,
         "ema_period": ema_period,
         "defaults_used": effective_defaults_used,
@@ -271,6 +308,16 @@ def main() -> None:
             "band_pips": band_pips,
             "band_atr_k": band_atr_k,
             "band_atr_period": band_atr_period,
+            "band_std_k": band_std_k,
+            "band_std_period": band_std_period,
+            "band_std_source": band_std_source,
+            "band_range_period": band_range_period,
+            "band_range_k": band_range_k,
+            "band_range_percentile": band_range_percentile,
+            "band_vol_period": band_vol_period,
+            "band_vol_k": band_vol_k,
+            "band_fixed_floor_pips": band_fixed_floor_pips,
+            "band_fixed_cap_pips": band_fixed_cap_pips,
             "pip_size": pip_size,
         },
         "assumption_notes": {

@@ -97,11 +97,18 @@ These are compact and deterministic CSV/YAML/Markdown artifacts for cloud review
 ## Seeded executable batch
 
 - `configs/batches/batch_band_model_screen_v1.yaml`
+- `configs/batches/batch_band_model_screen_v2.yaml`
 
 This batch screens envelope band models across:
-- percent envelope: `0.05, 0.06, 0.07, 0.08`
+- percent envelope: `0.0005, 0.0006, 0.0007, 0.0008`
 - fixed pip envelope: `8, 9, 10, 11`
 - ATR*k envelope: `0.8, 1.0, 1.2`
+
+`batch_band_model_screen_v1` keeps legacy compact settings for backward compatibility.
+For new sweeps, use decimal-rate percent units (`0.0005` means `0.05%`).
+
+`batch_band_model_screen_v2` is the cloud/public large-screening spec and expands
+hundreds of variants across percent/fixed/ATR/stddev/range/vol/hybrid families.
 
 Variant naming is compact/stable, centered on band dimension in this phase.
 
