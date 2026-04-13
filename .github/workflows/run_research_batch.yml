@@ -190,6 +190,10 @@ jobs:
             ${{ needs.prepare.outputs.batch_output_root }}/batch_manifest.yaml
             ${{ needs.prepare.outputs.batch_output_root }}/batch_ranking.csv
             ${{ needs.prepare.outputs.batch_output_root }}/batch_shortlist.csv
+            ${{ needs.prepare.outputs.batch_output_root }}/band_variant_compare.csv
+            ${{ needs.prepare.outputs.batch_output_root }}/policy_variant_compare.csv
+            ${{ needs.prepare.outputs.batch_output_root }}/policy_variant_robustness.csv
+            ${{ needs.prepare.outputs.batch_output_root }}/shortlist_robustness.csv
             ${{ needs.prepare.outputs.batch_output_root }}/batch_review.md
             ${{ needs.prepare.outputs.batch_output_root }}/batch_review_machine.yaml
 

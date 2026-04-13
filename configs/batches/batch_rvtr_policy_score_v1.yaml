@@ -25,6 +25,8 @@ decision_policy_sweep:
   score_bundles:
     - sf_ctx_base_v1
     - sf_ctx_momo_v1
+    - sf_timing_micro_v1
+    - sf_zone_risk_v1
 timing_modes: [baseline_touch]
 compare_sections:
   - overall
