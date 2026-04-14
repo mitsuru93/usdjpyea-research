@@ -96,6 +96,10 @@ def _validate_batch_spec(spec: dict[str, Any]) -> None:
                 f"blackout_windows_jst[{idx}] must define daily recurring 'start_hhmmss' and 'end_hhmmss'"
             )
 
+    analyze_after_run = spec.get("analyze_after_run", True)
+    if not isinstance(analyze_after_run, bool):
+        raise ValueError("analyze_after_run must be a boolean when provided")
+
 
 def _band_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
     sweep = spec.get("band_model_sweep", {}) or {}
@@ -329,6 +333,7 @@ def main() -> None:
         raise ValueError("No variants produced from timing_modes x band_model_sweep")
 
     shard_size = int(spec["shard_size"])
+    analyze_after_run = bool(spec.get("analyze_after_run", True))
     shard_count = math.ceil(len(variants) / shard_size)
     shards_dir = ensure_directory(runtime_dir / "shards")
 
@@ -377,7 +382,7 @@ def main() -> None:
                 "max_holding_bars": 30,
                 "symbol": "USDJPY",
                 "timeframe": "M1",
-                "analyze_after_run": True,
+                "analyze_after_run": analyze_after_run,
             },
             "runs": runs,
             "compare": {
@@ -417,6 +422,7 @@ def main() -> None:
         "blackout_windows_jst": list(spec.get("blackout_windows_jst", [])),
         "ranking_profile": dict(spec.get("ranking_profile", {})),
         "review_sink": dict(spec.get("review_sink", {})),
+        "analyze_after_run": analyze_after_run,
         "compare_sections": list(spec.get("compare_sections", [])),
         "shard_size": shard_size,
         "shard_count": shard_count,
