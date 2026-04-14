@@ -21,6 +21,22 @@ if str(REPO_ROOT) not in sys.path:
 from research.orchestration.path_utils import ensure_directory, sanitize_label
 
 SPREAD_MODES = {"ignore", "audit_only", "column_proxy"}
+DEFAULT_BAND_MODEL_WEIGHTS = {
+    "percent": 1.0,
+    "fixed_pips": 1.0,
+    "max_percent_fixed_floor": 1.2,
+    "atr": 1.8,
+    "min_atr_fixed_cap": 2.0,
+    "max_atr_fixed_floor": 2.0,
+    "range_mean": 1.6,
+    "range_median": 1.9,
+    "range_percentile": 3.0,
+    "stddev": 2.4,
+    "realized_vol_cc": 3.2,
+    "parkinson": 3.2,
+    "garman_klass": 3.4,
+    "rogers_satchell": 3.4,
+}
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -99,6 +115,29 @@ def _validate_batch_spec(spec: dict[str, Any]) -> None:
     analyze_after_run = spec.get("analyze_after_run", True)
     if not isinstance(analyze_after_run, bool):
         raise ValueError("analyze_after_run must be a boolean when provided")
+
+    weighted_cfg = spec.get("weighted_sharding")
+    if weighted_cfg is None:
+        return
+    if not isinstance(weighted_cfg, dict):
+        raise ValueError("weighted_sharding must be a mapping when provided")
+    enabled = weighted_cfg.get("enabled", False)
+    if not isinstance(enabled, bool):
+        raise ValueError("weighted_sharding.enabled must be a boolean")
+    model_weights = weighted_cfg.get("model_weights")
+    if model_weights is not None:
+        if not isinstance(model_weights, dict):
+            raise ValueError("weighted_sharding.model_weights must be a mapping")
+        for key, value in model_weights.items():
+            model_name = str(key).strip().lower()
+            if not model_name:
+                raise ValueError("weighted_sharding.model_weights keys must be non-empty")
+            try:
+                weight = float(value)
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"weighted_sharding.model_weights[{key!r}] must be numeric") from exc
+            if weight <= 0:
+                raise ValueError(f"weighted_sharding.model_weights[{key!r}] must be > 0")
 
 
 def _band_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
@@ -276,6 +315,42 @@ def _build_policy_variant_label(
     return f"FAM{family_token}__BAND{band_token}__{timing_token}__HG30__{decision_token}__{score_token}__V1"
 
 
+def _variant_weight(variant: dict[str, Any], model_weights: dict[str, float]) -> float:
+    band_model = str(variant.get("band_model", "")).strip().lower()
+    return float(model_weights.get(band_model, 1.0))
+
+
+def _contiguous_assignments(*, variants: list[dict[str, Any]], shard_size: int) -> list[list[dict[str, Any]]]:
+    shard_count = math.ceil(len(variants) / shard_size)
+    return [
+        variants[shard_index * shard_size : min((shard_index + 1) * shard_size, len(variants))]
+        for shard_index in range(shard_count)
+    ]
+
+
+def _weighted_assignments(
+    *,
+    variants: list[dict[str, Any]],
+    shard_size: int,
+    model_weights: dict[str, float],
+) -> tuple[list[list[dict[str, Any]]], list[float]]:
+    shard_count = math.ceil(len(variants) / shard_size)
+    shards: list[list[dict[str, Any]]] = [[] for _ in range(shard_count)]
+    shard_totals: list[float] = [0.0 for _ in range(shard_count)]
+    ranked_variants = sorted(
+        variants,
+        key=lambda item: (-_variant_weight(item, model_weights), str(item.get("label", ""))),
+    )
+    for variant in ranked_variants:
+        candidates = [idx for idx in range(shard_count) if len(shards[idx]) < shard_size]
+        if not candidates:
+            raise RuntimeError("Weighted sharding failed: no shard has remaining capacity")
+        target_idx = min(candidates, key=lambda idx: (shard_totals[idx], idx))
+        shards[target_idx].append(variant)
+        shard_totals[target_idx] += _variant_weight(variant, model_weights)
+    return shards, shard_totals
+
+
 def main() -> None:
     args = parse_args()
     batch_spec_path = Path(args.batch_spec).resolve()
@@ -334,14 +409,29 @@ def main() -> None:
 
     shard_size = int(spec["shard_size"])
     analyze_after_run = bool(spec.get("analyze_after_run", True))
-    shard_count = math.ceil(len(variants) / shard_size)
+    weighted_cfg = spec.get("weighted_sharding", {}) or {}
+    weighted_enabled = bool(weighted_cfg.get("enabled", False))
+    configured_weights = weighted_cfg.get("model_weights", {}) or {}
+    band_model_weights = dict(DEFAULT_BAND_MODEL_WEIGHTS)
+    band_model_weights.update({str(k).strip().lower(): float(v) for k, v in configured_weights.items()})
+    if weighted_enabled:
+        shard_variants_list, shard_weight_totals = _weighted_assignments(
+            variants=variants,
+            shard_size=shard_size,
+            model_weights=band_model_weights,
+        )
+        sharding_strategy = "weighted_greedy"
+    else:
+        shard_variants_list = _contiguous_assignments(variants=variants, shard_size=shard_size)
+        shard_weight_totals = [
+            sum(_variant_weight(item, band_model_weights) for item in shard_variants) for shard_variants in shard_variants_list
+        ]
+        sharding_strategy = "contiguous"
+    shard_count = len(shard_variants_list)
     shards_dir = ensure_directory(runtime_dir / "shards")
 
     shard_records: list[dict[str, Any]] = []
-    for shard_index in range(shard_count):
-        start = shard_index * shard_size
-        end = min((shard_index + 1) * shard_size, len(variants))
-        shard_variants = variants[start:end]
+    for shard_index, shard_variants in enumerate(shard_variants_list):
         shard_id = f"shard_{shard_index:03d}"
         shard_dir = ensure_directory(shards_dir / shard_id)
         shard_runtime_relpath = f"shards/{shard_id}/study"
@@ -407,6 +497,7 @@ def main() -> None:
                 "shard_output_relpath": shard_runtime_relpath,
                 "shard_artifact_name": shard_artifact_name,
                 "run_count": len(shard_variants),
+                "estimated_weight_total": float(shard_weight_totals[shard_index]),
                 "runs": shard_variants,
             }
         )
@@ -423,6 +514,12 @@ def main() -> None:
         "ranking_profile": dict(spec.get("ranking_profile", {})),
         "review_sink": dict(spec.get("review_sink", {})),
         "analyze_after_run": analyze_after_run,
+        "sharding_strategy": sharding_strategy,
+        "weighted_sharding": {
+            "enabled": weighted_enabled,
+            "weight_proxy": "band_model_compute_class",
+            "model_weights": band_model_weights,
+        },
         "compare_sections": list(spec.get("compare_sections", [])),
         "shard_size": shard_size,
         "shard_count": shard_count,

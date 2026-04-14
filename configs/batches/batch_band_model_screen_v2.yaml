@@ -3,6 +3,8 @@ dataset_registry: configs/datasets/dataset_registry.yaml
 dataset_id: usdjpy_m1_2024_01_02_to_2026_02_18_public_main
 output_root: research/reports/batches/batch_band_model_screen_v2
 shard_size: 12
+weighted_sharding:
+  enabled: true
 output_tag_default: cloud_dispatch_v2
 blackout_windows_jst:
   - start_hhmmss: '06:55:00'
