@@ -120,8 +120,34 @@ jobs:
 
       - name: Upload shard artifacts
         run: |
-          mkdir -p "batch_artifacts/${{ matrix.shard_runtime_relpath }}"
-          cp -R "${{ needs.prepare.outputs.batch_output_root }}/${{ matrix.study_output_relpath }}/." "batch_artifacts/${{ matrix.shard_runtime_relpath }}/"
+          SHARD_SRC="${{ needs.prepare.outputs.batch_output_root }}/${{ matrix.study_output_relpath }}"
+          SHARD_DST="batch_artifacts/${{ matrix.shard_runtime_relpath }}"
+          mkdir -p "${SHARD_DST}"
+
+          # Aggregate only needs study_metadata + select per-run summary/candidate files.
+          if [ -f "${SHARD_SRC}/study_metadata.yaml" ]; then
+            cp "${SHARD_SRC}/study_metadata.yaml" "${SHARD_DST}/study_metadata.yaml"
+          fi
+
+          if [ -d "${SHARD_SRC}/runs" ]; then
+            find "${SHARD_SRC}/runs" -mindepth 1 -maxdepth 1 -type d | while read -r run_dir; do
+              run_name="$(basename "${run_dir}")"
+              run_dst="${SHARD_DST}/runs/${run_name}"
+              mkdir -p "${run_dst}"
+              for file in \
+                summary_overall.csv \
+                candidates.csv \
+                candidate_summary.csv \
+                policy_candidate_summary.csv \
+                summary_by_month.csv \
+                summary_by_session.csv \
+                effective_band_config.yaml; do
+                if [ -f "${run_dir}/${file}" ]; then
+                  cp "${run_dir}/${file}" "${run_dst}/${file}"
+                fi
+              done
+            done
+          fi
 
       - name: Upload shard artifacts bundle
         uses: actions/upload-artifact@v4
