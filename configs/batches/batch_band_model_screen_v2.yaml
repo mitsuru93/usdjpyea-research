@@ -12,6 +12,7 @@ blackout_windows_jst:
     end_hhmmss: '00:10:00'
     label: daily_rollover_guard
 spread_mode: audit_only
+analyze_after_run: false
 band_model_sweep:
   families:
     percent:
