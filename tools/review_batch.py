@@ -50,6 +50,18 @@ def _safe_read_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def _load_candidate_rows_for_aggregate(run_dir: Path) -> tuple[pd.DataFrame, str]:
+    aggregate_path = run_dir / "candidates_aggregate.csv.gz"
+    if aggregate_path.exists():
+        return _safe_read_csv(aggregate_path), aggregate_path.name
+
+    legacy_path = run_dir / "candidates.csv"
+    if legacy_path.exists():
+        return _safe_read_csv(legacy_path), legacy_path.name
+
+    return pd.DataFrame(columns=["timestamp", "pnl_pips"]), "missing"
+
+
 def _pnl_stats(summary_df: pd.DataFrame, prefix: str) -> dict[str, Any]:
     result: dict[str, Any] = {
         f"profitable_{prefix}_count": 0,
@@ -378,7 +390,7 @@ def main() -> None:
                 warnings.append(f"{shard_id}/{label}: run_dir unresolved in aggregate staging")
                 continue
             overall = _safe_read_csv(run_dir / "summary_overall.csv")
-            candidates = _safe_read_csv(run_dir / "candidates.csv")
+            candidates, aggregate_candidate_source = _load_candidate_rows_for_aggregate(run_dir)
             candidate_summary = _safe_read_csv(run_dir / "candidate_summary.csv")
             policy_summary = _safe_read_csv(run_dir / "policy_candidate_summary.csv")
             month_summary = _safe_read_csv(run_dir / "summary_by_month.csv")
@@ -477,6 +489,7 @@ def main() -> None:
                     "rv_selected_count": rv_selected_count,
                     "tr_selected_count": tr_selected_count,
                     "no_entry_group_count": no_entry_group_count,
+                    "aggregate_candidate_source": aggregate_candidate_source,
                     **robustness,
                 }
             )
@@ -504,6 +517,7 @@ def main() -> None:
                     "rv_selected_count": rv_selected_count,
                     "tr_selected_count": tr_selected_count,
                     "no_entry_group_count": no_entry_group_count,
+                    "aggregate_candidate_source": aggregate_candidate_source,
                     **robustness,
                 }
             )

@@ -217,6 +217,16 @@ def main() -> None:
             last_candidate_time = ts.iloc[-1].isoformat()
 
     outcomes_df.to_csv(output_dir / "candidates.csv", index=False)
+
+    aggregate_cols = [col for col in ["timestamp", "pnl_pips"] if col in outcomes_df.columns]
+    aggregate_candidates_df = outcomes_df.loc[:, aggregate_cols].copy() if aggregate_cols else pd.DataFrame(columns=["timestamp", "pnl_pips"])
+    if "timestamp" not in aggregate_candidates_df.columns:
+        aggregate_candidates_df["timestamp"] = pd.Series(dtype="object")
+    if "pnl_pips" not in aggregate_candidates_df.columns:
+        aggregate_candidates_df["pnl_pips"] = pd.Series(dtype="float64")
+    aggregate_candidates_df = aggregate_candidates_df[["timestamp", "pnl_pips"]]
+    aggregate_candidates_df.to_csv(output_dir / "candidates_aggregate.csv.gz", index=False, compression="gzip")
+
     timing_audit_df.to_csv(output_dir / "candidates_timing_audit.csv", index=False)
     decision_policy_audit_df.to_csv(output_dir / "candidates_decision_policy_audit.csv", index=False)
     candidates_audit_df.to_csv(output_dir / "candidates_policy_audit.csv", index=False)

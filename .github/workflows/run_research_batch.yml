@@ -136,7 +136,7 @@ jobs:
               mkdir -p "${run_dst}"
               for file in \
                 summary_overall.csv \
-                candidates.csv \
+                candidates_aggregate.csv.gz \
                 candidate_summary.csv \
                 policy_candidate_summary.csv \
                 summary_by_month.csv \
