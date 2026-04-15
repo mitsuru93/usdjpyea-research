@@ -264,7 +264,7 @@ def _build_variant_label(*, family_token: str, band_token: str, timing_mode: str
     return f"FAM{family_token}__BAND{band_token}__{timing_token}__HG30__DECBASE__EXNONE__V1"
 
 
-def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, str]]:
+def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
     sweep = spec.get("decision_policy_sweep")
     if not sweep:
         return [{"decision_policy": "", "score_bundle": "", "decision_token": "DECBASE", "score_token": "SFBASE"}]
@@ -276,7 +276,6 @@ def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, str]]:
     if not bundles:
         raise ValueError("decision_policy_sweep.score_bundles must define at least one score bundle")
 
-    variants: list[dict[str, str]] = []
     policy_tokens = {
         "bin_env_v1": "DENV",
         "bin_forceflip_v1": "DFF",
@@ -289,18 +288,106 @@ def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, str]]:
         "sf_timing_micro_v1": "STIM",
         "sf_zone_risk_v1": "SZON",
     }
+    margin_threshold_values = sweep.get("margin_threshold_values")
+    no_entry_threshold_values = sweep.get("no_entry_threshold_values")
+    legacy_policy_bundle_only = margin_threshold_values is None and no_entry_threshold_values is None
+
+    if legacy_policy_bundle_only:
+        variants: list[dict[str, Any]] = []
+        for policy in policies:
+            for bundle in bundles:
+                policy_key = policy.lower()
+                bundle_key = bundle.lower()
+                variants.append(
+                    {
+                        "decision_policy": policy,
+                        "score_bundle": bundle,
+                        "decision_token": policy_tokens.get(policy_key, f"D{sanitize_label(policy).upper()}"),
+                        "score_token": score_tokens.get(bundle_key, f"S{sanitize_label(bundle).upper()}"),
+                    }
+                )
+        return variants
+
+    margin_values = [float(x) for x in (margin_threshold_values or [0.75])]
+    no_entry_values = [float(x) for x in (no_entry_threshold_values or [0.25])]
+    if not margin_values:
+        raise ValueError("decision_policy_sweep.margin_threshold_values must define at least one numeric value")
+    if not no_entry_values:
+        raise ValueError("decision_policy_sweep.no_entry_threshold_values must define at least one numeric value")
+
+    variants: list[dict[str, Any]] = []
+
+    def _threshold_token(margin: float, no_entry: float, *, include_no_entry: bool) -> str:
+        margin_token = int(round(margin * 100))
+        no_entry_token = int(round(no_entry * 100))
+        if include_no_entry:
+            return f"M{margin_token:03d}N{no_entry_token:03d}"
+        return f"M{margin_token:03d}"
+
     for policy in policies:
         for bundle in bundles:
             policy_key = policy.lower()
             bundle_key = bundle.lower()
+            base_decision_token = policy_tokens.get(policy_key, f"D{sanitize_label(policy).upper()}")
+            score_token = score_tokens.get(bundle_key, f"S{sanitize_label(bundle).upper()}")
+
+            if policy_key == "two_stage_margin_v1":
+                for margin_threshold in margin_values:
+                    no_entry_threshold = 0.25
+                    variants.append(
+                        {
+                            "decision_policy_family": policy,
+                            "decision_policy": {
+                                "family": policy,
+                                "margin_threshold": margin_threshold,
+                                "no_entry_threshold": no_entry_threshold,
+                            },
+                            "score_bundle": bundle,
+                            "margin_threshold": margin_threshold,
+                            "no_entry_threshold": no_entry_threshold,
+                            "decision_token": f"{base_decision_token}{_threshold_token(margin_threshold, no_entry_threshold, include_no_entry=False)}",
+                            "score_token": score_token,
+                        }
+                    )
+                continue
+
+            if policy_key == "tri_score_rvtrno_v1":
+                for margin_threshold, no_entry_threshold in itertools.product(margin_values, no_entry_values):
+                    variants.append(
+                        {
+                            "decision_policy_family": policy,
+                            "decision_policy": {
+                                "family": policy,
+                                "margin_threshold": margin_threshold,
+                                "no_entry_threshold": no_entry_threshold,
+                            },
+                            "score_bundle": bundle,
+                            "margin_threshold": margin_threshold,
+                            "no_entry_threshold": no_entry_threshold,
+                            "decision_token": f"{base_decision_token}{_threshold_token(margin_threshold, no_entry_threshold, include_no_entry=True)}",
+                            "score_token": score_token,
+                        }
+                    )
+                continue
+
+            default_margin_threshold = 0.75
+            default_no_entry_threshold = 0.25
             variants.append(
                 {
-                    "decision_policy": policy,
+                    "decision_policy_family": policy,
+                    "decision_policy": {
+                        "family": policy,
+                        "margin_threshold": default_margin_threshold,
+                        "no_entry_threshold": default_no_entry_threshold,
+                    },
                     "score_bundle": bundle,
-                    "decision_token": policy_tokens.get(policy_key, f"D{sanitize_label(policy).upper()}"),
-                    "score_token": score_tokens.get(bundle_key, f"S{sanitize_label(bundle).upper()}"),
+                    "margin_threshold": default_margin_threshold,
+                    "no_entry_threshold": default_no_entry_threshold,
+                    "decision_token": base_decision_token,
+                    "score_token": score_token,
                 }
             )
+
     return variants
 
 
@@ -452,7 +539,7 @@ def main() -> None:
                 "notes": (
                     f"batch_variant family={variant.get('band_model_family')} "
                     f"model={variant['band_model']} "
-                    f"decision_policy={variant.get('decision_policy') or 'bin_env_v1'} "
+                    f"decision_policy={variant.get('decision_policy_family') or variant.get('decision_policy') or 'bin_env_v1'} "
                     f"score_bundle={variant.get('score_bundle') or 'sf_ctx_base_v1'}"
                 ),
             }
