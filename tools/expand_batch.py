@@ -554,6 +554,7 @@ def main() -> None:
             "study_name": f"{batch_id}__{shard_id}",
             "output_root": str(study_output),
             "dataset_registry": spec["dataset_registry"],
+            "shared_precompute": dict(spec.get("shared_precompute", {})),
             "shared_defaults": {
                 "input_timezone_mode": "UTC",
                 "max_holding_bars": 30,

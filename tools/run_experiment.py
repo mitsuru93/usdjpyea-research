@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import sys
+import tempfile
 from pathlib import Path
 
 import pandas as pd
@@ -119,6 +121,103 @@ def _load_policy_preset(path: Path) -> dict:
     return payload
 
 
+def _build_precompute_inputs(cfg: dict) -> tuple[dict[str, object], dict[str, object]]:
+    band_model = str(cfg.get("band_model", DEFAULT_BAND_MODEL)).strip().lower()
+    if band_model not in SUPPORTED_BAND_MODELS:
+        raise ValueError(f"Unsupported band_model='{band_model}'. Allowed: {sorted(SUPPORTED_BAND_MODELS)}")
+
+    def _read_value(key: str, default: object, cast: object) -> object:
+        raw = cfg.get(key)
+        value = default if raw is None or raw == "" else raw
+        return cast(value) if callable(cast) else value
+
+    params: dict[str, object] = {
+        "band_model": band_model,
+        "ema_period": _read_value("ema_period", EMA_SPAN, int),
+        "band_percent": _read_value("band_percent", DEVIATION_RATE, float),
+        "band_pips": _read_value("band_pips", 10.0, float),
+        "band_atr_k": _read_value("band_atr_k", 1.0, float),
+        "band_atr_period": _read_value("band_atr_period", DEFAULT_ATR_PERIOD, int),
+        "band_std_k": _read_value("band_std_k", 1.0, float),
+        "band_std_period": _read_value("band_std_period", DEFAULT_STD_PERIOD, int),
+        "band_std_source": str(_read_value("band_std_source", "returns", str)).strip().lower(),
+        "band_range_period": _read_value("band_range_period", DEFAULT_RANGE_PERIOD, int),
+        "band_range_k": _read_value("band_range_k", 1.0, float),
+        "band_range_percentile": _read_value("band_range_percentile", 0.75, float),
+        "band_vol_period": _read_value("band_vol_period", DEFAULT_VOL_PERIOD, int),
+        "band_vol_k": _read_value("band_vol_k", 1.0, float),
+        "band_fixed_floor_pips": _read_value("band_fixed_floor_pips", 8.0, float),
+        "band_fixed_cap_pips": _read_value("band_fixed_cap_pips", 15.0, float),
+        "pip_size": _read_value("pip_size", DEFAULT_PIP_SIZE, float),
+    }
+    defaults_used: dict[str, bool] = {}
+    for key in params:
+        defaults_used[key] = key not in cfg or cfg.get(key) is None or cfg.get(key) == ""
+    return params, defaults_used
+
+
+def _compute_preprocessed_frames(cfg: dict, params: dict[str, object]) -> dict[str, pd.DataFrame]:
+    ohlc_df = load_ohlc_csv(cfg["input_csv"])
+    tagged_df = add_session_columns(ohlc_df, input_timezone_mode=cfg["input_timezone_mode"])
+    env_df = add_envelope_columns(
+        tagged_df,
+        ema_span=int(params["ema_period"]),
+        band_model=str(params["band_model"]),
+        band_percent=float(params["band_percent"]),
+        band_pips=float(params["band_pips"]),
+        band_atr_k=float(params["band_atr_k"]),
+        band_atr_period=int(params["band_atr_period"]),
+        band_std_k=float(params["band_std_k"]),
+        band_std_period=int(params["band_std_period"]),
+        band_std_source=str(params["band_std_source"]),
+        band_range_period=int(params["band_range_period"]),
+        band_range_k=float(params["band_range_k"]),
+        band_range_percentile=float(params["band_range_percentile"]),
+        band_vol_period=int(params["band_vol_period"]),
+        band_vol_k=float(params["band_vol_k"]),
+        band_fixed_floor_pips=float(params["band_fixed_floor_pips"]),
+        band_fixed_cap_pips=float(params["band_fixed_cap_pips"]),
+        pip_size=float(params["pip_size"]),
+    )
+    feature_df = build_feature_frame(env_df)
+    base_candidates = build_candidates(env_df)
+    timing_result = apply_timing_mode(base_candidates, env_df, timing_mode=cfg["timing_mode"])
+    timing_audit_df = timing_result["timing_audit_df"]
+    timing_entered_df = timing_result["entered_df"]
+    candidate_feature_df = attach_features_to_candidates(timing_entered_df, feature_df)
+    return {
+        "env_df": env_df,
+        "feature_df": feature_df,
+        "base_candidates": base_candidates,
+        "timing_audit_df": timing_audit_df,
+        "timing_entered_df": timing_entered_df,
+        "candidate_feature_df": candidate_feature_df,
+    }
+
+
+def _resolve_shared_precompute(cfg: dict, params: dict[str, object]) -> tuple[dict[str, pd.DataFrame], dict[str, object]]:
+    cache_dir_raw = str(cfg.get("shared_precompute_cache_dir", "")).strip()
+    cache_key_raw = str(cfg.get("shared_precompute_cache_key", "")).strip()
+    if not cache_dir_raw or not cache_key_raw:
+        return _compute_preprocessed_frames(cfg, params), {"enabled": False, "cache_hit": False, "cache_key": ""}
+
+    cache_dir = Path(cache_dir_raw).resolve()
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_hash = hashlib.sha256(cache_key_raw.encode("utf-8")).hexdigest()
+    cache_path = cache_dir / f"{cache_hash}.pkl"
+
+    if cache_path.exists():
+        cached = pd.read_pickle(cache_path)
+        return cached, {"enabled": True, "cache_hit": True, "cache_key": cache_key_raw, "cache_path": str(cache_path)}
+
+    preprocessed = _compute_preprocessed_frames(cfg, params)
+    with tempfile.NamedTemporaryFile(mode="wb", delete=False, dir=cache_dir, prefix=f".{cache_hash}.", suffix=".tmp") as tmp:
+        tmp_path = Path(tmp.name)
+    pd.to_pickle(preprocessed, tmp_path)
+    tmp_path.replace(cache_path)
+    return preprocessed, {"enabled": True, "cache_hit": False, "cache_key": cache_key_raw, "cache_path": str(cache_path)}
+
+
 def main() -> None:
     args = parse_args()
     cfg = _load_config(args.config)
@@ -126,63 +225,31 @@ def main() -> None:
     output_dir = Path(cfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    effective_defaults_used: dict[str, bool] = {}
+    params, effective_defaults_used = _build_precompute_inputs(cfg)
+    band_model = str(params["band_model"])
+    ema_period = int(params["ema_period"])
+    band_percent = float(params["band_percent"])
+    band_pips = float(params["band_pips"])
+    band_atr_k = float(params["band_atr_k"])
+    band_atr_period = int(params["band_atr_period"])
+    band_std_k = float(params["band_std_k"])
+    band_std_period = int(params["band_std_period"])
+    band_std_source = str(params["band_std_source"])
+    band_range_period = int(params["band_range_period"])
+    band_range_k = float(params["band_range_k"])
+    band_range_percentile = float(params["band_range_percentile"])
+    band_vol_period = int(params["band_vol_period"])
+    band_vol_k = float(params["band_vol_k"])
+    band_fixed_floor_pips = float(params["band_fixed_floor_pips"])
+    band_fixed_cap_pips = float(params["band_fixed_cap_pips"])
+    pip_size = float(params["pip_size"])
 
-    def _cfg_value(key: str, default: object) -> object:
-        raw_value = cfg.get(key)
-        use_default = key not in cfg or raw_value is None or raw_value == ""
-        effective_defaults_used[key] = use_default
-        return default if use_default else raw_value
-
-    band_model = str(_cfg_value("band_model", DEFAULT_BAND_MODEL)).strip().lower()
-    if band_model not in SUPPORTED_BAND_MODELS:
-        raise ValueError(f"Unsupported band_model='{band_model}'. Allowed: {sorted(SUPPORTED_BAND_MODELS)}")
-    ema_period = int(_cfg_value("ema_period", EMA_SPAN))
-    band_percent = float(_cfg_value("band_percent", DEVIATION_RATE))
-    band_pips = float(_cfg_value("band_pips", 10.0))
-    band_atr_k = float(_cfg_value("band_atr_k", 1.0))
-    band_atr_period = int(_cfg_value("band_atr_period", DEFAULT_ATR_PERIOD))
-    band_std_k = float(_cfg_value("band_std_k", 1.0))
-    band_std_period = int(_cfg_value("band_std_period", DEFAULT_STD_PERIOD))
-    band_std_source = str(_cfg_value("band_std_source", "returns")).strip().lower()
-    band_range_period = int(_cfg_value("band_range_period", DEFAULT_RANGE_PERIOD))
-    band_range_k = float(_cfg_value("band_range_k", 1.0))
-    band_range_percentile = float(_cfg_value("band_range_percentile", 0.75))
-    band_vol_period = int(_cfg_value("band_vol_period", DEFAULT_VOL_PERIOD))
-    band_vol_k = float(_cfg_value("band_vol_k", 1.0))
-    band_fixed_floor_pips = float(_cfg_value("band_fixed_floor_pips", 8.0))
-    band_fixed_cap_pips = float(_cfg_value("band_fixed_cap_pips", 15.0))
-    pip_size = float(_cfg_value("pip_size", DEFAULT_PIP_SIZE))
-
-    ohlc_df = load_ohlc_csv(cfg["input_csv"])
-    tagged_df = add_session_columns(ohlc_df, input_timezone_mode=cfg["input_timezone_mode"])
-    env_df = add_envelope_columns(
-        tagged_df,
-        ema_span=ema_period,
-        band_model=band_model,
-        band_percent=band_percent,
-        band_pips=band_pips,
-        band_atr_k=band_atr_k,
-        band_atr_period=band_atr_period,
-        band_std_k=band_std_k,
-        band_std_period=band_std_period,
-        band_std_source=band_std_source,
-        band_range_period=band_range_period,
-        band_range_k=band_range_k,
-        band_range_percentile=band_range_percentile,
-        band_vol_period=band_vol_period,
-        band_vol_k=band_vol_k,
-        band_fixed_floor_pips=band_fixed_floor_pips,
-        band_fixed_cap_pips=band_fixed_cap_pips,
-        pip_size=pip_size,
-    )
-    feature_df = build_feature_frame(env_df)
-
-    base_candidates = build_candidates(env_df)
-    timing_result = apply_timing_mode(base_candidates, env_df, timing_mode=cfg["timing_mode"])
-    timing_audit_df = timing_result["timing_audit_df"]
-    timing_entered_df = timing_result["entered_df"]
-    candidate_feature_df = attach_features_to_candidates(timing_entered_df, feature_df)
+    precompute_result, precompute_stats = _resolve_shared_precompute(cfg, params)
+    env_df = precompute_result["env_df"]
+    base_candidates = precompute_result["base_candidates"]
+    timing_audit_df = precompute_result["timing_audit_df"]
+    timing_entered_df = precompute_result["timing_entered_df"]
+    candidate_feature_df = precompute_result["candidate_feature_df"]
 
     decision_policy_cfg = parse_decision_policy_config(cfg.get("decision_policy"), cfg.get("score_bundle"))
     decision_policy_result = apply_decision_policy_to_candidates(candidate_feature_df, decision_policy_cfg)
@@ -367,6 +434,7 @@ def main() -> None:
             "excluded_candidate_count": int(len(candidates_audit_df) - len(screened_candidates_df)),
         },
         "notes": cfg.get("notes", ""),
+        "shared_precompute": precompute_stats,
     }
     with (output_dir / "run_metadata.yaml").open("w", encoding="utf-8") as f:
         yaml.safe_dump(metadata, f, sort_keys=False)
@@ -384,6 +452,7 @@ def main() -> None:
         f"timeouts={(outcomes_df['outcome_status'] == 'timeout').sum() if not outcomes_df.empty else 0}",
         f"tz_mode={cfg['input_timezone_mode']}",
         f"feature_set={FEATURE_SET_VERSION}",
+        f"shared_precompute={'hit' if precompute_stats.get('cache_hit', False) else ('miss' if precompute_stats.get('enabled', False) else 'disabled')}",
         f"out={output_dir}",
     )
 
