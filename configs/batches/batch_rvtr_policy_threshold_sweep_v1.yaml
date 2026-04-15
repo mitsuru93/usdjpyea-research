@@ -4,6 +4,8 @@ dataset_id: usdjpy_m1_2024_01_02_to_2026_02_18_public_main
 output_root: research/reports/batches/batch_rvtr_policy_threshold_sweep_v1
 shard_size: 4
 output_tag_default: mobile_dispatch
+shared_precompute:
+  enabled: true
 blackout_windows_jst:
   - start_hhmmss: '06:55:00'
     end_hhmmss: '07:10:00'

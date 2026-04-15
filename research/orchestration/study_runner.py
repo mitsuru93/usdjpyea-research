@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import hashlib
 from pathlib import Path
 from typing import Any
 
@@ -167,8 +168,38 @@ def _build_run_experiment_config(
         "ema_period",
         "decision_policy",
         "score_bundle",
+        "shared_precompute_cache_dir",
+        "shared_precompute_cache_key",
     ]
     return {key: merged[key] for key in passthrough_keys if key in merged}
+
+
+def _shared_precompute_key(run_payload: dict[str, Any]) -> str:
+    key_fields = {
+        "cache_key_version": "study_shared_precompute_v1",
+        "input_csv": str(run_payload.get("input_csv", "")),
+        "input_timezone_mode": str(run_payload.get("input_timezone_mode", "")),
+        "timing_mode": str(run_payload.get("timing_mode", "")),
+        "band_model": str(run_payload.get("band_model", "")),
+        "band_percent": run_payload.get("band_percent"),
+        "band_pips": run_payload.get("band_pips"),
+        "band_atr_k": run_payload.get("band_atr_k"),
+        "band_atr_period": run_payload.get("band_atr_period"),
+        "band_std_k": run_payload.get("band_std_k"),
+        "band_std_period": run_payload.get("band_std_period"),
+        "band_std_source": run_payload.get("band_std_source"),
+        "band_range_period": run_payload.get("band_range_period"),
+        "band_range_k": run_payload.get("band_range_k"),
+        "band_range_percentile": run_payload.get("band_range_percentile"),
+        "band_vol_period": run_payload.get("band_vol_period"),
+        "band_vol_k": run_payload.get("band_vol_k"),
+        "band_fixed_floor_pips": run_payload.get("band_fixed_floor_pips"),
+        "band_fixed_cap_pips": run_payload.get("band_fixed_cap_pips"),
+        "ema_period": run_payload.get("ema_period"),
+        "pip_size": run_payload.get("pip_size"),
+    }
+    payload = yaml.safe_dump(key_fields, sort_keys=True)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 def _normalize_policy_override_fields(*, merged: dict[str, Any], run_cfg: dict[str, Any]) -> None:
@@ -314,6 +345,11 @@ def run_study(
     compare_tool_path = repo_root / "tools" / "compare_runs.py"
 
     shared_defaults = dict(cfg.get("shared_defaults", {}))
+    shared_precompute_cfg = cfg.get("shared_precompute", {}) if isinstance(cfg.get("shared_precompute", {}), dict) else {}
+    shared_precompute_enabled = bool(shared_precompute_cfg.get("enabled", False))
+    shared_precompute_cache_dir = ensure_directory(output_root / "shared_precompute_cache")
+    shared_precompute_counts: dict[str, int] = {}
+    shared_reused_run_count = 0
     run_records: list[dict[str, Any]] = []
     warnings: list[str] = []
     errors: list[str] = []
@@ -359,6 +395,14 @@ def run_study(
                 dataset_registry_path=dataset_registry_path,
                 dataset_cache_dir=dataset_cache_dir,
             )
+            if shared_precompute_enabled:
+                shared_key = _shared_precompute_key(run_payload)
+                shared_precompute_counts[shared_key] = shared_precompute_counts.get(shared_key, 0) + 1
+                if shared_precompute_counts[shared_key] > 1:
+                    shared_reused_run_count += 1
+                run_payload["shared_precompute_cache_dir"] = str(shared_precompute_cache_dir)
+                run_payload["shared_precompute_cache_key"] = shared_key
+
             run_cfg_path = runtime_config_dir / f"run_{safe_label}.yaml"
             _write_yaml(run_cfg_path, run_payload)
 
@@ -454,6 +498,12 @@ def run_study(
         "warnings": warnings,
         "errors": errors,
         "notes": str(cfg.get("notes", "")),
+        "shared_precompute": {
+            "enabled": shared_precompute_enabled,
+            "group_count": len(shared_precompute_counts),
+            "reused_run_count": int(shared_reused_run_count),
+            "cache_dir": str(shared_precompute_cache_dir) if shared_precompute_enabled else None,
+        },
     }
 
     metadata_path = output_root / "study_metadata.yaml"
