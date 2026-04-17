@@ -79,6 +79,18 @@ def _persist_process_logs(
     }
 
 
+def _init_debug_log_files(output_dir: Path) -> dict[str, str]:
+    files = {
+        "run_experiment_stdout": output_dir / "run_experiment.stdout.log",
+        "run_experiment_stderr": output_dir / "run_experiment.stderr.log",
+        "analyze_run_stdout": output_dir / "analyze_run.stdout.log",
+        "analyze_run_stderr": output_dir / "analyze_run.stderr.log",
+    }
+    for path in files.values():
+        path.write_text("", encoding="utf-8")
+    return {key: str(path) for key, path in files.items()}
+
+
 def _validate_study_config(cfg: dict[str, Any]) -> None:
     required = ["study_name", "output_root", "shared_defaults", "runs"]
     missing = [key for key in required if key not in cfg]
@@ -408,6 +420,7 @@ def run_study(
             "warnings": [],
             "errors": [],
         }
+        record["debug_logs"] = _init_debug_log_files(run_output_dir)
 
         try:
             print(f"[study] run_start label={label} output_dir={run_output_dir}", flush=True)
@@ -433,27 +446,27 @@ def run_study(
             _write_yaml(run_cfg_path, run_payload)
 
             run_proc = _run_cli(run_tool_path, run_cfg_path, repo_root)
+            run_log_files = _persist_process_logs(
+                output_dir=run_output_dir,
+                process_name="run_experiment",
+                stdout=run_proc.stdout or "",
+                stderr=run_proc.stderr or "",
+            )
+            record["debug_logs"].update(
+                {
+                    "run_experiment_stdout": run_log_files["stdout"],
+                    "run_experiment_stderr": run_log_files["stderr"],
+                }
+            )
             if run_proc.returncode != 0:
                 record["status"] = "run_failed"
                 print(f"[study][{label}][run_experiment][stdout]", flush=True)
                 print(run_proc.stdout or "", flush=True)
                 print(f"[study][{label}][run_experiment][stderr]", flush=True)
                 print(run_proc.stderr or "", flush=True)
-                run_log_files = _persist_process_logs(
-                    output_dir=run_output_dir,
-                    process_name="run_experiment",
-                    stdout=run_proc.stdout or "",
-                    stderr=run_proc.stderr or "",
-                )
                 err = _short_error_excerpt(run_proc.stderr or "", run_proc.stdout or "")
                 message = f"run '{label}' failed during run_experiment: {err}"
                 record["errors"].append(message)
-                record.setdefault("debug_logs", {}).update(
-                    {
-                        "run_experiment_stdout": run_log_files["stdout"],
-                        "run_experiment_stderr": run_log_files["stderr"],
-                    }
-                )
                 errors.append(message)
                 run_records.append(record)
                 print(f"[study] run_end label={label} status={record['status']}", flush=True)
@@ -474,27 +487,27 @@ def run_study(
                 _write_yaml(analysis_cfg_path, analysis_payload)
 
                 analysis_proc = _run_cli(analyze_tool_path, analysis_cfg_path, repo_root)
+                analysis_log_files = _persist_process_logs(
+                    output_dir=run_output_dir,
+                    process_name="analyze_run",
+                    stdout=analysis_proc.stdout or "",
+                    stderr=analysis_proc.stderr or "",
+                )
+                record["debug_logs"].update(
+                    {
+                        "analyze_run_stdout": analysis_log_files["stdout"],
+                        "analyze_run_stderr": analysis_log_files["stderr"],
+                    }
+                )
                 if analysis_proc.returncode != 0:
                     record["status"] = "analysis_failed"
                     print(f"[study][{label}][analyze_run][stdout]", flush=True)
                     print(analysis_proc.stdout or "", flush=True)
                     print(f"[study][{label}][analyze_run][stderr]", flush=True)
                     print(analysis_proc.stderr or "", flush=True)
-                    analysis_log_files = _persist_process_logs(
-                        output_dir=run_output_dir,
-                        process_name="analyze_run",
-                        stdout=analysis_proc.stdout or "",
-                        stderr=analysis_proc.stderr or "",
-                    )
                     err = _short_error_excerpt(analysis_proc.stderr or "", analysis_proc.stdout or "")
                     message = f"run '{label}' failed during analyze_run: {err}"
                     record["errors"].append(message)
-                    record.setdefault("debug_logs", {}).update(
-                        {
-                            "analyze_run_stdout": analysis_log_files["stdout"],
-                            "analyze_run_stderr": analysis_log_files["stderr"],
-                        }
-                    )
                     errors.append(message)
                 else:
                     record["analysis_dir"] = str(analysis_output_dir)

@@ -166,14 +166,14 @@ jobs:
               if [ -f "${run_dir}/run_metadata.yaml" ]; then
                 cp "${run_dir}/run_metadata.yaml" "${run_dst}/run_metadata.yaml"
               fi
-
-              find "${run_dir}" -type f \( -name "*.log" -o -name "*.yaml" -o -name "*.yml" -o -name "*.md" \) \
-                -exec cp --parents {} "${SHARD_DST}" \;
             done
           fi
 
-          find "${SHARD_SRC}" -maxdepth 2 -type f \( -name "*.log" -o -name "*.yaml" -o -name "*.yml" -o -name "*.md" \) \
-            -exec cp --parents {} "${SHARD_DST}" \;
+          (
+            cd "${SHARD_SRC}" || exit 0
+            find . -type f \( -name "*.log" -o -name "*.yaml" -o -name "*.yml" -o -name "*.md" \) \
+              -exec cp --parents {} "${GITHUB_WORKSPACE}/${SHARD_DST}" \;
+          )
 
       - name: Upload shard artifacts bundle
         if: always()
