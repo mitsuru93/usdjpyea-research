@@ -37,6 +37,13 @@ class DecisionPolicyConfig:
     version: str = DECISION_POLICY_VERSION
 
 
+@dataclass(frozen=True)
+class DecisionPrepBundle:
+    score_bundle: str
+    decision_policy_version: str
+    prep_df: pd.DataFrame
+
+
 def parse_decision_policy_config(
     raw_policy: str | dict[str, Any] | None,
     raw_score_bundle: str | dict[str, Any] | None = None,
@@ -93,29 +100,90 @@ def apply_decision_policy_to_candidates(
     candidates_df: pd.DataFrame,
     policy: DecisionPolicyConfig,
 ) -> dict[str, Any]:
-    """Apply a deterministic RV/TR/no-entry decision policy to paired candidates."""
+    prep_bundle = prepare_decision_policy_inputs(candidates_df, policy.score_bundle)
+    return apply_prepared_decision_policy(prep_bundle, policy)
+
+
+def prepare_decision_policy_inputs(
+    candidates_df: pd.DataFrame,
+    score_bundle: str,
+) -> DecisionPrepBundle:
+    """Build threshold-independent score preparation bundle."""
     audit_df = candidates_df.copy()
+    audit_df["score_bundle"] = score_bundle
+    audit_df["decision_policy_version"] = DECISION_POLICY_VERSION
+    audit_df["rvtr_score"] = pd.Series(dtype="float64")
+    audit_df["rvtr_score_margin"] = pd.Series(dtype="float64")
+    audit_df["decision_group_id"] = ""
+    audit_df["decision_group_rank"] = pd.Series(dtype="int64")
+    audit_df["decision_best_score"] = pd.Series(dtype="float64")
+    audit_df["decision_second_score"] = pd.Series(dtype="float64")
+    audit_df["decision_group_count"] = pd.Series(dtype="int64")
+
+    if audit_df.empty:
+        return DecisionPrepBundle(
+            score_bundle=score_bundle,
+            decision_policy_version=DECISION_POLICY_VERSION,
+            prep_df=audit_df,
+        )
+
+    audit_df = _attach_scores(audit_df, score_bundle)
+
+    decision_group_id = (
+        audit_df["timestamp"].astype(str).fillna("")
+        + "|"
+        + audit_df["touch_side"].astype(str).fillna("")
+    )
+    audit_df["decision_group_id"] = decision_group_id
+
+    ranked = audit_df.sort_values(
+        ["decision_group_id", "rvtr_score", "candidate_family"],
+        ascending=[True, False, True],
+        kind="mergesort",
+    ).copy()
+
+    grouped = ranked.groupby("decision_group_id", sort=False, dropna=False)
+    ranked["decision_group_rank"] = grouped.cumcount().add(1).astype("int64")
+    ranked["decision_best_score"] = grouped["rvtr_score"].transform("first").astype("float64")
+    ranked["decision_group_count"] = grouped["rvtr_score"].transform("size").astype("int64")
+
+    second_score_map = ranked.loc[ranked["decision_group_rank"] == 2, ["decision_group_id", "rvtr_score"]].drop_duplicates(
+        "decision_group_id", keep="first"
+    )
+    second_score_series = second_score_map.set_index("decision_group_id")["rvtr_score"] if not second_score_map.empty else pd.Series(dtype="float64")
+    ranked["decision_second_score"] = ranked["decision_group_id"].map(second_score_series).fillna(0.0).astype("float64")
+    ranked["rvtr_score_margin"] = ranked["decision_best_score"] - ranked["decision_second_score"]
+
+    audit_df = ranked.sort_index()
+
+    return DecisionPrepBundle(
+        score_bundle=score_bundle,
+        decision_policy_version=DECISION_POLICY_VERSION,
+        prep_df=audit_df,
+    )
+
+
+def apply_prepared_decision_policy(
+    prep_bundle: DecisionPrepBundle,
+    policy: DecisionPolicyConfig,
+) -> dict[str, Any]:
+    """Apply threshold-dependent decision policy on prepared score bundle."""
+    audit_df = prep_bundle.prep_df.copy()
     audit_df["decision_policy_family"] = policy.family
     audit_df["score_bundle"] = policy.score_bundle
     audit_df["decision_policy_version"] = policy.version
-    audit_df["rvtr_score"] = pd.Series(dtype="float64")
-    audit_df["rvtr_score_margin"] = pd.Series(dtype="float64")
     audit_df["selected_by_decision_policy"] = False
     audit_df["decision_policy_outcome"] = "exclude"
-    audit_df["decision_group_id"] = ""
     audit_df["final_decision"] = "no_entry"
     audit_df["reject_reason"] = "excluded_by_policy"
-    audit_df["rv_total_score"] = pd.Series(0.0, index=audit_df.index, dtype="float64")
-    audit_df["tr_total_score"] = pd.Series(0.0, index=audit_df.index, dtype="float64")
-    audit_df["entry_strength_score"] = pd.Series(0.0, index=audit_df.index, dtype="float64")
-    audit_df["decision_margin_score"] = pd.Series(0.0, index=audit_df.index, dtype="float64")
+    audit_df["rv_total_score"] = pd.to_numeric(audit_df.get("rv_score", 0.0), errors="coerce").fillna(0.0).astype("float64")
+    audit_df["tr_total_score"] = pd.to_numeric(audit_df.get("tr_score", 0.0), errors="coerce").fillna(0.0).astype("float64")
+    audit_df["entry_strength_score"] = 0.0
+    audit_df["decision_margin_score"] = 0.0
 
     if audit_df.empty:
         return _build_result(audit_df, policy, no_entry_group_count=0)
 
-    audit_df = _attach_scores(audit_df, policy.score_bundle)
-    if policy.family == "total_score_rvtrno_v1":
-        audit_df = _attach_total_scores(audit_df, policy)
     if policy.family == "bin_env_v1":
         audit_df["selected_by_decision_policy"] = True
         audit_df["decision_policy_outcome"] = "include"
@@ -126,93 +194,71 @@ def apply_decision_policy_to_candidates(
         audit_df["rvtr_score_margin"] = 0.0
         return _build_result(audit_df, policy, no_entry_group_count=0)
 
-    no_entry_group_count = 0
-    group_cols = ["timestamp", "touch_side"]
-    for group_key, part in audit_df.groupby(group_cols, sort=False, dropna=False):
-        group_id = "|".join(str(item) for item in (group_key if isinstance(group_key, tuple) else (group_key,)))
-        audit_df.loc[part.index, "decision_group_id"] = group_id
+    if policy.family == "total_score_rvtrno_v1":
+        audit_df = _attach_total_scores(audit_df, policy)
+        rv_wins = (audit_df["rv_total_score"] >= policy.entry_threshold) & (
+            (audit_df["rv_total_score"] - audit_df["tr_total_score"]) >= policy.margin_threshold
+        )
+        tr_wins = (audit_df["tr_total_score"] >= policy.entry_threshold) & (
+            (audit_df["tr_total_score"] - audit_df["rv_total_score"]) >= policy.margin_threshold
+        )
+        audit_df.loc[rv_wins, "final_decision"] = "rv"
+        audit_df.loc[tr_wins, "final_decision"] = "tr"
+        audit_df["entry_strength_score"] = audit_df[["rv_total_score", "tr_total_score"]].max(axis=1)
+        audit_df["decision_margin_score"] = (audit_df["rv_total_score"] - audit_df["tr_total_score"]).abs()
 
-        ranked = part.sort_values(["rvtr_score", "candidate_family"], ascending=[False, True])
-        best_idx = ranked.index[0]
-        best_score = float(ranked.iloc[0]["rvtr_score"])
-        second_score = float(ranked.iloc[1]["rvtr_score"]) if len(ranked) > 1 else 0.0
-        margin = best_score - second_score
-        audit_df.loc[part.index, "rvtr_score_margin"] = margin
-
-        if policy.family == "total_score_rvtrno_v1":
-            part_df = audit_df.loc[part.index].copy()
-            part_df["entry_strength_score"] = part_df[["rv_total_score", "tr_total_score"]].max(axis=1)
-            part_df["decision_margin_score"] = (part_df["rv_total_score"] - part_df["tr_total_score"]).abs()
-
-            rv_wins = (part_df["rv_total_score"] >= policy.entry_threshold) & (
-                (part_df["rv_total_score"] - part_df["tr_total_score"]) >= policy.margin_threshold
+        family_match_mask = (
+            ((audit_df["final_decision"] == "rv") & audit_df["candidate_family"].eq("rev"))
+            | ((audit_df["final_decision"] == "tr") & audit_df["candidate_family"].eq("trend"))
+        )
+        audit_df["reject_reason"] = "no_entry_threshold"
+        audit_df.loc[audit_df["final_decision"] != "no_entry", "reject_reason"] = "decision_family_mismatch"
+        ranked_match = (
+            audit_df.loc[family_match_mask]
+            .sort_values(
+                ["decision_group_id", "entry_strength_score", "decision_margin_score", "candidate_family"],
+                ascending=[True, False, False, True],
+                kind="mergesort",
             )
-            tr_wins = (part_df["tr_total_score"] >= policy.entry_threshold) & (
-                (part_df["tr_total_score"] - part_df["rv_total_score"]) >= policy.margin_threshold
-            )
-            part_df.loc[rv_wins, "final_decision"] = "rv"
-            part_df.loc[tr_wins, "final_decision"] = "tr"
+            .groupby("decision_group_id", sort=False, dropna=False)
+            .cumcount()
+        )
+        top_selected_idx = ranked_match[ranked_match.eq(0)].index
+        audit_df.loc[top_selected_idx, "selected_by_decision_policy"] = True
+        audit_df.loc[top_selected_idx, "decision_policy_outcome"] = "include"
+        audit_df.loc[top_selected_idx, "reject_reason"] = ""
+        overflow_mask = family_match_mask & ~audit_df.index.isin(top_selected_idx)
+        audit_df.loc[overflow_mask, "reject_reason"] = "not_top_decision_score"
 
-            family_match_mask = (
-                ((part_df["final_decision"] == "rv") & part_df["candidate_family"].eq("rev"))
-                | ((part_df["final_decision"] == "tr") & part_df["candidate_family"].eq("trend"))
-            )
-            if bool(family_match_mask.any()):
-                best_match_idx = (
-                    part_df.loc[family_match_mask]
-                    .sort_values(
-                        ["entry_strength_score", "decision_margin_score", "candidate_family"],
-                        ascending=[False, False, True],
-                        kind="mergesort",
-                    )
-                    .index[0]
-                )
-                part_df["reject_reason"] = "no_entry_threshold"
-                part_df.loc[part_df["final_decision"] != "no_entry", "reject_reason"] = "decision_family_mismatch"
-                part_df.loc[family_match_mask, "reject_reason"] = "not_top_decision_score"
-                part_df.loc[best_match_idx, "selected_by_decision_policy"] = True
-                part_df.loc[best_match_idx, "decision_policy_outcome"] = "include"
-                part_df.loc[best_match_idx, "reject_reason"] = ""
-            else:
-                no_entry_group_count += 1
-                part_df["reject_reason"] = "no_entry_threshold"
-                part_df.loc[part_df["final_decision"] != "no_entry", "reject_reason"] = "decision_family_mismatch"
+        selected_groups = set(audit_df.loc[top_selected_idx, "decision_group_id"].astype(str))
+        no_entry_group_mask = ~audit_df["decision_group_id"].astype(str).isin(selected_groups)
+        no_entry_group_count = int(audit_df.loc[no_entry_group_mask, "decision_group_id"].nunique())
+        return _build_result(audit_df, policy, no_entry_group_count=no_entry_group_count)
 
-            audit_df.loc[part.index, "selected_by_decision_policy"] = part_df["selected_by_decision_policy"]
-            audit_df.loc[part.index, "decision_policy_outcome"] = part_df["decision_policy_outcome"]
-            audit_df.loc[part.index, "final_decision"] = part_df["final_decision"]
-            audit_df.loc[part.index, "reject_reason"] = part_df["reject_reason"]
-            audit_df.loc[part.index, "entry_strength_score"] = part_df["entry_strength_score"]
-            audit_df.loc[part.index, "decision_margin_score"] = part_df["decision_margin_score"]
-            continue
+    best_row_mask = audit_df["decision_group_rank"].eq(1)
 
-        if policy.family == "two_stage_margin_v1" and margin < policy.margin_threshold:
-            no_entry_group_count += 1
-            audit_df.loc[part.index, "decision_policy_outcome"] = "no_entry_margin"
-            audit_df.loc[part.index, "reject_reason"] = "no_entry_margin"
-            audit_df.loc[part.index, "entry_strength_score"] = best_score
-            audit_df.loc[part.index, "decision_margin_score"] = margin
-            continue
+    no_entry_group_mask = pd.Series(False, index=audit_df.index)
+    if policy.family == "two_stage_margin_v1":
+        no_entry_group_mask = audit_df["rvtr_score_margin"] < policy.margin_threshold
+        audit_df.loc[no_entry_group_mask, "decision_policy_outcome"] = "no_entry_margin"
+    elif policy.family == "tri_score_rvtrno_v1":
+        no_entry_score = policy.no_entry_threshold + (policy.margin_threshold - audit_df["rvtr_score_margin"]).clip(lower=0.0)
+        audit_df["no_entry_score"] = no_entry_score
+        no_entry_group_mask = no_entry_score >= audit_df["decision_best_score"]
+        audit_df.loc[no_entry_group_mask, "decision_policy_outcome"] = "no_entry_score"
 
-        if policy.family == "tri_score_rvtrno_v1":
-            no_entry_score = policy.no_entry_threshold + max(0.0, policy.margin_threshold - margin)
-            audit_df.loc[part.index, "no_entry_score"] = no_entry_score
-            if no_entry_score >= best_score:
-                no_entry_group_count += 1
-                audit_df.loc[part.index, "decision_policy_outcome"] = "no_entry_score"
-                audit_df.loc[part.index, "reject_reason"] = "no_entry_score"
-                audit_df.loc[part.index, "entry_strength_score"] = best_score
-                audit_df.loc[part.index, "decision_margin_score"] = margin
-                continue
-
-        audit_df.loc[best_idx, "selected_by_decision_policy"] = True
-        audit_df.loc[best_idx, "decision_policy_outcome"] = "include"
-        selected_family = str(audit_df.loc[best_idx, "candidate_family"]).strip().lower()
-        selected_decision = "rv" if selected_family == "rev" else "tr" if selected_family == "trend" else "no_entry"
-        audit_df.loc[best_idx, "final_decision"] = selected_decision
-        audit_df.loc[best_idx, "reject_reason"] = ""
-        audit_df.loc[part.index, "entry_strength_score"] = best_score
-        audit_df.loc[part.index, "decision_margin_score"] = margin
+    include_mask = best_row_mask & ~no_entry_group_mask
+    audit_df.loc[include_mask, "selected_by_decision_policy"] = True
+    audit_df.loc[include_mask, "decision_policy_outcome"] = "include"
+    audit_df.loc[include_mask, "final_decision"] = audit_df.loc[include_mask, "candidate_family"].map({"rev": "rv", "trend": "tr"}).fillna(
+        "no_entry"
+    )
+    audit_df.loc[include_mask, "reject_reason"] = ""
+    audit_df.loc[audit_df["decision_policy_outcome"] == "no_entry_margin", "reject_reason"] = "no_entry_margin"
+    audit_df.loc[audit_df["decision_policy_outcome"] == "no_entry_score", "reject_reason"] = "no_entry_score"
+    audit_df["entry_strength_score"] = audit_df["decision_best_score"].astype("float64")
+    audit_df["decision_margin_score"] = audit_df["rvtr_score_margin"].astype("float64")
+    no_entry_group_count = int(audit_df.loc[no_entry_group_mask, "decision_group_id"].nunique())
 
     return _build_result(audit_df, policy, no_entry_group_count=no_entry_group_count)
 
