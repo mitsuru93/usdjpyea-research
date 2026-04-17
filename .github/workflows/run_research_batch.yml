@@ -126,6 +126,7 @@ jobs:
           echo "review_timing_study end_utc=$(date -u +'%Y-%m-%dT%H:%M:%SZ') end_jst=$(TZ=Asia/Tokyo date +'%Y-%m-%dT%H:%M:%S%z')"
 
       - name: Upload shard artifacts
+        if: always()
         run: |
           SHARD_SRC="${{ needs.prepare.outputs.batch_output_root }}/${{ matrix.study_output_relpath }}"
           SHARD_DST="batch_artifacts/${{ matrix.shard_runtime_relpath }}"
@@ -133,6 +134,15 @@ jobs:
 
           if [ -f "${SHARD_SRC}/study_metadata.yaml" ]; then
             cp "${SHARD_SRC}/study_metadata.yaml" "${SHARD_DST}/study_metadata.yaml"
+          fi
+
+          if [ -f "${SHARD_SRC}/study_summary.md" ]; then
+            cp "${SHARD_SRC}/study_summary.md" "${SHARD_DST}/study_summary.md"
+          fi
+
+          if [ -d "${SHARD_SRC}/runtime_configs" ]; then
+            mkdir -p "${SHARD_DST}/runtime_configs"
+            cp -r "${SHARD_SRC}/runtime_configs/." "${SHARD_DST}/runtime_configs/"
           fi
 
           if [ -d "${SHARD_SRC}/runs" ]; then
@@ -152,10 +162,21 @@ jobs:
                   cp "${run_dir}/${file}" "${run_dst}/${file}"
                 fi
               done
+
+              if [ -f "${run_dir}/run_metadata.yaml" ]; then
+                cp "${run_dir}/run_metadata.yaml" "${run_dst}/run_metadata.yaml"
+              fi
             done
           fi
 
+          (
+            cd "${SHARD_SRC}" || exit 0
+            find . -type f \( -name "*.log" -o -name "*.yaml" -o -name "*.yml" -o -name "*.md" \) \
+              -exec cp --parents {} "${GITHUB_WORKSPACE}/${SHARD_DST}" \;
+          )
+
       - name: Upload shard artifacts bundle
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.shard_artifact_name }}
