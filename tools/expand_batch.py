@@ -282,12 +282,16 @@ def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
         "two_stage_margin_v1": "D2M",
         "tri_score_rvtrno_v1": "D3S",
         "total_score_rvtrno_v1": "DTS",
+        "total_score_rvtr_v1": "DTS2",
     }
     score_tokens = {
         "sf_ctx_base_v1": "SBAS",
         "sf_ctx_momo_v1": "SMOM",
         "sf_timing_micro_v1": "STIM",
         "sf_zone_risk_v1": "SZON",
+        "ts_ctx_min_v1": "TSMN",
+        "ts_ctx_band_timing_v1": "TSBT",
+        "ts_ctx_full_v1": "TSFL",
     }
     margin_threshold_values = sweep.get("margin_threshold_values")
     no_entry_threshold_values = sweep.get("no_entry_threshold_values")
@@ -405,6 +409,36 @@ def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
                                 f"{base_decision_token}"
                                 f"E{int(round(entry_threshold * 100)):03d}"
                                 f"M{int(round(margin_threshold * 100)):03d}"
+                                f"R{sanitize_label(rv_weights_name).upper()[:4]}"
+                                f"T{sanitize_label(tr_weights_name).upper()[:4]}"
+                            ),
+                            "score_token": score_token,
+                        }
+                    )
+                continue
+
+            if policy_key == "total_score_rvtr_v1":
+                rv_weight_variants = rv_score_weights_variants or [{"name": "rvctx", "weights": {}}]
+                tr_weight_variants = tr_score_weights_variants or [{"name": "trctx", "weights": {}}]
+                for rv_weights_variant, tr_weights_variant in itertools.product(rv_weight_variants, tr_weight_variants):
+                    rv_weights_name = str(rv_weights_variant.get("name", "rvctx")).strip().lower() or "rvctx"
+                    tr_weights_name = str(tr_weights_variant.get("name", "trctx")).strip().lower() or "trctx"
+                    rv_weights = rv_weights_variant.get("weights", {}) if isinstance(rv_weights_variant, dict) else {}
+                    tr_weights = tr_weights_variant.get("weights", {}) if isinstance(tr_weights_variant, dict) else {}
+                    variants.append(
+                        {
+                            "decision_policy_family": policy,
+                            "decision_policy": {
+                                "family": policy,
+                                "rv_score_weights": rv_weights,
+                                "tr_score_weights": tr_weights,
+                            },
+                            "score_bundle": bundle,
+                            "entry_threshold": 0.0,
+                            "margin_threshold": 0.0,
+                            "no_entry_threshold": 0.0,
+                            "decision_token": (
+                                f"{base_decision_token}"
                                 f"R{sanitize_label(rv_weights_name).upper()[:4]}"
                                 f"T{sanitize_label(tr_weights_name).upper()[:4]}"
                             ),

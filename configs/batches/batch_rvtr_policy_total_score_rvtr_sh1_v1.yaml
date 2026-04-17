@@ -1,0 +1,122 @@
+batch_id: batch_rvtr_policy_total_score_rvtr_sh1_v1
+dataset_registry: configs/datasets/dataset_registry.yaml
+dataset_id: usdjpy_m1_2024_01_02_to_2026_02_18_public_main
+output_root: research/reports/batches/batch_rvtr_policy_total_score_rvtr_sh1_v1
+shard_size: 1
+output_tag_default: mobile_dispatch
+shared_precompute:
+  enabled: true
+blackout_windows_jst:
+  - start_hhmmss: '06:55:00'
+    end_hhmmss: '07:10:00'
+    label: tokyo_preopen_guard
+  - start_hhmmss: '23:55:00'
+    end_hhmmss: '00:10:00'
+    label: daily_rollover_guard
+spread_mode: audit_only
+band_model_sweep:
+  variants:
+    - band_model_family: atr
+      band_model: atr
+      band_token: ATR04_P07
+      band_value: 0.4
+      band_atr_k: 0.4
+      band_atr_period: 7
+    - band_model_family: atr
+      band_model: atr
+      band_token: ATR04_P14
+      band_value: 0.4
+      band_atr_k: 0.4
+      band_atr_period: 14
+    - band_model_family: atr
+      band_model: atr
+      band_token: ATR04_P28
+      band_value: 0.4
+      band_atr_k: 0.4
+      band_atr_period: 28
+    - band_model_family: atr
+      band_model: atr
+      band_token: ATR05_P07
+      band_value: 0.5
+      band_atr_k: 0.5
+      band_atr_period: 7
+    - band_model_family: atr
+      band_model: atr
+      band_token: ATR05_P14
+      band_value: 0.5
+      band_atr_k: 0.5
+      band_atr_period: 14
+    - band_model_family: parkinson
+      band_model: parkinson
+      band_token: PARK08_P20
+      band_value: 0.8
+      band_vol_k: 0.8
+      band_vol_period: 20
+    - band_model_family: range_median
+      band_model: range_median
+      band_token: RMD06_P20
+      band_value: 0.6
+      band_range_k: 0.6
+      band_range_period: 20
+    - band_model_family: realized_vol_cc
+      band_model: realized_vol_cc
+      band_token: RVCC08_P10
+      band_value: 0.8
+      band_vol_k: 0.8
+      band_vol_period: 10
+    - band_model_family: fixed_pips
+      band_model: fixed_pips
+      band_token: PIP08
+      band_value: 8
+      band_pips: 8
+decision_policy_sweep:
+  families:
+    - bin_env_v1
+    - total_score_rvtr_v1
+  score_bundles:
+    - ts_ctx_min_v1
+    - ts_ctx_band_timing_v1
+    - ts_ctx_full_v1
+  rv_score_weights_variants:
+    - name: rv_ctx_base
+      weights: {}
+    - name: rv_ctx_rev
+      weights:
+        rv_band_score: 0.55
+        rv_momo_score: 0.72
+        rv_stretch_score: 0.70
+  tr_score_weights_variants:
+    - name: tr_ctx_base
+      weights: {}
+    - name: tr_ctx_trend
+      weights:
+        tr_timing_score: 0.58
+        tr_momo_score: 0.92
+        tr_regime_score: 0.56
+timing_modes: [baseline_touch]
+compare_sections:
+  - overall
+  - by_month
+  - by_session
+  - by_family
+  - timing_overall
+  - timing_by_month
+  - timing_by_session
+  - timing_by_family
+  - timing_by_decision_event
+  - timing_by_reject_reason
+  - timing_by_family_decision_event
+  - timing_by_family_reject_reason
+  - timing_by_still_touch_status
+ranking_profile:
+  primary_metric: kept_total_pnl_pips
+  secondary_metric: kept_avg_pnl_pips
+  tertiary_metric: kept_trade_count
+  shortlist_top_n: 8
+  require_spread_column: false
+review_sink:
+  issue_number: 1
+  comment_marker: BATCH_REVIEW_BATCH_RVTR_POLICY_TOTAL_SCORE_RVTR_V1
+notes: >-
+  Safety shard-size=1 version of RV/TR-only total-score narrow sweep.
+  This family excludes no-entry from primary decision; hard gate remains separate.
