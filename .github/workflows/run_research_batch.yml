@@ -89,7 +89,7 @@ jobs:
     needs: prepare
     strategy:
       fail-fast: false
-      max-parallel: 1
+      max-parallel: 2
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
       - name: Checkout
