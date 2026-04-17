@@ -1,4 +1,4 @@
-name: Run Research Batch
+name: Run Research Batch (Self Hosted)
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       batch_spec:
         description: Batch spec YAML path
         required: true
-        default: configs/batches/batch_band_model_screen_v1.yaml
+        default: configs/batches/batch_rvtr_policy_threshold_sweep_lite_v1.yaml
         type: string
       dataset_id:
         description: Optional dataset_id override
@@ -26,7 +26,7 @@ on:
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     outputs:
       matrix: ${{ steps.expand.outputs.matrix }}
       batch_manifest: ${{ steps.expand.outputs.batch_manifest }}
@@ -75,7 +75,6 @@ jobs:
         id: runtime_artifact_meta
         run: |
           artifact_name="batch-runtime-${{ steps.expand.outputs.batch_id }}-${{ github.run_id }}"
-
           echo "batch_runtime_artifact_name=${artifact_name}" >> "$GITHUB_OUTPUT"
 
       - name: Upload batch runtime bundle
@@ -86,10 +85,11 @@ jobs:
             ${{ github.workspace }}/${{ steps.expand.outputs.runtime_bundle_relroot }}/*
 
   run-shards:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     needs: prepare
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
       - name: Checkout
@@ -124,7 +124,6 @@ jobs:
           SHARD_DST="batch_artifacts/${{ matrix.shard_runtime_relpath }}"
           mkdir -p "${SHARD_DST}"
 
-          # Aggregate only needs study_metadata + select per-run summary/candidate files.
           if [ -f "${SHARD_SRC}/study_metadata.yaml" ]; then
             cp "${SHARD_SRC}/study_metadata.yaml" "${SHARD_DST}/study_metadata.yaml"
           fi
@@ -157,7 +156,7 @@ jobs:
             batch_artifacts
 
   aggregate:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     needs: [prepare, run-shards]
     permissions:
       issues: write
@@ -183,10 +182,6 @@ jobs:
           pattern: batch-shard-*
           path: batch_artifacts
           merge-multiple: true
-
-      - name: Debug downloaded shard artifact layout
-        run: |
-          find batch_artifacts -maxdepth 6 -type f | sort
 
       - name: Download batch runtime bundle
         uses: actions/download-artifact@v4
@@ -222,62 +217,3 @@ jobs:
             ${{ needs.prepare.outputs.batch_output_root }}/shortlist_robustness.csv
             ${{ needs.prepare.outputs.batch_output_root }}/batch_review.md
             ${{ needs.prepare.outputs.batch_output_root }}/batch_review_machine.yaml
-
-      - name: Resolve review sink metadata
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import os
-          import yaml
-
-          machine = yaml.safe_load(Path("${{ needs.prepare.outputs.batch_output_root }}/batch_review_machine.yaml").read_text(encoding="utf-8")) or {}
-          issue_override = "${{ inputs.review_issue_number }}".strip()
-          issue = issue_override or str(machine.get("issue_number", "")).strip()
-          marker = str(machine.get("comment_marker", "BATCH_REVIEW")).strip() or "BATCH_REVIEW"
-
-          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as env:
-              env.write(f"REVIEW_ISSUE_NUMBER={issue}\n")
-              env.write(f"REVIEW_COMMENT_MARKER={marker}\n")
-              env.write(f"REVIEW_MD_PATH=${{ needs.prepare.outputs.batch_output_root }}/batch_review.md\n")
-          PY
-
-      - name: Publish/update review sink comment
-        continue-on-error: true
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const issueNumber = Number(process.env.REVIEW_ISSUE_NUMBER || 0);
-            if (!issueNumber) {
-              core.info('No review issue configured; skipping comment publish.');
-              return;
-            }
-            const marker = `<!-- ${process.env.REVIEW_COMMENT_MARKER || 'BATCH_REVIEW'} -->`;
-            const body = fs.readFileSync(process.env.REVIEW_MD_PATH, 'utf8');
-            const { owner, repo } = context.repo;
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner,
-              repo,
-              issue_number: issueNumber,
-              per_page: 100,
-            });
-            const target = comments.find(c => typeof c.body === 'string' && c.body.includes(marker));
-            if (target) {
-              await github.rest.issues.updateComment({ owner, repo, comment_id: target.id, body });
-              core.info(`Updated existing review comment ${target.id}.`);
-            } else {
-              await github.rest.issues.createComment({ owner, repo, issue_number: issueNumber, body });
-              core.info(`Created review comment on issue #${issueNumber}.`);
-            }
-
-      - name: Write summary
-        if: always()
-        run: |
-          {
-            echo "## Research Batch Summary"
-            echo "- batch id: \`${{ needs.prepare.outputs.batch_id }}\`"
-            echo "- dataset id: \`${{ needs.prepare.outputs.dataset_id }}\`"
-            echo "- output tag: \`${{ needs.prepare.outputs.output_tag || '<none>' }}\`"
-            echo "- manifest: \`${{ github.workspace }}/.batch_runtime/batch_manifest.yaml\`"
-            echo "- review artifact: \`${{ needs.prepare.outputs.batch_output_root }}/batch_review.md\`"
-          } >> "$GITHUB_STEP_SUMMARY"
