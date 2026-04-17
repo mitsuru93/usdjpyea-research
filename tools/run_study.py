@@ -41,6 +41,7 @@ def main() -> None:
         f"warnings={len(metadata['warnings'])}",
         f"compare_generated={metadata['compare']['generated']}",
         f"out={metadata['output_root']}",
+        flush=True,
     )
 
 

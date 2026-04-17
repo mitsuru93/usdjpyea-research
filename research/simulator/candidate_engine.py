@@ -8,6 +8,7 @@ attempt to reproduce full MT4 entry gating/position semantics.
 
 from __future__ import annotations
 
+import hashlib
 import pandas as pd
 
 ASSUMPTION_VERSION = "sim_v1_conservative"
@@ -27,17 +28,18 @@ def build_candidates(df: pd.DataFrame) -> pd.DataFrame:
     - lower touch => rev buy, trend sell
     """
     candidate_rows: list[dict] = []
+    extend = candidate_rows.extend
 
     for row in df.itertuples(index=False):
         if row.touch_upper:
-            candidate_rows.extend(
+            extend(
                 [
                     _make_candidate(row, touch_side="upper", family="rev", direction="sell"),
                     _make_candidate(row, touch_side="upper", family="trend", direction="buy"),
                 ]
             )
         if row.touch_lower:
-            candidate_rows.extend(
+            extend(
                 [
                     _make_candidate(row, touch_side="lower", family="rev", direction="buy"),
                     _make_candidate(row, touch_side="lower", family="trend", direction="sell"),
@@ -160,16 +162,34 @@ def _is_back_inside_band(df: pd.DataFrame) -> pd.Series:
 
 def _make_candidate(row: object, touch_side: str, family: str, direction: str) -> dict:
     levels = TP_SL_BY_FAMILY[family]
+    timestamp = row.datetime
+    entry_price = float(row.close)
+    tp_pips = levels["tp_pips"]
+    sl_pips = levels["sl_pips"]
+    deterministic_key = "|".join(
+        [
+            str(timestamp),
+            str(touch_side),
+            str(family),
+            str(direction),
+            f"{entry_price:.10f}",
+            str(tp_pips),
+            str(sl_pips),
+            ASSUMPTION_VERSION,
+        ]
+    )
+    candidate_id = hashlib.sha256(deterministic_key.encode("utf-8")).hexdigest()
     return {
-        "timestamp": row.datetime,
+        "candidate_id": candidate_id,
+        "timestamp": timestamp,
         "session": row.session,
         "month": row.month,
         "touch_side": touch_side,
         "candidate_family": family,
         "direction": direction,
-        "entry_price": float(row.close),
+        "entry_price": entry_price,
         "entry_price_type": "signal_reference_price",
-        "tp_pips": levels["tp_pips"],
-        "sl_pips": levels["sl_pips"],
+        "tp_pips": tp_pips,
+        "sl_pips": sl_pips,
         "assumption_version": ASSUMPTION_VERSION,
     }

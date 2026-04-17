@@ -385,6 +385,7 @@ def run_study(
         }
 
         try:
+            print(f"[study] run_start label={label} output_dir={run_output_dir}", flush=True)
             run_payload = _build_run_experiment_config(
                 shared_defaults=shared_defaults,
                 run_cfg=run,
@@ -414,11 +415,14 @@ def run_study(
                 record["errors"].append(message)
                 errors.append(message)
                 run_records.append(record)
+                print(f"[study] run_end label={label} status={record['status']}", flush=True)
                 continue
 
             record["status"] = "completed"
+            print(f"[study] run_end label={label} status=completed", flush=True)
 
             if record["analyze_after_run"]:
+                print(f"[study] analyze_start label={label}", flush=True)
                 analysis_payload = _build_analysis_config(
                     shared_defaults=shared_defaults,
                     run_cfg=run,
@@ -437,11 +441,13 @@ def run_study(
                     errors.append(message)
                 else:
                     record["analysis_dir"] = str(analysis_output_dir)
+                    print(f"[study] analyze_end label={label} status=completed", flush=True)
         except Exception as exc:  # noqa: BLE001
             record["status"] = "config_error"
             message = f"run '{label}' config/setup error: {exc}"
             record["errors"].append(message)
             errors.append(message)
+            print(f"[study] run_end label={label} status=config_error error={exc}", flush=True)
 
         run_records.append(record)
 
@@ -466,6 +472,7 @@ def run_study(
             )
         else:
             compare_output_dir = ensure_directory(output_root / "compare")
+            print("[study] compare_start", flush=True)
             compare_payload = _build_compare_config(cfg=cfg, run_records=run_records, compare_output_dir=compare_output_dir)
             compare_cfg_path = runtime_config_dir / "compare.yaml"
             _write_yaml(compare_cfg_path, compare_payload)
@@ -474,9 +481,11 @@ def run_study(
             if compare_proc.returncode != 0:
                 err = (compare_proc.stderr or compare_proc.stdout or "").strip()
                 errors.append(f"compare step failed: {err}")
+                print("[study] compare_end status=failed", flush=True)
             else:
                 compare_generated = True
                 compare_dir = str(compare_output_dir)
+                print("[study] compare_end status=completed", flush=True)
 
     metadata = {
         "study_name": str(cfg["study_name"]),

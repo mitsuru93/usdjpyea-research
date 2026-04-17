@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -20,8 +21,10 @@ from research.features import FEATURE_SET_VERSION, attach_features_to_candidates
 from research.io.csv_loader import load_ohlc_csv
 from research.policy import (
     POLICY_SEMANTICS,
-    apply_decision_policy_to_candidates,
+    DecisionPrepBundle,
+    apply_prepared_decision_policy,
     apply_policy_to_candidates,
+    prepare_decision_policy_inputs,
     parse_decision_policy_config,
     parse_policy_config,
 )
@@ -218,9 +221,133 @@ def _resolve_shared_precompute(cfg: dict, params: dict[str, object]) -> tuple[di
     return preprocessed, {"enabled": True, "cache_hit": False, "cache_key": cache_key_raw, "cache_path": str(cache_path)}
 
 
+def _candidate_universe_identity(df: pd.DataFrame) -> str:
+    if df.empty:
+        return "empty"
+    stable_cols = [
+        "candidate_id",
+        "timestamp",
+        "touch_side",
+        "candidate_family",
+        "direction",
+        "entry_price",
+        "tp_pips",
+        "sl_pips",
+        "assumption_version",
+    ]
+    payload = df.loc[:, [col for col in stable_cols if col in df.columns]].copy()
+    payload = payload.sort_values([col for col in ["candidate_id", "timestamp", "candidate_family"] if col in payload.columns])
+    csv_blob = payload.to_csv(index=False).encode("utf-8")
+    return hashlib.sha256(csv_blob).hexdigest()
+
+
+def _resolve_decision_score_prep_cache(
+    *,
+    cfg: dict,
+    candidate_feature_df: pd.DataFrame,
+    score_bundle: str,
+    decision_policy_version: str,
+    universe_identity: str,
+) -> tuple[pd.DataFrame, dict[str, object]]:
+    cache_dir_raw = str(cfg.get("shared_precompute_cache_dir", "")).strip()
+    shared_key = str(cfg.get("shared_precompute_cache_key", "")).strip()
+    cache_enabled = bool(cache_dir_raw and shared_key)
+    cache_fields = {
+        "cache_type": "decision_score_prep_v1",
+        "shared_precompute_cache_key": shared_key,
+        "score_bundle": score_bundle,
+        "decision_policy_version": decision_policy_version,
+        "candidate_universe_identity": universe_identity,
+    }
+    cache_material = yaml.safe_dump(cache_fields, sort_keys=True).encode("utf-8")
+    cache_hash = hashlib.sha256(cache_material).hexdigest()
+    if not cache_enabled:
+        bundle = prepare_decision_policy_inputs(candidate_feature_df, score_bundle)
+        return bundle.prep_df, {"enabled": False, "cache_hit": False, "cache_key": cache_hash}
+
+    cache_dir = Path(cache_dir_raw).resolve() / "decision_score_prep"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_path = cache_dir / f"{cache_hash}.pkl"
+    if cache_path.exists():
+        return pd.read_pickle(cache_path), {
+            "enabled": True,
+            "cache_hit": True,
+            "cache_key": cache_hash,
+            "cache_path": str(cache_path),
+        }
+
+    bundle = prepare_decision_policy_inputs(candidate_feature_df, score_bundle)
+    with tempfile.NamedTemporaryFile(mode="wb", delete=False, dir=cache_dir, prefix=f".{cache_hash}.", suffix=".tmp") as tmp:
+        tmp_path = Path(tmp.name)
+    pd.to_pickle(bundle.prep_df, tmp_path)
+    tmp_path.replace(cache_path)
+    return bundle.prep_df, {"enabled": True, "cache_hit": False, "cache_key": cache_hash, "cache_path": str(cache_path)}
+
+
+def _resolve_outcome_cache(
+    *,
+    cfg: dict,
+    env_df: pd.DataFrame,
+    candidate_feature_df: pd.DataFrame,
+    max_holding_bars: int,
+    universe_identity: str,
+) -> tuple[pd.DataFrame, dict[str, object]]:
+    cache_dir_raw = str(cfg.get("shared_precompute_cache_dir", "")).strip()
+    shared_key = str(cfg.get("shared_precompute_cache_key", "")).strip()
+    cache_enabled = bool(cache_dir_raw and shared_key)
+    cache_fields = {
+        "cache_type": "outcome_table_v1",
+        "shared_precompute_cache_key": shared_key,
+        "max_holding_bars": int(max_holding_bars),
+        "assumption_version": ASSUMPTION_VERSION,
+        "simulator_version": "v1",
+        "candidate_universe_identity": universe_identity,
+    }
+    cache_material = yaml.safe_dump(cache_fields, sort_keys=True).encode("utf-8")
+    cache_hash = hashlib.sha256(cache_material).hexdigest()
+    if not cache_enabled:
+        full_outcomes = evaluate_candidates(env_df, candidate_feature_df, max_holding_bars=max_holding_bars)
+        return full_outcomes, {"enabled": False, "cache_hit": False, "cache_key": cache_hash}
+
+    cache_dir = Path(cache_dir_raw).resolve() / "outcome_table"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_path = cache_dir / f"{cache_hash}.pkl"
+    if cache_path.exists():
+        return pd.read_pickle(cache_path), {
+            "enabled": True,
+            "cache_hit": True,
+            "cache_key": cache_hash,
+            "cache_path": str(cache_path),
+        }
+
+    full_outcomes = evaluate_candidates(env_df, candidate_feature_df, max_holding_bars=max_holding_bars)
+    with tempfile.NamedTemporaryFile(mode="wb", delete=False, dir=cache_dir, prefix=f".{cache_hash}.", suffix=".tmp") as tmp:
+        tmp_path = Path(tmp.name)
+    pd.to_pickle(full_outcomes, tmp_path)
+    tmp_path.replace(cache_path)
+    return full_outcomes, {"enabled": True, "cache_hit": False, "cache_key": cache_hash, "cache_path": str(cache_path)}
+
+
 def main() -> None:
     args = parse_args()
+    stage_starts: dict[str, float] = {}
+    stage_elapsed: dict[str, float] = {}
+
+    def _stage_start(name: str) -> None:
+        stage_starts[name] = time.perf_counter()
+        print(f"[stage:start] {name}", flush=True)
+
+    def _stage_end(name: str) -> None:
+        started = stage_starts.get(name)
+        elapsed = 0.0 if started is None else (time.perf_counter() - started)
+        stage_elapsed[name] = elapsed
+        print(f"[stage:end] {name} elapsed_sec={elapsed:.6f}", flush=True)
+
+    total_started = time.perf_counter()
+
+    _stage_start("load_config")
     cfg = _load_config(args.config)
+    _stage_end("load_config")
 
     output_dir = Path(cfg["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -244,7 +371,9 @@ def main() -> None:
     band_fixed_cap_pips = float(params["band_fixed_cap_pips"])
     pip_size = float(params["pip_size"])
 
+    _stage_start("shared_precompute_resolve")
     precompute_result, precompute_stats = _resolve_shared_precompute(cfg, params)
+    _stage_end("shared_precompute_resolve")
     env_df = precompute_result["env_df"]
     base_candidates = precompute_result["base_candidates"]
     timing_audit_df = precompute_result["timing_audit_df"]
@@ -252,20 +381,59 @@ def main() -> None:
     candidate_feature_df = precompute_result["candidate_feature_df"]
 
     decision_policy_cfg = parse_decision_policy_config(cfg.get("decision_policy"), cfg.get("score_bundle"))
-    decision_policy_result = apply_decision_policy_to_candidates(candidate_feature_df, decision_policy_cfg)
+    candidate_universe_identity = _candidate_universe_identity(candidate_feature_df)
+
+    _stage_start("decision_score_prep")
+    decision_prep_df, decision_score_cache_stats = _resolve_decision_score_prep_cache(
+        cfg=cfg,
+        candidate_feature_df=candidate_feature_df,
+        score_bundle=decision_policy_cfg.score_bundle,
+        decision_policy_version=decision_policy_cfg.version,
+        universe_identity=candidate_universe_identity,
+    )
+    _stage_end("decision_score_prep")
+
+    _stage_start("decision_threshold_apply")
+    decision_policy_result = apply_prepared_decision_policy(
+        prep_bundle=DecisionPrepBundle(
+            score_bundle=decision_policy_cfg.score_bundle,
+            decision_policy_version=decision_policy_cfg.version,
+            prep_df=decision_prep_df,
+        ),
+        policy=decision_policy_cfg,
+    )
+    _stage_end("decision_threshold_apply")
     decision_candidates_df = decision_policy_result["included_df"]
     decision_policy_audit_df = decision_policy_result["audit_df"]
     decision_policy_summary = decision_policy_result["summary"]
 
+    _stage_start("rule_policy_apply")
     policy_cfg = parse_policy_config(cfg.get("policy"))
     policy_result = apply_policy_to_candidates(decision_candidates_df, policy_cfg)
+    _stage_end("rule_policy_apply")
     screened_candidates_df = policy_result["included_df"]
     candidates_audit_df = policy_result["audit_df"]
 
-    outcomes_df = evaluate_candidates(env_df, screened_candidates_df, max_holding_bars=int(cfg["max_holding_bars"]))
+    _stage_start("outcome_resolve")
+    full_outcomes_df, outcome_cache_stats = _resolve_outcome_cache(
+        cfg=cfg,
+        env_df=env_df,
+        candidate_feature_df=candidate_feature_df,
+        max_holding_bars=int(cfg["max_holding_bars"]),
+        universe_identity=candidate_universe_identity,
+    )
+    if "candidate_id" in full_outcomes_df.columns and "candidate_id" in screened_candidates_df.columns:
+        selected_ids = screened_candidates_df["candidate_id"].astype(str)
+        outcomes_df = full_outcomes_df[full_outcomes_df["candidate_id"].astype(str).isin(selected_ids)].copy()
+    else:
+        outcomes_df = evaluate_candidates(env_df, screened_candidates_df, max_holding_bars=int(cfg["max_holding_bars"]))
+    _stage_end("outcome_resolve")
+
+    _stage_start("summary_generation")
     summaries = summarize_outcomes(outcomes_df)
     timing_summaries = summarize_timing_audit(timing_audit_df)
     timing_diagnostics = summarize_timing_diagnostics(timing_audit_df)
+    _stage_end("summary_generation")
 
     def _count_timing_event(event_name: str) -> int:
         if "timing_decision_event" not in timing_audit_df.columns:
@@ -283,6 +451,7 @@ def main() -> None:
             first_candidate_time = ts.iloc[0].isoformat()
             last_candidate_time = ts.iloc[-1].isoformat()
 
+    _stage_start("artifact_writes")
     outcomes_df.to_csv(output_dir / "candidates.csv", index=False)
 
     aggregate_cols = [col for col in ["timestamp", "pnl_pips"] if col in outcomes_df.columns]
@@ -362,6 +531,10 @@ def main() -> None:
         yaml.safe_dump(effective_decision_policy, f, sort_keys=False)
     pd.DataFrame([decision_policy_summary]).to_csv(output_dir / "policy_candidate_summary.csv", index=False)
 
+    _stage_end("artifact_writes")
+    total_elapsed = time.perf_counter() - total_started
+    stage_elapsed["total_elapsed"] = total_elapsed
+
     metadata = {
         "simulator_version": "v1",
         "feature_set_version": FEATURE_SET_VERSION,
@@ -435,9 +608,20 @@ def main() -> None:
         },
         "notes": cfg.get("notes", ""),
         "shared_precompute": precompute_stats,
+        "cache": {
+            "candidate_universe_identity": candidate_universe_identity,
+            "decision_score_prep": decision_score_cache_stats,
+            "outcome_table": outcome_cache_stats,
+        },
+        "telemetry": {
+            "stage_elapsed_sec": stage_elapsed,
+        },
     }
     with (output_dir / "run_metadata.yaml").open("w", encoding="utf-8") as f:
         yaml.safe_dump(metadata, f, sort_keys=False)
+
+    telemetry_df = pd.DataFrame([{"stage": stage, "elapsed_sec": elapsed} for stage, elapsed in stage_elapsed.items()])
+    telemetry_df.to_csv(output_dir / "run_stage_telemetry.csv", index=False)
 
     print(
         "Experiment run completed:",
@@ -453,7 +637,10 @@ def main() -> None:
         f"tz_mode={cfg['input_timezone_mode']}",
         f"feature_set={FEATURE_SET_VERSION}",
         f"shared_precompute={'hit' if precompute_stats.get('cache_hit', False) else ('miss' if precompute_stats.get('enabled', False) else 'disabled')}",
+        f"decision_score_cache={'hit' if decision_score_cache_stats.get('cache_hit', False) else ('miss' if decision_score_cache_stats.get('enabled', False) else 'disabled')}",
+        f"outcome_cache={'hit' if outcome_cache_stats.get('cache_hit', False) else ('miss' if outcome_cache_stats.get('enabled', False) else 'disabled')}",
         f"out={output_dir}",
+        flush=True,
     )
 
 
