@@ -59,6 +59,14 @@ def _repo_relpath(path: Path) -> str:
         return path.resolve().as_posix()
 
 
+def _repo_relative_or_fail(path: Path, *, field_name: str) -> str:
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(REPO_ROOT).as_posix()
+    except ValueError as exc:
+        raise ValueError(f"{field_name} must resolve inside repository root: {resolved}") from exc
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Expand batch spec into shard study configs for matrix execution.")
     parser.add_argument("--batch-spec", required=True, help="Path to batch spec YAML")
@@ -453,10 +461,10 @@ def main() -> None:
 
     output_root = Path(str(spec["output_root"]))
     if not output_root.is_absolute():
-        output_root = (REPO_ROOT / output_root).resolve()
+        output_root = (REPO_ROOT / output_root)
     if output_tag:
         output_root = output_root / sanitize_label(output_tag)
-    output_root = output_root.resolve()
+    output_root_relpath = _repo_relative_or_fail(output_root, field_name="output_root")
 
     variants: list[dict[str, Any]] = []
     for timing_mode in [str(x).strip() for x in spec.get("timing_modes", []) if str(x).strip()]:
@@ -524,8 +532,8 @@ def main() -> None:
         shard_runtime_relpath = f"shards/{shard_id}/study"
         study_config_relpath = f"shards/{shard_id}/study_config.yaml"
         shard_artifact_name = f"batch-shard-{sanitize_label(batch_id)}-{shard_id}"
-        study_output = (output_root / "shards" / shard_id / "study").resolve()
-        study_cfg_path = (shard_dir / "study_config.yaml").resolve()
+        study_output = f"{output_root_relpath}/shards/{shard_id}/study"
+        study_cfg_path = shard_dir / "study_config.yaml"
 
         runs = []
         for variant in shard_variants:
@@ -552,7 +560,7 @@ def main() -> None:
 
         study_cfg = {
             "study_name": f"{batch_id}__{shard_id}",
-            "output_root": str(study_output),
+            "output_root": study_output,
             "dataset_registry": spec["dataset_registry"],
             "shared_precompute": dict(spec.get("shared_precompute", {})),
             "shared_defaults": {
@@ -577,10 +585,10 @@ def main() -> None:
             {
                 "shard_id": shard_id,
                 "shard_index": shard_index,
-                "study_config": str(study_cfg_path),
+                "study_config": study_config_relpath,
                 "study_config_relpath": study_config_relpath,
-                "study_output": str(study_output),
-                "study_output_relpath": shard_runtime_relpath,
+                "study_output": study_output,
+                "study_output_relpath": study_output,
                 "shard_runtime_relpath": shard_runtime_relpath,
                 "shard_output_relpath": shard_runtime_relpath,
                 "shard_artifact_name": shard_artifact_name,
@@ -592,11 +600,11 @@ def main() -> None:
 
     manifest = {
         "batch_id": batch_id,
-        "batch_spec": str(batch_spec_path),
+        "batch_spec": _repo_relpath(batch_spec_path),
         "dataset_registry": str(spec["dataset_registry"]),
         "dataset_id": dataset_id,
         "output_tag": output_tag,
-        "output_root": str(output_root),
+        "output_root": output_root_relpath,
         "spread_mode": str(spec["spread_mode"]),
         "blackout_windows_jst": list(spec.get("blackout_windows_jst", [])),
         "ranking_profile": dict(spec.get("ranking_profile", {})),
@@ -618,7 +626,7 @@ def main() -> None:
         "notes": str(spec.get("notes", "")),
     }
 
-    manifest_path = (runtime_dir / "batch_manifest.yaml").resolve()
+    manifest_path = runtime_dir / "batch_manifest.yaml"
     _write_yaml(manifest_path, manifest)
 
     matrix_rows = [
@@ -651,11 +659,11 @@ def main() -> None:
             raise RuntimeError("--write-github-output was provided but GITHUB_OUTPUT is not set")
         github_output = Path(github_output_raw)
         with github_output.open("a", encoding="utf-8") as out:
-            out.write(f"batch_runtime_dir={runtime_dir.as_posix()}\n")
+            out.write(f"batch_runtime_dir={_repo_relpath(runtime_dir)}\n")
             out.write(f"runtime_bundle_relroot={_repo_relpath(runtime_dir)}\n")
-            out.write(f"batch_manifest={manifest_path.as_posix()}\n")
+            out.write(f"batch_manifest={_repo_relpath(manifest_path)}\n")
             out.write(f"batch_manifest_relpath={_repo_relpath(manifest_path)}\n")
-            out.write(f"batch_output_root={output_root.as_posix()}\n")
+            out.write(f"batch_output_root={output_root_relpath}\n")
             out.write(f"batch_id={batch_id}\n")
             out.write(f"dataset_id={dataset_id}\n")
             out.write(f"output_tag={output_tag}\n")

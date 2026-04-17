@@ -120,7 +120,7 @@ jobs:
 
       - name: Review shard timing study
         run: |
-          STUDY_OUTPUT_PATH="${{ needs.prepare.outputs.batch_output_root }}/${{ matrix.study_output_relpath }}"
+          STUDY_OUTPUT_PATH="${{ github.workspace }}/${{ matrix.study_output_relpath }}"
           echo "review_timing_study start_utc=$(date -u +'%Y-%m-%dT%H:%M:%SZ') start_jst=$(TZ=Asia/Tokyo date +'%Y-%m-%dT%H:%M:%S%z')"
           /usr/bin/time -v python -u tools/review_timing_study.py --study-dir "${STUDY_OUTPUT_PATH}"
           echo "review_timing_study end_utc=$(date -u +'%Y-%m-%dT%H:%M:%SZ') end_jst=$(TZ=Asia/Tokyo date +'%Y-%m-%dT%H:%M:%S%z')"
@@ -128,7 +128,7 @@ jobs:
       - name: Upload shard artifacts
         if: always()
         run: |
-          SHARD_SRC="${{ needs.prepare.outputs.batch_output_root }}/${{ matrix.study_output_relpath }}"
+          SHARD_SRC="${{ github.workspace }}/${{ matrix.study_output_relpath }}"
           SHARD_DST="batch_artifacts/${{ matrix.shard_runtime_relpath }}"
           mkdir -p "${SHARD_DST}"
 
@@ -235,13 +235,13 @@ jobs:
         with:
           name: batch-review-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}
           path: |
-            ${{ needs.prepare.outputs.batch_output_root }}/batch_metadata.yaml
-            ${{ needs.prepare.outputs.batch_output_root }}/batch_manifest.yaml
-            ${{ needs.prepare.outputs.batch_output_root }}/batch_ranking.csv
-            ${{ needs.prepare.outputs.batch_output_root }}/batch_shortlist.csv
-            ${{ needs.prepare.outputs.batch_output_root }}/band_variant_compare.csv
-            ${{ needs.prepare.outputs.batch_output_root }}/policy_variant_compare.csv
-            ${{ needs.prepare.outputs.batch_output_root }}/policy_variant_robustness.csv
-            ${{ needs.prepare.outputs.batch_output_root }}/shortlist_robustness.csv
-            ${{ needs.prepare.outputs.batch_output_root }}/batch_review.md
-            ${{ needs.prepare.outputs.batch_output_root }}/batch_review_machine.yaml
+            ${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/batch_metadata.yaml
+            ${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/batch_manifest.yaml
+            ${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/batch_ranking.csv
+            ${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/batch_shortlist.csv
+            ${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/band_variant_compare.csv
+            ${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/policy_variant_compare.csv
+            ${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/policy_variant_robustness.csv
+            ${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/shortlist_robustness.csv
+            ${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/batch_review.md
+            ${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/batch_review_machine.yaml
