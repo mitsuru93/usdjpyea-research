@@ -14,7 +14,7 @@ def main() -> None:
 
     run_shards = workflow["jobs"]["run-shards"]
     assert run_shards["runs-on"] == ["self-hosted", "linux", "x64"]
-    assert int(run_shards["strategy"]["max-parallel"]) == 8
+    assert int(run_shards["strategy"]["max-parallel"]) == 4
 
     steps = run_shards["steps"]
     step_names = [s.get("name", "") for s in steps]
@@ -39,6 +39,7 @@ def main() -> None:
         "batch_rvtr_policy_threshold_sweep_lite_sh2_v1.yaml",
         "batch_rvtr_policy_threshold_sweep_lite_sh1_v1.yaml",
         "batch_rvtr_policy_total_score_narrow_v1.yaml",
+        "batch_rvtr_policy_total_score_narrow_sh1_v1.yaml",
     ]:
         spec_path = REPO_ROOT / "configs" / "batches" / spec_name
         payload = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
@@ -46,8 +47,12 @@ def main() -> None:
 
     sh1 = yaml.safe_load((REPO_ROOT / "configs" / "batches" / "batch_rvtr_policy_threshold_sweep_lite_sh1_v1.yaml").read_text())
     sh2 = yaml.safe_load((REPO_ROOT / "configs" / "batches" / "batch_rvtr_policy_threshold_sweep_lite_sh2_v1.yaml").read_text())
+    total_score = yaml.safe_load((REPO_ROOT / "configs" / "batches" / "batch_rvtr_policy_total_score_narrow_v1.yaml").read_text())
+    total_score_sh1 = yaml.safe_load((REPO_ROOT / "configs" / "batches" / "batch_rvtr_policy_total_score_narrow_sh1_v1.yaml").read_text())
     assert int(sh1["shard_size"]) == 1
     assert int(sh2["shard_size"]) == 2
+    assert int(total_score["shard_size"]) == 2
+    assert int(total_score_sh1["shard_size"]) == 1
 
     print("batch workflow smoke test passed")
 
