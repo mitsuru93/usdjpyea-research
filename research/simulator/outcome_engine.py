@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 
 PIP_SIZE = 0.01  # USDJPY pip size
@@ -34,30 +35,30 @@ def evaluate_candidates(
 
     candidates = candidates_df.reset_index(drop=True)
     candidate_columns = list(candidates.columns)
-    candidate_values = candidates.to_numpy(copy=False)
-
-    col_idx = {name: idx for idx, name in enumerate(candidate_columns)}
-    timestamp_idx = col_idx["timestamp"]
-    entry_price_idx = col_idx["entry_price"]
-    tp_pips_idx = col_idx["tp_pips"]
-    sl_pips_idx = col_idx["sl_pips"]
-    direction_idx = col_idx["direction"]
+    ts_values = candidates["timestamp"].to_numpy(copy=False)
+    entry_values = pd.to_numeric(candidates["entry_price"], errors="coerce").to_numpy(dtype=float, copy=False)
+    tp_moves = pd.to_numeric(candidates["tp_pips"], errors="coerce").to_numpy(dtype=float, copy=False) * PIP_SIZE
+    sl_moves = pd.to_numeric(candidates["sl_pips"], errors="coerce").to_numpy(dtype=float, copy=False) * PIP_SIZE
+    direction_values = candidates["direction"].astype(str).to_numpy(copy=False)
 
     evaluated_rows = []
     bar_count = len(bar_high)
 
-    for row_values in candidate_values:
-        timestamp = row_values[timestamp_idx]
+    status_values = np.full(len(candidates), "timeout", dtype=object)
+    exit_values = entry_values.copy()
+    bars_held_values = np.zeros(len(candidates), dtype=np.int64)
+
+    for row_idx, timestamp in enumerate(ts_values):
         entry_idx = time_to_idx.get(timestamp)
         if entry_idx is None:
             raise ValueError(f"Candidate timestamp not found in OHLC series: {timestamp}")
 
         start_idx = entry_idx + 1
 
-        entry = float(row_values[entry_price_idx])
-        tp_move = row_values[tp_pips_idx] * PIP_SIZE
-        sl_move = row_values[sl_pips_idx] * PIP_SIZE
-        direction = row_values[direction_idx]
+        entry = float(entry_values[row_idx])
+        tp_move = float(tp_moves[row_idx])
+        sl_move = float(sl_moves[row_idx])
+        direction = direction_values[row_idx]
 
         if direction == "buy":
             tp_price = entry + tp_move
@@ -100,20 +101,15 @@ def evaluate_candidates(
                 bars_held = idx - start_idx + 1
                 break
 
-        if direction == "buy":
-            pnl_pips = (exit_price - entry) / PIP_SIZE
-        else:
-            pnl_pips = (entry - exit_price) / PIP_SIZE
+        status_values[row_idx] = status
+        exit_values[row_idx] = float(exit_price)
+        bars_held_values[row_idx] = int(bars_held)
 
-        result = {column: row_values[idx] for idx, column in enumerate(candidate_columns)}
-        result.update(
-            {
-                "outcome_status": status,
-                "exit_price": float(exit_price),
-                "bars_held": int(bars_held),
-                "pnl_pips": float(pnl_pips),
-            }
-        )
-        evaluated_rows.append(result)
-
-    return pd.DataFrame(evaluated_rows)
+    evaluated = candidates.copy()
+    evaluated["outcome_status"] = status_values
+    evaluated["exit_price"] = exit_values.astype(float)
+    evaluated["bars_held"] = bars_held_values.astype(int)
+    buy_mask = pd.Series(direction_values).eq("buy").to_numpy()
+    pnl = np.where(buy_mask, (exit_values - entry_values) / PIP_SIZE, (entry_values - exit_values) / PIP_SIZE)
+    evaluated["pnl_pips"] = pnl.astype(float)
+    return evaluated[candidate_columns + ["outcome_status", "exit_price", "bars_held", "pnl_pips"]]

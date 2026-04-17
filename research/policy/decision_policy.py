@@ -33,6 +33,13 @@ class DecisionPolicyConfig:
     version: str = DECISION_POLICY_VERSION
 
 
+@dataclass(frozen=True)
+class DecisionPrepBundle:
+    score_bundle: str
+    decision_policy_version: str
+    prep_df: pd.DataFrame
+
+
 def parse_decision_policy_config(
     raw_policy: str | dict[str, Any] | None,
     raw_score_bundle: str | dict[str, Any] | None = None,
@@ -76,21 +83,74 @@ def apply_decision_policy_to_candidates(
     candidates_df: pd.DataFrame,
     policy: DecisionPolicyConfig,
 ) -> dict[str, Any]:
-    """Apply a deterministic RV/TR/no-entry decision policy to paired candidates."""
+    prep_bundle = prepare_decision_policy_inputs(candidates_df, policy.score_bundle)
+    return apply_prepared_decision_policy(prep_bundle, policy)
+
+
+def prepare_decision_policy_inputs(
+    candidates_df: pd.DataFrame,
+    score_bundle: str,
+) -> DecisionPrepBundle:
+    """Build threshold-independent score preparation bundle."""
     audit_df = candidates_df.copy()
+    audit_df["score_bundle"] = score_bundle
+    audit_df["decision_policy_version"] = DECISION_POLICY_VERSION
+    audit_df["rvtr_score"] = pd.Series(dtype="float64")
+    audit_df["rvtr_score_margin"] = pd.Series(dtype="float64")
+    audit_df["decision_group_id"] = ""
+    audit_df["decision_group_rank"] = pd.Series(dtype="int64")
+    audit_df["decision_best_score"] = pd.Series(dtype="float64")
+    audit_df["decision_second_score"] = pd.Series(dtype="float64")
+    audit_df["decision_group_count"] = pd.Series(dtype="int64")
+
+    if audit_df.empty:
+        return DecisionPrepBundle(
+            score_bundle=score_bundle,
+            decision_policy_version=DECISION_POLICY_VERSION,
+            prep_df=audit_df,
+        )
+
+    audit_df = _attach_scores(audit_df, score_bundle)
+
+    group_cols = ["timestamp", "touch_side"]
+    for group_key, part in audit_df.groupby(group_cols, sort=False, dropna=False):
+        group_id = "|".join(str(item) for item in (group_key if isinstance(group_key, tuple) else (group_key,)))
+        audit_df.loc[part.index, "decision_group_id"] = group_id
+
+        ranked = part.sort_values(["rvtr_score", "candidate_family"], ascending=[False, True])
+        best_score = float(ranked.iloc[0]["rvtr_score"])
+        second_score = float(ranked.iloc[1]["rvtr_score"]) if len(ranked) > 1 else 0.0
+        margin = best_score - second_score
+        audit_df.loc[part.index, "rvtr_score_margin"] = margin
+        audit_df.loc[part.index, "decision_best_score"] = best_score
+        audit_df.loc[part.index, "decision_second_score"] = second_score
+        audit_df.loc[part.index, "decision_group_count"] = int(len(ranked))
+
+        group_rank = pd.Series(range(1, len(ranked) + 1), index=ranked.index, dtype="int64")
+        audit_df.loc[group_rank.index, "decision_group_rank"] = group_rank
+
+    return DecisionPrepBundle(
+        score_bundle=score_bundle,
+        decision_policy_version=DECISION_POLICY_VERSION,
+        prep_df=audit_df,
+    )
+
+
+def apply_prepared_decision_policy(
+    prep_bundle: DecisionPrepBundle,
+    policy: DecisionPolicyConfig,
+) -> dict[str, Any]:
+    """Apply threshold-dependent decision policy on prepared score bundle."""
+    audit_df = prep_bundle.prep_df.copy()
     audit_df["decision_policy_family"] = policy.family
     audit_df["score_bundle"] = policy.score_bundle
     audit_df["decision_policy_version"] = policy.version
-    audit_df["rvtr_score"] = pd.Series(dtype="float64")
-    audit_df["rvtr_score_margin"] = pd.Series(dtype="float64")
     audit_df["selected_by_decision_policy"] = False
     audit_df["decision_policy_outcome"] = "exclude"
-    audit_df["decision_group_id"] = ""
 
     if audit_df.empty:
         return _build_result(audit_df, policy, no_entry_group_count=0)
 
-    audit_df = _attach_scores(audit_df, policy.score_bundle)
     if policy.family == "bin_env_v1":
         audit_df["selected_by_decision_policy"] = True
         audit_df["decision_policy_outcome"] = "include"
@@ -98,17 +158,13 @@ def apply_decision_policy_to_candidates(
         return _build_result(audit_df, policy, no_entry_group_count=0)
 
     no_entry_group_count = 0
-    group_cols = ["timestamp", "touch_side"]
-    for group_key, part in audit_df.groupby(group_cols, sort=False, dropna=False):
-        group_id = "|".join(str(item) for item in (group_key if isinstance(group_key, tuple) else (group_key,)))
-        audit_df.loc[part.index, "decision_group_id"] = group_id
-
-        ranked = part.sort_values(["rvtr_score", "candidate_family"], ascending=[False, True])
-        best_idx = ranked.index[0]
-        best_score = float(ranked.iloc[0]["rvtr_score"])
-        second_score = float(ranked.iloc[1]["rvtr_score"]) if len(ranked) > 1 else 0.0
-        margin = best_score - second_score
-        audit_df.loc[part.index, "rvtr_score_margin"] = margin
+    for _, part in audit_df.groupby("decision_group_id", sort=False, dropna=False):
+        group_best = part[part["decision_group_rank"] == 1]
+        if group_best.empty:
+            continue
+        best_idx = group_best.index[0]
+        margin = float(part["rvtr_score_margin"].iloc[0])
+        best_score = float(part["decision_best_score"].iloc[0])
 
         if policy.family == "two_stage_margin_v1" and margin < policy.margin_threshold:
             no_entry_group_count += 1

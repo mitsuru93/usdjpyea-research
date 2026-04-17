@@ -89,7 +89,7 @@ jobs:
     needs: prepare
     strategy:
       fail-fast: false
-      max-parallel: 6
+      max-parallel: 8
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
       - name: Checkout
@@ -114,9 +114,16 @@ jobs:
       - name: Run shard study
         run: |
           STUDY_CONFIG_PATH="${{ github.workspace }}/.batch_runtime/${{ matrix.study_config_relpath }}"
+          echo "run_study start_utc=$(date -u +'%Y-%m-%dT%H:%M:%SZ') start_jst=$(TZ=Asia/Tokyo date +'%Y-%m-%dT%H:%M:%S%z')"
+          /usr/bin/time -v python -u tools/run_study.py --config "${STUDY_CONFIG_PATH}"
+          echo "run_study end_utc=$(date -u +'%Y-%m-%dT%H:%M:%SZ') end_jst=$(TZ=Asia/Tokyo date +'%Y-%m-%dT%H:%M:%S%z')"
+
+      - name: Review shard timing study
+        run: |
           STUDY_OUTPUT_PATH="${{ needs.prepare.outputs.batch_output_root }}/${{ matrix.study_output_relpath }}"
-          python tools/run_study.py --config "${STUDY_CONFIG_PATH}"
-          python tools/review_timing_study.py --study-dir "${STUDY_OUTPUT_PATH}"
+          echo "review_timing_study start_utc=$(date -u +'%Y-%m-%dT%H:%M:%SZ') start_jst=$(TZ=Asia/Tokyo date +'%Y-%m-%dT%H:%M:%S%z')"
+          /usr/bin/time -v python -u tools/review_timing_study.py --study-dir "${STUDY_OUTPUT_PATH}"
+          echo "review_timing_study end_utc=$(date -u +'%Y-%m-%dT%H:%M:%SZ') end_jst=$(TZ=Asia/Tokyo date +'%Y-%m-%dT%H:%M:%S%z')"
 
       - name: Upload shard artifacts
         run: |
