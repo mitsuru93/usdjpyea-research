@@ -1,0 +1,165 @@
+{
+  "single_run": {
+    "run1_cache_miss_wall_sec": 1.1965966440002376,
+    "run2_cache_hit_wall_sec": 0.8030550029998267,
+    "run1_stage_elapsed_sec": {
+      "load_config": 0.006546683000124176,
+      "shared_precompute_resolve": 0.08478744199965149,
+      "decision_score_prep": 0.03471106399956625,
+      "decision_threshold_apply": 0.0077295319988479605,
+      "rule_policy_apply": 0.006186500999319833,
+      "outcome_resolve": 0.012373077001029742,
+      "summary_generation": 0.0397815010001068,
+      "artifact_writes": 0.03518172299845901,
+      "total_elapsed": 0.23705698500089056
+    },
+    "run2_stage_elapsed_sec": {
+      "load_config": 0.0029982340001879493,
+      "shared_precompute_resolve": 0.0029690969986404525,
+      "decision_score_prep": 0.001793302000805852,
+      "decision_threshold_apply": 0.006870788000014727,
+      "rule_policy_apply": 0.004364127998996992,
+      "outcome_resolve": 0.003534908999426989,
+      "summary_generation": 0.02653588899920578,
+      "artifact_writes": 0.023261958000148297,
+      "total_elapsed": 0.08296668000002683
+    },
+    "run1_cache": {
+      "candidate_universe_identity": "c5a172a81c801564f6e0d6cb74daf056437f75ceb0bbf30d574d5c187f3cbe0a",
+      "decision_score_prep": {
+        "enabled": true,
+        "cache_hit": false,
+        "cache_key": "a7aa5ee4eef0ff1dc0fb0dc473943796eb0482bb7995787bc028284c7ec3f45c",
+        "cache_path": "/tmp/tmp8hof7iwz/cache/decision_score_prep/a7aa5ee4eef0ff1dc0fb0dc473943796eb0482bb7995787bc028284c7ec3f45c.pkl"
+      },
+      "outcome_table": {
+        "enabled": true,
+        "cache_hit": false,
+        "cache_key": "e04c6673caf7d7cb698139eb86cb5f111c807b20bed13b3f312627b5fafc406a",
+        "cache_path": "/tmp/tmp8hof7iwz/cache/outcome_table/e04c6673caf7d7cb698139eb86cb5f111c807b20bed13b3f312627b5fafc406a.pkl"
+      }
+    },
+    "run2_cache": {
+      "candidate_universe_identity": "c5a172a81c801564f6e0d6cb74daf056437f75ceb0bbf30d574d5c187f3cbe0a",
+      "decision_score_prep": {
+        "enabled": true,
+        "cache_hit": true,
+        "cache_key": "a7aa5ee4eef0ff1dc0fb0dc473943796eb0482bb7995787bc028284c7ec3f45c",
+        "cache_path": "/tmp/tmp8hof7iwz/cache/decision_score_prep/a7aa5ee4eef0ff1dc0fb0dc473943796eb0482bb7995787bc028284c7ec3f45c.pkl"
+      },
+      "outcome_table": {
+        "enabled": true,
+        "cache_hit": true,
+        "cache_key": "e04c6673caf7d7cb698139eb86cb5f111c807b20bed13b3f312627b5fafc406a",
+        "cache_path": "/tmp/tmp8hof7iwz/cache/outcome_table/e04c6673caf7d7cb698139eb86cb5f111c807b20bed13b3f312627b5fafc406a.pkl"
+      }
+    }
+  },
+  "microbench": {
+    "prepare_decision_policy_inputs": {
+      "new": {
+        "mean_sec": 0.017535266200502518,
+        "median_sec": 0.016805516001113574,
+        "min_sec": 0.016709579000234953,
+        "max_sec": 0.01936391999879561
+      },
+      "legacy": {
+        "mean_sec": 0.061840429799485716,
+        "median_sec": 0.06349911399956909,
+        "min_sec": 0.057740505999390734,
+        "max_sec": 0.0644297609997011
+      }
+    },
+    "apply_prepared_decision_policy": {
+      "new": {
+        "mean_sec": 0.003983150400017621,
+        "median_sec": 0.003951798000343842,
+        "min_sec": 0.0038326499998220243,
+        "max_sec": 0.004258152001057169
+      },
+      "legacy": {
+        "mean_sec": 0.01341480059963942,
+        "median_sec": 0.013372090999837383,
+        "min_sec": 0.013332841999726952,
+        "max_sec": 0.013651222998305457
+      }
+    },
+    "evaluate_candidates": {
+      "new": {
+        "mean_sec": 0.0036825814000621903,
+        "median_sec": 0.0035437099995760946,
+        "min_sec": 0.0034439659993950045,
+        "max_sec": 0.004178259001491824
+      },
+      "legacy": {
+        "mean_sec": 0.005541011199966306,
+        "median_sec": 0.0054550319982809015,
+        "min_sec": 0.005256897000435856,
+        "max_sec": 0.00620150100075989
+      }
+    },
+    "build_candidates": {
+      "new": {
+        "mean_sec": 0.0022483944001578495,
+        "median_sec": 0.0022513029998663114,
+        "min_sec": 0.0021517149998544483,
+        "max_sec": 0.0023483590011892375
+      },
+      "legacy": {
+        "mean_sec": 0.002034607200039318,
+        "median_sec": 0.0020704500002466375,
+        "min_sec": 0.0018899679998867214,
+        "max_sec": 0.0021185049990890548
+      }
+    },
+    "candidate_universe_identity": {
+      "mean_sec": 0.0028218801995535613,
+      "median_sec": 0.002549814998928923,
+      "min_sec": 0.0025279469991801307,
+      "max_sec": 0.0038289719996100757
+    },
+    "cache_read_write": {
+      "mean_sec": 0.008050412399097696,
+      "median_sec": 0.0081088209990412,
+      "min_sec": 0.007721984999079723,
+      "max_sec": 0.008434620998741593
+    }
+  },
+  "cprofile": {
+    "prepare_decision_policy_inputs": {
+      "call_count": 1.0,
+      "tottime_sec": 0.000225829,
+      "cumtime_sec": 0.0316457
+    },
+    "apply_prepared_decision_policy": {
+      "call_count": 1.0,
+      "tottime_sec": 4.9834000000000004e-05,
+      "cumtime_sec": 0.007702533
+    },
+    "build_candidates": {
+      "call_count": 1.0,
+      "tottime_sec": 9.473100000000001e-05,
+      "cumtime_sec": 0.004884759000000001
+    },
+    "evaluate_candidates": {
+      "call_count": 1.0,
+      "tottime_sec": 0.000393538,
+      "cumtime_sec": 0.0072332
+    },
+    "_candidate_universe_identity": {
+      "call_count": 1.0,
+      "tottime_sec": 8.373e-05,
+      "cumtime_sec": 0.006543056
+    },
+    "_resolve_decision_score_prep_cache": {
+      "call_count": 1.0,
+      "tottime_sec": 8.2569e-05,
+      "cumtime_sec": 0.034653771
+    },
+    "_resolve_outcome_cache": {
+      "call_count": 1.0,
+      "tottime_sec": 8.016900000000001e-05,
+      "cumtime_sec": 0.010163911000000001
+    }
+  }
+}

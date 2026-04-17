@@ -41,7 +41,6 @@ def evaluate_candidates(
     sl_moves = pd.to_numeric(candidates["sl_pips"], errors="coerce").to_numpy(dtype=float, copy=False) * PIP_SIZE
     direction_values = candidates["direction"].astype(str).to_numpy(copy=False)
 
-    evaluated_rows = []
     bar_count = len(bar_high)
 
     status_values = np.full(len(candidates), "timeout", dtype=object)
@@ -74,32 +73,37 @@ def evaluate_candidates(
         exit_price = entry
         bars_held = max(0, end_idx - start_idx)
 
-        for idx in range(start_idx, end_idx):
-            high = bar_high[idx]
-            low = bar_low[idx]
-
+        if start_idx < end_idx:
+            high_window = bar_high[start_idx:end_idx]
+            low_window = bar_low[start_idx:end_idx]
             if direction == "buy":
-                tp_hit = high >= tp_price
-                sl_hit = low <= sl_price
+                tp_hits = high_window >= tp_price
+                sl_hits = low_window <= sl_price
             else:
-                tp_hit = low <= tp_price
-                sl_hit = high >= sl_price
+                tp_hits = low_window <= tp_price
+                sl_hits = high_window >= sl_price
 
-            if tp_hit and sl_hit:
+            tp_idx = int(np.argmax(tp_hits)) if bool(tp_hits.any()) else -1
+            sl_idx = int(np.argmax(sl_hits)) if bool(sl_hits.any()) else -1
+
+            if tp_idx >= 0 and sl_idx >= 0:
+                # Conservative same-bar ambiguity handling: SL-first.
+                if sl_idx <= tp_idx:
+                    status = "loss"
+                    exit_price = sl_price
+                    bars_held = sl_idx + 1
+                else:
+                    status = "win"
+                    exit_price = tp_price
+                    bars_held = tp_idx + 1
+            elif sl_idx >= 0:
                 status = "loss"
                 exit_price = sl_price
-                bars_held = idx - start_idx + 1
-                break
-            if sl_hit:
-                status = "loss"
-                exit_price = sl_price
-                bars_held = idx - start_idx + 1
-                break
-            if tp_hit:
+                bars_held = sl_idx + 1
+            elif tp_idx >= 0:
                 status = "win"
                 exit_price = tp_price
-                bars_held = idx - start_idx + 1
-                break
+                bars_held = tp_idx + 1
 
         status_values[row_idx] = status
         exit_values[row_idx] = float(exit_price)

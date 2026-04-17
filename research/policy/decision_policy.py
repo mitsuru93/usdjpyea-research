@@ -112,22 +112,32 @@ def prepare_decision_policy_inputs(
 
     audit_df = _attach_scores(audit_df, score_bundle)
 
-    group_cols = ["timestamp", "touch_side"]
-    for group_key, part in audit_df.groupby(group_cols, sort=False, dropna=False):
-        group_id = "|".join(str(item) for item in (group_key if isinstance(group_key, tuple) else (group_key,)))
-        audit_df.loc[part.index, "decision_group_id"] = group_id
+    decision_group_id = (
+        audit_df["timestamp"].astype(str).fillna("")
+        + "|"
+        + audit_df["touch_side"].astype(str).fillna("")
+    )
+    audit_df["decision_group_id"] = decision_group_id
 
-        ranked = part.sort_values(["rvtr_score", "candidate_family"], ascending=[False, True])
-        best_score = float(ranked.iloc[0]["rvtr_score"])
-        second_score = float(ranked.iloc[1]["rvtr_score"]) if len(ranked) > 1 else 0.0
-        margin = best_score - second_score
-        audit_df.loc[part.index, "rvtr_score_margin"] = margin
-        audit_df.loc[part.index, "decision_best_score"] = best_score
-        audit_df.loc[part.index, "decision_second_score"] = second_score
-        audit_df.loc[part.index, "decision_group_count"] = int(len(ranked))
+    ranked = audit_df.sort_values(
+        ["decision_group_id", "rvtr_score", "candidate_family"],
+        ascending=[True, False, True],
+        kind="mergesort",
+    ).copy()
 
-        group_rank = pd.Series(range(1, len(ranked) + 1), index=ranked.index, dtype="int64")
-        audit_df.loc[group_rank.index, "decision_group_rank"] = group_rank
+    grouped = ranked.groupby("decision_group_id", sort=False, dropna=False)
+    ranked["decision_group_rank"] = grouped.cumcount().add(1).astype("int64")
+    ranked["decision_best_score"] = grouped["rvtr_score"].transform("first").astype("float64")
+    ranked["decision_group_count"] = grouped["rvtr_score"].transform("size").astype("int64")
+
+    second_score_map = ranked.loc[ranked["decision_group_rank"] == 2, ["decision_group_id", "rvtr_score"]].drop_duplicates(
+        "decision_group_id", keep="first"
+    )
+    second_score_series = second_score_map.set_index("decision_group_id")["rvtr_score"] if not second_score_map.empty else pd.Series(dtype="float64")
+    ranked["decision_second_score"] = ranked["decision_group_id"].map(second_score_series).fillna(0.0).astype("float64")
+    ranked["rvtr_score_margin"] = ranked["decision_best_score"] - ranked["decision_second_score"]
+
+    audit_df = ranked.sort_index()
 
     return DecisionPrepBundle(
         score_bundle=score_bundle,
@@ -157,30 +167,22 @@ def apply_prepared_decision_policy(
         audit_df["rvtr_score_margin"] = 0.0
         return _build_result(audit_df, policy, no_entry_group_count=0)
 
-    no_entry_group_count = 0
-    for _, part in audit_df.groupby("decision_group_id", sort=False, dropna=False):
-        group_best = part[part["decision_group_rank"] == 1]
-        if group_best.empty:
-            continue
-        best_idx = group_best.index[0]
-        margin = float(part["rvtr_score_margin"].iloc[0])
-        best_score = float(part["decision_best_score"].iloc[0])
+    best_row_mask = audit_df["decision_group_rank"].eq(1)
 
-        if policy.family == "two_stage_margin_v1" and margin < policy.margin_threshold:
-            no_entry_group_count += 1
-            audit_df.loc[part.index, "decision_policy_outcome"] = "no_entry_margin"
-            continue
+    no_entry_group_mask = pd.Series(False, index=audit_df.index)
+    if policy.family == "two_stage_margin_v1":
+        no_entry_group_mask = audit_df["rvtr_score_margin"] < policy.margin_threshold
+        audit_df.loc[no_entry_group_mask, "decision_policy_outcome"] = "no_entry_margin"
+    elif policy.family == "tri_score_rvtrno_v1":
+        no_entry_score = policy.no_entry_threshold + (policy.margin_threshold - audit_df["rvtr_score_margin"]).clip(lower=0.0)
+        audit_df["no_entry_score"] = no_entry_score
+        no_entry_group_mask = no_entry_score >= audit_df["decision_best_score"]
+        audit_df.loc[no_entry_group_mask, "decision_policy_outcome"] = "no_entry_score"
 
-        if policy.family == "tri_score_rvtrno_v1":
-            no_entry_score = policy.no_entry_threshold + max(0.0, policy.margin_threshold - margin)
-            audit_df.loc[part.index, "no_entry_score"] = no_entry_score
-            if no_entry_score >= best_score:
-                no_entry_group_count += 1
-                audit_df.loc[part.index, "decision_policy_outcome"] = "no_entry_score"
-                continue
-
-        audit_df.loc[best_idx, "selected_by_decision_policy"] = True
-        audit_df.loc[best_idx, "decision_policy_outcome"] = "include"
+    include_mask = best_row_mask & ~no_entry_group_mask
+    audit_df.loc[include_mask, "selected_by_decision_policy"] = True
+    audit_df.loc[include_mask, "decision_policy_outcome"] = "include"
+    no_entry_group_count = int(audit_df.loc[no_entry_group_mask, "decision_group_id"].nunique())
 
     return _build_result(audit_df, policy, no_entry_group_count=no_entry_group_count)
 

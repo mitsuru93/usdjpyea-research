@@ -28,17 +28,18 @@ def build_candidates(df: pd.DataFrame) -> pd.DataFrame:
     - lower touch => rev buy, trend sell
     """
     candidate_rows: list[dict] = []
+    extend = candidate_rows.extend
 
     for row in df.itertuples(index=False):
         if row.touch_upper:
-            candidate_rows.extend(
+            extend(
                 [
                     _make_candidate(row, touch_side="upper", family="rev", direction="sell"),
                     _make_candidate(row, touch_side="upper", family="trend", direction="buy"),
                 ]
             )
         if row.touch_lower:
-            candidate_rows.extend(
+            extend(
                 [
                     _make_candidate(row, touch_side="lower", family="rev", direction="buy"),
                     _make_candidate(row, touch_side="lower", family="trend", direction="sell"),
