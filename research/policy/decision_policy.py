@@ -13,6 +13,7 @@ SUPPORTED_DECISION_FAMILIES = {
     "bin_forceflip_v1",
     "two_stage_margin_v1",
     "tri_score_rvtrno_v1",
+    "total_score_rvtrno_v1",
 }
 SUPPORTED_SCORE_BUNDLES = {
     "sf_ctx_base_v1",
@@ -30,6 +31,9 @@ class DecisionPolicyConfig:
     score_bundle: str
     margin_threshold: float
     no_entry_threshold: float
+    entry_threshold: float = 0.75
+    rv_score_weights: dict[str, float] | None = None
+    tr_score_weights: dict[str, float] | None = None
     version: str = DECISION_POLICY_VERSION
 
 
@@ -41,11 +45,21 @@ def parse_decision_policy_config(
     family = DEFAULT_DECISION_FAMILY
     margin_threshold = 0.75
     no_entry_threshold = 0.25
+    entry_threshold = 0.75
+    rv_score_weights: dict[str, float] | None = None
+    tr_score_weights: dict[str, float] | None = None
 
     if isinstance(raw_policy, dict):
         family = str(raw_policy.get("family", raw_policy.get("name", family))).strip()
         margin_threshold = float(raw_policy.get("margin_threshold", margin_threshold))
         no_entry_threshold = float(raw_policy.get("no_entry_threshold", no_entry_threshold))
+        entry_threshold = float(raw_policy.get("entry_threshold", entry_threshold))
+        rv_weights_raw = raw_policy.get("rv_score_weights")
+        tr_weights_raw = raw_policy.get("tr_score_weights")
+        if isinstance(rv_weights_raw, dict):
+            rv_score_weights = {str(k): float(v) for k, v in rv_weights_raw.items()}
+        if isinstance(tr_weights_raw, dict):
+            tr_score_weights = {str(k): float(v) for k, v in tr_weights_raw.items()}
     elif raw_policy is not None and str(raw_policy).strip() != "":
         family = str(raw_policy).strip()
 
@@ -69,6 +83,9 @@ def parse_decision_policy_config(
         score_bundle=score_bundle,
         margin_threshold=margin_threshold,
         no_entry_threshold=no_entry_threshold,
+        entry_threshold=entry_threshold,
+        rv_score_weights=rv_score_weights,
+        tr_score_weights=tr_score_weights,
     )
 
 
@@ -86,14 +103,26 @@ def apply_decision_policy_to_candidates(
     audit_df["selected_by_decision_policy"] = False
     audit_df["decision_policy_outcome"] = "exclude"
     audit_df["decision_group_id"] = ""
+    audit_df["final_decision"] = "no_entry"
+    audit_df["reject_reason"] = "excluded_by_policy"
+    audit_df["rv_total_score"] = pd.Series(0.0, index=audit_df.index, dtype="float64")
+    audit_df["tr_total_score"] = pd.Series(0.0, index=audit_df.index, dtype="float64")
+    audit_df["entry_strength_score"] = pd.Series(0.0, index=audit_df.index, dtype="float64")
+    audit_df["decision_margin_score"] = pd.Series(0.0, index=audit_df.index, dtype="float64")
 
     if audit_df.empty:
         return _build_result(audit_df, policy, no_entry_group_count=0)
 
     audit_df = _attach_scores(audit_df, policy.score_bundle)
+    if policy.family == "total_score_rvtrno_v1":
+        audit_df = _attach_total_scores(audit_df, policy)
     if policy.family == "bin_env_v1":
         audit_df["selected_by_decision_policy"] = True
         audit_df["decision_policy_outcome"] = "include"
+        audit_df["final_decision"] = audit_df["candidate_family"].map({"rev": "rv", "trend": "tr"}).fillna("no_entry")
+        audit_df["reject_reason"] = ""
+        audit_df["entry_strength_score"] = audit_df[["rv_total_score", "tr_total_score"]].max(axis=1)
+        audit_df["decision_margin_score"] = (audit_df["rv_total_score"] - audit_df["tr_total_score"]).abs()
         audit_df["rvtr_score_margin"] = 0.0
         return _build_result(audit_df, policy, no_entry_group_count=0)
 
@@ -110,9 +139,59 @@ def apply_decision_policy_to_candidates(
         margin = best_score - second_score
         audit_df.loc[part.index, "rvtr_score_margin"] = margin
 
+        if policy.family == "total_score_rvtrno_v1":
+            part_df = audit_df.loc[part.index].copy()
+            part_df["entry_strength_score"] = part_df[["rv_total_score", "tr_total_score"]].max(axis=1)
+            part_df["decision_margin_score"] = (part_df["rv_total_score"] - part_df["tr_total_score"]).abs()
+
+            rv_wins = (part_df["rv_total_score"] >= policy.entry_threshold) & (
+                (part_df["rv_total_score"] - part_df["tr_total_score"]) >= policy.margin_threshold
+            )
+            tr_wins = (part_df["tr_total_score"] >= policy.entry_threshold) & (
+                (part_df["tr_total_score"] - part_df["rv_total_score"]) >= policy.margin_threshold
+            )
+            part_df.loc[rv_wins, "final_decision"] = "rv"
+            part_df.loc[tr_wins, "final_decision"] = "tr"
+
+            family_match_mask = (
+                ((part_df["final_decision"] == "rv") & part_df["candidate_family"].eq("rev"))
+                | ((part_df["final_decision"] == "tr") & part_df["candidate_family"].eq("trend"))
+            )
+            if bool(family_match_mask.any()):
+                best_match_idx = (
+                    part_df.loc[family_match_mask]
+                    .sort_values(
+                        ["entry_strength_score", "decision_margin_score", "candidate_family"],
+                        ascending=[False, False, True],
+                        kind="mergesort",
+                    )
+                    .index[0]
+                )
+                part_df["reject_reason"] = "no_entry_threshold"
+                part_df.loc[part_df["final_decision"] != "no_entry", "reject_reason"] = "decision_family_mismatch"
+                part_df.loc[family_match_mask, "reject_reason"] = "not_top_decision_score"
+                part_df.loc[best_match_idx, "selected_by_decision_policy"] = True
+                part_df.loc[best_match_idx, "decision_policy_outcome"] = "include"
+                part_df.loc[best_match_idx, "reject_reason"] = ""
+            else:
+                no_entry_group_count += 1
+                part_df["reject_reason"] = "no_entry_threshold"
+                part_df.loc[part_df["final_decision"] != "no_entry", "reject_reason"] = "decision_family_mismatch"
+
+            audit_df.loc[part.index, "selected_by_decision_policy"] = part_df["selected_by_decision_policy"]
+            audit_df.loc[part.index, "decision_policy_outcome"] = part_df["decision_policy_outcome"]
+            audit_df.loc[part.index, "final_decision"] = part_df["final_decision"]
+            audit_df.loc[part.index, "reject_reason"] = part_df["reject_reason"]
+            audit_df.loc[part.index, "entry_strength_score"] = part_df["entry_strength_score"]
+            audit_df.loc[part.index, "decision_margin_score"] = part_df["decision_margin_score"]
+            continue
+
         if policy.family == "two_stage_margin_v1" and margin < policy.margin_threshold:
             no_entry_group_count += 1
             audit_df.loc[part.index, "decision_policy_outcome"] = "no_entry_margin"
+            audit_df.loc[part.index, "reject_reason"] = "no_entry_margin"
+            audit_df.loc[part.index, "entry_strength_score"] = best_score
+            audit_df.loc[part.index, "decision_margin_score"] = margin
             continue
 
         if policy.family == "tri_score_rvtrno_v1":
@@ -121,10 +200,19 @@ def apply_decision_policy_to_candidates(
             if no_entry_score >= best_score:
                 no_entry_group_count += 1
                 audit_df.loc[part.index, "decision_policy_outcome"] = "no_entry_score"
+                audit_df.loc[part.index, "reject_reason"] = "no_entry_score"
+                audit_df.loc[part.index, "entry_strength_score"] = best_score
+                audit_df.loc[part.index, "decision_margin_score"] = margin
                 continue
 
         audit_df.loc[best_idx, "selected_by_decision_policy"] = True
         audit_df.loc[best_idx, "decision_policy_outcome"] = "include"
+        selected_family = str(audit_df.loc[best_idx, "candidate_family"]).strip().lower()
+        selected_decision = "rv" if selected_family == "rev" else "tr" if selected_family == "trend" else "no_entry"
+        audit_df.loc[best_idx, "final_decision"] = selected_decision
+        audit_df.loc[best_idx, "reject_reason"] = ""
+        audit_df.loc[part.index, "entry_strength_score"] = best_score
+        audit_df.loc[part.index, "decision_margin_score"] = margin
 
     return _build_result(audit_df, policy, no_entry_group_count=no_entry_group_count)
 
@@ -161,8 +249,51 @@ def _attach_scores(df: pd.DataFrame, score_bundle: str) -> pd.DataFrame:
 
     result["rv_score"] = rev_score
     result["tr_score"] = trend_score
+    result["directional_momo"] = directional_momo
+    result["extended_from_ema"] = extended_from_ema
+    result["rsi_extreme"] = rsi_extreme
     result["rvtr_score"] = trend_score.where(result["candidate_family"] == "trend", rev_score).fillna(0.0)
     result["no_entry_score"] = 0.0
+    return result
+
+
+def _attach_total_scores(df: pd.DataFrame, policy: DecisionPolicyConfig) -> pd.DataFrame:
+    result = df.copy()
+    rv_weights = {
+        "rv_score": 1.0,
+        "tr_score": 0.0,
+        "directional_momo": -0.08,
+        "extended_from_ema": 0.05,
+        "rsi_extreme": 0.04,
+    }
+    tr_weights = {
+        "rv_score": 0.0,
+        "tr_score": 1.0,
+        "directional_momo": 0.08,
+        "extended_from_ema": 0.02,
+        "rsi_extreme": 0.0,
+    }
+    if policy.rv_score_weights:
+        rv_weights.update(policy.rv_score_weights)
+    if policy.tr_score_weights:
+        tr_weights.update(policy.tr_score_weights)
+
+    feature_map: dict[str, pd.Series] = {
+        "rv_score": pd.to_numeric(result.get("rv_score", 0.0), errors="coerce").fillna(0.0),
+        "tr_score": pd.to_numeric(result.get("tr_score", 0.0), errors="coerce").fillna(0.0),
+        "directional_momo": pd.to_numeric(result.get("directional_momo", 0.0), errors="coerce").fillna(0.0),
+        "extended_from_ema": pd.to_numeric(result.get("extended_from_ema", 0.0), errors="coerce").fillna(0.0),
+        "rsi_extreme": pd.to_numeric(result.get("rsi_extreme", 0.0), errors="coerce").fillna(0.0),
+    }
+
+    rv_total = pd.Series(0.0, index=result.index, dtype="float64")
+    tr_total = pd.Series(0.0, index=result.index, dtype="float64")
+    for feature_name, weight in rv_weights.items():
+        rv_total = rv_total + (float(weight) * feature_map.get(feature_name, pd.Series(0.0, index=result.index)))
+    for feature_name, weight in tr_weights.items():
+        tr_total = tr_total + (float(weight) * feature_map.get(feature_name, pd.Series(0.0, index=result.index)))
+    result["rv_total_score"] = rv_total.astype("float64")
+    result["tr_total_score"] = tr_total.astype("float64")
     return result
 
 
