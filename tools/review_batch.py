@@ -311,6 +311,11 @@ def _build_policy_compare_rows(variant_rows: list[dict[str, Any]]) -> list[dict[
     for rows in by_anchor.values():
         families = {str(row.get("decision_policy", "")) for row in rows}
         if len(rows) >= 2 and len(families) >= 2:
+            preferred_a = next((r for r in rows if str(r.get("decision_policy", "")) == "bin_env_v1"), None)
+            preferred_b = next((r for r in rows if str(r.get("decision_policy", "")) == "total_score_rvtr_v1"), None)
+            if preferred_a is not None and preferred_b is not None:
+                selected = (preferred_a, preferred_b)
+                break
             sorted_rows = sorted(rows, key=lambda x: str(x.get("decision_policy", "")))
             selected = (sorted_rows[0], sorted_rows[1])
             break
@@ -337,6 +342,18 @@ def _build_policy_compare_rows(variant_rows: list[dict[str, Any]]) -> list[dict[
             "tr_selected_count_b": int(b.get("tr_selected_count", 0)),
             "no_entry_group_count_a": int(a.get("no_entry_group_count", 0)),
             "no_entry_group_count_b": int(b.get("no_entry_group_count", 0)),
+            "avg_rv_total_score_selected_a": float(a.get("avg_rv_total_score_selected", 0.0)),
+            "avg_rv_total_score_selected_b": float(b.get("avg_rv_total_score_selected", 0.0)),
+            "avg_tr_total_score_selected_a": float(a.get("avg_tr_total_score_selected", 0.0)),
+            "avg_tr_total_score_selected_b": float(b.get("avg_tr_total_score_selected", 0.0)),
+            "avg_score_gap_abs_a": float(a.get("avg_score_gap_abs", 0.0)),
+            "avg_score_gap_abs_b": float(b.get("avg_score_gap_abs", 0.0)),
+            "rv_share_a": float(a.get("rv_share", 0.0)),
+            "rv_share_b": float(b.get("rv_share", 0.0)),
+            "tr_share_a": float(a.get("tr_share", 0.0)),
+            "tr_share_b": float(b.get("tr_share", 0.0)),
+            "decision_flip_rate_vs_control_a": float(a.get("decision_flip_rate_vs_control", 0.0)),
+            "decision_flip_rate_vs_control_b": float(b.get("decision_flip_rate_vs_control", 0.0)),
             "candidate_timestamp_overlap_count": len(ts_a & ts_b),
             "candidate_timestamp_only_a": len(ts_a - ts_b),
             "candidate_timestamp_only_b": len(ts_b - ts_a),
@@ -359,6 +376,7 @@ def main() -> None:
     robustness_rows: list[dict[str, Any]] = []
     shard_status_rows: list[dict[str, Any]] = []
     warnings: list[str] = []
+    decision_maps_by_label: dict[str, dict[str, str]] = {}
 
     blackout_windows = list(manifest.get("blackout_windows_jst", []))
 
@@ -393,6 +411,7 @@ def main() -> None:
             candidates, aggregate_candidate_source = _load_candidate_rows_for_aggregate(run_dir)
             candidate_summary = _safe_read_csv(run_dir / "candidate_summary.csv")
             policy_summary = _safe_read_csv(run_dir / "policy_candidate_summary.csv")
+            decision_audit = _safe_read_csv(run_dir / "candidates_decision_policy_audit.csv")
             month_summary = _safe_read_csv(run_dir / "summary_by_month.csv")
             session_summary = _safe_read_csv(run_dir / "summary_by_session.csv")
             if overall.empty:
@@ -439,6 +458,11 @@ def main() -> None:
             rv_selected_count = 0
             tr_selected_count = 0
             no_entry_group_count = 0
+            avg_rv_total_score_selected = 0.0
+            avg_tr_total_score_selected = 0.0
+            avg_score_gap_abs = 0.0
+            rv_share = 0.0
+            tr_share = 0.0
             if not policy_summary.empty:
                 policy_row = policy_summary.iloc[0].to_dict()
                 decision_policy = str(policy_row.get("decision_policy_family", decision_policy) or decision_policy)
@@ -450,6 +474,33 @@ def main() -> None:
                 candidate_count = int(policy_row.get("selected_candidate_count", candidate_count) or candidate_count)
             else:
                 base_candidate_count = candidate_count
+            if not decision_audit.empty and "selected_by_decision_policy" in decision_audit.columns:
+                selected_audit = decision_audit[
+                    pd.to_numeric(decision_audit["selected_by_decision_policy"], errors="coerce").fillna(False).astype(bool)
+                ].copy()
+                if not selected_audit.empty:
+                    avg_rv_total_score_selected = float(
+                        pd.to_numeric(selected_audit.get("rv_total_score", 0.0), errors="coerce").fillna(0.0).mean()
+                    )
+                    avg_tr_total_score_selected = float(
+                        pd.to_numeric(selected_audit.get("tr_total_score", 0.0), errors="coerce").fillna(0.0).mean()
+                    )
+                    avg_score_gap_abs = float(
+                        pd.to_numeric(selected_audit.get("score_gap_abs", 0.0), errors="coerce").fillna(0.0).mean()
+                    )
+                    decisions = selected_audit.get("final_decision", pd.Series(dtype=object)).astype(str).str.lower()
+                    decision_count = int(len(decisions))
+                    rv_share = float((decisions == "rv").sum() / decision_count) if decision_count else 0.0
+                    tr_share = float((decisions == "tr").sum() / decision_count) if decision_count else 0.0
+                    if "decision_group_id" in selected_audit.columns:
+                        decision_maps_by_label[label] = (
+                            selected_audit[["decision_group_id", "final_decision"]]
+                            .dropna()
+                            .astype({"decision_group_id": str, "final_decision": str})
+                            .drop_duplicates(subset=["decision_group_id"], keep="first")
+                            .set_index("decision_group_id")["final_decision"]
+                            .to_dict()
+                        )
 
             robustness = {
                 **_pnl_stats(month_summary, "month"),
@@ -489,6 +540,12 @@ def main() -> None:
                     "rv_selected_count": rv_selected_count,
                     "tr_selected_count": tr_selected_count,
                     "no_entry_group_count": no_entry_group_count,
+                    "avg_rv_total_score_selected": avg_rv_total_score_selected,
+                    "avg_tr_total_score_selected": avg_tr_total_score_selected,
+                    "avg_score_gap_abs": avg_score_gap_abs,
+                    "rv_share": rv_share,
+                    "tr_share": tr_share,
+                    "decision_flip_rate_vs_control": 0.0,
                     "aggregate_candidate_source": aggregate_candidate_source,
                     **robustness,
                 }
@@ -517,6 +574,12 @@ def main() -> None:
                     "rv_selected_count": rv_selected_count,
                     "tr_selected_count": tr_selected_count,
                     "no_entry_group_count": no_entry_group_count,
+                    "avg_rv_total_score_selected": avg_rv_total_score_selected,
+                    "avg_tr_total_score_selected": avg_tr_total_score_selected,
+                    "avg_score_gap_abs": avg_score_gap_abs,
+                    "rv_share": rv_share,
+                    "tr_share": tr_share,
+                    "decision_flip_rate_vs_control": 0.0,
                     "aggregate_candidate_source": aggregate_candidate_source,
                     **robustness,
                 }
@@ -543,11 +606,51 @@ def main() -> None:
                     "rv_selected_count": rv_selected_count,
                     "tr_selected_count": tr_selected_count,
                     "no_entry_group_count": no_entry_group_count,
+                    "avg_rv_total_score_selected": avg_rv_total_score_selected,
+                    "avg_tr_total_score_selected": avg_tr_total_score_selected,
+                    "avg_score_gap_abs": avg_score_gap_abs,
+                    "rv_share": rv_share,
+                    "tr_share": tr_share,
+                    "decision_flip_rate_vs_control": 0.0,
                     "candidate_timestamps": candidate_timestamps,
                 }
             )
 
     ranking_df = pd.DataFrame(ranking_rows)
+    if not ranking_df.empty:
+        control_lookup: dict[tuple[str, str, str, str, str], tuple[str, dict[str, str]]] = {}
+        for _, row in ranking_df.iterrows():
+            anchor = (
+                str(row.get("timing_mode", "")),
+                str(row.get("band_model_family", "")),
+                str(row.get("band_model", "")),
+                str(row.get("band_value", "")),
+                str(row.get("score_bundle", "")),
+            )
+            label = str(row.get("variant_label", ""))
+            if str(row.get("decision_policy", "")) == "bin_env_v1":
+                control_lookup[anchor] = (label, decision_maps_by_label.get(label, {}))
+        for idx, row in ranking_df.iterrows():
+            anchor = (
+                str(row.get("timing_mode", "")),
+                str(row.get("band_model_family", "")),
+                str(row.get("band_model", "")),
+                str(row.get("band_value", "")),
+                str(row.get("score_bundle", "")),
+            )
+            control = control_lookup.get(anchor)
+            if control is None:
+                continue
+            control_label, control_map = control
+            current_label = str(row.get("variant_label", ""))
+            current_map = decision_maps_by_label.get(current_label, {})
+            if not control_map or not current_map:
+                continue
+            overlap_keys = set(control_map.keys()) & set(current_map.keys())
+            if not overlap_keys:
+                continue
+            flipped = sum(1 for key in overlap_keys if str(control_map[key]) != str(current_map[key]))
+            ranking_df.at[idx, "decision_flip_rate_vs_control"] = float(flipped / len(overlap_keys))
     if not ranking_df.empty:
         ranking_df = ranking_df.sort_values(["kept_total_pnl_pips", "kept_avg_pnl_pips", "kept_trade_count"], ascending=[False, False, False])
     shortlist_n = int((manifest.get("ranking_profile", {}) or {}).get("shortlist_top_n", 8) or 8)
@@ -565,6 +668,10 @@ def main() -> None:
         )
     shortlist_robustness_df = robustness_df.head(shortlist_n).copy() if not robustness_df.empty else robustness_df.copy()
     variant_compare_df = pd.DataFrame(_build_variant_compare_rows(variant_diag_rows))
+    if not ranking_df.empty:
+        flip_lookup = ranking_df.set_index("variant_label")["decision_flip_rate_vs_control"].to_dict()
+        for row in policy_diag_rows:
+            row["decision_flip_rate_vs_control"] = float(flip_lookup.get(str(row.get("variant_label", "")), 0.0))
     policy_compare_df = pd.DataFrame(_build_policy_compare_rows(policy_diag_rows))
     family_summary_df = pd.DataFrame()
     if not ranking_df.empty and "band_model_family" in ranking_df.columns:
@@ -724,7 +831,10 @@ def main() -> None:
             f"rv=({int(c['rv_selected_count_a'])}, {int(c['rv_selected_count_b'])}), "
             f"tr=({int(c['tr_selected_count_a'])}, {int(c['tr_selected_count_b'])}), "
             f"no_entry=({int(c['no_entry_group_count_a'])}, {int(c['no_entry_group_count_b'])}), "
-            f"overlap={int(c['candidate_timestamp_overlap_count'])}"
+            f"overlap={int(c['candidate_timestamp_overlap_count'])}, "
+            f"avg_score_gap_abs=({float(c.get('avg_score_gap_abs_a', 0.0)):.3f}, {float(c.get('avg_score_gap_abs_b', 0.0)):.3f}), "
+            f"rv_share=({float(c.get('rv_share_a', 0.0)):.3f}, {float(c.get('rv_share_b', 0.0)):.3f}), "
+            f"flip_vs_control=({float(c.get('decision_flip_rate_vs_control_a', 0.0)):.3f}, {float(c.get('decision_flip_rate_vs_control_b', 0.0)):.3f})"
         )
     lines.extend(["", "## No-entry-heavy variants"])
     if ranking_df.empty or "no_entry_group_count" not in ranking_df.columns:
