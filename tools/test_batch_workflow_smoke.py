@@ -38,6 +38,7 @@ def main() -> None:
         "batch_rvtr_policy_threshold_sweep_lite_v1.yaml",
         "batch_rvtr_policy_threshold_sweep_lite_sh2_v1.yaml",
         "batch_rvtr_policy_threshold_sweep_lite_sh1_v1.yaml",
+        "batch_rvtr_policy_total_score_narrow_v1.yaml",
     ]:
         spec_path = REPO_ROOT / "configs" / "batches" / spec_name
         payload = yaml.safe_load(spec_path.read_text(encoding="utf-8"))

@@ -523,8 +523,11 @@ def main() -> None:
         "decision_policy_family": decision_policy_cfg.family,
         "score_bundle": decision_policy_cfg.score_bundle,
         "decision_policy_version": decision_policy_cfg.version,
+        "entry_threshold": decision_policy_cfg.entry_threshold,
         "margin_threshold": decision_policy_cfg.margin_threshold,
         "no_entry_threshold": decision_policy_cfg.no_entry_threshold,
+        "rv_score_weights": decision_policy_cfg.rv_score_weights or {},
+        "tr_score_weights": decision_policy_cfg.tr_score_weights or {},
         "notes": "Research-only RV/TR/no-entry selection. MT4 remains final source of truth.",
     }
     with (output_dir / "effective_decision_policy.yaml").open("w", encoding="utf-8") as f:
