@@ -15,3 +15,12 @@ def test_run_research_batch_workflow_keeps_shard_artifacts_on_failure() -> None:
     assert "runtime_configs" in workflow_text
     assert "run_metadata.yaml" in workflow_text
     assert "-name \"*.log\"" in workflow_text
+
+
+def test_run_research_batch_workflow_uses_current_runner_workspace_for_shard_paths() -> None:
+    workflow_path = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "run_research_batch.yml"
+    workflow_text = workflow_path.read_text(encoding="utf-8")
+
+    assert 'STUDY_OUTPUT_PATH="${{ github.workspace }}/${{ matrix.study_output_relpath }}"' in workflow_text
+    assert 'SHARD_SRC="${{ github.workspace }}/${{ matrix.study_output_relpath }}"' in workflow_text
+    assert '${{ github.workspace }}/${{ needs.prepare.outputs.batch_output_root }}/batch_manifest.yaml' in workflow_text
