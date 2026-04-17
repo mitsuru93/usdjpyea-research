@@ -281,6 +281,7 @@ def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
         "bin_forceflip_v1": "DFF",
         "two_stage_margin_v1": "D2M",
         "tri_score_rvtrno_v1": "D3S",
+        "total_score_rvtrno_v1": "DTS",
     }
     score_tokens = {
         "sf_ctx_base_v1": "SBAS",
@@ -290,6 +291,9 @@ def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
     }
     margin_threshold_values = sweep.get("margin_threshold_values")
     no_entry_threshold_values = sweep.get("no_entry_threshold_values")
+    entry_threshold_values = sweep.get("entry_threshold_values")
+    rv_score_weights_variants = sweep.get("rv_score_weights_variants")
+    tr_score_weights_variants = sweep.get("tr_score_weights_variants")
     legacy_policy_bundle_only = margin_threshold_values is None and no_entry_threshold_values is None
 
     if legacy_policy_bundle_only:
@@ -310,10 +314,13 @@ def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
 
     margin_values = [float(x) for x in (margin_threshold_values or [0.75])]
     no_entry_values = [float(x) for x in (no_entry_threshold_values or [0.25])]
+    entry_values = [float(x) for x in (entry_threshold_values or [0.75])]
     if not margin_values:
         raise ValueError("decision_policy_sweep.margin_threshold_values must define at least one numeric value")
     if not no_entry_values:
         raise ValueError("decision_policy_sweep.no_entry_threshold_values must define at least one numeric value")
+    if not entry_values:
+        raise ValueError("decision_policy_sweep.entry_threshold_values must define at least one numeric value")
 
     variants: list[dict[str, Any]] = []
 
@@ -365,6 +372,42 @@ def _decision_policy_variants(spec: dict[str, Any]) -> list[dict[str, Any]]:
                             "margin_threshold": margin_threshold,
                             "no_entry_threshold": no_entry_threshold,
                             "decision_token": f"{base_decision_token}{_threshold_token(margin_threshold, no_entry_threshold, include_no_entry=True)}",
+                            "score_token": score_token,
+                        }
+                    )
+                continue
+
+            if policy_key == "total_score_rvtrno_v1":
+                rv_weight_variants = rv_score_weights_variants or [{"name": "rvbase", "weights": {}}]
+                tr_weight_variants = tr_score_weights_variants or [{"name": "trbase", "weights": {}}]
+                for entry_threshold, margin_threshold, rv_weights_variant, tr_weights_variant in itertools.product(
+                    entry_values, margin_values, rv_weight_variants, tr_weight_variants
+                ):
+                    rv_weights_name = str(rv_weights_variant.get("name", "rvbase")).strip().lower() or "rvbase"
+                    tr_weights_name = str(tr_weights_variant.get("name", "trbase")).strip().lower() or "trbase"
+                    rv_weights = rv_weights_variant.get("weights", {}) if isinstance(rv_weights_variant, dict) else {}
+                    tr_weights = tr_weights_variant.get("weights", {}) if isinstance(tr_weights_variant, dict) else {}
+                    variants.append(
+                        {
+                            "decision_policy_family": policy,
+                            "decision_policy": {
+                                "family": policy,
+                                "entry_threshold": entry_threshold,
+                                "margin_threshold": margin_threshold,
+                                "rv_score_weights": rv_weights,
+                                "tr_score_weights": tr_weights,
+                            },
+                            "score_bundle": bundle,
+                            "entry_threshold": entry_threshold,
+                            "margin_threshold": margin_threshold,
+                            "no_entry_threshold": 0.0,
+                            "decision_token": (
+                                f"{base_decision_token}"
+                                f"E{int(round(entry_threshold * 100)):03d}"
+                                f"M{int(round(margin_threshold * 100)):03d}"
+                                f"R{sanitize_label(rv_weights_name).upper()[:4]}"
+                                f"T{sanitize_label(tr_weights_name).upper()[:4]}"
+                            ),
                             "score_token": score_token,
                         }
                     )
