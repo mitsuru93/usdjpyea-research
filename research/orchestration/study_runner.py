@@ -54,6 +54,31 @@ def _run_cli(cli_path: Path, config_path: Path, repo_root: Path) -> subprocess.C
     return subprocess.run(cmd, text=True, capture_output=True, check=False, cwd=repo_root, env=env)
 
 
+def _short_error_excerpt(*parts: str, max_chars: int = 1200) -> str:
+    for part in parts:
+        text = (part or "").strip()
+        if text:
+            return text[:max_chars]
+    return ""
+
+
+def _persist_process_logs(
+    *,
+    output_dir: Path,
+    process_name: str,
+    stdout: str,
+    stderr: str,
+) -> dict[str, str]:
+    stdout_path = output_dir / f"{process_name}.stdout.log"
+    stderr_path = output_dir / f"{process_name}.stderr.log"
+    stdout_path.write_text(stdout or "", encoding="utf-8")
+    stderr_path.write_text(stderr or "", encoding="utf-8")
+    return {
+        "stdout": str(stdout_path),
+        "stderr": str(stderr_path),
+    }
+
+
 def _validate_study_config(cfg: dict[str, Any]) -> None:
     required = ["study_name", "output_root", "shared_defaults", "runs"]
     missing = [key for key in required if key not in cfg]
@@ -410,9 +435,25 @@ def run_study(
             run_proc = _run_cli(run_tool_path, run_cfg_path, repo_root)
             if run_proc.returncode != 0:
                 record["status"] = "run_failed"
-                err = (run_proc.stderr or run_proc.stdout or "").strip()
+                print(f"[study][{label}][run_experiment][stdout]", flush=True)
+                print(run_proc.stdout or "", flush=True)
+                print(f"[study][{label}][run_experiment][stderr]", flush=True)
+                print(run_proc.stderr or "", flush=True)
+                run_log_files = _persist_process_logs(
+                    output_dir=run_output_dir,
+                    process_name="run_experiment",
+                    stdout=run_proc.stdout or "",
+                    stderr=run_proc.stderr or "",
+                )
+                err = _short_error_excerpt(run_proc.stderr or "", run_proc.stdout or "")
                 message = f"run '{label}' failed during run_experiment: {err}"
                 record["errors"].append(message)
+                record.setdefault("debug_logs", {}).update(
+                    {
+                        "run_experiment_stdout": run_log_files["stdout"],
+                        "run_experiment_stderr": run_log_files["stderr"],
+                    }
+                )
                 errors.append(message)
                 run_records.append(record)
                 print(f"[study] run_end label={label} status={record['status']}", flush=True)
@@ -435,9 +476,25 @@ def run_study(
                 analysis_proc = _run_cli(analyze_tool_path, analysis_cfg_path, repo_root)
                 if analysis_proc.returncode != 0:
                     record["status"] = "analysis_failed"
-                    err = (analysis_proc.stderr or analysis_proc.stdout or "").strip()
+                    print(f"[study][{label}][analyze_run][stdout]", flush=True)
+                    print(analysis_proc.stdout or "", flush=True)
+                    print(f"[study][{label}][analyze_run][stderr]", flush=True)
+                    print(analysis_proc.stderr or "", flush=True)
+                    analysis_log_files = _persist_process_logs(
+                        output_dir=run_output_dir,
+                        process_name="analyze_run",
+                        stdout=analysis_proc.stdout or "",
+                        stderr=analysis_proc.stderr or "",
+                    )
+                    err = _short_error_excerpt(analysis_proc.stderr or "", analysis_proc.stdout or "")
                     message = f"run '{label}' failed during analyze_run: {err}"
                     record["errors"].append(message)
+                    record.setdefault("debug_logs", {}).update(
+                        {
+                            "analyze_run_stdout": analysis_log_files["stdout"],
+                            "analyze_run_stderr": analysis_log_files["stderr"],
+                        }
+                    )
                     errors.append(message)
                 else:
                     record["analysis_dir"] = str(analysis_output_dir)
