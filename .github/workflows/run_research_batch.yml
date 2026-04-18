@@ -139,6 +139,7 @@ jobs:
                 candidates_aggregate.csv.gz \
                 candidate_summary.csv \
                 policy_candidate_summary.csv \
+                candidates_decision_policy_audit.csv \
                 summary_by_month.csv \
                 summary_by_session.csv \
                 effective_band_config.yaml; do
