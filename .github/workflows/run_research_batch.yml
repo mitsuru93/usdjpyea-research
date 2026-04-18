@@ -199,7 +199,6 @@ jobs:
             shard_rel="${shard_dir#batch_artifacts/}"
             shard_dst="${LABEL_SRC_ROOT}/${shard_rel}"
             mkdir -p "${shard_dst}"
-            # Use hard links to avoid duplicate file data and reduce disk pressure on runner.
             ln "${study_meta}" "${shard_dst}/study_metadata.yaml"
 
             if [ -d "${shard_dir}/runs" ]; then
@@ -212,7 +211,6 @@ jobs:
                   candidates_decision_policy_audit.csv \
                   effective_band_config.yaml; do
                   if [ -f "${run_dir}/${file}" ]; then
-                    # Use hard links to avoid duplicate file data and reduce disk pressure on runner.
                     ln "${run_dir}/${file}" "${run_dst}/${file}"
                   fi
                 done
