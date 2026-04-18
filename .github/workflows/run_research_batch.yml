@@ -139,6 +139,7 @@ jobs:
                 candidates_aggregate.csv.gz \
                 candidate_summary.csv \
                 policy_candidate_summary.csv \
+                candidates_decision_policy_audit.csv \
                 summary_by_month.csv \
                 summary_by_session.csv \
                 effective_band_config.yaml; do
@@ -187,6 +188,42 @@ jobs:
       - name: Debug downloaded shard artifact layout
         run: |
           find batch_artifacts -maxdepth 6 -type f | sort
+
+      - name: Stage run-level label source artifact
+        run: |
+          LABEL_SRC_ROOT="label_source"
+          mkdir -p "${LABEL_SRC_ROOT}"
+
+          find batch_artifacts -type f -name "study_metadata.yaml" | while read -r study_meta; do
+            shard_dir="$(dirname "${study_meta}")"
+            shard_rel="${shard_dir#batch_artifacts/}"
+            shard_dst="${LABEL_SRC_ROOT}/${shard_rel}"
+            mkdir -p "${shard_dst}"
+            cp "${study_meta}" "${shard_dst}/study_metadata.yaml"
+
+            if [ -d "${shard_dir}/runs" ]; then
+              find "${shard_dir}/runs" -mindepth 1 -maxdepth 1 -type d | while read -r run_dir; do
+                run_name="$(basename "${run_dir}")"
+                run_dst="${shard_dst}/runs/${run_name}"
+                mkdir -p "${run_dst}"
+                for file in \
+                  candidates_aggregate.csv.gz \
+                  candidates_decision_policy_audit.csv \
+                  effective_band_config.yaml; do
+                  if [ -f "${run_dir}/${file}" ]; then
+                    cp "${run_dir}/${file}" "${run_dst}/${file}"
+                  fi
+                done
+              done
+            fi
+          done
+
+      - name: Upload run-level label source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-runlevel-label-source-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}
+          path: |
+            label_source
 
       - name: Download batch runtime bundle
         uses: actions/download-artifact@v4
