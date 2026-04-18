@@ -199,7 +199,7 @@ jobs:
             shard_rel="${shard_dir#batch_artifacts/}"
             shard_dst="${LABEL_SRC_ROOT}/${shard_rel}"
             mkdir -p "${shard_dst}"
-            cp "${study_meta}" "${shard_dst}/study_metadata.yaml"
+            ln "${study_meta}" "${shard_dst}/study_metadata.yaml"
 
             if [ -d "${shard_dir}/runs" ]; then
               find "${shard_dir}/runs" -mindepth 1 -maxdepth 1 -type d | while read -r run_dir; do
@@ -211,7 +211,7 @@ jobs:
                   candidates_decision_policy_audit.csv \
                   effective_band_config.yaml; do
                   if [ -f "${run_dir}/${file}" ]; then
-                    cp "${run_dir}/${file}" "${run_dst}/${file}"
+                    ln "${run_dir}/${file}" "${run_dst}/${file}"
                   fi
                 done
               done
