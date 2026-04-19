@@ -67,31 +67,31 @@ jobs:
           gh run download "$LABEL_SOURCE_RUN_ID" -R "$GH_REPO" -n "$LABEL_SOURCE_ARTIFACT_NAME" -D "$ARTIFACT_DIR"
           export ARTIFACT_DIR
           LABEL_SOURCE_ROOT="$(python - <<'PY'
-import os
-from pathlib import Path
+          import os
+          from pathlib import Path
 
-root = Path(os.environ["ARTIFACT_DIR"]).resolve()
-if (root / "shards").is_dir():
-    print(root)
-    raise SystemExit(0)
+          root = Path(os.environ["ARTIFACT_DIR"]).resolve()
+          if (root / "shards").is_dir():
+              print(root)
+              raise SystemExit(0)
 
-candidates = []
-for path in root.rglob("shards"):
-    if path.is_dir():
-        candidates.append(path.parent)
-if candidates:
-    candidates.sort(key=lambda p: (len(p.relative_to(root).parts), str(p)))
-    print(candidates[0].resolve())
-    raise SystemExit(0)
+          candidates = []
+          for path in root.rglob("shards"):
+              if path.is_dir():
+                  candidates.append(path.parent)
+          if candidates:
+              candidates.sort(key=lambda p: (len(p.relative_to(root).parts), str(p)))
+              print(candidates[0].resolve())
+              raise SystemExit(0)
 
-child_dirs = [p for p in root.iterdir() if p.is_dir()]
-if len(child_dirs) == 1:
-    print(child_dirs[0].resolve())
-    raise SystemExit(0)
+          child_dirs = [p for p in root.iterdir() if p.is_dir()]
+          if len(child_dirs) == 1:
+              print(child_dirs[0].resolve())
+              raise SystemExit(0)
 
-raise SystemExit("Could not locate extracted label-source root")
-PY
-)"
+          raise SystemExit("Could not locate extracted label-source root")
+          PY
+          )"
           echo "LABEL_SOURCE_ROOT=$LABEL_SOURCE_ROOT" >> "$GITHUB_ENV"
 
       - name: Build RV/TR label table
