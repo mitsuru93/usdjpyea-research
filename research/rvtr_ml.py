@@ -1,8 +1,8 @@
 """Shared helpers for the RV/TR ML research pipeline.
 
-This module stays research-side only. It provides deterministic data loading,
-label-table construction, feature derivation, and small utility helpers that
-the CLI tools reuse.
+Research-only helpers for label sourcing, feature construction, and time-based
+splits. The code intentionally stays on the research side and does not touch
+Core / MT4 production paths.
 """
 
 from __future__ import annotations
@@ -10,8 +10,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
+import numpy as np
 import pandas as pd
 import yaml
 
@@ -38,9 +39,10 @@ COMPARISON_BANDS = {
     "PARK08_P10",
     "PARK08_P20",
 }
-CONTROL_BANDS = {
-    "bin_env_v1",
-}
+CONTROL_BANDS = {"bin_env_v1"}
+
+PRIMARY_AUDIT_NAMES = ("candidates_decision_policy_audit.csv", "candidates_policy_audit.csv")
+PRIMARY_OUTCOME_NAMES = ("candidates_aggregate.csv.gz", "candidates.csv")
 
 
 @dataclass(frozen=True)
@@ -65,6 +67,7 @@ def _load_yaml(path: Path | None) -> dict[str, Any]:
 
 
 def _resolve_metadata_path(run_dir: Path) -> Path | None:
+    """Resolve metadata from run_metadata.yaml first, then ancestor study_metadata.yaml."""
     run_metadata = run_dir / "run_metadata.yaml"
     if run_metadata.exists():
         return run_metadata
@@ -98,41 +101,13 @@ def _iter_run_dirs(source_root: Path) -> list[Path]:
     if source_root.is_file():
         return [source_root.parent]
     run_dirs: set[Path] = set()
-    for candidate_path in source_root.rglob("candidates_decision_policy_audit.csv"):
-        run_dirs.add(candidate_path.parent)
-    for candidate_path in source_root.rglob("candidates_aggregate.csv.gz"):
-        run_dirs.add(candidate_path.parent)
-    for candidate_path in source_root.rglob("candidates_policy_audit.csv"):
-        run_dirs.add(candidate_path.parent)
-    for candidate_path in source_root.rglob("candidates.csv"):
-        run_dirs.add(candidate_path.parent)
+    for name in PRIMARY_AUDIT_NAMES + PRIMARY_OUTCOME_NAMES:
+        for candidate_path in source_root.rglob(name):
+            run_dirs.add(candidate_path.parent)
     return sorted(run_dirs)
 
 
-def _load_run_artifact(run_dir: Path) -> RunArtifact | None:
-    audit_path = _first_existing(run_dir, ["candidates_decision_policy_audit.csv", "candidates_policy_audit.csv"])
-    pnl_path = _first_existing(run_dir, ["candidates_aggregate.csv.gz", "candidates.csv"])
-    source_path = audit_path or pnl_path
-    if source_path is None:
-        return None
-
-    rows = load_run_rows(run_dir)
-    metadata_path = _resolve_metadata_path(run_dir)
-    band_config_path = run_dir / "effective_band_config.yaml"
-    metadata = _load_yaml(metadata_path)
-    band_config = _load_yaml(band_config_path)
-    return RunArtifact(
-        run_dir=run_dir,
-        source_path=source_path,
-        metadata_path=metadata_path if metadata_path is not None else None,
-        band_config_path=band_config_path if band_config_path.exists() else None,
-        rows=rows,
-        metadata=metadata,
-        band_config=band_config,
-    )
-
-
-def _first_existing(run_dir: Path, names: list[str]) -> Path | None:
+def _first_existing(run_dir: Path, names: tuple[str, ...]) -> Path | None:
     for name in names:
         path = run_dir / name
         if path.exists():
@@ -144,6 +119,8 @@ def _merge_outcome_table(audit_df: pd.DataFrame, outcome_df: pd.DataFrame) -> pd
     if audit_df.empty or outcome_df.empty:
         return audit_df.copy()
     if "pnl_pips" in audit_df.columns and audit_df["pnl_pips"].notna().any():
+        return audit_df.copy()
+    if "pnl_pips" not in outcome_df.columns:
         return audit_df.copy()
 
     join_candidates = [
@@ -160,9 +137,10 @@ def _merge_outcome_table(audit_df: pd.DataFrame, outcome_df: pd.DataFrame) -> pd
                 how="left",
                 suffixes=("", "_outcome"),
             )
-            return merged
+            if merged["pnl_pips"].notna().any():
+                return merged
 
-    if len(audit_df) == len(outcome_df) and "pnl_pips" in outcome_df.columns:
+    if len(audit_df) == len(outcome_df):
         merged = audit_df.copy().reset_index(drop=True)
         merged["pnl_pips"] = pd.to_numeric(outcome_df["pnl_pips"], errors="coerce").reset_index(drop=True)
         return merged
@@ -171,25 +149,57 @@ def _merge_outcome_table(audit_df: pd.DataFrame, outcome_df: pd.DataFrame) -> pd
 
 
 def load_run_rows(run_dir: str | Path) -> pd.DataFrame:
+    """Load one run directory and merge audit/outcome artifacts when both exist."""
     run_dir = Path(run_dir)
-    audit_path = _first_existing(run_dir, ["candidates_decision_policy_audit.csv", "candidates_policy_audit.csv"])
-    pnl_path = _first_existing(run_dir, ["candidates_aggregate.csv.gz", "candidates.csv"])
-    if audit_path is not None and pnl_path is not None:
-        audit_df = pd.read_csv(audit_path)
-        outcome_df = pd.read_csv(pnl_path)
-        return _merge_outcome_table(audit_df, outcome_df)
-    if audit_path is not None:
-        return pd.read_csv(audit_path)
-    if pnl_path is not None:
-        return pd.read_csv(pnl_path)
-    return pd.DataFrame()
+    audit_path = _first_existing(run_dir, PRIMARY_AUDIT_NAMES)
+    outcome_path = _first_existing(run_dir, PRIMARY_OUTCOME_NAMES)
+    if audit_path is None and outcome_path is None:
+        return pd.DataFrame()
+    if audit_path is None:
+        return pd.read_csv(outcome_path)
+    audit_df = pd.read_csv(audit_path)
+    if outcome_path is None:
+        return audit_df
+    outcome_df = pd.read_csv(outcome_path)
+    return _merge_outcome_table(audit_df, outcome_df)
+
+
+def _load_run_artifact(run_dir: Path) -> RunArtifact | None:
+    rows = load_run_rows(run_dir)
+    if rows.empty:
+        return None
+    metadata_path = _resolve_metadata_path(run_dir)
+    band_config_path = run_dir / "effective_band_config.yaml"
+    metadata = _load_yaml(metadata_path)
+    band_config = _load_yaml(band_config_path)
+    source_path = _first_existing(run_dir, PRIMARY_AUDIT_NAMES + PRIMARY_OUTCOME_NAMES)
+    if source_path is None:
+        return None
+    return RunArtifact(
+        run_dir=run_dir,
+        source_path=source_path,
+        metadata_path=metadata_path,
+        band_config_path=band_config_path if band_config_path.exists() else None,
+        rows=rows,
+        metadata=metadata,
+        band_config=band_config,
+    )
+
+
+def load_run_artifacts(source_root: str | Path) -> list[RunArtifact]:
+    root = Path(source_root).resolve()
+    artifacts: list[RunArtifact] = []
+    for run_dir in _iter_run_dirs(root):
+        artifact = _load_run_artifact(run_dir)
+        if artifact is not None:
+            artifacts.append(artifact)
+    return artifacts
 
 
 def _band_token_from_band_config(band_config: dict[str, Any]) -> str:
     band_model = str(band_config.get("band_model", "")).strip().lower()
     if not band_model:
         return ""
-
     if band_model == "atr":
         k = float(band_config.get("band_atr_k", band_config.get("band_value", 0.0)) or 0.0)
         period = int(float(band_config.get("band_atr_period", 0) or 0))
@@ -218,15 +228,6 @@ def _scalar_float(value: Any, default: float = 0.0) -> float:
     return float(numeric)
 
 
-def _extract_band_token(row: pd.Series, band_config: dict[str, Any]) -> str:
-    for col in ["band_token", "band_label", "band_name"]:
-        if col in row.index and str(row.get(col, "")).strip():
-            return _normalize_band_token(row.get(col, ""))
-    if band_config:
-        return _normalize_band_token(_band_token_from_band_config(band_config))
-    return ""
-
-
 def _session_core(session: str) -> float:
     text = str(session).strip().lower()
     if text == "asia":
@@ -247,253 +248,263 @@ def _safe_ts(value: Any) -> pd.Timestamp:
     return pd.Timestamp(ts)
 
 
-def _lookup_close_series(ohlc_df: pd.DataFrame) -> pd.Series:
-    close = pd.to_numeric(ohlc_df["close"], errors="coerce")
-    close.index = pd.to_datetime(ohlc_df["datetime"], errors="coerce")
-    return close.sort_index()
+def _series_or_default(df: pd.DataFrame, col: str, default: float | str | None = np.nan) -> pd.Series:
+    if col in df.columns:
+        return df[col]
+    if isinstance(default, str):
+        return pd.Series(default, index=df.index, dtype="object")
+    return pd.Series(default, index=df.index, dtype="float64")
 
 
-def _slope_from_close_series(close_series: pd.Series, ts: pd.Timestamp, window: int) -> float:
-    if window <= 0:
-        return 0.0
-    try:
-        loc = close_series.index.get_loc(ts)
-    except KeyError:
-        return 0.0
-    if isinstance(loc, slice):
-        loc = loc.stop - 1
-    if loc < window:
-        return 0.0
-    current = float(close_series.iloc[loc])
-    past = float(close_series.iloc[loc - window])
-    return (current - past) / float(window) / PIP_SIZE
+def _lookup_close_frame(ohlc_df: pd.DataFrame | None) -> pd.DataFrame | None:
+    if ohlc_df is None or ohlc_df.empty:
+        return None
+    frame = ohlc_df.loc[:, ["datetime", "close"]].copy()
+    frame["datetime"] = pd.to_datetime(frame["datetime"], errors="coerce")
+    frame["close"] = pd.to_numeric(frame["close"], errors="coerce")
+    frame = frame.dropna(subset=["datetime"]).sort_values("datetime").reset_index(drop=True)
+    for window in (5, 30, 60):
+        frame[f"close_lag_{window}"] = frame["close"].shift(window)
+    return frame
 
 
-def _build_family_block_scores(base: dict[str, float]) -> dict[str, float]:
-    band = base["dist_from_ema_norm_by_band"]
-    timing = base["session_core"]
-    momo = base["directional_momo_core"]
-    stretch = base["dist_from_ema_norm_by_atr"]
-    regime = base["regime_core"]
-    exit_proxy = base["exit_proxy_core"]
-
-    return {
-        "rv_band_score": band,
-        "tr_band_score": band,
-        "rv_timing_score": -timing,
-        "tr_timing_score": timing,
-        "rv_momo_score": -momo,
-        "tr_momo_score": momo,
-        "rv_stretch_score": stretch,
-        "tr_stretch_score": stretch,
-        "rv_regime_score": -regime,
-        "tr_regime_score": regime,
-        "rv_exit_proxy_score": -exit_proxy,
-        "tr_exit_proxy_score": exit_proxy,
-    }
+def _build_family_block_scores(base: pd.DataFrame) -> pd.DataFrame:
+    out = pd.DataFrame(index=base.index)
+    out["rv_band_score"] = base["dist_from_ema_norm_by_band"]
+    out["tr_band_score"] = base["dist_from_ema_norm_by_band"]
+    out["rv_timing_score"] = -base["session_core"]
+    out["tr_timing_score"] = base["session_core"]
+    out["rv_momo_score"] = -base["directional_momo_core"]
+    out["tr_momo_score"] = base["directional_momo_core"]
+    out["rv_stretch_score"] = base["dist_from_ema_norm_by_atr"]
+    out["tr_stretch_score"] = base["dist_from_ema_norm_by_atr"]
+    out["rv_regime_score"] = -base["regime_core"]
+    out["tr_regime_score"] = base["regime_core"]
+    out["rv_exit_proxy_score"] = -base["exit_proxy_core"]
+    out["tr_exit_proxy_score"] = base["exit_proxy_core"]
+    return out
 
 
-def _feature_row_from_candidate(row: pd.Series, close_series: pd.Series) -> dict[str, Any]:
-    ts = _safe_ts(row.get("timestamp"))
-    dist_from_ema_pips = _scalar_float(row.get("dist_from_ema_pips"))
-    atr14_pips = _scalar_float(row.get("atr14_pips"))
-    atr14_safe = atr14_pips if abs(atr14_pips) > 1e-9 else 1.0
-    envelope_upper = row.get("envelope_upper", row.get("upper_env", 0.0))
-    envelope_lower = row.get("envelope_lower", row.get("lower_env", 0.0))
-    band_width_pips = float((float(envelope_upper) - float(envelope_lower)) / PIP_SIZE)
-    band_half_width_pips = band_width_pips / 2.0 if abs(band_width_pips) > 1e-9 else 1.0
-    pre10 = _scalar_float(row.get("pre10_change_pips"))
-    pre30 = _scalar_float(row.get("pre30_change_pips"))
-    pre60 = _scalar_float(row.get("pre60_change_pips"))
-    net10 = _scalar_float(row.get("net10_change_pips"))
-    rsi14 = _scalar_float(row.get("rsi14"), 50.0)
-    macd_hist = _scalar_float(row.get("macd_hist"))
-    bb_width_ratio_to_close = _scalar_float(row.get("bb_width_ratio_to_close"))
-    atr_ratio_5_14 = _scalar_float(row.get("atr_ratio_5_14"), 1.0)
-    session = str(row.get("session", "")).strip()
-    direction = str(row.get("direction", "")).strip().lower()
-    direction_sign = 1.0 if direction == "buy" else -1.0 if direction == "sell" else 0.0
+def _build_feature_frame(candidate_rows: pd.DataFrame, close_frame: pd.DataFrame | None) -> pd.DataFrame:
+    work = candidate_rows.copy()
+    work["timestamp"] = pd.to_datetime(work["timestamp"], errors="coerce")
+    work["session"] = _series_or_default(work, "session", "").astype(str).str.strip()
+    work["candidate_family"] = _series_or_default(work, "candidate_family", "").astype(str).str.lower()
+    work["direction"] = _series_or_default(work, "direction", "").astype(str).str.lower()
+    work["pre10_change_pips"] = pd.to_numeric(_series_or_default(work, "pre10_change_pips"), errors="coerce")
+    work["pre30_change_pips"] = pd.to_numeric(_series_or_default(work, "pre30_change_pips"), errors="coerce")
+    work["pre60_change_pips"] = pd.to_numeric(_series_or_default(work, "pre60_change_pips"), errors="coerce")
+    work["net10_change_pips"] = pd.to_numeric(_series_or_default(work, "net10_change_pips"), errors="coerce")
+    work["dist_from_ema_pips"] = pd.to_numeric(_series_or_default(work, "dist_from_ema_pips"), errors="coerce")
+    work["atr14_pips"] = pd.to_numeric(_series_or_default(work, "atr14_pips"), errors="coerce")
+    work["atr5_pips"] = pd.to_numeric(_series_or_default(work, "atr5_pips"), errors="coerce")
+    work["rsi14"] = pd.to_numeric(_series_or_default(work, "rsi14", 50.0), errors="coerce").fillna(50.0)
+    work["macd_hist"] = pd.to_numeric(_series_or_default(work, "macd_hist"), errors="coerce")
+    work["bb_width_ratio_to_close"] = pd.to_numeric(_series_or_default(work, "bb_width_ratio_to_close"), errors="coerce")
+    work["atr_ratio_5_14"] = pd.to_numeric(_series_or_default(work, "atr_ratio_5_14", 1.0), errors="coerce").fillna(1.0)
+    work["envelope_upper"] = pd.to_numeric(
+        _series_or_default(work, "envelope_upper").combine_first(_series_or_default(work, "upper_env")),
+        errors="coerce",
+    )
+    work["envelope_lower"] = pd.to_numeric(
+        _series_or_default(work, "envelope_lower").combine_first(_series_or_default(work, "lower_env")),
+        errors="coerce",
+    )
+    work["month"] = _series_or_default(work, "month", "").astype(str)
+    work.loc[work["month"].isin(["", "nan", "NaT", "None"]), "month"] = work["timestamp"].dt.strftime("%Y-%m")
+    work.loc[work["month"].isin(["", "nan", "NaT", "None"]), "month"] = ""
 
-    m5_slope = _slope_from_close_series(close_series, ts, 5)
-    m30_slope = _slope_from_close_series(close_series, ts, 30)
-    h1_slope = _slope_from_close_series(close_series, ts, 60)
+    work["direction_sign"] = np.select(
+        [work["direction"].eq("buy"), work["direction"].eq("sell")],
+        [1.0, -1.0],
+        default=0.0,
+    )
+    work["session_core"] = work["session"].map(_session_core).astype(float)
+    work["atr14_safe"] = work["atr14_pips"].where(work["atr14_pips"].abs() > 1e-9, 1.0)
+    band_width_pips = ((work["envelope_upper"] - work["envelope_lower"]) / PIP_SIZE).fillna(0.0)
+    band_half_width_pips = (band_width_pips / 2.0).where(band_width_pips.abs() > 1e-9, 1.0)
 
-    dist_from_ema_norm_by_band = dist_from_ema_pips / band_half_width_pips
-    dist_from_ema_norm_by_atr = dist_from_ema_pips / atr14_safe
-    band_width_norm_vs_atr = band_width_pips / atr14_safe
-    directional_momo_core = direction_sign * (0.6 * pre10 + 0.3 * pre30 + 0.1 * net10) / 10.0
-    regime_core = ((atr_ratio_5_14 - 1.0) * 0.75) + (0.25 * bb_width_ratio_to_close * 100.0)
-    exit_proxy_core = (0.5 * m5_slope) + (0.3 * m30_slope) + (0.2 * h1_slope) + (0.1 * macd_hist * 100.0)
+    work["dist_from_ema_norm_by_band"] = work["dist_from_ema_pips"] / band_half_width_pips
+    work["dist_from_ema_norm_by_atr"] = work["dist_from_ema_pips"] / work["atr14_safe"]
+    work["band_width_norm_vs_atr"] = band_width_pips / work["atr14_safe"]
+    work["directional_momo_core"] = (
+        work["direction_sign"] * (0.6 * work["pre10_change_pips"] + 0.3 * work["pre30_change_pips"] + 0.1 * work["net10_change_pips"]) / 10.0
+    )
+    work["regime_core"] = ((work["atr_ratio_5_14"] - 1.0) * 0.75) + (0.25 * work["bb_width_ratio_to_close"].fillna(0.0) * 100.0)
 
-    base = {
-        "dist_from_ema_norm_by_band": dist_from_ema_norm_by_band,
-        "dist_from_ema_norm_by_atr": dist_from_ema_norm_by_atr,
-        "band_width_norm_vs_atr": band_width_norm_vs_atr,
-        "pre10_change_pips": pre10,
-        "pre30_change_pips": pre30,
-        "pre60_change_pips": pre60,
-        "net10_change_pips": net10,
-        "m5_slope": m5_slope,
-        "m30_slope": m30_slope,
-        "h1_slope": h1_slope,
-        "rsi14": rsi14,
-        "macd_hist": macd_hist,
-        "bb_width_ratio_to_close": bb_width_ratio_to_close,
-        "atr_ratio_5_14": atr_ratio_5_14,
-        "session": session,
-        "session_core": _session_core(session),
-        "directional_momo_core": directional_momo_core,
-        "regime_core": regime_core,
-        "exit_proxy_core": exit_proxy_core,
-    }
-    base.update(_build_family_block_scores(base))
-    return base
+    if close_frame is not None and not close_frame.empty:
+        merged = work.merge(close_frame, left_on="timestamp", right_on="datetime", how="left")
+        for window in (5, 30, 60):
+            merged[f"m{window if window != 60 else '1'}_slope"] = (
+                (merged["close"] - merged[f"close_lag_{window}"]) / float(window) / PIP_SIZE
+            )
+        merged["m5_slope"] = merged["m5_slope"].fillna(0.0)
+        merged["m30_slope"] = merged["m30_slope"].fillna(0.0)
+        merged["h1_slope"] = merged["m1_slope"].fillna(0.0)
+        work = merged.drop(columns=[c for c in ["datetime", "close", "close_lag_5", "close_lag_30", "close_lag_60", "m1_slope"] if c in merged.columns])
+    else:
+        work["m5_slope"] = 0.0
+        work["m30_slope"] = 0.0
+        work["h1_slope"] = 0.0
 
+    work["exit_proxy_core"] = (0.5 * work["m5_slope"]) + (0.3 * work["m30_slope"]) + (0.2 * work["h1_slope"]) + (0.1 * work["macd_hist"].fillna(0.0) * 100.0)
 
-def load_run_artifacts(source_root: str | Path) -> list[RunArtifact]:
-    root = Path(source_root).resolve()
-    artifacts: list[RunArtifact] = []
-    for run_dir in _iter_run_dirs(root):
-        artifact = _load_run_artifact(run_dir)
-        if artifact is not None:
-            artifacts.append(artifact)
-    return artifacts
+    work = pd.concat([work, _build_family_block_scores(work)], axis=1)
+    return work
 
 
-def _band_is_shortlisted(band_token: str, shortlist_bands: set[str]) -> bool:
-    return _normalize_band_token(band_token) in {_normalize_band_token(x) for x in shortlist_bands}
+def _band_token_for_artifact(artifact: RunArtifact, first_row: pd.Series | None) -> str:
+    for col in ("band_token", "band_label", "band_name"):
+        if first_row is not None and col in first_row.index:
+            token = str(first_row.get(col, "")).strip()
+            if token:
+                return _normalize_band_token(token)
+    if artifact.band_config:
+        return _normalize_band_token(_band_token_from_band_config(artifact.band_config))
+    return ""
+
+
+def _required_columns_present(base_rows: pd.DataFrame) -> pd.Series:
+    required_cols = [
+        "dist_from_ema_pips",
+        "atr14_pips",
+        "envelope_upper",
+        "envelope_lower",
+        "session",
+        "month",
+    ]
+    present = pd.Series(True, index=base_rows.index)
+    for col in required_cols:
+        if col not in base_rows.columns:
+            present &= False
+        else:
+            present &= base_rows[col].notna()
+    return present
 
 
 def build_label_table(source_root: str | Path) -> pd.DataFrame:
+    """Build one-row-per-decision-group RV/TR labels for shortlisted bands."""
     artifacts = load_run_artifacts(source_root)
     if not artifacts:
         return pd.DataFrame()
 
-    grouped_rows: list[dict[str, Any]] = []
     shortlist_band_tokens = {_normalize_band_token(x) for x in SHORTLIST_BANDS}
     repo_root = Path(__file__).resolve().parents[1]
+    grouped_frames: list[pd.DataFrame] = []
 
     for artifact in artifacts:
-        band_token = _extract_band_token(artifact.rows.iloc[0] if not artifact.rows.empty else pd.Series(dtype=object), artifact.band_config)
+        first_row = artifact.rows.iloc[0] if not artifact.rows.empty else None
+        band_token = _band_token_for_artifact(artifact, first_row)
         if band_token not in shortlist_band_tokens:
             continue
 
-        ohlc_df = load_ohlc_for_run(artifact.metadata, repo_root)
-        close_series = _lookup_close_series(ohlc_df) if ohlc_df is not None else None
         work = artifact.rows.copy()
-
-        if "candidate_family" not in work.columns:
-            continue
-        if "timestamp" not in work.columns:
+        if work.empty or "candidate_family" not in work.columns or "timestamp" not in work.columns:
             continue
 
-        for _, group in work.groupby(["timestamp", "touch_side"], dropna=False):
-            family_map: dict[str, pd.Series] = {}
-            for _, row in group.iterrows():
-                family = str(row.get("candidate_family", "")).strip().lower()
-                if family in {"rev", "trend"} and family not in family_map:
-                    family_map[family] = row
-            if not family_map:
-                continue
+        work["source_run_dir"] = str(artifact.run_dir)
+        work["source_artifact_path"] = str(artifact.source_path)
+        work["band_token"] = band_token
+        work["candidate_family"] = work["candidate_family"].astype(str).str.lower()
+        work["timestamp"] = pd.to_datetime(work["timestamp"], errors="coerce")
+        work["touch_side"] = work.get("touch_side", "").astype(str).str.lower()
+        work = work.loc[work["candidate_family"].isin(["rev", "trend"]) & work["timestamp"].notna() & work["touch_side"].ne("")].copy()
+        if work.empty:
+            continue
 
-            base_row = next(iter(family_map.values()))
-            timestamp = _safe_ts(base_row.get("timestamp"))
-            touch_side = str(base_row.get("touch_side", "")).strip().lower()
-            decision_group_id_v1 = "||".join([sanitize_label(artifact.run_dir.name), band_token, timestamp.isoformat(), touch_side])
+        if "candidate_id" in work.columns:
+            work["candidate_id"] = work["candidate_id"].astype(str)
+        family_rank = np.where(work["candidate_family"].eq("rev"), 0, 1)
+        work = work.assign(family_rank=family_rank)
 
-            pnl_rv = pd.to_numeric(family_map["rev"].get("pnl_pips"), errors="coerce") if "rev" in family_map else pd.NA
-            pnl_tr = pd.to_numeric(family_map["trend"].get("pnl_pips"), errors="coerce") if "trend" in family_map else pd.NA
-            if pd.isna(pnl_rv) or pd.isna(pnl_tr):
-                continue
-            pnl_rv = float(pnl_rv)
-            pnl_tr = float(pnl_tr)
+        group_cols = ["source_run_dir", "band_token", "timestamp", "touch_side"]
+        sort_cols = group_cols + ["family_rank"] + (["candidate_id"] if "candidate_id" in work.columns else [])
+        work = work.sort_values(sort_cols, kind="mergesort")
 
-            label_gap = float(pnl_rv - pnl_tr)
-            if label_gap >= LABEL_GAP_THRESHOLD_PIPS:
-                label = "rv"
-            elif label_gap <= -LABEL_GAP_THRESHOLD_PIPS:
-                label = "tr"
+        family_rows = work.drop_duplicates(group_cols + ["candidate_family"], keep="first").copy()
+        base_rows = work.drop_duplicates(group_cols, keep="first").copy()
+
+        pair = (
+            family_rows.pivot_table(index=group_cols, columns="candidate_family", values="pnl_pips", aggfunc="first")
+            .rename(columns={"rev": "pnl_rv_pips", "trend": "pnl_tr_pips"})
+            .reset_index()
+        )
+        counts = (
+            work.groupby(group_cols, dropna=False)
+            .agg(raw_row_count=("candidate_family", "size"), unique_family_count=("candidate_family", "nunique"))
+            .reset_index()
+        )
+
+        if "month" not in base_rows.columns:
+            base_rows["month"] = base_rows["timestamp"].dt.strftime("%Y-%m")
+        else:
+            base_rows["month"] = base_rows["month"].astype(str)
+            base_rows.loc[base_rows["month"].isin(["", "nan", "NaT", "None"]), "month"] = base_rows["timestamp"].dt.strftime("%Y-%m")
+        if "session" not in base_rows.columns:
+            base_rows["session"] = ""
+
+        hard_gate = None
+        if "hard_gate_passed" not in base_rows.columns:
+            if "hard_gate_passed" in work.columns:
+                hard_gate = (
+                    work.assign(hard_gate_passed=work["hard_gate_passed"].fillna(False).astype(bool))
+                    .groupby(group_cols, dropna=False)["hard_gate_passed"]
+                    .max()
+                    .reset_index()
+                )
             else:
-                label = "ambiguous"
+                hard_gate = base_rows.loc[:, group_cols].copy()
+                hard_gate["hard_gate_passed"] = _required_columns_present(base_rows).to_numpy()
 
-            required_cols = [
-                "dist_from_ema_pips",
-                "atr14_pips",
-                "envelope_upper",
-                "envelope_lower",
-                "session",
-                "month",
-            ]
-            missing_required = [col for col in required_cols if col not in base_row.index or pd.isna(base_row.get(col))]
-            if "hard_gate_passed" in base_row.index and not pd.isna(base_row.get("hard_gate_passed")):
-                hard_gate_passed = bool(base_row.get("hard_gate_passed"))
-            else:
-                hard_gate_passed = len(missing_required) == 0
-            group_status = "complete_unique_pair" if set(family_map.keys()) == {"rev", "trend"} else "incomplete_pair"
-            if len(group) != len(family_map):
-                group_status = "duplicate_or_ambiguous_pair" if group_status == "complete_unique_pair" else group_status
+        features = _build_feature_frame(base_rows, _lookup_close_frame(load_ohlc_for_run(artifact.metadata, repo_root)))
+        feature_extras = features.drop(columns=[col for col in features.columns if col in base_rows.columns and col not in group_cols], errors="ignore")
 
-            feature_base = _feature_row_from_candidate(base_row, close_series) if close_series is not None else {
-                "dist_from_ema_norm_by_band": 0.0,
-                "dist_from_ema_norm_by_atr": 0.0,
-                "band_width_norm_vs_atr": 0.0,
-                "pre10_change_pips": _scalar_float(base_row.get("pre10_change_pips")),
-                "pre30_change_pips": _scalar_float(base_row.get("pre30_change_pips")),
-                "pre60_change_pips": _scalar_float(base_row.get("pre60_change_pips")),
-                "net10_change_pips": _scalar_float(base_row.get("net10_change_pips")),
-                "m5_slope": 0.0,
-                "m30_slope": 0.0,
-                "h1_slope": 0.0,
-                "rsi14": _scalar_float(base_row.get("rsi14"), 50.0),
-                "macd_hist": _scalar_float(base_row.get("macd_hist")),
-                "bb_width_ratio_to_close": _scalar_float(base_row.get("bb_width_ratio_to_close")),
-                "atr_ratio_5_14": _scalar_float(base_row.get("atr_ratio_5_14"), 1.0),
-                "session": str(base_row.get("session", "")),
-                "session_core": _session_core(str(base_row.get("session", ""))),
-                "directional_momo_core": 0.0,
-                "regime_core": 0.0,
-                "exit_proxy_core": 0.0,
-                "rv_band_score": 0.0,
-                "tr_band_score": 0.0,
-                "rv_timing_score": 0.0,
-                "tr_timing_score": 0.0,
-                "rv_momo_score": 0.0,
-                "tr_momo_score": 0.0,
-                "rv_stretch_score": 0.0,
-                "tr_stretch_score": 0.0,
-                "rv_regime_score": 0.0,
-                "tr_regime_score": 0.0,
-                "rv_exit_proxy_score": 0.0,
-                "tr_exit_proxy_score": 0.0,
-            }
+        out = (
+            base_rows.merge(pair, on=group_cols, how="left")
+            .merge(counts, on=group_cols, how="left")
+            .merge(feature_extras, on=group_cols, how="left")
+        )
+        if hard_gate is not None:
+            out = out.merge(hard_gate, on=group_cols, how="left")
 
-            shared = {
-                "decision_group_id_v1": decision_group_id_v1,
-                "band_token": band_token,
-                "band_model": str(artifact.band_config.get("band_model", "")).strip().lower(),
-                "band_model_family": str(artifact.band_config.get("band_model_family", artifact.band_config.get("band_model", ""))).strip().lower(),
-                "source_run_dir": str(artifact.run_dir),
-                "source_artifact_path": str(artifact.source_path),
-                "timestamp": timestamp.isoformat(),
-                "touch_side": touch_side,
-                "session": str(base_row.get("session", "")),
-                "month": str(base_row.get("month", "")),
-                "hard_gate_passed": bool(hard_gate_passed),
-                "group_status": group_status,
-                "label_gap_rv_minus_tr_pips": label_gap,
-                "label_rvtr_v1": label,
-                "pnl_rv_pips": pnl_rv,
-                "pnl_tr_pips": pnl_tr,
-            }
+        out["decision_group_id_v1"] = (
+            sanitize_label(artifact.run_dir.name)
+            + "||"
+            + out["band_token"].astype(str)
+            + "||"
+            + out["timestamp"].dt.strftime("%Y-%m-%dT%H:%M:%S")
+            + "||"
+            + out["touch_side"].astype(str)
+        )
+        out["group_status"] = np.select(
+            [
+                out["raw_row_count"].eq(2) & out["unique_family_count"].eq(2),
+                out["unique_family_count"].eq(2) & ~out["raw_row_count"].eq(2),
+                out["unique_family_count"].eq(1),
+            ],
+            ["complete_unique_pair", "duplicate_or_ambiguous_pair", "incomplete_pair"],
+            default="incomplete_pair",
+        )
 
-            row_payload = dict(shared)
-            row_payload.update(feature_base)
-            grouped_rows.append(row_payload)
+        out["pnl_rv_pips"] = pd.to_numeric(out["pnl_rv_pips"], errors="coerce")
+        out["pnl_tr_pips"] = pd.to_numeric(out["pnl_tr_pips"], errors="coerce")
+        out["label_gap_rv_minus_tr_pips"] = out["pnl_rv_pips"] - out["pnl_tr_pips"]
+        out["label_rvtr_v1"] = np.select(
+            [
+                out["label_gap_rv_minus_tr_pips"] >= LABEL_GAP_THRESHOLD_PIPS,
+                out["label_gap_rv_minus_tr_pips"] <= -LABEL_GAP_THRESHOLD_PIPS,
+            ],
+            ["rv", "tr"],
+            default="ambiguous",
+        )
+        out["band_model"] = str(artifact.band_config.get("band_model", "")).strip().lower()
+        out["band_model_family"] = str(artifact.band_config.get("band_model_family", artifact.band_config.get("band_model", ""))).strip().lower()
+        grouped_frames.append(out)
 
-    label_table = pd.DataFrame(grouped_rows)
-    if label_table.empty:
-        return label_table
+    if not grouped_frames:
+        return pd.DataFrame()
 
+    label_table = pd.concat(grouped_frames, ignore_index=True)
     label_table = label_table.sort_values(["band_token", "timestamp", "touch_side"], kind="mergesort").reset_index(drop=True)
     return label_table
 
@@ -520,24 +531,29 @@ def add_split_column(df: pd.DataFrame) -> pd.DataFrame:
 
 def build_distribution_table(df: pd.DataFrame, group_cols: list[str]) -> pd.DataFrame:
     if df.empty:
-        return pd.DataFrame(columns=group_cols + ["row_count", "rv_count", "tr_count", "ambiguous_count"])
-    grouped = df.groupby(group_cols, dropna=False) if group_cols else [("overall", df)]
-    rows: list[dict[str, Any]] = []
-    for key, part in grouped:
-        row: dict[str, Any] = {}
-        if group_cols:
-            if len(group_cols) == 1:
-                row[group_cols[0]] = key
-            else:
-                row.update(dict(zip(group_cols, key)))
-        row["row_count"] = int(len(part))
-        row["rv_count"] = int((part["label_rvtr_v1"] == "rv").sum())
-        row["tr_count"] = int((part["label_rvtr_v1"] == "tr").sum())
-        row["ambiguous_count"] = int((part["label_rvtr_v1"] == "ambiguous").sum())
-        row["rv_share"] = (row["rv_count"] / row["row_count"]) if row["row_count"] else 0.0
-        row["tr_share"] = (row["tr_count"] / row["row_count"]) if row["row_count"] else 0.0
-        rows.append(row)
-    return pd.DataFrame(rows)
+        cols = group_cols + ["row_count", "rv_count", "tr_count", "ambiguous_count", "rv_share", "tr_share"]
+        return pd.DataFrame(columns=cols)
+    if not group_cols:
+        row = {
+            "row_count": int(len(df)),
+            "rv_count": int((df["label_rvtr_v1"] == "rv").sum()),
+            "tr_count": int((df["label_rvtr_v1"] == "tr").sum()),
+            "ambiguous_count": int((df["label_rvtr_v1"] == "ambiguous").sum()),
+        }
+        row["rv_share"] = row["rv_count"] / row["row_count"] if row["row_count"] else 0.0
+        row["tr_share"] = row["tr_count"] / row["row_count"] if row["row_count"] else 0.0
+        return pd.DataFrame([row])
+
+    grouped = df.groupby(group_cols, dropna=False)
+    out = grouped.agg(
+        row_count=("label_rvtr_v1", "size"),
+        rv_count=("label_rvtr_v1", lambda s: int((s == "rv").sum())),
+        tr_count=("label_rvtr_v1", lambda s: int((s == "tr").sum())),
+        ambiguous_count=("label_rvtr_v1", lambda s: int((s == "ambiguous").sum())),
+    ).reset_index()
+    out["rv_share"] = np.where(out["row_count"] > 0, out["rv_count"] / out["row_count"], 0.0)
+    out["tr_share"] = np.where(out["row_count"] > 0, out["tr_count"] / out["row_count"], 0.0)
+    return out
 
 
 def prepare_trainable_label_table(df: pd.DataFrame) -> pd.DataFrame:
@@ -641,3 +657,31 @@ def one_hot_session_columns(df: pd.DataFrame) -> pd.DataFrame:
         safe = sanitize_label(value).lower()
         work[f"session__{safe}"] = (session == value).astype(float)
     return work
+
+
+__all__ = [
+    "CONTROL_BANDS",
+    "COMPARISON_BANDS",
+    "HOLDOUT_END",
+    "HOLDOUT_START",
+    "LABEL_GAP_THRESHOLD_PIPS",
+    "PRIMARY_AUDIT_NAMES",
+    "PRIMARY_OUTCOME_NAMES",
+    "PIP_SIZE",
+    "SHORTLIST_BANDS",
+    "TRAIN_END",
+    "TRAIN_START",
+    "VALID_END",
+    "VALID_START",
+    "RunArtifact",
+    "add_split_column",
+    "build_distribution_table",
+    "build_label_table",
+    "feature_columns",
+    "load_ohlc_for_run",
+    "load_run_artifacts",
+    "load_run_rows",
+    "one_hot_session_columns",
+    "prepare_trainable_label_table",
+    "sanitize_label",
+]
