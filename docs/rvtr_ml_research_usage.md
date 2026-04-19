@@ -30,24 +30,31 @@ Important:
 
 ## How to run
 
-Use this workflow file:
-- `/.github/workflows/run_rvtr_ml_research.yml`
+Primary workflow (recommended):
+- file: `/.github/workflows/run_rvtr_ml_from_batch_spec.yml`
+- name: `Run RV/TR ML From Batch Spec`
 
-Workflow name:
-- `Run RV/TR ML Research`
+Primary inputs:
+- `batch_spec` (required, e.g. `configs/...yaml`)
+- `dataset_id` (optional)
+- `output_tag` (optional)
+- `review_issue_number` (optional)
+- `rvtr_ml_output_subdir` (optional, defaults to `rvtr_ml_research`)
 
-Required inputs:
-- `label_source_run_id`
-- `label_source_artifact_name`
+Main path is config-driven. You trigger once with `batch_spec = configs/...yaml` and the same run executes:
+- batch prepare
+- shard runs
+- aggregate
+- run-level label source staging
+- RV/TR ML build/train/distill
 
-Optional review inputs:
-- `control_run_dir`
-- `current_run_dir`
-- `distilled_run_dir`
+No manual `label_source_run_id` / `label_source_artifact_name` input is required in the primary flow.
 
-The optional review inputs may be left blank for the first run. Build, train, and distill still run without them.
-
-The workflow downloads the artifact on the runner, extracts it, resolves the extracted root, and passes that root into the label builder. No pre-mounted local directory is required.
+Secondary helper workflow (manual, non-primary):
+- file: `/.github/workflows/run_rvtr_ml_research.yml`
+- name: `Run RV/TR ML Research`
+- purpose: run ML-only from an already produced label-source artifact, when needed
+- required helper inputs: `label_source_run_id`, `label_source_artifact_name`
 
 Example flow:
 
@@ -64,6 +71,8 @@ python tools/distill_rvtr_score_v1.py \
   --coef-csv research/reports/rvtr_ml_research/rvtr_logit_v1_coef.csv \
   --output-dir research/reports/rvtr_ml_research
 ```
+
+In the new primary workflow this chain is run inside the aggregate job, using the staged `label_source` generated from shard artifacts.
 
 Optional review step:
 
