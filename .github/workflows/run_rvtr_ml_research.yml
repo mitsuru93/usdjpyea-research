@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       source_root:
-        description: Completed run source root containing label-source artifacts
+        description: Root directory created by extracting a batch-runlevel-label-source-* artifact; must contain shards/.../runs/<run_name>/
         required: true
-        default: research/reports/batches/batch_band_model_screen_v2
+        default: ./batch-runlevel-label-source-root
         type: string
       output_dir:
         description: Output directory for RV/TR ML artifacts
@@ -97,4 +97,3 @@ jobs:
             ${{ inputs.output_dir }}/review/rvtr_ml_by_month.csv
             ${{ inputs.output_dir }}/review/rvtr_ml_by_session.csv
             ${{ inputs.output_dir }}/review/rvtr_ml_by_band.csv
-

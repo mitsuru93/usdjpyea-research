@@ -64,6 +64,17 @@ def _load_yaml(path: Path | None) -> dict[str, Any]:
     return payload
 
 
+def _resolve_metadata_path(run_dir: Path) -> Path | None:
+    run_metadata = run_dir / "run_metadata.yaml"
+    if run_metadata.exists():
+        return run_metadata
+    for parent in [run_dir] + list(run_dir.parents):
+        study_metadata = parent / "study_metadata.yaml"
+        if study_metadata.exists():
+            return study_metadata
+    return None
+
+
 @lru_cache(maxsize=8)
 def _load_ohlc_cached(csv_path: str) -> pd.DataFrame:
     return load_ohlc_csv(csv_path)
@@ -105,17 +116,15 @@ def _load_run_artifact(run_dir: Path) -> RunArtifact | None:
     if source_path is None:
         return None
 
-    rows = pd.read_csv(audit_path) if audit_path is not None else pd.read_csv(pnl_path)
-    if audit_path is not None and pnl_path is not None:
-        rows = _merge_outcome_table(rows, pd.read_csv(pnl_path))
-    metadata_path = run_dir / "run_metadata.yaml"
+    rows = load_run_rows(run_dir)
+    metadata_path = _resolve_metadata_path(run_dir)
     band_config_path = run_dir / "effective_band_config.yaml"
     metadata = _load_yaml(metadata_path)
     band_config = _load_yaml(band_config_path)
     return RunArtifact(
         run_dir=run_dir,
         source_path=source_path,
-        metadata_path=metadata_path if metadata_path.exists() else None,
+        metadata_path=metadata_path if metadata_path is not None else None,
         band_config_path=band_config_path if band_config_path.exists() else None,
         rows=rows,
         metadata=metadata,
@@ -159,6 +168,21 @@ def _merge_outcome_table(audit_df: pd.DataFrame, outcome_df: pd.DataFrame) -> pd
         return merged
 
     return audit_df.copy()
+
+
+def load_run_rows(run_dir: str | Path) -> pd.DataFrame:
+    run_dir = Path(run_dir)
+    audit_path = _first_existing(run_dir, ["candidates_decision_policy_audit.csv", "candidates_policy_audit.csv"])
+    pnl_path = _first_existing(run_dir, ["candidates_aggregate.csv.gz", "candidates.csv"])
+    if audit_path is not None and pnl_path is not None:
+        audit_df = pd.read_csv(audit_path)
+        outcome_df = pd.read_csv(pnl_path)
+        return _merge_outcome_table(audit_df, outcome_df)
+    if audit_path is not None:
+        return pd.read_csv(audit_path)
+    if pnl_path is not None:
+        return pd.read_csv(pnl_path)
+    return pd.DataFrame()
 
 
 def _band_token_from_band_config(band_config: dict[str, Any]) -> str:
@@ -401,7 +425,10 @@ def build_label_table(source_root: str | Path) -> pd.DataFrame:
                 "month",
             ]
             missing_required = [col for col in required_cols if col not in base_row.index or pd.isna(base_row.get(col))]
-            hard_gate_passed = len(missing_required) == 0
+            if "hard_gate_passed" in base_row.index and not pd.isna(base_row.get("hard_gate_passed")):
+                hard_gate_passed = bool(base_row.get("hard_gate_passed"))
+            else:
+                hard_gate_passed = len(missing_required) == 0
             group_status = "complete_unique_pair" if set(family_map.keys()) == {"rev", "trend"} else "incomplete_pair"
             if len(group) != len(family_map):
                 group_status = "duplicate_or_ambiguous_pair" if group_status == "complete_unique_pair" else group_status

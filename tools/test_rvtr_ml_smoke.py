@@ -32,7 +32,7 @@ def main() -> None:
         audit_df.to_csv(run_dir / "candidates_decision_policy_audit.csv", index=False)
         outcome_df.to_csv(run_dir / "candidates_aggregate.csv.gz", index=False, compression="gzip")
 
-        (run_dir / "run_metadata.yaml").write_text(
+        (source_root / "study_metadata.yaml").write_text(
             yaml.safe_dump(
                 {
                     "input_csv": str(temp_root / "synthetic_ohlc.csv"),

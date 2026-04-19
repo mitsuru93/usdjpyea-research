@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from research.rvtr_ml import sanitize_label
+from research.rvtr_ml import load_run_rows, sanitize_label
 
 
 def parse_args() -> argparse.Namespace:
@@ -38,18 +38,10 @@ def _read_yaml(path: Path | None) -> dict[str, Any]:
 
 
 def _load_run_frame(run_dir: Path) -> pd.DataFrame:
-    candidates = [
-        run_dir / "candidates_decision_policy_audit.csv",
-        run_dir / "candidates_aggregate.csv.gz",
-        run_dir / "candidates_policy_audit.csv",
-        run_dir / "candidates.csv",
-    ]
-    for path in candidates:
-        if path.exists():
-            df = pd.read_csv(path)
-            df["__source_path"] = str(path)
-            return df
-    raise FileNotFoundError(f"No candidate artifact found in {run_dir}")
+    df = load_run_rows(run_dir)
+    if df.empty:
+        raise FileNotFoundError(f"No candidate artifact found in {run_dir}")
+    return df
 
 
 def _normalize_band_token(df: pd.DataFrame, run_dir: Path) -> pd.Series:

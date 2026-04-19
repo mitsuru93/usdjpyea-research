@@ -11,13 +11,17 @@ Scope:
 
 ## Inputs
 
-The pipeline expects a completed run-level label source root containing run outputs such as:
+The pipeline expects a directory produced by extracting a verified GitHub artifact named `batch-runlevel-label-source-*`.
+That extracted root should contain run outputs under a path like:
+- `shards/.../runs/<run_name>/`
+
+Each run directory should contain verified inputs such as:
 - `candidates_decision_policy_audit.csv`
 - `candidates_aggregate.csv.gz`
-- `run_metadata.yaml`
+- `study_metadata.yaml`
 - `effective_band_config.yaml`
 
-The source root can be a batch output root or any directory containing run subdirectories with those artifacts.
+`run_metadata.yaml` is accepted as a backward-compatible per-run fallback, but `study_metadata.yaml` is the verified metadata source for the label-source artifact flow.
 Legacy fallbacks (`candidates_policy_audit.csv`, `candidates.csv`) are accepted, but the verified names above are the primary inputs.
 
 ## Local CLI flow
