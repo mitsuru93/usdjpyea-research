@@ -225,6 +225,122 @@ jobs:
           path: |
             label_source
 
+      - name: Build run-level label source manifest
+        run: |
+          MANIFEST_ROOT="label_source_manifest"
+          mkdir -p "${MANIFEST_ROOT}"
+
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+
+          label_root = Path("label_source")
+          manifest_root = Path("label_source_manifest")
+          csv_path = manifest_root / "runlevel_label_source_manifest.csv"
+          summary_path = manifest_root / "runlevel_label_source_summary.json"
+
+          rows = []
+          total_run_count = 0
+          complete_run_count = 0
+          missing_candidates_aggregate_count = 0
+          missing_candidates_decision_policy_audit_count = 0
+          missing_effective_band_config_count = 0
+
+          if label_root.exists():
+              for run_dir in sorted(label_root.glob("*/runs/*")):
+                  if not run_dir.is_dir():
+                      continue
+
+                  shard_dir = run_dir.parent.parent
+                  shard_relpath = shard_dir.relative_to(label_root).as_posix()
+                  run_name = run_dir.name
+                  study_metadata_present = (shard_dir / "study_metadata.yaml").is_file()
+
+                  aggregate_path = run_dir / "candidates_aggregate.csv.gz"
+                  audit_path = run_dir / "candidates_decision_policy_audit.csv"
+                  band_cfg_path = run_dir / "effective_band_config.yaml"
+
+                  candidates_aggregate_present = aggregate_path.is_file()
+                  candidates_decision_policy_audit_present = audit_path.is_file()
+                  effective_band_config_present = band_cfg_path.is_file()
+
+                  candidates_aggregate_size_bytes = aggregate_path.stat().st_size if candidates_aggregate_present else 0
+                  candidates_decision_policy_audit_size_bytes = audit_path.stat().st_size if candidates_decision_policy_audit_present else 0
+
+                  missing_file_count = 0
+                  for present in (
+                      candidates_aggregate_present,
+                      candidates_decision_policy_audit_present,
+                      effective_band_config_present,
+                  ):
+                      if not present:
+                          missing_file_count += 1
+                  all_required_present = missing_file_count == 0
+
+                  total_run_count += 1
+                  if all_required_present:
+                      complete_run_count += 1
+                  if not candidates_aggregate_present:
+                      missing_candidates_aggregate_count += 1
+                  if not candidates_decision_policy_audit_present:
+                      missing_candidates_decision_policy_audit_count += 1
+                  if not effective_band_config_present:
+                      missing_effective_band_config_count += 1
+
+                  rows.append(
+                      {
+                          "shard_relpath": shard_relpath,
+                          "run_name": run_name,
+                          "study_metadata_present": str(study_metadata_present).lower(),
+                          "candidates_aggregate_present": str(candidates_aggregate_present).lower(),
+                          "candidates_aggregate_size_bytes": str(candidates_aggregate_size_bytes),
+                          "candidates_decision_policy_audit_present": str(candidates_decision_policy_audit_present).lower(),
+                          "candidates_decision_policy_audit_size_bytes": str(candidates_decision_policy_audit_size_bytes),
+                          "effective_band_config_present": str(effective_band_config_present).lower(),
+                          "all_required_present": str(all_required_present).lower(),
+                          "missing_file_count": str(missing_file_count),
+                      }
+                  )
+
+          fieldnames = [
+              "shard_relpath",
+              "run_name",
+              "study_metadata_present",
+              "candidates_aggregate_present",
+              "candidates_aggregate_size_bytes",
+              "candidates_decision_policy_audit_present",
+              "candidates_decision_policy_audit_size_bytes",
+              "effective_band_config_present",
+              "all_required_present",
+              "missing_file_count",
+          ]
+
+          with csv_path.open("w", newline="", encoding="utf-8") as f:
+              writer = csv.DictWriter(f, fieldnames=fieldnames)
+              writer.writeheader()
+              writer.writerows(rows)
+
+          summary = {
+              "total_run_count": total_run_count,
+              "complete_run_count": complete_run_count,
+              "missing_candidates_aggregate_count": missing_candidates_aggregate_count,
+              "missing_candidates_decision_policy_audit_count": missing_candidates_decision_policy_audit_count,
+              "missing_effective_band_config_count": missing_effective_band_config_count,
+          }
+
+          with summary_path.open("w", encoding="utf-8") as f:
+              json.dump(summary, f, ensure_ascii=False, indent=2)
+          PY
+
+      - name: Upload run-level label source manifest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-runlevel-label-source-manifest-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}
+          path: |
+            label_source_manifest/runlevel_label_source_manifest.csv
+            label_source_manifest/runlevel_label_source_summary.json
+
       - name: Download batch runtime bundle
         uses: actions/download-artifact@v4
         with:
