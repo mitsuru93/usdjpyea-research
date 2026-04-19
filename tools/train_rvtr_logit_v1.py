@@ -100,14 +100,35 @@ def _split_metrics(y_true: np.ndarray, y_score: np.ndarray) -> dict[str, Any]:
     }
 
 
+def _apply_trainable_subset(df: pd.DataFrame) -> pd.DataFrame:
+    work = df.copy()
+    if "label_rvtr_v1" in work.columns:
+        work = work[work["label_rvtr_v1"].isin(["rv", "tr"])].copy()
+    if "group_status" in work.columns:
+        work = work[work["group_status"].astype(str).eq("complete_unique_pair")].copy()
+    if "hard_gate_passed" in work.columns:
+        work = work[work["hard_gate_passed"].fillna(False).astype(bool)].copy()
+    else:
+        work = work.iloc[0:0].copy()
+    required_features = feature_columns() + ["session"]
+    missing_feature_cols = [col for col in required_features if col not in work.columns]
+    if missing_feature_cols:
+        work = work.iloc[0:0].copy()
+    else:
+        feature_null_mask = work.loc[:, feature_columns()].isna().any(axis=1)
+        feature_null_mask |= work["session"].isna()
+        work = work.loc[~feature_null_mask].copy()
+    return work
+
+
 def main() -> None:
     args = parse_args()
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(args.label_table, compression="gzip")
+    df = _apply_trainable_subset(df)
     df = add_split_column(df)
-    df = df[df["label_rvtr_v1"].isin(["rv", "tr"])].copy()
     if df.empty:
         raise ValueError("Training table is empty after filtering rv/tr rows.")
 
