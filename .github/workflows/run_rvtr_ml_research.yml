@@ -1,6 +1,6 @@
 name: Run RV/TR ML Research
 
-'on':
+on:
   workflow_dispatch:
     inputs:
       label_source_run_id:
