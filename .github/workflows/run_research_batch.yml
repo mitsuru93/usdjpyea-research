@@ -248,7 +248,7 @@ jobs:
           missing_effective_band_config_count = 0
 
           if label_root.exists():
-              for run_dir in sorted(label_root.glob("*/runs/*")):
+              for run_dir in sorted(label_root.glob("**/runs/*")):
                   if not run_dir.is_dir():
                       continue
 
