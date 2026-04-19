@@ -20,18 +20,31 @@ def _run(cmd: list[str], cwd: Path) -> None:
 def main() -> None:
     with tempfile.TemporaryDirectory() as td:
         temp_root = Path(td)
-        source_root = temp_root / "source"
+        source_root = temp_root / "label_source_root"
+        run_dir = source_root / "shards" / "shard_001" / "runs" / "atr04_p14_run"
         output_root = temp_root / "rvtr_ml"
-        run_dir = source_root / "atr04_p14_run"
         run_dir.mkdir(parents=True, exist_ok=True)
         output_root.mkdir(parents=True, exist_ok=True)
 
         audit_df = _build_synthetic_audit_rows()
         outcome_df = audit_df.loc[:, ["candidate_id", "pnl_pips"]].copy()
+        audit_df = audit_df.drop(columns=["pnl_pips"], errors="ignore")
 
         audit_df.to_csv(run_dir / "candidates_decision_policy_audit.csv", index=False)
         outcome_df.to_csv(run_dir / "candidates_aggregate.csv.gz", index=False, compression="gzip")
 
+        (run_dir / "effective_band_config.yaml").write_text(
+            yaml.safe_dump(
+                {
+                    "band_model": "atr",
+                    "band_atr_k": 0.4,
+                    "band_atr_period": 14,
+                    "band_token": "ATR04_P14",
+                },
+                sort_keys=False,
+            ),
+            encoding="utf-8",
+        )
         (source_root / "study_metadata.yaml").write_text(
             yaml.safe_dump(
                 {
@@ -45,21 +58,8 @@ def main() -> None:
             ),
             encoding="utf-8",
         )
-        (run_dir / "effective_band_config.yaml").write_text(
-            yaml.safe_dump(
-                {
-                    "band_model": "atr",
-                    "band_atr_k": 0.4,
-                    "band_atr_period": 14,
-                    "band_token": "ATR04_P14",
-                },
-                sort_keys=False,
-            ),
-            encoding="utf-8",
-        )
 
-        ohlc_df = _build_synthetic_ohlc()
-        ohlc_df.to_csv(temp_root / "synthetic_ohlc.csv", index=False)
+        _build_synthetic_ohlc().to_csv(temp_root / "synthetic_ohlc.csv", index=False)
 
         _run(
             [
@@ -151,8 +151,8 @@ def _build_synthetic_audit_rows() -> pd.DataFrame:
     scenarios = [
         ("2024-01-11", "ASIA", "upper", 1),
         ("2024-01-21", "LONDON", "upper", -1),
-        ("2024-02-11", "ASIA", "lower", 1),
-        ("2025-01-11", "LONDON", "lower", -1),
+        ("2025-01-11", "ASIA", "lower", 1),
+        ("2025-11-11", "LONDON", "lower", -1),
     ]
     for timestamp_text, session, touch_side, sign in scenarios:
         for family, direction, pnl in [
@@ -176,9 +176,6 @@ def _build_synthetic_audit_rows() -> pd.DataFrame:
                     "final_decision": family,
                     "hard_gate_passed": True,
                     "group_status": "complete_unique_pair",
-                    "label_gap_rv_minus_tr_pips": pnl,
-                    "label_rvtr_v1": "rv" if pnl > 0 else "tr",
-                    "pnl_pips": pnl,
                     "dist_from_ema_pips": 0.35,
                     "envelope_upper": 0.75,
                     "envelope_lower": -0.05,
@@ -196,6 +193,8 @@ def _build_synthetic_audit_rows() -> pd.DataFrame:
                     "bb_width_ratio_to_close": 0.0015,
                 }
             )
+        rows[-2]["pnl_pips"] = 8.0 if sign > 0 else -7.0
+        rows[-1]["pnl_pips"] = 2.0 if sign > 0 else 11.0
     return pd.DataFrame(rows)
 
 

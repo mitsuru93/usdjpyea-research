@@ -38,10 +38,10 @@ def _read_yaml(path: Path | None) -> dict[str, Any]:
 
 
 def _load_run_frame(run_dir: Path) -> pd.DataFrame:
-    df = load_run_rows(run_dir)
-    if df.empty:
+    frame = load_run_rows(run_dir)
+    if frame.empty:
         raise FileNotFoundError(f"No candidate artifact found in {run_dir}")
-    return df
+    return frame
 
 
 def _normalize_band_token(df: pd.DataFrame, run_dir: Path) -> pd.Series:
@@ -76,29 +76,33 @@ def _selected_rows(df: pd.DataFrame) -> pd.DataFrame:
     return work.loc[mask].copy()
 
 
+def _decision_group_id(df: pd.DataFrame) -> pd.Series:
+    if "decision_group_id" in df.columns:
+        return df["decision_group_id"].astype(str)
+    if "decision_group_id_v1" in df.columns:
+        return df["decision_group_id_v1"].astype(str)
+    if "timestamp" in df.columns and "touch_side" in df.columns:
+        return df["timestamp"].astype(str) + "|" + df["touch_side"].astype(str)
+    return df.index.astype(str)
+
+
 def _group_choice(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return pd.DataFrame(columns=["decision_group_id", "candidate_family", "pnl_pips"])
-    group_col = "decision_group_id"
-    if group_col not in df.columns:
-        if "timestamp" in df.columns and "touch_side" in df.columns:
-            df = df.copy()
-            df[group_col] = df["timestamp"].astype(str) + "|" + df["touch_side"].astype(str)
-        else:
-            df = df.copy()
-            df[group_col] = df.index.astype(str)
-    if "pnl_pips" not in df.columns:
-        df = df.copy()
-        df["pnl_pips"] = 0.0
-    selected = _selected_rows(df)
-    if selected.empty:
-        return pd.DataFrame(columns=["decision_group_id", "candidate_family", "pnl_pips"])
-    selected = selected.copy()
-    selected["pnl_pips"] = pd.to_numeric(selected["pnl_pips"], errors="coerce").fillna(0.0)
-    selected["decision_group_id"] = selected["decision_group_id"].astype(str)
-    selected = selected.sort_values(["decision_group_id", "pnl_pips", "candidate_family"], ascending=[True, False, True], kind="mergesort")
-    top = selected.groupby("decision_group_id", as_index=False, dropna=False).head(1).copy()
-    return top.loc[:, [c for c in ["decision_group_id", "candidate_family", "pnl_pips", "month", "session", "band_token"] if c in top.columns]]
+    work = df.copy()
+    work["decision_group_id"] = _decision_group_id(work)
+    if "candidate_family" not in work.columns:
+        work["candidate_family"] = "unknown"
+    if "pnl_pips" not in work.columns:
+        work["pnl_pips"] = 0.0
+    work["pnl_pips"] = pd.to_numeric(work["pnl_pips"], errors="coerce").fillna(0.0)
+    sort_cols = ["decision_group_id", "pnl_pips", "candidate_family"]
+    if "candidate_id" in work.columns:
+        sort_cols.append("candidate_id")
+    ascending = [True, False, True] + [True] * (len(sort_cols) - 3)
+    top = work.sort_values(sort_cols, ascending=ascending, kind="mergesort").drop_duplicates("decision_group_id", keep="first")
+    keep_cols = [c for c in ["decision_group_id", "candidate_family", "pnl_pips", "month", "session", "band_token"] if c in top.columns]
+    return top.loc[:, keep_cols].copy()
 
 
 def _summary_frame(df: pd.DataFrame, label: str, run_dir: Path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, Any]]:
@@ -111,14 +115,12 @@ def _summary_frame(df: pd.DataFrame, label: str, run_dir: Path) -> tuple[pd.Data
     if "candidate_family" not in work.columns:
         work["candidate_family"] = "unknown"
     if "decision_group_id" not in work.columns:
-        if "timestamp" in work.columns and "touch_side" in work.columns:
-            work["decision_group_id"] = work["timestamp"].astype(str) + "|" + work["touch_side"].astype(str)
-        else:
-            work["decision_group_id"] = work.index.astype(str)
+        work["decision_group_id"] = _decision_group_id(work)
+
     selected = _selected_rows(work)
     selected["pnl_pips"] = pd.to_numeric(selected.get("pnl_pips", 0.0), errors="coerce").fillna(0.0)
+    chosen = _group_choice(work)
 
-    group_choice = _group_choice(work)
     overall = {
         "label": label,
         "run_dir": str(run_dir),
@@ -128,57 +130,57 @@ def _summary_frame(df: pd.DataFrame, label: str, run_dir: Path) -> tuple[pd.Data
         "kept_avg_pnl_pips": float(selected["pnl_pips"].mean()) if not selected.empty else 0.0,
         "rv_share": float((selected["candidate_family"].astype(str) == "rev").mean()) if not selected.empty else 0.0,
         "tr_share": float((selected["candidate_family"].astype(str) == "trend").mean()) if not selected.empty else 0.0,
-        "unique_groups": int(group_choice["decision_group_id"].nunique()) if not group_choice.empty else 0,
+        "unique_groups": int(chosen["decision_group_id"].nunique()) if not chosen.empty else 0,
     }
-    return selected, group_choice, pd.DataFrame([overall]), overall
+    return selected, chosen, pd.DataFrame([overall]), overall
 
 
 def _metrics_by_group(selected: pd.DataFrame, label: str, group_cols: list[str], control_choice: pd.DataFrame | None = None) -> pd.DataFrame:
     if selected.empty:
         cols = ["label"] + group_cols + ["kept_trade_count", "kept_total_pnl_pips", "kept_avg_pnl_pips", "rv_share", "tr_share", "decision_flip_rate_vs_control"]
         return pd.DataFrame(columns=cols)
+
     work = selected.copy()
     for col in group_cols:
         if col not in work.columns:
             work[col] = "unknown"
-    rows: list[dict[str, Any]] = []
-    group_key = group_cols if group_cols else ["label"]
-    for key, part in work.groupby(group_cols, dropna=False):
-        row: dict[str, Any] = {"label": label}
-        if group_cols:
-            if len(group_cols) == 1:
-                row[group_cols[0]] = key
-            else:
-                row.update(dict(zip(group_cols, key)))
-        row["kept_trade_count"] = int(len(part))
-        row["kept_total_pnl_pips"] = float(pd.to_numeric(part["pnl_pips"], errors="coerce").fillna(0.0).sum())
-        row["kept_avg_pnl_pips"] = float(pd.to_numeric(part["pnl_pips"], errors="coerce").fillna(0.0).mean())
-        row["rv_share"] = float((part["candidate_family"].astype(str) == "rev").mean())
-        row["tr_share"] = float((part["candidate_family"].astype(str) == "trend").mean())
-        row["decision_flip_rate_vs_control"] = 0.0
-        if control_choice is not None and not control_choice.empty and "decision_group_id" in part.columns:
-            group_ids = part["decision_group_id"].astype(str).unique().tolist()
-            control_subset = control_choice[control_choice["decision_group_id"].astype(str).isin(group_ids)].copy()
-            if not control_subset.empty:
-                if "decision_group_id" in part.columns:
-                    chosen = (
-                        part.groupby("decision_group_id", dropna=False)
-                        .head(1)
-                        .loc[:, ["decision_group_id", "candidate_family"]]
-                        .drop_duplicates("decision_group_id", keep="first")
-                    )
-                    merged = chosen.merge(
-                        control_subset.loc[:, ["decision_group_id", "candidate_family"]].drop_duplicates("decision_group_id", keep="first"),
-                        on="decision_group_id",
-                        how="inner",
-                        suffixes=("_variant", "_control"),
-                    )
-                    if not merged.empty:
-                        row["decision_flip_rate_vs_control"] = float(
-                            (merged["candidate_family_variant"].astype(str) != merged["candidate_family_control"].astype(str)).mean()
-                        )
-        rows.append(row)
-    return pd.DataFrame(rows)
+    work["pnl_pips"] = pd.to_numeric(work.get("pnl_pips", 0.0), errors="coerce").fillna(0.0)
+    work["is_rv"] = work["candidate_family"].astype(str).eq("rev")
+    work["is_tr"] = work["candidate_family"].astype(str).eq("trend")
+
+    if control_choice is not None and not control_choice.empty:
+        control_map = control_choice.loc[:, ["decision_group_id", "candidate_family"]].drop_duplicates("decision_group_id").rename(
+            columns={"candidate_family": "candidate_family_control"}
+        )
+        choice_map = _group_choice(work)
+        choice_map = choice_map.merge(control_map, on="decision_group_id", how="inner")
+        choice_map["flip"] = choice_map["candidate_family"].astype(str) != choice_map["candidate_family_control"].astype(str)
+        flip_rate = (
+            choice_map.groupby(group_cols, dropna=False)["flip"].mean().reset_index(name="decision_flip_rate_vs_control")
+            if not choice_map.empty
+            else pd.DataFrame(columns=group_cols + ["decision_flip_rate_vs_control"])
+        )
+    else:
+        flip_rate = pd.DataFrame(columns=group_cols + ["decision_flip_rate_vs_control"])
+
+    agg = (
+        work.groupby(group_cols, dropna=False)
+        .agg(
+            kept_trade_count=("pnl_pips", "size"),
+            kept_total_pnl_pips=("pnl_pips", "sum"),
+            kept_avg_pnl_pips=("pnl_pips", "mean"),
+            rv_share=("is_rv", "mean"),
+            tr_share=("is_tr", "mean"),
+        )
+        .reset_index()
+    )
+    agg["label"] = label
+    if not flip_rate.empty:
+        agg = agg.merge(flip_rate, on=group_cols, how="left")
+    else:
+        agg["decision_flip_rate_vs_control"] = 0.0
+    agg["decision_flip_rate_vs_control"] = agg["decision_flip_rate_vs_control"].fillna(0.0)
+    return agg
 
 
 def _sign_sanity(coef_csv: Path | None) -> dict[str, Any]:
@@ -230,9 +232,8 @@ def main() -> None:
         overall_rows.append(overall)
 
     control_choice = group_choices["bin_env_v1"]
-
     overall_compare = pd.concat(overall_rows, ignore_index=True)
-    overall_compare["decision_flip_rate_vs_control"] = 0.0
+
     for label in ["total_score_rvtr_v1", "total_score_rvtr_v2_ml"]:
         chosen = group_choices[label]
         if control_choice.empty or chosen.empty:
@@ -248,24 +249,15 @@ def main() -> None:
         overall_compare.loc[overall_compare["label"] == label, "decision_flip_rate_vs_control"] = flip_rate
 
     by_month = pd.concat(
-        [
-            _metrics_by_group(selected_frames[label], label, ["month"], control_choice=control_choice)
-            for label in runs
-        ],
+        [_metrics_by_group(selected_frames[label], label, ["month"], control_choice=control_choice) for label in runs],
         ignore_index=True,
     )
     by_session = pd.concat(
-        [
-            _metrics_by_group(selected_frames[label], label, ["session"], control_choice=control_choice)
-            for label in runs
-        ],
+        [_metrics_by_group(selected_frames[label], label, ["session"], control_choice=control_choice) for label in runs],
         ignore_index=True,
     )
     by_band = pd.concat(
-        [
-            _metrics_by_group(selected_frames[label], label, ["band_token"], control_choice=control_choice)
-            for label in runs
-        ],
+        [_metrics_by_group(selected_frames[label], label, ["band_token"], control_choice=control_choice) for label in runs],
         ignore_index=True,
     )
 
@@ -318,11 +310,7 @@ def main() -> None:
 
     (output_dir / "rvtr_ml_review.md").write_text("\n".join(md_lines) + "\n", encoding="utf-8")
 
-    print(
-        "RV/TR ML review completed:",
-        f"compare_rows={len(overall_compare)}",
-        f"out={output_dir}",
-    )
+    print("RV/TR ML review completed:", f"compare_rows={len(overall_compare)}", f"out={output_dir}")
 
 
 if __name__ == "__main__":

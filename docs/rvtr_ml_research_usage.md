@@ -1,6 +1,6 @@
 # RV/TR ML Research Usage
 
-This repository now includes a compact research pipeline for optimizing RV/TR decision criteria on the ATR shortlist bands.
+This repository contains a research-only RV/TR ML pipeline for ATR shortlist bands.
 
 Scope:
 - pre-MT4 research only
@@ -8,27 +8,52 @@ Scope:
 - fixed exit profile only
 - hard gate stays separate
 - no MT4 production code
+- GitHub-hosted Actions only
+- no self-hosted runner dependency
 
-## Inputs
+## Primary verified inputs
 
-The pipeline expects a directory produced by extracting a verified GitHub artifact named `batch-runlevel-label-source-*`.
-That extracted root should contain run outputs under a path like:
-- `shards/.../runs/<run_name>/`
+The pipeline consumes a verified label-source artifact extracted from a prior GitHub Actions run.
 
-Each run directory should contain verified inputs such as:
+Primary artifacts inside each run directory:
 - `candidates_decision_policy_audit.csv`
 - `candidates_aggregate.csv.gz`
-- `study_metadata.yaml`
 - `effective_band_config.yaml`
 
-`run_metadata.yaml` is accepted as a backward-compatible per-run fallback, but `study_metadata.yaml` is the verified metadata source for the label-source artifact flow.
-Legacy fallbacks (`candidates_policy_audit.csv`, `candidates.csv`) are accepted, but the verified names above are the primary inputs.
+Verified metadata source:
+- `study_metadata.yaml`
 
-## Local CLI flow
+Important:
+- `study_metadata.yaml` is not required to live directly inside the run directory.
+- The loader resolves `run_metadata.yaml` first when present.
+- If `run_metadata.yaml` is absent, it walks upward from the run directory and uses the first `study_metadata.yaml` it finds in the ancestor hierarchy.
+
+## How to run
+
+Use this workflow file:
+- `/.github/workflows/run_rvtr_ml_research.yml`
+
+Workflow name:
+- `Run RV/TR ML Research`
+
+Required inputs:
+- `label_source_run_id`
+- `label_source_artifact_name`
+
+Optional review inputs:
+- `control_run_dir`
+- `current_run_dir`
+- `distilled_run_dir`
+
+The optional review inputs may be left blank for the first run. Build, train, and distill still run without them.
+
+The workflow downloads the artifact on the runner, extracts it, resolves the extracted root, and passes that root into the label builder. No pre-mounted local directory is required.
+
+Example flow:
 
 ```bash
 python tools/build_rvtr_label_table.py \
-  --source-root <completed_run_source_root> \
+  --source-root <extracted_batch-runlevel-label-source_root> \
   --output-dir research/reports/rvtr_ml_research
 
 python tools/train_rvtr_logit_v1.py \
@@ -40,7 +65,7 @@ python tools/distill_rvtr_score_v1.py \
   --output-dir research/reports/rvtr_ml_research
 ```
 
-Optional review step when completed control/current/distilled run directories are available:
+Optional review step:
 
 ```bash
 python tools/review_rvtr_ml.py \
@@ -52,17 +77,8 @@ python tools/review_rvtr_ml.py \
   --output-dir research/reports/rvtr_ml_research/review
 ```
 
-## Workflow
-
-Use `.github/workflows/run_rvtr_ml_research.yml` for an end-to-end run:
-- build label table
-- train logistic regression
-- distill score weights
-- optionally review completed run directories
-
 ## Output artifacts
 
-Main artifacts:
 - `rvtr_label_table_v1.csv.gz`
 - `rvtr_label_table_trainable_v1.csv.gz`
 - `rvtr_label_table_v1.summary.json`
@@ -121,3 +137,17 @@ Trainable subset:
 - `group_status == complete_unique_pair`
 - `label_rvtr_v1 in {rv, tr}`
 - no missing required features after preparation
+
+## Performance notes
+
+The implementation intentionally avoids row-by-row Python work where pandas/numpy can do the job:
+- label build uses `merge`, `sort_values`, `drop_duplicates`, `pivot_table`, and `groupby`
+- review uses `groupby` aggregations rather than manual loops
+
+Remaining Python loops:
+- one loop over run artifacts during label-source discovery
+- one loop over logistic iterations in the Newton solver
+
+Future compiled-path candidates if research scale grows:
+- `numba` for the Newton solver
+- `cython` for any remaining hot path that stays resistant to vectorization

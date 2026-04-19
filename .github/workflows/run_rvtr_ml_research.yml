@@ -1,12 +1,15 @@
-name: Run RV/TR ML Research (Self Hosted)
+name: Run RV/TR ML Research
 
 on:
   workflow_dispatch:
     inputs:
-      source_root:
-        description: Root directory created by extracting a batch-runlevel-label-source-* artifact; must contain shards/.../runs/<run_name>/
+      label_source_run_id:
+        description: Workflow run id that produced the batch-runlevel-label-source-* artifact
         required: true
-        default: ./batch-runlevel-label-source-root
+        type: string
+      label_source_artifact_name:
+        description: Artifact name to download from the source run
+        required: true
         type: string
       output_dir:
         description: Output directory for RV/TR ML artifacts
@@ -16,22 +19,26 @@ on:
       control_run_dir:
         description: Optional bin_env_v1 run directory for review
         required: false
-        default: ''
+        default: ""
         type: string
       current_run_dir:
         description: Optional total_score_rvtr_v1 run directory for review
         required: false
-        default: ''
+        default: ""
         type: string
       distilled_run_dir:
         description: Optional total_score_rvtr_v2_ml run directory for review
         required: false
-        default: ''
+        default: ""
         type: string
+
+permissions:
+  contents: read
+  actions: read
 
 jobs:
   run-rvtr-ml:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,17 +46,58 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Download label source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          LABEL_SOURCE_RUN_ID: ${{ inputs.label_source_run_id }}
+          LABEL_SOURCE_ARTIFACT_NAME: ${{ inputs.label_source_artifact_name }}
+        run: |
+          set -euo pipefail
+          ARTIFACT_DIR="$RUNNER_TEMP/rvtr_label_source"
+          rm -rf "$ARTIFACT_DIR"
+          mkdir -p "$ARTIFACT_DIR"
+          gh run download "$LABEL_SOURCE_RUN_ID" -R "$GH_REPO" -n "$LABEL_SOURCE_ARTIFACT_NAME" -D "$ARTIFACT_DIR"
+          export ARTIFACT_DIR
+          LABEL_SOURCE_ROOT="$(python - <<'PY'
+import os
+from pathlib import Path
+
+root = Path(os.environ["ARTIFACT_DIR"]).resolve()
+if (root / "shards").is_dir():
+    print(root)
+    raise SystemExit(0)
+
+candidates = []
+for path in root.rglob("shards"):
+    if path.is_dir():
+        candidates.append(path.parent)
+if candidates:
+    candidates.sort(key=lambda p: (len(p.relative_to(root).parts), str(p)))
+    print(candidates[0].resolve())
+    raise SystemExit(0)
+
+child_dirs = [p for p in root.iterdir() if p.is_dir()]
+if len(child_dirs) == 1:
+    print(child_dirs[0].resolve())
+    raise SystemExit(0)
+
+raise SystemExit("Could not locate extracted label-source root")
+PY
+)"
+          echo "LABEL_SOURCE_ROOT=$LABEL_SOURCE_ROOT" >> "$GITHUB_ENV"
+
       - name: Build RV/TR label table
         run: |
           python -u tools/build_rvtr_label_table.py \
-            --source-root "${{ inputs.source_root }}" \
+            --source-root "${LABEL_SOURCE_ROOT}" \
             --output-dir "${{ inputs.output_dir }}"
 
       - name: Train RV/TR logistic model
