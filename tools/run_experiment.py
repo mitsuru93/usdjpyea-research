@@ -454,13 +454,31 @@ def main() -> None:
     _stage_start("artifact_writes")
     outcomes_df.to_csv(output_dir / "candidates.csv", index=False)
 
-    aggregate_cols = [col for col in ["timestamp", "pnl_pips"] if col in outcomes_df.columns]
-    aggregate_candidates_df = outcomes_df.loc[:, aggregate_cols].copy() if aggregate_cols else pd.DataFrame(columns=["timestamp", "pnl_pips"])
+    aggregate_required_cols = [
+        "candidate_id",
+        "timestamp",
+        "touch_side",
+        "candidate_family",
+        "direction",
+        "pnl_pips",
+    ]
+    aggregate_cols = [col for col in aggregate_required_cols if col in outcomes_df.columns]
+    aggregate_candidates_df = (
+        outcomes_df.loc[:, aggregate_cols].copy() if aggregate_cols else pd.DataFrame(columns=aggregate_required_cols)
+    )
+    if "candidate_id" not in aggregate_candidates_df.columns:
+        aggregate_candidates_df["candidate_id"] = pd.Series(dtype="object")
     if "timestamp" not in aggregate_candidates_df.columns:
         aggregate_candidates_df["timestamp"] = pd.Series(dtype="object")
+    if "touch_side" not in aggregate_candidates_df.columns:
+        aggregate_candidates_df["touch_side"] = pd.Series(dtype="object")
+    if "candidate_family" not in aggregate_candidates_df.columns:
+        aggregate_candidates_df["candidate_family"] = pd.Series(dtype="object")
+    if "direction" not in aggregate_candidates_df.columns:
+        aggregate_candidates_df["direction"] = pd.Series(dtype="object")
     if "pnl_pips" not in aggregate_candidates_df.columns:
         aggregate_candidates_df["pnl_pips"] = pd.Series(dtype="float64")
-    aggregate_candidates_df = aggregate_candidates_df[["timestamp", "pnl_pips"]]
+    aggregate_candidates_df = aggregate_candidates_df[aggregate_required_cols]
     aggregate_candidates_df.to_csv(output_dir / "candidates_aggregate.csv.gz", index=False, compression="gzip")
 
     timing_audit_df.to_csv(output_dir / "candidates_timing_audit.csv", index=False)
