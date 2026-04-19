@@ -43,6 +43,43 @@ CONTROL_BANDS = {"bin_env_v1"}
 
 PRIMARY_AUDIT_NAMES = ("candidates_decision_policy_audit.csv", "candidates_policy_audit.csv")
 PRIMARY_OUTCOME_NAMES = ("candidates_aggregate.csv.gz", "candidates.csv")
+AUDIT_READ_COLUMNS = (
+    "timestamp",
+    "touch_side",
+    "candidate_family",
+    "direction",
+    "candidate_id",
+    "pnl_pips",
+    "session",
+    "month",
+    "pre10_change_pips",
+    "pre30_change_pips",
+    "pre60_change_pips",
+    "net10_change_pips",
+    "dist_from_ema_pips",
+    "atr14_pips",
+    "atr5_pips",
+    "rsi14",
+    "macd_hist",
+    "bb_width_ratio_to_close",
+    "atr_ratio_5_14",
+    "envelope_upper",
+    "upper_env",
+    "envelope_lower",
+    "lower_env",
+    "hard_gate_passed",
+    "band_token",
+    "band_label",
+    "band_name",
+)
+OUTCOME_READ_COLUMNS = (
+    "candidate_id",
+    "timestamp",
+    "touch_side",
+    "candidate_family",
+    "direction",
+    "pnl_pips",
+)
 
 
 @dataclass(frozen=True)
@@ -148,6 +185,14 @@ def _merge_outcome_table(audit_df: pd.DataFrame, outcome_df: pd.DataFrame) -> pd
     return audit_df.copy()
 
 
+def _read_csv_columns(path: Path, requested_cols: tuple[str, ...]) -> pd.DataFrame:
+    header = pd.read_csv(path, nrows=0, low_memory=False)
+    existing_cols = [col for col in requested_cols if col in header.columns]
+    if not existing_cols:
+        return pd.DataFrame()
+    return pd.read_csv(path, usecols=existing_cols, low_memory=False)
+
+
 def load_run_rows(run_dir: str | Path) -> pd.DataFrame:
     """Load one run directory and merge audit/outcome artifacts when both exist."""
     run_dir = Path(run_dir)
@@ -156,22 +201,22 @@ def load_run_rows(run_dir: str | Path) -> pd.DataFrame:
     if audit_path is None and outcome_path is None:
         return pd.DataFrame()
     if audit_path is None:
-        return pd.read_csv(outcome_path)
-    audit_df = pd.read_csv(audit_path)
+        return _read_csv_columns(outcome_path, OUTCOME_READ_COLUMNS)
+    audit_df = _read_csv_columns(audit_path, AUDIT_READ_COLUMNS)
     if outcome_path is None:
         return audit_df
-    outcome_df = pd.read_csv(outcome_path)
+    outcome_df = _read_csv_columns(outcome_path, OUTCOME_READ_COLUMNS)
     return _merge_outcome_table(audit_df, outcome_df)
 
 
-def _load_run_artifact(run_dir: Path) -> RunArtifact | None:
+def _load_run_artifact(run_dir: Path, band_config: dict[str, Any] | None = None) -> RunArtifact | None:
     rows = load_run_rows(run_dir)
     if rows.empty:
         return None
     metadata_path = _resolve_metadata_path(run_dir)
     band_config_path = run_dir / "effective_band_config.yaml"
     metadata = _load_yaml(metadata_path)
-    band_config = _load_yaml(band_config_path)
+    effective_band_config = band_config if band_config is not None else _load_yaml(band_config_path)
     source_path = _first_existing(run_dir, PRIMARY_AUDIT_NAMES + PRIMARY_OUTCOME_NAMES)
     if source_path is None:
         return None
@@ -182,7 +227,7 @@ def _load_run_artifact(run_dir: Path) -> RunArtifact | None:
         band_config_path=band_config_path if band_config_path.exists() else None,
         rows=rows,
         metadata=metadata,
-        band_config=band_config,
+        band_config=effective_band_config,
     )
 
 
@@ -384,18 +429,21 @@ def _required_columns_present(base_rows: pd.DataFrame) -> pd.Series:
 
 def build_label_table(source_root: str | Path) -> pd.DataFrame:
     """Build one-row-per-decision-group RV/TR labels for shortlisted bands."""
-    artifacts = load_run_artifacts(source_root)
-    if not artifacts:
+    run_dirs = _iter_run_dirs(Path(source_root).resolve())
+    if not run_dirs:
         return pd.DataFrame()
-
     shortlist_band_tokens = {_normalize_band_token(x) for x in SHORTLIST_BANDS}
     repo_root = Path(__file__).resolve().parents[1]
     grouped_frames: list[pd.DataFrame] = []
 
-    for artifact in artifacts:
-        first_row = artifact.rows.iloc[0] if not artifact.rows.empty else None
-        band_token = _band_token_for_artifact(artifact, first_row)
+    for run_dir in run_dirs:
+        band_config_path = run_dir / "effective_band_config.yaml"
+        band_config = _load_yaml(band_config_path)
+        band_token = _normalize_band_token(_band_token_from_band_config(band_config))
         if band_token not in shortlist_band_tokens:
+            continue
+        artifact = _load_run_artifact(run_dir, band_config=band_config)
+        if artifact is None:
             continue
 
         work = artifact.rows.copy()
