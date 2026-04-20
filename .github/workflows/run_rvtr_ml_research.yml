@@ -145,3 +145,4 @@ jobs:
             ${{ inputs.output_dir }}/review/rvtr_ml_by_month.csv
             ${{ inputs.output_dir }}/review/rvtr_ml_by_session.csv
             ${{ inputs.output_dir }}/review/rvtr_ml_by_band.csv
+          retention-days: 7

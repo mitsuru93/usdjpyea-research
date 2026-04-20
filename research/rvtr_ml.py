@@ -41,7 +41,7 @@ COMPARISON_BANDS = {
 }
 CONTROL_BANDS = {"bin_env_v1"}
 
-PRIMARY_AUDIT_NAMES = ("candidates_decision_policy_audit.csv", "candidates_policy_audit.csv")
+PRIMARY_AUDIT_NAMES = ("rvtr_label_source_rows.csv.gz", "candidates_decision_policy_audit.csv", "candidates_policy_audit.csv")
 PRIMARY_OUTCOME_NAMES = ("candidates_aggregate.csv.gz", "candidates.csv")
 AUDIT_READ_COLUMNS = (
     "timestamp",
@@ -202,7 +202,10 @@ def load_run_rows(run_dir: str | Path) -> pd.DataFrame:
         return pd.DataFrame()
     if audit_path is None:
         return _read_csv_columns(outcome_path, OUTCOME_READ_COLUMNS)
-    audit_df = _read_csv_columns(audit_path, AUDIT_READ_COLUMNS)
+    requested_cols = AUDIT_READ_COLUMNS
+    if audit_path.name == "rvtr_label_source_rows.csv.gz":
+        requested_cols = tuple(dict.fromkeys(AUDIT_READ_COLUMNS + OUTCOME_READ_COLUMNS))
+    audit_df = _read_csv_columns(audit_path, requested_cols)
     if outcome_path is None:
         return audit_df
     outcome_df = _read_csv_columns(outcome_path, OUTCOME_READ_COLUMNS)
