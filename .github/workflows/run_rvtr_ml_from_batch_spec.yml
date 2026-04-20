@@ -144,6 +144,7 @@ jobs:
                 candidates_aggregate.csv.gz \
                 candidate_summary.csv \
                 policy_candidate_summary.csv \
+                candidates_decision_policy_audit.csv \
                 rvtr_label_source_rows.csv.gz \
                 summary_by_month.csv \
                 summary_by_session.csv \
@@ -233,6 +234,7 @@ jobs:
                 mkdir -p "${run_dst}"
                 for file in \
                   candidates_aggregate.csv.gz \
+                  candidates_decision_policy_audit.csv \
                   rvtr_label_source_rows.csv.gz \
                   effective_band_config.yaml; do
                   if [ -f "${run_dir}/${file}" ]; then

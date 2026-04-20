@@ -139,6 +139,7 @@ jobs:
                 candidates_aggregate.csv.gz \
                 candidate_summary.csv \
                 policy_candidate_summary.csv \
+                candidates_decision_policy_audit.csv \
                 rvtr_label_source_rows.csv.gz \
                 summary_by_month.csv \
                 summary_by_session.csv \
@@ -219,6 +220,7 @@ jobs:
                 mkdir -p "${run_dst}"
                 for file in \
                   candidates_aggregate.csv.gz \
+                  candidates_decision_policy_audit.csv \
                   rvtr_label_source_rows.csv.gz \
                   effective_band_config.yaml; do
                   if [ -f "${run_dir}/${file}" ]; then
@@ -256,6 +258,7 @@ jobs:
           total_run_count = 0
           complete_run_count = 0
           missing_candidates_aggregate_count = 0
+          missing_candidates_decision_policy_audit_count = 0
           missing_rvtr_label_source_rows_count = 0
           missing_effective_band_config_count = 0
 
@@ -270,19 +273,25 @@ jobs:
                   study_metadata_present = (shard_dir / "study_metadata.yaml").is_file()
 
                   aggregate_path = run_dir / "candidates_aggregate.csv.gz"
-                  audit_path = run_dir / "rvtr_label_source_rows.csv.gz"
+                  decision_audit_path = run_dir / "candidates_decision_policy_audit.csv"
+                  slim_audit_path = run_dir / "rvtr_label_source_rows.csv.gz"
                   band_cfg_path = run_dir / "effective_band_config.yaml"
 
                   candidates_aggregate_present = aggregate_path.is_file()
-                  rvtr_label_source_rows_present = audit_path.is_file()
+                  candidates_decision_policy_audit_present = decision_audit_path.is_file()
+                  rvtr_label_source_rows_present = slim_audit_path.is_file()
                   effective_band_config_present = band_cfg_path.is_file()
 
                   candidates_aggregate_size_bytes = aggregate_path.stat().st_size if candidates_aggregate_present else 0
-                  rvtr_label_source_rows_size_bytes = audit_path.stat().st_size if rvtr_label_source_rows_present else 0
+                  candidates_decision_policy_audit_size_bytes = (
+                      decision_audit_path.stat().st_size if candidates_decision_policy_audit_present else 0
+                  )
+                  rvtr_label_source_rows_size_bytes = slim_audit_path.stat().st_size if rvtr_label_source_rows_present else 0
 
                   missing_file_count = 0
                   for present in (
                       candidates_aggregate_present,
+                      candidates_decision_policy_audit_present,
                       rvtr_label_source_rows_present,
                       effective_band_config_present,
                   ):
@@ -295,6 +304,8 @@ jobs:
                       complete_run_count += 1
                   if not candidates_aggregate_present:
                       missing_candidates_aggregate_count += 1
+                  if not candidates_decision_policy_audit_present:
+                      missing_candidates_decision_policy_audit_count += 1
                   if not rvtr_label_source_rows_present:
                       missing_rvtr_label_source_rows_count += 1
                   if not effective_band_config_present:
@@ -307,6 +318,8 @@ jobs:
                           "study_metadata_present": str(study_metadata_present).lower(),
                           "candidates_aggregate_present": str(candidates_aggregate_present).lower(),
                           "candidates_aggregate_size_bytes": str(candidates_aggregate_size_bytes),
+                          "candidates_decision_policy_audit_present": str(candidates_decision_policy_audit_present).lower(),
+                          "candidates_decision_policy_audit_size_bytes": str(candidates_decision_policy_audit_size_bytes),
                           "rvtr_label_source_rows_present": str(rvtr_label_source_rows_present).lower(),
                           "rvtr_label_source_rows_size_bytes": str(rvtr_label_source_rows_size_bytes),
                           "effective_band_config_present": str(effective_band_config_present).lower(),
@@ -321,6 +334,8 @@ jobs:
               "study_metadata_present",
               "candidates_aggregate_present",
               "candidates_aggregate_size_bytes",
+              "candidates_decision_policy_audit_present",
+              "candidates_decision_policy_audit_size_bytes",
               "rvtr_label_source_rows_present",
               "rvtr_label_source_rows_size_bytes",
               "effective_band_config_present",
@@ -337,6 +352,7 @@ jobs:
               "total_run_count": total_run_count,
               "complete_run_count": complete_run_count,
               "missing_candidates_aggregate_count": missing_candidates_aggregate_count,
+              "missing_candidates_decision_policy_audit_count": missing_candidates_decision_policy_audit_count,
               "missing_rvtr_label_source_rows_count": missing_rvtr_label_source_rows_count,
               "missing_effective_band_config_count": missing_effective_band_config_count,
           }
