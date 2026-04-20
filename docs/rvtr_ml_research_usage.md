@@ -41,12 +41,11 @@ Primary inputs:
 - `review_issue_number` (optional)
 - `rvtr_ml_output_subdir` (optional, defaults to `rvtr_ml_research`)
 
-Main path is config-driven. You trigger once with `batch_spec = configs/...yaml` and the same run executes:
-- batch prepare
-- shard runs
-- aggregate
-- run-level label source staging
-- RV/TR ML build/train/distill
+Main path is config-driven. You trigger once with `batch_spec = configs/...yaml` and the same run executes two internal jobs after shard runs:
+- `aggregate` job (shard artifact download, run-level label source staging, batch review, review publish)
+- `rvtr-ml` job (fresh runner, label-source artifact download, RV/TR ML build/train/distill)
+
+User operation stays the same: only `batch_spec = configs/...yaml` is required for the primary flow.
 
 No manual `label_source_run_id` / `label_source_artifact_name` input is required in the primary flow.
 
@@ -72,7 +71,7 @@ python tools/distill_rvtr_score_v1.py \
   --output-dir research/reports/rvtr_ml_research
 ```
 
-In the new primary workflow this chain is run inside the aggregate job, using the staged `label_source` generated from shard artifacts.
+In the new primary workflow this chain is run inside the `rvtr-ml` job on a fresh GitHub-hosted runner, using the staged `label_source` downloaded via artifact from `aggregate`.
 
 Optional review step:
 

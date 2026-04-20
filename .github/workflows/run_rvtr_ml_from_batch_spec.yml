@@ -162,13 +162,16 @@ jobs:
           path: |
             batch_artifacts
 
-  aggregate-and-rvtr-ml:
+  aggregate:
     runs-on: ubuntu-latest
     needs: [prepare, run-shards]
     permissions:
       issues: write
       pull-requests: write
       contents: read
+    outputs:
+      label_source_artifact_name: ${{ steps.artifact_names.outputs.label_source_artifact_name }}
+      batch_review_artifact_name: ${{ steps.artifact_names.outputs.batch_review_artifact_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -182,6 +185,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Resolve aggregate artifact names
+        id: artifact_names
+        run: |
+          echo "label_source_artifact_name=batch-runlevel-label-source-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}" >> "$GITHUB_OUTPUT"
+          echo "batch_review_artifact_name=batch-review-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}" >> "$GITHUB_OUTPUT"
 
       - name: Download shard artifacts
         uses: actions/download-artifact@v4
@@ -226,7 +235,7 @@ jobs:
       - name: Upload run-level label source artifact
         uses: actions/upload-artifact@v4
         with:
-          name: batch-runlevel-label-source-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}
+          name: ${{ steps.artifact_names.outputs.label_source_artifact_name }}
           path: |
             label_source
 
@@ -249,37 +258,10 @@ jobs:
             --artifact-staging-root "batch_artifacts" \
             $ISSUE_ARGS
 
-      - name: Resolve RV/TR ML output directory
-        run: |
-          RVTR_SUBDIR="${{ inputs.rvtr_ml_output_subdir }}"
-          if [ -z "${RVTR_SUBDIR}" ]; then
-            RVTR_SUBDIR="rvtr_ml_research"
-          fi
-          RVTR_OUTPUT_DIR="${{ needs.prepare.outputs.batch_output_root }}/${RVTR_SUBDIR}"
-          echo "RVTR_ML_OUTPUT_DIR=${RVTR_OUTPUT_DIR}" >> "$GITHUB_ENV"
-
-      - name: Build RV/TR label table
-        run: |
-          python -u tools/build_rvtr_label_table.py \
-            --source-root "label_source" \
-            --output-dir "${RVTR_ML_OUTPUT_DIR}"
-
-      - name: Train RV/TR logistic model
-        run: |
-          python -u tools/train_rvtr_logit_v1.py \
-            --label-table "${RVTR_ML_OUTPUT_DIR}/rvtr_label_table_trainable_v1.csv.gz" \
-            --output-dir "${RVTR_ML_OUTPUT_DIR}"
-
-      - name: Distill RV/TR score weights
-        run: |
-          python -u tools/distill_rvtr_score_v1.py \
-            --coef-csv "${RVTR_ML_OUTPUT_DIR}/rvtr_logit_v1_coef.csv" \
-            --output-dir "${RVTR_ML_OUTPUT_DIR}"
-
       - name: Upload batch artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: batch-review-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}
+          name: ${{ steps.artifact_names.outputs.batch_review_artifact_name }}
           path: |
             ${{ needs.prepare.outputs.batch_output_root }}/batch_metadata.yaml
             ${{ needs.prepare.outputs.batch_output_root }}/batch_manifest.yaml
@@ -291,24 +273,6 @@ jobs:
             ${{ needs.prepare.outputs.batch_output_root }}/shortlist_robustness.csv
             ${{ needs.prepare.outputs.batch_output_root }}/batch_review.md
             ${{ needs.prepare.outputs.batch_output_root }}/batch_review_machine.yaml
-
-      - name: Upload RV/TR ML artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: rvtr-ml-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}
-          path: |
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_label_table_v1.csv.gz
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_label_table_trainable_v1.csv.gz
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_label_table_v1.summary.json
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_overall.csv
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_by_month.csv
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_by_session.csv
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_by_band.csv
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_logit_v1_coef.csv
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_logit_v1_metrics.json
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_logit_v1_predictions.csv.gz
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/distilled_total_score_rvtr_v2.yaml
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/distilled_feature_importance.csv
 
       - name: Resolve review sink metadata
         run: |
@@ -357,15 +321,95 @@ jobs:
               core.info(`Created review comment on issue #${issueNumber}.`);
             }
 
-      - name: Write summary
+      - name: Write aggregate summary
         if: always()
         run: |
           {
-            echo "## Research Batch + RV/TR ML Summary"
+            echo "## Research Batch Aggregate Summary"
             echo "- batch id: \`${{ needs.prepare.outputs.batch_id }}\`"
             echo "- dataset id: \`${{ needs.prepare.outputs.dataset_id }}\`"
             echo "- output tag: \`${{ needs.prepare.outputs.output_tag || '<none>' }}\`"
-            echo "- manifest: \`${{ github.workspace }}/.batch_runtime/batch_manifest.yaml\`"
-            echo "- review artifact: \`${{ needs.prepare.outputs.batch_output_root }}/batch_review.md\`"
+            echo "- label-source artifact: \`${{ steps.artifact_names.outputs.label_source_artifact_name }}\`"
+            echo "- batch review artifact: \`${{ steps.artifact_names.outputs.batch_review_artifact_name }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  rvtr-ml:
+    runs-on: ubuntu-latest
+    needs: [prepare, aggregate]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download run-level label source artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.aggregate.outputs.label_source_artifact_name }}
+          path: ${{ github.workspace }}/.rvtr_label_source
+
+      - name: Resolve RV/TR ML output directory
+        run: |
+          RVTR_SUBDIR="${{ inputs.rvtr_ml_output_subdir }}"
+          if [ -z "${RVTR_SUBDIR}" ]; then
+            RVTR_SUBDIR="rvtr_ml_research"
+          fi
+          RVTR_OUTPUT_DIR="${{ needs.prepare.outputs.batch_output_root }}/${RVTR_SUBDIR}"
+          echo "RVTR_ML_OUTPUT_DIR=${RVTR_OUTPUT_DIR}" >> "$GITHUB_ENV"
+
+      - name: Build RV/TR label table
+        run: |
+          python -u tools/build_rvtr_label_table.py \
+            --source-root "${{ github.workspace }}/.rvtr_label_source/label_source" \
+            --output-dir "${RVTR_ML_OUTPUT_DIR}"
+
+      - name: Train RV/TR logistic model
+        run: |
+          python -u tools/train_rvtr_logit_v1.py \
+            --label-table "${RVTR_ML_OUTPUT_DIR}/rvtr_label_table_trainable_v1.csv.gz" \
+            --output-dir "${RVTR_ML_OUTPUT_DIR}"
+
+      - name: Distill RV/TR score weights
+        run: |
+          python -u tools/distill_rvtr_score_v1.py \
+            --coef-csv "${RVTR_ML_OUTPUT_DIR}/rvtr_logit_v1_coef.csv" \
+            --output-dir "${RVTR_ML_OUTPUT_DIR}"
+
+      - name: Upload RV/TR ML artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rvtr-ml-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}
+          path: |
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_label_table_v1.csv.gz
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_label_table_trainable_v1.csv.gz
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_label_table_v1.summary.json
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_overall.csv
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_by_month.csv
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_by_session.csv
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_by_band.csv
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_logit_v1_coef.csv
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_logit_v1_metrics.json
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_logit_v1_predictions.csv.gz
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/distilled_total_score_rvtr_v2.yaml
+            ${{ env.RVTR_ML_OUTPUT_DIR }}/distilled_feature_importance.csv
+
+      - name: Write RV/TR ML summary
+        if: always()
+        run: |
+          {
+            echo "## RV/TR ML Summary"
+            echo "- batch id: \`${{ needs.prepare.outputs.batch_id }}\`"
             echo "- rvtr ml output dir: \`${RVTR_ML_OUTPUT_DIR}\`"
+            echo "- rvtr-ml artifact: \`rvtr-ml-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}\`"
+            echo "- build rvtr label table: executed"
+            echo "- train rvtr logistic model: executed"
+            echo "- distill rvtr score weights: executed"
           } >> "$GITHUB_STEP_SUMMARY"
