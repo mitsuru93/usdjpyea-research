@@ -33,6 +33,18 @@ def _write_csv(path: Path, df: pd.DataFrame) -> None:
     df.to_csv(path, index=False, compression="gzip" if path.suffix == ".gz" else None)
 
 
+def _value_counts_dict(series: pd.Series) -> dict[str, int]:
+    counts = series.value_counts(dropna=False)
+    result: dict[str, int] = {}
+    for key, value in counts.items():
+        if pd.isna(key):
+            norm_key = "<NA>"
+        else:
+            norm_key = str(key)
+        result[norm_key] = int(value)
+    return result
+
+
 def _sigmoid(z: np.ndarray) -> np.ndarray:
     return 1.0 / (1.0 + np.exp(-np.clip(z, -35.0, 35.0)))
 
@@ -121,14 +133,104 @@ def _apply_trainable_subset(df: pd.DataFrame) -> pd.DataFrame:
     return work
 
 
+def _compute_trainable_subset_and_diagnostics(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
+    stage_counts: list[dict[str, Any]] = []
+    work = df.copy()
+    stage_counts.append({"stage": "raw", "row_count": int(len(work))})
+    label_counts_raw = _value_counts_dict(work["label_rvtr_v1"]) if "label_rvtr_v1" in work.columns else {}
+    group_status_counts_raw = _value_counts_dict(work["group_status"]) if "group_status" in work.columns else {}
+    hard_gate_counts_raw = _value_counts_dict(work["hard_gate_passed"]) if "hard_gate_passed" in work.columns else {}
+
+    if "label_rvtr_v1" in work.columns:
+        work = work[work["label_rvtr_v1"].isin(["rv", "tr"])].copy()
+    stage_counts.append({"stage": "after_label_filter", "row_count": int(len(work))})
+
+    if "group_status" in work.columns:
+        work = work[work["group_status"].astype(str).eq("complete_unique_pair")].copy()
+    stage_counts.append({"stage": "after_group_status_filter", "row_count": int(len(work))})
+
+    if "hard_gate_passed" in work.columns:
+        work = work[work["hard_gate_passed"].fillna(False).astype(bool)].copy()
+    else:
+        work = work.iloc[0:0].copy()
+    stage_counts.append({"stage": "after_hard_gate_filter", "row_count": int(len(work))})
+
+    required_features = feature_columns() + ["session"]
+    missing_feature_cols = [col for col in required_features if col not in work.columns]
+    if missing_feature_cols:
+        work = work.iloc[0:0].copy()
+    else:
+        feature_null_mask = work.loc[:, feature_columns()].isna().any(axis=1)
+        feature_null_mask |= work["session"].isna()
+        work = work.loc[~feature_null_mask].copy()
+    stage_counts.append({"stage": "after_feature_non_null_filter", "row_count": int(len(work))})
+    stage_counts.append({"stage": "final_trainable", "row_count": int(len(work))})
+
+    diagnostics = {
+        "raw_row_count": int(stage_counts[0]["row_count"]),
+        "after_label_filter_row_count": int(stage_counts[1]["row_count"]),
+        "after_group_status_filter_row_count": int(stage_counts[2]["row_count"]),
+        "after_hard_gate_filter_row_count": int(stage_counts[3]["row_count"]),
+        "after_feature_non_null_filter_row_count": int(stage_counts[4]["row_count"]),
+        "final_trainable_row_count": int(stage_counts[5]["row_count"]),
+        "missing_feature_columns": missing_feature_cols,
+        "label_counts_raw": label_counts_raw,
+        "group_status_counts_raw": group_status_counts_raw,
+        "hard_gate_counts_raw": hard_gate_counts_raw,
+    }
+    return work, diagnostics
+
+
+def _write_trainable_diagnostics(df_final: pd.DataFrame, diagnostics: dict[str, Any], output_dir: Path) -> None:
+    diagnostics_out = dict(diagnostics)
+    diagnostics_out["label_counts_final"] = _value_counts_dict(df_final["label_rvtr_v1"]) if "label_rvtr_v1" in df_final.columns else {}
+
+    if not df_final.empty:
+        split_counts_final = _value_counts_dict(add_split_column(df_final.copy())["split"])
+    else:
+        split_counts_final = {}
+    diagnostics_out["split_counts_final"] = split_counts_final
+    diagnostics_out["train_row_count"] = int(split_counts_final.get("train", 0))
+    diagnostics_out["valid_row_count"] = int(split_counts_final.get("valid", 0))
+    diagnostics_out["holdout_row_count"] = int(split_counts_final.get("holdout", 0))
+
+    (output_dir / "rvtr_trainable_diagnostics.json").write_text(json.dumps(diagnostics_out, indent=2, sort_keys=True), encoding="utf-8")
+
+    stage_counts_df = pd.DataFrame(
+        [
+            {"stage": "raw", "row_count": diagnostics_out["raw_row_count"]},
+            {"stage": "after_label_filter", "row_count": diagnostics_out["after_label_filter_row_count"]},
+            {"stage": "after_group_status_filter", "row_count": diagnostics_out["after_group_status_filter_row_count"]},
+            {"stage": "after_hard_gate_filter", "row_count": diagnostics_out["after_hard_gate_filter_row_count"]},
+            {"stage": "after_feature_non_null_filter", "row_count": diagnostics_out["after_feature_non_null_filter_row_count"]},
+            {"stage": "final_trainable", "row_count": diagnostics_out["final_trainable_row_count"]},
+        ]
+    )
+    _write_csv(output_dir / "rvtr_trainable_stage_counts.csv", stage_counts_df)
+
+    label_distribution = pd.DataFrame(
+        [{"label_rvtr_v1": key, "row_count": value} for key, value in diagnostics_out["label_counts_final"].items()]
+    )
+    _write_csv(output_dir / "rvtr_trainable_label_distribution.csv", label_distribution)
+
+    group_distribution = pd.DataFrame(
+        [{"group_status": key, "row_count": value} for key, value in diagnostics_out["group_status_counts_raw"].items()]
+    )
+    _write_csv(output_dir / "rvtr_trainable_group_status_distribution.csv", group_distribution)
+
+    split_distribution = pd.DataFrame([{"split": key, "row_count": value} for key, value in split_counts_final.items()])
+    _write_csv(output_dir / "rvtr_trainable_split_distribution.csv", split_distribution)
+
+
 def main() -> None:
     args = parse_args()
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    df = pd.read_csv(args.label_table, compression="gzip")
-    df = _apply_trainable_subset(df)
-    df = add_split_column(df)
+    raw_df = pd.read_csv(args.label_table, compression="gzip")
+    subset_df, diagnostics = _compute_trainable_subset_and_diagnostics(raw_df)
+    _write_trainable_diagnostics(subset_df, diagnostics, output_dir)
+    df = add_split_column(subset_df)
     if df.empty:
         raise ValueError("Training table is empty after filtering rv/tr rows.")
 
