@@ -366,50 +366,108 @@ jobs:
           echo "RVTR_ML_OUTPUT_DIR=${RVTR_OUTPUT_DIR}" >> "$GITHUB_ENV"
 
       - name: Build RV/TR label table
+        id: build_label_table
         run: |
           python -u tools/build_rvtr_label_table.py \
             --source-root "${{ github.workspace }}/.rvtr_label_source/label_source" \
             --output-dir "${RVTR_ML_OUTPUT_DIR}"
 
       - name: Train RV/TR logistic model
+        id: train_logit
         run: |
           python -u tools/train_rvtr_logit_v1.py \
             --label-table "${RVTR_ML_OUTPUT_DIR}/rvtr_label_table_trainable_v1.csv.gz" \
             --output-dir "${RVTR_ML_OUTPUT_DIR}"
 
       - name: Distill RV/TR score weights
+        id: distill_score
         run: |
           python -u tools/distill_rvtr_score_v1.py \
             --coef-csv "${RVTR_ML_OUTPUT_DIR}/rvtr_logit_v1_coef.csv" \
             --output-dir "${RVTR_ML_OUTPUT_DIR}"
 
       - name: Upload RV/TR ML artifacts
+        if: always()
+        run: |
+          ARTIFACT_STAGE_DIR="${{ github.workspace }}/.rvtr_ml_artifacts"
+          mkdir -p "${ARTIFACT_STAGE_DIR}"
+
+          for rel in \
+            rvtr_label_table_v1.csv.gz \
+            rvtr_label_table_trainable_v1.csv.gz \
+            rvtr_label_table_v1.summary.json \
+            label_distribution_overall.csv \
+            label_distribution_by_month.csv \
+            label_distribution_by_session.csv \
+            label_distribution_by_band.csv \
+            rvtr_trainable_diagnostics.json \
+            rvtr_trainable_stage_counts.csv \
+            rvtr_trainable_label_distribution.csv \
+            rvtr_trainable_group_status_distribution.csv \
+            rvtr_trainable_split_distribution.csv \
+            rvtr_logit_v1_coef.csv \
+            rvtr_logit_v1_metrics.json \
+            rvtr_logit_v1_predictions.csv.gz \
+            distilled_total_score_rvtr_v2.yaml \
+            distilled_feature_importance.csv; do
+            src="${RVTR_ML_OUTPUT_DIR}/${rel}"
+            if [ -f "${src}" ]; then
+              cp "${src}" "${ARTIFACT_STAGE_DIR}/${rel}"
+            fi
+          done
+
+          (cd "${ARTIFACT_STAGE_DIR}" && find . -maxdepth 1 -type f | sort) > "${ARTIFACT_STAGE_DIR}/artifact_upload_manifest.txt"
+
+      - name: Upload RV/TR ML artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rvtr-ml-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}
           path: |
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_label_table_v1.csv.gz
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_label_table_trainable_v1.csv.gz
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_label_table_v1.summary.json
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_overall.csv
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_by_month.csv
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_by_session.csv
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/label_distribution_by_band.csv
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_logit_v1_coef.csv
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_logit_v1_metrics.json
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/rvtr_logit_v1_predictions.csv.gz
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/distilled_total_score_rvtr_v2.yaml
-            ${{ env.RVTR_ML_OUTPUT_DIR }}/distilled_feature_importance.csv
+            ${{ github.workspace }}/.rvtr_ml_artifacts
+          if-no-files-found: warn
 
       - name: Write RV/TR ML summary
         if: always()
         run: |
-          {
-            echo "## RV/TR ML Summary"
-            echo "- batch id: \`${{ needs.prepare.outputs.batch_id }}\`"
-            echo "- rvtr ml output dir: \`${RVTR_ML_OUTPUT_DIR}\`"
-            echo "- rvtr-ml artifact: \`rvtr-ml-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}\`"
-            echo "- build rvtr label table: executed"
-            echo "- train rvtr logistic model: executed"
-            echo "- distill rvtr score weights: executed"
-          } >> "$GITHUB_STEP_SUMMARY"
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          import os
+
+          summary_path = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          diag_path = Path(os.environ["RVTR_ML_OUTPUT_DIR"]) / "rvtr_trainable_diagnostics.json"
+          summary_lines = [
+              "## RV/TR ML Summary",
+              f"- batch id: `${{ needs.prepare.outputs.batch_id }}`",
+              f"- rvtr ml output dir: `{os.environ['RVTR_ML_OUTPUT_DIR']}`",
+              f"- rvtr-ml artifact: `rvtr-ml-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}`",
+              "- build rvtr label table: `${{ steps.build_label_table.outcome }}`",
+              "- train rvtr logistic model: `${{ steps.train_logit.outcome }}`",
+              "- distill rvtr score weights: `${{ steps.distill_score.outcome }}`",
+          ]
+          if diag_path.exists():
+              diag = json.loads(diag_path.read_text(encoding="utf-8"))
+              summary_lines.extend(
+                  [
+                      "",
+                      "### Trainable Diagnostics",
+                      f"- raw rows: `{diag.get('raw_row_count', 0)}`",
+                      f"- final trainable rows: `{diag.get('final_trainable_row_count', 0)}`",
+                      f"- train rows: `{diag.get('train_row_count', 0)}`",
+                      f"- valid rows: `{diag.get('valid_row_count', 0)}`",
+                      f"- holdout rows: `{diag.get('holdout_row_count', 0)}`",
+                      f"- raw label counts: `{json.dumps(diag.get('label_counts_raw', {}), sort_keys=True)}`",
+                      f"- final label counts: `{json.dumps(diag.get('label_counts_final', {}), sort_keys=True)}`",
+                  ]
+              )
+          else:
+              summary_lines.extend(
+                  [
+                      "",
+                      "### Trainable Diagnostics",
+                      f"- diagnostics file not found: `{diag_path}`",
+                  ]
+              )
+          summary_path.write_text("\n".join(summary_lines) + "\n", encoding="utf-8")
+          PY
