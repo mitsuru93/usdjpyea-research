@@ -366,18 +366,21 @@ jobs:
           echo "RVTR_ML_OUTPUT_DIR=${RVTR_OUTPUT_DIR}" >> "$GITHUB_ENV"
 
       - name: Build RV/TR label table
+        id: build_label_table
         run: |
           python -u tools/build_rvtr_label_table.py \
             --source-root "${{ github.workspace }}/.rvtr_label_source/label_source" \
             --output-dir "${RVTR_ML_OUTPUT_DIR}"
 
       - name: Train RV/TR logistic model
+        id: train_logit
         run: |
           python -u tools/train_rvtr_logit_v1.py \
             --label-table "${RVTR_ML_OUTPUT_DIR}/rvtr_label_table_trainable_v1.csv.gz" \
             --output-dir "${RVTR_ML_OUTPUT_DIR}"
 
       - name: Distill RV/TR score weights
+        id: distill_score
         run: |
           python -u tools/distill_rvtr_score_v1.py \
             --coef-csv "${RVTR_ML_OUTPUT_DIR}/rvtr_logit_v1_coef.csv" \
@@ -439,9 +442,9 @@ jobs:
               f"- batch id: `${{ needs.prepare.outputs.batch_id }}`",
               f"- rvtr ml output dir: `{os.environ['RVTR_ML_OUTPUT_DIR']}`",
               f"- rvtr-ml artifact: `rvtr-ml-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}`",
-              "- build rvtr label table: executed",
-              "- train rvtr logistic model: executed",
-              "- distill rvtr score weights: executed",
+              "- build rvtr label table: `${{ steps.build_label_table.outcome }}`",
+              "- train rvtr logistic model: `${{ steps.train_logit.outcome }}`",
+              "- distill rvtr score weights: `${{ steps.distill_score.outcome }}`",
           ]
           if diag_path.exists():
               diag = json.loads(diag_path.read_text(encoding="utf-8"))
