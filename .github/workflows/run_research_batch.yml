@@ -118,7 +118,7 @@ jobs:
           python tools/run_study.py --config "${STUDY_CONFIG_PATH}"
           python tools/review_timing_study.py --study-dir "${STUDY_OUTPUT_PATH}"
 
-      - name: Upload shard artifacts
+      - name: Stage shard handoff artifacts
         run: |
           SHARD_SRC="${{ needs.prepare.outputs.batch_output_root }}/${{ matrix.study_output_relpath }}"
           SHARD_DST="batch_artifacts/${{ matrix.shard_runtime_relpath }}"
@@ -140,6 +140,7 @@ jobs:
                 candidate_summary.csv \
                 policy_candidate_summary.csv \
                 candidates_decision_policy_audit.csv \
+                rvtr_label_source_rows.csv.gz \
                 summary_by_month.csv \
                 summary_by_session.csv \
                 effective_band_config.yaml; do
@@ -150,12 +151,23 @@ jobs:
             done
           fi
 
+          {
+            echo "shard_runtime_relpath=${{ matrix.shard_runtime_relpath }}"
+            echo "payload_policy=aggregate+batch_review+rvtr_ml_minimal"
+            echo
+            echo "files:"
+            find "${SHARD_DST}" -type f -printf "%P\t%s bytes\n" | sort
+            echo
+            echo "total_bytes=$(find "${SHARD_DST}" -type f -printf "%s\n" | awk '{s+=$1} END {print s+0}')"
+          } > "${SHARD_DST}/artifact_size_summary.txt"
+
       - name: Upload shard artifacts bundle
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.shard_artifact_name }}
           path: |
             batch_artifacts
+          retention-days: 1
 
   aggregate:
     runs-on: ubuntu-latest
@@ -209,6 +221,7 @@ jobs:
                 for file in \
                   candidates_aggregate.csv.gz \
                   candidates_decision_policy_audit.csv \
+                  rvtr_label_source_rows.csv.gz \
                   effective_band_config.yaml; do
                   if [ -f "${run_dir}/${file}" ]; then
                     ln "${run_dir}/${file}" "${run_dst}/${file}"
@@ -224,6 +237,7 @@ jobs:
           name: batch-runlevel-label-source-${{ needs.prepare.outputs.batch_id }}-${{ github.run_id }}
           path: |
             label_source
+          retention-days: 3
 
       - name: Build run-level label source manifest
         run: |
@@ -245,6 +259,7 @@ jobs:
           complete_run_count = 0
           missing_candidates_aggregate_count = 0
           missing_candidates_decision_policy_audit_count = 0
+          missing_rvtr_label_source_rows_count = 0
           missing_effective_band_config_count = 0
 
           if label_root.exists():
@@ -258,20 +273,26 @@ jobs:
                   study_metadata_present = (shard_dir / "study_metadata.yaml").is_file()
 
                   aggregate_path = run_dir / "candidates_aggregate.csv.gz"
-                  audit_path = run_dir / "candidates_decision_policy_audit.csv"
+                  decision_audit_path = run_dir / "candidates_decision_policy_audit.csv"
+                  slim_audit_path = run_dir / "rvtr_label_source_rows.csv.gz"
                   band_cfg_path = run_dir / "effective_band_config.yaml"
 
                   candidates_aggregate_present = aggregate_path.is_file()
-                  candidates_decision_policy_audit_present = audit_path.is_file()
+                  candidates_decision_policy_audit_present = decision_audit_path.is_file()
+                  rvtr_label_source_rows_present = slim_audit_path.is_file()
                   effective_band_config_present = band_cfg_path.is_file()
 
                   candidates_aggregate_size_bytes = aggregate_path.stat().st_size if candidates_aggregate_present else 0
-                  candidates_decision_policy_audit_size_bytes = audit_path.stat().st_size if candidates_decision_policy_audit_present else 0
+                  candidates_decision_policy_audit_size_bytes = (
+                      decision_audit_path.stat().st_size if candidates_decision_policy_audit_present else 0
+                  )
+                  rvtr_label_source_rows_size_bytes = slim_audit_path.stat().st_size if rvtr_label_source_rows_present else 0
 
                   missing_file_count = 0
                   for present in (
                       candidates_aggregate_present,
                       candidates_decision_policy_audit_present,
+                      rvtr_label_source_rows_present,
                       effective_band_config_present,
                   ):
                       if not present:
@@ -285,6 +306,8 @@ jobs:
                       missing_candidates_aggregate_count += 1
                   if not candidates_decision_policy_audit_present:
                       missing_candidates_decision_policy_audit_count += 1
+                  if not rvtr_label_source_rows_present:
+                      missing_rvtr_label_source_rows_count += 1
                   if not effective_band_config_present:
                       missing_effective_band_config_count += 1
 
@@ -297,6 +320,8 @@ jobs:
                           "candidates_aggregate_size_bytes": str(candidates_aggregate_size_bytes),
                           "candidates_decision_policy_audit_present": str(candidates_decision_policy_audit_present).lower(),
                           "candidates_decision_policy_audit_size_bytes": str(candidates_decision_policy_audit_size_bytes),
+                          "rvtr_label_source_rows_present": str(rvtr_label_source_rows_present).lower(),
+                          "rvtr_label_source_rows_size_bytes": str(rvtr_label_source_rows_size_bytes),
                           "effective_band_config_present": str(effective_band_config_present).lower(),
                           "all_required_present": str(all_required_present).lower(),
                           "missing_file_count": str(missing_file_count),
@@ -311,6 +336,8 @@ jobs:
               "candidates_aggregate_size_bytes",
               "candidates_decision_policy_audit_present",
               "candidates_decision_policy_audit_size_bytes",
+              "rvtr_label_source_rows_present",
+              "rvtr_label_source_rows_size_bytes",
               "effective_band_config_present",
               "all_required_present",
               "missing_file_count",
@@ -326,6 +353,7 @@ jobs:
               "complete_run_count": complete_run_count,
               "missing_candidates_aggregate_count": missing_candidates_aggregate_count,
               "missing_candidates_decision_policy_audit_count": missing_candidates_decision_policy_audit_count,
+              "missing_rvtr_label_source_rows_count": missing_rvtr_label_source_rows_count,
               "missing_effective_band_config_count": missing_effective_band_config_count,
           }
 
@@ -340,6 +368,7 @@ jobs:
           path: |
             label_source_manifest/runlevel_label_source_manifest.csv
             label_source_manifest/runlevel_label_source_summary.json
+          retention-days: 3
 
       - name: Download batch runtime bundle
         uses: actions/download-artifact@v4
@@ -375,6 +404,7 @@ jobs:
             ${{ needs.prepare.outputs.batch_output_root }}/shortlist_robustness.csv
             ${{ needs.prepare.outputs.batch_output_root }}/batch_review.md
             ${{ needs.prepare.outputs.batch_output_root }}/batch_review_machine.yaml
+          retention-days: 7
 
       - name: Resolve review sink metadata
         run: |
@@ -433,4 +463,7 @@ jobs:
             echo "- output tag: \`${{ needs.prepare.outputs.output_tag || '<none>' }}\`"
             echo "- manifest: \`${{ github.workspace }}/.batch_runtime/batch_manifest.yaml\`"
             echo "- review artifact: \`${{ needs.prepare.outputs.batch_output_root }}/batch_review.md\`"
+            echo "- shard payload policy: \`summary+aggregate+policy/month/session+rvtr_label_source_rows+band_config\`"
+            echo "- slim label source: \`rvtr_label_source_rows.csv.gz (enabled)\`"
+            echo "- retention: shard=1d label-source=3d batch-review=7d"
           } >> "$GITHUB_STEP_SUMMARY"

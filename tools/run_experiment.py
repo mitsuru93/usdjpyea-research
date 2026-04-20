@@ -483,6 +483,46 @@ def main() -> None:
 
     timing_audit_df.to_csv(output_dir / "candidates_timing_audit.csv", index=False)
     decision_policy_audit_df.to_csv(output_dir / "candidates_decision_policy_audit.csv", index=False)
+    rvtr_label_source_required_cols = [
+        "timestamp",
+        "touch_side",
+        "candidate_family",
+        "direction",
+        "candidate_id",
+        "pnl_pips",
+        "session",
+        "month",
+        "pre10_change_pips",
+        "pre30_change_pips",
+        "pre60_change_pips",
+        "net10_change_pips",
+        "dist_from_ema_pips",
+        "atr14_pips",
+        "atr5_pips",
+        "rsi14",
+        "macd_hist",
+        "bb_width_ratio_to_close",
+        "atr_ratio_5_14",
+        "envelope_upper",
+        "upper_env",
+        "envelope_lower",
+        "lower_env",
+        "hard_gate_passed",
+        "band_token",
+        "band_label",
+        "band_name",
+    ]
+    rvtr_label_source_cols = [col for col in rvtr_label_source_required_cols if col in decision_policy_audit_df.columns]
+    rvtr_label_source_df = (
+        decision_policy_audit_df.loc[:, rvtr_label_source_cols].copy()
+        if rvtr_label_source_cols
+        else pd.DataFrame(columns=rvtr_label_source_required_cols)
+    )
+    for col in rvtr_label_source_required_cols:
+        if col not in rvtr_label_source_df.columns:
+            rvtr_label_source_df[col] = pd.Series(dtype="object")
+    rvtr_label_source_df = rvtr_label_source_df[rvtr_label_source_required_cols]
+    rvtr_label_source_df.to_csv(output_dir / "rvtr_label_source_rows.csv.gz", index=False, compression="gzip")
     candidates_audit_df.to_csv(output_dir / "candidates_policy_audit.csv", index=False)
     summaries["overall"].to_csv(output_dir / "summary_overall.csv", index=False)
     summaries["by_month"].to_csv(output_dir / "summary_by_month.csv", index=False)
