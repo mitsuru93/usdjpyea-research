@@ -231,8 +231,12 @@ def load_run_rows(run_dir: str | Path) -> pd.DataFrame:
     return _merge_outcome_table(audit_df, outcome_df)
 
 
-def _load_run_artifact(run_dir: Path, band_config: dict[str, Any] | None = None) -> RunArtifact | None:
-    rows = load_run_rows(run_dir)
+def _load_run_artifact(
+    run_dir: Path,
+    band_config: dict[str, Any] | None = None,
+    preloaded_rows: pd.DataFrame | None = None,
+) -> RunArtifact | None:
+    rows = preloaded_rows if preloaded_rows is not None else load_run_rows(run_dir)
     if rows.empty:
         return None
     metadata_path = _resolve_metadata_path(run_dir)
@@ -509,7 +513,7 @@ def build_label_table_with_diagnostics(source_root: str | Path) -> tuple[pd.Data
             run_summaries.append(summary_row)
             continue
 
-        artifact = _load_run_artifact(run_dir, band_config=band_config)
+        artifact = _load_run_artifact(run_dir, band_config=band_config, preloaded_rows=rows)
         if artifact is None:
             summary_row["exclude_reason"] = "missing_audit_source"
             run_summaries.append(summary_row)
@@ -570,10 +574,6 @@ def build_label_table_with_diagnostics(source_root: str | Path) -> tuple[pd.Data
         summary_row["complete_pair_group_count"] = int(
             (counts["raw_row_count"].eq(2) & counts["unique_family_count"].eq(2)).sum()
         )
-        if summary_row["complete_pair_group_count"] == 0:
-            summary_row["exclude_reason"] = "zero_complete_pairs"
-            run_summaries.append(summary_row)
-            continue
 
         if "month" not in base_rows.columns:
             base_rows["month"] = base_rows["timestamp"].dt.strftime("%Y-%m")
@@ -641,7 +641,7 @@ def build_label_table_with_diagnostics(source_root: str | Path) -> tuple[pd.Data
         out["band_model_family"] = str(artifact.band_config.get("band_model_family", artifact.band_config.get("band_model", ""))).strip().lower()
         grouped_frames.append(out)
         summary_row["emitted_label_rows"] = int(len(out))
-        summary_row["exclude_reason"] = "ok"
+        summary_row["exclude_reason"] = "zero_complete_pairs" if summary_row["complete_pair_group_count"] == 0 else "ok"
         run_summaries.append(summary_row)
 
     label_table = pd.DataFrame()
