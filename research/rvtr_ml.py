@@ -80,6 +80,7 @@ OUTCOME_READ_COLUMNS = (
     "direction",
     "pnl_pips",
 )
+LABEL_BUILD_REQUIRED_COLUMNS = ("timestamp", "touch_side", "candidate_family", "pnl_pips")
 
 
 @dataclass(frozen=True)
@@ -150,6 +151,24 @@ def _first_existing(run_dir: Path, names: tuple[str, ...]) -> Path | None:
         if path.exists():
             return path
     return None
+
+
+def _first_existing_name(run_dir: Path, names: tuple[str, ...], missing: str = "missing") -> str:
+    path = _first_existing(run_dir, names)
+    return path.name if path is not None else missing
+
+
+def _value_counts_str(series: pd.Series, limit: int = 20) -> str:
+    if series.empty:
+        return ""
+    counts = series.value_counts(dropna=False).head(limit)
+    parts: list[str] = []
+    for key, value in counts.items():
+        text = str(key)
+        if text in {"nan", "None", "NaT"}:
+            text = "<missing>"
+        parts.append(f"{text}:{int(value)}")
+    return "|".join(parts)
 
 
 def _merge_outcome_table(audit_df: pd.DataFrame, outcome_df: pd.DataFrame) -> pd.DataFrame:
@@ -430,38 +449,96 @@ def _required_columns_present(base_rows: pd.DataFrame) -> pd.Series:
     return present
 
 
-def build_label_table(source_root: str | Path) -> pd.DataFrame:
-    """Build one-row-per-decision-group RV/TR labels for shortlisted bands."""
+def build_label_table_with_diagnostics(source_root: str | Path) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]:
+    """Build RV/TR labels and return per-run diagnostics for root-cause analysis."""
     run_dirs = _iter_run_dirs(Path(source_root).resolve())
-    if not run_dirs:
-        return pd.DataFrame()
     shortlist_band_tokens = {_normalize_band_token(x) for x in SHORTLIST_BANDS}
     repo_root = Path(__file__).resolve().parents[1]
     grouped_frames: list[pd.DataFrame] = []
+    run_summaries: list[dict[str, Any]] = []
 
     for run_dir in run_dirs:
         band_config_path = run_dir / "effective_band_config.yaml"
+        has_band_config = band_config_path.exists()
         band_config = _load_yaml(band_config_path)
         band_token = _normalize_band_token(_band_token_from_band_config(band_config))
+        audit_source_name = _first_existing_name(run_dir, PRIMARY_AUDIT_NAMES)
+        outcome_source_name = _first_existing_name(run_dir, PRIMARY_OUTCOME_NAMES)
+        summary_row: dict[str, Any] = {
+            "run_dir": str(run_dir),
+            "source_run_dir": str(run_dir),
+            "band_token": band_token,
+            "is_shortlist_band": False,
+            "audit_source_name": audit_source_name,
+            "outcome_source_name": outcome_source_name,
+            "rows_loaded": 0,
+            "has_required_columns": False,
+            "missing_required_columns": "",
+            "candidate_family_values": "",
+            "touch_side_values": "",
+            "rows_after_family_filter": 0,
+            "rows_after_required_key_filter": 0,
+            "group_count": 0,
+            "complete_pair_group_count": 0,
+            "emitted_label_rows": 0,
+            "exclude_reason": "",
+        }
+        reasons: list[str] = []
+        if not has_band_config:
+            reasons.append("missing_band_config")
         if band_token not in shortlist_band_tokens:
+            reasons.append("not_shortlist_band")
+        summary_row["is_shortlist_band"] = band_token in shortlist_band_tokens
+        if reasons:
+            summary_row["exclude_reason"] = ";".join(reasons)
+            run_summaries.append(summary_row)
             continue
+
+        rows = load_run_rows(run_dir)
+        summary_row["rows_loaded"] = int(len(rows))
+        if rows.empty:
+            summary_row["exclude_reason"] = "zero_rows_loaded"
+            run_summaries.append(summary_row)
+            continue
+
+        missing_required_cols = sorted(col for col in LABEL_BUILD_REQUIRED_COLUMNS if col not in rows.columns)
+        summary_row["missing_required_columns"] = "|".join(missing_required_cols)
+        summary_row["has_required_columns"] = len(missing_required_cols) == 0
+        if not summary_row["has_required_columns"]:
+            summary_row["exclude_reason"] = "missing_required_columns"
+            run_summaries.append(summary_row)
+            continue
+
         artifact = _load_run_artifact(run_dir, band_config=band_config)
         if artifact is None:
+            summary_row["exclude_reason"] = "missing_audit_source"
+            run_summaries.append(summary_row)
             continue
 
         work = artifact.rows.copy()
-        if work.empty or "candidate_family" not in work.columns or "timestamp" not in work.columns:
+        work["candidate_family"] = work["candidate_family"].astype(str).str.lower()
+        summary_row["candidate_family_values"] = _value_counts_str(work["candidate_family"])
+        work["timestamp"] = pd.to_datetime(work["timestamp"], errors="coerce")
+        work["touch_side"] = work.get("touch_side", "").astype(str).str.lower()
+        summary_row["touch_side_values"] = _value_counts_str(work["touch_side"])
+
+        work = work.loc[work["candidate_family"].isin(["rev", "trend"])].copy()
+        summary_row["rows_after_family_filter"] = int(len(work))
+        if work.empty:
+            summary_row["exclude_reason"] = "zero_rows_after_family_filter"
+            run_summaries.append(summary_row)
+            continue
+
+        work = work.loc[work["timestamp"].notna() & work["touch_side"].ne("")].copy()
+        summary_row["rows_after_required_key_filter"] = int(len(work))
+        if work.empty:
+            summary_row["exclude_reason"] = "zero_rows_after_required_key_filter"
+            run_summaries.append(summary_row)
             continue
 
         work["source_run_dir"] = str(artifact.run_dir)
         work["source_artifact_path"] = str(artifact.source_path)
         work["band_token"] = band_token
-        work["candidate_family"] = work["candidate_family"].astype(str).str.lower()
-        work["timestamp"] = pd.to_datetime(work["timestamp"], errors="coerce")
-        work["touch_side"] = work.get("touch_side", "").astype(str).str.lower()
-        work = work.loc[work["candidate_family"].isin(["rev", "trend"]) & work["timestamp"].notna() & work["touch_side"].ne("")].copy()
-        if work.empty:
-            continue
 
         if "candidate_id" in work.columns:
             work["candidate_id"] = work["candidate_id"].astype(str)
@@ -474,6 +551,11 @@ def build_label_table(source_root: str | Path) -> pd.DataFrame:
 
         family_rows = work.drop_duplicates(group_cols + ["candidate_family"], keep="first").copy()
         base_rows = work.drop_duplicates(group_cols, keep="first").copy()
+        summary_row["group_count"] = int(len(base_rows))
+        if summary_row["group_count"] == 0:
+            summary_row["exclude_reason"] = "zero_groups"
+            run_summaries.append(summary_row)
+            continue
 
         pair = (
             family_rows.pivot_table(index=group_cols, columns="candidate_family", values="pnl_pips", aggfunc="first")
@@ -485,6 +567,13 @@ def build_label_table(source_root: str | Path) -> pd.DataFrame:
             .agg(raw_row_count=("candidate_family", "size"), unique_family_count=("candidate_family", "nunique"))
             .reset_index()
         )
+        summary_row["complete_pair_group_count"] = int(
+            (counts["raw_row_count"].eq(2) & counts["unique_family_count"].eq(2)).sum()
+        )
+        if summary_row["complete_pair_group_count"] == 0:
+            summary_row["exclude_reason"] = "zero_complete_pairs"
+            run_summaries.append(summary_row)
+            continue
 
         if "month" not in base_rows.columns:
             base_rows["month"] = base_rows["timestamp"].dt.strftime("%Y-%m")
@@ -551,12 +640,60 @@ def build_label_table(source_root: str | Path) -> pd.DataFrame:
         out["band_model"] = str(artifact.band_config.get("band_model", "")).strip().lower()
         out["band_model_family"] = str(artifact.band_config.get("band_model_family", artifact.band_config.get("band_model", ""))).strip().lower()
         grouped_frames.append(out)
+        summary_row["emitted_label_rows"] = int(len(out))
+        summary_row["exclude_reason"] = "ok"
+        run_summaries.append(summary_row)
 
-    if not grouped_frames:
-        return pd.DataFrame()
+    label_table = pd.DataFrame()
+    if grouped_frames:
+        label_table = pd.concat(grouped_frames, ignore_index=True)
+        label_table = label_table.sort_values(["band_token", "timestamp", "touch_side"], kind="mergesort").reset_index(drop=True)
+    run_summary_df = pd.DataFrame(run_summaries)
+    if run_summary_df.empty:
+        run_summary_df = pd.DataFrame(
+            columns=[
+                "run_dir",
+                "source_run_dir",
+                "band_token",
+                "is_shortlist_band",
+                "audit_source_name",
+                "outcome_source_name",
+                "rows_loaded",
+                "has_required_columns",
+                "missing_required_columns",
+                "candidate_family_values",
+                "touch_side_values",
+                "rows_after_family_filter",
+                "rows_after_required_key_filter",
+                "group_count",
+                "complete_pair_group_count",
+                "emitted_label_rows",
+                "exclude_reason",
+            ]
+        )
+    exclude_counts = run_summary_df["exclude_reason"].fillna("unknown").astype(str).value_counts().to_dict()
+    diagnostics = {
+        "discovered_run_count": int(len(run_dirs)),
+        "shortlist_matched_run_count": int(run_summary_df["is_shortlist_band"].fillna(False).sum()) if not run_summary_df.empty else 0,
+        "skipped_not_shortlist_count": int(run_summary_df["exclude_reason"].astype(str).str.contains(r"(^|;)not_shortlist_band($|;)").sum()) if not run_summary_df.empty else 0,
+        "loaded_run_count": int((run_summary_df["rows_loaded"] > 0).sum()) if not run_summary_df.empty else 0,
+        "runs_with_rows_count": int((run_summary_df["rows_after_required_key_filter"] > 0).sum()) if not run_summary_df.empty else 0,
+        "runs_with_complete_pairs_count": int((run_summary_df["complete_pair_group_count"] > 0).sum()) if not run_summary_df.empty else 0,
+        "total_rows_loaded": int(run_summary_df["rows_loaded"].sum()) if not run_summary_df.empty else 0,
+        "total_groups": int(run_summary_df["group_count"].sum()) if not run_summary_df.empty else 0,
+        "total_complete_pair_groups": int(run_summary_df["complete_pair_group_count"].sum()) if not run_summary_df.empty else 0,
+        "total_emitted_label_rows": int(run_summary_df["emitted_label_rows"].sum()) if not run_summary_df.empty else 0,
+        "exclude_reason_counts": {str(k): int(v) for k, v in exclude_counts.items()},
+        "audit_source_counts": run_summary_df["audit_source_name"].astype(str).value_counts().to_dict() if not run_summary_df.empty else {},
+        "band_token_counts": run_summary_df["band_token"].astype(str).value_counts().to_dict() if not run_summary_df.empty else {},
+        "shortlist_bands": sorted(SHORTLIST_BANDS),
+    }
+    return label_table, run_summary_df, diagnostics
 
-    label_table = pd.concat(grouped_frames, ignore_index=True)
-    label_table = label_table.sort_values(["band_token", "timestamp", "touch_side"], kind="mergesort").reset_index(drop=True)
+
+def build_label_table(source_root: str | Path) -> pd.DataFrame:
+    """Build one-row-per-decision-group RV/TR labels for shortlisted bands."""
+    label_table, _, _ = build_label_table_with_diagnostics(source_root)
     return label_table
 
 
@@ -728,6 +865,7 @@ __all__ = [
     "add_split_column",
     "build_distribution_table",
     "build_label_table",
+    "build_label_table_with_diagnostics",
     "feature_columns",
     "load_ohlc_for_run",
     "load_run_artifacts",

@@ -17,7 +17,7 @@ if str(REPO_ROOT) not in sys.path:
 from research.rvtr_ml import (
     SHORTLIST_BANDS,
     build_distribution_table,
-    build_label_table,
+    build_label_table_with_diagnostics,
     prepare_trainable_label_table,
 )
 
@@ -44,7 +44,7 @@ def main() -> None:
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    label_table = build_label_table(args.source_root)
+    label_table, run_summary_df, build_diagnostics = build_label_table_with_diagnostics(args.source_root)
     trainable = prepare_trainable_label_table(label_table)
 
     _write_csv(output_dir / "rvtr_label_table_v1.csv.gz", label_table)
@@ -54,6 +54,8 @@ def main() -> None:
     _write_csv(output_dir / "label_distribution_by_month.csv", build_distribution_table(label_table, ["month"]))
     _write_csv(output_dir / "label_distribution_by_session.csv", build_distribution_table(label_table, ["session"]))
     _write_csv(output_dir / "label_distribution_by_band.csv", build_distribution_table(label_table, ["band_token"]))
+    _write_csv(output_dir / "rvtr_build_run_summary.csv", run_summary_df)
+    _write_summary(output_dir / "rvtr_build_diagnostics.json", build_diagnostics)
 
     summary = {
         "source_root": str(Path(args.source_root).resolve()),
