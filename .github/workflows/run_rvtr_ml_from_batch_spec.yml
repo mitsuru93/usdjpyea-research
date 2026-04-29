@@ -374,6 +374,33 @@ jobs:
           name: ${{ needs.aggregate.outputs.label_source_artifact_name }}
           path: ${{ github.workspace }}/.rvtr_label_source
 
+      - name: Resolve RV/TR label source root
+        run: |
+          CANDIDATE_A="${{ github.workspace }}/.rvtr_label_source/label_source"
+          CANDIDATE_B="${{ github.workspace }}/.rvtr_label_source"
+          ROOT=""
+
+          if [ -d "${CANDIDATE_A}/shards" ]; then
+            ROOT="${CANDIDATE_A}"
+          elif [ -d "${CANDIDATE_B}/shards" ]; then
+            ROOT="${CANDIDATE_B}"
+          else
+            shard_dir="$(find "${{ github.workspace }}/.rvtr_label_source" -type d -name shards | sort | head -n 1)"
+            if [ -n "${shard_dir}" ]; then
+              ROOT="$(dirname "${shard_dir}")"
+            fi
+          fi
+
+          if [ -z "${ROOT}" ]; then
+            echo "Failed to resolve RV/TR label source root under ${{ github.workspace }}/.rvtr_label_source"
+            find "${{ github.workspace }}/.rvtr_label_source" -maxdepth 5 -type f | sort | head -200
+            exit 1
+          fi
+
+          echo "RVTR_LABEL_SOURCE_ROOT=${ROOT}" >> "$GITHUB_ENV"
+          echo "RVTR_LABEL_SOURCE_ROOT=${ROOT}"
+          find "${ROOT}" -maxdepth 4 -type f | sort | head -100
+
       - name: Resolve RV/TR ML output directory
         run: |
           RVTR_SUBDIR="${{ inputs.rvtr_ml_output_subdir }}"
@@ -387,7 +414,7 @@ jobs:
         id: build_label_table
         run: |
           python -u tools/build_rvtr_label_table.py \
-            --source-root "${{ github.workspace }}/.rvtr_label_source/label_source" \
+            --source-root "${RVTR_LABEL_SOURCE_ROOT}" \
             --output-dir "${RVTR_ML_OUTPUT_DIR}"
 
       - name: Train RV/TR logistic model
