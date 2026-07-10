@@ -3,18 +3,27 @@ name: Run Public FX Data Pilot 2024-01
 on:
   workflow_dispatch:
 
+env:
+  START: "2024-01-01T00"
+  END: "2024-02-01T00"
+  TIMEFRAMES: "M1 M5 M15 H1"
+  PILOT_TAG: "pilot-2024-01"
+  MIN_COVERAGE: "0.995"
+  MAX_HARD_ERRORS: "20"
+
 jobs:
-  public-fx-data-pilot-2024-01:
+  collect-symbol:
+    name: collect-${{ matrix.symbol }}
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        symbol: [EURUSD, USDJPY, GBPUSD, AUDUSD, USDCAD, USDCHF]
     env:
-      SYMBOLS: "EURUSD USDJPY GBPUSD AUDUSD USDCAD USDCHF"
-      START: "2024-01-01T00"
-      END: "2024-02-01T00"
-      TIMEFRAMES: "M1 M5 M15 H1"
-      OUTPUT_TAG: "pilot-2024-01"
-      MIN_COVERAGE: "0.995"
-      MAX_HARD_ERRORS: "20"
+      SYMBOL: ${{ matrix.symbol }}
+      OUTPUT_TAG: pilot-2024-01-${{ matrix.symbol }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,19 +52,20 @@ jobs:
         run: |
           mkdir -p data/raw/dukascopy_bi5_${OUTPUT_TAG}
           python tools/download_dukascopy_bi5_ticks.py \
-            --symbols ${SYMBOLS} \
+            --symbols ${SYMBOL} \
             --start "${START}" \
             --end "${END}" \
             --output-root data/raw/dukascopy_bi5_${OUTPUT_TAG} \
             --manifest-out data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
             --max-errors ${MAX_HARD_ERRORS} \
-            --request-interval 0.25
+            --retries 3 \
+            --request-interval 0.05
 
       - name: Summarize download coverage
         run: |
           python tools/summarize_download_manifest.py \
             --manifest data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
-            --symbols ${SYMBOLS} \
+            --symbols ${SYMBOL} \
             --start "${START}" \
             --end "${END}" \
             --output data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_summary.json \
@@ -92,16 +102,15 @@ jobs:
               --output-dir data/profiles/dukascopy_bi5_${OUTPUT_TAG}_market_profile/${tf}
           done
 
-      - name: Write summary
+      - name: Write symbol summary
         if: always()
         run: |
-          echo "# Public FX Data Pilot 2024-01" >> "$GITHUB_STEP_SUMMARY"
+          echo "# Public FX Data Pilot 2024-01 / ${SYMBOL}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "symbols: ${SYMBOLS}" >> "$GITHUB_STEP_SUMMARY"
           echo "start: ${START}" >> "$GITHUB_STEP_SUMMARY"
           echo "end: ${END}" >> "$GITHUB_STEP_SUMMARY"
           echo "timeframes: ${TIMEFRAMES}" >> "$GITHUB_STEP_SUMMARY"
-          echo "min coverage: ${MIN_COVERAGE}" >> "$GITHUB_STEP_SUMMARY"
+          echo "min effective coverage: ${MIN_COVERAGE}" >> "$GITHUB_STEP_SUMMARY"
           echo "max hard errors: ${MAX_HARD_ERRORS}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "## Download summary" >> "$GITHUB_STEP_SUMMARY"
@@ -113,13 +122,8 @@ jobs:
           echo '```json' >> "$GITHUB_STEP_SUMMARY"
           cat data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/validation_summary.json >> "$GITHUB_STEP_SUMMARY" || true
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "## M5 Market profile overall" >> "$GITHUB_STEP_SUMMARY"
-          echo '```csv' >> "$GITHUB_STEP_SUMMARY"
-          cat data/profiles/dukascopy_bi5_${OUTPUT_TAG}_market_profile/M5/market_profile_overall.csv >> "$GITHUB_STEP_SUMMARY" || true
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload pilot artifacts
+      - name: Upload symbol artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -131,5 +135,105 @@ jobs:
             data/processed/dukascopy_bi5_${{ env.OUTPUT_TAG }}_bars/resample_manifest.jsonl
             data/processed/dukascopy_bi5_${{ env.OUTPUT_TAG }}_bars/validation_summary.json
             data/profiles/dukascopy_bi5_${{ env.OUTPUT_TAG }}_market_profile/**/*.csv
+          if-no-files-found: warn
+          retention-days: 14
+
+  aggregate-pilot:
+    name: aggregate-pilot-2024-01
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: collect-symbol
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas pyyaml
+
+      - name: Download symbol artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: public-fx-data-pilot-2024-01-*-${{ github.run_id }}
+          path: data/pilot_symbol_artifacts
+          merge-multiple: true
+
+      - name: Combine manifests and summaries
+        run: |
+          mkdir -p data/raw/dukascopy_bi5_${PILOT_TAG}_combined
+          find data/pilot_symbol_artifacts -path "*/download_manifest.jsonl" -type f -print0 | sort -z | xargs -0 cat > data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl
+          python tools/summarize_download_manifest.py \
+            --manifest data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl \
+            --symbols EURUSD USDJPY GBPUSD AUDUSD USDCAD USDCHF \
+            --start "${START}" \
+            --end "${END}" \
+            --output data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_summary.json \
+            --min-coverage ${MIN_COVERAGE} \
+            --max-hard-errors ${MAX_HARD_ERRORS}
+
+      - name: Validate all resampled bars
+        run: |
+          args=""
+          while IFS= read -r -d '' f; do
+            args="$args --input $f"
+          done < <(find data/pilot_symbol_artifacts -path "*/M1/*.csv.gz" -o -path "*/M5/*.csv.gz" -o -path "*/M15/*.csv.gz" -o -path "*/H1/*.csv.gz" -print0)
+          python tools/validate_fx_bar_artifacts.py \
+            $args \
+            --output data/raw/dukascopy_bi5_${PILOT_TAG}_combined/validation_summary.json
+
+      - name: Build combined market profiles by timeframe
+        run: |
+          mkdir -p data/profiles/dukascopy_bi5_${PILOT_TAG}_market_profile
+          for tf in ${TIMEFRAMES}; do
+            args=""
+            while IFS= read -r -d '' f; do
+              args="$args --input $f"
+            done < <(find data/pilot_symbol_artifacts -path "*/${tf}/*.csv.gz" -print0)
+            python tools/build_market_profile.py \
+              $args \
+              --output-dir data/profiles/dukascopy_bi5_${PILOT_TAG}_market_profile/${tf}
+          done
+
+      - name: Write aggregate summary
+        if: always()
+        run: |
+          echo "# Public FX Data Pilot 2024-01 / Aggregate" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "start: ${START}" >> "$GITHUB_STEP_SUMMARY"
+          echo "end: ${END}" >> "$GITHUB_STEP_SUMMARY"
+          echo "timeframes: ${TIMEFRAMES}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Download summary" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_summary.json >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Validation summary" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat data/raw/dukascopy_bi5_${PILOT_TAG}_combined/validation_summary.json >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## M5 Market profile overall" >> "$GITHUB_STEP_SUMMARY"
+          echo '```csv' >> "$GITHUB_STEP_SUMMARY"
+          cat data/profiles/dukascopy_bi5_${PILOT_TAG}_market_profile/M5/market_profile_overall.csv >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload aggregate artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-fx-data-${{ env.PILOT_TAG }}-aggregate-${{ github.run_id }}
+          path: |
+            data/raw/dukascopy_bi5_${{ env.PILOT_TAG }}_combined/download_manifest.jsonl
+            data/raw/dukascopy_bi5_${{ env.PILOT_TAG }}_combined/download_summary.json
+            data/raw/dukascopy_bi5_${{ env.PILOT_TAG }}_combined/validation_summary.json
+            data/profiles/dukascopy_bi5_${{ env.PILOT_TAG }}_market_profile/**/*.csv
           if-no-files-found: warn
           retention-days: 14
