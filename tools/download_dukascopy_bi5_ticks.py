@@ -19,6 +19,7 @@ import gzip
 import hashlib
 import json
 import lzma
+import random
 import struct
 import sys
 import time
@@ -48,6 +49,7 @@ PIP_SCALE = {
 
 BASE_URL = "https://datafeed.dukascopy.com/datafeed/{symbol}/{year}/{month_zero_based:02d}/{day:02d}/{hour:02d}h_ticks.bi5"
 RECORD_STRUCT = struct.Struct(">IIIff")
+RETRYABLE_HTTP_CODES = {408, 425, 429, 500, 502, 503, 504}
 
 
 @dataclass(frozen=True)
@@ -79,7 +81,6 @@ def iter_hours(start: dt.datetime, end: dt.datetime, symbols: list[str]) -> Iter
 
 
 def parse_utc_hour(value: str) -> dt.datetime:
-    # Accept YYYY-MM-DD, YYYY-MM-DDTHH, or YYYY-MM-DDTHH:MM:SSZ.
     raw = value.strip().replace("Z", "")
     if "T" not in raw:
         raw = raw + "T00:00:00"
@@ -99,21 +100,57 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def retry_delay(attempt: int, base_seconds: float, retry_after: str | None = None) -> float:
+    if retry_after:
+        try:
+            return max(float(retry_after), base_seconds)
+        except ValueError:
+            pass
+    exponential = base_seconds * (2**attempt)
+    jitter = random.uniform(0.0, max(0.1, base_seconds * 0.25))
+    return exponential + jitter
+
+
 def fetch_bytes(url: str, retries: int, sleep_seconds: float) -> bytes | None:
     last_error: Exception | None = None
     for attempt in range(retries + 1):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "usdjpyea-research/dukascopy-downloader"})
-            with urllib.request.urlopen(req, timeout=60) as response:
-                return response.read()
+            req = urllib.request.Request(
+                url,
+                headers={
+                    "User-Agent": "usdjpyea-research/dukascopy-downloader",
+                    "Accept": "application/octet-stream,*/*;q=0.8",
+                    "Connection": "close",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=90) as response:
+                payload = response.read()
+                if not payload:
+                    raise RuntimeError(f"empty response payload: {url}")
+                return payload
         except urllib.error.HTTPError as exc:
             if exc.code == 404:
                 return None
             last_error = exc
-        except Exception as exc:  # noqa: BLE001 - CLI should report source failures
+            if exc.code not in RETRYABLE_HTTP_CODES:
+                raise
+            retry_after = exc.headers.get("Retry-After") if exc.headers else None
+            delay = retry_delay(attempt, sleep_seconds, retry_after)
+            print(
+                f"retryable HTTP error code={exc.code} attempt={attempt + 1}/{retries + 1} "
+                f"sleep={delay:.2f}s url={url}",
+                file=sys.stderr,
+            )
+        except (urllib.error.URLError, TimeoutError, ConnectionError, RuntimeError) as exc:
             last_error = exc
+            delay = retry_delay(attempt, sleep_seconds)
+            print(
+                f"retryable network error type={type(exc).__name__} attempt={attempt + 1}/{retries + 1} "
+                f"sleep={delay:.2f}s url={url} detail={exc}",
+                file=sys.stderr,
+            )
         if attempt < retries:
-            time.sleep(sleep_seconds)
+            time.sleep(delay)
     if last_error is not None:
         raise last_error
     return None
@@ -193,8 +230,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-root", required=True, help="Root directory for raw tick CSV.GZ outputs.")
     parser.add_argument("--manifest-out", default=None, help="JSONL manifest output path. Default: <output-root>/dukascopy_download_manifest.jsonl")
     parser.add_argument("--overwrite", action="store_true", help="Re-download existing hourly files.")
-    parser.add_argument("--retries", type=int, default=2, help="Retries for non-404 network failures.")
-    parser.add_argument("--sleep-seconds", type=float, default=0.5, help="Sleep between retries.")
+    parser.add_argument("--retries", type=int, default=6, help="Retries for transient network/HTTP failures.")
+    parser.add_argument("--sleep-seconds", type=float, default=1.0, help="Base delay for exponential retry backoff.")
+    parser.add_argument("--request-interval", type=float, default=0.25, help="Minimum pause between hourly requests.")
+    parser.add_argument("--max-errors", type=int, default=0, help="Maximum terminal request/decode errors allowed before failing after manifest write.")
     return parser.parse_args()
 
 
@@ -208,13 +247,42 @@ def main() -> None:
     output_root.mkdir(parents=True, exist_ok=True)
     manifest_out = Path(args.manifest_out) if args.manifest_out else output_root / "dukascopy_download_manifest.jsonl"
     manifest_out.parent.mkdir(parents=True, exist_ok=True)
+    errors = 0
+    attempted = 0
     with manifest_out.open("w", encoding="utf-8") as manifest_fh:
         for spec in iter_hours(start, end, [s.upper() for s in args.symbols]):
-            record = download_hour(spec, output_root, overwrite=args.overwrite, retries=args.retries, sleep_seconds=args.sleep_seconds)
+            attempted += 1
+            try:
+                record = download_hour(
+                    spec,
+                    output_root,
+                    overwrite=args.overwrite,
+                    retries=args.retries,
+                    sleep_seconds=args.sleep_seconds,
+                )
+            except Exception as exc:  # continue so the manifest preserves the exact failure location
+                errors += 1
+                record = {
+                    "symbol": spec.symbol,
+                    "hour_start_utc": spec.hour_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "url": spec.url,
+                    "path": str(output_root / spec.output_relpath),
+                    "status": "error",
+                    "rows": 0,
+                    "sha256": None,
+                    "bytes": 0,
+                    "error_type": type(exc).__name__,
+                    "error": str(exc),
+                }
             line = json.dumps(record, ensure_ascii=False, sort_keys=True)
             print(line)
             manifest_fh.write(line + "\n")
-    print(f"wrote manifest: {manifest_out}")
+            manifest_fh.flush()
+            if args.request_interval > 0:
+                time.sleep(args.request_interval)
+    print(f"wrote manifest: {manifest_out} attempted={attempted} errors={errors}")
+    if errors > args.max_errors:
+        raise RuntimeError(f"download completed with terminal errors={errors}, allowed={args.max_errors}; inspect {manifest_out}")
 
 
 if __name__ == "__main__":
