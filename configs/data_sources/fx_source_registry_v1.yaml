@@ -125,8 +125,17 @@ cost_model_policy:
     source: dukascopy_or_histdata_bid_ask
     role: research_screening
   rakuten_advertised_spread:
-    source: rakuten_mt4_official_pages
+    source: rakuten_mt4_official_pages_and_user_confirmed_current_account_observation
     role: minimum_cost_floor_not_execution_truth
+    base_spread_pips:
+      EURUSD: 0.6
+      USDJPY: 0.5
+      GBPUSD: 1.2
+      AUDUSD: 1.2
+      USDCAD: 2.0
+      USDCHF: 1.6
+    notes:
+      USDJPY: "User confirmed current Rakuten MT4 account spread is 0.5 pips on 2026-07-10. Treat as initial base cost only, not a guarantee."
   stress_tests:
     spread_multipliers:
       - 1.0
@@ -146,9 +155,16 @@ cost_model_policy:
     - holiday_year_end_thin_liquidity
     - unscheduled_shock_window
 
+tooling_added:
+  - tools/download_public_fx_data.py
+  - tools/normalize_fx_bars.py
+  - tools/build_market_profile.py
+  - configs/data_sources/public_fx_download_plan_v1.yaml
+
 next_actions:
-  - "Implement source-specific downloader/resampler outside MT4."
+  - "Fill explicit source URLs or release assets in public_fx_download_plan_v1.yaml."
   - "Download EURUSD/USDJPY/GBPUSD/AUDUSD/USDCAD/USDCHF public historical data."
+  - "Normalize data to M1 and derive M5/M15."
+  - "Build market profile before strategy optimization."
   - "Write checksums and dataset ids after download."
-  - "Run market profile before strategy optimization."
   - "Start Rakuten MT4 live spread/logger in parallel, but do not block public-data research on it."
