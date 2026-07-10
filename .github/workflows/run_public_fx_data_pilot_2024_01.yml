@@ -183,7 +183,7 @@ jobs:
           args=""
           while IFS= read -r -d '' f; do
             args="$args --input $f"
-          done < <(find data/pilot_symbol_artifacts -path "*/M1/*.csv.gz" -o -path "*/M5/*.csv.gz" -o -path "*/M15/*.csv.gz" -o -path "*/H1/*.csv.gz" -print0)
+          done < <(find data/pilot_symbol_artifacts \( -path "*/M1/*.csv.gz" -o -path "*/M5/*.csv.gz" -o -path "*/M15/*.csv.gz" -o -path "*/H1/*.csv.gz" \) -print0)
           python tools/validate_fx_bar_artifacts.py \
             $args \
             --output data/raw/dukascopy_bi5_${PILOT_TAG}_combined/validation_summary.json
