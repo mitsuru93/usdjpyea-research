@@ -1,0 +1,111 @@
+name: Run Public FX Data Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: "Space-separated symbols"
+        required: true
+        default: "EURUSD USDJPY"
+      start:
+        description: "UTC start hour/date, inclusive"
+        required: true
+        default: "2024-01-02T00"
+      end:
+        description: "UTC end hour/date, exclusive"
+        required: true
+        default: "2024-01-03T00"
+      timeframes:
+        description: "Space-separated output timeframes"
+        required: true
+        default: "M1 M5 M15 H1"
+      output_tag:
+        description: "Short tag for artifact names"
+        required: false
+        default: "smoke"
+
+jobs:
+  public-fx-data-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas pyyaml
+
+      - name: Compile tools
+        run: |
+          python -m py_compile \
+            tools/download_dukascopy_bi5_ticks.py \
+            tools/resample_fx_ticks.py \
+            tools/resample_from_download_manifest.py \
+            tools/build_market_profile.py
+
+      - name: Download public tick data
+        run: |
+          mkdir -p data/raw/dukascopy_bi5_${{ inputs.output_tag }}
+          python tools/download_dukascopy_bi5_ticks.py \
+            --symbols ${{ inputs.symbols }} \
+            --start "${{ inputs.start }}" \
+            --end "${{ inputs.end }}" \
+            --output-root data/raw/dukascopy_bi5_${{ inputs.output_tag }} \
+            --manifest-out data/raw/dukascopy_bi5_${{ inputs.output_tag }}/download_manifest.jsonl
+
+      - name: Resample downloaded ticks
+        run: |
+          python tools/resample_from_download_manifest.py \
+            --manifest data/raw/dukascopy_bi5_${{ inputs.output_tag }}/download_manifest.jsonl \
+            --output-dir data/processed/dukascopy_bi5_${{ inputs.output_tag }}_bars \
+            --timeframes ${{ inputs.timeframes }}
+
+      - name: Build M1 market profile
+        run: |
+          inputs=""
+          for f in data/processed/dukascopy_bi5_${{ inputs.output_tag }}_bars/M1/*.csv.gz; do
+            inputs="$inputs --input $f"
+          done
+          python tools/build_market_profile.py \
+            $inputs \
+            --output-dir data/profiles/dukascopy_bi5_${{ inputs.output_tag }}_market_profile
+
+      - name: Write summary
+        if: always()
+        run: |
+          echo "# Public FX Data Smoke" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "symbols: ${{ inputs.symbols }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "start: ${{ inputs.start }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "end: ${{ inputs.end }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "timeframes: ${{ inputs.timeframes }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Download manifest sample" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          head -20 data/raw/dukascopy_bi5_${{ inputs.output_tag }}/download_manifest.jsonl >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Market profile overall" >> "$GITHUB_STEP_SUMMARY"
+          echo '```csv' >> "$GITHUB_STEP_SUMMARY"
+          cat data/profiles/dukascopy_bi5_${{ inputs.output_tag }}_market_profile/market_profile_overall.csv >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-fx-data-${{ inputs.output_tag }}-${{ github.run_id }}
+          path: |
+            data/raw/dukascopy_bi5_${{ inputs.output_tag }}/download_manifest.jsonl
+            data/processed/dukascopy_bi5_${{ inputs.output_tag }}_bars/**/*.csv.gz
+            data/processed/dukascopy_bi5_${{ inputs.output_tag }}_bars/resample_manifest.jsonl
+            data/profiles/dukascopy_bi5_${{ inputs.output_tag }}_market_profile/*.csv
+          if-no-files-found: warn
+          retention-days: 7
