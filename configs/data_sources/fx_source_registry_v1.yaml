@@ -1,0 +1,154 @@
+# FX research public data source registry v1
+# Purpose: restart MT4/FX research from market-source selection, not from the legacy USDJPY-only asset base.
+# Collected on: 2026-07-10 JST
+# Storage rule: keep raw bulk historical data out of git; store deterministic source metadata, downloader specs,
+# checksums after download, and normalized derived outputs/artifacts.
+
+schema_version: fx_source_registry_v1
+collected_at_jst: "2026-07-10"
+research_scope:
+  execution_environment: rakuten_mt4
+  initial_market_universe:
+    - EURUSD
+    - USDJPY
+    - GBPUSD
+    - AUDUSD
+    - USDCAD
+    - USDCHF
+  initial_timeframes:
+    - M1
+    - M5
+    - M15
+  primary_goal: "Long-run cost-adjusted positive expectancy with robustness across months/sessions/regimes."
+  explicit_non_goal: "Do not choose symbols only because existing USDJPY assets are available."
+
+sources:
+  dukascopy_historical_data_export:
+    type: public_historical_market_data
+    priority: primary_public_tick_bid_ask_source
+    official_url: "https://www.dukascopy.com/swiss/english/marketwatch/historical/"
+    evidence:
+      page_title: "Forex Historical Data Export:: Dukascopy Bank SA"
+      page_contains_navigation_to:
+        - Historical Data Export
+        - Average Spreads
+        - FX Market Hours
+    intended_use:
+      - bid_ask_tick_or_bar_source_for_research
+      - spread_proxy_when_rakuten_tick_spread_is_not_available
+      - M1_M5_M15_resampling
+    limitations:
+      - "Not Rakuten Securities MT4 quotes. Use as market proxy only."
+      - "Downloader and checksum capture still required before a dataset_id can be promoted."
+
+  histdata_free_forex_data:
+    type: public_historical_market_data
+    priority: secondary_crosscheck_source
+    official_url: "https://www.histdata.com/download-free-forex-data/"
+    evidence:
+      page_title: "Download Free Forex Data – HistData.com"
+      platform_formats:
+        metatrader_4_5: "M1 only"
+        generic_ascii: "M1 and tick data"
+        ninjatrader: "M1, 1-second last quote, 1-second bid quote, 1-second ask quote"
+      observed_last_updated: "2026-06-28 22:55:26"
+    intended_use:
+      - public_M1_crosscheck
+      - bid_ask_1s_crosscheck_if_downloadable
+      - data_vendor_sensitivity_test
+    limitations:
+      - "Free web download flow may not be stable enough for unattended CI."
+      - "Bid/ask availability differs by platform format; source-specific parser required."
+      - "Not Rakuten Securities MT4 quotes. Use as proxy/crosscheck only."
+
+  rakuten_mt4_official_pages:
+    type: broker_execution_environment
+    priority: broker_constraint_source
+    official_pages:
+      mt4_top: "https://www.rakuten-sec.co.jp/web/fx/mt4/"
+      rule: "https://www.rakuten-sec.co.jp/web/fx/mt4/rule.html"
+      session: "https://www.rakuten-sec.co.jp/web/fx/mt4/session.html"
+      commission_spread: "https://www.rakuten-sec.co.jp/web/fx/mt4/commission.html"
+      spread_performance_pdf: "https://www.rakuten-sec.co.jp/web/company/disclosure/pdf/fx_spread.pdf"
+    intended_use:
+      - broker_static_spread_and_rule_snapshot
+      - cost_model_calibration_floor
+      - MT4_time_session_mapping
+      - maintenance_window_filter
+    limitations:
+      - "Published advertisement spreads and spread-presentation ratios are not tick-level historical spreads."
+      - "Rakuten states spreads can widen and advertisement values are not guaranteed execution spreads."
+      - "Final validation requires Rakuten MT4-side logging of live Bid/Ask/spread/order outcomes."
+
+normalized_dataset_contract:
+  preferred_granularity: tick_or_bid_ask_1s_to_M1
+  required_columns:
+    - timestamp_utc
+    - symbol
+    - bid_open
+    - bid_high
+    - bid_low
+    - bid_close
+    - ask_open
+    - ask_high
+    - ask_low
+    - ask_close
+    - mid_open
+    - mid_high
+    - mid_low
+    - mid_close
+    - spread_open_pips
+    - spread_high_pips
+    - spread_low_pips
+    - spread_close_pips
+    - spread_mean_pips
+    - source
+    - source_build_id
+  fallback_mid_ohlc_columns:
+    - timestamp_utc
+    - symbol
+    - open
+    - high
+    - low
+    - close
+    - volume
+    - source
+    - source_build_id
+  derived_timeframes:
+    - M1
+    - M5
+    - M15
+    - H1
+
+cost_model_policy:
+  public_proxy:
+    source: dukascopy_or_histdata_bid_ask
+    role: research_screening
+  rakuten_advertised_spread:
+    source: rakuten_mt4_official_pages
+    role: minimum_cost_floor_not_execution_truth
+  stress_tests:
+    spread_multipliers:
+      - 1.0
+      - 1.5
+      - 2.0
+      - 3.0
+    slippage_pips_per_side:
+      - 0.0
+      - 0.1
+      - 0.3
+      - 0.5
+      - 1.0
+  mandatory_bad_liquidity_windows:
+    - rakuten_daily_maintenance
+    - weekday_early_morning_spread_widening
+    - major_economic_release_window
+    - holiday_year_end_thin_liquidity
+    - unscheduled_shock_window
+
+next_actions:
+  - "Implement source-specific downloader/resampler outside MT4."
+  - "Download EURUSD/USDJPY/GBPUSD/AUDUSD/USDCAD/USDCHF public historical data."
+  - "Write checksums and dataset ids after download."
+  - "Run market profile before strategy optimization."
+  - "Start Rakuten MT4 live spread/logger in parallel, but do not block public-data research on it."
