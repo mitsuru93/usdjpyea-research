@@ -1,6 +1,6 @@
 # Rakuten MT4 broker/execution snapshot
 # Collected on: 2026-07-10 JST
-# Source: Rakuten Securities official MT4 pages and spread performance PDF.
+# Source: Rakuten Securities official MT4 pages, spread performance PDF, and user-confirmed current-account observation.
 # This is a research input, not a guarantee of execution conditions.
 
 schema_version: rakuten_mt4_snapshot_v1
@@ -57,12 +57,12 @@ spread_advertisement_snapshot:
   note: "The official spread page states spreads vary with market conditions."
   initial_universe_advertised_spreads_pips:
     EURUSD: 0.6
-    USDJPY: null
+    USDJPY: 0.5
     GBPUSD: 1.2
     AUDUSD: 1.2
     USDCAD: 2.0
     USDCHF: 1.6
-  usd_jpy_note: "The 2026-07-06 Rakuten MT4 spread page shows USD/JPY as '—' in the parsed table; do not infer a current standard spread from legacy assumptions."
+  usd_jpy_note: "User confirmed current Rakuten MT4 account spread is 0.5 pips on 2026-07-10. Treat as base cost floor only, not guaranteed execution truth."
   other_pairs_from_page:
     EURJPY: 1.1
     GBPJPY: 2.0
@@ -119,11 +119,11 @@ spread_performance_snapshot:
       max_spread_pips: 33.5
       distribution_stop_seconds: 311.2
     USDJPY:
-      advertised_spread_pips: null
+      advertised_spread_pips: 0.5
       presentation_ratio_pct: null
       max_spread_pips: null
       distribution_stop_seconds: null
-      note: "USDJPY appears in separate campaign/time-split PDF pages; requires explicit extraction before using in cost model."
+      note: "Base spread supplied by user account observation; explicit PDF row extraction still required before using presentation ratio/max spread."
 
 spread_risk_notes:
   official_caveat: "Advertised spreads are not guaranteed; actual effective spread may differ from the advertisement."
