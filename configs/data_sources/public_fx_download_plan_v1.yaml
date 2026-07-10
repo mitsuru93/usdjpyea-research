@@ -1,0 +1,42 @@
+# Public FX download plan v1
+# This is a manifest template. Fill source URLs only after confirming the data vendor's current download endpoint and terms.
+schema_version: public_fx_download_plan_v1
+created_at_jst: "2026-07-10"
+execution_environment: rakuten_mt4
+primary_research_sources:
+  - dukascopy_historical_data_export
+  - histdata_free_forex_data
+symbols:
+  - EURUSD
+  - USDJPY
+  - GBPUSD
+  - AUDUSD
+  - USDCAD
+  - USDCHF
+timeframes:
+  raw_preferred: tick_or_1s_bid_ask
+  normalized: M1
+  derived:
+    - M5
+    - M15
+    - H1
+period_target:
+  preferred_start: "2018-01-01"
+  minimum_start: "2020-01-01"
+  end: "latest_available"
+cost_model:
+  rakuten_base_spread_pips:
+    EURUSD: 0.6
+    USDJPY: 0.5
+    GBPUSD: 1.2
+    AUDUSD: 1.2
+    USDCAD: 2.0
+    USDCHF: 1.6
+  spread_multipliers: [1.0, 1.5, 2.0, 3.0]
+  slippage_pips_per_side: [0.0, 0.1, 0.3, 0.5, 1.0]
+outputs:
+  raw_download_root: data/raw_public_fx
+  normalized_root: data/normalized_public_fx
+  profile_root: output/market_profile_v1
+  storage_policy: "Do not commit raw bulk data to git. Use release assets or workflow artifacts, then register checksum-pinned dataset IDs."
+downloads: []
