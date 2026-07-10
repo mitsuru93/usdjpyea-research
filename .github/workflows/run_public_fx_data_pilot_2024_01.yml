@@ -1,0 +1,135 @@
+name: Run Public FX Data Pilot 2024-01
+
+on:
+  workflow_dispatch:
+
+jobs:
+  public-fx-data-pilot-2024-01:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      SYMBOLS: "EURUSD USDJPY GBPUSD AUDUSD USDCAD USDCHF"
+      START: "2024-01-01T00"
+      END: "2024-02-01T00"
+      TIMEFRAMES: "M1 M5 M15 H1"
+      OUTPUT_TAG: "pilot-2024-01"
+      MIN_COVERAGE: "0.995"
+      MAX_HARD_ERRORS: "20"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas pyyaml
+
+      - name: Compile tools
+        run: |
+          python -m py_compile \
+            tools/download_dukascopy_bi5_ticks.py \
+            tools/summarize_download_manifest.py \
+            tools/resample_fx_ticks.py \
+            tools/resample_from_download_manifest.py \
+            tools/validate_fx_bar_artifacts.py \
+            tools/build_market_profile.py
+
+      - name: Download public tick data
+        run: |
+          mkdir -p data/raw/dukascopy_bi5_${OUTPUT_TAG}
+          python tools/download_dukascopy_bi5_ticks.py \
+            --symbols ${SYMBOLS} \
+            --start "${START}" \
+            --end "${END}" \
+            --output-root data/raw/dukascopy_bi5_${OUTPUT_TAG} \
+            --manifest-out data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
+            --max-errors ${MAX_HARD_ERRORS} \
+            --request-interval 0.25
+
+      - name: Summarize download coverage
+        run: |
+          python tools/summarize_download_manifest.py \
+            --manifest data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
+            --symbols ${SYMBOLS} \
+            --start "${START}" \
+            --end "${END}" \
+            --output data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_summary.json \
+            --min-coverage ${MIN_COVERAGE} \
+            --max-hard-errors ${MAX_HARD_ERRORS}
+
+      - name: Resample downloaded ticks
+        run: |
+          python tools/resample_from_download_manifest.py \
+            --manifest data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
+            --output-dir data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars \
+            --timeframes ${TIMEFRAMES}
+
+      - name: Validate resampled bars
+        run: |
+          args=""
+          for f in data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/*/*.csv.gz; do
+            args="$args --input $f"
+          done
+          python tools/validate_fx_bar_artifacts.py \
+            $args \
+            --output data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/validation_summary.json
+
+      - name: Build market profiles by timeframe
+        run: |
+          mkdir -p data/profiles/dukascopy_bi5_${OUTPUT_TAG}_market_profile
+          for tf in ${TIMEFRAMES}; do
+            args=""
+            for f in data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/${tf}/*.csv.gz; do
+              args="$args --input $f"
+            done
+            python tools/build_market_profile.py \
+              $args \
+              --output-dir data/profiles/dukascopy_bi5_${OUTPUT_TAG}_market_profile/${tf}
+          done
+
+      - name: Write summary
+        if: always()
+        run: |
+          echo "# Public FX Data Pilot 2024-01" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "symbols: ${SYMBOLS}" >> "$GITHUB_STEP_SUMMARY"
+          echo "start: ${START}" >> "$GITHUB_STEP_SUMMARY"
+          echo "end: ${END}" >> "$GITHUB_STEP_SUMMARY"
+          echo "timeframes: ${TIMEFRAMES}" >> "$GITHUB_STEP_SUMMARY"
+          echo "min coverage: ${MIN_COVERAGE}" >> "$GITHUB_STEP_SUMMARY"
+          echo "max hard errors: ${MAX_HARD_ERRORS}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Download summary" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_summary.json >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Validation summary" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/validation_summary.json >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## M5 Market profile overall" >> "$GITHUB_STEP_SUMMARY"
+          echo '```csv' >> "$GITHUB_STEP_SUMMARY"
+          cat data/profiles/dukascopy_bi5_${OUTPUT_TAG}_market_profile/M5/market_profile_overall.csv >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload pilot artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-fx-data-${{ env.OUTPUT_TAG }}-${{ github.run_id }}
+          path: |
+            data/raw/dukascopy_bi5_${{ env.OUTPUT_TAG }}/download_manifest.jsonl
+            data/raw/dukascopy_bi5_${{ env.OUTPUT_TAG }}/download_summary.json
+            data/processed/dukascopy_bi5_${{ env.OUTPUT_TAG }}_bars/**/*.csv.gz
+            data/processed/dukascopy_bi5_${{ env.OUTPUT_TAG }}_bars/resample_manifest.jsonl
+            data/processed/dukascopy_bi5_${{ env.OUTPUT_TAG }}_bars/validation_summary.json
+            data/profiles/dukascopy_bi5_${{ env.OUTPUT_TAG }}_market_profile/**/*.csv
+          if-no-files-found: warn
+          retention-days: 14
