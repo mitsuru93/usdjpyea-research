@@ -1,0 +1,101 @@
+# Dukascopy BI5 public-data collection plan v1
+# Collected/created on: 2026-07-10 JST
+# Purpose: build a public bid/ask proxy dataset for zero-base FX strategy research.
+# This is not Rakuten MT4 data. Treat it as market-structure research input only.
+
+schema_version: dukascopy_bi5_plan_v1
+created_at_jst: "2026-07-10"
+source:
+  source_id: dukascopy_bi5
+  source_role: primary_public_bid_ask_proxy
+  historical_data_export_page: "https://www.dukascopy.com/swiss/english/marketwatch/historical/"
+  datafeed_base_pattern: "https://datafeed.dukascopy.com/datafeed/{symbol}/{year}/{month_zero_based}/{day}/{hour}h_ticks.bi5"
+  caveats:
+    - "Dukascopy quotes are not Rakuten MT4 quotes."
+    - "Use for market profile, regime discovery, and public-data screening."
+    - "Final acceptance requires Rakuten MT4 forward logs."
+
+initial_universe:
+  symbols:
+    - EURUSD
+    - USDJPY
+    - GBPUSD
+    - AUDUSD
+    - USDCAD
+    - USDCHF
+  preferred_timeframes:
+    - M1
+    - M5
+    - M15
+    - H1
+
+collection_windows:
+  smoke_test:
+    start_utc: "2024-01-02T00:00:00Z"
+    end_utc: "2024-01-03T00:00:00Z"
+    symbols:
+      - EURUSD
+      - USDJPY
+  pilot_month:
+    start_utc: "2024-01-01T00:00:00Z"
+    end_utc: "2024-02-01T00:00:00Z"
+    symbols:
+      - EURUSD
+      - USDJPY
+      - GBPUSD
+      - AUDUSD
+      - USDCAD
+      - USDCHF
+  first_full_research_window:
+    start_utc: "2018-01-01T00:00:00Z"
+    end_utc: "2026-01-01T00:00:00Z"
+    symbols:
+      - EURUSD
+      - USDJPY
+      - GBPUSD
+      - AUDUSD
+      - USDCAD
+      - USDCHF
+
+pip_scales:
+  EURUSD: 100000
+  GBPUSD: 100000
+  AUDUSD: 100000
+  USDCAD: 100000
+  USDCHF: 100000
+  USDJPY: 1000
+
+pipeline:
+  step_1_download_ticks:
+    command_template: >-
+      python tools/download_dukascopy_bi5_ticks.py
+      --symbols EURUSD USDJPY GBPUSD AUDUSD USDCAD USDCHF
+      --start 2024-01-01T00
+      --end 2024-02-01T00
+      --output-root data/raw/dukascopy_bi5
+      --manifest-out data/raw/dukascopy_bi5/download_manifest.jsonl
+  step_2_resample:
+    command_template: >-
+      python tools/resample_fx_ticks.py
+      --input <repeat hourly csv.gz paths>
+      --output-dir data/processed/dukascopy_bi5_bars
+      --timeframes M1 M5 M15 H1
+  step_3_market_profile:
+    command_template: >-
+      python tools/build_market_profile.py
+      --input <repeat normalized/resampled csv.gz paths>
+      --output-dir data/profiles/dukascopy_bi5_market_profile
+  step_4_register_dataset:
+    rule: "Register dataset IDs in configs/datasets/dataset_registry.yaml only after checksums are known."
+
+storage_policy:
+  raw_bulk_data: "Do not commit to git. Store as workflow artifacts or GitHub Release assets."
+  processed_bulk_data: "Do not commit to git unless tiny smoke sample. Store checksum and deterministic source metadata."
+  manifests: "Commit small manifests/configs only."
+  smoke_samples: "Small samples may be committed only for tests."
+
+acceptance_gate_before_strategy_research:
+  - "At least smoke_test download/resample must run without schema errors."
+  - "Market profile must report spread/range distribution by symbol and hour."
+  - "USDJPY cost model must include 0.5 pips base spread plus x1.5/x2.0/x3.0 stress."
+  - "Do not optimize trading rules before market profile exists."
