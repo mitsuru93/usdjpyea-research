@@ -112,6 +112,13 @@ def retry_delay(attempt: int, base_seconds: float, retry_after: str | None = Non
 
 
 def fetch_bytes(url: str, retries: int, sleep_seconds: float) -> bytes | None:
+    """Fetch one BI5 payload.
+
+    Return values:
+    - bytes with content: normal BI5 payload
+    - b"": valid HTTP response with no ticks for that hour, often market-closed time
+    - None: source explicitly returned 404
+    """
     last_error: Exception | None = None
     for attempt in range(retries + 1):
         try:
@@ -126,7 +133,7 @@ def fetch_bytes(url: str, retries: int, sleep_seconds: float) -> bytes | None:
             with urllib.request.urlopen(req, timeout=90) as response:
                 payload = response.read()
                 if not payload:
-                    raise RuntimeError(f"empty response payload: {url}")
+                    return b""
                 return payload
         except urllib.error.HTTPError as exc:
             if exc.code == 404:
@@ -141,7 +148,7 @@ def fetch_bytes(url: str, retries: int, sleep_seconds: float) -> bytes | None:
                 f"sleep={delay:.2f}s url={url}",
                 file=sys.stderr,
             )
-        except (urllib.error.URLError, TimeoutError, ConnectionError, RuntimeError) as exc:
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as exc:
             last_error = exc
             delay = retry_delay(attempt, sleep_seconds)
             print(
@@ -208,6 +215,17 @@ def download_hour(spec: HourSpec, output_root: Path, overwrite: bool, retries: i
             "sha256": None,
             "bytes": 0,
         }
+    if payload == b"":
+        return {
+            "symbol": spec.symbol,
+            "hour_start_utc": spec.hour_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "url": spec.url,
+            "path": str(output_path),
+            "status": "no_ticks",
+            "rows": 0,
+            "sha256": None,
+            "bytes": 0,
+        }
     rows = decode_bi5(payload, symbol=spec.symbol, hour_start=spec.hour_start)
     write_ticks(output_path, rows, symbol=spec.symbol)
     return {
@@ -230,9 +248,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-root", required=True, help="Root directory for raw tick CSV.GZ outputs.")
     parser.add_argument("--manifest-out", default=None, help="JSONL manifest output path. Default: <output-root>/dukascopy_download_manifest.jsonl")
     parser.add_argument("--overwrite", action="store_true", help="Re-download existing hourly files.")
-    parser.add_argument("--retries", type=int, default=6, help="Retries for transient network/HTTP failures.")
+    parser.add_argument("--retries", type=int, default=3, help="Retries for transient network/HTTP failures.")
     parser.add_argument("--sleep-seconds", type=float, default=1.0, help="Base delay for exponential retry backoff.")
-    parser.add_argument("--request-interval", type=float, default=0.25, help="Minimum pause between hourly requests.")
+    parser.add_argument("--request-interval", type=float, default=0.05, help="Minimum pause between hourly requests.")
     parser.add_argument("--max-errors", type=int, default=0, help="Maximum terminal request/decode errors allowed before failing after manifest write.")
     return parser.parse_args()
 
