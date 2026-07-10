@@ -57,6 +57,9 @@ def load_ticks(paths: list[str]) -> pd.DataFrame:
     df = df.dropna(subset=["timestamp_utc", "symbol", "bid", "ask"])
     if df.empty:
         raise ValueError("no valid ticks after parsing")
+    invalid = df["ask"] < df["bid"]
+    if invalid.any():
+        raise ValueError(f"negative-spread ticks detected: {int(invalid.sum())}")
     return df.sort_values(["symbol", "timestamp_utc"])
 
 
@@ -66,22 +69,41 @@ def resample_symbol(df: pd.DataFrame, timeframe: str) -> pd.DataFrame:
     if pip is None:
         raise ValueError(f"unsupported symbol: {symbol}")
     rule = TIMEFRAME_RULES[timeframe]
-    indexed = df.set_index("timestamp_utc")
+    indexed = df.set_index("timestamp_utc").copy()
+    indexed["spread_pips"] = (indexed["ask"] - indexed["bid"]) / pip
+
     bid_ohlc = indexed["bid"].resample(rule, label="left", closed="left").ohlc()
     ask_ohlc = indexed["ask"].resample(rule, label="left", closed="left").ohlc()
     tick_count = indexed["bid"].resample(rule, label="left", closed="left").count().rename("tick_count")
+    spread = indexed["spread_pips"].resample(rule, label="left", closed="left").agg(
+        spread_open_pips="first",
+        spread_high_pips="max",
+        spread_low_pips="min",
+        spread_close_pips="last",
+        spread_mean_pips="mean",
+    )
+
     bars = pd.concat({"bid": bid_ohlc, "ask": ask_ohlc}, axis=1)
     bars.columns = [f"{side}_{field}" for side, field in bars.columns]
-    bars = bars.join(tick_count)
-    bars = bars.dropna(subset=["bid_open", "ask_open", "bid_close", "ask_close"])
-    bars = bars.reset_index().rename(columns={"timestamp_utc": "timestamp_utc"})
+    bars = bars.join(tick_count).join(spread)
+    bars = bars.dropna(subset=["bid_open", "ask_open", "bid_close", "ask_close", "spread_mean_pips"])
+    bars = bars.reset_index()
     bars.insert(1, "symbol", symbol)
+
     for field in ("open", "high", "low", "close"):
         bars[f"mid_{field}"] = (bars[f"bid_{field}"] + bars[f"ask_{field}"]) / 2.0
-        bars[f"spread_{field}_pips"] = (bars[f"ask_{field}"] - bars[f"bid_{field}"]) / pip
-    bars["spread_mean_pips"] = bars[["spread_open_pips", "spread_high_pips", "spread_low_pips", "spread_close_pips"]].mean(axis=1)
+
+    spread_bad = (
+        (bars["spread_low_pips"] < 0)
+        | (bars["spread_high_pips"] < bars["spread_low_pips"])
+        | (bars["spread_mean_pips"] < bars["spread_low_pips"] - 1e-12)
+        | (bars["spread_mean_pips"] > bars["spread_high_pips"] + 1e-12)
+    )
+    if spread_bad.any():
+        raise ValueError(f"invalid spread aggregates detected: {int(spread_bad.sum())}")
+
     bars["source"] = "dukascopy_bi5"
-    bars["source_build_id"] = f"dukascopy_bi5_{symbol}_{timeframe}"
+    bars["source_build_id"] = f"dukascopy_bi5_{symbol}_{timeframe}_spread_v2"
     bars["timestamp_utc"] = bars["timestamp_utc"].dt.strftime("%Y-%m-%dT%H:%M:%SZ")
     return bars
 
@@ -90,7 +112,13 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Resample tick CSV.GZ files into bid/ask OHLC bars.")
     parser.add_argument("--input", action="append", required=True, help="Tick CSV or CSV.GZ path. Repeatable.")
     parser.add_argument("--output-dir", required=True, help="Output directory for bars.")
-    parser.add_argument("--timeframes", nargs="+", default=["M1", "M5", "M15"], choices=sorted(TIMEFRAME_RULES), help="Derived timeframes.")
+    parser.add_argument(
+        "--timeframes",
+        nargs="+",
+        default=["M1", "M5", "M15"],
+        choices=sorted(TIMEFRAME_RULES),
+        help="Derived timeframes.",
+    )
     return parser.parse_args()
 
 
@@ -112,11 +140,15 @@ def main() -> None:
                 "rows": int(len(bars)),
                 "output": str(out_path),
                 "sha256": sha256_file(out_path),
+                "source_build_id": str(bars["source_build_id"].iloc[0]) if not bars.empty else None,
             }
             records.append(record)
             print(json.dumps(record, ensure_ascii=False, sort_keys=True))
     manifest = output_dir / "resample_manifest.jsonl"
-    manifest.write_text("\n".join(json.dumps(r, ensure_ascii=False, sort_keys=True) for r in records) + "\n", encoding="utf-8")
+    manifest.write_text(
+        "\n".join(json.dumps(r, ensure_ascii=False, sort_keys=True) for r in records) + "\n",
+        encoding="utf-8",
+    )
     print(f"wrote manifest: {manifest}")
 
 
