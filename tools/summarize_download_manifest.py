@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 SUCCESS_STATUSES = {"downloaded", "exists"}
-SOFT_MISSING_STATUSES = {"missing_404"}
+SOFT_MISSING_STATUSES = {"missing_404", "no_ticks"}
 ERROR_STATUSES = {"error"}
 
 
@@ -74,14 +74,18 @@ def summarize(records: list[dict[str, Any]], expected: int) -> dict[str, Any]:
     hard_errors = sum(status_counts[s] for s in ERROR_STATUSES)
     soft_missing = sum(status_counts[s] for s in SOFT_MISSING_STATUSES)
     observed = len(records)
-    coverage = successful / expected if expected else 0.0
+    effective_expected = max(expected - soft_missing, 0)
+    calendar_coverage = successful / expected if expected else 0.0
+    effective_coverage = successful / effective_expected if effective_expected else 0.0
     return {
         "expected_records": expected,
         "observed_records": observed,
         "successful_records": successful,
         "soft_missing_records": soft_missing,
         "hard_error_records": hard_errors,
-        "coverage": coverage,
+        "calendar_coverage": calendar_coverage,
+        "effective_expected_records": effective_expected,
+        "effective_coverage": effective_coverage,
         "status_counts": dict(sorted(status_counts.items())),
         "by_symbol": {k: dict(sorted(v.items())) for k, v in sorted(by_symbol.items())},
         "error_examples": error_examples,
@@ -95,7 +99,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--start", required=True, help="UTC start hour/date, inclusive.")
     parser.add_argument("--end", required=True, help="UTC end hour/date, exclusive.")
     parser.add_argument("--output", required=True, help="Output JSON path.")
-    parser.add_argument("--min-coverage", type=float, default=1.0, help="Minimum successful/expected coverage.")
+    parser.add_argument("--min-coverage", type=float, default=1.0, help="Minimum successful/effective-expected coverage after excluding no-tick or explicit missing hours.")
     parser.add_argument("--max-hard-errors", type=int, default=0, help="Maximum terminal error records allowed.")
     return parser.parse_args()
 
@@ -111,8 +115,8 @@ def main() -> None:
     output.write_text(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, sort_keys=True))
     failures: list[str] = []
-    if summary["coverage"] < args.min_coverage:
-        failures.append(f"coverage {summary['coverage']:.6f} < min {args.min_coverage:.6f}")
+    if summary["effective_coverage"] < args.min_coverage:
+        failures.append(f"effective coverage {summary['effective_coverage']:.6f} < min {args.min_coverage:.6f}")
     if summary["hard_error_records"] > args.max_hard_errors:
         failures.append(f"hard errors {summary['hard_error_records']} > max {args.max_hard_errors}")
     if failures:
