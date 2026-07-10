@@ -59,7 +59,8 @@ jobs:
             --start "${{ inputs.start }}" \
             --end "${{ inputs.end }}" \
             --output-root data/raw/dukascopy_bi5_${{ inputs.output_tag }} \
-            --manifest-out data/raw/dukascopy_bi5_${{ inputs.output_tag }}/download_manifest.jsonl
+            --manifest-out data/raw/dukascopy_bi5_${{ inputs.output_tag }}/download_manifest.jsonl \
+            --max-errors 1
 
       - name: Resample downloaded ticks
         run: |
@@ -98,9 +99,18 @@ jobs:
           echo "end: ${{ inputs.end }}" >> "$GITHUB_STEP_SUMMARY"
           echo "timeframes: ${{ inputs.timeframes }}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "## Download manifest sample" >> "$GITHUB_STEP_SUMMARY"
-          echo '```json' >> "$GITHUB_STEP_SUMMARY"
-          head -20 data/raw/dukascopy_bi5_${{ inputs.output_tag }}/download_manifest.jsonl >> "$GITHUB_STEP_SUMMARY" || true
+          echo "## Download status counts" >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY" || true
+          import json
+          from collections import Counter
+          from pathlib import Path
+          p = Path("data/raw/dukascopy_bi5_${{ inputs.output_tag }}/download_manifest.jsonl")
+          if p.exists():
+              rows = [json.loads(line) for line in p.read_text().splitlines() if line.strip()]
+              print(dict(Counter(r.get("status") for r in rows)))
+              print(f"coverage={(sum(r.get('status') in {'downloaded','exists'} for r in rows)/len(rows)):.4%}")
+          PY
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "## Validation summary" >> "$GITHUB_STEP_SUMMARY"
