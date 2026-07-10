@@ -1,0 +1,139 @@
+# Rakuten MT4 broker/execution snapshot
+# Collected on: 2026-07-10 JST
+# Source: Rakuten Securities official MT4 pages and spread performance PDF.
+# This is a research input, not a guarantee of execution conditions.
+
+schema_version: rakuten_mt4_snapshot_v1
+collected_at_jst: "2026-07-10"
+broker: Rakuten Securities
+execution_environment: Rakuten MT4
+official_sources:
+  mt4_top: "https://www.rakuten-sec.co.jp/web/fx/mt4/"
+  mt4_rule: "https://www.rakuten-sec.co.jp/web/fx/mt4/rule.html"
+  mt4_session: "https://www.rakuten-sec.co.jp/web/fx/mt4/session.html"
+  mt4_commission_spread: "https://www.rakuten-sec.co.jp/web/fx/mt4/commission.html"
+  spread_performance_pdf: "https://www.rakuten-sec.co.jp/web/company/disclosure/pdf/fx_spread.pdf"
+
+platform_notes:
+  server_location_claim: "Rakuten says it provides a domestic Japan trading server environment for Rakuten MT4."
+  ea_support_boundary: "Rakuten notes EA programming/EA guide support is outside customer-support scope."
+  mt4_display_time:
+    jst_relation: "JST = MT4 display time + 7 hours; +6 hours during summer time."
+    implication: "Research timestamps must preserve UTC/JST/MT4-server mappings explicitly."
+
+trading_rules:
+  tradable_fx_pairs_count: 24
+  fee: free
+  minimum_trade_unit: "1,000 units for listed pairs; MT4 lot input 0.01 = 1,000 units and 1.00 = 100,000 units."
+  max_single_order_size: "2,000,000 currency units"
+  max_total_position_and_orders: "JPY 10,000,000,000 equivalent"
+  spread_type: realtime_two_way_price
+  min_rate_increment:
+    jpy_quote_pair: "1 point = 0.001 JPY"
+    non_jpy_quote_pair: "1 point = 0.00001"
+  order_types:
+    - market_order_open_close
+    - streaming_two_way_price_order
+    - limit_order_open_close
+    - stop_order_open_close
+    - if_done
+    - if_oco
+    - one_click_order
+    - trailing_stop
+  order_execution_caveat: "During sudden market moves or order concentration, orders can fail/expire if Rakuten cannot fill beyond executable quantity."
+  hedging_allowed: true
+  settlement_position_specification_allowed: true
+
+trading_hours:
+  general: "Principally 24 hours"
+  summer_time_shift: "Trading end time is moved one hour earlier during summer time."
+  daily_maintenance_jst:
+    standard_time: "06:55-07:10"
+    summer_time: "05:55-06:10"
+  weekend_caveat: "No new input/cancel/modify during non-FX trading hours such as weekends."
+
+spread_advertisement_snapshot:
+  source_page_ad_publication_date: "2026-07-06"
+  note: "The official spread page states spreads vary with market conditions."
+  initial_universe_advertised_spreads_pips:
+    EURUSD: 0.6
+    USDJPY: null
+    GBPUSD: 1.2
+    AUDUSD: 1.2
+    USDCAD: 2.0
+    USDCHF: 1.6
+  usd_jpy_note: "The 2026-07-06 Rakuten MT4 spread page shows USD/JPY as '—' in the parsed table; do not infer a current standard spread from legacy assumptions."
+  other_pairs_from_page:
+    EURJPY: 1.1
+    GBPJPY: 2.0
+    AUDJPY: 1.2
+    MXNJPY: 0.7
+    NZDJPY: 2.8
+    ZARJPY: 1.2
+    CADJPY: 2.0
+    CHFJPY: 2.8
+    TRYJPY: 2.8
+    NZDUSD: 2.0
+    GBPCHF: 3.6
+    EURGBP: 1.0
+    EURCHF: 1.6
+    AUDCHF: 2.4
+    NZDCHF: 2.8
+    AUDNZD: 2.8
+    EURAUD: 1.5
+    GBPAUD: 1.6
+
+spread_performance_snapshot:
+  source: spread_performance_pdf
+  publication_date: "2026-07-10"
+  target_period: "2026-06-08 to 2026-07-03"
+  target_section: "Rakuten MT4 customer tradable time"
+  definitions:
+    spread_presentation_ratio: "Time share where actual customer-presented spread was at or below the advertised spread."
+    max_spread: "Maximum actual customer-presented spread during the period."
+    distribution_stop_time: "Total time quote presentation or execution was stopped; <0.1 sec truncated."
+  initial_universe_mt4_rows:
+    EURUSD:
+      advertised_spread_pips: 0.6
+      presentation_ratio_pct: 96.15
+      max_spread_pips: 10.2
+      distribution_stop_seconds: 0.0
+    GBPUSD:
+      advertised_spread_pips: 1.2
+      presentation_ratio_pct: 96.20
+      max_spread_pips: 13.7
+      distribution_stop_seconds: 15.9
+    AUDUSD:
+      advertised_spread_pips: 1.2
+      presentation_ratio_pct: 96.21
+      max_spread_pips: 7.7
+      distribution_stop_seconds: 37.7
+    USDCHF:
+      advertised_spread_pips: 1.6
+      presentation_ratio_pct: 96.21
+      max_spread_pips: 25.0
+      distribution_stop_seconds: 0.0
+    USDCAD:
+      advertised_spread_pips: 2.0
+      presentation_ratio_pct: 96.22
+      max_spread_pips: 33.5
+      distribution_stop_seconds: 311.2
+    USDJPY:
+      advertised_spread_pips: null
+      presentation_ratio_pct: null
+      max_spread_pips: null
+      distribution_stop_seconds: null
+      note: "USDJPY appears in separate campaign/time-split PDF pages; requires explicit extraction before using in cost model."
+
+spread_risk_notes:
+  official_caveat: "Advertised spreads are not guaranteed; actual effective spread may differ from the advertisement."
+  widening_conditions_from_rakuten:
+    - "Weekday early morning around 06:30-07:30 JST; one hour earlier during summer time"
+    - "Domestic/foreign market holidays such as overseas Christmas or year-end/new-year"
+    - "Before and after major economic indicators"
+    - "Natural disasters, political changes, major financial/economic events, or other shocks"
+  research_implication:
+    - "Do not use advertised spread alone for final acceptance."
+    - "Reject strategies whose expectancy disappears under spread x1.5/x2.0 stress."
+    - "Add bad-liquidity no-trade windows before MT4 implementation."
+    - "Collect Rakuten MT4 live Bid/Ask/order-outcome logs for final calibration."
