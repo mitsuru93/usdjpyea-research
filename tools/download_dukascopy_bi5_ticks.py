@@ -50,6 +50,7 @@ PIP_SCALE = {
 BASE_URL = "https://datafeed.dukascopy.com/datafeed/{symbol}/{year}/{month_zero_based:02d}/{day:02d}/{hour:02d}h_ticks.bi5"
 RECORD_STRUCT = struct.Struct(">IIIff")
 RETRYABLE_HTTP_CODES = {408, 425, 429, 500, 502, 503, 504}
+SUCCESS_STATUSES = {"downloaded", "exists", "missing_404", "no_ticks", "market_closed"}
 
 
 @dataclass(frozen=True)
@@ -70,6 +71,10 @@ class HourSpec:
     @property
     def output_relpath(self) -> Path:
         return Path(self.symbol) / f"{self.hour_start:%Y/%m/%d/%H}.csv.gz"
+
+    @property
+    def key(self) -> tuple[str, str]:
+        return (self.symbol, self.hour_start.strftime("%Y-%m-%dT%H:%M:%SZ"))
 
 
 def iter_hours(start: dt.datetime, end: dt.datetime, symbols: list[str]) -> Iterable[HourSpec]:
@@ -197,59 +202,84 @@ def download_hour(
     retries: int,
     sleep_seconds: float,
     request_timeout: float,
+    pass_name: str,
 ) -> dict[str, object]:
     output_path = output_root / spec.output_relpath
+    base_record: dict[str, object] = {
+        "symbol": spec.symbol,
+        "hour_start_utc": spec.hour_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "url": spec.url,
+        "path": str(output_path),
+        "attempt_pass": pass_name,
+    }
     if output_path.exists() and not overwrite:
         return {
-            "symbol": spec.symbol,
-            "hour_start_utc": spec.hour_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "url": spec.url,
-            "path": str(output_path),
+            **base_record,
             "status": "exists",
             "rows": None,
             "sha256": sha256_file(output_path),
             "bytes": output_path.stat().st_size,
         }
-    payload = fetch_bytes(
-        spec.url,
-        retries=retries,
-        sleep_seconds=sleep_seconds,
-        request_timeout=request_timeout,
-    )
+    payload = fetch_bytes(spec.url, retries=retries, sleep_seconds=sleep_seconds, request_timeout=request_timeout)
     if payload is None:
-        return {
-            "symbol": spec.symbol,
-            "hour_start_utc": spec.hour_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "url": spec.url,
-            "path": str(output_path),
-            "status": "missing_404",
-            "rows": 0,
-            "sha256": None,
-            "bytes": 0,
-        }
+        return {**base_record, "status": "missing_404", "rows": 0, "sha256": None, "bytes": 0}
     if payload == b"":
-        return {
-            "symbol": spec.symbol,
-            "hour_start_utc": spec.hour_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "url": spec.url,
-            "path": str(output_path),
-            "status": "no_ticks",
-            "rows": 0,
-            "sha256": None,
-            "bytes": 0,
-        }
+        return {**base_record, "status": "no_ticks", "rows": 0, "sha256": None, "bytes": 0}
     rows = decode_bi5(payload, symbol=spec.symbol, hour_start=spec.hour_start)
     write_ticks(output_path, rows, symbol=spec.symbol)
     return {
-        "symbol": spec.symbol,
-        "hour_start_utc": spec.hour_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "url": spec.url,
-        "path": str(output_path),
+        **base_record,
         "status": "downloaded",
         "rows": len(rows),
         "sha256": sha256_file(output_path),
         "bytes": output_path.stat().st_size,
     }
+
+
+def write_record(manifest_fh, record: dict[str, object]) -> None:
+    line = json.dumps(record, ensure_ascii=False, sort_keys=True)
+    print(line)
+    manifest_fh.write(line + "\n")
+    manifest_fh.flush()
+
+
+def error_record(spec: HourSpec, output_root: Path, exc: Exception, pass_name: str) -> dict[str, object]:
+    return {
+        "symbol": spec.symbol,
+        "hour_start_utc": spec.hour_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "url": spec.url,
+        "path": str(output_root / spec.output_relpath),
+        "status": "error",
+        "rows": 0,
+        "sha256": None,
+        "bytes": 0,
+        "error_type": type(exc).__name__,
+        "error": str(exc),
+        "attempt_pass": pass_name,
+    }
+
+
+def try_spec(
+    spec: HourSpec,
+    output_root: Path,
+    overwrite: bool,
+    retries: int,
+    sleep_seconds: float,
+    request_timeout: float,
+    pass_name: str,
+) -> dict[str, object]:
+    try:
+        return download_hour(
+            spec,
+            output_root,
+            overwrite=overwrite,
+            retries=retries,
+            sleep_seconds=sleep_seconds,
+            request_timeout=request_timeout,
+            pass_name=pass_name,
+        )
+    except Exception as exc:  # continue so the manifest preserves the exact failure location
+        return error_record(spec, output_root, exc, pass_name)
 
 
 def parse_args() -> argparse.Namespace:
@@ -260,11 +290,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-root", required=True, help="Root directory for raw tick CSV.GZ outputs.")
     parser.add_argument("--manifest-out", default=None, help="JSONL manifest output path. Default: <output-root>/dukascopy_download_manifest.jsonl")
     parser.add_argument("--overwrite", action="store_true", help="Re-download existing hourly files.")
-    parser.add_argument("--retries", type=int, default=2, help="Retries for transient network/HTTP failures.")
-    parser.add_argument("--sleep-seconds", type=float, default=0.5, help="Base delay for exponential retry backoff.")
+    parser.add_argument("--retries", type=int, default=2, help="Retries for transient network/HTTP failures in the first pass.")
+    parser.add_argument("--sleep-seconds", type=float, default=0.5, help="Base delay for exponential retry backoff in the first pass.")
     parser.add_argument("--request-interval", type=float, default=0.05, help="Minimum pause between hourly requests.")
     parser.add_argument("--request-timeout", type=float, default=20.0, help="Per-request HTTP timeout in seconds. Keep this bounded in CI to avoid job-level cancellation.")
-    parser.add_argument("--max-errors", type=int, default=0, help="Maximum terminal request/decode errors allowed before failing after manifest write.")
+    parser.add_argument("--max-errors", type=int, default=0, help="Maximum terminal error records allowed after all retry passes.")
+    parser.add_argument("--error-retry-passes", type=int, default=0, help="Additional passes over hours that ended as error in the previous pass.")
+    parser.add_argument("--error-retry-sleep-seconds", type=float, default=3.0, help="Pause before each error retry pass.")
+    parser.add_argument("--error-retry-request-timeout", type=float, default=None, help="Per-request timeout for error retry passes. Defaults to --request-timeout.")
+    parser.add_argument("--error-retry-retries", type=int, default=None, help="Per-hour retries for error retry passes. Defaults to --retries.")
     return parser.parse_args()
 
 
@@ -278,43 +312,57 @@ def main() -> None:
     output_root.mkdir(parents=True, exist_ok=True)
     manifest_out = Path(args.manifest_out) if args.manifest_out else output_root / "dukascopy_download_manifest.jsonl"
     manifest_out.parent.mkdir(parents=True, exist_ok=True)
-    errors = 0
+
+    all_specs = list(iter_hours(start, end, [s.upper() for s in args.symbols]))
+    final_by_key: dict[tuple[str, str], dict[str, object]] = {}
     attempted = 0
+
     with manifest_out.open("w", encoding="utf-8") as manifest_fh:
-        for spec in iter_hours(start, end, [s.upper() for s in args.symbols]):
+        for spec in all_specs:
             attempted += 1
-            try:
-                record = download_hour(
+            record = try_spec(
+                spec,
+                output_root,
+                overwrite=args.overwrite,
+                retries=args.retries,
+                sleep_seconds=args.sleep_seconds,
+                request_timeout=args.request_timeout,
+                pass_name="initial",
+            )
+            final_by_key[spec.key] = record
+            write_record(manifest_fh, record)
+            if args.request_interval > 0:
+                time.sleep(args.request_interval)
+
+        retry_timeout = args.error_retry_request_timeout if args.error_retry_request_timeout is not None else args.request_timeout
+        retry_retries = args.error_retry_retries if args.error_retry_retries is not None else args.retries
+        for retry_pass in range(1, args.error_retry_passes + 1):
+            retry_specs = [spec for spec in all_specs if str(final_by_key.get(spec.key, {}).get("status")) == "error"]
+            if not retry_specs:
+                break
+            print(f"retrying error hours pass={retry_pass} count={len(retry_specs)}", file=sys.stderr)
+            if args.error_retry_sleep_seconds > 0:
+                time.sleep(args.error_retry_sleep_seconds)
+            for spec in retry_specs:
+                attempted += 1
+                record = try_spec(
                     spec,
                     output_root,
                     overwrite=args.overwrite,
-                    retries=args.retries,
+                    retries=retry_retries,
                     sleep_seconds=args.sleep_seconds,
-                    request_timeout=args.request_timeout,
+                    request_timeout=retry_timeout,
+                    pass_name=f"error_retry_{retry_pass}",
                 )
-            except Exception as exc:  # continue so the manifest preserves the exact failure location
-                errors += 1
-                record = {
-                    "symbol": spec.symbol,
-                    "hour_start_utc": spec.hour_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                    "url": spec.url,
-                    "path": str(output_root / spec.output_relpath),
-                    "status": "error",
-                    "rows": 0,
-                    "sha256": None,
-                    "bytes": 0,
-                    "error_type": type(exc).__name__,
-                    "error": str(exc),
-                }
-            line = json.dumps(record, ensure_ascii=False, sort_keys=True)
-            print(line)
-            manifest_fh.write(line + "\n")
-            manifest_fh.flush()
-            if args.request_interval > 0:
-                time.sleep(args.request_interval)
-    print(f"wrote manifest: {manifest_out} attempted={attempted} errors={errors}")
-    if errors > args.max_errors:
-        raise RuntimeError(f"download completed with terminal errors={errors}, allowed={args.max_errors}; inspect {manifest_out}")
+                final_by_key[spec.key] = record
+                write_record(manifest_fh, record)
+                if args.request_interval > 0:
+                    time.sleep(args.request_interval)
+
+    final_errors = sum(1 for record in final_by_key.values() if str(record.get("status")) == "error")
+    print(f"wrote manifest: {manifest_out} attempted={attempted} final_errors={final_errors}")
+    if final_errors > args.max_errors:
+        raise RuntimeError(f"download completed with terminal errors={final_errors}, allowed={args.max_errors}; inspect {manifest_out}")
 
 
 if __name__ == "__main__":
