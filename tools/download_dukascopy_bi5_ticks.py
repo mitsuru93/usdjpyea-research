@@ -111,7 +111,7 @@ def retry_delay(attempt: int, base_seconds: float, retry_after: str | None = Non
     return exponential + jitter
 
 
-def fetch_bytes(url: str, retries: int, sleep_seconds: float) -> bytes | None:
+def fetch_bytes(url: str, retries: int, sleep_seconds: float, request_timeout: float) -> bytes | None:
     """Fetch one BI5 payload.
 
     Return values:
@@ -130,7 +130,7 @@ def fetch_bytes(url: str, retries: int, sleep_seconds: float) -> bytes | None:
                     "Connection": "close",
                 },
             )
-            with urllib.request.urlopen(req, timeout=90) as response:
+            with urllib.request.urlopen(req, timeout=request_timeout) as response:
                 payload = response.read()
                 if not payload:
                     return b""
@@ -145,15 +145,15 @@ def fetch_bytes(url: str, retries: int, sleep_seconds: float) -> bytes | None:
             delay = retry_delay(attempt, sleep_seconds, retry_after)
             print(
                 f"retryable HTTP error code={exc.code} attempt={attempt + 1}/{retries + 1} "
-                f"sleep={delay:.2f}s url={url}",
+                f"timeout={request_timeout:.1f}s sleep={delay:.2f}s url={url}",
                 file=sys.stderr,
             )
-        except (urllib.error.URLError, TimeoutError, ConnectionError) as exc:
+        except (urllib.error.URLError, TimeoutError, ConnectionError, OSError) as exc:
             last_error = exc
             delay = retry_delay(attempt, sleep_seconds)
             print(
                 f"retryable network error type={type(exc).__name__} attempt={attempt + 1}/{retries + 1} "
-                f"sleep={delay:.2f}s url={url} detail={exc}",
+                f"timeout={request_timeout:.1f}s sleep={delay:.2f}s url={url} detail={exc}",
                 file=sys.stderr,
             )
         if attempt < retries:
@@ -190,7 +190,14 @@ def write_ticks(path: Path, rows: list[tuple[str, float, float, float, float]], 
             writer.writerow([ts, symbol, f"{bid:.8f}", f"{ask:.8f}", f"{bid_volume:.8f}", f"{ask_volume:.8f}", "dukascopy_bi5"])
 
 
-def download_hour(spec: HourSpec, output_root: Path, overwrite: bool, retries: int, sleep_seconds: float) -> dict[str, object]:
+def download_hour(
+    spec: HourSpec,
+    output_root: Path,
+    overwrite: bool,
+    retries: int,
+    sleep_seconds: float,
+    request_timeout: float,
+) -> dict[str, object]:
     output_path = output_root / spec.output_relpath
     if output_path.exists() and not overwrite:
         return {
@@ -203,7 +210,12 @@ def download_hour(spec: HourSpec, output_root: Path, overwrite: bool, retries: i
             "sha256": sha256_file(output_path),
             "bytes": output_path.stat().st_size,
         }
-    payload = fetch_bytes(spec.url, retries=retries, sleep_seconds=sleep_seconds)
+    payload = fetch_bytes(
+        spec.url,
+        retries=retries,
+        sleep_seconds=sleep_seconds,
+        request_timeout=request_timeout,
+    )
     if payload is None:
         return {
             "symbol": spec.symbol,
@@ -248,9 +260,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-root", required=True, help="Root directory for raw tick CSV.GZ outputs.")
     parser.add_argument("--manifest-out", default=None, help="JSONL manifest output path. Default: <output-root>/dukascopy_download_manifest.jsonl")
     parser.add_argument("--overwrite", action="store_true", help="Re-download existing hourly files.")
-    parser.add_argument("--retries", type=int, default=3, help="Retries for transient network/HTTP failures.")
-    parser.add_argument("--sleep-seconds", type=float, default=1.0, help="Base delay for exponential retry backoff.")
+    parser.add_argument("--retries", type=int, default=2, help="Retries for transient network/HTTP failures.")
+    parser.add_argument("--sleep-seconds", type=float, default=0.5, help="Base delay for exponential retry backoff.")
     parser.add_argument("--request-interval", type=float, default=0.05, help="Minimum pause between hourly requests.")
+    parser.add_argument("--request-timeout", type=float, default=20.0, help="Per-request HTTP timeout in seconds. Keep this bounded in CI to avoid job-level cancellation.")
     parser.add_argument("--max-errors", type=int, default=0, help="Maximum terminal request/decode errors allowed before failing after manifest write.")
     return parser.parse_args()
 
@@ -277,6 +290,7 @@ def main() -> None:
                     overwrite=args.overwrite,
                     retries=args.retries,
                     sleep_seconds=args.sleep_seconds,
+                    request_timeout=args.request_timeout,
                 )
             except Exception as exc:  # continue so the manifest preserves the exact failure location
                 errors += 1
