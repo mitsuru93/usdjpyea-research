@@ -35,7 +35,7 @@ jobs:
   collect-day:
     name: collect-${{ inputs.symbol }}-${{ matrix.chunk }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -102,17 +102,21 @@ jobs:
       - name: Download public tick data
         run: |
           mkdir -p data/raw/dukascopy_bi5_${OUTPUT_TAG}
-          timeout --kill-after=30s 32m python tools/download_dukascopy_bi5_ticks.py \
+          timeout --kill-after=30s 50m python tools/download_dukascopy_bi5_ticks.py \
             --symbols ${SYMBOL} \
             --start "${CHUNK_START}" \
             --end "${CHUNK_END}" \
             --output-root data/raw/dukascopy_bi5_${OUTPUT_TAG} \
             --manifest-out data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
             --max-errors 9999 \
-            --retries 3 \
+            --retries 2 \
             --sleep-seconds 1.0 \
             --request-timeout 25 \
             --request-interval 0.35 \
+            --error-retry-passes 4 \
+            --error-retry-sleep-seconds 8 \
+            --error-retry-request-timeout 45 \
+            --error-retry-retries 3 \
           || echo "download command ended before full chunk; manifest will be summarized"
 
       - name: Summarize download coverage
