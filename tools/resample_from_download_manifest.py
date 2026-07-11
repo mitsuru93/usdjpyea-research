@@ -4,6 +4,11 @@
 This wrapper avoids manually enumerating hourly files after a Dukascopy BI5 download.
 It filters successful/existing records from the manifest and delegates to
 `tools/resample_fx_ticks.py`.
+
+Closed-market chunks are valid in chunked collection workflows. If a manifest
+contains no downloaded/existing tick files, this tool now exits successfully after
+creating the output directory. Dataset promotion is handled by the aggregate
+coverage gate, not by this per-chunk wrapper.
 """
 
 from __future__ import annotations
@@ -52,15 +57,18 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     manifest = Path(args.manifest)
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
     symbols = {s.upper() for s in args.symbols} if args.symbols else None
     paths = load_paths(manifest, symbols)
     if not paths:
-        raise RuntimeError("no downloaded/existing tick paths found in manifest")
+        print(f"no downloaded/existing tick paths found in manifest; created empty output dir: {output_dir}")
+        return
     script = Path(__file__).resolve().parent / "resample_fx_ticks.py"
     cmd = [sys.executable, str(script)]
     for path in paths:
         cmd.extend(["--input", path])
-    cmd.extend(["--output-dir", args.output_dir, "--timeframes", *args.timeframes])
+    cmd.extend(["--output-dir", str(output_dir), "--timeframes", *args.timeframes])
     print("running:", " ".join(cmd))
     subprocess.run(cmd, check=True)
 
