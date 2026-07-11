@@ -12,18 +12,37 @@ env:
   MAX_HARD_ERRORS: "20"
 
 jobs:
-  collect-symbol:
-    name: collect-${{ matrix.symbol }}
+  collect-chunk:
+    name: collect-${{ matrix.symbol }}-${{ matrix.chunk }}
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 35
     strategy:
       fail-fast: false
-      max-parallel: 2
+      max-parallel: 4
       matrix:
         symbol: [EURUSD, USDJPY, GBPUSD, AUDUSD, USDCAD, USDCHF]
+        include:
+          - chunk: w01
+            chunk_start: "2024-01-01T00"
+            chunk_end: "2024-01-08T00"
+          - chunk: w02
+            chunk_start: "2024-01-08T00"
+            chunk_end: "2024-01-15T00"
+          - chunk: w03
+            chunk_start: "2024-01-15T00"
+            chunk_end: "2024-01-22T00"
+          - chunk: w04
+            chunk_start: "2024-01-22T00"
+            chunk_end: "2024-01-29T00"
+          - chunk: w05
+            chunk_start: "2024-01-29T00"
+            chunk_end: "2024-02-01T00"
     env:
       SYMBOL: ${{ matrix.symbol }}
-      OUTPUT_TAG: pilot-2024-01-${{ matrix.symbol }}
+      CHUNK: ${{ matrix.chunk }}
+      CHUNK_START: ${{ matrix.chunk_start }}
+      CHUNK_END: ${{ matrix.chunk_end }}
+      OUTPUT_TAG: pilot-2024-01-${{ matrix.symbol }}-${{ matrix.chunk }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,77 +72,96 @@ jobs:
           mkdir -p data/raw/dukascopy_bi5_${OUTPUT_TAG}
           python tools/download_dukascopy_bi5_ticks.py \
             --symbols ${SYMBOL} \
-            --start "${START}" \
-            --end "${END}" \
+            --start "${CHUNK_START}" \
+            --end "${CHUNK_END}" \
             --output-root data/raw/dukascopy_bi5_${OUTPUT_TAG} \
             --manifest-out data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
-            --max-errors ${MAX_HARD_ERRORS} \
-            --retries 3 \
-            --request-interval 0.05
+            --max-errors 9999 \
+            --retries 2 \
+            --request-interval 0.02
 
       - name: Summarize download coverage
-        run: |
-          python tools/summarize_download_manifest.py \
-            --manifest data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
-            --symbols ${SYMBOL} \
-            --start "${START}" \
-            --end "${END}" \
-            --output data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_summary.json \
-            --min-coverage ${MIN_COVERAGE} \
-            --max-hard-errors ${MAX_HARD_ERRORS}
-
-      - name: Resample downloaded ticks
-        run: |
-          python tools/resample_from_download_manifest.py \
-            --manifest data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
-            --output-dir data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars \
-            --timeframes ${TIMEFRAMES}
-
-      - name: Validate resampled bars
-        run: |
-          args=""
-          for f in data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/*/*.csv.gz; do
-            args="$args --input $f"
-          done
-          python tools/validate_fx_bar_artifacts.py \
-            $args \
-            --output data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/validation_summary.json
-
-      - name: Build market profiles by timeframe
-        run: |
-          mkdir -p data/profiles/dukascopy_bi5_${OUTPUT_TAG}_market_profile
-          for tf in ${TIMEFRAMES}; do
-            args=""
-            for f in data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/${tf}/*.csv.gz; do
-              args="$args --input $f"
-            done
-            python tools/build_market_profile.py \
-              $args \
-              --output-dir data/profiles/dukascopy_bi5_${OUTPUT_TAG}_market_profile/${tf}
-          done
-
-      - name: Write symbol summary
         if: always()
         run: |
-          echo "# Public FX Data Pilot 2024-01 / ${SYMBOL}" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl ]; then
+            python tools/summarize_download_manifest.py \
+              --manifest data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
+              --symbols ${SYMBOL} \
+              --start "${CHUNK_START}" \
+              --end "${CHUNK_END}" \
+              --output data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_summary.json \
+              --min-coverage 0.0 \
+              --max-hard-errors 9999
+          else
+            mkdir -p data/raw/dukascopy_bi5_${OUTPUT_TAG}
+            echo '{"status":"missing_manifest","symbol":"'"${SYMBOL}"'","chunk":"'"${CHUNK}"'"}' > data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_summary.json
+          fi
+
+      - name: Resample downloaded ticks
+        if: always()
+        run: |
+          if [ -f data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl ]; then
+            python tools/resample_from_download_manifest.py \
+              --manifest data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
+              --output-dir data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars \
+              --timeframes ${TIMEFRAMES}
+          else
+            echo "download_manifest.jsonl missing; skip resample"
+          fi
+
+      - name: Validate resampled bars
+        if: always()
+        run: |
+          args=""
+          if [ -d data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars ]; then
+            for f in data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/*/*.csv.gz; do
+              [ -e "$f" ] || continue
+              args="$args --input $f"
+            done
+          fi
+          if [ -n "$args" ]; then
+            python tools/validate_fx_bar_artifacts.py \
+              $args \
+              --output data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/validation_summary.json
+          else
+            mkdir -p data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars
+            echo '{"status":"no_resampled_bars","symbol":"'"${SYMBOL}"'","chunk":"'"${CHUNK}"'"}' > data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/validation_summary.json
+          fi
+
+      - name: Build market profiles by timeframe
+        if: always()
+        run: |
+          mkdir -p data/profiles/dukascopy_bi5_${OUTPUT_TAG}_market_profile
+          if [ -d data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars ]; then
+            for tf in ${TIMEFRAMES}; do
+              args=""
+              for f in data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/${tf}/*.csv.gz; do
+                [ -e "$f" ] || continue
+                args="$args --input $f"
+              done
+              if [ -n "$args" ]; then
+                python tools/build_market_profile.py \
+                  $args \
+                  --output-dir data/profiles/dukascopy_bi5_${OUTPUT_TAG}_market_profile/${tf}
+              fi
+            done
+          fi
+
+      - name: Write chunk summary
+        if: always()
+        run: |
+          echo "# Public FX Data Pilot 2024-01 / ${SYMBOL} ${CHUNK}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "start: ${START}" >> "$GITHUB_STEP_SUMMARY"
-          echo "end: ${END}" >> "$GITHUB_STEP_SUMMARY"
+          echo "chunk_start: ${CHUNK_START}" >> "$GITHUB_STEP_SUMMARY"
+          echo "chunk_end: ${CHUNK_END}" >> "$GITHUB_STEP_SUMMARY"
           echo "timeframes: ${TIMEFRAMES}" >> "$GITHUB_STEP_SUMMARY"
-          echo "min effective coverage: ${MIN_COVERAGE}" >> "$GITHUB_STEP_SUMMARY"
-          echo "max hard errors: ${MAX_HARD_ERRORS}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "## Download summary" >> "$GITHUB_STEP_SUMMARY"
           echo '```json' >> "$GITHUB_STEP_SUMMARY"
           cat data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_summary.json >> "$GITHUB_STEP_SUMMARY" || true
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "## Validation summary" >> "$GITHUB_STEP_SUMMARY"
-          echo '```json' >> "$GITHUB_STEP_SUMMARY"
-          cat data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/validation_summary.json >> "$GITHUB_STEP_SUMMARY" || true
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload symbol artifacts
+      - name: Upload chunk artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -141,8 +179,8 @@ jobs:
   aggregate-pilot:
     name: aggregate-pilot-2024-01
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-    needs: collect-symbol
+    timeout-minutes: 60
+    needs: collect-chunk
     if: always()
     steps:
       - name: Checkout
@@ -158,32 +196,32 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pandas pyyaml
 
-      - name: Download symbol artifacts
+      - name: Download chunk artifacts
         uses: actions/download-artifact@v4
         with:
           pattern: public-fx-data-pilot-2024-01-*-${{ github.run_id }}
-          path: data/pilot_symbol_artifacts
+          path: data/pilot_chunk_artifacts
           merge-multiple: true
 
       - name: Combine manifests and summaries
         run: |
           mkdir -p data/raw/dukascopy_bi5_${PILOT_TAG}_combined
-          find data/pilot_symbol_artifacts -path "*/download_manifest.jsonl" -type f -print0 | sort -z | xargs -0 cat > data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl
+          find data/pilot_chunk_artifacts -path "*/download_manifest.jsonl" -type f -print0 | sort -z | xargs -0 cat > data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl
           python tools/summarize_download_manifest.py \
             --manifest data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl \
             --symbols EURUSD USDJPY GBPUSD AUDUSD USDCAD USDCHF \
             --start "${START}" \
             --end "${END}" \
             --output data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_summary.json \
-            --min-coverage ${MIN_COVERAGE} \
-            --max-hard-errors ${MAX_HARD_ERRORS}
+            --min-coverage 0.0 \
+            --max-hard-errors 9999
 
       - name: Validate all resampled bars
         run: |
           args=""
           while IFS= read -r -d '' f; do
             args="$args --input $f"
-          done < <(find data/pilot_symbol_artifacts \( -path "*/M1/*.csv.gz" -o -path "*/M5/*.csv.gz" -o -path "*/M15/*.csv.gz" -o -path "*/H1/*.csv.gz" \) -print0)
+          done < <(find data/pilot_chunk_artifacts \( -path "*/M1/*.csv.gz" -o -path "*/M5/*.csv.gz" -o -path "*/M15/*.csv.gz" -o -path "*/H1/*.csv.gz" \) -print0)
           python tools/validate_fx_bar_artifacts.py \
             $args \
             --output data/raw/dukascopy_bi5_${PILOT_TAG}_combined/validation_summary.json
@@ -195,11 +233,29 @@ jobs:
             args=""
             while IFS= read -r -d '' f; do
               args="$args --input $f"
-            done < <(find data/pilot_symbol_artifacts -path "*/${tf}/*.csv.gz" -print0)
+            done < <(find data/pilot_chunk_artifacts -path "*/${tf}/*.csv.gz" -print0)
             python tools/build_market_profile.py \
               $args \
               --output-dir data/profiles/dukascopy_bi5_${PILOT_TAG}_market_profile/${tf}
           done
+
+      - name: Gate aggregate coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary = json.loads(Path('data/raw/dukascopy_bi5_pilot-2024-01_combined/download_summary.json').read_text())
+          min_cov = float('${{ env.MIN_COVERAGE }}')
+          max_errors = int('${{ env.MAX_HARD_ERRORS }}')
+          failures = []
+          if summary.get('effective_coverage', 0.0) < min_cov:
+              failures.append(f"effective_coverage={summary.get('effective_coverage')} < {min_cov}")
+          if summary.get('hard_error_records', 0) > max_errors:
+              failures.append(f"hard_error_records={summary.get('hard_error_records')} > {max_errors}")
+          if failures:
+              raise SystemExit('; '.join(failures))
+          print('coverage gate passed', summary.get('effective_coverage'), summary.get('hard_error_records'))
+          PY
 
       - name: Write aggregate summary
         if: always()
@@ -209,6 +265,8 @@ jobs:
           echo "start: ${START}" >> "$GITHUB_STEP_SUMMARY"
           echo "end: ${END}" >> "$GITHUB_STEP_SUMMARY"
           echo "timeframes: ${TIMEFRAMES}" >> "$GITHUB_STEP_SUMMARY"
+          echo "min effective coverage: ${MIN_COVERAGE}" >> "$GITHUB_STEP_SUMMARY"
+          echo "max hard errors: ${MAX_HARD_ERRORS}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "## Download summary" >> "$GITHUB_STEP_SUMMARY"
           echo '```json' >> "$GITHUB_STEP_SUMMARY"
@@ -225,7 +283,7 @@ jobs:
           cat data/profiles/dukascopy_bi5_${PILOT_TAG}_market_profile/M5/market_profile_overall.csv >> "$GITHUB_STEP_SUMMARY" || true
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload aggregate artifact
+      - name: Upload aggregate artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
