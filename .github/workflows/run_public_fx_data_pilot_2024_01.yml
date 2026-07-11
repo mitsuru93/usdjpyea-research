@@ -3,6 +3,10 @@ name: Run Public FX Data Pilot 2024-01
 on:
   workflow_dispatch:
 
+concurrency:
+  group: public-fx-data-pilot-2024-01
+  cancel-in-progress: false
+
 env:
   START: "2024-01-02T00"
   END: "2024-02-01T00"
@@ -15,10 +19,10 @@ jobs:
   collect-chunk:
     name: collect-${{ matrix.symbol }}-${{ matrix.chunk }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     strategy:
       fail-fast: false
-      max-parallel: 6
+      max-parallel: 1
       matrix:
         symbol: [EURUSD, USDJPY, GBPUSD, AUDUSD, USDCAD, USDCHF]
         chunk: [d01, d02, d03, d04, d05, d06, d07, d08, d09, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22]
@@ -84,17 +88,17 @@ jobs:
       - name: Download public tick data
         run: |
           mkdir -p data/raw/dukascopy_bi5_${OUTPUT_TAG}
-          timeout --kill-after=30s 18m python tools/download_dukascopy_bi5_ticks.py \
+          timeout --kill-after=30s 32m python tools/download_dukascopy_bi5_ticks.py \
             --symbols ${SYMBOL} \
             --start "${CHUNK_START}" \
             --end "${CHUNK_END}" \
             --output-root data/raw/dukascopy_bi5_${OUTPUT_TAG} \
             --manifest-out data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
             --max-errors 9999 \
-            --retries 1 \
-            --sleep-seconds 0.5 \
-            --request-timeout 10 \
-            --request-interval 0.02 \
+            --retries 2 \
+            --sleep-seconds 1.0 \
+            --request-timeout 20 \
+            --request-interval 0.15 \
           || echo "download command ended before full chunk; manifest will be summarized"
 
       - name: Summarize download coverage
