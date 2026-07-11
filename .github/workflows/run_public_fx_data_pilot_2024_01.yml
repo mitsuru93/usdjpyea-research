@@ -20,21 +20,125 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        symbol: [EURUSD, USDJPY, GBPUSD, AUDUSD, USDCAD, USDCHF]
         include:
-          - chunk: w01
+          - symbol: EURUSD
+            chunk: w01
             chunk_start: "2024-01-01T00"
             chunk_end: "2024-01-08T00"
-          - chunk: w02
+          - symbol: EURUSD
+            chunk: w02
             chunk_start: "2024-01-08T00"
             chunk_end: "2024-01-15T00"
-          - chunk: w03
+          - symbol: EURUSD
+            chunk: w03
             chunk_start: "2024-01-15T00"
             chunk_end: "2024-01-22T00"
-          - chunk: w04
+          - symbol: EURUSD
+            chunk: w04
             chunk_start: "2024-01-22T00"
             chunk_end: "2024-01-29T00"
-          - chunk: w05
+          - symbol: EURUSD
+            chunk: w05
+            chunk_start: "2024-01-29T00"
+            chunk_end: "2024-02-01T00"
+          - symbol: USDJPY
+            chunk: w01
+            chunk_start: "2024-01-01T00"
+            chunk_end: "2024-01-08T00"
+          - symbol: USDJPY
+            chunk: w02
+            chunk_start: "2024-01-08T00"
+            chunk_end: "2024-01-15T00"
+          - symbol: USDJPY
+            chunk: w03
+            chunk_start: "2024-01-15T00"
+            chunk_end: "2024-01-22T00"
+          - symbol: USDJPY
+            chunk: w04
+            chunk_start: "2024-01-22T00"
+            chunk_end: "2024-01-29T00"
+          - symbol: USDJPY
+            chunk: w05
+            chunk_start: "2024-01-29T00"
+            chunk_end: "2024-02-01T00"
+          - symbol: GBPUSD
+            chunk: w01
+            chunk_start: "2024-01-01T00"
+            chunk_end: "2024-01-08T00"
+          - symbol: GBPUSD
+            chunk: w02
+            chunk_start: "2024-01-08T00"
+            chunk_end: "2024-01-15T00"
+          - symbol: GBPUSD
+            chunk: w03
+            chunk_start: "2024-01-15T00"
+            chunk_end: "2024-01-22T00"
+          - symbol: GBPUSD
+            chunk: w04
+            chunk_start: "2024-01-22T00"
+            chunk_end: "2024-01-29T00"
+          - symbol: GBPUSD
+            chunk: w05
+            chunk_start: "2024-01-29T00"
+            chunk_end: "2024-02-01T00"
+          - symbol: AUDUSD
+            chunk: w01
+            chunk_start: "2024-01-01T00"
+            chunk_end: "2024-01-08T00"
+          - symbol: AUDUSD
+            chunk: w02
+            chunk_start: "2024-01-08T00"
+            chunk_end: "2024-01-15T00"
+          - symbol: AUDUSD
+            chunk: w03
+            chunk_start: "2024-01-15T00"
+            chunk_end: "2024-01-22T00"
+          - symbol: AUDUSD
+            chunk: w04
+            chunk_start: "2024-01-22T00"
+            chunk_end: "2024-01-29T00"
+          - symbol: AUDUSD
+            chunk: w05
+            chunk_start: "2024-01-29T00"
+            chunk_end: "2024-02-01T00"
+          - symbol: USDCAD
+            chunk: w01
+            chunk_start: "2024-01-01T00"
+            chunk_end: "2024-01-08T00"
+          - symbol: USDCAD
+            chunk: w02
+            chunk_start: "2024-01-08T00"
+            chunk_end: "2024-01-15T00"
+          - symbol: USDCAD
+            chunk: w03
+            chunk_start: "2024-01-15T00"
+            chunk_end: "2024-01-22T00"
+          - symbol: USDCAD
+            chunk: w04
+            chunk_start: "2024-01-22T00"
+            chunk_end: "2024-01-29T00"
+          - symbol: USDCAD
+            chunk: w05
+            chunk_start: "2024-01-29T00"
+            chunk_end: "2024-02-01T00"
+          - symbol: USDCHF
+            chunk: w01
+            chunk_start: "2024-01-01T00"
+            chunk_end: "2024-01-08T00"
+          - symbol: USDCHF
+            chunk: w02
+            chunk_start: "2024-01-08T00"
+            chunk_end: "2024-01-15T00"
+          - symbol: USDCHF
+            chunk: w03
+            chunk_start: "2024-01-15T00"
+            chunk_end: "2024-01-22T00"
+          - symbol: USDCHF
+            chunk: w04
+            chunk_start: "2024-01-22T00"
+            chunk_end: "2024-01-29T00"
+          - symbol: USDCHF
+            chunk: w05
             chunk_start: "2024-01-29T00"
             chunk_end: "2024-02-01T00"
     env:
