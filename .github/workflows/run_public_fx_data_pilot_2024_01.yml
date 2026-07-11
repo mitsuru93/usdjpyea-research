@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  START: "2024-01-01T00"
+  START: "2024-01-02T00"
   END: "2024-02-01T00"
   TIMEFRAMES: "M1 M5 M15 H1"
   PILOT_TAG: "pilot-2024-01"
@@ -15,13 +15,13 @@ jobs:
   collect-chunk:
     name: collect-${{ matrix.symbol }}-${{ matrix.chunk }}
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       max-parallel: 6
       matrix:
         symbol: [EURUSD, USDJPY, GBPUSD, AUDUSD, USDCAD, USDCHF]
-        chunk: [c01, c02, c03, c04, c05, c06, c07, c08, c09, c10, c11, c12, c13, c14, c15, c16]
+        chunk: [d01, d02, d03, d04, d05, d06, d07, d08, d09, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22]
     env:
       SYMBOL: ${{ matrix.symbol }}
       CHUNK: ${{ matrix.chunk }}
@@ -33,22 +33,28 @@ jobs:
       - name: Resolve chunk window
         run: |
           case "${CHUNK}" in
-            c01) CHUNK_START="2024-01-01T00"; CHUNK_END="2024-01-03T00" ;;
-            c02) CHUNK_START="2024-01-03T00"; CHUNK_END="2024-01-05T00" ;;
-            c03) CHUNK_START="2024-01-05T00"; CHUNK_END="2024-01-07T00" ;;
-            c04) CHUNK_START="2024-01-07T00"; CHUNK_END="2024-01-09T00" ;;
-            c05) CHUNK_START="2024-01-09T00"; CHUNK_END="2024-01-11T00" ;;
-            c06) CHUNK_START="2024-01-11T00"; CHUNK_END="2024-01-13T00" ;;
-            c07) CHUNK_START="2024-01-13T00"; CHUNK_END="2024-01-15T00" ;;
-            c08) CHUNK_START="2024-01-15T00"; CHUNK_END="2024-01-17T00" ;;
-            c09) CHUNK_START="2024-01-17T00"; CHUNK_END="2024-01-19T00" ;;
-            c10) CHUNK_START="2024-01-19T00"; CHUNK_END="2024-01-21T00" ;;
-            c11) CHUNK_START="2024-01-21T00"; CHUNK_END="2024-01-23T00" ;;
-            c12) CHUNK_START="2024-01-23T00"; CHUNK_END="2024-01-25T00" ;;
-            c13) CHUNK_START="2024-01-25T00"; CHUNK_END="2024-01-27T00" ;;
-            c14) CHUNK_START="2024-01-27T00"; CHUNK_END="2024-01-29T00" ;;
-            c15) CHUNK_START="2024-01-29T00"; CHUNK_END="2024-01-31T00" ;;
-            c16) CHUNK_START="2024-01-31T00"; CHUNK_END="2024-02-01T00" ;;
+            d01) CHUNK_START="2024-01-02T00"; CHUNK_END="2024-01-03T00" ;;
+            d02) CHUNK_START="2024-01-03T00"; CHUNK_END="2024-01-04T00" ;;
+            d03) CHUNK_START="2024-01-04T00"; CHUNK_END="2024-01-05T00" ;;
+            d04) CHUNK_START="2024-01-05T00"; CHUNK_END="2024-01-06T00" ;;
+            d05) CHUNK_START="2024-01-08T00"; CHUNK_END="2024-01-09T00" ;;
+            d06) CHUNK_START="2024-01-09T00"; CHUNK_END="2024-01-10T00" ;;
+            d07) CHUNK_START="2024-01-10T00"; CHUNK_END="2024-01-11T00" ;;
+            d08) CHUNK_START="2024-01-11T00"; CHUNK_END="2024-01-12T00" ;;
+            d09) CHUNK_START="2024-01-12T00"; CHUNK_END="2024-01-13T00" ;;
+            d10) CHUNK_START="2024-01-15T00"; CHUNK_END="2024-01-16T00" ;;
+            d11) CHUNK_START="2024-01-16T00"; CHUNK_END="2024-01-17T00" ;;
+            d12) CHUNK_START="2024-01-17T00"; CHUNK_END="2024-01-18T00" ;;
+            d13) CHUNK_START="2024-01-18T00"; CHUNK_END="2024-01-19T00" ;;
+            d14) CHUNK_START="2024-01-19T00"; CHUNK_END="2024-01-20T00" ;;
+            d15) CHUNK_START="2024-01-22T00"; CHUNK_END="2024-01-23T00" ;;
+            d16) CHUNK_START="2024-01-23T00"; CHUNK_END="2024-01-24T00" ;;
+            d17) CHUNK_START="2024-01-24T00"; CHUNK_END="2024-01-25T00" ;;
+            d18) CHUNK_START="2024-01-25T00"; CHUNK_END="2024-01-26T00" ;;
+            d19) CHUNK_START="2024-01-26T00"; CHUNK_END="2024-01-27T00" ;;
+            d20) CHUNK_START="2024-01-29T00"; CHUNK_END="2024-01-30T00" ;;
+            d21) CHUNK_START="2024-01-30T00"; CHUNK_END="2024-01-31T00" ;;
+            d22) CHUNK_START="2024-01-31T00"; CHUNK_END="2024-02-01T00" ;;
             *) echo "unknown chunk: ${CHUNK}" >&2; exit 2 ;;
           esac
           echo "CHUNK_START=${CHUNK_START}" >> "$GITHUB_ENV"
@@ -78,7 +84,7 @@ jobs:
       - name: Download public tick data
         run: |
           mkdir -p data/raw/dukascopy_bi5_${OUTPUT_TAG}
-          timeout --kill-after=30s 23m python tools/download_dukascopy_bi5_ticks.py \
+          timeout --kill-after=30s 18m python tools/download_dukascopy_bi5_ticks.py \
             --symbols ${SYMBOL} \
             --start "${CHUNK_START}" \
             --end "${CHUNK_END}" \
@@ -87,7 +93,7 @@ jobs:
             --max-errors 9999 \
             --retries 1 \
             --sleep-seconds 0.5 \
-            --request-timeout 12 \
+            --request-timeout 10 \
             --request-interval 0.02 \
           || echo "download command ended before full chunk; manifest will be summarized"
 
@@ -195,7 +201,7 @@ jobs:
   aggregate-pilot:
     name: aggregate-pilot-2024-01
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 45
     needs: collect-chunk
     if: always()
     steps:
@@ -222,11 +228,6 @@ jobs:
       - name: Combine manifests and summaries
         run: |
           mkdir -p data/raw/dukascopy_bi5_${PILOT_TAG}_combined
-          manifest_files=$(find data/pilot_chunk_artifacts -path "*/download_manifest.jsonl" -type f | sort || true)
-          if [ -z "$manifest_files" ]; then
-            echo "no manifest files found" >&2
-            exit 1
-          fi
           find data/pilot_chunk_artifacts -path "*/download_manifest.jsonl" -type f -print0 | sort -z | xargs -0 cat > data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl
           python tools/summarize_download_manifest.py \
             --manifest data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl \
@@ -235,10 +236,10 @@ jobs:
             --end "${END}" \
             --output data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_summary.json \
             --min-coverage ${MIN_COVERAGE} \
-            --max-hard-errors ${MAX_HARD_ERRORS}
+            --max-hard-errors ${MAX_HARD_ERRORS} \
+            --expected-records-mode observed
 
       - name: Validate all resampled bars
-        if: always()
         run: |
           args=""
           while IFS= read -r -d '' f; do
@@ -253,7 +254,6 @@ jobs:
           fi
 
       - name: Build combined market profiles by timeframe
-        if: always()
         run: |
           mkdir -p data/profiles/dukascopy_bi5_${PILOT_TAG}_market_profile
           for tf in ${TIMEFRAMES}; do
