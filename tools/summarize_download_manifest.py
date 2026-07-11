@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 SUCCESS_STATUSES = {"downloaded", "exists"}
-SOFT_MISSING_STATUSES = {"missing_404", "no_ticks"}
+SOFT_MISSING_STATUSES = {"missing_404", "no_ticks", "market_closed"}
 ERROR_STATUSES = {"error"}
 
 
@@ -101,15 +101,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True, help="Output JSON path.")
     parser.add_argument("--min-coverage", type=float, default=1.0, help="Minimum successful/effective-expected coverage after excluding no-tick or explicit missing hours.")
     parser.add_argument("--max-hard-errors", type=int, default=0, help="Maximum terminal error records allowed.")
+    parser.add_argument(
+        "--expected-records-mode",
+        choices=["calendar", "observed"],
+        default="calendar",
+        help="Use calendar hours from start/end, or use observed manifest records. Use observed for discontinuous trading-day chunk aggregates.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     symbols = [s.upper() for s in args.symbols]
-    expected = expected_hours(parse_utc_hour(args.start), parse_utc_hour(args.end), symbols)
     records = load_manifest(Path(args.manifest))
+    if args.expected_records_mode == "observed":
+        expected = len(records)
+    else:
+        expected = expected_hours(parse_utc_hour(args.start), parse_utc_hour(args.end), symbols)
     summary = summarize(records, expected)
+    summary["expected_records_mode"] = args.expected_records_mode
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
