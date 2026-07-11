@@ -15,141 +15,45 @@ jobs:
   collect-chunk:
     name: collect-${{ matrix.symbol }}-${{ matrix.chunk }}
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 6
       matrix:
-        include:
-          - symbol: EURUSD
-            chunk: w01
-            chunk_start: "2024-01-01T00"
-            chunk_end: "2024-01-08T00"
-          - symbol: EURUSD
-            chunk: w02
-            chunk_start: "2024-01-08T00"
-            chunk_end: "2024-01-15T00"
-          - symbol: EURUSD
-            chunk: w03
-            chunk_start: "2024-01-15T00"
-            chunk_end: "2024-01-22T00"
-          - symbol: EURUSD
-            chunk: w04
-            chunk_start: "2024-01-22T00"
-            chunk_end: "2024-01-29T00"
-          - symbol: EURUSD
-            chunk: w05
-            chunk_start: "2024-01-29T00"
-            chunk_end: "2024-02-01T00"
-          - symbol: USDJPY
-            chunk: w01
-            chunk_start: "2024-01-01T00"
-            chunk_end: "2024-01-08T00"
-          - symbol: USDJPY
-            chunk: w02
-            chunk_start: "2024-01-08T00"
-            chunk_end: "2024-01-15T00"
-          - symbol: USDJPY
-            chunk: w03
-            chunk_start: "2024-01-15T00"
-            chunk_end: "2024-01-22T00"
-          - symbol: USDJPY
-            chunk: w04
-            chunk_start: "2024-01-22T00"
-            chunk_end: "2024-01-29T00"
-          - symbol: USDJPY
-            chunk: w05
-            chunk_start: "2024-01-29T00"
-            chunk_end: "2024-02-01T00"
-          - symbol: GBPUSD
-            chunk: w01
-            chunk_start: "2024-01-01T00"
-            chunk_end: "2024-01-08T00"
-          - symbol: GBPUSD
-            chunk: w02
-            chunk_start: "2024-01-08T00"
-            chunk_end: "2024-01-15T00"
-          - symbol: GBPUSD
-            chunk: w03
-            chunk_start: "2024-01-15T00"
-            chunk_end: "2024-01-22T00"
-          - symbol: GBPUSD
-            chunk: w04
-            chunk_start: "2024-01-22T00"
-            chunk_end: "2024-01-29T00"
-          - symbol: GBPUSD
-            chunk: w05
-            chunk_start: "2024-01-29T00"
-            chunk_end: "2024-02-01T00"
-          - symbol: AUDUSD
-            chunk: w01
-            chunk_start: "2024-01-01T00"
-            chunk_end: "2024-01-08T00"
-          - symbol: AUDUSD
-            chunk: w02
-            chunk_start: "2024-01-08T00"
-            chunk_end: "2024-01-15T00"
-          - symbol: AUDUSD
-            chunk: w03
-            chunk_start: "2024-01-15T00"
-            chunk_end: "2024-01-22T00"
-          - symbol: AUDUSD
-            chunk: w04
-            chunk_start: "2024-01-22T00"
-            chunk_end: "2024-01-29T00"
-          - symbol: AUDUSD
-            chunk: w05
-            chunk_start: "2024-01-29T00"
-            chunk_end: "2024-02-01T00"
-          - symbol: USDCAD
-            chunk: w01
-            chunk_start: "2024-01-01T00"
-            chunk_end: "2024-01-08T00"
-          - symbol: USDCAD
-            chunk: w02
-            chunk_start: "2024-01-08T00"
-            chunk_end: "2024-01-15T00"
-          - symbol: USDCAD
-            chunk: w03
-            chunk_start: "2024-01-15T00"
-            chunk_end: "2024-01-22T00"
-          - symbol: USDCAD
-            chunk: w04
-            chunk_start: "2024-01-22T00"
-            chunk_end: "2024-01-29T00"
-          - symbol: USDCAD
-            chunk: w05
-            chunk_start: "2024-01-29T00"
-            chunk_end: "2024-02-01T00"
-          - symbol: USDCHF
-            chunk: w01
-            chunk_start: "2024-01-01T00"
-            chunk_end: "2024-01-08T00"
-          - symbol: USDCHF
-            chunk: w02
-            chunk_start: "2024-01-08T00"
-            chunk_end: "2024-01-15T00"
-          - symbol: USDCHF
-            chunk: w03
-            chunk_start: "2024-01-15T00"
-            chunk_end: "2024-01-22T00"
-          - symbol: USDCHF
-            chunk: w04
-            chunk_start: "2024-01-22T00"
-            chunk_end: "2024-01-29T00"
-          - symbol: USDCHF
-            chunk: w05
-            chunk_start: "2024-01-29T00"
-            chunk_end: "2024-02-01T00"
+        symbol: [EURUSD, USDJPY, GBPUSD, AUDUSD, USDCAD, USDCHF]
+        chunk: [c01, c02, c03, c04, c05, c06, c07, c08, c09, c10, c11, c12, c13, c14, c15, c16]
     env:
       SYMBOL: ${{ matrix.symbol }}
       CHUNK: ${{ matrix.chunk }}
-      CHUNK_START: ${{ matrix.chunk_start }}
-      CHUNK_END: ${{ matrix.chunk_end }}
       OUTPUT_TAG: pilot-2024-01-${{ matrix.symbol }}-${{ matrix.chunk }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Resolve chunk window
+        run: |
+          case "${CHUNK}" in
+            c01) CHUNK_START="2024-01-01T00"; CHUNK_END="2024-01-03T00" ;;
+            c02) CHUNK_START="2024-01-03T00"; CHUNK_END="2024-01-05T00" ;;
+            c03) CHUNK_START="2024-01-05T00"; CHUNK_END="2024-01-07T00" ;;
+            c04) CHUNK_START="2024-01-07T00"; CHUNK_END="2024-01-09T00" ;;
+            c05) CHUNK_START="2024-01-09T00"; CHUNK_END="2024-01-11T00" ;;
+            c06) CHUNK_START="2024-01-11T00"; CHUNK_END="2024-01-13T00" ;;
+            c07) CHUNK_START="2024-01-13T00"; CHUNK_END="2024-01-15T00" ;;
+            c08) CHUNK_START="2024-01-15T00"; CHUNK_END="2024-01-17T00" ;;
+            c09) CHUNK_START="2024-01-17T00"; CHUNK_END="2024-01-19T00" ;;
+            c10) CHUNK_START="2024-01-19T00"; CHUNK_END="2024-01-21T00" ;;
+            c11) CHUNK_START="2024-01-21T00"; CHUNK_END="2024-01-23T00" ;;
+            c12) CHUNK_START="2024-01-23T00"; CHUNK_END="2024-01-25T00" ;;
+            c13) CHUNK_START="2024-01-25T00"; CHUNK_END="2024-01-27T00" ;;
+            c14) CHUNK_START="2024-01-27T00"; CHUNK_END="2024-01-29T00" ;;
+            c15) CHUNK_START="2024-01-29T00"; CHUNK_END="2024-01-31T00" ;;
+            c16) CHUNK_START="2024-01-31T00"; CHUNK_END="2024-02-01T00" ;;
+            *) echo "unknown chunk: ${CHUNK}" >&2; exit 2 ;;
+          esac
+          echo "CHUNK_START=${CHUNK_START}" >> "$GITHUB_ENV"
+          echo "CHUNK_END=${CHUNK_END}" >> "$GITHUB_ENV"
+          echo "chunk ${CHUNK}: ${CHUNK_START} -> ${CHUNK_END}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -174,15 +78,18 @@ jobs:
       - name: Download public tick data
         run: |
           mkdir -p data/raw/dukascopy_bi5_${OUTPUT_TAG}
-          python tools/download_dukascopy_bi5_ticks.py \
+          timeout --kill-after=30s 23m python tools/download_dukascopy_bi5_ticks.py \
             --symbols ${SYMBOL} \
             --start "${CHUNK_START}" \
             --end "${CHUNK_END}" \
             --output-root data/raw/dukascopy_bi5_${OUTPUT_TAG} \
             --manifest-out data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_manifest.jsonl \
             --max-errors 9999 \
-            --retries 2 \
-            --request-interval 0.02
+            --retries 1 \
+            --sleep-seconds 0.5 \
+            --request-timeout 12 \
+            --request-interval 0.02 \
+          || echo "download command ended before full chunk; manifest will be summarized"
 
       - name: Summarize download coverage
         if: always()
@@ -264,6 +171,11 @@ jobs:
           echo '```json' >> "$GITHUB_STEP_SUMMARY"
           cat data/raw/dukascopy_bi5_${OUTPUT_TAG}/download_summary.json >> "$GITHUB_STEP_SUMMARY" || true
           echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Validation summary" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat data/processed/dukascopy_bi5_${OUTPUT_TAG}_bars/validation_summary.json >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload chunk artifacts
         if: always()
@@ -310,6 +222,11 @@ jobs:
       - name: Combine manifests and summaries
         run: |
           mkdir -p data/raw/dukascopy_bi5_${PILOT_TAG}_combined
+          manifest_files=$(find data/pilot_chunk_artifacts -path "*/download_manifest.jsonl" -type f | sort || true)
+          if [ -z "$manifest_files" ]; then
+            echo "no manifest files found" >&2
+            exit 1
+          fi
           find data/pilot_chunk_artifacts -path "*/download_manifest.jsonl" -type f -print0 | sort -z | xargs -0 cat > data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl
           python tools/summarize_download_manifest.py \
             --manifest data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl \
@@ -317,20 +234,26 @@ jobs:
             --start "${START}" \
             --end "${END}" \
             --output data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_summary.json \
-            --min-coverage 0.0 \
-            --max-hard-errors 9999
+            --min-coverage ${MIN_COVERAGE} \
+            --max-hard-errors ${MAX_HARD_ERRORS}
 
       - name: Validate all resampled bars
+        if: always()
         run: |
           args=""
           while IFS= read -r -d '' f; do
             args="$args --input $f"
           done < <(find data/pilot_chunk_artifacts \( -path "*/M1/*.csv.gz" -o -path "*/M5/*.csv.gz" -o -path "*/M15/*.csv.gz" -o -path "*/H1/*.csv.gz" \) -print0)
-          python tools/validate_fx_bar_artifacts.py \
-            $args \
-            --output data/raw/dukascopy_bi5_${PILOT_TAG}_combined/validation_summary.json
+          if [ -n "$args" ]; then
+            python tools/validate_fx_bar_artifacts.py \
+              $args \
+              --output data/raw/dukascopy_bi5_${PILOT_TAG}_combined/validation_summary.json
+          else
+            echo '{"status":"no_resampled_bars"}' > data/raw/dukascopy_bi5_${PILOT_TAG}_combined/validation_summary.json
+          fi
 
       - name: Build combined market profiles by timeframe
+        if: always()
         run: |
           mkdir -p data/profiles/dukascopy_bi5_${PILOT_TAG}_market_profile
           for tf in ${TIMEFRAMES}; do
@@ -338,28 +261,12 @@ jobs:
             while IFS= read -r -d '' f; do
               args="$args --input $f"
             done < <(find data/pilot_chunk_artifacts -path "*/${tf}/*.csv.gz" -print0)
-            python tools/build_market_profile.py \
-              $args \
-              --output-dir data/profiles/dukascopy_bi5_${PILOT_TAG}_market_profile/${tf}
+            if [ -n "$args" ]; then
+              python tools/build_market_profile.py \
+                $args \
+                --output-dir data/profiles/dukascopy_bi5_${PILOT_TAG}_market_profile/${tf}
+            fi
           done
-
-      - name: Gate aggregate coverage
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          summary = json.loads(Path('data/raw/dukascopy_bi5_pilot-2024-01_combined/download_summary.json').read_text())
-          min_cov = float('${{ env.MIN_COVERAGE }}')
-          max_errors = int('${{ env.MAX_HARD_ERRORS }}')
-          failures = []
-          if summary.get('effective_coverage', 0.0) < min_cov:
-              failures.append(f"effective_coverage={summary.get('effective_coverage')} < {min_cov}")
-          if summary.get('hard_error_records', 0) > max_errors:
-              failures.append(f"hard_error_records={summary.get('hard_error_records')} > {max_errors}")
-          if failures:
-              raise SystemExit('; '.join(failures))
-          print('coverage gate passed', summary.get('effective_coverage'), summary.get('hard_error_records'))
-          PY
 
       - name: Write aggregate summary
         if: always()
@@ -369,8 +276,6 @@ jobs:
           echo "start: ${START}" >> "$GITHUB_STEP_SUMMARY"
           echo "end: ${END}" >> "$GITHUB_STEP_SUMMARY"
           echo "timeframes: ${TIMEFRAMES}" >> "$GITHUB_STEP_SUMMARY"
-          echo "min effective coverage: ${MIN_COVERAGE}" >> "$GITHUB_STEP_SUMMARY"
-          echo "max hard errors: ${MAX_HARD_ERRORS}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "## Download summary" >> "$GITHUB_STEP_SUMMARY"
           echo '```json' >> "$GITHUB_STEP_SUMMARY"
