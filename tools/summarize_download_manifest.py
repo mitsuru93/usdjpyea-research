@@ -52,7 +52,21 @@ def load_manifest(path: Path) -> list[dict[str, Any]]:
     return records
 
 
-def summarize(records: list[dict[str, Any]], expected: int) -> dict[str, Any]:
+def deduplicate_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep the final record for each symbol/hour.
+
+    The downloader may append retry-pass records after an initial error. For coverage
+    gating, only the latest terminal state for a symbol/hour should count.
+    """
+    latest: dict[tuple[str, str], dict[str, Any]] = {}
+    for record in records:
+        symbol = str(record.get("symbol", "UNKNOWN"))
+        hour = str(record.get("hour_start_utc", ""))
+        latest[(symbol, hour)] = record
+    return list(latest.values())
+
+
+def summarize(records: list[dict[str, Any]], expected: int, raw_records: int) -> dict[str, Any]:
     status_counts = Counter(str(r.get("status", "")) for r in records)
     by_symbol: dict[str, Counter[str]] = defaultdict(Counter)
     error_examples: list[dict[str, Any]] = []
@@ -68,6 +82,7 @@ def summarize(records: list[dict[str, Any]], expected: int) -> dict[str, Any]:
                     "url": r.get("url"),
                     "error_type": r.get("error_type"),
                     "error": r.get("error"),
+                    "attempt_pass": r.get("attempt_pass"),
                 }
             )
     successful = sum(status_counts[s] for s in SUCCESS_STATUSES)
@@ -79,6 +94,7 @@ def summarize(records: list[dict[str, Any]], expected: int) -> dict[str, Any]:
     effective_coverage = successful / effective_expected if effective_expected else 0.0
     return {
         "expected_records": expected,
+        "raw_manifest_records": raw_records,
         "observed_records": observed,
         "successful_records": successful,
         "soft_missing_records": soft_missing,
@@ -113,12 +129,13 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     symbols = [s.upper() for s in args.symbols]
-    records = load_manifest(Path(args.manifest))
+    raw_records = load_manifest(Path(args.manifest))
+    records = deduplicate_records(raw_records)
     if args.expected_records_mode == "observed":
         expected = len(records)
     else:
         expected = expected_hours(parse_utc_hour(args.start), parse_utc_hour(args.end), symbols)
-    summary = summarize(records, expected)
+    summary = summarize(records, expected, raw_records=len(raw_records))
     summary["expected_records_mode"] = args.expected_records_mode
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
