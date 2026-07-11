@@ -1,0 +1,13 @@
+name: Run Public FX Tick Pilot 2024-01 USDCHF
+
+on:
+  workflow_dispatch:
+
+jobs:
+  usdchf-tick-pilot:
+    uses: ./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml
+    with:
+      symbol: USDCHF
+      pilot_tag: pilot-2024-01-USDCHF
+      min_coverage: "0.995"
+      max_hard_errors: "20"
