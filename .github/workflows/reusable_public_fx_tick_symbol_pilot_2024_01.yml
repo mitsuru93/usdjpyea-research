@@ -93,6 +93,7 @@ jobs:
         run: |
           python -m py_compile \
             tools/download_dukascopy_bi5_ticks.py \
+            tools/retry_dukascopy_manifest_errors.py \
             tools/summarize_download_manifest.py \
             tools/resample_fx_ticks.py \
             tools/resample_from_download_manifest.py \
@@ -223,7 +224,7 @@ jobs:
   aggregate-symbol:
     name: aggregate-${{ inputs.symbol }}-2024-01
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     needs: collect-day
     if: always()
     steps:
@@ -240,6 +241,17 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pandas pyyaml
 
+      - name: Compile tools
+        run: |
+          python -m py_compile \
+            tools/download_dukascopy_bi5_ticks.py \
+            tools/retry_dukascopy_manifest_errors.py \
+            tools/summarize_download_manifest.py \
+            tools/resample_fx_ticks.py \
+            tools/resample_from_download_manifest.py \
+            tools/validate_fx_bar_artifacts.py \
+            tools/build_market_profile.py
+
       - name: Download day artifacts
         uses: actions/download-artifact@v4
         with:
@@ -247,10 +259,45 @@ jobs:
           path: data/symbol_day_artifacts
           merge-multiple: true
 
-      - name: Combine manifests and summaries
+      - name: Combine day manifests
         run: |
           mkdir -p data/raw/dukascopy_bi5_${PILOT_TAG}_combined
-          find data/symbol_day_artifacts -path "*/download_manifest.jsonl" -type f -print0 | sort -z | xargs -0 cat > data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl
+          find data/symbol_day_artifacts -path "*/download_manifest.jsonl" -type f -print0 | sort -z | xargs -0 cat > data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.initial.jsonl
+
+      - name: Repair aggregate error hours
+        run: |
+          mkdir -p data/raw/dukascopy_bi5_${PILOT_TAG}_aggregate_repair
+          timeout --kill-after=30s 70m python tools/retry_dukascopy_manifest_errors.py \
+            --manifest data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.initial.jsonl \
+            --output-root data/raw/dukascopy_bi5_${PILOT_TAG}_aggregate_repair \
+            --manifest-out data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.aggregate_repair.jsonl \
+            --passes 5 \
+            --retries 5 \
+            --sleep-seconds 2.0 \
+            --request-timeout 75 \
+            --request-interval 1.5 \
+            --pass-sleep-seconds 30 \
+          || echo "aggregate repair ended before all error hours were recovered"
+
+      - name: Resample aggregate repairs
+        if: always()
+        run: |
+          if [ -s data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.aggregate_repair.jsonl ]; then
+            python tools/resample_from_download_manifest.py \
+              --manifest data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.aggregate_repair.jsonl \
+              --output-dir data/processed/dukascopy_bi5_${PILOT_TAG}_aggregate_repair_bars \
+              --timeframes ${TIMEFRAMES}
+          else
+            mkdir -p data/processed/dukascopy_bi5_${PILOT_TAG}_aggregate_repair_bars
+            echo "no aggregate repair manifest records; skip repair resample"
+          fi
+
+      - name: Finalize download coverage
+        run: |
+          cat data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.initial.jsonl > data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl
+          if [ -s data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.aggregate_repair.jsonl ]; then
+            cat data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.aggregate_repair.jsonl >> data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl
+          fi
           python tools/summarize_download_manifest.py \
             --manifest data/raw/dukascopy_bi5_${PILOT_TAG}_combined/download_manifest.jsonl \
             --symbols ${SYMBOL} \
@@ -266,7 +313,7 @@ jobs:
           args=""
           while IFS= read -r -d '' f; do
             args="$args --input $f"
-          done < <(find data/symbol_day_artifacts \( -path "*/M1/*.csv.gz" -o -path "*/M5/*.csv.gz" -o -path "*/M15/*.csv.gz" -o -path "*/H1/*.csv.gz" \) -print0)
+          done < <(find data/symbol_day_artifacts data/processed/dukascopy_bi5_${PILOT_TAG}_aggregate_repair_bars \( -path "*/M1/*.csv.gz" -o -path "*/M5/*.csv.gz" -o -path "*/M15/*.csv.gz" -o -path "*/H1/*.csv.gz" \) -print0)
           if [ -n "$args" ]; then
             python tools/validate_fx_bar_artifacts.py \
               $args \
@@ -282,7 +329,7 @@ jobs:
             args=""
             while IFS= read -r -d '' f; do
               args="$args --input $f"
-            done < <(find data/symbol_day_artifacts -path "*/${tf}/*.csv.gz" -print0)
+            done < <(find data/symbol_day_artifacts data/processed/dukascopy_bi5_${PILOT_TAG}_aggregate_repair_bars -path "*/${tf}/*.csv.gz" -print0)
             if [ -n "$args" ]; then
               python tools/build_market_profile.py \
                 $args \
@@ -320,6 +367,8 @@ jobs:
         with:
           name: public-fx-data-${{ env.PILOT_TAG }}-aggregate-${{ github.run_id }}
           path: |
+            data/raw/dukascopy_bi5_${{ env.PILOT_TAG }}_combined/download_manifest.initial.jsonl
+            data/raw/dukascopy_bi5_${{ env.PILOT_TAG }}_combined/download_manifest.aggregate_repair.jsonl
             data/raw/dukascopy_bi5_${{ env.PILOT_TAG }}_combined/download_manifest.jsonl
             data/raw/dukascopy_bi5_${{ env.PILOT_TAG }}_combined/download_summary.json
             data/raw/dukascopy_bi5_${{ env.PILOT_TAG }}_combined/validation_summary.json
