@@ -119,6 +119,7 @@ jobs:
             --symbol "${SYMBOL}" \
             --timeframes M5 M15 \
             --base-spread-pips 0.5 \
+            --cost-spread-mode max_base_public \
             --spread-mults "1.0 1.5 2.0 3.0" \
             --slippage-pips "0.0 0.1 0.3 0.5" \
             --output-dir "${OUTPUT_DIR}"
