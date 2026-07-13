@@ -19,11 +19,12 @@ concurrency:
 jobs:
   session-baseline:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 75
     env:
       SYMBOL: ${{ inputs.symbol }}
       SOURCE_RUN_ID: ${{ inputs.source_run_id }}
       OUTPUT_DIR: data/experiments/usdjpy_session_baseline_2024_01
+      TIMEFRAMES: "M5 M15"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,7 +41,12 @@ jobs:
 
       - name: Compile tools
         run: |
-          python -m py_compile tools/run_session_baseline_experiments.py
+          python -m py_compile \
+            tools/download_dukascopy_bi5_ticks.py \
+            tools/retry_dukascopy_manifest_errors.py \
+            tools/resample_from_download_manifest.py \
+            tools/resample_fx_ticks.py \
+            tools/run_session_baseline_experiments.py
 
       - name: Download USDJPY day bar artifacts
         uses: actions/download-artifact@v4
@@ -51,12 +57,41 @@ jobs:
           run-id: ${{ env.SOURCE_RUN_ID }}
           github-token: ${{ github.token }}
 
+      - name: Repair remaining source error hours
+        run: |
+          mkdir -p data/source_combined data/source_aggregate_repair
+          find data/source_day_artifacts -path "*/download_manifest.jsonl" -type f -print0 | sort -z | xargs -0 cat > data/source_combined/download_manifest.initial.jsonl
+          timeout --kill-after=30s 55m python tools/retry_dukascopy_manifest_errors.py \
+            --manifest data/source_combined/download_manifest.initial.jsonl \
+            --output-root data/source_aggregate_repair/raw \
+            --manifest-out data/source_combined/download_manifest.aggregate_repair.jsonl \
+            --passes 5 \
+            --retries 5 \
+            --sleep-seconds 2.0 \
+            --request-timeout 75 \
+            --request-interval 1.5 \
+            --pass-sleep-seconds 30 \
+          || echo "source aggregate repair ended before all error hours were recovered"
+
+      - name: Resample repaired source ticks
+        if: always()
+        run: |
+          if [ -s data/source_combined/download_manifest.aggregate_repair.jsonl ]; then
+            python tools/resample_from_download_manifest.py \
+              --manifest data/source_combined/download_manifest.aggregate_repair.jsonl \
+              --output-dir data/source_aggregate_repair/bars \
+              --timeframes ${TIMEFRAMES}
+          else
+            mkdir -p data/source_aggregate_repair/bars
+            echo "no repair manifest records; skip repair resample"
+          fi
+
       - name: Run session baseline experiments
         run: |
-          mapfile -d '' BAR_FILES < <(find data/source_day_artifacts \( -path "*/M5/${SYMBOL}_M5.csv.gz" -o -path "*/M15/${SYMBOL}_M15.csv.gz" \) -print0 | sort -z)
+          mapfile -d '' BAR_FILES < <(find data/source_day_artifacts data/source_aggregate_repair/bars \( -path "*/M5/${SYMBOL}_M5.csv.gz" -o -path "*/M15/${SYMBOL}_M15.csv.gz" \) -print0 | sort -z)
           if [ "${#BAR_FILES[@]}" -eq 0 ]; then
             echo "No M5/M15 bar files found for ${SYMBOL} in source run ${SOURCE_RUN_ID}" >&2
-            find data/source_day_artifacts -maxdepth 6 -type f | sort >&2 || true
+            find data/source_day_artifacts data/source_aggregate_repair -maxdepth 8 -type f | sort >&2 || true
             exit 2
           fi
           args=()
@@ -90,6 +125,9 @@ jobs:
         with:
           name: usdjpy-session-baseline-2024-01-${{ github.run_id }}
           path: |
+            data/source_combined/download_manifest.initial.jsonl
+            data/source_combined/download_manifest.aggregate_repair.jsonl
+            data/source_aggregate_repair/bars/**/*.csv.gz
             data/experiments/usdjpy_session_baseline_2024_01/**/*.csv
             data/experiments/usdjpy_session_baseline_2024_01/**/*.json
             data/experiments/usdjpy_session_baseline_2024_01/**/*.md
