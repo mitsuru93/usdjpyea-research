@@ -50,6 +50,14 @@ Initial interpretation:
 - M5 and M15 are more natural first research timeframes because transaction cost consumes a smaller share of median bar range.
 - H1 has favorable spread/range economics, but strategy cadence and sample size become different problems.
 
+### Decision rationale
+
+この初期判断の中心は「価格がどれだけ動くか」ではなく、「その動きのうち、取引コストに食われる割合がどれだけか」である。USDJPYのM1はmedian rangeが2.25 pipsしかない。楽天の作業仮定spread 0.5 pipsだけを見ても、bar中央的な値幅の22.2%を入口時点で消費する。Dukascopy実測spread中央値では0.644 pipsで、spread/rangeは28.7%になる。ここにslippage 0.1〜0.5 pips per sideやspread stress 1.5x〜3.0xを足すと、小さいTPや短期逆張りは、方向が当たってもコストで優位性が崩れやすい。したがってM1を最初の最適化対象にすると、データ量が多いため見かけ上の勝ちパターンは出やすいが、その多くはコスト耐性を持たない疑似エッジになる可能性が高い。
+
+一方、M5ではmedian rangeが5.50 pipsまで広がり、楽天0.5 pipsの比率は9.1%まで下がる。M15では9.90 pipsに対して5.1%で、さらにコスト比率が下がる。これは「M5/M15なら勝てる」という意味ではない。単に、初期検証で候補戦略の価格構造を見に行くには、M1よりもコストで潰れにくい観測単位だという意味である。H1はspread/range比だけなら2.5%とさらに良いが、2024年1月だけではbar数が520本しかなく、session別・条件別に分解すると標本が薄くなる。そのため、初期の実験単位としてはM5/M15が最もバランスがよい。
+
+時間帯についても同じ考え方で見る。UTC 21〜23、つまりJST 06〜08は、rangeが小さいかspreadが大きく、特にUTC 22はM1 median range 1.15 pipsに対してDukascopy spread中央値が3.254 pipsで、spread/rangeが269.5%まで悪化している。この時間帯で短期売買を試すと、戦略の良し悪しより市場構造上の不利を測ってしまう。逆にUTC 13〜16、JST 22〜01はM1/M5/M15/H1の値幅が相対的に大きく、M5で見た楽天0.5pips/rangeも5.0〜6.6%程度に収まる。よって最初はall-session最適化ではなく、UTC 13〜16を主候補、UTC 7〜9を副候補、UTC 21〜23を除外候補として分け、各sessionで生き残るかを見るべきである。
+
 ## Hour-of-day profile
 
 UTC hours. JST = UTC + 9.
