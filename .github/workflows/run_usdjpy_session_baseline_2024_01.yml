@@ -1,0 +1,97 @@
+name: Run USDJPY Session Baseline 2024-01
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Workflow run ID containing USDJPY day artifacts"
+        required: true
+        default: "29189903048"
+      symbol:
+        description: "Symbol to analyze"
+        required: true
+        default: "USDJPY"
+
+concurrency:
+  group: usdjpy-session-baseline-2024-01
+  cancel-in-progress: false
+
+jobs:
+  session-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SYMBOL: ${{ inputs.symbol }}
+      SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+      OUTPUT_DIR: data/experiments/usdjpy_session_baseline_2024_01
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas tabulate
+
+      - name: Compile tools
+        run: |
+          python -m py_compile tools/run_session_baseline_experiments.py
+
+      - name: Download USDJPY day bar artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: public-fx-data-pilot-2024-01-${{ env.SYMBOL }}-d*-${{ env.SOURCE_RUN_ID }}
+          path: data/source_day_artifacts
+          merge-multiple: true
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+
+      - name: Run session baseline experiments
+        run: |
+          mapfile -d '' BAR_FILES < <(find data/source_day_artifacts \( -path "*/M5/${SYMBOL}_M5.csv.gz" -o -path "*/M15/${SYMBOL}_M15.csv.gz" \) -print0 | sort -z)
+          if [ "${#BAR_FILES[@]}" -eq 0 ]; then
+            echo "No M5/M15 bar files found for ${SYMBOL} in source run ${SOURCE_RUN_ID}" >&2
+            find data/source_day_artifacts -maxdepth 6 -type f | sort >&2 || true
+            exit 2
+          fi
+          args=()
+          for f in "${BAR_FILES[@]}"; do
+            args+=(--input "$f")
+          done
+          python tools/run_session_baseline_experiments.py \
+            "${args[@]}" \
+            --symbol "${SYMBOL}" \
+            --timeframes M5 M15 \
+            --base-spread-pips 0.5 \
+            --spread-mults "1.0 1.5 2.0 3.0" \
+            --slippage-pips "0.0 0.1 0.3 0.5" \
+            --output-dir "${OUTPUT_DIR}"
+
+      - name: Write summary
+        if: always()
+        run: |
+          echo "# USDJPY Session Baseline 2024-01" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "source_run_id: ${SOURCE_RUN_ID}" >> "$GITHUB_STEP_SUMMARY"
+          echo "symbol: ${SYMBOL}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f "${OUTPUT_DIR}/README.md" ]; then
+            cat "${OUTPUT_DIR}/README.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload experiment artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-session-baseline-2024-01-${{ github.run_id }}
+          path: |
+            data/experiments/usdjpy_session_baseline_2024_01/**/*.csv
+            data/experiments/usdjpy_session_baseline_2024_01/**/*.json
+            data/experiments/usdjpy_session_baseline_2024_01/**/*.md
+          if-no-files-found: warn
+          retention-days: 14
