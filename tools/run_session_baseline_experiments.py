@@ -33,6 +33,8 @@ DEFAULT_SESSIONS = {
     "all_hours": set(range(24)),
 }
 
+COST_SPREAD_MODES = {"fixed_base", "max_base_public"}
+
 
 @dataclass(frozen=True)
 class Scenario:
@@ -69,6 +71,7 @@ def load_bars(paths: list[str], symbol: str, timeframes: set[str]) -> pd.DataFra
         "mid_high",
         "mid_low",
         "mid_close",
+        "spread_mean_pips",
         "source_build_id",
     }
     missing = required - set(df.columns)
@@ -79,9 +82,9 @@ def load_bars(paths: list[str], symbol: str, timeframes: set[str]) -> pd.DataFra
     df = df[df["symbol"] == symbol.upper()].copy()
     if df.empty:
         raise ValueError(f"no bars found for symbol={symbol}")
-    for col in ["mid_open", "mid_high", "mid_low", "mid_close"]:
+    for col in ["mid_open", "mid_high", "mid_low", "mid_close", "spread_mean_pips"]:
         df[col] = pd.to_numeric(df[col], errors="coerce")
-    df = df.dropna(subset=["timestamp_utc", "mid_open", "mid_high", "mid_low", "mid_close"])
+    df = df.dropna(subset=["timestamp_utc", "mid_open", "mid_high", "mid_low", "mid_close", "spread_mean_pips"])
     df["timeframe"] = df["source_build_id"].astype(str).str.extract(r"_([A-Z0-9]+)_spread_v\d+$", expand=False)
     unknown_tf = df["timeframe"].isna()
     if unknown_tf.any():
@@ -107,10 +110,19 @@ def build_trade_rows(
     work["side"] = signal_side
     work["entry_ts"] = work["timestamp_utc"].shift(-1)
     work["entry_mid"] = work["mid_open"].shift(-1)
+    work["entry_public_spread_pips"] = work["spread_mean_pips"].shift(-1)
     work["exit_ts"] = work["timestamp_utc"].shift(-hold_bars)
     work["exit_mid"] = work["mid_close"].shift(-hold_bars)
-    mask = work["side"].isin([1, -1]) & work["entry_mid"].notna() & work["exit_mid"].notna()
-    trades = work.loc[mask, ["timestamp_utc", "entry_ts", "exit_ts", "entry_mid", "exit_mid", "side"]].copy()
+    mask = (
+        work["side"].isin([1, -1])
+        & work["entry_mid"].notna()
+        & work["exit_mid"].notna()
+        & work["entry_public_spread_pips"].notna()
+    )
+    trades = work.loc[
+        mask,
+        ["timestamp_utc", "entry_ts", "exit_ts", "entry_mid", "exit_mid", "entry_public_spread_pips", "side"],
+    ].copy()
     if trades.empty:
         return trades
     trades["symbol"] = symbol
@@ -228,6 +240,8 @@ def summarize(stressed: pd.DataFrame) -> pd.DataFrame:
             trades=int(len(group)),
             win_rate=float((net > 0).mean()) if len(group) else 0.0,
             avg_gross_pips=float(gross.mean()) if len(group) else 0.0,
+            avg_cost_pips=float(group["cost_pips"].mean()) if len(group) else 0.0,
+            avg_entry_public_spread_pips=float(group["entry_public_spread_pips"].mean()) if len(group) else 0.0,
             avg_net_pips=float(net.mean()) if len(group) else 0.0,
             median_net_pips=float(net.median()) if len(group) else 0.0,
             total_net_pips=float(net.sum()) if len(group) else 0.0,
@@ -250,7 +264,8 @@ def make_readme(output_dir: Path, summary: pd.DataFrame, config: dict[str, objec
         "# USDJPY Session Baseline Results",
         "",
         "This artifact is a first-pass market-structure probe, not a deployable EA backtest.",
-        "Signals use mid-price bar logic, then subtract Rakuten-style spread and slippage stress.",
+        "Signals use mid-price bar logic, then subtract spread and slippage stress.",
+        "When `cost_spread_mode=max_base_public`, spread cost is based on max(Rakuten base spread, public bar spread).",
         "",
         "## Configuration",
         "",
@@ -272,6 +287,7 @@ def make_readme(output_dir: Path, summary: pd.DataFrame, config: dict[str, objec
             "hold_bars",
             "trades",
             "win_rate",
+            "avg_cost_pips",
             "avg_net_pips",
             "total_net_pips",
             "profit_factor",
@@ -290,6 +306,14 @@ def make_readme(output_dir: Path, summary: pd.DataFrame, config: dict[str, objec
     (output_dir / "README.md").write_text("\n".join(lines), encoding="utf-8")
 
 
+def spread_basis_for_cost(part: pd.DataFrame, base_spread_pips: float, cost_spread_mode: str) -> pd.Series:
+    if cost_spread_mode == "fixed_base":
+        return pd.Series(base_spread_pips, index=part.index, dtype="float64")
+    if cost_spread_mode == "max_base_public":
+        return part["entry_public_spread_pips"].clip(lower=base_spread_pips)
+    raise ValueError(f"unsupported cost spread mode: {cost_spread_mode}")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run session-filtered baseline experiments on FX bars.")
     parser.add_argument("--input", action="append", required=True, help="Bar CSV or CSV.GZ path. Repeatable.")
@@ -297,6 +321,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--symbol", default="USDJPY", help="Symbol to analyze.")
     parser.add_argument("--timeframes", nargs="+", default=["M5", "M15"], help="Timeframes to include.")
     parser.add_argument("--base-spread-pips", type=float, default=0.5, help="Base round-trip spread cost in pips.")
+    parser.add_argument(
+        "--cost-spread-mode",
+        choices=sorted(COST_SPREAD_MODES),
+        default="max_base_public",
+        help="Spread basis for cost. fixed_base ignores bar spread; max_base_public uses max(base spread, public spread).",
+    )
     parser.add_argument("--spread-mults", default="1.0 1.5 2.0 3.0", help="Spread multipliers to stress.")
     parser.add_argument("--slippage-pips", default="0.0 0.1 0.3 0.5", help="Slippage pips per side to stress.")
     parser.add_argument("--breakout-lookbacks", default="3 6 12", help="Breakout lookback bars.")
@@ -355,7 +385,10 @@ def main() -> None:
         part["spread_mult"] = scenario.spread_mult
         part["slippage_pips"] = scenario.slippage_pips
         part["scenario"] = scenario.label
-        part["net_pips"] = part["gross_pips"] - (args.base_spread_pips * scenario.spread_mult) - (2.0 * scenario.slippage_pips)
+        spread_basis = spread_basis_for_cost(part, args.base_spread_pips, args.cost_spread_mode)
+        part["spread_basis_pips"] = spread_basis
+        part["cost_pips"] = (spread_basis * scenario.spread_mult) + (2.0 * scenario.slippage_pips)
+        part["net_pips"] = part["gross_pips"] - part["cost_pips"]
         stressed_frames.append(part)
     stressed = pd.concat(stressed_frames, ignore_index=True)
     summary = summarize(stressed)
@@ -366,6 +399,7 @@ def main() -> None:
         "symbol": symbol,
         "timeframes": sorted(timeframes),
         "base_spread_pips": args.base_spread_pips,
+        "cost_spread_mode": args.cost_spread_mode,
         "spread_multipliers": parse_float_list(args.spread_mults),
         "slippage_pips_per_side": parse_float_list(args.slippage_pips),
         "sessions": {k: sorted(v) for k, v in DEFAULT_SESSIONS.items()},
@@ -391,6 +425,7 @@ def main() -> None:
         "trades": int(len(trades)),
         "session_trade_rows": int(len(session_trades)),
         "summary_rows": int(len(summary)),
+        "cost_spread_mode": args.cost_spread_mode,
     }, sort_keys=True))
 
 
