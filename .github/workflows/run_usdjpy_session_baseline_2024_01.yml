@@ -19,7 +19,7 @@ concurrency:
 jobs:
   session-baseline:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 90
     env:
       SYMBOL: ${{ inputs.symbol }}
       SOURCE_RUN_ID: ${{ inputs.source_run_id }}
@@ -44,6 +44,7 @@ jobs:
           python -m py_compile \
             tools/download_dukascopy_bi5_ticks.py \
             tools/retry_dukascopy_manifest_errors.py \
+            tools/summarize_download_manifest.py \
             tools/resample_from_download_manifest.py \
             tools/resample_fx_ticks.py \
             tools/run_session_baseline_experiments.py
@@ -61,20 +62,35 @@ jobs:
         run: |
           mkdir -p data/source_combined data/source_aggregate_repair
           find data/source_day_artifacts -path "*/download_manifest.jsonl" -type f -print0 | sort -z | xargs -0 cat > data/source_combined/download_manifest.initial.jsonl
-          timeout --kill-after=30s 55m python tools/retry_dukascopy_manifest_errors.py \
+          timeout --kill-after=30s 70m python tools/retry_dukascopy_manifest_errors.py \
             --manifest data/source_combined/download_manifest.initial.jsonl \
             --output-root data/source_aggregate_repair/raw \
             --manifest-out data/source_combined/download_manifest.aggregate_repair.jsonl \
-            --passes 5 \
+            --passes 8 \
             --retries 5 \
             --sleep-seconds 2.0 \
             --request-timeout 75 \
             --request-interval 1.5 \
             --pass-sleep-seconds 30 \
-          || echo "source aggregate repair ended before all error hours were recovered"
+          || echo "source aggregate repair ended before all error hours were recovered; coverage gate will decide"
+
+      - name: Gate source coverage after repair
+        run: |
+          cat data/source_combined/download_manifest.initial.jsonl > data/source_combined/download_manifest.jsonl
+          if [ -s data/source_combined/download_manifest.aggregate_repair.jsonl ]; then
+            cat data/source_combined/download_manifest.aggregate_repair.jsonl >> data/source_combined/download_manifest.jsonl
+          fi
+          python tools/summarize_download_manifest.py \
+            --manifest data/source_combined/download_manifest.jsonl \
+            --symbols ${SYMBOL} \
+            --start "2024-01-02T00" \
+            --end "2024-02-01T00" \
+            --output data/source_combined/download_summary.json \
+            --min-coverage 1.0 \
+            --max-hard-errors 0 \
+            --expected-records-mode observed
 
       - name: Resample repaired source ticks
-        if: always()
         run: |
           if [ -s data/source_combined/download_manifest.aggregate_repair.jsonl ]; then
             python tools/resample_from_download_manifest.py \
@@ -115,6 +131,11 @@ jobs:
           echo "source_run_id: ${SOURCE_RUN_ID}" >> "$GITHUB_STEP_SUMMARY"
           echo "symbol: ${SYMBOL}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Source coverage" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat data/source_combined/download_summary.json >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
           if [ -f "${OUTPUT_DIR}/README.md" ]; then
             cat "${OUTPUT_DIR}/README.md" >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -127,6 +148,8 @@ jobs:
           path: |
             data/source_combined/download_manifest.initial.jsonl
             data/source_combined/download_manifest.aggregate_repair.jsonl
+            data/source_combined/download_manifest.jsonl
+            data/source_combined/download_summary.json
             data/source_aggregate_repair/bars/**/*.csv.gz
             data/experiments/usdjpy_session_baseline_2024_01/**/*.csv
             data/experiments/usdjpy_session_baseline_2024_01/**/*.json
