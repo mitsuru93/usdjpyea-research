@@ -1,0 +1,213 @@
+name: Run FX Session Baseline 2024-01
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Workflow run ID containing symbol day artifacts"
+        required: true
+      symbol:
+        description: "Symbol to analyze, e.g. USDJPY, EURUSD, GBPUSD, AUDUSD, USDCAD, USDCHF"
+        required: true
+        default: "USDJPY"
+      base_spread_pips:
+        description: "Base broker spread in pips, or auto to use the Rakuten snapshot defaults"
+        required: true
+        default: "auto"
+      start_utc_hour:
+        description: "Inclusive start UTC hour for source coverage gate"
+        required: true
+        default: "2024-01-02T00"
+      end_utc_hour:
+        description: "Exclusive end UTC hour for source coverage gate"
+        required: true
+        default: "2024-02-01T00"
+
+concurrency:
+  group: fx-session-baseline-2024-01-${{ inputs.symbol }}
+  cancel-in-progress: false
+
+jobs:
+  session-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      INPUT_SYMBOL: ${{ inputs.symbol }}
+      SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+      INPUT_BASE_SPREAD_PIPS: ${{ inputs.base_spread_pips }}
+      START_UTC_HOUR: ${{ inputs.start_utc_hour }}
+      END_UTC_HOUR: ${{ inputs.end_utc_hour }}
+      TIMEFRAMES: "M5 M15"
+      SESSION_CONFIG: configs/market_sessions/fx_market_sessions_v1.json
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas tabulate
+
+      - name: Resolve symbol and broker spread
+        run: |
+          SYMBOL="${INPUT_SYMBOL^^}"
+          case "${INPUT_BASE_SPREAD_PIPS}" in
+            auto|AUTO|Auto)
+              case "${SYMBOL}" in
+                EURUSD) BASE_SPREAD_PIPS="0.6" ;;
+                USDJPY) BASE_SPREAD_PIPS="0.5" ;;
+                GBPUSD) BASE_SPREAD_PIPS="1.2" ;;
+                AUDUSD) BASE_SPREAD_PIPS="1.2" ;;
+                USDCAD) BASE_SPREAD_PIPS="2.0" ;;
+                USDCHF) BASE_SPREAD_PIPS="1.6" ;;
+                *) echo "Unknown symbol for auto base spread: ${SYMBOL}" >&2; exit 2 ;;
+              esac
+              ;;
+            *)
+              BASE_SPREAD_PIPS="${INPUT_BASE_SPREAD_PIPS}"
+              ;;
+          esac
+          SYMBOL_LC="${SYMBOL,,}"
+          OUTPUT_DIR="data/experiments/${SYMBOL_LC}_session_baseline_2024_01"
+          echo "SYMBOL=${SYMBOL}" >> "$GITHUB_ENV"
+          echo "SYMBOL_LC=${SYMBOL_LC}" >> "$GITHUB_ENV"
+          echo "BASE_SPREAD_PIPS=${BASE_SPREAD_PIPS}" >> "$GITHUB_ENV"
+          echo "OUTPUT_DIR=${OUTPUT_DIR}" >> "$GITHUB_ENV"
+          echo "symbol=${SYMBOL}" >> "$GITHUB_STEP_SUMMARY"
+          echo "base_spread_pips=${BASE_SPREAD_PIPS}" >> "$GITHUB_STEP_SUMMARY"
+          echo "output_dir=${OUTPUT_DIR}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Compile tools and validate session config
+        run: |
+          python -m py_compile \
+            tools/download_dukascopy_bi5_ticks.py \
+            tools/retry_dukascopy_manifest_errors.py \
+            tools/summarize_download_manifest.py \
+            tools/resample_from_download_manifest.py \
+            tools/resample_fx_ticks.py \
+            tools/run_session_baseline_experiments.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("configs/market_sessions/fx_market_sessions_v1.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          assert data["hard_no_trade_windows"], "hard_no_trade_windows must not be empty"
+          print(json.dumps({"session_config": str(p), "hard_no_trade_windows": len(data["hard_no_trade_windows"])}, sort_keys=True))
+          PY
+
+      - name: Download symbol day bar artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: public-fx-data-pilot-2024-01-${{ env.SYMBOL }}-d*-${{ env.SOURCE_RUN_ID }}
+          path: data/source_day_artifacts
+          merge-multiple: true
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+
+      - name: Repair remaining source error hours
+        run: |
+          mkdir -p data/source_combined data/source_aggregate_repair
+          find data/source_day_artifacts -path "*/download_manifest.jsonl" -type f -print0 | sort -z | xargs -0 cat > data/source_combined/download_manifest.initial.jsonl
+          timeout --kill-after=30s 70m python tools/retry_dukascopy_manifest_errors.py \
+            --manifest data/source_combined/download_manifest.initial.jsonl \
+            --output-root data/source_aggregate_repair/raw \
+            --manifest-out data/source_combined/download_manifest.aggregate_repair.jsonl \
+            --passes 8 \
+            --retries 5 \
+            --sleep-seconds 2.0 \
+            --request-timeout 75 \
+            --request-interval 1.5 \
+            --pass-sleep-seconds 30 \
+          || echo "source aggregate repair ended before all error hours were recovered; coverage gate will decide"
+
+      - name: Gate source coverage after repair
+        run: |
+          cat data/source_combined/download_manifest.initial.jsonl > data/source_combined/download_manifest.jsonl
+          if [ -s data/source_combined/download_manifest.aggregate_repair.jsonl ]; then
+            cat data/source_combined/download_manifest.aggregate_repair.jsonl >> data/source_combined/download_manifest.jsonl
+          fi
+          python tools/summarize_download_manifest.py \
+            --manifest data/source_combined/download_manifest.jsonl \
+            --symbols ${SYMBOL} \
+            --start "${START_UTC_HOUR}" \
+            --end "${END_UTC_HOUR}" \
+            --output data/source_combined/download_summary.json \
+            --min-coverage 1.0 \
+            --max-hard-errors 0 \
+            --expected-records-mode observed
+
+      - name: Resample repaired source ticks
+        run: |
+          if [ -s data/source_combined/download_manifest.aggregate_repair.jsonl ]; then
+            python tools/resample_from_download_manifest.py \
+              --manifest data/source_combined/download_manifest.aggregate_repair.jsonl \
+              --output-dir data/source_aggregate_repair/bars \
+              --timeframes ${TIMEFRAMES}
+          else
+            mkdir -p data/source_aggregate_repair/bars
+            echo "no repair manifest records; skip repair resample"
+          fi
+
+      - name: Run session baseline experiments
+        run: |
+          mapfile -d '' BAR_FILES < <(find data/source_day_artifacts data/source_aggregate_repair/bars \( -path "*/M5/${SYMBOL}_M5.csv.gz" -o -path "*/M15/${SYMBOL}_M15.csv.gz" \) -print0 | sort -z)
+          if [ "${#BAR_FILES[@]}" -eq 0 ]; then
+            echo "No M5/M15 bar files found for ${SYMBOL} in source run ${SOURCE_RUN_ID}" >&2
+            find data/source_day_artifacts data/source_aggregate_repair -maxdepth 8 -type f | sort >&2 || true
+            exit 2
+          fi
+          args=()
+          for f in "${BAR_FILES[@]}"; do
+            args+=(--input "$f")
+          done
+          python tools/run_session_baseline_experiments.py \
+            "${args[@]}" \
+            --symbol "${SYMBOL}" \
+            --timeframes M5 M15 \
+            --base-spread-pips "${BASE_SPREAD_PIPS}" \
+            --cost-spread-mode max_base_public \
+            --session-config "${SESSION_CONFIG}" \
+            --spread-mults "1.0 1.5 2.0 3.0" \
+            --slippage-pips "0.0 0.1 0.3 0.5" \
+            --output-dir "${OUTPUT_DIR}"
+
+      - name: Write summary
+        if: always()
+        run: |
+          echo "# FX Session Baseline 2024-01" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "source_run_id: ${SOURCE_RUN_ID}" >> "$GITHUB_STEP_SUMMARY"
+          echo "symbol: ${SYMBOL}" >> "$GITHUB_STEP_SUMMARY"
+          echo "base_spread_pips: ${BASE_SPREAD_PIPS}" >> "$GITHUB_STEP_SUMMARY"
+          echo "session_config: ${SESSION_CONFIG}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Source coverage" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat data/source_combined/download_summary.json >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f "${OUTPUT_DIR}/README.md" ]; then
+            cat "${OUTPUT_DIR}/README.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload experiment artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fx-session-baseline-2024-01-${{ env.SYMBOL }}-${{ github.run_id }}
+          path: |
+            data/source_combined/download_manifest.initial.jsonl
+            data/source_combined/download_manifest.aggregate_repair.jsonl
+            data/source_combined/download_manifest.jsonl
+            data/source_combined/download_summary.json
+            data/source_aggregate_repair/bars/**/*.csv.gz
+            data/experiments/${{ env.SYMBOL_LC }}_session_baseline_2024_01/**/*.csv
+            data/experiments/${{ env.SYMBOL_LC }}_session_baseline_2024_01/**/*.json
+            data/experiments/${{ env.SYMBOL_LC }}_session_baseline_2024_01/**/*.md
+          if-no-files-found: warn
+          retention-days: 14
