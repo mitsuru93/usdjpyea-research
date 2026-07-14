@@ -3,7 +3,7 @@
 
 This is not an optimizer. It is a first-pass market-structure probe that asks
 whether simple breakout/continuation signals retain any expectancy after
-session splits and cost stress.
+session splits, project-wide no-trade windows, and cost stress.
 """
 
 from __future__ import annotations
@@ -12,7 +12,9 @@ import argparse
 import json
 import math
 from dataclasses import dataclass
+from datetime import time
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 
@@ -52,6 +54,56 @@ def parse_float_list(raw: str) -> list[float]:
 
 def parse_int_list(raw: str) -> list[int]:
     return [int(x) for x in raw.replace(",", " ").split() if x.strip()]
+
+
+def parse_hhmm(raw: str) -> time:
+    hour_s, minute_s = raw.split(":", 1)
+    return time(hour=int(hour_s), minute=int(minute_s))
+
+
+def load_session_config(path: str | None) -> dict[str, object] | None:
+    if not path:
+        return None
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def symbol_applies(window: dict[str, object], symbol: str) -> bool:
+    applies = window.get("applies_to", ["*"])
+    if not isinstance(applies, list):
+        raise ValueError(f"applies_to must be a list in no-trade window: {window}")
+    normalized = {str(item).upper() for item in applies}
+    return "*" in normalized or symbol.upper() in normalized
+
+
+def local_time_in_window(local_times: pd.Series, start_t: time, end_t: time) -> pd.Series:
+    if start_t <= end_t:
+        return (local_times >= start_t) & (local_times < end_t)
+    return (local_times >= start_t) | (local_times < end_t)
+
+
+def hard_exclusion_mask(trades: pd.DataFrame, symbol: str, session_config: dict[str, object] | None) -> tuple[pd.Series, pd.Series]:
+    mask = pd.Series(False, index=trades.index)
+    reasons = pd.Series("", index=trades.index, dtype="object")
+    if not session_config:
+        return mask, reasons
+    windows = session_config.get("hard_no_trade_windows", [])
+    if not isinstance(windows, list):
+        raise ValueError("hard_no_trade_windows must be a list")
+    for window in windows:
+        if not isinstance(window, dict):
+            raise ValueError(f"no-trade window must be an object: {window}")
+        if not symbol_applies(window, symbol):
+            continue
+        tz = ZoneInfo(str(window["timezone"]))
+        start_t = parse_hhmm(str(window["start_local"]))
+        end_t = parse_hhmm(str(window["end_local"]))
+        local_times = trades["entry_ts"].dt.tz_convert(tz).dt.time
+        window_mask = local_time_in_window(local_times, start_t, end_t)
+        reason = str(window.get("id", "hard_no_trade_window"))
+        mask = mask | window_mask
+        reasons = reasons.mask(window_mask & reasons.eq(""), reason)
+        reasons = reasons.mask(window_mask & ~reasons.eq("") & ~reasons.str.contains(reason, regex=False), reasons + ";" + reason)
+    return mask, reasons
 
 
 def load_bars(paths: list[str], symbol: str, timeframes: set[str]) -> pd.DataFrame:
@@ -198,6 +250,23 @@ def pullback_trades(
     return out
 
 
+def apply_hard_exclusions(
+    trades: pd.DataFrame,
+    *,
+    symbol: str,
+    session_config: dict[str, object] | None,
+    enforce: bool,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    if trades.empty or not session_config or not enforce:
+        return trades.copy(), trades.iloc[0:0].copy()
+    mask, reasons = hard_exclusion_mask(trades, symbol, session_config)
+    excluded = trades.loc[mask].copy()
+    if not excluded.empty:
+        excluded["hard_exclude_reason"] = reasons.loc[mask]
+    kept = trades.loc[~mask].copy()
+    return kept.reset_index(drop=True), excluded.reset_index(drop=True)
+
+
 def assign_sessions(trades: pd.DataFrame) -> pd.DataFrame:
     frames = []
     for name, hours in DEFAULT_SESSIONS.items():
@@ -266,6 +335,7 @@ def make_readme(output_dir: Path, summary: pd.DataFrame, config: dict[str, objec
         "This artifact is a first-pass market-structure probe, not a deployable EA backtest.",
         "Signals use mid-price bar logic, then subtract spread and slippage stress.",
         "When `cost_spread_mode=max_base_public`, spread cost is based on max(Rakuten base spread, public bar spread).",
+        "Project-wide hard no-trade windows are applied before session summaries when configured.",
         "",
         "## Configuration",
         "",
@@ -297,7 +367,8 @@ def make_readme(output_dir: Path, summary: pd.DataFrame, config: dict[str, objec
         "",
         "## Files",
         "",
-        "- `trades.csv`: signal-level gross outcomes before stress expansion.",
+        "- `trades.csv`: signal-level gross outcomes before stress expansion and after hard no-trade filtering.",
+        "- `excluded_trades.csv`: signal-level trades removed by project-wide hard no-trade windows.",
         "- `summary.csv`: grouped gross/net metrics by timeframe, session, strategy family, parameters, and stress scenario.",
         "- `top_default_cost.csv`: default-cost rows sorted by average net pips after a minimum trade-count filter.",
         "- `config.json`: run configuration.",
@@ -335,6 +406,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pullback-min-pips", default="1 2", help="Minimum one-bar pullback pips.")
     parser.add_argument("--hold-bars", default="1 3 6", help="Fixed holding periods in bars.")
     parser.add_argument("--min-trades-for-top-table", type=int, default=30, help="Top table minimum trade count.")
+    parser.add_argument("--session-config", default=None, help="Project-wide market session/no-trade JSON config.")
+    parser.add_argument(
+        "--disable-hard-no-trade-windows",
+        action="store_true",
+        help="Do not remove trades that fall inside hard no-trade windows from the session config.",
+    )
     return parser.parse_args()
 
 
@@ -344,6 +421,7 @@ def main() -> None:
     pip = PIP_SIZE.get(symbol)
     if pip is None:
         raise ValueError(f"unsupported symbol: {symbol}")
+    session_config = load_session_config(args.session_config)
     timeframes = {tf.upper() for tf in args.timeframes}
     bars = load_bars(args.input, symbol=symbol, timeframes=timeframes)
 
@@ -371,9 +449,17 @@ def main() -> None:
                 pip=pip,
             )
         )
-    trades = pd.concat([f for f in trade_frames if not f.empty], ignore_index=True) if trade_frames else pd.DataFrame()
-    if trades.empty:
+    trades_raw = pd.concat([f for f in trade_frames if not f.empty], ignore_index=True) if trade_frames else pd.DataFrame()
+    if trades_raw.empty:
         raise ValueError("no trades generated by baseline signal definitions")
+    trades, excluded_trades = apply_hard_exclusions(
+        trades_raw,
+        symbol=symbol,
+        session_config=session_config,
+        enforce=not args.disable_hard_no_trade_windows,
+    )
+    if trades.empty:
+        raise ValueError("all trades were removed by hard no-trade windows")
     session_trades = assign_sessions(trades)
     if session_trades.empty:
         raise ValueError("no trades remained after session assignment")
@@ -403,6 +489,10 @@ def main() -> None:
         "spread_multipliers": parse_float_list(args.spread_mults),
         "slippage_pips_per_side": parse_float_list(args.slippage_pips),
         "sessions": {k: sorted(v) for k, v in DEFAULT_SESSIONS.items()},
+        "session_config": args.session_config,
+        "hard_no_trade_windows_enabled": not args.disable_hard_no_trade_windows,
+        "raw_signal_trades_before_hard_exclusion": int(len(trades_raw)),
+        "hard_excluded_trades": int(len(excluded_trades)),
         "breakout_lookbacks": parse_int_list(args.breakout_lookbacks),
         "trend_lookbacks": parse_int_list(args.trend_lookbacks),
         "trend_min_pips": parse_float_list(args.trend_min_pips),
@@ -412,6 +502,7 @@ def main() -> None:
         "min_trades_for_top_table": args.min_trades_for_top_table,
     }
     trades.to_csv(output_dir / "trades.csv", index=False)
+    excluded_trades.to_csv(output_dir / "excluded_trades.csv", index=False)
     summary.to_csv(output_dir / "summary.csv", index=False)
     default_top = summary[(summary["scenario"] == "spread_x1_slip_0") & (summary["trades"] >= args.min_trades_for_top_table)].sort_values(
         ["avg_net_pips", "trades"], ascending=[False, False]
@@ -422,10 +513,13 @@ def main() -> None:
     print(json.dumps({
         "output_dir": str(output_dir),
         "bars": int(len(bars)),
+        "raw_signal_trades": int(len(trades_raw)),
+        "hard_excluded_trades": int(len(excluded_trades)),
         "trades": int(len(trades)),
         "session_trade_rows": int(len(session_trades)),
         "summary_rows": int(len(summary)),
         "cost_spread_mode": args.cost_spread_mode,
+        "session_config": args.session_config,
     }, sort_keys=True))
 
 
