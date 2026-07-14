@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "description": "Project-wide FX market session and hard no-trade rules. Local times are converted with IANA time zones, so DST is handled by the runtime time-zone database.",
+  "hard_no_trade_windows": [
+    {
+      "id": "asia_preopen_low_liquidity_ny_rollover",
+      "label": "Asia pre-open low-liquidity / New York rollover window",
+      "applies_to": ["*"],
+      "timezone": "America/New_York",
+      "start_local": "16:00",
+      "end_local": "18:00",
+      "action": "hard_exclude",
+      "rationale": "Do not trade the thin-liquidity period before Asian liquidity forms. The rule is anchored to New York local time so the UTC exclusion shifts automatically across US daylight-saving time. User trading experience and public tick profiles both show structurally poor spreads/transaction quality around this window. Any apparent edge inside this window must not be accepted for research or live deployment."
+    }
+  ]
+}
