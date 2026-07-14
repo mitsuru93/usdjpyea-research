@@ -8,9 +8,9 @@
       "applies_to": ["*"],
       "timezone": "America/New_York",
       "start_local": "16:00",
-      "end_local": "18:00",
+      "end_local": "19:00",
       "action": "hard_exclude",
-      "rationale": "Do not trade the thin-liquidity period before Asian liquidity forms. The rule is anchored to New York local time so the UTC exclusion shifts automatically across US daylight-saving time. User trading experience and public tick profiles both show structurally poor spreads/transaction quality around this window. Any apparent edge inside this window must not be accepted for research or live deployment."
+      "rationale": "Do not trade the thin-liquidity period before Asian liquidity forms. The rule is anchored to New York local time so the UTC exclusion shifts automatically across US daylight-saving time. In New York standard time this excludes UTC 21:00-24:00, covering JST 06:00-09:00; in New York daylight time this excludes UTC 20:00-23:00, covering JST 05:00-08:00. User trading experience and public tick profiles both show structurally poor spreads/transaction quality around this window. Any apparent edge inside this window must not be accepted for research or live deployment."
     }
   ]
 }
