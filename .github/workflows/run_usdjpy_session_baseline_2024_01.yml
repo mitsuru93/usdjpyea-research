@@ -25,6 +25,7 @@ jobs:
       SOURCE_RUN_ID: ${{ inputs.source_run_id }}
       OUTPUT_DIR: data/experiments/usdjpy_session_baseline_2024_01
       TIMEFRAMES: "M5 M15"
+      SESSION_CONFIG: configs/market_sessions/fx_market_sessions_v1.json
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,7 +40,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pandas tabulate
 
-      - name: Compile tools
+      - name: Compile tools and validate session config
         run: |
           python -m py_compile \
             tools/download_dukascopy_bi5_ticks.py \
@@ -48,6 +49,14 @@ jobs:
             tools/resample_from_download_manifest.py \
             tools/resample_fx_ticks.py \
             tools/run_session_baseline_experiments.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("configs/market_sessions/fx_market_sessions_v1.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          assert data["hard_no_trade_windows"], "hard_no_trade_windows must not be empty"
+          print(json.dumps({"session_config": str(p), "hard_no_trade_windows": len(data["hard_no_trade_windows"])}, sort_keys=True))
+          PY
 
       - name: Download USDJPY day bar artifacts
         uses: actions/download-artifact@v4
@@ -120,6 +129,7 @@ jobs:
             --timeframes M5 M15 \
             --base-spread-pips 0.5 \
             --cost-spread-mode max_base_public \
+            --session-config "${SESSION_CONFIG}" \
             --spread-mults "1.0 1.5 2.0 3.0" \
             --slippage-pips "0.0 0.1 0.3 0.5" \
             --output-dir "${OUTPUT_DIR}"
@@ -131,6 +141,7 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "source_run_id: ${SOURCE_RUN_ID}" >> "$GITHUB_STEP_SUMMARY"
           echo "symbol: ${SYMBOL}" >> "$GITHUB_STEP_SUMMARY"
+          echo "session_config: ${SESSION_CONFIG}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "## Source coverage" >> "$GITHUB_STEP_SUMMARY"
           echo '```json' >> "$GITHUB_STEP_SUMMARY"
@@ -147,6 +158,7 @@ jobs:
         with:
           name: usdjpy-session-baseline-2024-01-${{ github.run_id }}
           path: |
+            configs/market_sessions/fx_market_sessions_v1.json
             data/source_combined/download_manifest.initial.jsonl
             data/source_combined/download_manifest.aggregate_repair.jsonl
             data/source_combined/download_manifest.jsonl
