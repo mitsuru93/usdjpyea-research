@@ -23,6 +23,10 @@ on:
         required: false
         type: string
         default: "0"
+      collect_max_parallel:
+        required: false
+        type: number
+        default: 4
 
 concurrency:
   group: public-fx-tick-${{ inputs.symbol }}-${{ inputs.pilot_tag }}
@@ -87,7 +91,7 @@ jobs:
     needs: prepare-chunks
     strategy:
       fail-fast: false
-      max-parallel: 1
+      max-parallel: ${{ inputs.collect_max_parallel }}
       matrix:
         include: ${{ fromJson(needs.prepare-chunks.outputs.chunks) }}
     env:
