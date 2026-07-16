@@ -54,7 +54,7 @@ median absolute entry-price difference: 0.25 pips
 share within 2.0 pips:                 99.35%
 ```
 
-The public M1 series is therefore used for descriptive range, direction and excursion fields. It does not replace the Dukascopy P&L calculation.
+This agreement is adequate for descriptive range and excursion fields. It is not evidence that the public-M1 series can replace Dukascopy for signal generation or P&L.
 
 ## Fixed-family result
 
@@ -84,9 +84,9 @@ The Q2 failure remains the verified decision. Direction-only interpretation does
 
 The unfiltered breakout family remains unpromoted.
 
-## Q1 versus Q2 market-state change
+## Q1 versus Q2 descriptive market-state change
 
-Median descriptive fields:
+Median fields derived from the reconciled public M1 series:
 
 | Candidate | Field | Q1 | Q2 |
 |---|---|---:|---:|
@@ -103,7 +103,7 @@ Median descriptive fields:
 | M15 breakout | holding-window MFE | 12.9 | 8.85 |
 | M15 breakout | holding-window range | 26.9 | 21.5 |
 
-The principal repeated difference is weaker primary-session expansion and weaker post-entry excursion in Q2. It is not a broad collapse in prior three-hour range: prior 180-minute range is nearly unchanged for both fixed candidates.
+The repeated difference is weaker primary-session expansion and weaker post-entry excursion in Q2. Prior 180-minute range is nearly unchanged, so this is not simply a broad reduction in pre-entry volatility.
 
 ## M5 pullback diagnosis
 
@@ -116,41 +116,19 @@ Natural pre-entry interpretations were checked without fitting profitable numeri
 - recent one-hour volatility versus the preceding three-hour average;
 - entry outside the pre-primary-session range.
 
-No condition produced a combination of:
+No condition produced positive Q1 and Q2 averages, repeated monthly performance, acceptable severe-cost behavior and low day concentration together.
 
-- positive Q1 and Q2 averages;
-- repeated positive months;
-- acceptable severe-cost behavior;
-- low dependence on one or two days.
+The M5 pullback branch therefore remains rejected. No regime filter is promoted.
 
-The M5 pullback branch therefore remains rejected. No regime filter is promoted from this diagnostic.
+## Provisional M15 mechanism observed with reconciled features
 
-## M15 mechanism comparison
-
-Four mechanism definitions were compared. These are natural sign or relative-comparison rules, not fitted thresholds.
-
-| Mechanism | Trades | Positive months | Q1 avg | Q2 avg | Default PF | Severe avg | Severe PF | Event-excluded avg | Event-excluded PF | Total excluding best 2 days |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Signal range > previous-bar range | 393 | 4/6 | +2.141 | +1.302 | 1.235 | -0.421 | 0.951 | +1.145 | 1.154 | +150.38 |
-| Direction aligned with prior 12h | 428 | 4/6 | +0.763 | +2.319 | 1.200 | -0.683 | 0.919 | +0.890 | 1.121 | +84.17 |
-| Direction aligned with prior 24h | 336 | 4/6 | +0.954 | +2.069 | 1.198 | -0.655 | 0.924 | +1.125 | 1.147 | +95.15 |
-| Recent volatility acceleration | 548 | 4/6 | +1.013 | +0.839 | 1.125 | -1.228 | 0.858 | +0.584 | 1.078 | -141.69 |
-
-Event-excluded results remove the following diagnostic dates:
-
-```text
-2024-04-29
-2024-05-01
-2024-05-02
-```
-
-The strongest mechanism under the predefined robustness dimensions is:
+When the existing Dukascopy breakout trade rows are labeled by public-M1 descriptive features, the strongest observed condition is:
 
 ```text
 signal-bar range > immediately preceding M15 bar range
 ```
 
-It has:
+The labeled Dukascopy trade rows show:
 
 ```text
 trades: 393
@@ -167,21 +145,30 @@ event-excluded PF: 1.154
 total excluding best two days: +150.38
 ```
 
-The complement, breakout signals without signal-range expansion, is approximately flat in aggregate and negative in Q2. This supports an impulse-confirmation mechanism rather than a generic breakout edge.
+This is a useful diagnostic lead, not yet a valid H2 candidate.
 
-## Interpretation
+## Signal-generation equivalence check
 
-The selected hypothesis is not that the original breakout family passed. It did not.
+The exact impulse rule was then regenerated directly from the public-M1 OHLC bars for the same H1 period.
 
-The new hypothesis is narrower and mechanistically distinct:
+That result changed materially:
 
-> A local M15 close breakout is more likely to continue when the breakout bar itself shows immediate volatility expansion relative to the preceding completed M15 bar.
+```text
+trades: 395
+positive months: 3 / 6
+avg net pips: +1.099
+total net pips: +434.00
+profit factor: 1.143
+severe avg net pips: -0.901
+severe PF: 0.897
+total excluding best two days: -29.10
+```
 
-The rule is observable at the signal close and uses no fitted magnitude threshold. The comparison boundary is exactly 1.0 because it asks whether range expanded or contracted.
+The public-M1 signal generation therefore does not reproduce the robustness profile obtained by labeling the Dukascopy baseline trades.
 
-This is development-sample evidence only. It must be tested on a later untouched block before Dukascopy H2 collection, exit research or EA implementation.
+The cause is not the small median entry-price difference alone. Small OHLC differences change whether a close exceeds a three-bar high or low and whether one bar range exceeds the preceding range. The selected trade population changes.
 
-## Decision
+## Current decision
 
 ```text
 M5 pullback branch:
@@ -190,12 +177,37 @@ M5 pullback branch:
 Unfiltered M15 breakout:
   remains rejected
 
-New candidate for pre-registration:
-  M15 impulse-confirmed breakout
-  breakout lookback = 3
-  signal range > previous-bar range
-  hold = 6
-  entry UTC hours = 13-16
+M15 impulse-confirmation lead:
+  provisional only
+
+H2 pre-registration:
+  withdrawn before any July-December result was inspected
 ```
 
-The next step is Step 3C: commit the exact H2 candidate and gate before inspecting July-December results.
+## Required next action
+
+Before defining any H2 candidate, rerun the impulse diagnostic using the original Dukascopy M15 source bars from the six verified source runs.
+
+Required source runs:
+
+```text
+2024-01: 29189903048
+2024-02: 29329511595
+2024-03: 29386417671
+2024-04: 29423451609
+2024-05: 29455212697
+2024-06: 29469210771
+```
+
+The exact-source diagnostic must:
+
+1. download the original day-bar artifacts;
+2. reconstruct monthly Dukascopy M15 bars;
+3. apply `range[t] > range[t-1]` on those bars;
+4. join the condition to the canonical baseline trade rows;
+5. reproduce monthly, severe-stress, event-sensitivity and day-concentration metrics;
+6. compare the resulting trade population with the public-M1 labeled population.
+
+Only if the Dukascopy-bar result independently meets the robustness requirements may the candidate and H2 gate be committed.
+
+No 2024-07 through 2024-12 performance result has been inspected or accepted.
