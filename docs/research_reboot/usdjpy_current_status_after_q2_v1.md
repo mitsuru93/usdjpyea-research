@@ -2,9 +2,7 @@
 
 ## Last verified stage
 
-The last verified research stage is the completion of the monthly USDJPY session-baseline runs for 2024-01 through 2024-06.
-
-Canonical baseline runs:
+The verified monthly USDJPY session-baseline runs cover 2024-01 through 2024-06.
 
 ```text
 2024-01: 29307131333
@@ -20,8 +18,6 @@ All six baseline artifacts were generated from source data with 100% effective c
 ## Verified family decisions
 
 ### M5 pullback continuation
-
-Fixed representative:
 
 ```text
 timeframe: M5
@@ -53,11 +49,11 @@ profit_factor: 0.827
 positive_months: 1 / 3
 ```
 
-The pre-registered Q2 promotion gate was not met.
+The pre-registered Q2 promotion gate was not met. The post-Q2 diagnosis did not identify a repeated M5 regime condition with acceptable monthly, severe-stress and concentration behavior.
+
+The M5 pullback branch is closed in its current form.
 
 ### M15 breakout close follow-through
-
-Fixed watchlist representative:
 
 ```text
 timeframe: M15
@@ -77,73 +73,116 @@ Monthly default-cost average net pips:
 2024-06: -1.216
 ```
 
-This family did not reproduce consistently and was not promoted.
+The unfiltered family did not reproduce consistently and was not promoted.
+
+## Diagnostic progress
+
+P&L remains sourced from the canonical Dukascopy baseline trade rows.
+
+The public M1 series was reconciled to the 1,529 fixed-candidate entries and used for descriptive market-state fields only:
+
+```text
+median absolute entry-price difference: 0.25 pips
+99th percentile:                       1.10 pips
+share within 2.0 pips:                 99.35%
+```
+
+The Q1-to-Q2 descriptive change is weaker primary-session expansion and weaker post-entry excursion, rather than a large change in prior three-hour range.
+
+A provisional M15 lead appeared when the Dukascopy baseline trade rows were labeled with the descriptive condition:
+
+```text
+signal-bar range > previous completed M15 bar range
+```
+
+However, regenerating both signals and P&L directly from the public-M1 series did not reproduce the same robustness profile:
+
+```text
+public-M1 H1 regeneration:
+trades: 395
+positive months: 3 / 6
+avg net pips: +1.099
+profit factor: 1.143
+severe avg net pips: -0.901
+severe PF: 0.897
+total excluding best two days: -29.10
+```
+
+Therefore the public M1 dataset cannot be used to validate this candidate. It remains a diagnostic lead only.
 
 ## Current phase
 
 ```text
-Phase: post-Q2 failure diagnosis
-Development data allowed: 2024-01 through 2024-06 only
-Later untouched period: not yet selected for testing
-EA implementation: not started
-Exit-policy optimization: not started
+Original roadmap position:
+Step 3B - post-Q2 entry-strategy diagnosis
+
+Current substep:
+exact-source confirmation of the provisional M15 impulse mechanism
+
+Development data allowed:
+2024-01 through 2024-06 only
+
+2024-07 through 2024-12:
+not inspected and not accepted as evidence
+
+Exit-policy optimization:
+not started
+
+EA / Core implementation:
+not started
 ```
 
-The current phase is diagnostic. It is not a seventh monthly baseline run and it is not a July-December performance test.
+## Exact-source confirmation
 
-## Work now being performed
+The confirmation must use the original Dukascopy M15 bars from the source runs that generated the six verified baselines:
 
-The two fixed candidates are analyzed without changing their parameters.
+```text
+2024-01: 29189903048
+2024-02: 29329511595
+2024-03: 29386417671
+2024-04: 29423451609
+2024-05: 29455212697
+2024-06: 29469210771
+```
 
-Required diagnostic outputs:
+The exact-source tool is:
 
-1. Monthly attribution.
-2. Long / short attribution.
-3. Daily profit and loss concentration.
-4. Official intervention-event sensitivity.
-5. Q1 versus Q2 market-state attribution using source M5 and M15 bars:
-   - prior-session realized range;
-   - primary-session realized range;
-   - directional efficiency;
-   - spread / range ratio;
-   - pre-entry trend magnitude;
-   - prior-bar and prior-hour shock size.
+```text
+tools/analyze_usdjpy_dukascopy_impulse_confirmation.py
+```
 
-The purpose is to determine whether the Q1-to-Q2 difference has a repeated market mechanism. The purpose is not to find a profitable threshold inside January-June.
+The workflow to run is:
 
-## Decision after diagnosis
+```text
+Run USDJPY H1 Dukascopy Impulse Confirmation
+```
 
-There are only two permitted outcomes.
+Workflow file:
 
-### Outcome A: repeated mechanism found
+```text
+.github/workflows/run_usdjpy_h1_dukascopy_impulse_confirmation.yml
+```
 
-A new strategy family or regime hypothesis may be written only when the mechanism:
+It downloads the six canonical baseline artifacts and all corresponding day-bar artifacts, calculates `range[t] > range[t-1]` on the original Dukascopy M15 bars, joins the condition to the canonical breakout trade rows, and reports:
 
-- appears across multiple months;
-- is not created by one intervention episode or one extreme day;
-- is observable before entry;
-- can be defined without selecting a profitable threshold from the same sample.
+- source-bar coverage;
+- monthly results;
+- severe-stress results;
+- intervention sensitivity;
+- direction split;
+- best-day concentration;
+- impulse versus non-impulse population comparison.
 
-The hypothesis, exact candidate and promotion gate must then be committed before any later period is inspected.
+## Next decision
 
-### Outcome B: no repeated mechanism found
+Only two outcomes are permitted after the exact-source artifact is inspected.
 
-The pullback and breakout research branch is closed. A different family with an independent market rationale must be designed.
+### Exact-source confirmation passes
 
-## Later-period rule
+The exact candidate, later test period and promotion gate are committed before any 2024-07 through 2024-12 result is opened.
 
-2024-07 through 2024-12 has not been accepted as a verified result block in this project.
+### Exact-source confirmation fails
 
-No July-December result may be treated as evidence until:
+The impulse lead is rejected. The pullback and breakout branch is closed and a different strategy family with an independent market mechanism is designed.
 
-1. the current January-June diagnosis is completed;
-2. a candidate is specified;
-3. the later test interval and gates are committed in advance;
-4. the corresponding workflow is actually run;
-5. its GitHub Actions artifact is inspected.
-
-## Invalid H2 material removed
-
-Unverified H1 diagnostic results, the unsupported 24-hour-alignment candidate, its H2 result record, screen tool and workflow were removed from the repository.
-
-The repository is therefore reset to the verified January-June state plus the post-Q2 diagnostic plan.
+No H2 pre-registration is currently active.
