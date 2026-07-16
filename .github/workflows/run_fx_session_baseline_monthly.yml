@@ -6,19 +6,19 @@ on:
       source_run_id:
         description: "Workflow run ID containing symbol day artifacts"
         required: true
-        default: "29423451609"
+        default: "29455212697"
       symbol:
         description: "Symbol to analyze, e.g. USDJPY, EURUSD, GBPUSD, AUDUSD, USDCAD, USDCHF"
         required: true
         default: "USDJPY"
       pilot_tag:
-        description: "Pilot tag used by day artifacts, e.g. pilot-2024-04-USDJPY"
+        description: "Pilot tag used by day artifacts, e.g. pilot-2024-05-USDJPY"
         required: true
-        default: "pilot-2024-04-USDJPY"
+        default: "pilot-2024-05-USDJPY"
       month_tag:
-        description: "Month tag for output naming, e.g. 2024-04"
+        description: "Month tag for output naming, e.g. 2024-05"
         required: true
-        default: "2024-04"
+        default: "2024-05"
       base_spread_pips:
         description: "Base broker spread in pips, or auto to use the Rakuten snapshot defaults"
         required: true
@@ -26,11 +26,11 @@ on:
       start_utc_hour:
         description: "Inclusive coverage-gate start"
         required: true
-        default: "2024-04-01T00"
+        default: "2024-05-01T00"
       end_utc_hour:
         description: "Exclusive coverage-gate end"
         required: true
-        default: "2024-05-01T00"
+        default: "2024-06-01T00"
 
 concurrency:
   group: fx-session-baseline-${{ inputs.month_tag }}-${{ inputs.symbol }}
