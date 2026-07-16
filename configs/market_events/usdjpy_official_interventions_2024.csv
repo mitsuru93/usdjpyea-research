@@ -1,0 +1,5 @@
+official_date,event_type,usd_action,jpy_action,amount_jpy_billion,source_url,notes
+2024-04-29,official_fx_intervention,sold,bought,5918.5,https://www.mof.go.jp/english/policy/international_policy/reference/feio/quarter/2024_2Qe.html,MOF operation date; do not treat as an exact UTC interval
+2024-05-01,official_fx_intervention,sold,bought,3870.0,https://www.mof.go.jp/english/policy/international_policy/reference/feio/quarter/2024_2Qe.html,MOF operation date; second market shock appears around the following UTC/JST calendar date
+2024-07-11,official_fx_intervention,sold,bought,3167.8,https://www.mof.go.jp/english/policy/international_policy/reference/feio/quarter/2024_3Qe.html,Outside current Q2 sample
+2024-07-12,official_fx_intervention,sold,bought,2367.0,https://www.mof.go.jp/english/policy/international_policy/reference/feio/quarter/2024_3Qe.html,Outside current Q2 sample
