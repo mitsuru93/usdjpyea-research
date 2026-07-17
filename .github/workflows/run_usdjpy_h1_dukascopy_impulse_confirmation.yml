@@ -130,6 +130,21 @@ jobs:
           run-id: 29469210771
           github-token: ${{ github.token }}
 
+      - name: Add baseline aggregate-repair M15 bars
+        run: |
+          set -euo pipefail
+          for month in 2024-01 2024-02 2024-03 2024-04 2024-05 2024-06; do
+            repair_file="data/baselines/${month}/source_aggregate_repair/bars/M15/USDJPY_M15.csv.gz"
+            if [ -f "${repair_file}" ]; then
+              target_dir="data/source/${month}/baseline_aggregate_repair/M15"
+              mkdir -p "${target_dir}"
+              cp "${repair_file}" "${target_dir}/USDJPY_M15.csv.gz"
+              echo "${month}: added aggregate-repair M15 bars"
+            else
+              echo "${month}: no aggregate-repair M15 bars"
+            fi
+          done
+
       - name: Confirm impulse condition on Dukascopy bars
         run: |
           python tools/analyze_usdjpy_dukascopy_impulse_confirmation.py \
