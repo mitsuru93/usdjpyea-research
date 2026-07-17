@@ -2,7 +2,7 @@
 
 ## Verified baseline block
 
-The verified monthly USDJPY session-baseline runs cover 2024-01 through 2024-06.
+The verified Dukascopy monthly baseline block covers 2024-01 through 2024-06 with 100% effective coverage and zero final hard errors.
 
 ```text
 2024-01: 29307131333
@@ -13,57 +13,20 @@ The verified monthly USDJPY session-baseline runs cover 2024-01 through 2024-06.
 2024-06: 29475803893
 ```
 
-All six baseline artifacts were generated from source data with 100% effective coverage and zero final hard errors.
-
-## Closed branch
-
-The fixed M5 pullback representative failed its Q2 gate:
+## Existing family decisions
 
 ```text
-Q2 trades: 423
-Q2 avg net pips: -0.888
-Q2 total net pips: -375.48
-Q2 profit factor: 0.827
-positive Q2 months: 1 / 3
+M5 pullback continuation:
+  closed in current form after Q2 gate failure
+
+Unfiltered M15 breakout:
+  rejected
+
+M15 impulse-confirmed breakout:
+  exact-source-confirmed H1 development candidate
 ```
 
-No repeated M5 regime condition survived the post-Q2 diagnostic requirements. The M5 pullback branch is closed in its current form.
-
-The unfiltered M15 breakout family also remains rejected.
-
-## Exact-source-confirmed candidate
-
-Candidate:
-
-```text
-name: m15_impulse_breakout_lb3
-timeframe: M15
-entry hours UTC: 13, 14, 15, 16
-breakout lookback: 3 completed M15 bars
-impulse condition: signal-bar range > previous completed M15-bar range
-entry: next M15 bar open
-hold: 6 M15 bars
-```
-
-Exact-source confirmation run:
-
-```text
-run_id: 29543895841
-artifact: usdjpy-h1-dukascopy-impulse-confirmation-29543895841
-artifact_digest: sha256:75ca6f8c86f013a4e8a3d8962d4c00d80aebcef8d21e95dd182370be38558999
-```
-
-The confirmation used the original Dukascopy M15 source bars and the canonical baseline P&L rows, including aggregate-repair bars.
-
-Coverage:
-
-```text
-all canonical breakout trades: 598
-matched signal bars: 598
-missing signal bars: 0
-```
-
-Impulse-confirmed H1 result:
+Impulse candidate H1 result:
 
 ```text
 trades: 391
@@ -73,53 +36,66 @@ total net pips: +788.22
 profit factor: 1.281
 Q1 avg net pips: +2.628
 Q2 avg net pips: +1.327
+severe profit factor: 0.982
+event-excluded profit factor: 1.204
+total excluding best two days: +251.58 pips
 ```
 
-Severe stress:
-
-```text
-avg net pips: -0.153
-profit factor: 0.982
-```
-
-After excluding the 2024 Q2 intervention episode dates:
-
-```text
-avg net pips: +1.458
-profit factor: 1.204
-```
-
-After excluding the two strongest UTC days:
-
-```text
-total net pips: +251.58
-```
-
-The complement population without range expansion is negative:
-
-```text
-trades: 207
-avg net pips: -0.637
-profit factor: 0.916
-```
-
-Result record:
+Canonical result:
 
 ```text
 docs/research_reboot/usdjpy_h1_dukascopy_impulse_confirmation_result_v1.md
 ```
 
+## Adopted research design
+
+The project will not validate the impulse candidate alone. Multiple independent families are developed on the same H1 block and then tested together on one untouched H2 block.
+
+```text
+Step 3A: evaluate each family independently on 2024-01 through 2024-06
+Step 3B: retain at most three representatives per family
+Step 3C: pre-register all retained candidates and common H2 gates
+Step 3D: evaluate all retained candidates on 2024-07 through 2024-12 in one batch
+Step 4: compare surviving families
+Step 5: consider family combinations only after independent validation
+```
+
+Active plan:
+
+```text
+docs/research_reboot/usdjpy_multi_family_h1_research_plan_v1.md
+```
+
+Candidate registry:
+
+```text
+configs/research/usdjpy_h1_multi_family_candidates_v1.json
+```
+
+## Families currently included
+
+```text
+A. M15 impulse-confirmed breakout
+B. Session range breakout
+C. Mean reversion / failed excursion
+D. Compression to expansion
+E. Higher-timeframe trend continuation
+```
+
+The families are not combined during H1 screening.
+
 ## Current phase
 
 ```text
-Original roadmap position:
-Step 3C - untouched-period entry-strategy validation
+Roadmap position:
+Step 3A - H1 independent multi-family screening
 
-Development period:
+Development data:
 2024-01 through 2024-06
 
-Untouched H2 period:
+Untouched validation data:
 2024-07 through 2024-12
+not yet opened for candidate evaluation
 
 Exit-policy optimization:
 not started
@@ -128,38 +104,56 @@ EA / Core implementation:
 not started
 ```
 
-## Active H2 pre-registration
+## Current implementation
+
+Screening tool:
 
 ```text
-docs/research_reboot/usdjpy_m15_impulse_breakout_h2_prereg_v1.md
+tools/run_usdjpy_h1_multi_family_screen.py
 ```
 
-Pre-registration commit:
+Workflow:
 
 ```text
-fc35f780659fb97e3bec5a32e74276baa868da0b
-```
-
-The exact candidate, Dukascopy data source, cost model, intervention sensitivity, sample-size conditions, monthly replication conditions, concentration test and severe-stress gate are fixed before any H2 candidate result is inspected.
-
-## Immediate next action
-
-Collect July 2024 Dukascopy USDJPY bid/ask ticks with:
-
-```text
-Run Public FX Tick Pilot 2024-07 USDJPY
+Run USDJPY H1 Multi-Family Screen
 ```
 
 Workflow file:
 
 ```text
-.github/workflows/run_public_fx_tick_pilot_USDJPY_2024_07.yml
+.github/workflows/run_usdjpy_h1_multi_family_screen.yml
 ```
 
-July wrapper commit:
+The workflow downloads the original H1 Dukascopy M15 day artifacts, adds aggregate-repair bars from the canonical monthly baselines, evaluates only the registered candidates, and reports:
+
+- source-bar coverage and duplicate handling;
+- candidate-level and monthly results;
+- Q1/Q2 attribution;
+- default and severe costs;
+- intervention sensitivity;
+- best-two-day concentration;
+- H1 retention checks;
+- family ranking;
+- retained candidates, capped at three per family.
+
+## H2 status
+
+The earlier impulse-only H2 pre-registration has been superseded before H2 execution.
 
 ```text
-f864427b230f4821d786418e92027e9be49eaa59
+docs/research_reboot/usdjpy_m15_impulse_breakout_h2_prereg_v1.md
 ```
 
-After the July source run reaches 100% effective coverage and zero hard errors, run the monthly baseline with that source run. The impulse condition is evaluated from the same Dukascopy M15 bars. Repeat sequentially for August through December without changing the pre-registered candidate or gate.
+A new joint H2 pre-registration will be created only after the H1 multi-family artifact has been inspected and the final retained candidate list has been committed.
+
+The July tick-pilot wrapper may remain in the repository, but its data must not be used for candidate selection or evaluation before the joint H2 pre-registration is complete.
+
+## Immediate next action
+
+Run:
+
+```text
+Run USDJPY H1 Multi-Family Screen
+```
+
+After the run completes, inspect its artifact and decide which candidates survive H1. Only then create the joint H2 pre-registration.
