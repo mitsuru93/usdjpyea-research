@@ -97,6 +97,8 @@ The workflow processes the four source months sequentially with four concurrent 
 
 ## Entry-horizon diagnostic
 
+### Invalid v1
+
 Run `29582417411` completed technically but is research-invalid.
 
 ```text
@@ -105,32 +107,67 @@ invalid record:
 
 reason:
   the v1 runner generated signals separately for each month and reset prior-history state at month boundaries
-
-observed registered-hold mismatches:
-  B3 authoritative 94 trades; v1 diagnostic 90
-  E2 authoritative 372 trades; v1 diagnostic 368
-  E3 authoritative 361 trades; v1 diagnostic 354
 ```
 
-The A1-only regression passed because A1's three-bar lookback did not expose the boundary defect. No result from the invalid artifact may be used.
+No result from the invalid artifact may be used.
 
-Corrected v2 files:
+### Accepted v2
 
 ```text
-protocol:
-  docs/research_reboot/usdjpy_entry_horizon_research_protocol_v2.md
-
-config:
-  configs/research/usdjpy_h1_entry_horizon_diagnostic_v2.json
-
-runner:
-  tools/run_usdjpy_h1_entry_horizon_diagnostic_v2.py
-
-workflow:
-  Run USDJPY H1 Entry-Horizon Diagnostic v2
+workflow: Run USDJPY H1 Entry-Horizon Diagnostic v2
+run_id: 29583719940
+head_sha: e81fe4d1600a5c8d665c700d68218b6bf85299c3
+artifact: usdjpy-h1-entry-horizon-diagnostic-v2-29583719940
+artifact_digest: sha256:f95a0a450aa3b821dbcb20ea4f3410f345668606bf5f20a766a3e01d8a6e89e4
+result record: docs/research_reboot/usdjpy_h1_entry_horizon_diagnostic_v2_result_v1.md
 ```
 
-The v2 runner concatenates January-June before signal generation, matching the authoritative H1 screen. Acceptance now requires all 13 candidates to reproduce their authoritative registered-hold metrics, plus 13-candidate / 12-entry-definition accounting and confirmation that no H2 data was read.
+The v2 run is accepted. It passed the registered-hold regression for all 13 candidates, matched the authoritative H1 metrics, reported 12 unique entry definitions and confirmed `h2_data_read: false` and `promotion_decision: false`.
+
+Primary horizon findings:
+
+```text
+A1:
+  positive from 1 through 16 bars except no tested negative point inside that range
+  highest tested average at 6 bars: +2.016 pips
+  24 bars: -0.233 pips
+
+E3:
+  negative at 1-3 bars
+  positive at 4-24 bars
+  strongest region at 6-12 bars
+  highest tested average at 6 bars: +1.783 pips
+
+C4:
+  strengthens from 6 through 24 bars
+  16 bars: +2.932 pips, severe PF 1.079
+  24 bars: +4.198 pips, severe PF 1.170
+
+C3:
+  broad positive region at 8-16 bars
+  highest tested average at 12 bars: +1.606 pips
+  negative again at 24 bars
+
+E2:
+  weak at shorter horizons
+  24 bars: +3.607 pips, 5 positive months, severe PF 1.109
+
+B2:
+  16 and 24 bars become positive and cost-stress positive
+  remains sample-limited with 99 H1 entries
+
+B3:
+  positive only at 6 bars and negative at neighboring tested horizons
+  remains below the 120-trade gate
+```
+
+Research interpretation:
+
+- A1 and E3 are not merely isolated six-bar peaks; each has a neighboring positive horizon region.
+- The original six-bar screen nevertheless changed candidate ranking materially.
+- C4, C3, E2 and B2 require separate slower-horizon hypotheses if researched later.
+- No candidate is promoted from the development diagnostic.
+- Any new entry-plus-exit strategy requires a new pre-registration and a later untouched validation block.
 
 ## Research roadmap
 
@@ -149,14 +186,15 @@ Step 3D — untouched H2 data collection and batch validation:
 
 Entry-horizon development diagnostic:
   v1 invalidated
-  v2 implementation complete; execution pending
+  v2 accepted and recorded
 
 Step 4 — evaluate frozen A1+hold6 and E3+hold6 H2 results:
   not started
 
 Exit-policy research:
-  not started
-  must use controlled mechanism-based branches after valid horizon/path evidence
+  horizon/path evidence available
+  strategy selection not started
+  must use controlled mechanism-based branches and a later untouched validation block
 
 EA / Core / MT4 implementation:
   not started
@@ -164,8 +202,8 @@ EA / Core / MT4 implementation:
 
 ## Next operations
 
-1. Run `Run USDJPY H1 Entry-Horizon Diagnostic v2`.
-2. Accept its artifact only if every registered-hold regression passes.
-3. Finish and verify run `29569149852` without inspecting month-level candidate results.
-4. Evaluate A1+hold6 and E3+hold6 on the full H2 block under the frozen gate.
-5. Define any later exit candidates under a new pre-registration and reserve a later untouched validation block.
+1. Finish and verify run `29569149852` without inspecting month-level candidate results.
+2. Evaluate A1+hold6 and E3+hold6 on the full H2 block under the frozen gate.
+3. Use the accepted horizon surface to define a small mechanism-based exit research plan.
+4. Pre-register any new entry-plus-exit candidates before evaluating them on a later untouched block.
+5. Reproduce surviving complete strategies in Core/MT4 before EA deployment.
