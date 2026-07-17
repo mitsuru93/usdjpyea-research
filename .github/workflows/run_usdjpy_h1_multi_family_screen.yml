@@ -27,7 +27,9 @@ jobs:
 
       - name: Compile and validate registry
         run: |
-          python -m py_compile tools/run_usdjpy_h1_multi_family_screen.py
+          python -m py_compile \
+            tools/run_usdjpy_h1_multi_family_screen.py \
+            tools/run_usdjpy_h1_multi_family_screen_v2.py
           python - <<'PY'
           import json
           from pathlib import Path
@@ -154,9 +156,9 @@ jobs:
             fi
           done
 
-      - name: Run fixed H1 multi-family screen
+      - name: Run corrected fixed H1 multi-family screen
         run: |
-          python tools/run_usdjpy_h1_multi_family_screen.py \
+          python tools/run_usdjpy_h1_multi_family_screen_v2.py \
             --bars 2024-01=data/source/2024-01 \
             --bars 2024-02=data/source/2024-02 \
             --bars 2024-03=data/source/2024-03 \
@@ -165,33 +167,53 @@ jobs:
             --bars 2024-06=data/source/2024-06 \
             --registry configs/research/usdjpy_h1_multi_family_candidates_v1.json \
             --session-config configs/market_sessions/fx_market_sessions_v1.json \
-            --output-dir data/experiments/usdjpy_h1_multi_family_screen_v1
+            --output-dir data/experiments/usdjpy_h1_multi_family_screen_v2
+
+      - name: Verify A1 canonical reproduction
+        run: |
+          python - <<'PY'
+          import math
+          import pandas as pd
+          path = "data/experiments/usdjpy_h1_multi_family_screen_v2/candidate_summary.csv"
+          summary = pd.read_csv(path)
+          row = summary.loc[summary["candidate_id"] == "A1_impulse_breakout_lb3_hold6"].iloc[0]
+          expected = {
+              "trades": 391,
+              "total_net_pips": 788.2165005892261,
+              "avg_net_pips": 2.0158989784890693,
+              "profit_factor": 1.2805773608918685,
+          }
+          assert int(row["trades"]) == expected["trades"], (row.to_dict(), expected)
+          for key in ["total_net_pips", "avg_net_pips", "profit_factor"]:
+              assert math.isclose(float(row[key]), expected[key], rel_tol=0.0, abs_tol=1e-9), (key, row[key], expected[key])
+          print({"canonical_reproduction": "passed", **expected})
+          PY
 
       - name: Write result summary
         if: always()
         run: |
-          echo "# USDJPY H1 Multi-Family Screen" >> "$GITHUB_STEP_SUMMARY"
+          echo "# USDJPY H1 Multi-Family Screen v2" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "## Candidate summary" >> "$GITHUB_STEP_SUMMARY"
           echo '```csv' >> "$GITHUB_STEP_SUMMARY"
-          cat data/experiments/usdjpy_h1_multi_family_screen_v1/candidate_summary.csv >> "$GITHUB_STEP_SUMMARY" || true
+          cat data/experiments/usdjpy_h1_multi_family_screen_v2/candidate_summary.csv >> "$GITHUB_STEP_SUMMARY" || true
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "## Family ranking" >> "$GITHUB_STEP_SUMMARY"
           echo '```csv' >> "$GITHUB_STEP_SUMMARY"
-          cat data/experiments/usdjpy_h1_multi_family_screen_v1/family_ranking.csv >> "$GITHUB_STEP_SUMMARY" || true
+          cat data/experiments/usdjpy_h1_multi_family_screen_v2/family_ranking.csv >> "$GITHUB_STEP_SUMMARY" || true
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "## Retained candidates" >> "$GITHUB_STEP_SUMMARY"
           echo '```json' >> "$GITHUB_STEP_SUMMARY"
-          cat data/experiments/usdjpy_h1_multi_family_screen_v1/retained_candidates.json >> "$GITHUB_STEP_SUMMARY" || true
+          cat data/experiments/usdjpy_h1_multi_family_screen_v2/retained_candidates.json >> "$GITHUB_STEP_SUMMARY" || true
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload screening artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: usdjpy-h1-multi-family-screen-${{ github.run_id }}
-          path: data/experiments/usdjpy_h1_multi_family_screen_v1/**
+          name: usdjpy-h1-multi-family-screen-v2-${{ github.run_id }}
+          path: data/experiments/usdjpy_h1_multi_family_screen_v2/**
           if-no-files-found: error
           retention-days: 30
