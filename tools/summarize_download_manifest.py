@@ -5,7 +5,6 @@ This tool is intentionally small and source-agnostic over the manifest schema em
 by tools/download_dukascopy_bi5_ticks.py. It does not promote a dataset; it only
 reports whether the collection run is complete enough for the current workflow stage.
 """
-
 from __future__ import annotations
 
 import argparse
@@ -37,6 +36,24 @@ def expected_hours(start: dt.datetime, end: dt.datetime, symbols: list[str]) -> 
     if end <= start:
         raise ValueError("end must be after start")
     hours = int((end - start).total_seconds() // 3600)
+    return hours * len(symbols)
+
+
+def expected_weekday_hours(start: dt.datetime, end: dt.datetime, symbols: list[str]) -> int:
+    """Count UTC hours belonging to Monday-Friday dates.
+
+    Monthly FX collection workflows deliberately create one 24-hour chunk for each
+    UTC weekday and create no weekend chunks. This fixed expectation detects a whole
+    missing weekday artifact, which observed-record counting cannot detect.
+    """
+    if end <= start:
+        raise ValueError("end must be after start")
+    current = start
+    hours = 0
+    while current < end:
+        if current.weekday() < 5:
+            hours += 1
+        current += dt.timedelta(hours=1)
     return hours * len(symbols)
 
 
@@ -89,6 +106,7 @@ def summarize(records: list[dict[str, Any]], expected: int, raw_records: int) ->
     hard_errors = sum(status_counts[s] for s in ERROR_STATUSES)
     soft_missing = sum(status_counts[s] for s in SOFT_MISSING_STATUSES)
     observed = len(records)
+    unobserved = max(expected - observed, 0)
     effective_expected = max(expected - soft_missing, 0)
     calendar_coverage = successful / expected if expected else 0.0
     effective_coverage = successful / effective_expected if effective_expected else 0.0
@@ -96,6 +114,7 @@ def summarize(records: list[dict[str, Any]], expected: int, raw_records: int) ->
         "expected_records": expected,
         "raw_manifest_records": raw_records,
         "observed_records": observed,
+        "unobserved_records": unobserved,
         "successful_records": successful,
         "soft_missing_records": soft_missing,
         "hard_error_records": hard_errors,
@@ -119,9 +138,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-hard-errors", type=int, default=0, help="Maximum terminal error records allowed.")
     parser.add_argument(
         "--expected-records-mode",
-        choices=["calendar", "observed"],
+        choices=["calendar", "weekdays", "observed"],
         default="calendar",
-        help="Use calendar hours from start/end, or use observed manifest records. Use observed for discontinuous trading-day chunk aggregates.",
+        help=(
+            "Use all calendar hours, fixed Monday-Friday UTC hours, or observed manifest "
+            "records. Weekdays is authoritative for monthly weekday-chunk FX aggregates."
+        ),
     )
     return parser.parse_args()
 
@@ -129,12 +151,16 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     symbols = [s.upper() for s in args.symbols]
+    start = parse_utc_hour(args.start)
+    end = parse_utc_hour(args.end)
     raw_records = load_manifest(Path(args.manifest))
     records = deduplicate_records(raw_records)
     if args.expected_records_mode == "observed":
         expected = len(records)
+    elif args.expected_records_mode == "weekdays":
+        expected = expected_weekday_hours(start, end, symbols)
     else:
-        expected = expected_hours(parse_utc_hour(args.start), parse_utc_hour(args.end), symbols)
+        expected = expected_hours(start, end, symbols)
     summary = summarize(records, expected, raw_records=len(raw_records))
     summary["expected_records_mode"] = args.expected_records_mode
     output = Path(args.output)
