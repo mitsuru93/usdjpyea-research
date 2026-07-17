@@ -1,0 +1,197 @@
+name: Run USDJPY H1 Multi-Family Screen
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: usdjpy-h1-multi-family-screen
+  cancel-in-progress: false
+
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas
+
+      - name: Compile and validate registry
+        run: |
+          python -m py_compile tools/run_usdjpy_h1_multi_family_screen.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          registry = json.loads(Path("configs/research/usdjpy_h1_multi_family_candidates_v1.json").read_text())
+          assert registry["symbol"] == "USDJPY"
+          assert len(registry["families"]) == 5
+          print({"families": [f["family"] for f in registry["families"]]})
+          PY
+
+      - name: Download January baseline repair bars
+        uses: actions/download-artifact@v4
+        with:
+          name: fx-session-baseline-2024-01-USDJPY-29307131333
+          path: data/baselines/2024-01
+          run-id: 29307131333
+          github-token: ${{ github.token }}
+
+      - name: Download February baseline repair bars
+        uses: actions/download-artifact@v4
+        with:
+          name: fx-session-baseline-2024-02-USDJPY-29383810487
+          path: data/baselines/2024-02
+          run-id: 29383810487
+          github-token: ${{ github.token }}
+
+      - name: Download March baseline repair bars
+        uses: actions/download-artifact@v4
+        with:
+          name: fx-session-baseline-2024-03-USDJPY-29421329471
+          path: data/baselines/2024-03
+          run-id: 29421329471
+          github-token: ${{ github.token }}
+
+      - name: Download April baseline repair bars
+        uses: actions/download-artifact@v4
+        with:
+          name: fx-session-baseline-2024-04-USDJPY-29455059447
+          path: data/baselines/2024-04
+          run-id: 29455059447
+          github-token: ${{ github.token }}
+
+      - name: Download May baseline repair bars
+        uses: actions/download-artifact@v4
+        with:
+          name: fx-session-baseline-2024-05-USDJPY-29469227483
+          path: data/baselines/2024-05
+          run-id: 29469227483
+          github-token: ${{ github.token }}
+
+      - name: Download June baseline repair bars
+        uses: actions/download-artifact@v4
+        with:
+          name: fx-session-baseline-2024-06-USDJPY-29475803893
+          path: data/baselines/2024-06
+          run-id: 29475803893
+          github-token: ${{ github.token }}
+
+      - name: Download January source bars
+        uses: actions/download-artifact@v4
+        with:
+          pattern: public-fx-data-pilot-2024-01-USDJPY-d*-29189903048
+          path: data/source/2024-01
+          merge-multiple: true
+          run-id: 29189903048
+          github-token: ${{ github.token }}
+
+      - name: Download February source bars
+        uses: actions/download-artifact@v4
+        with:
+          pattern: public-fx-data-pilot-2024-02-USDJPY-d*-29329511595
+          path: data/source/2024-02
+          merge-multiple: true
+          run-id: 29329511595
+          github-token: ${{ github.token }}
+
+      - name: Download March source bars
+        uses: actions/download-artifact@v4
+        with:
+          pattern: public-fx-data-pilot-2024-03-USDJPY-d*-29386417671
+          path: data/source/2024-03
+          merge-multiple: true
+          run-id: 29386417671
+          github-token: ${{ github.token }}
+
+      - name: Download April source bars
+        uses: actions/download-artifact@v4
+        with:
+          pattern: public-fx-data-pilot-2024-04-USDJPY-d*-29423451609
+          path: data/source/2024-04
+          merge-multiple: true
+          run-id: 29423451609
+          github-token: ${{ github.token }}
+
+      - name: Download May source bars
+        uses: actions/download-artifact@v4
+        with:
+          pattern: public-fx-data-pilot-2024-05-USDJPY-d*-29455212697
+          path: data/source/2024-05
+          merge-multiple: true
+          run-id: 29455212697
+          github-token: ${{ github.token }}
+
+      - name: Download June source bars
+        uses: actions/download-artifact@v4
+        with:
+          pattern: public-fx-data-pilot-2024-06-USDJPY-d*-29469210771
+          path: data/source/2024-06
+          merge-multiple: true
+          run-id: 29469210771
+          github-token: ${{ github.token }}
+
+      - name: Add aggregate-repair M15 bars
+        run: |
+          set -euo pipefail
+          for month in 2024-01 2024-02 2024-03 2024-04 2024-05 2024-06; do
+            repair_file="data/baselines/${month}/source_aggregate_repair/bars/M15/USDJPY_M15.csv.gz"
+            if [ -f "${repair_file}" ]; then
+              target_dir="data/source/${month}/baseline_aggregate_repair/M15"
+              mkdir -p "${target_dir}"
+              cp "${repair_file}" "${target_dir}/USDJPY_M15.csv.gz"
+              echo "${month}: added aggregate-repair M15 bars"
+            else
+              echo "${month}: no aggregate-repair M15 bars"
+            fi
+          done
+
+      - name: Run fixed H1 multi-family screen
+        run: |
+          python tools/run_usdjpy_h1_multi_family_screen.py \
+            --bars 2024-01=data/source/2024-01 \
+            --bars 2024-02=data/source/2024-02 \
+            --bars 2024-03=data/source/2024-03 \
+            --bars 2024-04=data/source/2024-04 \
+            --bars 2024-05=data/source/2024-05 \
+            --bars 2024-06=data/source/2024-06 \
+            --registry configs/research/usdjpy_h1_multi_family_candidates_v1.json \
+            --session-config configs/market_sessions/fx_market_sessions_v1.json \
+            --output-dir data/experiments/usdjpy_h1_multi_family_screen_v1
+
+      - name: Write result summary
+        if: always()
+        run: |
+          echo "# USDJPY H1 Multi-Family Screen" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Candidate summary" >> "$GITHUB_STEP_SUMMARY"
+          echo '```csv' >> "$GITHUB_STEP_SUMMARY"
+          cat data/experiments/usdjpy_h1_multi_family_screen_v1/candidate_summary.csv >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Family ranking" >> "$GITHUB_STEP_SUMMARY"
+          echo '```csv' >> "$GITHUB_STEP_SUMMARY"
+          cat data/experiments/usdjpy_h1_multi_family_screen_v1/family_ranking.csv >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Retained candidates" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat data/experiments/usdjpy_h1_multi_family_screen_v1/retained_candidates.json >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload screening artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-h1-multi-family-screen-${{ github.run_id }}
+          path: data/experiments/usdjpy_h1_multi_family_screen_v1/**
+          if-no-files-found: error
+          retention-days: 30
