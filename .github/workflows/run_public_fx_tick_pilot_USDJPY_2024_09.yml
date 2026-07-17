@@ -1,0 +1,16 @@
+name: Run Public FX Tick Pilot 2024-09 USDJPY
+
+on:
+  workflow_dispatch:
+
+jobs:
+  usd-jpy-2024-09:
+    uses: ./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml
+    with:
+      symbol: USDJPY
+      pilot_tag: pilot-2024-09-USDJPY
+      start_utc_hour: "2024-09-01T00"
+      end_utc_hour: "2024-10-01T00"
+      min_coverage: "1.0"
+      max_hard_errors: "0"
+      collect_max_parallel: 2
