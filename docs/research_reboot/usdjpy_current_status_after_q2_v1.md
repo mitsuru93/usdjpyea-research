@@ -1,6 +1,6 @@
 # USDJPY Research Status After Q2 v1
 
-## Verified H1 data block
+## Verified development data block
 
 The verified Dukascopy development block covers 2024-01 through 2024-06 with 100% effective coverage and zero final hard errors.
 
@@ -13,44 +13,15 @@ The verified Dukascopy development block covers 2024-01 through 2024-06 with 100
 2024-06 baseline: 29475803893
 ```
 
-## Closed or rejected branches
+## Corrected multi-family development run
 
-```text
-M5 pullback continuation:
-  closed in current form after Q2 failure
-
-Unfiltered M15 breakout:
-  rejected
-
-Session range breakout:
-  no candidate retained
-  B3 failed only the predeclared aggregate sample gate: 94 < 120
-
-Mean reversion / failed excursion:
-  no candidate retained
-
-Compression to expansion:
-  no candidate retained
-
-Higher-timeframe trend continuation:
-  E1 and E2 rejected
-  E3 retained
-```
-
-No failed H1 candidate may be added to H2 after the corrected screen result was opened.
-
-## Corrected H1 multi-family result
-
-Authoritative workflow:
+Authoritative workflow result:
 
 ```text
 run_id: 29547232643
-head_sha: a1a96ca0808f31b508b6ee82da345949725acc30
 artifact: usdjpy-h1-multi-family-screen-v2-29547232643
 artifact_digest: sha256:b5fd40e7c37cd3c4c417b9e02547ce6d7195f0f989266e4f0e3ae0305947ec94
 ```
-
-The run completed successfully and passed the A1 canonical reproduction assertion.
 
 Canonical result record:
 
@@ -58,60 +29,90 @@ Canonical result record:
 docs/research_reboot/usdjpy_h1_multi_family_screen_v2_result_v1.md
 ```
 
-The earlier run 29546116205 is invalid because it applied selected entry-hour fields to the signal bar and used a different spread field.
+The earlier run `29546116205` is invalid because it applied selected entry-hour fields to the signal bar and used a different spread field.
 
-## Retained H2 candidates
+The corrected January–June screen is retained as a development-period diagnostic. Its `retention_pass` field does not filter the July–December validation set.
 
-### A1 — M15 impulse-confirmed breakout
+## Frozen H2 candidate set
 
-```text
-candidate_id: A1_impulse_breakout_lb3_hold6
-trades: 391
-positive months: 4 / 6
-avg net pips: +2.015899
-total net pips: +788.216501
-profit factor: 1.280577
-Q1 avg net pips: +2.628028
-Q2 avg net pips: +1.327254
-severe profit factor: 0.981540
-event-excluded profit factor: 1.203591
-total excluding best two days: +251.580550
-```
-
-### E3 — 96-bar trend resumption
+All 13 candidates in the registered M15 universe advance to the untouched H2 batch:
 
 ```text
-candidate_id: E3_trend_24h_resumption_hold6
-trades: 361
-positive months: 4 / 6
-avg net pips: +1.783355
-total net pips: +643.791082
-profit factor: 1.305343
-Q1 avg net pips: +0.816226
-Q2 avg net pips: +2.724059
-severe profit factor: 0.949636
-event-excluded profit factor: 1.246307
-total excluding best two days: +394.000132
+A1_impulse_breakout_lb3_hold6
+
+B1_asia_00_06_breakout_hold6
+B2_asia_00_07_breakout_hold6
+B3_prior_utc_day_breakout_hold6
+
+C1_failed_12bar_hold3
+C2_failed_12bar_hold6
+C3_failed_24bar_hold6
+C4_failed_asia_00_06_hold6
+
+D1_compression_4v4_hold6
+D2_compression_8v8_hold6
+
+E1_trend_4h_resumption_hold6
+E2_trend_8h_resumption_hold6
+E3_trend_24h_resumption_hold6
 ```
 
-Both candidates remain two-sided. Direction-only variants are not registered.
+Authoritative files:
+
+```text
+configs/research/usdjpy_h1_multi_family_candidates_v1.json
+configs/research/usdjpy_h2_all_candidates_v1.json
+docs/research_reboot/usdjpy_joint_h2_prereg_all_candidates_v1.md
+```
+
+Candidate-set policy:
+
+```text
+all_registered_candidates_no_h1_retention_filter
+```
+
+The prior A1/E3-only H2 pre-registration is superseded and must not be used.
+
+## M5 pullback status
+
+The fixed M5 pullback-continuation hypothesis remains rejected in its tested form.
+
+```text
+trend_lookback_bars: 12
+trend_min_pips: 10
+pullback_min_pips: 2
+hold_bars: 6
+```
+
+It failed the pre-registered Q2 gate:
+
+```text
+trades: 423
+avg_net_pips: -0.888
+total_net_pips: -375.48
+positive_months: 1 / 3
+severe avg_net_pips: -3.033
+severe total_net_pips: -1282.75
+```
+
+This rejects the specific pullback-continuation family, not the M5 timeframe. A new M5 hypothesis requires a new family definition and a later untouched validation block. It is not part of the current H2 promotion set.
 
 ## Research roadmap position
 
 ```text
-Step 3A — independent H1 family screening:
+Step 3A — define and freeze the multi-family candidate universe:
   complete
 
-Step 3B — retain representatives:
+Step 3B — corrected January–June development diagnostics:
   complete
 
-Step 3C — joint H2 pre-registration:
-  complete
+Step 3C — all-candidate H2 pre-registration:
+  complete after merge of the all-candidate handoff
 
-Step 3D — untouched H2 data collection and batch validation:
+Step 3D — untouched July–December data collection and joint validation:
   current
 
-Step 4 — compare candidates that pass every H2 gate:
+Step 4 — compare all candidates that pass every independent H2 gate:
   not started
 
 Exit-policy research:
@@ -121,25 +122,17 @@ EA / Core / MT4 implementation:
   not started
 ```
 
-## Active H2 pre-registration
-
-```text
-docs/research_reboot/usdjpy_joint_h2_prereg_a1_e3_v1.md
-```
-
-Pre-registration commit:
-
-```text
-b89b550c87addd074ac6ab6de5438ad6f8e972ce
-```
-
-Validation block:
+## H2 validation block
 
 ```text
 2024-07-01T00:00:00Z through 2025-01-01T00:00:00Z exclusive
 ```
 
-Both candidates are judged independently against the same predeclared gate. Candidate definitions, directions, holds, sessions, sample thresholds, intervention dates and cost scenarios may not be changed after H2 is opened.
+All 13 candidates are judged independently against the common gate in `configs/research/usdjpy_h2_all_candidates_v1.json`.
+
+Candidate definitions, directions, holds, sessions, cost scenarios, event dates and gates may not be changed after H2 is opened. Every candidate must remain in the final artifact whether it passes or fails.
+
+Required joint reporting includes monthly default/severe metrics, long/short attribution, intervention sensitivity, best-two-day concentration, monthly sample counts, exact entry overlap, daily P&L correlation and family-level comparison.
 
 ## Immediate next action
 
@@ -155,4 +148,4 @@ Workflow file:
 .github/workflows/run_public_fx_tick_pilot_USDJPY_2024_07.yml
 ```
 
-After July reaches 100% effective coverage and zero final hard errors, preserve its source run ID. Repeat the same collection and monthly processing for August through December, then evaluate A1 and E3 together in one H2 batch. Monthly candidate results must not be used to alter either candidate while collection is in progress.
+After July reaches 100% effective coverage and zero final hard errors, preserve its source run ID. Repeat for August through December. Do not inspect candidate-level H2 results month by month. Evaluate all 13 candidates together only after the six-month block is complete.
