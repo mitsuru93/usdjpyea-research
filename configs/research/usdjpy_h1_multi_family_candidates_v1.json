@@ -1,0 +1,155 @@
+{
+  "version": "v1",
+  "symbol": "USDJPY",
+  "timeframe": "M15",
+  "development_period": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z"
+  },
+  "costs": {
+    "base_spread_pips": 0.5,
+    "default_spread_multiplier": 1.0,
+    "default_slippage_pips_per_side": 0.0,
+    "severe_spread_multiplier": 3.0,
+    "severe_slippage_pips_per_side": 0.5
+  },
+  "event_dates_utc": [
+    "2024-04-29",
+    "2024-05-01",
+    "2024-05-02"
+  ],
+  "families": [
+    {
+      "family": "m15_impulse_breakout",
+      "candidates": [
+        {
+          "id": "A1_impulse_breakout_lb3_hold6",
+          "lookback_bars": 3,
+          "hold_bars": 6,
+          "entry_hours_utc": [13, 14, 15, 16],
+          "impulse_rule": "signal_range_gt_previous_bar_range"
+        }
+      ]
+    },
+    {
+      "family": "session_range_breakout",
+      "candidates": [
+        {
+          "id": "B1_asia_00_06_breakout_hold6",
+          "reference": "utc_session_range",
+          "reference_start_hour": 0,
+          "reference_end_hour_exclusive": 6,
+          "entry_start_hour": 7,
+          "entry_end_hour_inclusive": 12,
+          "hold_bars": 6
+        },
+        {
+          "id": "B2_asia_00_07_breakout_hold6",
+          "reference": "utc_session_range",
+          "reference_start_hour": 0,
+          "reference_end_hour_exclusive": 7,
+          "entry_start_hour": 7,
+          "entry_end_hour_inclusive": 12,
+          "hold_bars": 6
+        },
+        {
+          "id": "B3_prior_utc_day_breakout_hold6",
+          "reference": "prior_utc_day_range",
+          "entry_start_hour": 7,
+          "entry_end_hour_inclusive": 16,
+          "hold_bars": 6
+        }
+      ]
+    },
+    {
+      "family": "mean_reversion_failed_excursion",
+      "candidates": [
+        {
+          "id": "C1_failed_12bar_hold3",
+          "reference": "rolling_completed_bars",
+          "lookback_bars": 12,
+          "hold_bars": 3,
+          "entry_hours_utc": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        },
+        {
+          "id": "C2_failed_12bar_hold6",
+          "reference": "rolling_completed_bars",
+          "lookback_bars": 12,
+          "hold_bars": 6,
+          "entry_hours_utc": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        },
+        {
+          "id": "C3_failed_24bar_hold6",
+          "reference": "rolling_completed_bars",
+          "lookback_bars": 24,
+          "hold_bars": 6,
+          "entry_hours_utc": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        },
+        {
+          "id": "C4_failed_asia_00_06_hold6",
+          "reference": "utc_session_range",
+          "reference_start_hour": 0,
+          "reference_end_hour_exclusive": 6,
+          "entry_start_hour": 7,
+          "entry_end_hour_inclusive": 16,
+          "hold_bars": 6
+        }
+      ]
+    },
+    {
+      "family": "compression_expansion",
+      "candidates": [
+        {
+          "id": "D1_compression_4v4_hold6",
+          "compression_bars": 4,
+          "comparison_bars": 4,
+          "hold_bars": 6,
+          "entry_hours_utc": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        },
+        {
+          "id": "D2_compression_8v8_hold6",
+          "compression_bars": 8,
+          "comparison_bars": 8,
+          "hold_bars": 6,
+          "entry_hours_utc": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        }
+      ]
+    },
+    {
+      "family": "higher_timeframe_trend_continuation",
+      "candidates": [
+        {
+          "id": "E1_trend_4h_resumption_hold6",
+          "trend_bars": 16,
+          "hold_bars": 6,
+          "entry_hours_utc": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        },
+        {
+          "id": "E2_trend_8h_resumption_hold6",
+          "trend_bars": 32,
+          "hold_bars": 6,
+          "entry_hours_utc": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        },
+        {
+          "id": "E3_trend_24h_resumption_hold6",
+          "trend_bars": 96,
+          "hold_bars": 6,
+          "entry_hours_utc": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        }
+      ]
+    }
+  ],
+  "h1_retention_screen": {
+    "aggregate_avg_net_pips_gt": 0.0,
+    "aggregate_profit_factor_gte": 1.1,
+    "q1_avg_net_pips_gt": 0.0,
+    "q2_avg_net_pips_gt": 0.0,
+    "positive_months_gte": 4,
+    "total_excluding_best_two_days_gt": 0.0,
+    "event_excluded_avg_net_pips_gt": 0.0,
+    "severe_profit_factor_gte": 0.9,
+    "aggregate_trades_gte": 120,
+    "minimum_monthly_trades_gte": 12,
+    "max_representatives_per_family": 3
+  }
+}
