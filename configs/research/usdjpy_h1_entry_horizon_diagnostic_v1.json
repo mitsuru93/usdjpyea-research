@@ -1,0 +1,48 @@
+{
+  "version": "v1",
+  "symbol": "USDJPY",
+  "timeframe": "M15",
+  "purpose": "development-only entry-path and horizon-sensitivity diagnostic",
+  "development_period": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z"
+  },
+  "candidate_registry": "configs/research/usdjpy_h1_multi_family_candidates_v1.json",
+  "candidate_registry_blob_sha": "68d2ad24ef278283f9addf190a2aadd26504efd6",
+  "candidate_set": "all_13_registered_candidates",
+  "entry_semantics": {
+    "signal_definitions": "unchanged_from_candidate_registry_and_corrected_v2_implementation",
+    "entry_price": "next_M15_open",
+    "entry_hour_basis": "actual_next_bar_entry_timestamp_except_session_reference_signal_windows",
+    "hard_no_trade_windows": "configs/market_sessions/fx_market_sessions_v1.json",
+    "direction_changes_prohibited": true
+  },
+  "horizon_bars": [1, 2, 3, 4, 6, 8, 12, 16, 24],
+  "path_window_bars": 24,
+  "month_boundary_policy": "do_not_cross_month_boundaries_to_preserve_canonical_H1_screen_semantics",
+  "costs": {
+    "base_spread_pips": 0.5,
+    "default_cost": "max(0.5, entry_bar_spread_mean_pips)",
+    "severe_cost": "3 * max(0.5, entry_bar_spread_mean_pips) + 1.0_pip_round_trip_slippage"
+  },
+  "required_outputs": [
+    "horizon_trades.csv",
+    "horizon_summary.csv",
+    "horizon_monthly.csv",
+    "entry_path_trades.csv",
+    "entry_path_summary.csv",
+    "horizon_stability.csv",
+    "source_bar_coverage.csv",
+    "run_metadata.json"
+  ],
+  "interpretation_rules": [
+    "The existing primary H2 remains a confirmatory test of A1_plus_hold6 and E3_plus_hold6.",
+    "This diagnostic uses only the January-June development block and must not read July-December candidate results.",
+    "A candidate is not promoted because it has the highest result at one horizon.",
+    "Horizon results are interpreted as a response surface; isolated peaks are not evidence of a stable exit.",
+    "MFE and MAE are descriptive path diagnostics, not executable exit results.",
+    "No failed H1 candidate is rescued into the active H2 from this diagnostic.",
+    "Any new entry-plus-exit strategy generated from this diagnostic requires a separate pre-registration and a later untouched validation block.",
+    "Core and MT4 remain unchanged and are the final source of truth after research validation."
+  ]
+}
