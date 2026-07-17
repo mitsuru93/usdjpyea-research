@@ -1,0 +1,77 @@
+{
+  "version": "v1",
+  "symbol": "USDJPY",
+  "timeframe": "M15",
+  "development_period": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z"
+  },
+  "validation_period": {
+    "start_utc": "2024-07-01T00:00:00Z",
+    "end_utc_exclusive": "2025-01-01T00:00:00Z"
+  },
+  "source_registry": "configs/research/usdjpy_h1_multi_family_candidates_v1.json",
+  "source_registry_blob_sha": "68d2ad24ef278283f9addf190a2aadd26504efd6",
+  "candidate_set_policy": "all_registered_candidates_no_h1_retention_filter",
+  "candidate_ids": [
+    "A1_impulse_breakout_lb3_hold6",
+    "B1_asia_00_06_breakout_hold6",
+    "B2_asia_00_07_breakout_hold6",
+    "B3_prior_utc_day_breakout_hold6",
+    "C1_failed_12bar_hold3",
+    "C2_failed_12bar_hold6",
+    "C3_failed_24bar_hold6",
+    "C4_failed_asia_00_06_hold6",
+    "D1_compression_4v4_hold6",
+    "D2_compression_8v8_hold6",
+    "E1_trend_4h_resumption_hold6",
+    "E2_trend_8h_resumption_hold6",
+    "E3_trend_24h_resumption_hold6"
+  ],
+  "costs": {
+    "base_spread_pips": 0.5,
+    "default_spread_multiplier": 1.0,
+    "default_slippage_pips_per_side": 0.0,
+    "severe_spread_multiplier": 3.0,
+    "severe_slippage_pips_per_side": 0.5,
+    "spread_basis": "max_base_public_entry_bar_spread_mean"
+  },
+  "event_dates_utc": [
+    "2024-07-11",
+    "2024-07-12"
+  ],
+  "common_validation_gate": {
+    "positive_months_gte": 4,
+    "aggregate_avg_net_pips_gt": 0.0,
+    "aggregate_profit_factor_gte": 1.1,
+    "event_excluded_avg_net_pips_gt": 0.0,
+    "event_excluded_profit_factor_gte": 1.05,
+    "total_excluding_best_two_days_gt": 0.0,
+    "severe_avg_net_pips_gte": -0.5,
+    "severe_profit_factor_gte": 0.9,
+    "aggregate_trades_gte": 120,
+    "minimum_monthly_trades_gte": 12,
+    "hard_no_trade_violations_eq": 0,
+    "h1_regression_required": true
+  },
+  "required_reporting": [
+    "monthly_default_metrics",
+    "monthly_severe_metrics",
+    "long_short_attribution",
+    "event_date_excluded_metrics",
+    "best_two_day_excluded_total",
+    "trade_count_by_month",
+    "candidate_entry_overlap",
+    "daily_net_pips_correlation",
+    "candidate_family_comparison",
+    "all_candidate_results_including_gate_failures"
+  ],
+  "prior_hypotheses_not_in_promotion_set": [
+    {
+      "name": "M5 pullback continuation fixed representative",
+      "status": "rejected_in_current_form_after_q2",
+      "reason": "Q2 aggregate and severe-stress failure across the pre-registered parameter band",
+      "timeframe_rejection": false
+    }
+  ]
+}
