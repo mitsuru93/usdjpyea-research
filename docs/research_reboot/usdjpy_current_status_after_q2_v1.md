@@ -141,18 +141,48 @@ Validation block:
 
 Both candidates are judged independently against the same predeclared gate. Candidate definitions, directions, holds, sessions, sample thresholds, intervention dates and cost scenarios may not be changed after H2 is opened.
 
+## Verified H2 source collection
+
+### 2024-07
+
+```text
+source workflow: Run Public FX Tick Pilot 2024-07 USDJPY
+source run_id: 29544395435
+source head_sha: d22d5213f066298df74f55fbe65725714e1a6c17
+aggregate artifact: public-fx-data-pilot-2024-07-USDJPY-aggregate-29544395435
+aggregate artifact digest: sha256:0698a05fc17d15cd9e3c405cb1367a02e6a10230ab69bbb29bceb61b62f34672
+```
+
+Aggregate source quality:
+
+```text
+expected hourly records: 552
+downloaded: 540
+no_ticks soft-missing: 12
+hard errors: 0
+calendar coverage: 97.8261%
+effective coverage: 100%
+bar validation status: ok
+validated bar files: 92
+```
+
+The 12 `no_ticks` records are soft-missing observations and do not reduce effective coverage. The run satisfies the H2 source gate of 100% effective coverage and zero final hard errors.
+
+This source collection did not evaluate A1 or E3. It therefore does not alter the pre-registered candidate set or gates.
+
 ## Immediate next action
 
-Collect the July 2024 Dukascopy USDJPY bid/ask tick block with:
+Run the generic monthly baseline workflow with the following fixed inputs:
 
 ```text
-Run Public FX Tick Pilot 2024-07 USDJPY
+workflow: Run FX Session Baseline Monthly
+source_run_id: 29544395435
+symbol: USDJPY
+pilot_tag: pilot-2024-07-USDJPY
+month_tag: 2024-07
+base_spread_pips: auto
+start_utc_hour: 2024-07-01T00
+end_utc_hour: 2024-08-01T00
 ```
 
-Workflow file:
-
-```text
-.github/workflows/run_public_fx_tick_pilot_USDJPY_2024_07.yml
-```
-
-After July reaches 100% effective coverage and zero final hard errors, preserve its source run ID. Repeat the same collection and monthly processing for August through December, then evaluate A1 and E3 together in one H2 batch. Monthly candidate results must not be used to alter either candidate while collection is in progress.
+The July baseline must reach 100% effective coverage and zero final hard errors. Preserve its run ID and artifact. Then collect and process August through December with the same pipeline. A1 and E3 are evaluated together only after all six H2 months are ready.
