@@ -1,6 +1,6 @@
 # USDJPY Research Status After Q2 v1
 
-## Last verified stage
+## Verified baseline block
 
 The verified monthly USDJPY session-baseline runs cover 2024-01 through 2024-06.
 
@@ -15,115 +15,111 @@ The verified monthly USDJPY session-baseline runs cover 2024-01 through 2024-06.
 
 All six baseline artifacts were generated from source data with 100% effective coverage and zero final hard errors.
 
-## Verified family decisions
+## Closed branch
 
-### M5 pullback continuation
+The fixed M5 pullback representative failed its Q2 gate:
 
 ```text
-timeframe: M5
-session: UTC 13-16
-pullback_min_pips: 2
-trend_lookback_bars: 12
-trend_min_pips: 10
-hold_bars: 6
+Q2 trades: 423
+Q2 avg net pips: -0.888
+Q2 total net pips: -375.48
+Q2 profit factor: 0.827
+positive Q2 months: 1 / 3
 ```
 
-Monthly default-cost average net pips:
+No repeated M5 regime condition survived the post-Q2 diagnostic requirements. The M5 pullback branch is closed in its current form.
+
+The unfiltered M15 breakout family also remains rejected.
+
+## Exact-source-confirmed candidate
+
+Candidate:
 
 ```text
-2024-01: +2.022
-2024-02: +2.164
-2024-03: +1.912
-2024-04: +0.430
-2024-05: -1.902
-2024-06: -0.767
-```
-
-Q2 aggregate:
-
-```text
-trades: 423
-avg_net_pips: -0.888
-total_net_pips: -375.48
-profit_factor: 0.827
-positive_months: 1 / 3
-```
-
-The pre-registered Q2 promotion gate was not met. The post-Q2 diagnosis did not identify a repeated M5 regime condition with acceptable monthly, severe-stress and concentration behavior.
-
-The M5 pullback branch is closed in its current form.
-
-### M15 breakout close follow-through
-
-```text
+name: m15_impulse_breakout_lb3
 timeframe: M15
-session: UTC 13-16
-lookback_bars: 3
-hold_bars: 6
+entry hours UTC: 13, 14, 15, 16
+breakout lookback: 3 completed M15 bars
+impulse condition: signal-bar range > previous completed M15-bar range
+entry: next M15 bar open
+hold: 6 M15 bars
 ```
 
-Monthly default-cost average net pips:
+Exact-source confirmation run:
 
 ```text
-2024-01: +2.100
-2024-02: +2.909
-2024-03: -1.365
-2024-04: +3.493
-2024-05: -0.240
-2024-06: -1.216
+run_id: 29543895841
+artifact: usdjpy-h1-dukascopy-impulse-confirmation-29543895841
+artifact_digest: sha256:75ca6f8c86f013a4e8a3d8962d4c00d80aebcef8d21e95dd182370be38558999
 ```
 
-The unfiltered family did not reproduce consistently and was not promoted.
+The confirmation used the original Dukascopy M15 source bars and the canonical baseline P&L rows, including aggregate-repair bars.
 
-## Diagnostic progress
-
-P&L remains sourced from the canonical Dukascopy baseline trade rows.
-
-The public M1 series was reconciled to the 1,529 fixed-candidate entries and used for descriptive market-state fields only:
+Coverage:
 
 ```text
-median absolute entry-price difference: 0.25 pips
-99th percentile:                       1.10 pips
-share within 2.0 pips:                 99.35%
+all canonical breakout trades: 598
+matched signal bars: 598
+missing signal bars: 0
 ```
 
-The Q1-to-Q2 descriptive change is weaker primary-session expansion and weaker post-entry excursion, rather than a large change in prior three-hour range.
-
-A provisional M15 lead appeared when the Dukascopy baseline trade rows were labeled with the descriptive condition:
+Impulse-confirmed H1 result:
 
 ```text
-signal-bar range > previous completed M15 bar range
+trades: 391
+positive months: 4 / 6
+avg net pips: +2.016
+total net pips: +788.22
+profit factor: 1.281
+Q1 avg net pips: +2.628
+Q2 avg net pips: +1.327
 ```
 
-However, regenerating both signals and P&L directly from the public-M1 series did not reproduce the same robustness profile:
+Severe stress:
 
 ```text
-public-M1 H1 regeneration:
-trades: 395
-positive months: 3 / 6
-avg net pips: +1.099
-profit factor: 1.143
-severe avg net pips: -0.901
-severe PF: 0.897
-total excluding best two days: -29.10
+avg net pips: -0.153
+profit factor: 0.982
 ```
 
-Therefore the public M1 dataset cannot be used to validate this candidate. It remains a diagnostic lead only.
+After excluding the 2024 Q2 intervention episode dates:
+
+```text
+avg net pips: +1.458
+profit factor: 1.204
+```
+
+After excluding the two strongest UTC days:
+
+```text
+total net pips: +251.58
+```
+
+The complement population without range expansion is negative:
+
+```text
+trades: 207
+avg net pips: -0.637
+profit factor: 0.916
+```
+
+Result record:
+
+```text
+docs/research_reboot/usdjpy_h1_dukascopy_impulse_confirmation_result_v1.md
+```
 
 ## Current phase
 
 ```text
 Original roadmap position:
-Step 3B - post-Q2 entry-strategy diagnosis
+Step 3C - untouched-period entry-strategy validation
 
-Current substep:
-exact-source confirmation of the provisional M15 impulse mechanism
+Development period:
+2024-01 through 2024-06
 
-Development data allowed:
-2024-01 through 2024-06 only
-
-2024-07 through 2024-12:
-not inspected and not accepted as evidence
+Untouched H2 period:
+2024-07 through 2024-12
 
 Exit-policy optimization:
 not started
@@ -132,57 +128,38 @@ EA / Core implementation:
 not started
 ```
 
-## Exact-source confirmation
-
-The confirmation must use the original Dukascopy M15 bars from the source runs that generated the six verified baselines:
+## Active H2 pre-registration
 
 ```text
-2024-01: 29189903048
-2024-02: 29329511595
-2024-03: 29386417671
-2024-04: 29423451609
-2024-05: 29455212697
-2024-06: 29469210771
+docs/research_reboot/usdjpy_m15_impulse_breakout_h2_prereg_v1.md
 ```
 
-The exact-source tool is:
+Pre-registration commit:
 
 ```text
-tools/analyze_usdjpy_dukascopy_impulse_confirmation.py
+fc35f780659fb97e3bec5a32e74276baa868da0b
 ```
 
-The workflow to run is:
+The exact candidate, Dukascopy data source, cost model, intervention sensitivity, sample-size conditions, monthly replication conditions, concentration test and severe-stress gate are fixed before any H2 candidate result is inspected.
+
+## Immediate next action
+
+Collect July 2024 Dukascopy USDJPY bid/ask ticks with:
 
 ```text
-Run USDJPY H1 Dukascopy Impulse Confirmation
+Run Public FX Tick Pilot 2024-07 USDJPY
 ```
 
 Workflow file:
 
 ```text
-.github/workflows/run_usdjpy_h1_dukascopy_impulse_confirmation.yml
+.github/workflows/run_public_fx_tick_pilot_USDJPY_2024_07.yml
 ```
 
-It downloads the six canonical baseline artifacts and all corresponding day-bar artifacts, calculates `range[t] > range[t-1]` on the original Dukascopy M15 bars, joins the condition to the canonical breakout trade rows, and reports:
+July wrapper commit:
 
-- source-bar coverage;
-- monthly results;
-- severe-stress results;
-- intervention sensitivity;
-- direction split;
-- best-day concentration;
-- impulse versus non-impulse population comparison.
+```text
+f864427b230f4821d786418e92027e9be49eaa59
+```
 
-## Next decision
-
-Only two outcomes are permitted after the exact-source artifact is inspected.
-
-### Exact-source confirmation passes
-
-The exact candidate, later test period and promotion gate are committed before any 2024-07 through 2024-12 result is opened.
-
-### Exact-source confirmation fails
-
-The impulse lead is rejected. The pullback and breakout branch is closed and a different strategy family with an independent market mechanism is designed.
-
-No H2 pre-registration is currently active.
+After the July source run reaches 100% effective coverage and zero hard errors, run the monthly baseline with that source run. The impulse condition is evaluated from the same Dukascopy M15 bars. Repeat sequentially for August through December without changing the pre-registered candidate or gate.
