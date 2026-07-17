@@ -10,6 +10,8 @@
   "candidate_registry": "configs/research/usdjpy_h1_multi_family_candidates_v1.json",
   "candidate_registry_blob_sha": "68d2ad24ef278283f9addf190a2aadd26504efd6",
   "candidate_set": "all_13_registered_candidates",
+  "expected_unique_entry_definitions": 12,
+  "duplicate_entry_definition_note": "C1_failed_12bar_hold3 and C2_failed_12bar_hold6 share the same entry definition and differ only in registered hold_bars",
   "entry_semantics": {
     "signal_definitions": "unchanged_from_candidate_registry_and_corrected_v2_implementation",
     "entry_price": "next_M15_open",
@@ -32,6 +34,7 @@
     "entry_path_trades.csv",
     "entry_path_summary.csv",
     "horizon_stability.csv",
+    "entry_definition_map.csv",
     "source_bar_coverage.csv",
     "run_metadata.json"
   ],
@@ -40,6 +43,7 @@
     "This diagnostic uses only the January-June development block and must not read July-December candidate results.",
     "A candidate is not promoted because it has the highest result at one horizon.",
     "Horizon results are interpreted as a response surface; isolated peaks are not evidence of a stable exit.",
+    "Duplicate registered candidates with the same entry_definition_id are not treated as independent entry evidence.",
     "MFE and MAE are descriptive path diagnostics, not executable exit results.",
     "No failed H1 candidate is rescued into the active H2 from this diagnostic.",
     "Any new entry-plus-exit strategy generated from this diagnostic requires a separate pre-registration and a later untouched validation block.",
