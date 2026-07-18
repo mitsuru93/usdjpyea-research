@@ -81,13 +81,13 @@ project-level globally untouched: no, because A1/E3 H2 results are known
 candidate-specific unused: yes, for every strategy whose H2 outcome has not been opened
 ```
 
-New complete strategies must therefore be developed and frozen from 2024 H1 only, then evaluated once on 2024 H2.
+New complete strategies must be developed and frozen from 2024 H1 only, then evaluated once on 2024 H2.
 
 ## Authoritative roadmap
 
 ```text
-docs/research_reboot/usdjpy_research_roadmap_h1_development_h2_validation_v3.md
-commit: 6b4efe96dce01ed2ed4452cc7e88ddcbec6cb05e
+docs/research_reboot/usdjpy_research_roadmap_2024_primary_2025_replication_v4.md
+commit: 8c6ec53cedf05cfb0fc6a49d17f8cf7e79828995
 ```
 
 Superseded roadmaps:
@@ -95,6 +95,7 @@ Superseded roadmaps:
 ```text
 docs/research_reboot/usdjpy_research_roadmap_after_h2_failure_v1.md
 docs/research_reboot/usdjpy_research_roadmap_full_2024_development_v2.md
+docs/research_reboot/usdjpy_research_roadmap_h1_development_h2_validation_v3.md
 ```
 
 ## Research roadmap
@@ -126,15 +127,27 @@ R6 — freeze at most five complete strategies and H2 gates:
 V1 — one joint candidate-specific unused 2024 H2 validation:
   not started
 
-V2 — unchanged replication on 2025 H1:
+Engineering — Research/Core and MT4 parity for V1 survivors:
+  may begin immediately after V1 pass
+
+V2 — one unchanged full-year 2025 historical replication:
+  not started
+  2025-01-01 through 2026-01-01 exclusive
+
+Forward / operational gate:
   not started
 
-V3 — unchanged replication on 2025 H2:
-  not started
-
-Core / MT4 / forward shadow:
-  not started
+Live capital allocation:
+  prohibited until V2 and operational gates pass
 ```
+
+## Why 2025 is retained
+
+2025 does not replace 2024 and is not used before the 2024 programme is complete.
+
+2024 H1 plus candidate-specific unused 2024 H2 is sufficient to complete development, first confirmation and the decision to begin implementation parity. The full-year 2025 block is retained only because the expanded H1 programme will compare many Entry, horizon and controlled Exit configurations; a single six-month H2 pass may still reflect selection luck or a 2024-specific regime.
+
+The 2025 block is one unchanged full-year replication, not two separate mandatory half-year gates and not an Exit-development block.
 
 ## Immediate operations
 
@@ -145,4 +158,6 @@ Core / MT4 / forward shadow:
 5. Perform controlled Exit research on H1 survivors.
 6. Freeze at most five complete strategies and all H2 gates.
 7. Run those strategies once on their candidate-specific unused 2024 H2 data.
-8. Replicate unchanged H2 survivors on 2025 H1 and H2 before Core or MT4 work.
+8. Begin Research/Core and MT4 parity for H2 survivors.
+9. Run one unchanged full-year 2025 historical replication before live allocation.
+10. Move only replication and operational-gate survivors to live capital.
