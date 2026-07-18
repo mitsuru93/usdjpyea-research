@@ -1,4 +1,4 @@
-name: Patch USDJPY R0 Manifest Discovery v1
+name: Patch USDJPY R0 Coverage Authority v1
 
 on:
   issues:
@@ -10,14 +10,14 @@ permissions:
 
 jobs:
   patch:
-    if: github.event.issue.title == '[Patch] Fix R0 aggregate manifest discovery v1'
+    if: github.event.issue.title == '[Patch] Fix R0 accepted coverage authority v1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Patch runner and refresh blob lock
+      - name: Patch runner config and blob lock
         run: |
           python - <<'PY'
           import json
@@ -26,30 +26,48 @@ jobs:
 
           runner = Path("tools/run_usdjpy_r0_canonical_bundle_v1.py")
           text = runner.read_text()
-          old = '        manifests = list(aggregate_root.rglob("source_combined/download_manifest.jsonl"))'
-          new = '''        manifests = [
+          old = '''        aggregate_root = restored_root / "aggregates" / month
+          manifests = [
               path
               for path in aggregate_root.rglob("download_manifest.jsonl")
               if path.parent.name.endswith("_combined") and path.parent.parent.name == "raw"
-          ]'''
+          ]
+          if len(manifests) != 1:
+              raise AssertionError(f"expected one accepted source manifest for {month}, found {len(manifests)}")'''
+          new = '''        baseline_root = restored_root / "baselines" / month
+          manifests = list(baseline_root.rglob("source_combined/download_manifest.jsonl"))
+          if len(manifests) != 1:
+              raise AssertionError(f"expected one accepted baseline source manifest for {month}, found {len(manifests)}")'''
           assert text.count(old) == 1, text.count(old)
           runner.write_text(text.replace(old, new))
           subprocess.run(["python", "-m", "py_compile", str(runner)], check=True)
 
-          blob = subprocess.check_output(["git", "hash-object", str(runner)], text=True).strip()
+          config_path = Path("configs/research/usdjpy_r0_canonicalization_v1.json")
+          config = json.loads(config_path.read_text())
+          config["canonicalization"]["coverage_manifest_authority"] = "accepted_monthly_baseline/source_combined/download_manifest.jsonl"
+          january = next(row for row in config["months"] if row["month"] == "2024-01")
+          january["audit_start"] = "2024-01-02T00"
+          january["expected_weekday_hour_records"] = 528
+          config_path.write_text(json.dumps(config, indent=2, sort_keys=False) + "\n")
+
           lock_path = Path("configs/research/usdjpy_r0_regression_lock_v1.json")
           lock = json.loads(lock_path.read_text())
-          lock["code_blobs"][str(runner)] = blob
+          for path in [runner, config_path]:
+              blob = subprocess.check_output(["git", "hash-object", str(path)], text=True).strip()
+              lock["code_blobs"][str(path)] = blob
+              print({str(path): blob})
           lock_path.write_text(json.dumps(lock, indent=2, sort_keys=False) + "\n")
-          print({"runner_blob": blob})
           PY
 
       - name: Commit patch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools/run_usdjpy_r0_canonical_bundle_v1.py configs/research/usdjpy_r0_regression_lock_v1.json
-          git commit -m "fix: discover accepted aggregate manifests in R0"
+          git add \
+            tools/run_usdjpy_r0_canonical_bundle_v1.py \
+            configs/research/usdjpy_r0_canonicalization_v1.json \
+            configs/research/usdjpy_r0_regression_lock_v1.json
+          git commit -m "fix: use accepted baseline coverage authority in R0"
           git push origin main
 
       - name: Close patch issue
@@ -58,5 +76,6 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPOSITORY: ${{ github.repository }}
         run: |
-          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "R0 aggregate manifest discovery patched and runner blob lock refreshed."
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "R0 coverage now uses the accepted baseline source manifest. January audit starts at 2024-01-02T00 with 528 expected weekday hours. Runner and canonical config blob locks were refreshed."
           gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
