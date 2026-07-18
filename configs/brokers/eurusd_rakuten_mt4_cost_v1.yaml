@@ -1,0 +1,65 @@
+# EURUSD broker-cost registration for Rakuten MT4 research
+# This file is symbol-specific and must not be reused for USDJPY or other pairs.
+
+schema_version: eurusd_rakuten_mt4_cost_v1
+status: registered
+registered_at_jst: "2026-07-18"
+
+symbol: EURUSD
+broker: Rakuten Securities
+execution_environment: Rakuten MT4
+
+source:
+  official_spread_page: "https://www.rakuten-sec.co.jp/web/fx/mt4/commission.html"
+  official_trading_rule_page: "https://www.rakuten-sec.co.jp/web/fx/mt4/rule.html"
+  official_page_updated_at_jst: "2026-07-05T21:05:40+09:00"
+  verified_at_jst: "2026-07-18"
+  repository_snapshot_reference:
+    path: configs/brokers/rakuten_mt4_snapshot_2026-07-10.yaml
+    blob_sha: c79b2c4e1e9cdaacac81b8ba9ad216070f4e643b
+
+registered_cost:
+  base_spread:
+    value_pips: 0.6
+    value_price: 0.00006
+    mt4_points: 6
+    basis: Rakuten_MT4_advertised_normal_spread
+    exception_applies: true
+    guaranteed: false
+  commission:
+    value: 0.0
+    basis: Rakuten_MT4_trading_fee_free
+  slippage:
+    status: not_registered
+    value_pips: null
+  other_execution_costs:
+    status: not_registered
+
+application_semantics:
+  mid_price_backtest: "Subtract 0.6 pips once per completed trade as the round-trip spread cost."
+  synthetic_rakuten_bid_ask_backtest: "Construct a 0.6-pip bid/ask spread and do not subtract the spread again."
+  dukascopy_bid_ask_source: "Dukascopy observed spread is source-market data and is not the registered Rakuten MT4 broker spread; do not treat it as a substitute for this cost lock."
+
+scope_lock:
+  applies_to:
+    - EURUSD
+  does_not_apply_to:
+    - USDJPY
+    - other_symbols
+  source_collection_workflow_remains_source_data_only: true
+  candidate_registry_status: not_registered
+  strategy_results_may_not_override_this_value: true
+
+official_caveat:
+  summary: "Rakuten states that spreads vary with market conditions and the advertised value may not match the effective spread at execution."
+  known_widening_conditions:
+    - weekday_early_morning
+    - domestic_or_overseas_market_holidays
+    - major_economic_indicator_releases
+    - sudden_financial_political_or_natural_events
+
+research_boundary:
+  base_spread_fixed: true
+  slippage_fixed: false
+  spread_stress_scenarios_fixed: false
+  final_execution_calibration_requires_rakuten_live_logs: true
