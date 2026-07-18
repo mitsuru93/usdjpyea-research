@@ -6,17 +6,21 @@ on:
     paths:
       - configs/research/usdjpy_r0_artifact_archive_v1.json
   workflow_dispatch:
+  issues:
+    types: [opened]
 
 permissions:
   actions: read
   contents: write
+  issues: write
 
 concurrency:
   group: usdjpy-r0-artifact-archive-v1
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   archive:
+    if: github.event_name != 'issues' || github.event.issue.title == '[R0] Archive USDJPY 2024 artifacts v1'
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
@@ -161,6 +165,16 @@ jobs:
             git commit -m "docs: record durable R0 artifact archive"
             git push
           fi
+
+      - name: Close archive trigger issue
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" \
+            --body "Archive completed. Release tag: usdjpy-r0-artifact-archive-2024-v1. Receipt committed under docs/research_reboot/artifact_archives/usdjpy_r0_2024_v1/."
+          gh issue close "${ISSUE_NUMBER}" --reason completed
 
       - name: Upload workflow audit artifact
         if: always()
