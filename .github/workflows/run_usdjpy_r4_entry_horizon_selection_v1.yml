@@ -1,0 +1,180 @@
+name: Run USDJPY R4 Entry/Horizon Selection v1
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: usdjpy-r4-entry-horizon-selection-v1
+  cancel-in-progress: false
+
+jobs:
+  r4:
+    if: github.event_name != 'issues' || github.event.issue.title == '[R4] Run USDJPY entry horizon selection v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      CONFIG_PATH: configs/research/usdjpy_r4_entry_horizon_selection_v1.json
+      LOCK_PATH: configs/research/usdjpy_r4_entry_horizon_selection_lock_v1.json
+      OUTPUT_DIR: data/experiments/usdjpy_r4_entry_horizon_selection_v1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Record run ID
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "USDJPY R4 selection started. Run ID: ${{ github.run_id }}. https://github.com/${REPOSITORY}/actions/runs/${{ github.run_id }}"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy
+
+      - name: Verify frozen evaluator and lock
+        run: |
+          set -euo pipefail
+          test -s "${LOCK_PATH}"
+          python -m py_compile tools/run_usdjpy_r4_entry_horizon_selection_v1.py
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+          lock=json.loads(Path('configs/research/usdjpy_r4_entry_horizon_selection_lock_v1.json').read_text())
+          for path, expected in lock['code_blobs'].items():
+              actual=subprocess.check_output(['git','rev-parse',f'HEAD:{path}'],text=True).strip()
+              assert actual==expected,(path,actual,expected)
+          for path, expected in lock['content_sha256'].items():
+              actual=hashlib.sha256(Path(path).read_bytes()).hexdigest()
+              assert actual==expected,(path,actual,expected)
+          assert lock['selection_contract']['candidate_horizon_combinations']==660
+          assert lock['selection_contract']['maximum_selected']==8
+          assert len(lock['ranking_contract']['components'])==12
+          assert lock['research_firewall']['H2_rows_parsed']==0
+          assert lock['research_firewall']['2025_access'] is False
+          print({'R4_lock':'PASS','files':len(lock['code_blobs'])})
+          PY
+
+      - name: Download and verify accepted R2 and R3 Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p input/r2 input/r3 releases/r2 releases/r3
+          python - <<'PY' > release.env
+          import json
+          from pathlib import Path
+          lock=json.loads(Path('configs/research/usdjpy_r4_entry_horizon_selection_lock_v1.json').read_text())
+          for key,prefix in [('r2','R2'),('r3','R3')]:
+              row=lock['input_releases'][key]
+              print(f'{prefix}_TAG={row["tag"]}')
+              print(f'{prefix}_ASSET={row["asset"]}')
+              print(f'{prefix}_SHA={row["asset_sha256"]}')
+          PY
+          source release.env
+          gh release download "${R2_TAG}" --repo "${GITHUB_REPOSITORY}" --pattern "${R2_ASSET}" --dir releases/r2
+          gh release download "${R3_TAG}" --repo "${GITHUB_REPOSITORY}" --pattern "${R3_ASSET}" --dir releases/r3
+          echo "${R2_SHA}  releases/r2/${R2_ASSET}" | sha256sum -c -
+          echo "${R3_SHA}  releases/r3/${R3_ASSET}" | sha256sum -c -
+          unzip -q "releases/r2/${R2_ASSET}" -d input/r2
+          unzip -q "releases/r3/${R3_ASSET}" -d input/r3
+          test -s input/r2/candidate_horizon_trades.csv.gz
+          test -s input/r2/candidate_horizon_summary.csv
+          test -s input/r3/r3_acceptance.json
+          test -s input/r3/temporal_monthly.csv
+          test -s input/r3/anchored_ranking.csv
+
+      - name: Run frozen R4 selection
+        run: |
+          python tools/run_usdjpy_r4_entry_horizon_selection_v1.py \
+            --r2-dir input/r2 \
+            --r3-dir input/r3 \
+            --config "${CONFIG_PATH}" \
+            --output-dir "${OUTPUT_DIR}"
+
+      - name: Verify output contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          out=Path('data/experiments/usdjpy_r4_entry_horizon_selection_v1')
+          lock=json.loads(Path('configs/research/usdjpy_r4_entry_horizon_selection_lock_v1.json').read_text())
+          for name in lock['required_outputs']:
+              path=out/name
+              assert path.is_file() and path.stat().st_size>0,name
+          audit=pd.read_csv(out/'selection_audit_all_660.csv')
+          eligible=pd.read_csv(out/'eligible_ranked.csv')
+          selected=pd.read_csv(out/'selected_representatives.csv')
+          pairwise=pd.read_csv(out/'eligible_pairwise_similarity.csv.gz',compression='gzip')
+          family=pd.read_csv(out/'family_selection_summary.csv')
+          acceptance=json.loads((out/'r4_acceptance.json').read_text())
+          metadata=json.loads((out/'run_metadata.json').read_text())
+          assert len(audit)==660
+          assert len(eligible)==metadata['eligible_combinations']
+          assert len(selected)==metadata['selected_representatives']
+          assert len(selected)<=8
+          assert selected['definition_sha256'].nunique()==len(selected)
+          assert selected.groupby('family').size().max()<=2
+          assert len(pairwise)==len(eligible)*(len(eligible)-1)//2
+          assert len(family)==12
+          assert acceptance['status']=='PASS'
+          assert all(v is True for k,v in acceptance.items() if k!='status')
+          assert metadata['H2_rows_parsed']==0
+          assert metadata['2025_artifact_access'] is False
+          assert metadata['exit_optimization'] is False
+          assert metadata['R5_design_unblocked'] is True
+          print({'R4':'PASS','eligible':len(eligible),'selected':len(selected),'pairwise':len(pairwise)})
+          PY
+
+      - name: Write job summary
+        if: always()
+        run: |
+          echo '# USDJPY R4 Entry/Horizon Selection v1' >> "${GITHUB_STEP_SUMMARY}"
+          echo >> "${GITHUB_STEP_SUMMARY}"
+          if [ -f "${OUTPUT_DIR}/run_metadata.json" ]; then
+            cat "${OUTPUT_DIR}/run_metadata.json" >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Upload R4 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-r4-entry-horizon-selection-v1-${{ github.run_id }}
+          path: data/experiments/usdjpy_r4_entry_horizon_selection_v1/**
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Close successful trigger issue
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body 'USDJPY R4 selection passed. At most eight H1 Entry/horizon representatives are frozen for R5 design. H2 and 2025 remained unopened; no Exit was evaluated.'
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
+
+      - name: Report failed trigger issue
+        if: github.event_name == 'issues' && failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body 'USDJPY R4 selection failed. No result is accepted and R5 remains blocked.'
