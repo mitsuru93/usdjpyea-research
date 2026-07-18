@@ -119,7 +119,7 @@ Accepted artifacts:
 
 The first-attempt November source artifact `8412658745` is excluded. The rerun recovered the missing 2024-11-22 day and the accepted terminal manifest contains all 504 fixed weekday hours.
 
-All six H2 source months, July through December 2024, are now accepted. No month-level A1/E3 result was used to alter either strategy.
+All six H2 source months, July through December 2024, are accepted. No month-level A1/E3 result was used to alter either strategy.
 
 ## Entry-horizon diagnostic
 
@@ -148,6 +148,35 @@ Research interpretation:
 - No candidate is promoted from the development diagnostic.
 - Any new entry-plus-exit strategy requires a new pre-registration and a later untouched validation block.
 
+## Joint H2 evaluator
+
+The evaluator implementation is frozen before opening the H2 candidate result.
+
+```text
+implementation lock:
+  docs/research_reboot/usdjpy_joint_h2_a1_e3_implementation_lock_v1.md
+
+config:
+  configs/research/usdjpy_joint_h2_a1_e3_eval_v1.json
+
+runner:
+  tools/run_usdjpy_joint_h2_a1_e3_eval_v1.py
+
+workflow:
+  Run USDJPY Joint H2 A1 E3 Evaluation v1
+```
+
+The evaluator:
+
+- audits all six H2 terminal manifests against fixed weekday-hour denominators;
+- loads accepted aggregate-repair M15 bars;
+- reproduces exact A1 and E3 H1 metrics within `1e-9` before H2 acceptance;
+- uses H1 bars only as prior lookback history near the H2 boundary;
+- retains only signals, entries and exits inside the H2 block;
+- applies every preregistered gate independently;
+- reports direction attribution, intervention sensitivity, best-two-day concentration, overlap and daily correlation;
+- performs no Exit optimization or parameter change.
+
 ## Research roadmap
 
 ```text
@@ -168,7 +197,8 @@ Entry-horizon development diagnostic:
   v2 accepted and recorded
 
 Step 4 — evaluate frozen A1+hold6 and E3+hold6 H2 results:
-  current
+  evaluator implementation complete
+  execution pending
 
 Exit-policy research:
   horizon/path evidence available
@@ -181,8 +211,8 @@ EA / Core / MT4 implementation:
 
 ## Next operations
 
-1. Implement and run the preregistered full-block A1+hold6 / E3+hold6 H2 evaluator.
-2. Require H1 regression assertions to pass before any H2 result is accepted.
+1. Run `Run USDJPY Joint H2 A1 E3 Evaluation v1` with no inputs.
+2. Accept the result only if all six fixed-weekday source audits and both H1 regressions pass.
 3. Apply the frozen common H2 gate exactly as registered.
 4. After the H2 decision, define a small mechanism-based exit research plan without reopening the current H2.
 5. Pre-register any new entry-plus-exit candidate before evaluating it on a later untouched block.
