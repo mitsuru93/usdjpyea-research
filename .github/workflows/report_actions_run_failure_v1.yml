@@ -1,0 +1,36 @@
+name: Report Actions Run Failure v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  report:
+    if: startsWith(github.event.issue.title, '[Diag] Report GitHub Actions run ')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract run ID and report failed log tail
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          set -euo pipefail
+          run_id="${ISSUE_TITLE##* }"
+          test -n "${run_id}"
+          gh run view "${run_id}" --repo "${REPOSITORY}" --log-failed > failed.log
+          tail -n 120 failed.log > failed-tail.log
+          {
+            echo 'Failed log tail:'
+            echo
+            echo '```text'
+            cat failed-tail.log
+            echo '```'
+          } > comment.md
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body-file comment.md
