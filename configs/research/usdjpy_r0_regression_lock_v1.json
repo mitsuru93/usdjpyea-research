@@ -1,0 +1,143 @@
+{
+  "version": "v1",
+  "symbol": "USDJPY",
+  "year": 2024,
+  "float_tolerance": 1e-9,
+  "code_blobs": {
+    "configs/research/usdjpy_r0_canonicalization_v1.json": "4985ffb0bb3a91e96b8f59e523b9503a2633c41f",
+    "configs/research/usdjpy_h1_multi_family_candidates_v1.json": "68d2ad24ef278283f9addf190a2aadd26504efd6",
+    "configs/research/usdjpy_joint_h2_a1_e3_eval_v1.json": "2c346e8c39355795de18c73e494d3e0bebd23a27",
+    "configs/market_sessions/fx_market_sessions_v1.json": "baead9fda40977a214d000dd7af127f05487f202",
+    "tools/build_fx_annual_bar_bundle.py": "b99618535cae30b1bd7caa82594a43ca8509d6f0",
+    "tools/run_usdjpy_r0_canonical_bundle_v1.py": "e978aaddc46933a645d9262a9f514d40c5ee2663",
+    "tools/run_usdjpy_h1_multi_family_screen.py": "797c037b5db830778c7d45ebbad742b193e4c195",
+    "tools/run_usdjpy_h1_multi_family_screen_v2.py": "ad5dc992a82692c84c3310b6fabe7a04bf4feb69",
+    "tools/run_usdjpy_joint_h2_a1_e3_eval_v1.py": "137ba6c366ec395a58dc9d4c291549493611107a",
+    "tools/summarize_download_manifest.py": "1b996b34f426633fff757aaefcb9ed617c3cdf0e"
+  },
+  "reference_assets": {
+    "h1": {
+      "file": "authoritative_h1_multi_family_screen_v2-id-8394436272.zip",
+      "artifact_id": 8394436272,
+      "sha256": "b5fd40e7c37cd3c4c417b9e02547ce6d7195f0f989266e4f0e3ae0305947ec94"
+    },
+    "horizon": {
+      "file": "authoritative_h1_entry_horizon_v2-id-8408094591.zip",
+      "artifact_id": 8408094591,
+      "sha256": "f95a0a450aa3b821dbcb20ea4f3410f345668606bf5f20a766a3e01d8a6e89e4"
+    },
+    "h2": {
+      "file": "authoritative_joint_h2_a1_e3_v1-id-8424623578.zip",
+      "artifact_id": 8424623578,
+      "sha256": "182840ea48bf9d375ce718a5c940cee064fbccb4c36b659a80e7678938664364"
+    }
+  },
+  "h1": {
+    "candidate_count": 13,
+    "monthly_rows": 78,
+    "summary_comparison": {
+      "file": "candidate_summary.csv",
+      "keys": ["candidate_id"],
+      "all_columns": true
+    },
+    "monthly_comparison": {
+      "file": "candidate_monthly.csv",
+      "keys": ["candidate_id", "month"],
+      "all_columns": true
+    },
+    "ledger": {
+      "file": "candidate_trades.csv",
+      "reference_normalized_sha256": "sha256:41a7f041e95b4782fc811861ec8e98b61cde85e6fc76b2ed697618b0bc7a6636",
+      "columns": [
+        "timestamp_utc",
+        "mid_open",
+        "mid_high",
+        "mid_low",
+        "mid_close",
+        "spread_mean_pips",
+        "side",
+        "entry_ts",
+        "entry_mid",
+        "entry_spread_pips",
+        "exit_ts",
+        "exit_mid",
+        "candidate_id",
+        "family",
+        "hold_bars",
+        "entry_date_utc",
+        "entry_month",
+        "gross_pips",
+        "default_cost_pips",
+        "severe_cost_pips",
+        "default_net_pips",
+        "severe_net_pips"
+      ],
+      "sort_keys": ["candidate_id", "entry_ts", "side", "exit_ts", "timestamp_utc"],
+      "float_format": "%.12f",
+      "path_columns_excluded": ["_path", "_priority"]
+    }
+  },
+  "h2": {
+    "candidate_ids": [
+      "A1_impulse_breakout_lb3_hold6",
+      "E3_trend_24h_resumption_hold6"
+    ],
+    "csv_comparisons": [
+      {"file": "h1_regression.csv", "keys": ["candidate_id"]},
+      {"file": "h2_candidate_summary.csv", "keys": ["candidate_id"]},
+      {"file": "h2_candidate_monthly.csv", "keys": ["candidate_id", "month"]},
+      {"file": "h2_gate_results.csv", "keys": ["candidate_id", "gate"]},
+      {"file": "h2_direction_attribution.csv", "keys": ["candidate_id", "direction"]},
+      {"file": "h2_daily_net_pips.csv", "keys": ["candidate_id", "entry_date_utc"]}
+    ],
+    "ledger": {
+      "file": "h2_candidate_trades.csv",
+      "reference_normalized_sha256": "sha256:e40e498dc15b13267bbcb3271766938332b345e5d00ac7a225bb78bc9fe31aa4",
+      "columns": [
+        "timestamp_utc",
+        "mid_open",
+        "mid_high",
+        "mid_low",
+        "mid_close",
+        "spread_mean_pips",
+        "side",
+        "entry_ts",
+        "entry_mid",
+        "entry_spread_pips",
+        "exit_ts",
+        "exit_mid",
+        "candidate_id",
+        "family",
+        "hold_bars",
+        "entry_date_utc",
+        "entry_month",
+        "gross_pips",
+        "default_cost_pips",
+        "severe_cost_pips",
+        "default_net_pips",
+        "severe_net_pips"
+      ],
+      "sort_keys": ["candidate_id", "entry_ts", "side", "exit_ts", "timestamp_utc"],
+      "float_format": "%.12f",
+      "path_columns_excluded": ["_path", "_priority"]
+    },
+    "expected_decision": "neither_advances",
+    "expected_promotion_pass_count": 0,
+    "expected_hard_no_trade_violations": 0
+  },
+  "horizon_reference": {
+    "candidate_count": 13,
+    "unique_entry_definition_count": 12,
+    "h2_data_read": false,
+    "promotion_decision": false,
+    "registered_hold_status": "passed"
+  },
+  "acceptance_policy": {
+    "summary_abs_tolerance": 1e-9,
+    "normalized_ledgers": "exact_sha256",
+    "decision_json": "exact_with_float_tolerance",
+    "any_failure_blocks_r1": true,
+    "core_promotion": false,
+    "mt4_promotion": false
+  }
+}
