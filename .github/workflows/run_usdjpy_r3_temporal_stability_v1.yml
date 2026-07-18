@@ -1,0 +1,236 @@
+name: Run USDJPY R3 Temporal Stability v1
+
+on:
+  workflow_dispatch:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: usdjpy-r3-temporal-stability-v1
+  cancel-in-progress: false
+
+jobs:
+  r3:
+    if: github.event_name != 'issues' || github.event.issue.title == '[R3] Run USDJPY temporal stability v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      CONFIG_PATH: configs/research/usdjpy_r3_temporal_stability_v1.json
+      LOCK_PATH: configs/research/usdjpy_r3_temporal_stability_lock_v1.json
+      SESSION_CONFIG: configs/market_sessions/fx_market_sessions_v1.json
+      OUTPUT_DIR: data/experiments/usdjpy_r3_temporal_stability_v1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Record run ID
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "USDJPY R3 temporal-stability diagnostics started. Run ID: ${{ github.run_id }}. https://github.com/${REPOSITORY}/actions/runs/${{ github.run_id }}"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy
+
+      - name: Verify committed evaluator and execution lock
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/run_usdjpy_r3_temporal_stability_v1.py
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+          lock=json.loads(Path('configs/research/usdjpy_r3_temporal_stability_lock_v1.json').read_text())
+          for path,expected in lock['code_blobs'].items():
+              actual=subprocess.check_output(['git','rev-parse',f'HEAD:{path}'],text=True).strip()
+              assert actual==expected,(path,actual,expected)
+          for path,expected in lock['content_sha256'].items():
+              actual=hashlib.sha256(Path(path).read_bytes()).hexdigest()
+              assert actual==expected,(path,actual,expected)
+          assert lock['content_sha256']['tools/run_usdjpy_r3_temporal_stability_v1.py']=='90c4e74babcf0670b6f801dac30d04537f2a8efce0dfdb6adee2ccbf4d1c2807'
+          assert lock['diagnostic_contract']['candidate_horizon_combinations']==660
+          assert lock['diagnostic_contract']['input_trade_rows']==383078
+          assert lock['research_firewall']['H2_rows_parsed']==0
+          assert lock['research_firewall']['2025_access'] is False
+          assert lock['research_firewall']['candidate_selection'] is False
+          print({'R3_execution_lock':'PASS','code_blobs':len(lock['code_blobs'])})
+          PY
+
+      - name: Download and verify frozen R2 and R0 inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p data/releases/r2 data/releases/r0 data/input/r2 data/input/r0
+          python - <<'PY' > release.env
+          import json
+          from pathlib import Path
+          lock=json.loads(Path('configs/research/usdjpy_r3_temporal_stability_lock_v1.json').read_text())
+          for key,prefix in [('r2','R2'),('r0','R0')]:
+              row=lock['input_releases'][key]
+              print(f'{prefix}_TAG={row["tag"]}')
+              print(f'{prefix}_ASSET={row["asset"]}')
+              print(f'{prefix}_ASSET_SHA={row["asset_sha256"]}')
+          PY
+          source release.env
+          gh release download "${R2_TAG}" --repo "${REPOSITORY}" --pattern "${R2_ASSET}" --dir data/releases/r2
+          gh release download "${R0_TAG}" --repo "${REPOSITORY}" --pattern "${R0_ASSET}" --dir data/releases/r0
+          echo "${R2_ASSET_SHA}  data/releases/r2/${R2_ASSET}" | sha256sum -c -
+          echo "${R0_ASSET_SHA}  data/releases/r0/${R0_ASSET}" | sha256sum -c -
+          unzip -q "data/releases/r2/${R2_ASSET}" -d data/input/r2
+          unzip -q "data/releases/r0/${R0_ASSET}" -d data/input/r0
+
+          mapfile -t TRADE_FILES < <(find data/input/r2 -type f -name 'candidate_horizon_trades.csv.gz' | sort)
+          mapfile -t SUMMARY_FILES < <(find data/input/r2 -type f -name 'candidate_horizon_summary.csv' | sort)
+          mapfile -t M15_FILES < <(find data/input/r0 -type f -path '*/canonical/bars/M15/USDJPY_M15.csv.gz' | sort)
+          test "${#TRADE_FILES[@]}" -eq 1
+          test "${#SUMMARY_FILES[@]}" -eq 1
+          test "${#M15_FILES[@]}" -eq 1
+
+          export R2_TRADES="${TRADE_FILES[0]}"
+          export R2_SUMMARY="${SUMMARY_FILES[0]}"
+          export CANONICAL_M15="${M15_FILES[0]}"
+          echo "R2_TRADES=${R2_TRADES}" >> "${GITHUB_ENV}"
+          echo "R2_SUMMARY=${R2_SUMMARY}" >> "${GITHUB_ENV}"
+          echo "CANONICAL_M15=${CANONICAL_M15}" >> "${GITHUB_ENV}"
+
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          lock=json.loads(Path('configs/research/usdjpy_r3_temporal_stability_lock_v1.json').read_text())
+          def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+          assert sha(os.environ['R2_TRADES'])==lock['input_releases']['r2']['trade_ledger_sha256']
+          assert sha(os.environ['R2_SUMMARY'])==lock['input_releases']['r2']['summary_sha256']
+          assert sha(os.environ['CANONICAL_M15'])==lock['input_releases']['r0']['canonical_m15_gzip_sha256']
+          print({'R3_internal_input_digests':'PASS'})
+          PY
+
+      - name: Run complete R3 diagnostics
+        run: |
+          python tools/run_usdjpy_r3_temporal_stability_v1.py \
+            --r2-trades "${R2_TRADES}" \
+            --r2-summary "${R2_SUMMARY}" \
+            --canonical-m15 "${CANONICAL_M15}" \
+            --config "${CONFIG_PATH}" \
+            --session-config "${SESSION_CONFIG}" \
+            --output-dir "${OUTPUT_DIR}"
+
+      - name: Verify R3 output contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          out=Path('data/experiments/usdjpy_r3_temporal_stability_v1')
+          lock=json.loads(Path('configs/research/usdjpy_r3_temporal_stability_lock_v1.json').read_text())
+          for name in lock['required_outputs']:
+              path=out/name
+              assert path.is_file() and path.stat().st_size>0,name
+
+          expected={
+              'temporal_monthly.csv':3960,
+              'temporal_quarterly.csv':1320,
+              'rolling_2month.csv':3300,
+              'rolling_3month.csv':2640,
+              'anchored_ranking.csv':3300,
+              'spread_regime.csv':2640,
+              'rv32_regime.csv':3300,
+              'rv96_regime.csv':3300,
+              'direction_attribution.csv':1320,
+              'horizon_neighborhood.csv':660,
+              'concentration.csv':660,
+              'sample_classes.csv':660,
+          }
+          frames={name:pd.read_csv(out/name) for name in expected}
+          for name,rows in expected.items():
+              assert len(frames[name])==rows,(name,len(frames[name]),rows)
+          regime_map=pd.read_csv(out/'entry_regime_map.csv.gz',compression='gzip')
+          assert len(regime_map)==7882,len(regime_map)
+          assert regime_map['entry_ts'].is_unique
+          assert frames['temporal_monthly.csv']['candidate_id'].nunique()==60
+          assert frames['temporal_monthly.csv']['horizon_bars'].nunique()==11
+          assert set(frames['sample_classes.csv']['sample_class'])=={'standard','moderate','sparse'}
+          counts=frames['sample_classes.csv']['sample_class'].value_counts().to_dict()
+          assert counts=={'standard':572,'moderate':44,'sparse':44},counts
+          assert set(frames['spread_regime.csv']['spread_quartile'])=={1,2,3,4}
+          assert set(frames['rv32_regime.csv']['rv32_quartile'])=={0,1,2,3,4}
+          assert set(frames['rv96_regime.csv']['rv96_quartile'])=={0,1,2,3,4}
+          acceptance=json.loads((out/'r3_acceptance.json').read_text())
+          assert acceptance['status']=='PASS'
+          assert all(value is True for key,value in acceptance.items() if key!='status')
+          metadata=json.loads((out/'run_metadata.json').read_text())
+          assert metadata['status']=='PASS'
+          assert metadata['candidate_horizon_combinations']==660
+          assert metadata['trade_rows']==383078
+          assert metadata['entry_regime_map_rows']==7882
+          assert metadata['H2_rows_parsed']==0
+          assert metadata['2025_artifact_access'] is False
+          assert metadata['selection_or_promotion_made'] is False
+          assert metadata['R4_design_unblocked'] is True
+          assert metadata['Core_promotion'] is False
+          assert metadata['MT4_promotion'] is False
+          print({'R3':'PASS','outputs':len(expected)+4,'sample_classes':counts})
+          PY
+
+      - name: Write job summary
+        if: always()
+        run: |
+          echo '# USDJPY R3 Temporal Stability v1' >> "${GITHUB_STEP_SUMMARY}"
+          echo >> "${GITHUB_STEP_SUMMARY}"
+          echo 'R3 diagnoses all 660 R2 combinations and makes no shortlist or promotion decision.' >> "${GITHUB_STEP_SUMMARY}"
+          if [ -f "${OUTPUT_DIR}/r3_acceptance.json" ]; then
+            echo '```json' >> "${GITHUB_STEP_SUMMARY}"
+            cat "${OUTPUT_DIR}/r3_acceptance.json" >> "${GITHUB_STEP_SUMMARY}"
+            echo '```' >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Upload R3 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-r3-temporal-stability-v1-${{ github.run_id }}
+          path: data/experiments/usdjpy_r3_temporal_stability_v1/**
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Close successful trigger issue
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "USDJPY R3 temporal-stability diagnostics passed. Run ID: ${{ github.run_id }}. R4 selection-rule design is unblocked; no candidate was selected and H2/2025 remained unopened."
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
+
+      - name: Report failed trigger issue
+        if: github.event_name == 'issues' && failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "USDJPY R3 failed. Run ID: ${{ github.run_id }}. R4 remains blocked."
