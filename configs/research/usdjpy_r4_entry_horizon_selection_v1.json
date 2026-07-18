@@ -1,0 +1,141 @@
+{
+  "version": "v1",
+  "research_stage": "R4_entry_horizon_selection",
+  "symbol": "USDJPY",
+  "development_period": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z"
+  },
+  "inputs": {
+    "r2_release_tag": "usdjpy-r2-horizon-surface-v1",
+    "r2_release_asset": "usdjpy-r2-horizon-surface-v1-run-29646040010-artifact-8430064217.zip",
+    "r2_release_asset_sha256": "84a495b7c7cddf1c719bb4c8ce78bfef2c990b355649d362c18481836d953426",
+    "r2_trade_ledger_sha256": "70c2313147607096976a76328b72a628e42fa0001816f14824bcd9e9a3ead6c6",
+    "r2_summary_sha256": "fa46a5db3e73c4d25b8e8c97ef4727c39d737cc8823080b23d21b0419d9e44f6",
+    "r3_release_tag": "usdjpy-r3-temporal-stability-v1",
+    "r3_release_asset": "usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip",
+    "r3_release_asset_sha256": "bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292",
+    "r3_acceptance_sha256": "17ef172240b4f7ee071634e99562fee811696497c49ef331c215b688f9a79d15",
+    "r3_temporal_monthly_sha256": "64f0f4122e744d8f5e70e40a29f0939abfa14f4ea60f7e7201c3f21a56fc2a02",
+    "r3_anchored_ranking_sha256": "f6fe5b1043482892ee69d361cc89641c0f2f8c3a7338727c44067a573be16158"
+  },
+  "surface_contract": {
+    "entry_definitions": 60,
+    "horizons": 11,
+    "candidate_horizon_combinations": 660,
+    "maximum_selected": 8,
+    "maximum_per_family": 2,
+    "maximum_per_definition_sha256": 1,
+    "minimum_selected": 0,
+    "relaxation_if_too_few": false
+  },
+  "eligibility": {
+    "allowed_sample_classes": ["standard", "moderate"],
+    "minimum_aggregate_trades": 60,
+    "minimum_monthly_trades": 5,
+    "aggregate": {
+      "avg_default_net_pips_strictly_positive": true,
+      "avg_severe_net_pips_strictly_positive": true,
+      "default_profit_factor_strictly_above_one": true,
+      "severe_profit_factor_strictly_above_one": true,
+      "minimum_positive_months": 4,
+      "total_excluding_best_two_utc_days_strictly_positive": true
+    },
+    "quarters": {
+      "required_default_positive": 2,
+      "required_severe_positive": 2
+    },
+    "rolling_2month": {
+      "required_default_positive": 4,
+      "required_severe_positive": 3,
+      "total_windows": 5
+    },
+    "rolling_3month": {
+      "required_default_positive": 4,
+      "required_severe_positive": 3,
+      "total_windows": 4
+    },
+    "horizon_neighborhood": {
+      "require_all_available_default_positive": true,
+      "minimum_severe_positive_count": 2,
+      "reject_isolated_default_positive": true
+    },
+    "spread_regimes": {
+      "nonempty_regimes": 4,
+      "minimum_default_positive_regimes": 3,
+      "minimum_severe_positive_regimes": 2
+    },
+    "rv32_regimes": {
+      "ignore_warmup_regime_zero": true,
+      "nonwarmup_regimes": 4,
+      "minimum_default_positive_regimes": 3,
+      "minimum_severe_positive_regimes": 2
+    },
+    "rv96_regimes": {
+      "ignore_warmup_regime_zero": true,
+      "nonwarmup_regimes": 4,
+      "minimum_default_positive_regimes": 3,
+      "minimum_severe_positive_regimes": 2
+    },
+    "concentration": {
+      "maximum_largest_absolute_day_share": 0.25,
+      "maximum_largest_absolute_month_share": 0.50,
+      "maximum_top_two_days_share_of_positive_daily_pips": 0.50,
+      "maximum_direction_absolute_contribution_share": 0.90
+    }
+  },
+  "ranking": {
+    "method": "equal_weight_percentile_rank_aggregation",
+    "higher_is_better": true,
+    "components": [
+      "aggregate_avg_severe_net_pips",
+      "aggregate_severe_profit_factor",
+      "minimum_quarterly_avg_severe_net_pips",
+      "minimum_rolling_3month_avg_severe_net_pips",
+      "minimum_spread_regime_avg_default_net_pips",
+      "minimum_rv32_nonwarmup_avg_default_net_pips",
+      "minimum_rv96_nonwarmup_avg_default_net_pips",
+      "median_anchored_percentile_avg_severe_net_pips",
+      "median_neighbor_avg_default_net_pips",
+      "total_excluding_best_two_utc_days_per_trade",
+      "one_minus_largest_absolute_month_share",
+      "one_minus_direction_absolute_contribution_share"
+    ],
+    "component_weights": "equal",
+    "tie_break_order": [
+      "selection_score_desc",
+      "aggregate_avg_severe_net_pips_desc",
+      "minimum_quarterly_avg_severe_net_pips_desc",
+      "total_excluding_best_two_utc_days_per_trade_desc",
+      "candidate_id_asc",
+      "horizon_bars_asc"
+    ]
+  },
+  "redundancy": {
+    "daily_default_net_pearson_threshold": 0.85,
+    "entry_timestamp_jaccard_threshold": 0.50,
+    "redundant_only_if_both_thresholds_met": true,
+    "daily_calendar": "all_UTC_dates_2024-01-01_through_2024-06-30_fill_missing_zero",
+    "keep": "higher_preregistered_rank"
+  },
+  "required_outputs": [
+    "selection_audit_all_660.csv",
+    "eligible_ranked.csv",
+    "selected_representatives.csv",
+    "redundancy_decisions.csv",
+    "eligible_pairwise_similarity.csv.gz",
+    "family_selection_summary.csv",
+    "r4_acceptance.json",
+    "run_metadata.json"
+  ],
+  "research_firewall": {
+    "H2_rows_parsed": 0,
+    "2025_access": false,
+    "entry_definition_changes": false,
+    "horizon_changes": false,
+    "exit_optimization": false,
+    "Core_promotion": false,
+    "MT4_promotion": false
+  },
+  "next_stage": "R5_controlled_exit_research"
+}
