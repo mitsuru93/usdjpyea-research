@@ -1,0 +1,52 @@
+name: Diagnose USDJPY R3 Archive Download v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  diagnose:
+    if: github.event.issue.title == '[Diag] Inspect USDJPY R3 archive download v1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download and report each audit phase
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -u
+          mkdir -p inspection
+          gh api "repos/${REPOSITORY}/actions/artifacts/8430424186/zip" > artifact.zip
+          actual="$(sha256sum artifact.zip | awk '{print $1}')"
+          bytes="$(stat -c %s artifact.zip)"
+          type="$(file -b artifact.zip)"
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "download: sha256=${actual}; bytes=${bytes}; type=${type}"
+          if unzip -t artifact.zip >/tmp/unzip_test.txt 2>&1; then
+            gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body 'unzip test: PASS'
+            unzip -q artifact.zip -d inspection
+          else
+            gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "unzip test: FAIL\n\`\`\`\n$(tail -20 /tmp/unzip_test.txt)\n\`\`\`"
+            exit 0
+          fi
+          find inspection -maxdepth 2 -type f -printf '%P %s\n' | sort > listing.txt
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "files:\n\`\`\`\n$(cat listing.txt)\n\`\`\`"
+          for spec in \
+            'r3_acceptance.json 17ef172240b4f7ee071634e99562fee811696497c49ef331c215b688f9a79d15' \
+            'temporal_monthly.csv 64f0f4122e744d8f5e70e40a29f0939abfa14f4ea60f7e7201c3f21a56fc2a02' \
+            'anchored_ranking.csv f6fe5b1043482892ee69d361cc89641c0f2f8c3a7338727c44067a573be16158' \
+            'entry_regime_map.csv.gz 73d54b2194e21859c39a24a8e47d472b3d56eef552f593eda8fbc0a5bdceced2'; do
+            set -- ${spec}
+            name="$1"; expected="$2"
+            if [ -f "inspection/${name}" ]; then
+              got="$(sha256sum "inspection/${name}" | awk '{print $1}')"
+              gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "${name}: sha256=${got}; expected=${expected}"
+            else
+              gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "${name}: MISSING"
+            fi
+          done
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
