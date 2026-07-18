@@ -1,0 +1,164 @@
+name: Archive USDJPY R0 2024 Artifacts v2
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+concurrency:
+  group: usdjpy-r0-artifact-archive
+  cancel-in-progress: true
+
+jobs:
+  archive:
+    if: github.event_name != 'issues' || github.event.issue.title == '[R0] Archive USDJPY 2024 artifacts v2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record run ID
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "Archive run started. Run ID: ${{ github.run_id }}. https://github.com/${REPOSITORY}/actions/runs/${{ github.run_id }}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile archive tools
+        run: |
+          python -m py_compile \
+            tools/archive_usdjpy_r0_artifacts_v1.py \
+            tools/archive_usdjpy_r0_artifacts_v2.py
+
+      - name: Download and verify accepted artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python tools/archive_usdjpy_r0_artifacts_v2.py \
+            --config configs/research/usdjpy_r0_artifact_archive_v1.json \
+            --output-dir data/r0_artifact_archive_v1
+
+      - name: Verify archive inventory
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path("data/r0_artifact_archive_v1")
+          summary = json.loads((root / "archive_summary.json").read_text())
+          manifest = json.loads((root / "release_assets/usdjpy-r0-artifact-archive-manifest-v1.json").read_text())
+          assert summary["status"] == "PASS", summary
+          assert summary["source_months"] == 12, summary
+          assert summary["preserved_original_artifacts"] == 288, summary
+          assert len(manifest["artifacts"]) == 288, len(manifest["artifacts"])
+          assert len(manifest["source_month_packages"]) == 12
+          archived_ids = {row["artifact_id"] for row in manifest["artifacts"]}
+          assert 8412658745 not in archived_ids
+          assert not any("2025" in json.dumps(row) for row in manifest["artifacts"])
+          print({"inventory_verification": "PASS", "original_artifacts": 288})
+          PY
+
+      - name: Write release notes
+        run: |
+          cat > data/r0_artifact_archive_v1/release-notes.md <<'EOF'
+          # USDJPY R0 2024 Artifact Archive v1
+
+          Durable archive of the accepted January-December 2024 Dukascopy USDJPY source, baseline and authoritative regression artifacts.
+
+          The archive contains 288 verified original artifacts represented by 29 Release assets. Original artifact ID, name, digest, creation time and expiry time are recorded in the manifest. Excluded November artifact ID 8412658745 is recorded but not included. No 2025 artifact is included.
+          EOF
+
+      - name: Create or update durable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: usdjpy-r0-artifact-archive-2024-v1
+        run: |
+          set -euo pipefail
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release upload "${TAG}" data/r0_artifact_archive_v1/release_assets/* --clobber
+          else
+            gh release create "${TAG}" \
+              data/r0_artifact_archive_v1/release_assets/* \
+              --title "USDJPY R0 Artifact Archive 2024 v1" \
+              --notes-file data/r0_artifact_archive_v1/release-notes.md \
+              --latest=false
+          fi
+
+      - name: Verify Release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: usdjpy-r0-artifact-archive-2024-v1
+        run: |
+          gh release view "${TAG}" --json tagName,url,isDraft,isPrerelease,assets \
+            > data/r0_artifact_archive_v1/release_receipt.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt = json.loads(Path("data/r0_artifact_archive_v1/release_receipt.json").read_text())
+          names = {asset["name"] for asset in receipt["assets"]}
+          assert receipt["tagName"] == "usdjpy-r0-artifact-archive-2024-v1"
+          assert receipt["isDraft"] is False
+          assert receipt["isPrerelease"] is False
+          assert len(receipt["assets"]) == 29, sorted(names)
+          assert "SHA256SUMS" in names
+          assert "usdjpy-r0-artifact-archive-manifest-v1.json" in names
+          assert sum(name.endswith("-source-artifacts-v1.tar.gz") for name in names) == 12
+          assert sum("-baseline-id-" in name for name in names) == 12
+          assert sum(name.startswith("authoritative_") for name in names) == 3
+          print({"release_verification": "PASS", "assets": 29})
+          PY
+
+      - name: Commit archive receipt
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          target="docs/research_reboot/artifact_archives/usdjpy_r0_2024_v1"
+          mkdir -p "${target}"
+          cp data/r0_artifact_archive_v1/archive_summary.json "${target}/archive_summary.json"
+          cp data/r0_artifact_archive_v1/release_receipt.json "${target}/release_receipt.json"
+          cp data/r0_artifact_archive_v1/release_assets/usdjpy-r0-artifact-archive-manifest-v1.json "${target}/artifact_manifest.json"
+          cp data/r0_artifact_archive_v1/release_assets/SHA256SUMS "${target}/SHA256SUMS"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${target}"
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: record durable R0 artifact archive"
+            git push origin main
+          fi
+
+      - name: Close trigger issue
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "Archive completed and verified: 288 original artifacts, 29 Release assets, receipt committed under docs/research_reboot/artifact_archives/usdjpy_r0_2024_v1/."
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
+
+      - name: Upload audit copy
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-r0-artifact-archive-audit-v2-${{ github.run_id }}
+          path: |
+            data/r0_artifact_archive_v1/archive_summary.json
+            data/r0_artifact_archive_v1/release_assets/usdjpy-r0-artifact-archive-manifest-v1.json
+            data/r0_artifact_archive_v1/release_assets/SHA256SUMS
+            data/r0_artifact_archive_v1/release_receipt.json
+          if-no-files-found: warn
+          retention-days: 90
