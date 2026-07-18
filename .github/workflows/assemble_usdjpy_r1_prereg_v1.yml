@@ -61,14 +61,11 @@ jobs:
           python - <<'PY'
           import gzip
           from pathlib import Path
-          payload = Path('runner_payload.bin').read_bytes()
-          assert len(payload) == 8586, len(payload)
-          assert payload[-2:] == b'XY', payload[-2:]
-          compressed = payload[:-2]
+          compressed = Path('runner_payload.bin').read_bytes()
           assert len(compressed) == 8584, len(compressed)
           runner = gzip.decompress(compressed)
           Path('tools/run_usdjpy_r1_entry_registry_v1.py').write_bytes(runner)
-          print({'blob_payload_bytes': len(payload), 'compressed_bytes': len(compressed), 'runner_bytes': len(runner)})
+          print({'compressed_bytes': len(compressed), 'runner_bytes': len(runner)})
           PY
           rm runner_payload.bin
           chmod +x tools/run_usdjpy_r1_entry_registry_v1.py
