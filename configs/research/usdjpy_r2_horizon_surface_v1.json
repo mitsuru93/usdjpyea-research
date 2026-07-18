@@ -1,0 +1,76 @@
+{
+  "version": "v1",
+  "research_stage": "R2_fixed_horizon_surface",
+  "symbol": "USDJPY",
+  "signal_timeframe": "M15",
+  "development_period": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "effective_first_bar_utc": "2024-01-02T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z"
+  },
+  "inputs": {
+    "r0_release_tag": "usdjpy-r0-canonical-2024-v1",
+    "r0_release_asset": "usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip",
+    "r0_release_asset_sha256": "d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015",
+    "canonical_m15_gzip_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c",
+    "r1_release_tag": "usdjpy-r1-entry-registry-v2",
+    "r1_release_asset": "usdjpy-r1-entry-registry-v2-run-29642282221-artifact-8428977454.zip",
+    "r1_release_asset_sha256": "0e0de71ccc56409a919d48d61e4dcb12502cefdb3944374b9163eda76d222d74",
+    "r1_signal_gzip_sha256": "99c2e2d19bd76b2438c1cec6c777228f82cdca16eeb1b471257bd389d6b7dc9e",
+    "r1_registry_snapshot_sha256": "113f6f19fd549a6769e5a1ed617bc62e44f840feef46979ba1a2cecf995f9827"
+  },
+  "surface": {
+    "candidate_count": 60,
+    "horizons_m15_bars": [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48],
+    "combination_count": 660,
+    "month_boundary_policy": "entry_and_exit_must_remain_in_same_utc_month",
+    "entry_price": "actual_next_M15_bar_mid_open",
+    "exit_price": "M15_mid_close_at_signal_index_plus_horizon",
+    "entry_spread_field": "actual_next_M15_bar_spread_mean_pips",
+    "default_cost_pips": "max(0.5, entry_bar_spread_mean_pips)",
+    "severe_cost_pips": "3*max(0.5, entry_bar_spread_mean_pips)+1.0",
+    "severe_slippage": "0.5_pip_per_side",
+    "path_extrema": "M15_mid_high_low_from_entry_bar_through_exit_bar_inclusive",
+    "intrabar_order_known": false
+  },
+  "required_reporting": {
+    "per_combination": [
+      "trades",
+      "win_rate",
+      "avg_gross_pips",
+      "avg_default_net_pips",
+      "total_default_net_pips",
+      "default_profit_factor",
+      "avg_severe_net_pips",
+      "total_severe_net_pips",
+      "severe_profit_factor",
+      "positive_months",
+      "minimum_monthly_trades",
+      "median_default_net_pips",
+      "q05_default_net_pips",
+      "q95_default_net_pips",
+      "avg_mfe_pips",
+      "avg_mae_pips",
+      "median_mfe_pips",
+      "median_mae_pips",
+      "total_excluding_best_utc_day",
+      "total_excluding_best_two_utc_days"
+    ],
+    "complete_monthly_grid": true,
+    "complete_direction_grid": true,
+    "surface_shape": "60_by_11",
+    "promotion_decision": false
+  },
+  "interpretation": {
+    "single_best_horizon_is_not_an_exit": true,
+    "isolated_positive_point_is_instability": true,
+    "neighboring_positive_region_required_later": true,
+    "no_candidate_removed_in_R2": true,
+    "no_candidate_added_in_R2": true,
+    "selection_deferred_to_R3_R4": true,
+    "H2_access": false,
+    "2025_access": false,
+    "Core_promotion": false,
+    "MT4_promotion": false
+  }
+}
