@@ -1,0 +1,88 @@
+{
+  "2025_artifact_access": false,
+  "Core_promotion": false,
+  "H2_rows_parsed": 0,
+  "MT4_promotion": false,
+  "R5_design_unblocked": true,
+  "accepted_head_sha": "854c1ea9a841eefd3942d99b059bd40363f6bcde",
+  "accepted_run_id": 29665005273,
+  "actions_artifact_id": 8435465130,
+  "actions_artifact_name": "usdjpy-r4-entry-horizon-selection-v1-29665005273",
+  "actions_artifact_sha256": "b201565ab5d1a531f54c066849e92223d0a4fa722f110bef7925cde7c10a4a97",
+  "eligible_combinations": 14,
+  "exit_optimization": false,
+  "pairwise_rows": 91,
+  "r4_acceptance_sha256": "80ab4e7f78b2498e4a78ef3c8957b2fd9eab4cfa190d768a80332c9d3d18d2f1",
+  "r4_status": "PASS",
+  "release_tag": "usdjpy-r4-entry-horizon-selection-v1",
+  "repository": "mitsuru93/usdjpyea-research",
+  "selected_candidates": [
+    {
+      "candidate_id": "R1H04_ramom_32_64_z125",
+      "definition_sha256": "72b1ce40434c8d8869a1546d72051fdd2224e81fc7124d7af2255067e11f89d6",
+      "family": "volatility_adjusted_momentum",
+      "horizon_bars": 32,
+      "selection_rank": 1,
+      "selection_score": 0.8065476190476192
+    },
+    {
+      "candidate_id": "R1B02_legacy_asia_00_07_breakout",
+      "definition_sha256": "b9abb7ac1a44d270dbee702758652a023dff24407d4764f7ac03547bb7aa7990",
+      "family": "session_range_breakout",
+      "horizon_bars": 48,
+      "selection_rank": 2,
+      "selection_score": 0.6785714285714285
+    },
+    {
+      "candidate_id": "R1E02_legacy_trend_8h_resumption",
+      "definition_sha256": "23e3724d872de13027eb769e830b148786cec42dd471b0e34bc062718f364017",
+      "family": "trend_pullback_resumption",
+      "horizon_bars": 48,
+      "selection_rank": 3,
+      "selection_score": 0.625
+    },
+    {
+      "candidate_id": "R1A04_impulse_lb24_med16_x125",
+      "definition_sha256": "f4be49b45f562ef8b3b1eda813bbb399c2d3552dd178f44789aeb620b73835ec",
+      "family": "impulse_breakout",
+      "horizon_bars": 48,
+      "selection_rank": 4,
+      "selection_score": 0.5714285714285715
+    },
+    {
+      "candidate_id": "R1F05_donchian_96",
+      "definition_sha256": "688e5f47d6a80ef2a8cbd9ed190579e2ce60536ae5168ef6edf736f3d72b2f1e",
+      "family": "donchian_channel_breakout",
+      "horizon_bars": 32,
+      "selection_rank": 5,
+      "selection_score": 0.5178571428571429
+    },
+    {
+      "candidate_id": "R1E03_trend_12h_resumption",
+      "definition_sha256": "90d0f87208e9aff45443c6864be13ef853dec694ab5c5a2d97902e744cce55e8",
+      "family": "trend_pullback_resumption",
+      "horizon_bars": 32,
+      "selection_rank": 6,
+      "selection_score": 0.4761904761904761
+    },
+    {
+      "candidate_id": "R1H05_ramom_48_96_z125",
+      "definition_sha256": "cc2455296b4036f3c4eee7eb5bf8078bf4bcc925533b6025d409929688188aa9",
+      "family": "volatility_adjusted_momentum",
+      "horizon_bars": 12,
+      "selection_rank": 7,
+      "selection_score": 0.36309523809523814
+    },
+    {
+      "candidate_id": "R1F04_donchian_64",
+      "definition_sha256": "250f9463fb7001c7217b9f3d0e9df47dd574802cf9121fdec22aba32b07f7e21",
+      "family": "donchian_channel_breakout",
+      "horizon_bars": 24,
+      "selection_rank": 8,
+      "selection_score": 0.32142857142857145
+    }
+  ],
+  "selected_representatives": 8,
+  "selected_representatives_sha256": "c9916dbec071a56e1931f3093f9f2e9152404ff1a4d19ed1d3ead8fc2d8a2d29",
+  "version": "v1"
+}
