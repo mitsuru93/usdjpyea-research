@@ -1,0 +1,89 @@
+{
+  "version": "v1",
+  "research_stage": "R3_temporal_stability",
+  "symbol": "USDJPY",
+  "development_period": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z"
+  },
+  "inputs": {
+    "r2_release_tag": "usdjpy-r2-horizon-surface-v1",
+    "r2_release_asset": "usdjpy-r2-horizon-surface-v1-run-29646040010-artifact-8430064217.zip",
+    "r2_release_asset_sha256": "84a495b7c7cddf1c719bb4c8ce78bfef2c990b355649d362c18481836d953426",
+    "r2_trade_ledger_sha256": "70c2313147607096976a76328b72a628e42fa0001816f14824bcd9e9a3ead6c6",
+    "r2_summary_sha256": "fa46a5db3e73c4d25b8e8c97ef4727c39d737cc8823080b23d21b0419d9e44f6",
+    "r0_release_tag": "usdjpy-r0-canonical-2024-v1",
+    "r0_release_asset": "usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip",
+    "r0_release_asset_sha256": "d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015",
+    "canonical_m15_gzip_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c"
+  },
+  "fixed_horizons": [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48],
+  "time_blocks": {
+    "months": ["2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06"],
+    "quarters": {
+      "2024-Q1": ["2024-01", "2024-02", "2024-03"],
+      "2024-Q2": ["2024-04", "2024-05", "2024-06"]
+    },
+    "rolling_2month": [
+      ["2024-01", "2024-02"],
+      ["2024-02", "2024-03"],
+      ["2024-03", "2024-04"],
+      ["2024-04", "2024-05"],
+      ["2024-05", "2024-06"]
+    ],
+    "rolling_3month": [
+      ["2024-01", "2024-02", "2024-03"],
+      ["2024-02", "2024-03", "2024-04"],
+      ["2024-03", "2024-04", "2024-05"],
+      ["2024-04", "2024-05", "2024-06"]
+    ],
+    "anchored_end_months": ["2024-02", "2024-03", "2024-04", "2024-05", "2024-06"]
+  },
+  "regimes": {
+    "spread": {
+      "source": "all canonical H1 M15 entry bars outside the fixed hard no-trade window",
+      "bins": "quartiles",
+      "labels": [1, 2, 3, 4]
+    },
+    "realized_volatility": {
+      "return": "M15 mid-close to mid-close pips",
+      "windows_bars": [32, 96],
+      "ddof": 0,
+      "entry_value": "rolling standard deviation ending on the completed signal bar",
+      "bins": "quartiles over eligible canonical H1 entry bars",
+      "labels": [0, 1, 2, 3, 4],
+      "warmup_label": 0
+    }
+  },
+  "sample_classes": {
+    "standard": {
+      "aggregate_trades_gte": 120,
+      "minimum_monthly_trades_gte": 12
+    },
+    "moderate": {
+      "aggregate_trades_gte": 60,
+      "minimum_monthly_trades_gte": 5
+    },
+    "sparse": "all other combinations"
+  },
+  "ranking_diagnostics": {
+    "metrics": [
+      "avg_default_net_pips",
+      "default_profit_factor",
+      "avg_severe_net_pips",
+      "severe_profit_factor"
+    ],
+    "method": "descending_min_rank",
+    "selection": false
+  },
+  "interpretation": {
+    "candidate_selection": false,
+    "isolated_maximum_not_robust": true,
+    "neighboring_horizon_support_is_descriptive": true,
+    "R3_is_internal_development_diagnostic": true,
+    "H2_access": false,
+    "2025_access": false,
+    "Core_promotion": false,
+    "MT4_promotion": false
+  }
+}
