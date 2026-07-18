@@ -1,0 +1,373 @@
+name: Run EURUSD 2024 Full-Year Public Data Collection
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: eurusd-2024-full-year-public-data
+  cancel-in-progress: false
+
+jobs:
+  collect-wave-1:
+    name: collect-${{ matrix.month_tag }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - month_tag: "2024-01"
+            start_utc_hour: "2024-01-01T00"
+            end_utc_hour: "2024-02-01T00"
+          - month_tag: "2024-02"
+            start_utc_hour: "2024-02-01T00"
+            end_utc_hour: "2024-03-01T00"
+          - month_tag: "2024-03"
+            start_utc_hour: "2024-03-01T00"
+            end_utc_hour: "2024-04-01T00"
+          - month_tag: "2024-04"
+            start_utc_hour: "2024-04-01T00"
+            end_utc_hour: "2024-05-01T00"
+    uses: ./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml
+    with:
+      symbol: EURUSD
+      pilot_tag: pilot-${{ matrix.month_tag }}-EURUSD-a${{ github.run_attempt }}
+      start_utc_hour: ${{ matrix.start_utc_hour }}
+      end_utc_hour: ${{ matrix.end_utc_hour }}
+      min_coverage: "1.0"
+      max_hard_errors: "0"
+      collect_max_parallel: 1
+
+  collect-wave-2:
+    name: collect-${{ matrix.month_tag }}
+    needs: collect-wave-1
+    if: ${{ always() }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - month_tag: "2024-05"
+            start_utc_hour: "2024-05-01T00"
+            end_utc_hour: "2024-06-01T00"
+          - month_tag: "2024-06"
+            start_utc_hour: "2024-06-01T00"
+            end_utc_hour: "2024-07-01T00"
+          - month_tag: "2024-07"
+            start_utc_hour: "2024-07-01T00"
+            end_utc_hour: "2024-08-01T00"
+          - month_tag: "2024-08"
+            start_utc_hour: "2024-08-01T00"
+            end_utc_hour: "2024-09-01T00"
+    uses: ./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml
+    with:
+      symbol: EURUSD
+      pilot_tag: pilot-${{ matrix.month_tag }}-EURUSD-a${{ github.run_attempt }}
+      start_utc_hour: ${{ matrix.start_utc_hour }}
+      end_utc_hour: ${{ matrix.end_utc_hour }}
+      min_coverage: "1.0"
+      max_hard_errors: "0"
+      collect_max_parallel: 1
+
+  collect-wave-3:
+    name: collect-${{ matrix.month_tag }}
+    needs: collect-wave-2
+    if: ${{ always() }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - month_tag: "2024-09"
+            start_utc_hour: "2024-09-01T00"
+            end_utc_hour: "2024-10-01T00"
+          - month_tag: "2024-10"
+            start_utc_hour: "2024-10-01T00"
+            end_utc_hour: "2024-11-01T00"
+          - month_tag: "2024-11"
+            start_utc_hour: "2024-11-01T00"
+            end_utc_hour: "2024-12-01T00"
+          - month_tag: "2024-12"
+            start_utc_hour: "2024-12-01T00"
+            end_utc_hour: "2025-01-01T00"
+    uses: ./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml
+    with:
+      symbol: EURUSD
+      pilot_tag: pilot-${{ matrix.month_tag }}-EURUSD-a${{ github.run_attempt }}
+      start_utc_hour: ${{ matrix.start_utc_hour }}
+      end_utc_hour: ${{ matrix.end_utc_hour }}
+      min_coverage: "1.0"
+      max_hard_errors: "0"
+      collect_max_parallel: 1
+
+  build-annual-bundle:
+    name: build-and-audit-EURUSD-2024-annual-bundle
+    needs:
+      - collect-wave-1
+      - collect-wave-2
+      - collect-wave-3
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      SYMBOL: EURUSD
+      YEAR: "2024"
+      START: "2024-01-01T00"
+      END: "2025-01-01T00"
+      ROOT: data/eurusd_2024_annual
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas pyyaml
+
+      - name: Compile annual bundle tools
+        run: |
+          python -m py_compile \
+            tools/retry_dukascopy_manifest_errors.py \
+            tools/summarize_download_manifest.py \
+            tools/resample_from_download_manifest.py \
+            tools/validate_fx_bar_artifacts.py \
+            tools/build_fx_annual_bar_bundle.py
+
+      - name: Download all EURUSD 2024 day artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: public-fx-data-pilot-2024-*-EURUSD-a*-d*-${{ github.run_id }}
+          path: data/eurusd_2024_day_artifacts
+          merge-multiple: false
+
+      - name: Combine day manifests and synthesize absent weekday hours
+        run: |
+          set -euo pipefail
+          mkdir -p "${ROOT}/source" "${ROOT}/annual_repair/raw" "${ROOT}/annual_repair/bars" "${ROOT}/audit/monthly"
+          mapfile -d '' MANIFESTS < <(find data/eurusd_2024_day_artifacts -path '*/download_manifest.jsonl' -type f -print0 | sort -z)
+          if [ "${#MANIFESTS[@]}" -eq 0 ]; then
+            echo "No EURUSD daily manifests were downloaded" >&2
+            exit 2
+          fi
+          : > "${ROOT}/source/download_manifest.initial.jsonl"
+          for manifest in "${MANIFESTS[@]}"; do
+            cat "${manifest}" >> "${ROOT}/source/download_manifest.initial.jsonl"
+          done
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+
+          path = Path(os.environ["ROOT"]) / "source" / "download_manifest.initial.jsonl"
+          records = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+          observed = {(str(r.get("symbol", "")).upper(), str(r.get("hour_start_utc", ""))) for r in records}
+          symbol = os.environ["SYMBOL"].upper()
+          start = datetime.strptime(os.environ["START"], "%Y-%m-%dT%H").replace(tzinfo=timezone.utc)
+          end = datetime.strptime(os.environ["END"], "%Y-%m-%dT%H").replace(tzinfo=timezone.utc)
+          missing = []
+          current = start
+          while current < end:
+              if current.weekday() < 5:
+                  hour = current.strftime("%Y-%m-%dT%H:%M:%SZ")
+                  if (symbol, hour) not in observed:
+                      missing.append({
+                          "attempt_pass": "synthetic_annual_gap",
+                          "bytes": 0,
+                          "error": "weekday hour absent from all EURUSD day artifacts",
+                          "error_type": "MissingManifestRecord",
+                          "hour_start_utc": hour,
+                          "path": None,
+                          "rows": 0,
+                          "sha256": None,
+                          "status": "error",
+                          "symbol": symbol,
+                          "url": None,
+                      })
+              current += timedelta(hours=1)
+          with path.open("a", encoding="utf-8") as fh:
+              for record in missing:
+                  fh.write(json.dumps(record, sort_keys=True) + "\n")
+          print(json.dumps({"source_records": len(records), "synthetic_missing_hours": len(missing)}, sort_keys=True))
+          PY
+
+      - name: Repair terminal error and absent hours
+        run: |
+          timeout --kill-after=30s 180m python tools/retry_dukascopy_manifest_errors.py \
+            --manifest "${ROOT}/source/download_manifest.initial.jsonl" \
+            --output-root "${ROOT}/annual_repair/raw" \
+            --manifest-out "${ROOT}/source/download_manifest.annual_repair.jsonl" \
+            --passes 10 \
+            --retries 5 \
+            --sleep-seconds 2.0 \
+            --request-timeout 75 \
+            --request-interval 1.5 \
+            --pass-sleep-seconds 30
+
+      - name: Resample annual repair ticks
+        run: |
+          if [ -s "${ROOT}/source/download_manifest.annual_repair.jsonl" ]; then
+            python tools/resample_from_download_manifest.py \
+              --manifest "${ROOT}/source/download_manifest.annual_repair.jsonl" \
+              --output-dir "${ROOT}/annual_repair/bars" \
+              --symbols "${SYMBOL}" \
+              --timeframes M1 M5 M15 H1
+          fi
+
+      - name: Finalize and audit full-year source manifest
+        run: |
+          set -euo pipefail
+          cat "${ROOT}/source/download_manifest.initial.jsonl" > "${ROOT}/source/download_manifest.jsonl"
+          if [ -s "${ROOT}/source/download_manifest.annual_repair.jsonl" ]; then
+            cat "${ROOT}/source/download_manifest.annual_repair.jsonl" >> "${ROOT}/source/download_manifest.jsonl"
+          fi
+          python tools/summarize_download_manifest.py \
+            --manifest "${ROOT}/source/download_manifest.jsonl" \
+            --symbols "${SYMBOL}" \
+            --start "${START}" \
+            --end "${END}" \
+            --output "${ROOT}/audit/annual_source_summary.json" \
+            --min-coverage 1.0 \
+            --max-hard-errors 0 \
+            --expected-records-mode weekdays
+
+      - name: Split and audit all twelve monthly manifests
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime
+          from pathlib import Path
+
+          root = Path(os.environ["ROOT"])
+          source = root / "source" / "download_manifest.jsonl"
+          output = root / "audit" / "monthly"
+          output.mkdir(parents=True, exist_ok=True)
+          buckets = {f"2024-{month:02d}": [] for month in range(1, 13)}
+          for line in source.read_text(encoding="utf-8").splitlines():
+              if not line.strip():
+                  continue
+              record = json.loads(line)
+              raw = str(record.get("hour_start_utc", ""))
+              if not raw:
+                  continue
+              month = datetime.fromisoformat(raw.replace("Z", "+00:00")).strftime("%Y-%m")
+              if month in buckets:
+                  buckets[month].append(record)
+          for month, records in buckets.items():
+              path = output / f"{month}.manifest.jsonl"
+              path.write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in records), encoding="utf-8")
+          print({month: len(records) for month, records in buckets.items()})
+          PY
+          for month in 01 02 03 04 05 06 07 08 09 10 11 12; do
+            start="2024-${month}-01T00"
+            case "${month}" in
+              12) end="2025-01-01T00" ;;
+              *) next=$(printf "%02d" $((10#${month} + 1))); end="2024-${next}-01T00" ;;
+            esac
+            python tools/summarize_download_manifest.py \
+              --manifest "${ROOT}/audit/monthly/2024-${month}.manifest.jsonl" \
+              --symbols "${SYMBOL}" \
+              --start "${start}" \
+              --end "${end}" \
+              --output "${ROOT}/audit/monthly/2024-${month}.summary.json" \
+              --min-coverage 1.0 \
+              --max-hard-errors 0 \
+              --expected-records-mode weekdays
+          done
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          expected = {
+              "2024-01": 552, "2024-02": 504, "2024-03": 504,
+              "2024-04": 528, "2024-05": 552, "2024-06": 480,
+              "2024-07": 552, "2024-08": 528, "2024-09": 504,
+              "2024-10": 552, "2024-11": 504, "2024-12": 528,
+          }
+          root = Path(os.environ["ROOT"]) / "audit" / "monthly"
+          rows = []
+          for month, expected_records in expected.items():
+              data = json.loads((root / f"{month}.summary.json").read_text(encoding="utf-8"))
+              assert data["expected_records_mode"] == "weekdays", month
+              assert data["expected_records"] == expected_records, (month, data["expected_records"])
+              assert data["observed_records"] == expected_records, (month, data["observed_records"])
+              assert data["unobserved_records"] == 0, month
+              assert data["hard_error_records"] == 0, month
+              assert data["effective_coverage"] == 1.0, month
+              rows.append({"month": month, **data})
+          (root / "monthly_audit_index.json").write_text(json.dumps(rows, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print({"months": 12, "monthly_fixed_weekday_audit": "passed"})
+          PY
+
+      - name: Build deterministic annual M1 M5 M15 H1 bundle
+        run: |
+          python tools/build_fx_annual_bar_bundle.py \
+            --input-root data/eurusd_2024_day_artifacts \
+            --input-root "${ROOT}/annual_repair/bars" \
+            --output-dir "${ROOT}/bundle" \
+            --symbol "${SYMBOL}" \
+            --year "${YEAR}" \
+            --timeframes M1 M5 M15 H1
+
+      - name: Validate annual bar files
+        run: |
+          args=()
+          for timeframe in M1 M5 M15 H1; do
+            args+=(--input "${ROOT}/bundle/bars/${timeframe}/${SYMBOL}_${timeframe}.csv.gz")
+          done
+          python tools/validate_fx_bar_artifacts.py \
+            "${args[@]}" \
+            --output "${ROOT}/bundle/validation_summary.json"
+
+      - name: Write run metadata and summary
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["ROOT"])
+          payload = {
+              "symbol": os.environ["SYMBOL"],
+              "year": int(os.environ["YEAR"]),
+              "source": "Dukascopy public bid/ask BI5",
+              "timeframes": ["M1", "M5", "M15", "H1"],
+              "strategy_assumptions": None,
+              "broker_spread_assumption": None,
+              "research_status": "source_data_only",
+              "workflow_run_id": os.environ.get("GITHUB_RUN_ID"),
+              "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
+              "head_sha": os.environ.get("GITHUB_SHA"),
+              "fixed_weekday_expected_hours": 6288,
+          }
+          (root / "run_metadata.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
+          echo "# EURUSD 2024 Full-Year Public Data" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Dukascopy bid/ask source; M1, M5, M15 and H1; no strategy or broker-spread assumption." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Annual source audit" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat "${ROOT}/audit/annual_source_summary.json" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Annual bar bundle" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat "${ROOT}/bundle/annual_bundle_manifest.json" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload EURUSD 2024 annual bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-fx-data-EURUSD-2024-annual-${{ github.run_id }}-a${{ github.run_attempt }}
+          path: |
+            data/eurusd_2024_annual/**/*
+          if-no-files-found: error
+          retention-days: 90
