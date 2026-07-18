@@ -93,6 +93,75 @@ jobs:
               --latest=false
           fi
 
+      - name: Verify durable Release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: usdjpy-r0-artifact-archive-2024-v1
+        run: |
+          set -euo pipefail
+          gh release view "${TAG}" \
+            --json tagName,url,isDraft,isPrerelease,assets \
+            > data/r0_artifact_archive_v1/release_receipt.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt = json.loads(Path("data/r0_artifact_archive_v1/release_receipt.json").read_text())
+          assets = receipt["assets"]
+          names = {asset["name"] for asset in assets}
+          expected = {
+              "SHA256SUMS",
+              "usdjpy-r0-artifact-archive-manifest-v1.json",
+              "authoritative_h1_multi_family_screen_v2-id-8394436272.zip",
+              "authoritative_h1_entry_horizon_v2-id-8408094591.zip",
+              "authoritative_joint_h2_a1_e3_v1-id-8424623578.zip",
+          }
+          expected.update(
+              f"usdjpy-2024-{month:02d}-source-artifacts-v1.tar.gz"
+              for month in range(1, 13)
+          )
+          expected.update(
+              {
+                  "usdjpy-2024-01-baseline-id-8301048206.zip",
+                  "usdjpy-2024-02-baseline-id-8331088231.zip",
+                  "usdjpy-2024-03-baseline-id-8345360140.zip",
+                  "usdjpy-2024-04-baseline-id-8359147323.zip",
+                  "usdjpy-2024-05-baseline-id-8364319250.zip",
+                  "usdjpy-2024-06-baseline-id-8366496997.zip",
+                  "usdjpy-2024-07-baseline-id-8397515234.zip",
+                  "usdjpy-2024-08-baseline-id-8401670704.zip",
+                  "usdjpy-2024-09-baseline-id-8423361030.zip",
+                  "usdjpy-2024-10-baseline-id-8423402213.zip",
+                  "usdjpy-2024-11-baseline-id-8423419800.zip",
+                  "usdjpy-2024-12-baseline-id-8423376366.zip",
+              }
+          )
+          assert receipt["tagName"] == "usdjpy-r0-artifact-archive-2024-v1", receipt
+          assert receipt["isDraft"] is False, receipt
+          assert receipt["isPrerelease"] is False, receipt
+          assert len(assets) == 29, (len(assets), sorted(names))
+          assert names == expected, (sorted(names - expected), sorted(expected - names))
+          print({"release_asset_verification": "PASS", "assets": len(assets)})
+          PY
+
+      - name: Commit archive receipt
+        run: |
+          set -euo pipefail
+          target="docs/research_reboot/artifact_archives/usdjpy_r0_2024_v1"
+          mkdir -p "${target}"
+          cp data/r0_artifact_archive_v1/archive_summary.json "${target}/archive_summary.json"
+          cp data/r0_artifact_archive_v1/release_receipt.json "${target}/release_receipt.json"
+          cp data/r0_artifact_archive_v1/release_assets/usdjpy-r0-artifact-archive-manifest-v1.json "${target}/artifact_manifest.json"
+          cp data/r0_artifact_archive_v1/release_assets/SHA256SUMS "${target}/SHA256SUMS"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${target}"
+          if git diff --cached --quiet; then
+            echo "Archive receipt already current"
+          else
+            git commit -m "docs: record durable R0 artifact archive"
+            git push
+          fi
+
       - name: Upload workflow audit artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -102,5 +171,6 @@ jobs:
             data/r0_artifact_archive_v1/archive_summary.json
             data/r0_artifact_archive_v1/release_assets/usdjpy-r0-artifact-archive-manifest-v1.json
             data/r0_artifact_archive_v1/release_assets/SHA256SUMS
+            data/r0_artifact_archive_v1/release_receipt.json
           if-no-files-found: error
           retention-days: 90
