@@ -1,0 +1,86 @@
+name: Assemble USDJPY R1 Preregistration v1
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: assemble-usdjpy-r1-prereg-v1
+  cancel-in-progress: false
+
+jobs:
+  assemble:
+    if: github.event_name != 'issues' || github.event.issue.title == '[R1] Assemble USDJPY preregistration v1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reconstruct frozen files
+        run: |
+          set -euo pipefail
+          mkdir -p configs/research tools docs/research_reboot
+          base64 -d .github/r1_stage/registry.json.gz.b64 | gzip -dc > configs/research/usdjpy_r1_entry_universe_v1.json
+          cat .github/r1_stage/runner.py.gz.b64.* | base64 -d | gzip -dc > tools/run_usdjpy_r1_entry_registry_v1.py
+          base64 -d .github/r1_stage/prereg.md.gz.b64 | gzip -dc > docs/research_reboot/usdjpy_r1_entry_universe_prereg_v1.md
+          chmod +x tools/run_usdjpy_r1_entry_registry_v1.py
+          echo 'ee646dc4dfefb3f231881c26249be0739b1e7b4ca9febbe01236b6120244a006  configs/research/usdjpy_r1_entry_universe_v1.json' | sha256sum -c -
+          echo '648c7a4f530756aa90b3fc8fb3e403050af44e7388464898a788a661da7281b3  tools/run_usdjpy_r1_entry_registry_v1.py' | sha256sum -c -
+          echo 'e8ffabafe948c98031ecaac1bc043dab45deed7a0d742a2db6a2457aee7496ed  docs/research_reboot/usdjpy_r1_entry_universe_prereg_v1.md' | sha256sum -c -
+          python -m json.tool configs/research/usdjpy_r1_entry_universe_v1.json >/dev/null
+          python -m py_compile tools/run_usdjpy_r1_entry_registry_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('configs/research/usdjpy_r1_entry_universe_v1.json')
+          d = json.loads(p.read_text())
+          families = d['families']
+          candidates = [c for f in families for c in f['candidates']]
+          assert len(families) == 12
+          assert len(candidates) == 60
+          assert len({c['id'] for c in candidates}) == 60
+          assert sum(f['cap'] for f in families) == 60
+          assert all(len(f['candidates']) == f['cap'] for f in families)
+          assert d['research_firewall']['h2_rows_parsed'] == 0
+          assert d['research_firewall']['2025_access'] is False
+          assert d['common_execution']['exit_or_horizon_in_R1'] is False
+          assert d['common_execution']['price_or_pnl_output_in_R1'] is False
+          print({'families': len(families), 'candidates': len(candidates), 'status': 'PASS'})
+          PY
+
+      - name: Commit preregistration and remove staging
+        run: |
+          set -euo pipefail
+          rm -rf .github/r1_stage
+          rm -f .github/workflows/assemble_usdjpy_r1_prereg_v1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'research: freeze USDJPY R1 entry universe v1'
+          git push origin HEAD:main
+
+      - name: Close trigger issue
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body 'USDJPY R1 entry universe frozen: 60 unique Entry definitions across 12 families. No H2, 2025, price, Exit, horizon or PnL output was opened.'
+          gh issue close "$ISSUE_NUMBER" --repo "$REPOSITORY" --reason completed
+
+      - name: Report failure
+        if: github.event_name == 'issues' && failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body 'USDJPY R1 preregistration assembly failed. R1 execution remains blocked.'
