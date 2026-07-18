@@ -1,0 +1,113 @@
+name: Patch USDJPY Status After R1 v2
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  patch:
+    if: github.event.issue.title == '[Patch] Record accepted USDJPY R1 v2'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch status
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('docs/research_reboot/usdjpy_current_status_after_q2_v1.md')
+          text = path.read_text()
+          start = text.index('## Accepted R1 Entry registry\n')
+          end = text.index('## Corrected H1 screen\n')
+          replacement = '''## Accepted corrected R1 Entry registry v2
+
+```text
+run_id: 29642282221
+head_sha: 9393e4ac9ec7d712f85c29e9ef7f44025de25403
+artifact_id: 8428977454
+artifact: usdjpy-r1-entry-registry-v2-29642282221
+artifact_digest: sha256:0e0de71ccc56409a919d48d61e4dcb12502cefdb3944374b9163eda76d222d74
+release_tag: usdjpy-r1-entry-registry-v2
+result: docs/research_reboot/usdjpy_r1_entry_registry_result_v2.md
+```
+
+R1 v2 passed the twenty original Entry-registry checks plus actual-next-bar Entry-hour semantics and exact thirteen-candidate historical Entry-ledger regression.
+
+```text
+families: 12
+unique Entry definitions: 60
+legacy unique Entry definitions: 12
+new Entry definitions: 48
+functional-definition duplicates: 0
+exact signal-equivalent groups: 0
+Entry signal rows: 34,955
+historical registered-hold regressions: 13 / 13 passed
+H2 rows parsed: 0
+2025 access: none
+outcomes opened: false
+```
+
+All sixty definitions generated Entry signals. No Entry price, Exit, horizon, cost, PnL, profit factor, expectancy or promotion result was opened in R1.
+
+Durable receipt:
+
+```text
+archive_run_id: 29642345597
+receipt: docs/research_reboot/artifact_archives/usdjpy_r1_entry_registry_v2/
+```
+
+### Excluded R1 v1
+
+```text
+run_id: 29641805182
+artifact_id: 8428842719
+release_tag: usdjpy-r1-entry-registry-v1
+status: EXCLUDED
+```
+
+V1 applied `entry_hours_utc` to the signal-bar hour rather than the actual next-bar Entry hour. It may not be used by R2 or any later stage. The v2 correction changed no candidate or parameter and used no outcome information.
+
+R1 v2 unblocks R2 only. Signal count is not a performance ranking.
+
+'''
+          text = text[:start] + replacement + text[end:]
+          old = '''R1 — expanded Entry registry on 2024 H1 only:
+  passed
+  run_id 29641805182
+  artifact_id 8428842719
+  60 unique Entry definitions across 12 families
+'''
+          new = '''R1 — expanded Entry registry on 2024 H1 only:
+  corrected v2 passed
+  run_id 29642282221
+  artifact_id 8428977454
+  60 unique Entry definitions across 12 families
+  all 13 historical registered-hold Entry regressions passed
+  predecessor run 29641805182 excluded
+'''
+          assert text.count(old) == 1, text.count(old)
+          text = text.replace(old, new)
+          path.write_text(text)
+          PY
+      - name: Commit and remove patch workflow
+        run: |
+          rm -f .github/workflows/patch_usdjpy_status_after_r1_v2.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'docs: correct USDJPY status for accepted R1 v2'
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Close issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body 'USDJPY status now records corrected R1 v2 as accepted and R1 v1 as excluded.'
+          gh issue close "$ISSUE_NUMBER" --repo "$REPOSITORY" --reason completed
