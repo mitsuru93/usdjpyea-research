@@ -9,7 +9,7 @@
     "configs/research/usdjpy_joint_h2_a1_e3_eval_v1.json": "2c346e8c39355795de18c73e494d3e0bebd23a27",
     "configs/market_sessions/fx_market_sessions_v1.json": "baead9fda40977a214d000dd7af127f05487f202",
     "tools/build_fx_annual_bar_bundle.py": "8657582159d7a5345965af62b409334d36890a6c",
-    "tools/run_usdjpy_r0_canonical_bundle_v1.py": "096e112dc0fd03352041a3e21ac05f5beb8ad5dc",
+    "tools/run_usdjpy_r0_canonical_bundle_v1.py": "ff09e5c27616c227416b8db482224534fc18acf9",
     "tools/run_usdjpy_h1_multi_family_screen.py": "797c037b5db830778c7d45ebbad742b193e4c195",
     "tools/run_usdjpy_h1_multi_family_screen_v2.py": "ad5dc992a82692c84c3310b6fabe7a04bf4feb69",
     "tools/run_usdjpy_joint_h2_a1_e3_eval_v1.py": "137ba6c366ec395a58dc9d4c291549493611107a",
@@ -52,7 +52,7 @@
     },
     "ledger": {
       "file": "candidate_trades.csv",
-      "reference_normalized_sha256": "sha256:41a7f041e95b4782fc811861ec8e98b61cde85e6fc76b2ed697618b0bc7a6636",
+      "reference_normalized_sha256": "sha256:98f67e110cb641263b629234b1b0401ece3a613f695f6c829bd007cc231894f8",
       "columns": [
         "timestamp_utc",
         "mid_open",
@@ -84,7 +84,7 @@
         "exit_ts",
         "timestamp_utc"
       ],
-      "float_format": "%.12f",
+      "float_format": "%.10f",
       "path_columns_excluded": [
         "_path",
         "_priority"
@@ -140,7 +140,7 @@
     ],
     "ledger": {
       "file": "h2_candidate_trades.csv",
-      "reference_normalized_sha256": "sha256:e40e498dc15b13267bbcb3271766938332b345e5d00ac7a225bb78bc9fe31aa4",
+      "reference_normalized_sha256": "sha256:e4eca229dc886abd239dc9a424a0ca7c2414f87acb761da952e11ab39a07ba04",
       "columns": [
         "timestamp_utc",
         "mid_open",
@@ -172,7 +172,7 @@
         "exit_ts",
         "timestamp_utc"
       ],
-      "float_format": "%.12f",
+      "float_format": "%.10f",
       "path_columns_excluded": [
         "_path",
         "_priority"

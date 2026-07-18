@@ -21,7 +21,7 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 
 FLOAT_TOLERANCE = 1e-9
-LEDGER_FLOAT_FORMAT = "%.12f"
+LEDGER_FLOAT_FORMAT = "%.10f"
 
 
 def sha256_file(path: Path) -> str:
