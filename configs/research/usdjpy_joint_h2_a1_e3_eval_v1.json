@@ -1,0 +1,112 @@
+{
+  "version": "v1",
+  "symbol": "USDJPY",
+  "timeframe": "M15",
+  "development_block": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z"
+  },
+  "h2_block": {
+    "start_utc": "2024-07-01T00:00:00Z",
+    "end_utc_exclusive": "2025-01-01T00:00:00Z"
+  },
+  "history_policy": "generate_h2_signals_on_contiguous_h1_plus_h2_bars_then_retain_entries_and_exits_inside_h2",
+  "candidate_ids": [
+    "A1_impulse_breakout_lb3_hold6",
+    "E3_trend_24h_resumption_hold6"
+  ],
+  "intervention_dates_utc": [
+    "2024-07-11",
+    "2024-07-12"
+  ],
+  "costs": {
+    "base_spread_pips": 0.5,
+    "default_spread_multiplier": 1.0,
+    "default_slippage_pips_per_side": 0.0,
+    "severe_spread_multiplier": 3.0,
+    "severe_slippage_pips_per_side": 0.5,
+    "spread_field": "spread_mean_pips",
+    "spread_mode": "max_base_public"
+  },
+  "gates": {
+    "positive_months_gte": 4,
+    "aggregate_avg_net_pips_gt": 0.0,
+    "aggregate_profit_factor_gte": 1.1,
+    "event_excluded_avg_net_pips_gt": 0.0,
+    "event_excluded_profit_factor_gte": 1.05,
+    "total_excluding_best_two_days_gt": 0.0,
+    "aggregate_trades_gte": 300,
+    "minimum_monthly_trades_gte": 35,
+    "severe_avg_net_pips_gte": -0.5,
+    "severe_profit_factor_gte": 0.9,
+    "hard_no_trade_violations_eq": 0,
+    "all_six_source_months_accepted": true,
+    "h1_regression_required": true
+  },
+  "expected_h1_regression": {
+    "A1_impulse_breakout_lb3_hold6": {
+      "trades": 391,
+      "win_rate": 0.5242966751918159,
+      "avg_net_pips": 2.0158989784890693,
+      "total_net_pips": 788.2165005892261,
+      "profit_factor": 1.2805773608918685,
+      "positive_months": 4,
+      "minimum_monthly_trades": 55,
+      "severe_avg_net_pips": -0.1530703279599257,
+      "severe_profit_factor": 0.9815404534887892,
+      "event_excluded_avg_net_pips": 1.4580254015321512,
+      "event_excluded_profit_factor": 1.2035914591179655,
+      "total_excluding_best_two_days": 251.58054958960588
+    },
+    "E3_trend_24h_resumption_hold6": {
+      "trades": 361,
+      "win_rate": 0.484764542936288,
+      "avg_net_pips": 1.7833547972648005,
+      "total_net_pips": 643.7910818125929,
+      "profit_factor": 1.3053430333986442,
+      "positive_months": 4,
+      "minimum_monthly_trades": 49,
+      "severe_avg_net_pips": -0.3515976580674448,
+      "severe_profit_factor": 0.949636037634243,
+      "event_excluded_avg_net_pips": 1.4494717549012432,
+      "event_excluded_profit_factor": 1.2463073581645463,
+      "total_excluding_best_two_days": 394.000132499365
+    }
+  },
+  "accepted_h2_baseline_artifacts": {
+    "2024-07": {
+      "run_id": 29556241138,
+      "artifact_name": "fx-session-baseline-2024-07-USDJPY-29556241138",
+      "digest": "sha256:e7dfc13f5186f29f0d9e83bf5554e30f615821638d4fde11fe0be353d1e6d6d2"
+    },
+    "2024-08": {
+      "run_id": 29567447264,
+      "artifact_name": "fx-session-baseline-2024-08-USDJPY-29567447264",
+      "digest": "sha256:e5dd5f183b4a414c2b25bb4f6e46f627c07660358533d9a097dec01a2968b7c6"
+    },
+    "2024-09": {
+      "run_id": 29569149852,
+      "artifact_id": 8423361030,
+      "artifact_name": "fx-session-baseline-2024-09-USDJPY-29569149852",
+      "digest": "sha256:1975d70dbbe40db942495fef8903078de73cf29af4cee65db176a18be6b45b31"
+    },
+    "2024-10": {
+      "run_id": 29569149852,
+      "artifact_id": 8423402213,
+      "artifact_name": "fx-session-baseline-2024-10-USDJPY-29569149852",
+      "digest": "sha256:fbae37c01ef7d342fd524b738116563cc99206850f7e200c7dd42e7fdb7ce57d"
+    },
+    "2024-11": {
+      "run_id": 29569149852,
+      "artifact_id": 8423419800,
+      "artifact_name": "fx-session-baseline-2024-11-USDJPY-29569149852",
+      "digest": "sha256:d83599f9080ed603fd5fc36cd0742a6281c26af4672bdf8e5216fcaf39779507"
+    },
+    "2024-12": {
+      "run_id": 29569149852,
+      "artifact_id": 8423376366,
+      "artifact_name": "fx-session-baseline-2024-12-USDJPY-29569149852",
+      "digest": "sha256:49e4748b6cd197e406ad14c59a37f873c96592bae4da1ba548ca11a0fad454f5"
+    }
+  }
+}
