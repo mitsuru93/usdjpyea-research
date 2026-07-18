@@ -1,0 +1,116 @@
+r5	Materialize evaluator and freeze lock before data access	﻿2026-07-18T23:43:58.3893127Z ##[group]Run set -euo pipefail
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3893530Z ^[[36;1mset -euo pipefail^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3893767Z ^[[36;1mpython - <<'PY'^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3893992Z ^[[36;1mimport base64^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3894204Z ^[[36;1mimport gzip^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3894407Z ^[[36;1mimport hashlib^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3894617Z ^[[36;1mimport json^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3895101Z ^[[36;1mimport subprocess^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3895352Z ^[[36;1mfrom pathlib import Path^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3895597Z ^[[36;1m^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3895870Z ^[[36;1mrunner=Path('tools/run_usdjpy_r5_controlled_exit_v1.py')^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3896240Z ^[[36;1mif not runner.is_file():^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3896563Z ^[[36;1m    stage=Path('.github/r5_stage/runner.py.gz.b64')^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3896968Z ^[[36;1m    compressed=base64.b64decode(stage.read_text().strip())^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3897805Z ^[[36;1m    assert hashlib.sha256(compressed).hexdigest()=='55d77b2c7a6e7eaa562558f23d1ad81900eeaf632daaafd730a75e458570288b'^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3898469Z ^[[36;1m    source=gzip.decompress(compressed)^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3898787Z ^[[36;1m    assert len(source)==33643,len(source)^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3899337Z ^[[36;1m    assert hashlib.sha256(source).hexdigest()=='61a08c41473f6895056b7c680f2d8a0730e6391b2f4e070e9bab4dd10f9c2a19'^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3899880Z ^[[36;1m    runner.write_bytes(source)^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3900149Z ^[[36;1m    runner.chmod(0o755)^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3900389Z ^[[36;1m^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3900703Z ^[[36;1mconfig_path=Path('configs/research/usdjpy_r5_controlled_exit_v1.json')^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3901245Z ^[[36;1mprereg_path=Path('docs/research_reboot/usdjpy_r5_controlled_exit_prereg_v1.md')^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3901692Z ^[[36;1mconfig=json.loads(config_path.read_text())^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3902022Z ^[[36;1massert len(config['representatives'])==8^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3902322Z ^[[36;1massert len(config['policies'])==4^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3902680Z ^[[36;1massert config['cohort_contract']['entry_rows_per_policy']==2982^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3903134Z ^[[36;1massert config['cohort_contract']['total_policy_trade_rows']==11928^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3903572Z ^[[36;1massert config['policy_design']['parameter_sweep'] is False^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3903973Z ^[[36;1massert config['research_firewall']['H2_rows_parsed']==0^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3904365Z ^[[36;1massert config['research_firewall']['2025_access'] is False^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3904937Z ^[[36;1m^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3905196Z ^[[36;1mpaths=[str(config_path),str(prereg_path),str(runner)]^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3905514Z ^[[36;1mcode_blobs={}^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3905732Z ^[[36;1mfor path in paths:^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3905950Z ^[[36;1m    try:^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3906393Z ^[[36;1m        blob=subprocess.check_output(['git','rev-parse',f'HEAD:{path}'],text=True,stderr=subprocess.DEVNULL).strip()^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3906948Z ^[[36;1m    except subprocess.CalledProcessError:^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3907381Z ^[[36;1m        blob=subprocess.check_output(['git','hash-object',path],text=True).strip()^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3907790Z ^[[36;1m    code_blobs[path]=blob^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3908025Z ^[[36;1mlock={^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3908215Z ^[[36;1m    'version':'v1',^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3908484Z ^[[36;1m    'research_stage':'R5_controlled_exit_research',^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3908789Z ^[[36;1m    'symbol':'USDJPY',^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3909023Z ^[[36;1m    'code_blobs':code_blobs,^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3909464Z ^[[36;1m    'content_sha256':{path:hashlib.sha256(Path(path).read_bytes()).hexdigest() for path in paths},^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3909920Z ^[[36;1m    'input_releases':{^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3910724Z ^[[36;1m        'r0':{'tag':config['inputs']['r0_release_tag'],'asset':config['inputs']['r0_release_asset'],'asset_sha256':config['inputs']['r0_release_asset_sha256'],'canonical_m15_gzip_sha256':config['inputs']['canonical_m15_gzip_sha256']},^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3912082Z ^[[36;1m        'r2':{'tag':config['inputs']['r2_release_tag'],'asset':config['inputs']['r2_release_asset'],'asset_sha256':config['inputs']['r2_release_asset_sha256'],'trade_ledger_sha256':config['inputs']['r2_trade_ledger_sha256']},^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3913677Z ^[[36;1m        'r4':{'tag':config['inputs']['r4_release_tag'],'asset':config['inputs']['r4_release_asset'],'asset_sha256':config['inputs']['r4_release_asset_sha256'],'selected_representatives_sha256':config['inputs']['r4_selected_representatives_sha256']},^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3914549Z ^[[36;1m    },^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3915043Z ^[[36;1m    'representatives':config['representatives'],^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3915400Z ^[[36;1m    'cohort_contract':config['cohort_contract'],^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3915707Z ^[[36;1m    'atr_contract':config['atr'],^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3915996Z ^[[36;1m    'policy_contract':config['policies'],^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3916492Z ^[[36;1m    'execution_contract':config['execution_semantics'],^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3916853Z ^[[36;1m    'cost_contract':config['cost_semantics'],^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3917184Z ^[[36;1m    'reporting_contract':config['reporting'],^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3917535Z ^[[36;1m    'required_outputs':config['required_outputs'],^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3917892Z ^[[36;1m    'research_firewall':config['research_firewall'],^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3918223Z ^[[36;1m    'next_stage':config['next_stage'],^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3918487Z ^[[36;1m}^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3918965Z ^[[36;1mPath('configs/research/usdjpy_r5_controlled_exit_lock_v1.json').write_text(json.dumps(lock,indent=2,sort_keys=True)+'\n')^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3919793Z ^[[36;1mprint({'R5_lock':'generated_before_data_access','runner_sha256':hashlib.sha256(runner.read_bytes()).hexdigest()})^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3920297Z ^[[36;1mPY^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3920587Z ^[[36;1mpython -m py_compile tools/run_usdjpy_r5_controlled_exit_v1.py^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3920962Z ^[[36;1mrm -rf .github/r5_stage^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3921308Z ^[[36;1mrm -f .github/workflows/assemble_usdjpy_r5_controlled_exit_v1.yml^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3921715Z ^[[36;1mgit config user.name 'github-actions[bot]'^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3922151Z ^[[36;1mgit config user.email '41898282+github-actions[bot]@users.noreply.github.com'^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3922550Z ^[[36;1mgit add -A^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3922775Z ^[[36;1mif ! git diff --cached --quiet; then^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3923183Z ^[[36;1m  git commit -m 'research: materialize and lock USDJPY R5 evaluator v1'^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3923577Z ^[[36;1m  git pull --rebase origin main^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3923841Z ^[[36;1m  git push origin HEAD:main^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3924075Z ^[[36;1mfi^[[0m
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3984281Z shell: /usr/bin/bash -e {0}
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3984526Z env:
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3985076Z   CONFIG_PATH: configs/research/usdjpy_r5_controlled_exit_v1.json
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3985535Z   LOCK_PATH: configs/research/usdjpy_r5_controlled_exit_lock_v1.json
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3985951Z   OUTPUT_DIR: data/experiments/usdjpy_r5_controlled_exit_v1
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3986347Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3986752Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3987165Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3987528Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3987902Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3988274Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.3988588Z ##[endgroup]
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.4380035Z Traceback (most recent call last):
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.4388636Z   File "<stdin>", line 12, in <module>
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.4389213Z AssertionError
+r5	Materialize evaluator and freeze lock before data access	2026-07-18T23:43:58.4446376Z ##[error]Process completed with exit code 1.
+r5	Upload R5 artifact	﻿2026-07-18T23:43:58.4752300Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+r5	Upload R5 artifact	2026-07-18T23:43:58.4753597Z ##[group]Run actions/upload-artifact@v4
+r5	Upload R5 artifact	2026-07-18T23:43:58.4753866Z with:
+r5	Upload R5 artifact	2026-07-18T23:43:58.4754143Z   name: usdjpy-r5-controlled-exit-v1-29665727132
+r5	Upload R5 artifact	2026-07-18T23:43:58.4754497Z   path: data/experiments/usdjpy_r5_controlled_exit_v1/**
+r5	Upload R5 artifact	2026-07-18T23:43:58.4755176Z   if-no-files-found: error
+r5	Upload R5 artifact	2026-07-18T23:43:58.4755418Z   retention-days: 90
+r5	Upload R5 artifact	2026-07-18T23:43:58.4755627Z   compression-level: 6
+r5	Upload R5 artifact	2026-07-18T23:43:58.4755833Z   overwrite: false
+r5	Upload R5 artifact	2026-07-18T23:43:58.4756044Z   include-hidden-files: false
+r5	Upload R5 artifact	2026-07-18T23:43:58.4756262Z env:
+r5	Upload R5 artifact	2026-07-18T23:43:58.4756520Z   CONFIG_PATH: configs/research/usdjpy_r5_controlled_exit_v1.json
+r5	Upload R5 artifact	2026-07-18T23:43:58.4756943Z   LOCK_PATH: configs/research/usdjpy_r5_controlled_exit_lock_v1.json
+r5	Upload R5 artifact	2026-07-18T23:43:58.4757377Z   OUTPUT_DIR: data/experiments/usdjpy_r5_controlled_exit_v1
+r5	Upload R5 artifact	2026-07-18T23:43:58.4757758Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+r5	Upload R5 artifact	2026-07-18T23:43:58.4758167Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+r5	Upload R5 artifact	2026-07-18T23:43:58.4758580Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+r5	Upload R5 artifact	2026-07-18T23:43:58.4758959Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+r5	Upload R5 artifact	2026-07-18T23:43:58.4759343Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+r5	Upload R5 artifact	2026-07-18T23:43:58.4759727Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+r5	Upload R5 artifact	2026-07-18T23:43:58.4760070Z ##[endgroup]
+r5	Upload R5 artifact	2026-07-18T23:43:58.6401154Z (node:2310) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+r5	Upload R5 artifact	2026-07-18T23:43:58.6402168Z (Use `node --trace-deprecation ...` to show where the warning was created)
+r5	Upload R5 artifact	2026-07-18T23:43:58.6433344Z ##[error]No files were found with the provided path: data/experiments/usdjpy_r5_controlled_exit_v1/**. No artifacts will be uploaded.
