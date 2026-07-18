@@ -1,0 +1,22 @@
+{
+  "version": "v2",
+  "release_tag": "usdjpy-r1-entry-registry-v2",
+  "accepted_run_id": 29642282221,
+  "accepted_head_sha": "9393e4ac9ec7d712f85c29e9ef7f44025de25403",
+  "actions_artifact_id": 8428977454,
+  "actions_artifact_sha256": "0e0de71ccc56409a919d48d61e4dcb12502cefdb3944374b9163eda76d222d74",
+  "excluded_predecessor_run_id": 29641805182,
+  "excluded_predecessor_artifact_id": 8428842719,
+  "families": 12,
+  "unique_entry_definitions": 60,
+  "signal_rows": 34955,
+  "historical_registered_hold_regressions": 13,
+  "historical_registered_hold_regressions_passed": 13,
+  "candidate_signals_gzip_sha256": "99c2e2d19bd76b2438c1cec6c777228f82cdca16eeb1b471257bd389d6b7dc9e",
+  "r1_v2_acceptance_sha256": "a49d194cc52253207744894d23458ecf9228c3f205ef5438c707a3d27de6e20f",
+  "legacy_regression_sha256": "2936af74567bb89440f1a18027beac714321869e1e96b00eb218f8b25a459992",
+  "h2_rows_parsed": 0,
+  "outcomes_opened": false,
+  "2025_artifact_access": false,
+  "r2_unblocked": true
+}
