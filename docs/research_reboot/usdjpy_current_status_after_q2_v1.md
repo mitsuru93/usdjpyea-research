@@ -1,47 +1,43 @@
-# USDJPY Research Status After Q2 v1
+# USDJPY Research Current Status v1
 
-## Verified data
-
-The accepted Dukascopy USDJPY source covers January through December 2024.
-
-Every accepted month has:
+## Governing boundary
 
 ```text
-fixed weekday-hour audit: passed
-unobserved records: 0
-terminal hard errors: 0
-effective coverage: 100%
+repository: mitsuru93/usdjpyea-research
+Research role: pre-MT4 candidate screener
+Core / MT4: final source of truth
+research data currently permitted: canonical 2024 H1 only
+H2 access for new candidates: prohibited until R6 freeze
+2025 access: prohibited until the unchanged V2 replication
+live capital allocation: prohibited
 ```
 
-November uses accepted rerun artifacts:
+R0 through R4 are accepted. R5 Exit policies are preregistered but no accepted R5 result exists yet.
 
-```text
-source artifact_id: 8421758330
-baseline artifact_id: 8423419800
-```
+## Verified 2024 data
 
-First-attempt November source artifact `8412658745` remains excluded.
+The accepted Dukascopy USDJPY source covers January through December 2024. Every accepted source month has effective coverage 100%, zero unobserved records and zero terminal hard errors.
 
-## Durable 2024 input archive
+November uses accepted rerun source artifact `8421758330` and baseline artifact `8423419800`. First-attempt source artifact `8412658745` remains excluded.
 
-All accepted 2024 inputs and authoritative regression artifacts are preserved independently of GitHub Actions expiry.
+Durable input archive:
 
 ```text
 release_tag: usdjpy-r0-artifact-archive-2024-v1
-release_assets: 29
-accepted_original_artifacts: 288
-source_day_artifacts: 261
-source_aggregate_artifacts: 12
-baseline_artifacts: 12
-authoritative_regression_artifacts: 3
+accepted original artifacts: 288
+source day artifacts: 261
+source aggregate artifacts: 12
+baseline artifacts: 12
+authoritative regression artifacts: 3
 receipt: docs/research_reboot/artifact_archives/usdjpy_r0_2024_v1/
 ```
 
-The excluded November artifact is recorded but is not archived as an accepted input. No 2025 artifact is present.
+No 2025 artifact is an accepted input to the current programme.
 
-## Accepted R0 canonical bundle
+## R0 — accepted canonical bundle
 
 ```text
+status: PASS
 run_id: 29639548804
 head_sha: 2d88fb846bbe77e256ee37abdf1dcbb462e3ebe4
 artifact_id: 8428199309
@@ -51,28 +47,12 @@ release_tag: usdjpy-r0-canonical-2024-v1
 result: docs/research_reboot/usdjpy_r0_canonical_bundle_result_v1.md
 ```
 
-R0 passed all twenty acceptance checks.
+Canonical timeframes are M1, M5, M15 and H1. Repeated builds were byte-identical, same-priority conflicts were zero, and the historical H1 and A1/E3 H2 artifacts were reproduced from the canonical bundle. R0 made no strategy promotion.
+
+## R1 — accepted corrected Entry registry v2
 
 ```text
-Release assets: 29 verified
-original artifact ZIPs: 288 verified
-source months: 12 / 12 at effective coverage 1.0
-unobserved records: 0
-hard source errors: 0
-canonical timeframes: M1, M5, M15, H1
-deterministic repeated builds: byte-identical
-same-priority conflicts: 0
-H1 candidate summary/monthly/normalized ledger: exact
-A1/E3 H2 required outputs/normalized ledger/decision: exact
-hard no-trade violations: H1 0, H2 0
-2025 artifact access: none
-```
-
-R0 did not promote any strategy to Core or MT4.
-
-## Accepted corrected R1 Entry registry v2
-
-```text
+status: PASS
 run_id: 29642282221
 head_sha: 9393e4ac9ec7d712f85c29e9ef7f44025de25403
 artifact_id: 8428977454
@@ -80,9 +60,8 @@ artifact: usdjpy-r1-entry-registry-v2-29642282221
 artifact_digest: sha256:0e0de71ccc56409a919d48d61e4dcb12502cefdb3944374b9163eda76d222d74
 release_tag: usdjpy-r1-entry-registry-v2
 result: docs/research_reboot/usdjpy_r1_entry_registry_result_v2.md
+receipt: docs/research_reboot/artifact_archives/usdjpy_r1_entry_registry_v2/
 ```
-
-R1 v2 passed the Entry-registry contract and all thirteen historical registered-hold Entry regressions.
 
 ```text
 families: 12
@@ -93,24 +72,15 @@ Entry signal rows: 34,955
 historical registered-hold regressions: 13 / 13 passed
 H2 rows parsed: 0
 2025 access: none
-outcomes opened: false
+outcomes opened in R1: false
 ```
 
-All sixty definitions generated at least one Entry signal. The earlier statement that five definitions had zero signals was incorrect.
+R1 v1 run `29641805182` and artifact `8428842719` remain excluded because the Entry-hour gate was applied to the signal-bar hour instead of the actual next-bar Entry hour. No candidate definition or parameter was changed in the v2 correction.
 
-R1 v1 run `29641805182` and artifact `8428842719` are excluded because `entry_hours_utc` was applied to the signal-bar hour rather than the actual next-bar Entry hour. The candidate definitions and parameters did not change in the correction.
-
-The corrected R1 artifact is preserved at Release `usdjpy-r1-entry-registry-v2` with receipt:
+## R2 — accepted fixed-horizon surface
 
 ```text
-docs/research_reboot/artifact_archives/usdjpy_r1_entry_registry_v2/
-```
-
-R1 unblocked R2 only. Signal count was not a performance ranking.
-
-## Accepted R2 fixed-horizon surface
-
-```text
+status: PASS
 run_id: 29646040010
 head_sha: 314f286c0878b72a0f2ee2250eaa0e21ef558188
 artifact_id: 8430064217
@@ -121,172 +91,166 @@ result: docs/research_reboot/usdjpy_r2_horizon_surface_result_v1.md
 receipt: docs/research_reboot/artifact_archives/usdjpy_r2_horizon_surface_v1/
 ```
 
-R2 passed all twenty-five acceptance checks.
-
 ```text
 Entry definitions: 60
-fixed horizons: 11
+fixed M15 horizons: 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48
 surface combinations: 660
 trade rows: 383,078
 monthly rows: 3,960
 direction rows: 1,320
-surface rows: 60
-ledger-hash rows: 660
 historical projected regressions: 117 / 117 passed
-legacy cross-month reference rows excluded: 5
-zero-trade candidates: 0
+legacy cross-month reference rows excluded under fixed same-month rule: 5
 H2 rows parsed: 0
 2025 access: none
-selection or promotion decision: false
+selection or promotion: false
 ```
 
-The R2 runner and execution lock were committed before the accepted run:
+R2 selected no winner and treated each horizon only as a diagnostic fixed-time Exit.
+
+## R3 — accepted temporal and regime stability diagnostics
 
 ```text
-runner_blob: 2f629358edb861c74155319cc25ab77a3bd8e914
-runner_content_sha256: fad3a5468fc819dfd7bede38021b78f49ad082080b753587d2a65fca56e35ff0
-lock_blob: 5f0d4ea55191dd072d7202d443ba612b6f208e29
+status: PASS
+run_id: 29647304892
+head_sha: 22a72f0cf1185e072d16afcdc64651502f2db83c
+artifact_id: 8430424186
+artifact: usdjpy-r3-temporal-stability-v1-29647304892
+artifact_digest: sha256:bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292
+release_tag: usdjpy-r3-temporal-stability-v1
+receipt: docs/research_reboot/artifact_archives/usdjpy_r3_temporal_stability_v1/
 ```
 
-Two input-contract errors were corrected before the accepted run without changing Entry, horizon, cost or performance rules:
-
-1. the accepted R1 registry snapshot digest is `3bb43eeb...67549`, not the previously transcribed value;
-2. the historical regression source is authoritative artifact `8408094591`, rather than a nonexistent path inside the R0 artifact.
-
-The legacy horizon artifact contained five May-Entry/June-Exit rows. They were excluded from the reference projection under the preregistered R2 same-UTC-month rule. All 117 candidate/horizon projected regressions then passed with maximum absolute numeric difference `1e-12`.
-
-R2 evaluated the complete surface and selected nothing. R3 is unblocked and must assess temporal stability, concentration, spread and realized-volatility attribution before R4 representative selection.
-
-## Historical corrected H1 screen
+R3 retained all 660 combinations and reported complete monthly, quarterly, rolling-block, anchored, spread, RV32, RV96, direction, concentration and neighbouring-horizon grids.
 
 ```text
-run_id: 29547232643
-artifact: usdjpy-h1-multi-family-screen-v2-29547232643
-artifact_digest: sha256:b5fd40e7c37cd3c4c417b9e02547ce6d7195f0f989266e4f0e3ae0305947ec94
+sample class standard: 572
+sample class moderate: 44
+sample class sparse: 44
+H2 rows parsed: 0
+2025 access: none
+shortlist or promotion: false
 ```
 
-The screen evaluated thirteen registered candidates, twelve unique Entry definitions and mostly six-bar time exits.
+The R3 Release was rebuilt to contain exactly its own ZIP, manifest and SHA256SUMS after detecting and removing R2 work-file contamination.
 
-Historical retained complete strategies were:
+## R4 — accepted Entry/horizon representative selection
 
 ```text
-A1_impulse_breakout_lb3_hold6
-E3_trend_24h_resumption_hold6
+status: PASS
+run_id: 29665005273
+head_sha: 854c1ea9a841eefd3942d99b059bd40363f6bcde
+artifact_id: 8435465130
+artifact: usdjpy-r4-entry-horizon-selection-v1-29665005273
+artifact_digest: sha256:b201565ab5d1a531f54c066849e92223d0a4fa722f110bef7925cde7c10a4a97
+release_tag: usdjpy-r4-entry-horizon-selection-v1
+result: docs/research_reboot/usdjpy_r4_entry_horizon_selection_result_v1.md
+receipt: docs/research_reboot/artifact_archives/usdjpy_r4_entry_horizon_selection_v1/
 ```
 
-R0 reproduced the full thirteen-candidate summary, all seventy-eight monthly rows and the normalized trade ledger from canonical M15 input.
-
-## Historical H1 entry-horizon diagnostic
+R4 applied the preregistered common gates, equal-weight twelve-component percentile rank and redundancy controls to all 660 combinations.
 
 ```text
-run_id: 29583719940
-artifact_id: 8408094591
-artifact: usdjpy-h1-entry-horizon-diagnostic-v2-29583719940
-artifact_digest: sha256:f95a0a450aa3b821dbcb20ea4f3410f345668606bf5f20a766a3e01d8a6e89e4
+fully eligible combinations: 14
+frozen representatives: 8
+pairwise eligible comparisons: 91
+maximum per family: 2
+maximum per Entry definition: 1
+H2 rows parsed: 0
+2025 access: none
+Exit optimization: false
+Core promotion: false
+MT4 promotion: false
 ```
 
-This artifact is now used only as an implementation-regression reference projected onto the R2 same-month domain. It does not promote a strategy.
+Frozen representatives:
 
-## Accepted A1/E3 H2 result
+| Rank | Candidate | Family | Diagnostic time cap |
+|---:|---|---|---:|
+| 1 | R1H04_ramom_32_64_z125 | volatility_adjusted_momentum | 32 |
+| 2 | R1B02_legacy_asia_00_07_breakout | session_range_breakout | 48 |
+| 3 | R1E02_legacy_trend_8h_resumption | trend_pullback_resumption | 48 |
+| 4 | R1A04_impulse_lb24_med16_x125 | impulse_breakout | 48 |
+| 5 | R1F05_donchian_96 | donchian_channel_breakout | 32 |
+| 6 | R1E03_trend_12h_resumption | trend_pullback_resumption | 32 |
+| 7 | R1H05_ramom_48_96_z125 | volatility_adjusted_momentum | 12 |
+| 8 | R1F04_donchian_64 | donchian_channel_breakout | 24 |
+
+These are H1 research representatives, not complete strategies.
+
+## R5 — controlled Exit research preregistered; formal result not accepted
+
+Authoritative preregistration:
+
+```text
+configuration: configs/research/usdjpy_r5_controlled_exit_v1.json
+configuration commit: b9f5f5b0836087414eaa5b905bab8c528fb1476e
+preregistration: docs/research_reboot/usdjpy_r5_controlled_exit_prereg_v1.md
+preregistration commit: 04474a1066b0d9358c7bbff28f339bb410c989d5
+```
+
+The exact R4 Entry cohort contains 2,982 rows. ATR14 calculated through the completed signal bar is available for all 2,982 rows.
+
+Four common policies are frozen:
+
+```text
+T0_fixed_time_cap
+S1_static_stop_2atr
+B1_bracket_1p5_3atr
+C1_chandelier_3atr
+```
+
+```text
+representative/policy combinations: 32
+Entry rows per policy: 2,982
+expected policy trade rows: 11,928
+parameter sweep: false
+candidate-specific Exit parameters: false
+same Entry keys across policies: required
+T0 exact R2 regression: required
+R5 selection or promotion: false
+H2 / 2025 / Core / MT4: closed
+```
+
+Run `29665727132` is excluded. It failed during pre-data payload-container verification and did not download inputs or calculate Exit outcomes. The compressed-container assertion is being replaced by gzip integrity, exact source length and exact decompressed evaluator SHA-256 verification; the R5 policy specification is unchanged.
+
+## Historical A1/E3 H2 result
 
 ```text
 run_id: 29628387393
 artifact_id: 8424623578
 artifact: usdjpy-joint-h2-a1-e3-eval-v1-29628387393
 artifact_digest: sha256:182840ea48bf9d375ce718a5c940cee064fbccb4c36b659a80e7678938664364
-```
-
-```text
 A1_impulse_breakout_lb3_hold6: failed
 E3_trend_24h_resumption_hold6: failed
-advancing candidates: none
 decision: neither_advances
 ```
 
-A1 and E3 remain closed. Their direction, hours, lookback, hold or Exit may not be changed and presented as continuation of that H2 test.
+A1 and E3 remain closed. Their direction, hours, lookback, hold or Exit may not be modified and presented as continuation of that H2 test.
 
-## Correct interpretation of 2024 H2
-
-The 2024 H2 block has been opened only for A1+hold6 and E3+hold6.
-
-For all other candidate definitions, including the new R1 definitions and historical B/C/D/E definitions other than A1/E3, 2024 H2 remains candidate-specific unused validation data.
-
-```text
-project-level globally untouched: no, because A1/E3 H2 results are known
-candidate-specific unused: yes, for every strategy whose H2 outcome has not been opened
-```
-
-New complete strategies must be developed and frozen from 2024 H1 only, then evaluated once on candidate-specific unused 2024 H2.
+The project-level 2024 H2 block is therefore not globally untouched. It remains candidate-specific unused validation data for strategies whose H2 outcomes have never been opened.
 
 ## Authoritative roadmap
 
 ```text
-docs/research_reboot/usdjpy_research_roadmap_2024_primary_2025_replication_v4.md
-commit: 8c6ec53cedf05cfb0fc6a49d17f8cf7e79828995
+roadmap: docs/research_reboot/usdjpy_research_roadmap_2024_primary_2025_replication_v4.md
+roadmap commit: 8c6ec53cedf05cfb0fc6a49d17f8cf7e79828995
 ```
-
-## Research roadmap
 
 ```text
-R0 — canonical 2024 bundle and regression lock:
-  passed
-  run_id 29639548804
-  artifact_id 8428199309
-
-R1 — expanded Entry registry on 2024 H1 only:
-  passed
-  corrected run_id 29642282221
-  artifact_id 8428977454
-  60 unique Entry definitions across 12 families
-
-R2 — full fixed-horizon surface on 2024 H1:
-  passed
-  run_id 29646040010
-  artifact_id 8430064217
-  660 Entry/horizon combinations
-  117 / 117 projected historical regressions passed
-  no candidate selection or promotion
-
-R3 — H1 temporal-stability diagnostics:
-  next
-  not started
-
-R4 — select at most eight Entry/horizon representatives:
-  not started
-
-R5 — controlled Exit research on 2024 H1:
-  not started
-  maximum four Exit policies per mechanism
-
-R6 — freeze at most five complete strategies and H2 gates:
-  not started
-
-V1 — one joint candidate-specific unused 2024 H2 validation:
-  not started
-
-Engineering — Research/Core and MT4 parity for V1 survivors:
-  may begin immediately after V1 pass
-
-V2 — one unchanged full-year 2025 historical replication:
-  not started
-  2025-01-01 through 2026-01-01 exclusive
-
-Forward / operational gate:
-  not started
-
-Live capital allocation:
-  prohibited until V2 and operational gates pass
+R0 canonical bundle: PASS
+R1 corrected Entry registry: PASS
+R2 complete fixed-horizon surface: PASS
+R3 temporal/regime diagnostics: PASS
+R4 maximum-eight representative selection: PASS
+R5 controlled Exit research: preregistered; accepted run pending
+R6 maximum-five complete-strategy freeze and H2 gates: not started
+V1 one joint candidate-specific unused 2024 H2 validation: not started
+Research/Core and MT4 parity: only after V1 pass
+V2 one unchanged full-year 2025 replication: not started
+forward/operational gate: not started
+live capital allocation: prohibited
 ```
 
-## Immediate operations
+## Immediate operation
 
-1. Freeze R3 diagnostics and common interpretation rules before opening new derived rankings.
-2. Run monthly, Q1/Q2, rolling two- and three-month, spread and realized-volatility attribution for all 660 combinations.
-3. Evaluate neighbouring-horizon support and day/month concentration without selecting an isolated maximum.
-4. Freeze the R4 common requirements and sample classes.
-5. Select at most two representatives per family and eight overall.
-6. Perform controlled Exit research only on the selected H1 representatives.
-7. Freeze at most five complete strategies and all H2 gates.
-8. Run those strategies once on candidate-specific unused 2024 H2.
-9. Begin Research/Core and MT4 parity only for H2 survivors.
-10. Run one unchanged full-year 2025 historical replication before live allocation.
+Complete the formal frozen R5 run and independent artifact audit. If R5 passes, preregister the R6 complete-strategy eligibility, maximum-five selection, redundancy treatment and candidate-specific unused H2 gates before selecting any Entry/Exit combination.
