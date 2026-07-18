@@ -30,16 +30,16 @@ The active candidates are complete entry-plus-six-bar strategies, not exit-indep
 
 ```text
 A1_impulse_breakout_lb3_hold6
-  trades: 391
-  avg net pips: +2.015899
-  total net pips: +788.216501
-  PF: 1.280577
+  H1 trades: 391
+  H1 avg net pips: +2.015899
+  H1 total net pips: +788.216501
+  H1 PF: 1.280577
 
 E3_trend_24h_resumption_hold6
-  trades: 361
-  avg net pips: +1.783355
-  total net pips: +643.791082
-  PF: 1.305343
+  H1 trades: 361
+  H1 avg net pips: +1.783355
+  H1 total net pips: +643.791082
+  H1 PF: 1.305343
 ```
 
 Active pre-registration:
@@ -66,7 +66,6 @@ hard errors: 0
 baseline run_id: 29556241138
 baseline artifact: fx-session-baseline-2024-07-USDJPY-29556241138
 baseline digest: sha256:e7dfc13f5186f29f0d9e83bf5554e30f615821638d4fde11fe0be353d1e6d6d2
-aggregate repair records: 0
 ```
 
 ### 2024-08
@@ -81,35 +80,52 @@ hard errors: 0
 baseline run_id: 29567447264
 baseline artifact: fx-session-baseline-2024-08-USDJPY-29567447264
 baseline digest: sha256:e5dd5f183b4a414c2b25bb4f6e46f627c07660358533d9a097dec01a2968b7c6
-aggregate repair records: 0
 ```
 
-No month-level A1/E3 result is used to alter either strategy.
-
-## 2024-09 through 2024-12 collection
+### 2024-09 through 2024-12
 
 ```text
 workflow: Run USDJPY H2 2024-09 to 2024-12 Collect and Baseline
 run_id: 29569149852
+head_sha: ba7dc2a448bf626d6282e69397d91e00c05ec12c
+result record: docs/research_reboot/usdjpy_h2_2024_09_12_source_and_baseline_result_v1.md
 ```
 
-The workflow processes the four source months sequentially with four concurrent day jobs per month, then creates four monthly baseline artifacts in parallel.
+Independent fixed-weekday audit:
+
+```text
+month     expected hours   observed   missing   hard errors   effective coverage
+2024-09   504              504        0         0             100%
+2024-10   552              552        0         0             100%
+2024-11   504              504        0         0             100%
+2024-12   528              528        0         0             100%
+```
+
+Accepted artifacts:
+
+```text
+2024-09 source artifact_id: 8404664185
+2024-09 baseline artifact_id: 8423361030
+
+2024-10 source artifact_id: 8408558801
+2024-10 baseline artifact_id: 8423402213
+
+2024-11 source artifact_id: 8421758330
+2024-11 baseline artifact_id: 8423419800
+
+2024-12 source artifact_id: 8423343357
+2024-12 baseline artifact_id: 8423376366
+```
+
+The first-attempt November source artifact `8412658745` is excluded. The rerun recovered the missing 2024-11-22 day and the accepted terminal manifest contains all 504 fixed weekday hours.
+
+All six H2 source months, July through December 2024, are now accepted. No month-level A1/E3 result was used to alter either strategy.
 
 ## Entry-horizon diagnostic
 
 ### Invalid v1
 
-Run `29582417411` completed technically but is research-invalid.
-
-```text
-invalid record:
-  docs/research_reboot/usdjpy_h1_entry_horizon_run_29582417411_invalid_v1.md
-
-reason:
-  the v1 runner generated signals separately for each month and reset prior-history state at month boundaries
-```
-
-No result from the invalid artifact may be used.
+Run `29582417411` completed technically but is research-invalid because it reset prior-history state at month boundaries. No result from that artifact may be used.
 
 ### Accepted v2
 
@@ -122,48 +138,11 @@ artifact_digest: sha256:f95a0a450aa3b821dbcb20ea4f3410f345668606bf5f20a766a3e01d
 result record: docs/research_reboot/usdjpy_h1_entry_horizon_diagnostic_v2_result_v1.md
 ```
 
-The v2 run is accepted. It passed the registered-hold regression for all 13 candidates, matched the authoritative H1 metrics, reported 12 unique entry definitions and confirmed `h2_data_read: false` and `promotion_decision: false`.
-
-Primary horizon findings:
-
-```text
-A1:
-  positive from 1 through 16 bars except no tested negative point inside that range
-  highest tested average at 6 bars: +2.016 pips
-  24 bars: -0.233 pips
-
-E3:
-  negative at 1-3 bars
-  positive at 4-24 bars
-  strongest region at 6-12 bars
-  highest tested average at 6 bars: +1.783 pips
-
-C4:
-  strengthens from 6 through 24 bars
-  16 bars: +2.932 pips, severe PF 1.079
-  24 bars: +4.198 pips, severe PF 1.170
-
-C3:
-  broad positive region at 8-16 bars
-  highest tested average at 12 bars: +1.606 pips
-  negative again at 24 bars
-
-E2:
-  weak at shorter horizons
-  24 bars: +3.607 pips, 5 positive months, severe PF 1.109
-
-B2:
-  16 and 24 bars become positive and cost-stress positive
-  remains sample-limited with 99 H1 entries
-
-B3:
-  positive only at 6 bars and negative at neighboring tested horizons
-  remains below the 120-trade gate
-```
+The v2 run passed the registered-hold regression for all 13 candidates, matched the authoritative H1 metrics, reported 12 unique entry definitions and confirmed `h2_data_read: false` and `promotion_decision: false`.
 
 Research interpretation:
 
-- A1 and E3 are not merely isolated six-bar peaks; each has a neighboring positive horizon region.
+- A1 and E3 are not isolated six-bar peaks; each has a neighboring positive horizon region.
 - The original six-bar screen nevertheless changed candidate ranking materially.
 - C4, C3, E2 and B2 require separate slower-horizon hypotheses if researched later.
 - No candidate is promoted from the development diagnostic.
@@ -182,14 +161,14 @@ Step 3C — joint A1+hold6 / E3+hold6 H2 pre-registration:
   complete
 
 Step 3D — untouched H2 data collection and batch validation:
-  current
+  complete
 
 Entry-horizon development diagnostic:
   v1 invalidated
   v2 accepted and recorded
 
 Step 4 — evaluate frozen A1+hold6 and E3+hold6 H2 results:
-  not started
+  current
 
 Exit-policy research:
   horizon/path evidence available
@@ -202,8 +181,9 @@ EA / Core / MT4 implementation:
 
 ## Next operations
 
-1. Finish and verify run `29569149852` without inspecting month-level candidate results.
-2. Evaluate A1+hold6 and E3+hold6 on the full H2 block under the frozen gate.
-3. Use the accepted horizon surface to define a small mechanism-based exit research plan.
-4. Pre-register any new entry-plus-exit candidates before evaluating them on a later untouched block.
-5. Reproduce surviving complete strategies in Core/MT4 before EA deployment.
+1. Implement and run the preregistered full-block A1+hold6 / E3+hold6 H2 evaluator.
+2. Require H1 regression assertions to pass before any H2 result is accepted.
+3. Apply the frozen common H2 gate exactly as registered.
+4. After the H2 decision, define a small mechanism-based exit research plan without reopening the current H2.
+5. Pre-register any new entry-plus-exit candidate before evaluating it on a later untouched block.
+6. Reproduce surviving complete strategies in Core/MT4 before EA deployment.
