@@ -1,0 +1,326 @@
+name: Archive Accepted USDJPY R2 Horizon Surface v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+concurrency:
+  group: archive-usdjpy-r2-horizon-surface-v1
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    if: github.event.issue.title == '[R2] Archive accepted horizon surface v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Record archive run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "Accepted R2 archive started. Run ID: ${{ github.run_id }}. https://github.com/${REPOSITORY}/actions/runs/${{ github.run_id }}"
+
+      - name: Download and verify accepted artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ARTIFACT_ID: '8430064217'
+          EXPECTED_SHA256: '84a495b7c7cddf1c719bb4c8ce78bfef2c990b355649d362c18481836d953426'
+        run: |
+          set -euo pipefail
+          mkdir -p release_assets inspection
+          asset='release_assets/usdjpy-r2-horizon-surface-v1-run-29646040010-artifact-8430064217.zip'
+          gh api "repos/${REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" > "${asset}"
+          echo "${EXPECTED_SHA256}  ${asset}" | sha256sum -c -
+          unzip -t "${asset}" >/dev/null
+          unzip -q "${asset}" -d inspection
+
+      - name: Independently verify archived outputs
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          root=Path('inspection')
+          acceptance=json.loads((root/'r2_acceptance.json').read_text())
+          metadata=json.loads((root/'run_metadata.json').read_text())
+          summary=pd.read_csv(root/'candidate_horizon_summary.csv')
+          monthly=pd.read_csv(root/'candidate_horizon_monthly.csv')
+          direction=pd.read_csv(root/'candidate_horizon_direction.csv')
+          surface=pd.read_csv(root/'candidate_horizon_surface.csv')
+          hashes=pd.read_csv(root/'candidate_horizon_hashes.csv')
+          regression=pd.read_csv(root/'legacy_horizon_regression.csv')
+          trades=pd.read_csv(root/'candidate_horizon_trades.csv.gz',compression='gzip')
+
+          assert acceptance['status']=='PASS'
+          assert all(value is True for key,value in acceptance.items() if key!='status')
+          assert metadata['status']=='PASS'
+          assert metadata['h2_rows_parsed']==0
+          assert metadata['2025_artifact_access'] is False
+          assert metadata['selection_or_promotion_made'] is False
+          assert metadata['R3_unblocked'] is True
+          assert metadata['legacy_reference_cross_month_rows_excluded']==5
+          assert metadata['legacy_horizon_regressions_passed'] is True
+          assert len(trades)==383078
+          assert len(summary)==660
+          assert len(monthly)==3960
+          assert len(direction)==1320
+          assert len(surface)==60
+          assert len(hashes)==660
+          assert len(regression)==117 and regression['passed'].all()
+          assert regression['reference_cross_month_rows_excluded_total'].eq(5).all()
+          assert summary['candidate_id'].nunique()==60
+          assert summary['horizon_bars'].nunique()==11
+
+          manifest={
+              'version':'v1',
+              'repository':'mitsuru93/usdjpyea-research',
+              'release_tag':'usdjpy-r2-horizon-surface-v1',
+              'accepted_run_id':29646040010,
+              'accepted_head_sha':'314f286c0878b72a0f2ee2250eaa0e21ef558188',
+              'actions_artifact_id':8430064217,
+              'actions_artifact_name':'usdjpy-r2-horizon-surface-final-v1-29646040010',
+              'actions_artifact_sha256':'84a495b7c7cddf1c719bb4c8ce78bfef2c990b355649d362c18481836d953426',
+              'r2_status':'PASS',
+              'acceptance_checks':len(acceptance)-1,
+              'candidates':60,
+              'horizons':11,
+              'surface_combinations':660,
+              'trade_rows':383078,
+              'monthly_rows':3960,
+              'direction_rows':1320,
+              'surface_rows':60,
+              'hash_rows':660,
+              'historical_regression_rows':117,
+              'legacy_reference_cross_month_rows_excluded':5,
+              'zero_trade_candidates':0,
+              'positive_default_combinations':int((summary['avg_default_net_pips']>0).sum()),
+              'positive_severe_combinations':int((summary['avg_severe_net_pips']>0).sum()),
+              'candidates_with_any_positive_default_horizon':int(summary.groupby('candidate_id')['avg_default_net_pips'].max().gt(0).sum()),
+              'candidates_with_any_positive_severe_horizon':int(summary.groupby('candidate_id')['avg_severe_net_pips'].max().gt(0).sum()),
+              'candidate_horizon_trades_sha256':hashlib.sha256((root/'candidate_horizon_trades.csv.gz').read_bytes()).hexdigest(),
+              'candidate_horizon_summary_sha256':hashlib.sha256((root/'candidate_horizon_summary.csv').read_bytes()).hexdigest(),
+              'candidate_horizon_monthly_sha256':hashlib.sha256((root/'candidate_horizon_monthly.csv').read_bytes()).hexdigest(),
+              'legacy_horizon_regression_sha256':hashlib.sha256((root/'legacy_horizon_regression.csv').read_bytes()).hexdigest(),
+              'r2_acceptance_sha256':hashlib.sha256((root/'r2_acceptance.json').read_bytes()).hexdigest(),
+              'run_metadata_sha256':hashlib.sha256((root/'run_metadata.json').read_bytes()).hexdigest(),
+              'h2_rows_parsed':0,
+              '2025_artifact_access':False,
+              'selection_or_promotion_made':False,
+              'R3_unblocked':True,
+              'Core_promotion':False,
+              'MT4_promotion':False,
+          }
+          Path('release_assets/usdjpy-r2-horizon-surface-v1-manifest.json').write_text(
+              json.dumps(manifest,indent=2,sort_keys=True)+'\n'
+          )
+          print(json.dumps(manifest,sort_keys=True))
+          PY
+          (cd release_assets && sha256sum * > SHA256SUMS)
+
+      - name: Create and verify durable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          TAG: usdjpy-r2-horizon-surface-v1
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<'EOF'
+          # USDJPY R2 Fixed-Horizon Surface v1
+
+          Durable copy of accepted run 29646040010 and artifact 8430064217.
+
+          R2 passed all twenty-five acceptance checks across the complete sixty-Entry by eleven-horizon H1 surface. The artifact includes 383,078 trade rows, complete monthly and direction grids, deterministic hashes, MFE/MAE outputs and 117 passed projected historical regressions. Five cross-month rows in the legacy diagnostic were excluded under the preregistered R2 same-month rule. No candidate was selected and no H2 or 2025 data was read.
+          EOF
+          if gh release view "${TAG}" --repo "${REPOSITORY}" >/dev/null 2>&1; then
+            gh release upload "${TAG}" release_assets/* --repo "${REPOSITORY}" --clobber
+          else
+            gh release create "${TAG}" release_assets/* --repo "${REPOSITORY}" \
+              --title 'USDJPY R2 Fixed-Horizon Surface v1' \
+              --notes-file release-notes.md --latest=false
+          fi
+          gh release view "${TAG}" --repo "${REPOSITORY}" \
+            --json tagName,url,isDraft,isPrerelease,assets > release_receipt.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt=json.loads(Path('release_receipt.json').read_text())
+          assets={row['name']:row for row in receipt['assets']}
+          expected={
+              'usdjpy-r2-horizon-surface-v1-run-29646040010-artifact-8430064217.zip':'sha256:84a495b7c7cddf1c719bb4c8ce78bfef2c990b355649d362c18481836d953426',
+              'usdjpy-r2-horizon-surface-v1-manifest.json':None,
+              'SHA256SUMS':None,
+          }
+          assert receipt['tagName']=='usdjpy-r2-horizon-surface-v1'
+          assert receipt['isDraft'] is False
+          assert receipt['isPrerelease'] is False
+          assert set(assets)==set(expected),assets
+          for name,digest in expected.items():
+              assert assets[name]['state']=='uploaded'
+              if digest is not None:
+                  assert assets[name]['digest']==digest,(assets[name],digest)
+          print({'release_verification':'PASS','assets':3})
+          PY
+
+      - name: Update status and commit receipts
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          status=Path('docs/research_reboot/usdjpy_current_status_after_q2_v1.md')
+          text=status.read_text()
+
+          start=text.index('## Accepted R1 Entry registry')
+          end=text.index('## Corrected H1 screen')
+          replacement='''## Accepted corrected R1 Entry registry v2
+
+```text
+run_id: 29642282221
+head_sha: 9393e4ac9ec7d712f85c29e9ef7f44025de25403
+artifact_id: 8428977454
+artifact: usdjpy-r1-entry-registry-v2-29642282221
+artifact_digest: sha256:0e0de71ccc56409a919d48d61e4dcb12502cefdb3944374b9163eda76d222d74
+release_tag: usdjpy-r1-entry-registry-v2
+result: docs/research_reboot/usdjpy_r1_entry_registry_result_v2.md
+```
+
+R1 v2 passed its core Entry-registry checks and all thirteen historical registered-hold Entry regressions.
+
+```text
+families: 12
+unique Entry definitions: 60
+legacy unique Entry definitions: 12
+new Entry definitions: 48
+Entry signal rows: 34,955
+historical registered-hold regressions: 13 / 13 passed
+H2 rows parsed: 0
+2025 access: none
+outcomes opened: false
+```
+
+All sixty definitions generated at least one Entry signal. R1 v1 run `29641805182` and artifact `8428842719` are excluded because `entry_hours_utc` was applied to the signal-bar hour instead of the actual next-bar Entry hour.
+
+The corrected R1 artifact is preserved at Release `usdjpy-r1-entry-registry-v2` with receipt `docs/research_reboot/artifact_archives/usdjpy_r1_entry_registry_v2/`.
+
+R1 unblocked R2 only. Signal count was not a performance ranking.
+
+## Accepted R2 fixed-horizon surface
+
+```text
+run_id: 29646040010
+head_sha: 314f286c0878b72a0f2ee2250eaa0e21ef558188
+artifact_id: 8430064217
+artifact: usdjpy-r2-horizon-surface-final-v1-29646040010
+artifact_digest: sha256:84a495b7c7cddf1c719bb4c8ce78bfef2c990b355649d362c18481836d953426
+release_tag: usdjpy-r2-horizon-surface-v1
+result: docs/research_reboot/usdjpy_r2_horizon_surface_result_v1.md
+```
+
+R2 passed all twenty-five acceptance checks.
+
+```text
+Entry definitions: 60
+fixed horizons: 11
+surface combinations: 660
+trade rows: 383,078
+monthly rows: 3,960
+direction rows: 1,320
+surface rows: 60
+ledger-hash rows: 660
+historical projected regressions: 117 / 117 passed
+legacy cross-month reference rows excluded: 5
+zero-trade candidates: 0
+H2 rows parsed: 0
+2025 access: none
+selection or promotion decision: false
+```
+
+R2 evaluated the complete surface and did not choose an Entry/horizon representative. R3 is unblocked and must evaluate temporal stability, concentration, spread and realized-volatility attribution before R4 selection.
+
+The accepted R2 artifact is preserved independently of Actions expiry at Release `usdjpy-r2-horizon-surface-v1` with receipt `docs/research_reboot/artifact_archives/usdjpy_r2_horizon_surface_v1/`.
+
+'''
+          text=text[:start]+replacement+text[end:]
+
+          start=text.index('R1 — expanded Entry registry on 2024 H1 only:')
+          end=text.index('R4 — select at most eight Entry/horizon representatives:')
+          roadmap='''R1 — expanded Entry registry on 2024 H1 only:
+  passed
+  corrected run_id 29642282221
+  artifact_id 8428977454
+  60 unique Entry definitions across 12 families
+
+R2 — full fixed-horizon surface on 2024 H1:
+  passed
+  run_id 29646040010
+  artifact_id 8430064217
+  660 Entry/horizon combinations
+  117 / 117 projected historical regressions passed
+  no candidate selection or promotion
+
+R3 — H1 temporal-stability diagnostics:
+  next
+  not started
+
+'''
+          text=text[:start]+roadmap+text[end:]
+          status.write_text(text)
+          PY
+
+          target='docs/research_reboot/artifact_archives/usdjpy_r2_horizon_surface_v1'
+          mkdir -p "${target}"
+          cp release_receipt.json "${target}/release_receipt.json"
+          cp release_assets/usdjpy-r2-horizon-surface-v1-manifest.json "${target}/artifact_manifest.json"
+          cp release_assets/SHA256SUMS "${target}/SHA256SUMS"
+
+          rm -f .github/workflows/archive_usdjpy_r2_horizon_surface_v1.yml
+          rm -f .github/workflows/run_usdjpy_r2_horizon_surface_v1.yml
+          rm -f .github/workflows/run_usdjpy_r2_horizon_surface_corrected_v1.yml
+          rm -f .github/workflows/finalize_usdjpy_r2_horizon_surface_v1.yml
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'docs: archive accepted USDJPY R2 horizon surface v1'
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Close archive issue and stale triggers
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body 'Accepted R2 artifact archived at Release usdjpy-r2-horizon-surface-v1; receipt and corrected status were committed. R3 is now the next stage.'
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
+          gh issue close 103 --repo "${REPOSITORY}" --reason completed || true
+          gh issue close 105 --repo "${REPOSITORY}" --reason completed || true
+          gh issue close 107 --repo "${REPOSITORY}" --reason completed || true
+
+      - name: Upload archive audit copy
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-r2-horizon-surface-release-audit-v1-${{ github.run_id }}
+          path: |
+            release_assets/usdjpy-r2-horizon-surface-v1-manifest.json
+            release_assets/SHA256SUMS
+            release_receipt.json
+          if-no-files-found: warn
+          retention-days: 90
