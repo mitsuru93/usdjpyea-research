@@ -23,13 +23,42 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Record run ID
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" \
+            --body "USDJPY R1 preregistration assembly started. Run ID: ${{ github.run_id }}. https://github.com/${REPOSITORY}/actions/runs/${{ github.run_id }}"
+
       - name: Reconstruct frozen files
         run: |
           set -euo pipefail
           mkdir -p configs/research tools docs/research_reboot
-          base64 -d .github/r1_stage/registry.json.gz.b64 | gzip -dc > configs/research/usdjpy_r1_entry_universe_v1.json
-          cat .github/r1_stage/runner.py.gz.b64.* | base64 -d | gzip -dc > tools/run_usdjpy_r1_entry_registry_v1.py
-          base64 -d .github/r1_stage/prereg.md.gz.b64 | gzip -dc > docs/research_reboot/usdjpy_r1_entry_universe_prereg_v1.md
+          python - <<'PY'
+          import base64
+          import gzip
+          from pathlib import Path
+
+          def decode_one(source: str, target: str) -> None:
+              encoded = Path(source).read_text(encoding='utf-8').strip()
+              compressed = base64.b64decode(encoded, validate=True)
+              payload = gzip.decompress(compressed)
+              Path(target).write_bytes(payload)
+              print({'source': source, 'target': target, 'encoded_chars': len(encoded), 'compressed_bytes': len(compressed), 'payload_bytes': len(payload)})
+
+          decode_one('.github/r1_stage/registry.json.gz.b64', 'configs/research/usdjpy_r1_entry_universe_v1.json')
+          runner_parts = sorted(Path('.github/r1_stage').glob('runner.py.gz.b64.*'))
+          assert [path.name for path in runner_parts] == ['runner.py.gz.b64.00', 'runner.py.gz.b64.01'], runner_parts
+          runner_encoded = ''.join(path.read_text(encoding='utf-8').strip() for path in runner_parts)
+          runner_compressed = base64.b64decode(runner_encoded, validate=True)
+          runner_payload = gzip.decompress(runner_compressed)
+          Path('tools/run_usdjpy_r1_entry_registry_v1.py').write_bytes(runner_payload)
+          print({'runner_parts': [str(path) for path in runner_parts], 'encoded_chars': len(runner_encoded), 'compressed_bytes': len(runner_compressed), 'payload_bytes': len(runner_payload)})
+          decode_one('.github/r1_stage/prereg.md.gz.b64', 'docs/research_reboot/usdjpy_r1_entry_universe_prereg_v1.md')
+          PY
           chmod +x tools/run_usdjpy_r1_entry_registry_v1.py
           echo 'ee646dc4dfefb3f231881c26249be0739b1e7b4ca9febbe01236b6120244a006  configs/research/usdjpy_r1_entry_universe_v1.json' | sha256sum -c -
           echo '648c7a4f530756aa90b3fc8fb3e403050af44e7388464898a788a661da7281b3  tools/run_usdjpy_r1_entry_registry_v1.py' | sha256sum -c -
@@ -64,6 +93,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
           git commit -m 'research: freeze USDJPY R1 entry universe v1'
+          git pull --rebase origin main
           git push origin HEAD:main
 
       - name: Close trigger issue
@@ -83,4 +113,4 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPOSITORY: ${{ github.repository }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body 'USDJPY R1 preregistration assembly failed. R1 execution remains blocked.'
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body "USDJPY R1 preregistration assembly failed. Run ID: ${{ github.run_id }}. R1 execution remains blocked."
