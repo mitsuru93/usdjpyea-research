@@ -1,0 +1,106 @@
+name: Archive USDJPY R0 2024 Artifacts v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - configs/research/usdjpy_r0_artifact_archive_v1.json
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: usdjpy-r0-artifact-archive-v1
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile archival runner
+        run: |
+          python -m py_compile tools/archive_usdjpy_r0_artifacts_v1.py
+
+      - name: Download and verify accepted artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python tools/archive_usdjpy_r0_artifacts_v1.py \
+            --config configs/research/usdjpy_r0_artifact_archive_v1.json \
+            --output-dir data/r0_artifact_archive_v1
+
+      - name: Verify required outputs
+        run: |
+          set -euo pipefail
+          test -f data/r0_artifact_archive_v1/release_assets/usdjpy-r0-artifact-archive-manifest-v1.json
+          test -f data/r0_artifact_archive_v1/release_assets/SHA256SUMS
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary = json.loads(Path("data/r0_artifact_archive_v1/archive_summary.json").read_text())
+          assert summary["status"] == "PASS", summary
+          assert summary["source_months"] == 12, summary
+          assert summary["preserved_original_artifacts"] >= 270, summary
+          print(summary)
+          PY
+
+      - name: Write release notes
+        run: |
+          cat > data/r0_artifact_archive_v1/release-notes.md <<'EOF'
+          # USDJPY R0 2024 Artifact Archive v1
+
+          Durable archive of the accepted 2024 Dukascopy USDJPY research inputs and authoritative regression artifacts.
+
+          Preserved:
+          - every accepted source day artifact for January-December 2024;
+          - each accepted monthly source aggregate;
+          - each accepted monthly baseline artifact;
+          - authoritative H1 13-candidate screen;
+          - authoritative H1 entry-horizon diagnostic v2;
+          - authoritative A1/E3 H2 evaluation.
+
+          The excluded first November aggregate artifact ID 8412658745 is recorded in the manifest but is not included.
+
+          Each original ZIP is identified by artifact ID, digest, creation time and expiry time. SHA256SUMS covers all release assets.
+          EOF
+
+      - name: Create or update durable GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: usdjpy-r0-artifact-archive-2024-v1
+        run: |
+          set -euo pipefail
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release upload "${TAG}" \
+              data/r0_artifact_archive_v1/release_assets/* \
+              --clobber
+          else
+            gh release create "${TAG}" \
+              data/r0_artifact_archive_v1/release_assets/* \
+              --title "USDJPY R0 Artifact Archive 2024 v1" \
+              --notes-file data/r0_artifact_archive_v1/release-notes.md \
+              --latest=false
+          fi
+
+      - name: Upload workflow audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-r0-artifact-archive-audit-v1-${{ github.run_id }}
+          path: |
+            data/r0_artifact_archive_v1/archive_summary.json
+            data/r0_artifact_archive_v1/release_assets/usdjpy-r0-artifact-archive-manifest-v1.json
+            data/r0_artifact_archive_v1/release_assets/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 90
