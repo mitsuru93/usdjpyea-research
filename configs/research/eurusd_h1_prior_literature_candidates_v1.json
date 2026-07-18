@@ -1,0 +1,238 @@
+{
+  "version": "v1",
+  "status": "candidate_universe_registered_source_data_pending",
+  "created_at_jst": "2026-07-18",
+  "symbol": "EURUSD",
+  "timeframe": "H1",
+  "research_scope": {
+    "purpose": "Pre-register a literature-derived EURUSD H1 strategy-family universe before inspecting 2024 strategy results.",
+    "source_data_only_until_gate_passes": true,
+    "must_not_reuse_usdjpy_results_or_parameters": true,
+    "must_not_promote_a_rule_from_in_sample_rank_alone": true
+  },
+  "source_data_gate": {
+    "required_artifact_name_pattern": "public-fx-data-EURUSD-2024-annual-<run_id>-a<run_attempt>",
+    "required_timeframes": ["M1", "M5", "M15", "H1"],
+    "expected_records_mode": "weekdays",
+    "required_unobserved_records": 0,
+    "required_hard_error_records": 0,
+    "required_effective_coverage": 1.0,
+    "strategy_execution_blocked_until_accepted": true
+  },
+  "periods": {
+    "development": {
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc_exclusive": "2024-07-01T00:00:00Z"
+    },
+    "validation": {
+      "start_utc": "2024-07-01T00:00:00Z",
+      "end_utc_exclusive": "2025-01-01T00:00:00Z"
+    }
+  },
+  "execution_conventions": {
+    "signal_information": "completed_h1_bars_only",
+    "entry": "next_h1_bar_open",
+    "same_bar_entry_forbidden": true,
+    "one_open_position_per_candidate": true,
+    "overlapping_entries_for_same_candidate": false,
+    "direction_symmetry_default": true,
+    "hard_no_trade_windows": "configs/market_sessions/fx_market_sessions_v1.json",
+    "costs": {
+      "base_spread_pips": 0.6,
+      "cost_spread_mode": "max_base_public",
+      "spread_multipliers": [1.0, 1.5, 2.0, 3.0],
+      "slippage_pips_per_side": [0.0, 0.1, 0.3, 0.5]
+    }
+  },
+  "families": [
+    {
+      "family_id": "A",
+      "family": "intraday_local_currency_direction",
+      "evidence_class": "direct_eurusd_intraday",
+      "hypothesis": "The euro tends to depreciate during European local trading hours and the dollar tends to depreciate during U.S. local trading hours.",
+      "candidates": [
+        {
+          "id": "A1_europe_local_short_hold4",
+          "timezone": "Europe/Berlin",
+          "entry_local_hour": 8,
+          "side": "short",
+          "hold_bars": 4
+        },
+        {
+          "id": "A2_europe_local_short_hold8",
+          "timezone": "Europe/Berlin",
+          "entry_local_hour": 8,
+          "side": "short",
+          "hold_bars": 8
+        },
+        {
+          "id": "A3_us_local_long_hold4",
+          "timezone": "America/New_York",
+          "entry_local_hour": 9,
+          "side": "long",
+          "hold_bars": 4
+        },
+        {
+          "id": "A4_us_local_long_hold8",
+          "timezone": "America/New_York",
+          "entry_local_hour": 9,
+          "side": "long",
+          "hold_bars": 8
+        }
+      ]
+    },
+    {
+      "family_id": "B",
+      "family": "return_sign_time_series_momentum",
+      "evidence_class": "fx_and_multi_asset_momentum_horizon_transfer",
+      "signal": "sign_of_close_to_close_return_over_lookback",
+      "lookback_bars": [24, 72, 120],
+      "hold_bars": [12, 24]
+    },
+    {
+      "family_id": "C",
+      "family": "moving_average_trend",
+      "evidence_class": "direct_fx_technical_rule_horizon_transfer",
+      "signal": "fast_sma_above_or_below_slow_sma",
+      "ma_pairs": [[12, 48], [24, 96], [48, 192]],
+      "hold_bars": [12, 24]
+    },
+    {
+      "family_id": "D",
+      "family": "trading_range_channel_breakout",
+      "evidence_class": "direct_fx_technical_rule_horizon_transfer",
+      "signal": "completed_h1_close_breaks_prior_rolling_high_or_low",
+      "lookback_bars": [24, 48, 120],
+      "hold_bars": [12, 24]
+    },
+    {
+      "family_id": "E",
+      "family": "asia_range_london_breakout",
+      "evidence_class": "fx_intraday_seasonality_microstructure_derived",
+      "reference_timezone": "UTC",
+      "reference_start_hour": 0,
+      "reference_end_hour_exclusive": 6,
+      "entry_start_hour": 7,
+      "entry_end_hour_inclusive": 12,
+      "signal": "first_completed_h1_close_outside_reference_range",
+      "hold_bars": [6, 12]
+    },
+    {
+      "family_id": "F",
+      "family": "bollinger_zscore_mean_reversion",
+      "evidence_class": "direct_fx_technical_indicator_horizon_transfer",
+      "signal": "fade_close_deviation_from_rolling_mean",
+      "lookback_bars": [24, 72],
+      "entry_abs_z": [1.5, 2.0],
+      "hold_bars": [6, 12],
+      "regime_filter": {
+        "type": "kaufman_efficiency_ratio",
+        "lookback_bars": 24,
+        "maximum": 0.35
+      }
+    },
+    {
+      "family_id": "G",
+      "family": "rsi_extreme_mean_reversion",
+      "evidence_class": "direct_fx_technical_indicator_horizon_transfer",
+      "rsi_lookback_bars": 14,
+      "threshold_pairs": [[30, 70], [25, 75]],
+      "hold_bars": [6, 12],
+      "regime_filter": {
+        "type": "kaufman_efficiency_ratio",
+        "lookback_bars": 24,
+        "maximum": 0.35
+      }
+    },
+    {
+      "family_id": "H",
+      "family": "failed_breakout_reversal",
+      "evidence_class": "channel_rule_and_liquidity_reversal_derived",
+      "reference_lookback_bars": [24, 48],
+      "signal": "bar_trades_beyond_prior_range_and_closes_back_inside",
+      "minimum_excursion_atr_fraction": 0.10,
+      "atr_lookback_bars": 24,
+      "hold_bars": [6, 12]
+    },
+    {
+      "family_id": "I",
+      "family": "volatility_compression_breakout",
+      "evidence_class": "fx_volatility_persistence_and_band_rule_derived",
+      "compression_window_bars": [6, 12],
+      "compression_percentile": [0.25, 0.35],
+      "percentile_history_sessions": 20,
+      "signal": "completed_h1_close_breaks_compressed_range",
+      "hold_bars": [12]
+    },
+    {
+      "family_id": "J",
+      "family": "session_half_momentum",
+      "evidence_class": "intraday_momentum_cross_market_transfer",
+      "candidates": [
+        {
+          "id": "J1_europe_morning_to_midday",
+          "timezone": "Europe/Berlin",
+          "formation_local_hours": [8, 9, 10],
+          "entry_local_hour": 11,
+          "hold_bars": 3,
+          "side": "formation_return_sign"
+        },
+        {
+          "id": "J2_us_morning_to_afternoon",
+          "timezone": "America/New_York",
+          "formation_local_hours": [9, 10, 11],
+          "entry_local_hour": 12,
+          "hold_bars": 3,
+          "side": "formation_return_sign"
+        }
+      ]
+    }
+  ],
+  "family_level_retention": {
+    "development_avg_net_pips_gt": 0.0,
+    "validation_avg_net_pips_gt": 0.0,
+    "aggregate_profit_factor_gte": 1.1,
+    "validation_profit_factor_gte": 1.05,
+    "positive_months_gte": 8,
+    "positive_months_each_half_gte": 3,
+    "aggregate_trades_gte": 60,
+    "trades_each_half_gte": 20,
+    "total_excluding_best_two_days_gt": 0.0,
+    "severe_profit_factor_gte": 0.9,
+    "neighboring_parameter_variants_positive_in_validation_gte": 2,
+    "single_best_rule_rank_is_not_a_retention_criterion": true
+  },
+  "stage_two_overlays_after_family_retention_only": [
+    "realized_volatility_regime",
+    "spread_percentile_filter",
+    "day_of_week_diagnostic",
+    "scheduled_macro_event_exclusion",
+    "exit_policy_research"
+  ],
+  "excluded_from_core_h1_screen": [
+    {
+      "family": "cross_sectional_currency_momentum",
+      "reason": "Requires a multi-currency universe and is not identifiable from EURUSD alone."
+    },
+    {
+      "family": "standalone_carry",
+      "reason": "Requires synchronized interest-rate or forward-point data and changes too slowly for a bar-only H1 family screen."
+    },
+    {
+      "family": "macro_surprise_trading",
+      "reason": "Requires point-in-time announcement expectations and surprise data not present in the source bundle."
+    },
+    {
+      "family": "order_flow_or_true_vwap",
+      "reason": "Dukascopy quote ticks do not provide centralized signed market-wide order flow or centralized FX volume."
+    },
+    {
+      "family": "genetic_programming_or_unbounded_indicator_search",
+      "reason": "Creates excessive model-search degrees of freedom before a transparent baseline family screen."
+    },
+    {
+      "family": "candlestick_named_patterns",
+      "reason": "No sufficiently strong FX-specific evidence was found to justify inclusion ahead of the registered families."
+    }
+  ]
+}
