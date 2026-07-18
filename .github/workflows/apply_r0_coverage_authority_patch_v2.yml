@@ -1,0 +1,87 @@
+name: Apply R0 Coverage Authority Patch v2
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  patch:
+    if: github.event.issue.title == '[Patch] Apply R0 coverage authority v2'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply line-based patch and refresh blob lock
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          runner = Path("tools/run_usdjpy_r0_canonical_bundle_v1.py")
+          lines = runner.read_text().splitlines()
+          baseline_marker = 'baseline_root = restored_root / "baselines" / month'
+          if not any(baseline_marker in line for line in lines):
+              start = next(i for i, line in enumerate(lines) if 'aggregate_root = restored_root / "aggregates" / month' in line)
+              end = next(
+                  i for i in range(start, len(lines))
+                  if 'raise AssertionError(f"expected one accepted source manifest for {month}' in lines[i]
+              )
+              replacement = [
+                  '        baseline_root = restored_root / "baselines" / month',
+                  '        manifests = list(baseline_root.rglob("source_combined/download_manifest.jsonl"))',
+                  '        if len(manifests) != 1:',
+                  '            raise AssertionError(f"expected one accepted baseline source manifest for {month}, found {len(manifests)}")',
+              ]
+              lines[start:end + 1] = replacement
+              runner.write_text("\n".join(lines) + "\n")
+          subprocess.run(["python", "-m", "py_compile", str(runner)], check=True)
+
+          config_path = Path("configs/research/usdjpy_r0_canonicalization_v1.json")
+          config = json.loads(config_path.read_text())
+          config["canonicalization"]["coverage_manifest_authority"] = "accepted_monthly_baseline/source_combined/download_manifest.jsonl"
+          january = next(row for row in config["months"] if row["month"] == "2024-01")
+          january["audit_start"] = "2024-01-02T00"
+          january["expected_weekday_hour_records"] = 528
+          config_path.write_text(json.dumps(config, indent=2, sort_keys=False) + "\n")
+
+          lock_path = Path("configs/research/usdjpy_r0_regression_lock_v1.json")
+          lock = json.loads(lock_path.read_text())
+          for path in [runner, config_path]:
+              blob = subprocess.check_output(["git", "hash-object", str(path)], text=True).strip()
+              lock["code_blobs"][str(path)] = blob
+              print(f"{path}: {blob}")
+          lock_path.write_text(json.dumps(lock, indent=2, sort_keys=False) + "\n")
+          PY
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            tools/run_usdjpy_r0_canonical_bundle_v1.py \
+            configs/research/usdjpy_r0_canonicalization_v1.json \
+            configs/research/usdjpy_r0_regression_lock_v1.json
+          if git diff --cached --quiet; then
+            echo "Patch already applied"
+          else
+            git commit -m "fix: use accepted baseline coverage authority in R0"
+            git push origin HEAD:main
+          fi
+
+      - name: Report completion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "Coverage-authority patch applied. Accepted baseline manifests are authoritative; January audit is 2024-01-02T00 to 2024-02-01T00 with 528 expected hours."
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
