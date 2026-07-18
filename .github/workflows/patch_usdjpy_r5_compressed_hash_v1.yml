@@ -1,0 +1,42 @@
+name: Patch USDJPY R5 Payload Verification v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  patch:
+    if: github.event.issue.title == '[Patch] Remove R5 compressed container hash assertion'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch implementation-only assertion
+        run: |
+          set -euo pipefail
+          path='.github/workflows/run_usdjpy_r5_controlled_exit_v1.yml'
+          sed -i "/assert hashlib.sha256(compressed).hexdigest()/d" "${path}"
+          grep -F "assert len(source)==33643" "${path}"
+          grep -F "61a08c41473f6895056b7c680f2d8a0730e6391b2f4e070e9bab4dd10f9c2a19" "${path}"
+      - name: Commit and remove patch workflow
+        run: |
+          rm -f .github/workflows/patch_usdjpy_r5_compressed_hash_v1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'workflow: verify R5 payload by decompressed source hash'
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Close issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body 'Removed only the compressed-container hash assertion. Gzip integrity, exact source length and exact evaluator source SHA-256 remain mandatory.'
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
