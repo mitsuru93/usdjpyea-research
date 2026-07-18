@@ -20,16 +20,19 @@ configs/research/usdjpy_joint_h2_a1_e3_eval_v1.json
 
 A1 and E3 signals are generated on one chronological M15 sequence consisting of the accepted 2024-01 through 2024-12 bars.
 
-The 2024-01 through 2024-06 bars are used only as pre-H2 history when generating signals near the 2024-07-01 boundary. They do not contribute H2 trades or H2 P&L.
+The 2024-01 through 2024-06 bars are used only as pre-H2 lookback history when generating signals near the 2024-07-01 boundary. They do not contribute an H2 signal, trade or P&L observation.
 
-A retained H2 trade must satisfy both:
+A retained H2 trade must satisfy all three conditions:
 
 ```text
+signal timestamp >= 2024-07-01T00:00:00Z
 entry timestamp >= 2024-07-01T00:00:00Z
 exit timestamp < 2025-01-01T00:00:00Z
 ```
 
-This prevents artificial loss of the first A1 lookback and the first 96-bar E3 trend window while keeping every scored entry and exit inside the preregistered H2 block.
+The entry timestamp must also be earlier than `2025-01-01T00:00:00Z`.
+
+This preserves the prior-bar history required by A1 and the 96-bar history required by E3 without allowing a signal formed in the development block to become an H2 observation. Every scored signal, entry and exit lies inside the preregistered H2 block.
 
 ## Data semantics
 
