@@ -42,12 +42,16 @@ jobs:
           import gzip
           from pathlib import Path
 
+          def padded(encoded: str) -> str:
+              return encoded + ('=' * (-len(encoded) % 4))
+
           def decode_one(source: str, target: str) -> None:
               encoded = Path(source).read_text(encoding='utf-8').strip()
-              compressed = base64.b64decode(encoded, validate=True)
+              normalized = padded(encoded)
+              compressed = base64.b64decode(normalized, validate=True)
               payload = gzip.decompress(compressed)
               Path(target).write_bytes(payload)
-              print({'source': source, 'target': target, 'encoded_chars': len(encoded), 'compressed_bytes': len(compressed), 'payload_bytes': len(payload)})
+              print({'source': source, 'target': target, 'encoded_chars': len(encoded), 'padding_added': len(normalized) - len(encoded), 'compressed_bytes': len(compressed), 'payload_bytes': len(payload)})
 
           decode_one('.github/r1_stage/registry.json.gz.b64', 'configs/research/usdjpy_r1_entry_universe_v1.json')
           runner_parts = sorted(Path('.github/r1_stage').glob('runner.py.gz.b64.*'))
@@ -55,10 +59,10 @@ jobs:
           decoded_parts = []
           for path in runner_parts:
               encoded = path.read_text(encoding='utf-8').strip()
-              assert len(encoded) % 4 == 0, (path, len(encoded))
-              decoded = base64.b64decode(encoded, validate=True)
+              normalized = padded(encoded)
+              decoded = base64.b64decode(normalized, validate=True)
               decoded_parts.append(decoded)
-              print({'runner_part': str(path), 'encoded_chars': len(encoded), 'decoded_bytes': len(decoded)})
+              print({'runner_part': str(path), 'encoded_chars': len(encoded), 'padding_added': len(normalized) - len(encoded), 'decoded_bytes': len(decoded)})
           runner_compressed = b''.join(decoded_parts)
           runner_payload = gzip.decompress(runner_compressed)
           Path('tools/run_usdjpy_r1_entry_registry_v1.py').write_bytes(runner_payload)
