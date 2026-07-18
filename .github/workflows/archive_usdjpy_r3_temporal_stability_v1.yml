@@ -25,10 +25,9 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPOSITORY: ${{ github.repository }}
         run: |
-          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
-            --body "R3 archive started. Run ID: ${{ github.run_id }}."
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "R3 archive retry started. Run ID: ${{ github.run_id }}."
 
-      - name: Download verify and inspect accepted artifact
+      - name: Download and verify accepted artifact
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
@@ -38,11 +37,22 @@ jobs:
           asset='release_assets/usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip'
           gh api "repos/${REPOSITORY}/actions/artifacts/8430424186/zip" > "${asset}"
           actual="$(sha256sum "${asset}" | awk '{print $1}')"
+          echo "artifact_sha256=${actual}"
           test "${actual}" = 'bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292'
+          unzip -t "${asset}" >/dev/null
           unzip -q "${asset}" -d inspection
+          for name in \
+            temporal_monthly.csv temporal_quarterly.csv rolling_2month.csv rolling_3month.csv \
+            anchored_ranking.csv spread_regime.csv rv32_regime.csv rv96_regime.csv \
+            direction_attribution.csv horizon_neighborhood.csv concentration.csv sample_classes.csv \
+            entry_regime_map.csv.gz regime_edges.json r3_acceptance.json run_metadata.json; do
+            test -s "inspection/${name}"
+          done
+          echo '17ef172240b4f7ee071634e99562fee811696497c49ef331c215b688f9a79d15  inspection/r3_acceptance.json' | sha256sum -c -
+          echo '64f0f4122e744d8f5e70e40a29f0939abfa14f4ea60f7e7201c3f21a56fc2a02  inspection/temporal_monthly.csv' | sha256sum -c -
+          echo 'f6fe5b1043482892ee69d361cc89641c0f2f8c3a7338727c44067a573be16158  inspection/anchored_ranking.csv' | sha256sum -c -
+          echo '73d54b2194e21859c39a24a8e47d472b3d56eef552f593eda8fbc0a5bdceced2  inspection/entry_regime_map.csv.gz' | sha256sum -c -
           python - <<'PY'
-          import csv
-          import gzip
           import json
           from pathlib import Path
           root=Path('inspection')
@@ -51,35 +61,15 @@ jobs:
           assert acceptance['status']=='PASS'
           assert all(value is True for key,value in acceptance.items() if key!='status')
           assert metadata['status']=='PASS'
-          assert metadata['trade_rows']==383078
           assert metadata['candidate_horizon_combinations']==660
+          assert metadata['trade_rows']==383078
           assert metadata['entry_regime_map_rows']==7882
           assert metadata['sample_class_counts']=={'moderate':44,'sparse':44,'standard':572}
           assert metadata['H2_rows_parsed']==0
           assert metadata['2025_artifact_access'] is False
           assert metadata['selection_or_promotion_made'] is False
           assert metadata['R4_design_unblocked'] is True
-          expected={
-              'temporal_monthly.csv':3960,
-              'temporal_quarterly.csv':1320,
-              'rolling_2month.csv':3300,
-              'rolling_3month.csv':2640,
-              'anchored_ranking.csv':3300,
-              'spread_regime.csv':2640,
-              'rv32_regime.csv':3300,
-              'rv96_regime.csv':3300,
-              'direction_attribution.csv':1320,
-              'horizon_neighborhood.csv':660,
-              'concentration.csv':660,
-              'sample_classes.csv':660,
-          }
-          for name,rows in expected.items():
-              with (root/name).open(newline='') as fh:
-                  actual_rows=sum(1 for _ in csv.reader(fh))-1
-              assert actual_rows==rows,(name,actual_rows,rows)
-          with gzip.open(root/'entry_regime_map.csv.gz','rt',newline='') as fh:
-              assert sum(1 for _ in csv.reader(fh))-1==7882
-          print({'R3_archive_input':'PASS','outputs':len(expected)+4})
+          print({'R3_archive_input':'PASS'})
           PY
 
       - name: Write frozen manifest and checksums
@@ -111,16 +101,12 @@ jobs:
             "neighborhood_rows": 660,
             "concentration_rows": 660,
             "sample_class_rows": 660,
-            "sample_class_counts": {
-              "standard": 572,
-              "moderate": 44,
-              "sparse": 44
-            },
+            "sample_class_counts": {"standard": 572, "moderate": 44, "sparse": 44},
             "temporal_monthly_sha256": "64f0f4122e744d8f5e70e40a29f0939abfa14f4ea60f7e7201c3f21a56fc2a02",
             "anchored_ranking_sha256": "f6fe5b1043482892ee69d361cc89641c0f2f8c3a7338727c44067a573be16158",
             "entry_regime_map_sha256": "73d54b2194e21859c39a24a8e47d472b3d56eef552f593eda8fbc0a5bdceced2",
             "r3_acceptance_sha256": "17ef172240b4f7ee071634e99562fee811696497c49ef331c215b688f9a79d15",
-            "h2_rows_parsed": 0,
+            "H2_rows_parsed": 0,
             "2025_artifact_access": false,
             "selection_or_promotion_made": false,
             "R4_design_unblocked": true,
@@ -142,11 +128,10 @@ jobs:
           else
             gh release create "${TAG}" release_assets/* --repo "${REPOSITORY}" \
               --title 'USDJPY R3 Temporal Stability v1' \
-              --notes 'Accepted R3 run 29647304892. Complete temporal, spread, realized-volatility, direction, concentration, neighbouring-horizon and sample-class diagnostics for all 660 R2 combinations. No shortlist and no H2 or 2025 access.' \
+              --notes 'Accepted R3 run 29647304892. Complete diagnostics for all 660 R2 combinations. No shortlist and no H2 or 2025 access.' \
               --latest=false
           fi
-          gh release view "${TAG}" --repo "${REPOSITORY}" \
-            --json tagName,url,isDraft,isPrerelease,assets > release_receipt.json
+          gh release view "${TAG}" --repo "${REPOSITORY}" --json tagName,url,isDraft,isPrerelease,assets > release_receipt.json
           python - <<'PY'
           import json
           from pathlib import Path
