@@ -20,8 +20,16 @@ MT4 promotion: false
 The authoritative registry is:
 
 ```text
-configs/research/usdjpy_r1_entry_universe_v1.json
+configs/research/usdjpy_r1_entry_universe_v2.json
 ```
+
+## Timing-semantics correction
+
+R1 v1 run `29641805182` and artifact `8428842719` are excluded because the v1 runner applied `entry_hours_utc` to the signal-bar hour. The authoritative corrected H1 implementation applies those fields to the actual next-bar Entry timestamp.
+
+The v2 correction changes no family, candidate, threshold, lookback, session window or Entry mechanism. No price, horizon or PnL outcome was used. Session candidates whose `entry_start_hour` and `entry_end_hour_inclusive` fields define signal-close windows remain unchanged.
+
+Acceptance of v2 additionally requires exact registered-hold signal-ledger reproduction for all thirteen historical candidates, including both C1 and C2 projections of the shared failed-excursion Entry definition.
 
 ## Why the universe is broad
 
@@ -99,12 +107,13 @@ Permitted outputs:
 - direction;
 - total, monthly and hourly signal counts;
 - pairwise signal overlap;
-- signal-equivalent definition groups.
+- signal-equivalent definition groups;
+- the thirteen-row historical registered-hold signal regression.
 
 Prohibited outputs:
 
 - entry price;
-- any Exit or holding period;
+- any Exit or holding period for a new outcome calculation;
 - gross or net pips;
 - transaction cost;
 - expectancy;
@@ -116,7 +125,7 @@ This separation prevents the Entry universe from being selected for an arbitrary
 
 ## Common execution rule
 
-Every signal uses completed bars only. The theoretical order is entered at the next available M15 bar open. The project-wide New York local 16:00–19:00 hard no-trade window is applied to the actual next-bar entry timestamp with IANA time-zone conversion.
+Every signal uses completed bars only. The theoretical order is entered at the next available M15 bar open. `entry_hours_utc` applies to that actual next-bar Entry timestamp. Session-range fields `entry_start_hour` and `entry_end_hour_inclusive` remain signal-close windows. The project-wide New York local 16:00–19:00 hard no-trade window is applied to the actual next-bar Entry timestamp with IANA time-zone conversion.
 
 R1 reads the accepted canonical M15 file only until:
 
@@ -128,7 +137,7 @@ No H2 row is parsed. No 2025 source is accessed.
 
 ## R1 acceptance
 
-R1 passes only if all of the following hold:
+R1 v2 passes only if all of the following hold:
 
 1. accepted canonical M15 gzip digest matches the R0 receipt;
 2. H2 rows parsed equals zero;
@@ -149,8 +158,9 @@ R1 passes only if all of the following hold:
 17. no entry timestamp reaches H2;
 18. outcome columns are absent;
 19. the signal ledger gzip is deterministic;
-20. the run metadata states that outcomes were not opened.
+20. the run metadata states that outcomes were not opened;
+21. all thirteen historical registered-hold signal ledgers reproduce exactly.
 
 ## Next stage
 
-A passing R1 freezes the Entry universe and unblocks R2. R2 will calculate the eleven fixed horizons on 2024 H1 only. No Entry definition may be added or altered after R1 output is opened.
+A passing R1 v2 freezes the Entry universe and unblocks R2. R2 will calculate the eleven fixed horizons on 2024 H1 only. No Entry definition may be added or altered after corrected R1 output is opened.
