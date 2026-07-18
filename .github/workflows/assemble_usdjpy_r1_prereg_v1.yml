@@ -34,6 +34,9 @@ jobs:
             --body "USDJPY R1 preregistration assembly started. Run ID: ${{ github.run_id }}. https://github.com/${REPOSITORY}/actions/runs/${{ github.run_id }}"
 
       - name: Reconstruct frozen files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
           mkdir -p configs/research tools docs/research_reboot
@@ -51,25 +54,23 @@ jobs:
               print({'source': source, 'target': target, 'compressed_bytes': len(compressed), 'payload_bytes': len(payload)})
 
           decode_one('.github/r1_stage/registry.json.gz.b64', 'configs/research/usdjpy_r1_entry_universe_v1.json')
-          part0 = Path('.github/r1_stage/runner.py.gz.b64.00').read_text(encoding='utf-8').strip()
-          part1_damaged = Path('.github/r1_stage/runner.py.gz.b64.01').read_text(encoding='utf-8').strip()
-          tail_record = Path('.github/r1_stage/runner.py.gz.b64.padding').read_text(encoding='utf-8').strip()
-          assert tail_record.endswith('X'), tail_record
-          exact_tail = tail_record[:-1]
-          assert len(part0) == 6000, len(part0)
-          assert len(part1_damaged) == 5446, len(part1_damaged)
-          assert len(exact_tail) == 64, len(exact_tail)
-          part1 = part1_damaged[:5384] + exact_tail
-          assert len(part1) == 5448, len(part1)
-          runner_encoded = part0 + part1
-          assert len(runner_encoded) == 11448, len(runner_encoded)
-          runner_compressed = base64.b64decode(runner_encoded, validate=True)
-          assert len(runner_compressed) == 8584, len(runner_compressed)
-          runner_payload = gzip.decompress(runner_compressed)
-          Path('tools/run_usdjpy_r1_entry_registry_v1.py').write_bytes(runner_payload)
-          print({'runner_encoded_chars': len(runner_encoded), 'runner_compressed_bytes': len(runner_compressed), 'runner_payload_bytes': len(runner_payload)})
           decode_one('.github/r1_stage/prereg.md.gz.b64', 'docs/research_reboot/usdjpy_r1_entry_universe_prereg_v1.md')
           PY
+          gh api "/repos/${REPOSITORY}/git/blobs/61e9587f0c3b5a1f74bf3497ac8dfd23dced6e5f" --jq .content \
+            | tr -d '\n' | base64 -d > runner_payload.bin
+          python - <<'PY'
+          import gzip
+          from pathlib import Path
+          payload = Path('runner_payload.bin').read_bytes()
+          assert len(payload) == 8586, len(payload)
+          assert payload[-2:] == b'XY', payload[-2:]
+          compressed = payload[:-2]
+          assert len(compressed) == 8584, len(compressed)
+          runner = gzip.decompress(compressed)
+          Path('tools/run_usdjpy_r1_entry_registry_v1.py').write_bytes(runner)
+          print({'blob_payload_bytes': len(payload), 'compressed_bytes': len(compressed), 'runner_bytes': len(runner)})
+          PY
+          rm runner_payload.bin
           chmod +x tools/run_usdjpy_r1_entry_registry_v1.py
           echo 'ee646dc4dfefb3f231881c26249be0739b1e7b4ca9febbe01236b6120244a006  configs/research/usdjpy_r1_entry_universe_v1.json' | sha256sum -c -
           echo '648c7a4f530756aa90b3fc8fb3e403050af44e7388464898a788a661da7281b3  tools/run_usdjpy_r1_entry_registry_v1.py' | sha256sum -c -
