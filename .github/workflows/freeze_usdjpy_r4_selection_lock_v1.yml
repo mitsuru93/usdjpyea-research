@@ -1,0 +1,119 @@
+name: Freeze USDJPY R4 Selection Lock v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  freeze:
+    if: github.event.issue.title == '[R4] Freeze USDJPY selection lock v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate and freeze lock
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/run_usdjpy_r4_entry_horizon_selection_v1.py
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          paths = [
+              'configs/research/usdjpy_r4_entry_horizon_selection_v1.json',
+              'docs/research_reboot/usdjpy_r4_entry_horizon_selection_prereg_v1.md',
+              'tools/run_usdjpy_r4_entry_horizon_selection_v1.py',
+          ]
+          for path in paths:
+              assert Path(path).is_file(), path
+
+          config = json.loads(Path(paths[0]).read_text())
+          assert config['surface_contract']['candidate_horizon_combinations'] == 660
+          assert config['surface_contract']['maximum_selected'] == 8
+          assert config['surface_contract']['maximum_per_family'] == 2
+          assert config['surface_contract']['maximum_per_definition_sha256'] == 1
+          assert config['surface_contract']['relaxation_if_too_few'] is False
+          assert len(config['ranking']['components']) == 12
+          assert config['ranking']['component_weights'] == 'equal'
+          assert config['research_firewall']['H2_rows_parsed'] == 0
+          assert config['research_firewall']['2025_access'] is False
+          assert config['research_firewall']['exit_optimization'] is False
+
+          lock = {
+              'version': 'v1',
+              'research_stage': 'R4_entry_horizon_selection',
+              'symbol': 'USDJPY',
+              'code_blobs': {
+                  path: subprocess.check_output(['git','rev-parse',f'HEAD:{path}'], text=True).strip()
+                  for path in paths
+              },
+              'content_sha256': {
+                  path: hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                  for path in paths
+              },
+              'input_releases': {
+                  'r2': {
+                      'tag': config['inputs']['r2_release_tag'],
+                      'asset': config['inputs']['r2_release_asset'],
+                      'asset_sha256': config['inputs']['r2_release_asset_sha256'],
+                      'trade_ledger_sha256': config['inputs']['r2_trade_ledger_sha256'],
+                      'summary_sha256': config['inputs']['r2_summary_sha256'],
+                  },
+                  'r3': {
+                      'tag': config['inputs']['r3_release_tag'],
+                      'asset': config['inputs']['r3_release_asset'],
+                      'asset_sha256': config['inputs']['r3_release_asset_sha256'],
+                      'acceptance_sha256': config['inputs']['r3_acceptance_sha256'],
+                      'temporal_monthly_sha256': config['inputs']['r3_temporal_monthly_sha256'],
+                      'anchored_ranking_sha256': config['inputs']['r3_anchored_ranking_sha256'],
+                  },
+              },
+              'selection_contract': config['surface_contract'],
+              'eligibility_contract': config['eligibility'],
+              'ranking_contract': config['ranking'],
+              'redundancy_contract': config['redundancy'],
+              'required_outputs': config['required_outputs'],
+              'research_firewall': config['research_firewall'],
+              'next_stage': config['next_stage'],
+          }
+          Path('configs/research/usdjpy_r4_entry_horizon_selection_lock_v1.json').write_text(
+              json.dumps(lock, indent=2, sort_keys=True) + '\n'
+          )
+          print(json.dumps({
+              'R4_lock': 'PASS',
+              'code_blobs': lock['code_blobs'],
+              'content_sha256': lock['content_sha256'],
+          }, sort_keys=True))
+          PY
+
+      - name: Commit lock and remove one-time workflow
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/freeze_usdjpy_r4_selection_lock_v1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'research: freeze USDJPY R4 selection lock v1'
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Close issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body 'R4 selection evaluator, configuration and preregistration were frozen before the formal selection run.'
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
