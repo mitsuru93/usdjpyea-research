@@ -1,0 +1,212 @@
+name: Run USDJPY R1 Entry Registry v1
+
+on:
+  workflow_dispatch:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: usdjpy-r1-entry-registry-v1
+  cancel-in-progress: false
+
+jobs:
+  r1:
+    if: github.event_name != 'issues' || github.event.issue.title == '[R1] Run USDJPY Entry Registry v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      OUTPUT_DIR: data/experiments/usdjpy_r1_entry_registry_v1
+      LOCK_PATH: configs/research/usdjpy_r1_entry_lock_v1.json
+      REGISTRY_PATH: configs/research/usdjpy_r1_entry_universe_v1.json
+      SESSION_CONFIG: configs/market_sessions/fx_market_sessions_v1.json
+      RELEASE_TAG: usdjpy-r0-canonical-2024-v1
+      RELEASE_ASSET: usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip
+      RELEASE_ASSET_SHA256: d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015
+      CANONICAL_M15_SHA256: 1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record run ID
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "USDJPY R1 Entry-registry run started. Run ID: ${{ github.run_id }}. https://github.com/${REPOSITORY}/actions/runs/${{ github.run_id }}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy
+
+      - name: Verify frozen code and registry contract
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/run_usdjpy_r1_entry_registry_v1.py
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          lock = json.loads(Path('configs/research/usdjpy_r1_entry_lock_v1.json').read_text())
+          for path, expected in lock['code_blobs'].items():
+              actual = subprocess.check_output(['git', 'rev-parse', f'HEAD:{path}'], text=True).strip()
+              assert actual == expected, (path, actual, expected)
+          for path, expected in lock['content_sha256'].items():
+              actual = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+              assert actual == expected, (path, actual, expected)
+
+          registry = json.loads(Path('configs/research/usdjpy_r1_entry_universe_v1.json').read_text())
+          families = registry['families']
+          candidates = [candidate for family in families for candidate in family['candidates']]
+          assert len(families) == 12
+          assert len(candidates) == 60
+          assert len({candidate['id'] for candidate in candidates}) == 60
+          assert all(len(family['candidates']) == int(family['cap']) for family in families)
+          assert sum(int(family['cap']) for family in families) == 60
+          assert registry['development_period']['end_utc_exclusive'] == '2024-07-01T00:00:00Z'
+          assert registry['research_firewall']['h2_rows_parsed'] == 0
+          assert registry['research_firewall']['2025_access'] is False
+          assert registry['common_execution']['exit_or_horizon_in_R1'] is False
+          assert registry['common_execution']['price_or_pnl_output_in_R1'] is False
+          print({'code_blobs': len(lock['code_blobs']), 'families': len(families), 'candidates': len(candidates), 'status': 'PASS'})
+          PY
+
+      - name: Download accepted R0 canonical Release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p data/r0_release data/r0_bundle
+          gh release download "${RELEASE_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pattern "${RELEASE_ASSET}" \
+            --dir data/r0_release
+          echo "${RELEASE_ASSET_SHA256}  data/r0_release/${RELEASE_ASSET}" | sha256sum -c -
+          unzip -q "data/r0_release/${RELEASE_ASSET}" -d data/r0_bundle
+          mapfile -t M15_FILES < <(find data/r0_bundle -type f -path '*/canonical/bars/M15/USDJPY_M15.csv.gz' | sort)
+          if [ "${#M15_FILES[@]}" -ne 1 ]; then
+            printf 'Expected one canonical M15 file; found %s\n' "${#M15_FILES[@]}" >&2
+            find data/r0_bundle -type f | sort >&2
+            exit 2
+          fi
+          echo "${CANONICAL_M15_SHA256}  ${M15_FILES[0]}" | sha256sum -c -
+          echo "CANONICAL_M15=${M15_FILES[0]}" >> "${GITHUB_ENV}"
+
+      - name: Run frozen R1 Entry registry
+        run: |
+          set -euo pipefail
+          python tools/run_usdjpy_r1_entry_registry_v1.py \
+            --canonical-m15 "${CANONICAL_M15}" \
+            --registry "${REGISTRY_PATH}" \
+            --session-config "${SESSION_CONFIG}" \
+            --output-dir "${OUTPUT_DIR}"
+
+      - name: Verify R1 output contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          output = Path('data/experiments/usdjpy_r1_entry_registry_v1')
+          lock = json.loads(Path('configs/research/usdjpy_r1_entry_lock_v1.json').read_text())
+          for name in lock['required_outputs']:
+              path = output / name
+              assert path.is_file() and path.stat().st_size > 0, (name, path.exists(), path.stat().st_size if path.exists() else None)
+
+          acceptance = json.loads((output / 'r1_acceptance.json').read_text())
+          assert acceptance == lock['required_acceptance'], (acceptance, lock['required_acceptance'])
+          metadata = json.loads((output / 'run_metadata.json').read_text())
+          assert metadata['status'] == 'PASS'
+          assert metadata['outcomes_opened'] is False
+          assert metadata['h2_opened_for_new_candidates'] is False
+          assert metadata['2025_artifact_access'] is False
+          assert metadata['core_promotion'] is False
+          assert metadata['mt4_promotion'] is False
+          assert metadata['r2_unblocked'] is True
+          assert metadata['families'] == 12
+          assert metadata['candidates'] == 60
+          assert metadata['input']['h2_rows_parsed'] == 0
+
+          summary = pd.read_csv(output / 'candidate_signal_summary.csv')
+          monthly = pd.read_csv(output / 'candidate_monthly_signals.csv')
+          hourly = pd.read_csv(output / 'candidate_hourly_signals.csv')
+          overlap = pd.read_csv(output / 'pairwise_signal_overlap.csv')
+          definitions = pd.read_csv(output / 'candidate_definition_audit.csv')
+          assert len(summary) == 60 and summary['candidate_id'].nunique() == 60
+          assert len(monthly) == 360
+          assert len(hourly) == 1440
+          assert len(overlap) == 1770
+          assert len(definitions) == 60 and definitions['definition_sha256'].nunique() == 60
+
+          prohibited = ('entry_price', 'exit', 'hold', 'gross', 'cost', 'net_pips', 'profit', 'expectancy', 'return_pips', 'promotion')
+          for path in output.glob('*.csv*'):
+              columns = [str(column).lower() for column in pd.read_csv(path, nrows=0).columns]
+              assert not any(term in column for column in columns for term in prohibited), (path, columns)
+          print({'acceptance_checks': len(acceptance) - 1, 'candidates': len(summary), 'monthly_rows': len(monthly), 'hourly_rows': len(hourly), 'pairs': len(overlap), 'status': 'PASS'})
+          PY
+
+      - name: Write job summary
+        if: always()
+        run: |
+          echo '# USDJPY R1 Entry Registry v1' >> "${GITHUB_STEP_SUMMARY}"
+          echo >> "${GITHUB_STEP_SUMMARY}"
+          echo 'R1 reports Entry definitions and signal structure only. It does not calculate prices, exits, horizons or PnL.' >> "${GITHUB_STEP_SUMMARY}"
+          echo >> "${GITHUB_STEP_SUMMARY}"
+          if [ -f "${OUTPUT_DIR}/r1_acceptance.json" ]; then
+            echo '## Acceptance' >> "${GITHUB_STEP_SUMMARY}"
+            echo '```json' >> "${GITHUB_STEP_SUMMARY}"
+            cat "${OUTPUT_DIR}/r1_acceptance.json" >> "${GITHUB_STEP_SUMMARY}"
+            echo '```' >> "${GITHUB_STEP_SUMMARY}"
+          fi
+          if [ -f "${OUTPUT_DIR}/family_signal_summary.csv" ]; then
+            echo '## Family signal structure' >> "${GITHUB_STEP_SUMMARY}"
+            echo '```csv' >> "${GITHUB_STEP_SUMMARY}"
+            cat "${OUTPUT_DIR}/family_signal_summary.csv" >> "${GITHUB_STEP_SUMMARY}"
+            echo '```' >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Upload R1 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-r1-entry-registry-v1-${{ github.run_id }}
+          path: data/experiments/usdjpy_r1_entry_registry_v1/**
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Close successful trigger issue
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "USDJPY R1 Entry registry passed. Run ID: ${{ github.run_id }}. R2 is unblocked; H2, 2025, prices, Exit, horizons and PnL remained unopened."
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
+
+      - name: Report failed trigger issue
+        if: github.event_name == 'issues' && failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "USDJPY R1 Entry registry failed. Run ID: ${{ github.run_id }}. R2 remains blocked."
