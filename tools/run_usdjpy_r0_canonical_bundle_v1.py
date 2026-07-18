@@ -367,7 +367,7 @@ def write_monthly_canonical_m15(canonical_root: Path, target_root: Path) -> dict
         destination = target_root / month / "M15" / "USDJPY_M15.csv.gz"
         destination.parent.mkdir(parents=True, exist_ok=True)
         text = io.StringIO(newline="")
-        frame.to_csv(text, index=False, float_format="%.15g", lineterminator="\n")
+        frame.to_csv(text, index=False, float_format="%.17g", lineterminator="\n")
         with destination.open("wb") as raw:
             with gzip.GzipFile(filename="", mode="wb", fileobj=raw, compresslevel=9, mtime=0) as compressed:
                 compressed.write(text.getvalue().encode("utf-8"))
