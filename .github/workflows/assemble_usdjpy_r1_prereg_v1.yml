@@ -52,11 +52,17 @@ jobs:
           decode_one('.github/r1_stage/registry.json.gz.b64', 'configs/research/usdjpy_r1_entry_universe_v1.json')
           runner_parts = sorted(Path('.github/r1_stage').glob('runner.py.gz.b64.*'))
           assert [path.name for path in runner_parts] == ['runner.py.gz.b64.00', 'runner.py.gz.b64.01'], runner_parts
-          runner_encoded = ''.join(path.read_text(encoding='utf-8').strip() for path in runner_parts)
-          runner_compressed = base64.b64decode(runner_encoded, validate=True)
+          decoded_parts = []
+          for path in runner_parts:
+              encoded = path.read_text(encoding='utf-8').strip()
+              assert len(encoded) % 4 == 0, (path, len(encoded))
+              decoded = base64.b64decode(encoded, validate=True)
+              decoded_parts.append(decoded)
+              print({'runner_part': str(path), 'encoded_chars': len(encoded), 'decoded_bytes': len(decoded)})
+          runner_compressed = b''.join(decoded_parts)
           runner_payload = gzip.decompress(runner_compressed)
           Path('tools/run_usdjpy_r1_entry_registry_v1.py').write_bytes(runner_payload)
-          print({'runner_parts': [str(path) for path in runner_parts], 'encoded_chars': len(runner_encoded), 'compressed_bytes': len(runner_compressed), 'payload_bytes': len(runner_payload)})
+          print({'runner_compressed_bytes': len(runner_compressed), 'runner_payload_bytes': len(runner_payload)})
           decode_one('.github/r1_stage/prereg.md.gz.b64', 'docs/research_reboot/usdjpy_r1_entry_universe_prereg_v1.md')
           PY
           chmod +x tools/run_usdjpy_r1_entry_registry_v1.py
