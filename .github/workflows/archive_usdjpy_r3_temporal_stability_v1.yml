@@ -1,0 +1,190 @@
+name: Archive Accepted USDJPY R3 Temporal Stability v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+jobs:
+  archive:
+    if: github.event.issue.title == '[R3] Archive accepted temporal stability v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Record archive run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "R3 archive started. Run ID: ${{ github.run_id }}."
+
+      - name: Download verify and inspect accepted artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p release_assets inspection
+          asset='release_assets/usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip'
+          gh api "repos/${REPOSITORY}/actions/artifacts/8430424186/zip" > "${asset}"
+          actual="$(sha256sum "${asset}" | awk '{print $1}')"
+          test "${actual}" = 'bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292'
+          unzip -q "${asset}" -d inspection
+          python - <<'PY'
+          import csv
+          import gzip
+          import json
+          from pathlib import Path
+          root=Path('inspection')
+          acceptance=json.loads((root/'r3_acceptance.json').read_text())
+          metadata=json.loads((root/'run_metadata.json').read_text())
+          assert acceptance['status']=='PASS'
+          assert all(value is True for key,value in acceptance.items() if key!='status')
+          assert metadata['status']=='PASS'
+          assert metadata['trade_rows']==383078
+          assert metadata['candidate_horizon_combinations']==660
+          assert metadata['entry_regime_map_rows']==7882
+          assert metadata['sample_class_counts']=={'moderate':44,'sparse':44,'standard':572}
+          assert metadata['H2_rows_parsed']==0
+          assert metadata['2025_artifact_access'] is False
+          assert metadata['selection_or_promotion_made'] is False
+          assert metadata['R4_design_unblocked'] is True
+          expected={
+              'temporal_monthly.csv':3960,
+              'temporal_quarterly.csv':1320,
+              'rolling_2month.csv':3300,
+              'rolling_3month.csv':2640,
+              'anchored_ranking.csv':3300,
+              'spread_regime.csv':2640,
+              'rv32_regime.csv':3300,
+              'rv96_regime.csv':3300,
+              'direction_attribution.csv':1320,
+              'horizon_neighborhood.csv':660,
+              'concentration.csv':660,
+              'sample_classes.csv':660,
+          }
+          for name,rows in expected.items():
+              with (root/name).open(newline='') as fh:
+                  actual_rows=sum(1 for _ in csv.reader(fh))-1
+              assert actual_rows==rows,(name,actual_rows,rows)
+          with gzip.open(root/'entry_regime_map.csv.gz','rt',newline='') as fh:
+              assert sum(1 for _ in csv.reader(fh))-1==7882
+          print({'R3_archive_input':'PASS','outputs':len(expected)+4})
+          PY
+
+      - name: Write frozen manifest and checksums
+        run: |
+          cat > release_assets/usdjpy-r3-temporal-stability-v1-manifest.json <<'JSON'
+          {
+            "version": "v1",
+            "repository": "mitsuru93/usdjpyea-research",
+            "release_tag": "usdjpy-r3-temporal-stability-v1",
+            "accepted_run_id": 29647304892,
+            "accepted_head_sha": "22a72f0cf1185e072d16afcdc64651502f2db83c",
+            "actions_artifact_id": 8430424186,
+            "actions_artifact_name": "usdjpy-r3-temporal-stability-v1-29647304892",
+            "actions_artifact_sha256": "bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292",
+            "r3_status": "PASS",
+            "acceptance_checks": 25,
+            "candidate_horizon_combinations": 660,
+            "input_trade_rows": 383078,
+            "entry_regime_map_rows": 7882,
+            "monthly_rows": 3960,
+            "quarterly_rows": 1320,
+            "rolling_2month_rows": 3300,
+            "rolling_3month_rows": 2640,
+            "anchored_rows": 3300,
+            "spread_regime_rows": 2640,
+            "rv32_regime_rows": 3300,
+            "rv96_regime_rows": 3300,
+            "direction_rows": 1320,
+            "neighborhood_rows": 660,
+            "concentration_rows": 660,
+            "sample_class_rows": 660,
+            "sample_class_counts": {
+              "standard": 572,
+              "moderate": 44,
+              "sparse": 44
+            },
+            "temporal_monthly_sha256": "64f0f4122e744d8f5e70e40a29f0939abfa14f4ea60f7e7201c3f21a56fc2a02",
+            "anchored_ranking_sha256": "f6fe5b1043482892ee69d361cc89641c0f2f8c3a7338727c44067a573be16158",
+            "entry_regime_map_sha256": "73d54b2194e21859c39a24a8e47d472b3d56eef552f593eda8fbc0a5bdceced2",
+            "r3_acceptance_sha256": "17ef172240b4f7ee071634e99562fee811696497c49ef331c215b688f9a79d15",
+            "h2_rows_parsed": 0,
+            "2025_artifact_access": false,
+            "selection_or_promotion_made": false,
+            "R4_design_unblocked": true,
+            "Core_promotion": false,
+            "MT4_promotion": false
+          }
+          JSON
+          (cd release_assets && sha256sum * > SHA256SUMS)
+
+      - name: Create and verify durable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          TAG: usdjpy-r3-temporal-stability-v1
+        run: |
+          set -euo pipefail
+          if gh release view "${TAG}" --repo "${REPOSITORY}" >/dev/null 2>&1; then
+            gh release upload "${TAG}" release_assets/* --repo "${REPOSITORY}" --clobber
+          else
+            gh release create "${TAG}" release_assets/* --repo "${REPOSITORY}" \
+              --title 'USDJPY R3 Temporal Stability v1' \
+              --notes 'Accepted R3 run 29647304892. Complete temporal, spread, realized-volatility, direction, concentration, neighbouring-horizon and sample-class diagnostics for all 660 R2 combinations. No shortlist and no H2 or 2025 access.' \
+              --latest=false
+          fi
+          gh release view "${TAG}" --repo "${REPOSITORY}" \
+            --json tagName,url,isDraft,isPrerelease,assets > release_receipt.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt=json.loads(Path('release_receipt.json').read_text())
+          assets={row['name']:row for row in receipt['assets']}
+          assert receipt['tagName']=='usdjpy-r3-temporal-stability-v1'
+          assert receipt['isDraft'] is False and receipt['isPrerelease'] is False
+          assert set(assets)=={
+              'usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip',
+              'usdjpy-r3-temporal-stability-v1-manifest.json',
+              'SHA256SUMS',
+          }
+          assert assets['usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip']['digest']=='sha256:bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292'
+          print({'R3_release':'PASS','assets':3})
+          PY
+
+      - name: Commit receipt and remove archive workflow
+        run: |
+          set -euo pipefail
+          target='docs/research_reboot/artifact_archives/usdjpy_r3_temporal_stability_v1'
+          mkdir -p "${target}"
+          cp release_receipt.json "${target}/release_receipt.json"
+          cp release_assets/usdjpy-r3-temporal-stability-v1-manifest.json "${target}/artifact_manifest.json"
+          cp release_assets/SHA256SUMS "${target}/SHA256SUMS"
+          rm -f .github/workflows/archive_usdjpy_r3_temporal_stability_v1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'docs: archive accepted USDJPY R3 temporal stability v1'
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Close issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body 'Accepted R3 artifact archived at Release usdjpy-r3-temporal-stability-v1 and receipt committed. R4 rule design is next; no shortlist was opened.'
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
