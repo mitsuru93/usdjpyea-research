@@ -1,0 +1,29 @@
+{
+  "version": "v1",
+  "repository": "mitsuru93/usdjpyea-research",
+  "release_tag": "usdjpy-r0-canonical-2024-v1",
+  "accepted_run_id": 29639548804,
+  "accepted_head_sha": "2d88fb846bbe77e256ee37abdf1dcbb462e3ebe4",
+  "actions_artifact_id": 8428199309,
+  "actions_artifact_name": "usdjpy-r0-canonical-2024-v1-29639548804",
+  "actions_artifact_sha256": "d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015",
+  "release_asset": "usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip",
+  "r0_status": "PASS",
+  "acceptance_checks": 20,
+  "release_input_tag": "usdjpy-r0-artifact-archive-2024-v1",
+  "canonical_manifest_sha256": "38991daed90f836217af7d871a5799d8645dc7738cb9e5bf93a7e4ace2b71cf6",
+  "r0_acceptance_sha256": "f3b523ca6ec27f2ed658801479778369cef9720ff4383f1f10878baf54623cf8",
+  "canonical_gzip_sha256": {
+    "M1": "bd2d2643191e79a2655c5703e861ead23bee547e8c94a55a8f1582237a735722",
+    "M5": "65ab9d3d9b830a169058010fd5ca06249330631b4522efb56e838807890e431b",
+    "M15": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c",
+    "H1": "235cae3c81c3c9e33d08dc670cd6beb2a4a2a220f1b55626a0df4d575f8ce5bb"
+  },
+  "h1_normalized_ledger_sha256": "98f67e110cb641263b629234b1b0401ece3a613f695f6c829bd007cc231894f8",
+  "h2_normalized_ledger_sha256": "e4eca229dc886abd239dc9a424a0ca7c2414f87acb761da952e11ab39a07ba04",
+  "h2_decision": "neither_advances",
+  "core_promotion": false,
+  "mt4_promotion": false,
+  "r1_unblocked": true,
+  "2025_artifact_access": false
+}
