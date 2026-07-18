@@ -1,0 +1,76 @@
+name: Apply R0 Float Round Trip Patch v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  patch:
+    if: github.event.issue.title == '[Patch] Apply R0 float round-trip v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply round-trip serialization and refresh lock
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          builder = Path("tools/build_fx_annual_bar_bundle.py")
+          text = builder.read_text()
+          count = text.count('float_format="%.15g"')
+          if count:
+              text = text.replace('float_format="%.15g"', 'float_format="%.17g"')
+              text = text.replace('"float_format": "%.15g"', '"float_format": "%.17g"')
+              builder.write_text(text)
+          assert 'float_format="%.15g"' not in builder.read_text()
+          assert 'float_format="%.17g"' in builder.read_text()
+          subprocess.run(["python", "-m", "py_compile", str(builder)], check=True)
+
+          config_path = Path("configs/research/usdjpy_r0_canonicalization_v1.json")
+          config = json.loads(config_path.read_text())
+          config["canonicalization"]["serialization"]["float_format"] = "%.17g"
+          config_path.write_text(json.dumps(config, indent=2, sort_keys=False) + "\n")
+
+          lock_path = Path("configs/research/usdjpy_r0_regression_lock_v1.json")
+          lock = json.loads(lock_path.read_text())
+          for path in [builder, config_path]:
+              blob = subprocess.check_output(["git", "hash-object", str(path)], text=True).strip()
+              lock["code_blobs"][str(path)] = blob
+              print(f"{path}: {blob}")
+          lock_path.write_text(json.dumps(lock, indent=2, sort_keys=False) + "\n")
+          PY
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            tools/build_fx_annual_bar_bundle.py \
+            configs/research/usdjpy_r0_canonicalization_v1.json \
+            configs/research/usdjpy_r0_regression_lock_v1.json
+          if git diff --cached --quiet; then
+            echo "Round-trip patch already applied"
+          else
+            git commit -m "fix: preserve float round-trip precision in R0"
+            git push origin HEAD:main
+          fi
+
+      - name: Report completion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "R0 canonical float serialization changed from %.15g to %.17g and builder/config blob locks were refreshed."
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
