@@ -35,7 +35,24 @@ R2 accepts only:
 1. canonical M15 bars from Release `usdjpy-r0-canonical-2024-v1`;
 2. corrected R1 v2 signal ledger and registry snapshot from Release `usdjpy-r1-entry-registry-v2`;
 3. the fixed market-session configuration;
-4. the archived accepted H1 horizon diagnostic for implementation regression only.
+4. the accepted H1 horizon diagnostic for implementation regression only.
+
+The historical implementation reference is pinned as:
+
+```text
+run_id: 29583719940
+artifact_id: 8408094591
+artifact: usdjpy-h1-entry-horizon-diagnostic-v2-29583719940
+artifact_digest: sha256:f95a0a450aa3b821dbcb20ea4f3410f345668606bf5f20a766a3e01d8a6e89e4
+```
+
+The corrected accepted R1 registry snapshot digest is:
+
+```text
+sha256:3bb43eeb1234ec6d175e37df3b1bbdb385364857351938bd088247ab14567549
+```
+
+The previously recorded `113f6f...` value was not the digest of the accepted artifact file and is excluded as an input-lock transcription error. No Entry definition or parameter changed.
 
 R1 v1 run `29641805182` and artifact `8428842719` are excluded and may not be read.
 
@@ -123,7 +140,16 @@ The accepted H1 horizon diagnostic contains thirteen historical candidate projec
 1, 2, 3, 4, 6, 8, 12, 16, 24
 ```
 
-R2 must reproduce all 117 candidate/horizon ledgers exactly by Entry timestamp and direction and within absolute tolerance `1e-9` for:
+Its legacy output predates the R2 same-month rule and contains five trades whose Entry is in May and Exit is in June. Before comparison, the reference ledger is projected onto the already registered R2 domain:
+
+```text
+keep only rows where Entry UTC month equals Exit UTC month
+expected excluded reference rows: 5
+```
+
+This projection changes neither the new R2 ledger nor any Entry, horizon, cost or performance rule. It prevents a legacy diagnostic with cross-month paths from being incorrectly treated as the R2 target.
+
+R2 must reproduce all 117 candidate/horizon projected ledgers exactly by Entry timestamp and direction and within absolute tolerance `1e-9` for:
 
 - Exit timestamp;
 - gross pips;
@@ -136,7 +162,7 @@ C1 and C2 remain separate historical projections of the shared Entry definition.
 
 R2 passes only if:
 
-1. both accepted Release asset digests match;
+1. accepted R0 and R1 Release asset digests and the historical horizon artifact digest match;
 2. canonical M15, R1 signal and R1 registry-snapshot digests match;
 3. only 2024 H1 bars are parsed;
 4. H2 rows parsed equals zero;
@@ -146,7 +172,7 @@ R2 passes only if:
 8. all 660 summary combinations are present;
 9. all 3,960 monthly rows are present;
 10. all 1,320 direction rows are present;
-11. zero-trade candidates remain represented;
+11. zero-trade candidates remain represented when present;
 12. Entry and Exit remain in the same UTC month;
 13. every Entry is the actual next M15 bar;
 14. hard no-trade violations equal zero;
@@ -154,7 +180,7 @@ R2 passes only if:
 16. severe cost is exact;
 17. MFE and MAE fields are complete;
 18. trade-ledger gzip is byte deterministic;
-19. all 117 historical horizon ledgers reproduce;
+19. the legacy artifact contains exactly five cross-month rows and all 117 projected historical horizon ledgers reproduce;
 20. no selection or promotion decision is emitted;
 21. Core and MT4 promotion remain false.
 
