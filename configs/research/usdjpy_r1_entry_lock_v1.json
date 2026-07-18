@@ -1,0 +1,85 @@
+{
+  "version": "v1",
+  "research_stage": "R1_entry_registry",
+  "symbol": "USDJPY",
+  "development_period": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "effective_first_bar_utc": "2024-01-02T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z"
+  },
+  "code_blobs": {
+    "configs/research/usdjpy_r1_entry_universe_v1.json": "6c14eb8ab48cca547d45624d9cd00bd59a813f1e",
+    "tools/run_usdjpy_r1_entry_registry_v1.py": "45202fd3df2937fb2befb0934a1b84ceba5bd80b",
+    "docs/research_reboot/usdjpy_r1_entry_universe_prereg_v1.md": "f41bede93be6f5e3f1b036411f5f1d96fe2fe76b",
+    "configs/market_sessions/fx_market_sessions_v1.json": "baead9fda40977a214d000dd7af127f05487f202"
+  },
+  "content_sha256": {
+    "configs/research/usdjpy_r1_entry_universe_v1.json": "ee646dc4dfefb3f231881c26249be0739b1e7b4ca9febbe01236b6120244a006",
+    "tools/run_usdjpy_r1_entry_registry_v1.py": "648c7a4f530756aa90b3fc8fb3e403050af44e7388464898a788a661da7281b3",
+    "docs/research_reboot/usdjpy_r1_entry_universe_prereg_v1.md": "e8ffabafe948c98031ecaac1bc043dab45deed7a0d742a2db6a2457aee7496ed"
+  },
+  "input_release": {
+    "tag": "usdjpy-r0-canonical-2024-v1",
+    "asset": "usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip",
+    "asset_sha256": "d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015",
+    "canonical_m15_path": "canonical/bars/M15/USDJPY_M15.csv.gz",
+    "canonical_m15_gzip_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c"
+  },
+  "registry_contract": {
+    "families": 12,
+    "unique_entry_definitions": 60,
+    "legacy_unique_entries": 12,
+    "new_entries": 48,
+    "candidate_changes_after_output": "prohibited"
+  },
+  "research_firewall": {
+    "h2_rows_parsed": 0,
+    "2025_access": false,
+    "outcomes_opened": false,
+    "entry_prices_output": false,
+    "exit_or_horizon_output": false,
+    "pnl_output": false,
+    "promotion_decision": false
+  },
+  "required_outputs": [
+    "r1_registry_snapshot.json",
+    "candidate_definition_audit.csv",
+    "candidate_signals.csv.gz",
+    "candidate_signal_summary.csv",
+    "candidate_monthly_signals.csv",
+    "candidate_hourly_signals.csv",
+    "family_signal_summary.csv",
+    "candidate_signal_hashes.csv",
+    "candidate_signal_equivalence.csv",
+    "pairwise_signal_overlap.csv",
+    "r1_acceptance.json",
+    "run_metadata.json"
+  ],
+  "required_acceptance": {
+    "status": "PASS",
+    "canonical_m15_digest_exact": true,
+    "h1_only_rows_parsed": true,
+    "h2_rows_parsed_zero": true,
+    "2025_access_false": true,
+    "family_count_12": true,
+    "candidate_count_60": true,
+    "family_caps_exact": true,
+    "candidate_ids_unique": true,
+    "functional_definitions_unique": true,
+    "no_exit_or_horizon_parameters": true,
+    "all_families_supported": true,
+    "all_candidates_reported": true,
+    "monthly_grid_complete": true,
+    "hourly_grid_complete": true,
+    "pairwise_overlap_complete": true,
+    "actual_next_bar_entries": true,
+    "hard_no_trade_violations_zero": true,
+    "no_h2_entry_timestamps": true,
+    "outcome_columns_absent": true,
+    "signal_ledger_deterministic_gzip": true
+  },
+  "next_stage": {
+    "stage": "R2_fixed_horizon_surface",
+    "horizons_m15_bars": [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48]
+  }
+}
