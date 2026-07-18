@@ -1,0 +1,75 @@
+{
+  "code_blobs": {
+    "configs/market_sessions/fx_market_sessions_v1.json": "baead9fda40977a214d000dd7af127f05487f202",
+    "configs/research/usdjpy_r3_temporal_stability_v1.json": "a1a6d337d6373ba4d1b424eccb4c083606e73604",
+    "docs/research_reboot/usdjpy_r3_temporal_stability_prereg_v1.md": "e37c7480e7fed6d1edaf25043d0314e83e5de5a3",
+    "tools/run_usdjpy_r3_temporal_stability_v1.py": "e196b0f49479eb22331ede719f00f3bfc233bb29"
+  },
+  "content_sha256": {
+    "configs/market_sessions/fx_market_sessions_v1.json": "e009ed1dd451a60d97bc8c021ae93ed2f28cf1996654464095647d5c1a30668d",
+    "configs/research/usdjpy_r3_temporal_stability_v1.json": "9e11d313826fd001093d72c5dad3f53c66df76abb379becefcd50b3fd6841933",
+    "docs/research_reboot/usdjpy_r3_temporal_stability_prereg_v1.md": "875c5e40a88c07f10b0cdec20c1b4ff827e1f21f863bac815852018400df29e8",
+    "tools/run_usdjpy_r3_temporal_stability_v1.py": "90c4e74babcf0670b6f801dac30d04537f2a8efce0dfdb6adee2ccbf4d1c2807"
+  },
+  "diagnostic_contract": {
+    "anchored_rows": 3300,
+    "candidate_horizon_combinations": 660,
+    "concentration_rows": 660,
+    "direction_rows": 1320,
+    "input_trade_rows": 383078,
+    "monthly_rows": 3960,
+    "neighborhood_rows": 660,
+    "quarterly_rows": 1320,
+    "rolling_2month_rows": 3300,
+    "rolling_3month_rows": 2640,
+    "rv32_regime_rows": 3300,
+    "rv96_regime_rows": 3300,
+    "rv_warmup_label": 0,
+    "sample_class_rows": 660,
+    "spread_regime_rows": 2640
+  },
+  "input_releases": {
+    "r0": {
+      "asset": "usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip",
+      "asset_sha256": "d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015",
+      "canonical_m15_gzip_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c",
+      "tag": "usdjpy-r0-canonical-2024-v1"
+    },
+    "r2": {
+      "asset": "usdjpy-r2-horizon-surface-v1-run-29646040010-artifact-8430064217.zip",
+      "asset_sha256": "84a495b7c7cddf1c719bb4c8ce78bfef2c990b355649d362c18481836d953426",
+      "summary_sha256": "fa46a5db3e73c4d25b8e8c97ef4727c39d737cc8823080b23d21b0419d9e44f6",
+      "tag": "usdjpy-r2-horizon-surface-v1",
+      "trade_ledger_sha256": "70c2313147607096976a76328b72a628e42fa0001816f14824bcd9e9a3ead6c6"
+    }
+  },
+  "next_stage": "R4_selection_design",
+  "required_outputs": [
+    "temporal_monthly.csv",
+    "temporal_quarterly.csv",
+    "rolling_2month.csv",
+    "rolling_3month.csv",
+    "anchored_ranking.csv",
+    "spread_regime.csv",
+    "rv32_regime.csv",
+    "rv96_regime.csv",
+    "direction_attribution.csv",
+    "horizon_neighborhood.csv",
+    "concentration.csv",
+    "sample_classes.csv",
+    "entry_regime_map.csv.gz",
+    "regime_edges.json",
+    "r3_acceptance.json",
+    "run_metadata.json"
+  ],
+  "research_firewall": {
+    "2025_access": false,
+    "Core_promotion": false,
+    "H2_rows_parsed": 0,
+    "MT4_promotion": false,
+    "candidate_selection": false
+  },
+  "research_stage": "R3_temporal_stability",
+  "symbol": "USDJPY",
+  "version": "v1"
+}
