@@ -1,0 +1,62 @@
+name: Patch USDJPY R0 Manifest Discovery v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  patch:
+    if: github.event.issue.title == '[Patch] Fix R0 aggregate manifest discovery v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch runner and refresh blob lock
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          runner = Path("tools/run_usdjpy_r0_canonical_bundle_v1.py")
+          text = runner.read_text()
+          old = '        manifests = list(aggregate_root.rglob("source_combined/download_manifest.jsonl"))'
+          new = '''        manifests = [
+              path
+              for path in aggregate_root.rglob("download_manifest.jsonl")
+              if path.parent.name.endswith("_combined") and path.parent.parent.name == "raw"
+          ]'''
+          assert text.count(old) == 1, text.count(old)
+          runner.write_text(text.replace(old, new))
+          subprocess.run(["python", "-m", "py_compile", str(runner)], check=True)
+
+          blob = subprocess.check_output(["git", "hash-object", str(runner)], text=True).strip()
+          lock_path = Path("configs/research/usdjpy_r0_regression_lock_v1.json")
+          lock = json.loads(lock_path.read_text())
+          lock["code_blobs"][str(runner)] = blob
+          lock_path.write_text(json.dumps(lock, indent=2, sort_keys=False) + "\n")
+          print({"runner_blob": blob})
+          PY
+
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/run_usdjpy_r0_canonical_bundle_v1.py configs/research/usdjpy_r0_regression_lock_v1.json
+          git commit -m "fix: discover accepted aggregate manifests in R0"
+          git push origin main
+
+      - name: Close patch issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "R0 aggregate manifest discovery patched and runner blob lock refreshed."
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
