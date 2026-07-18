@@ -22,6 +22,60 @@ baseline artifact_id: 8423419800
 
 First-attempt November source artifact `8412658745` remains excluded.
 
+## Durable 2024 artifact archive
+
+All accepted 2024 inputs and authoritative regression artifacts are preserved independently of GitHub Actions artifact expiry.
+
+```text
+release_tag: usdjpy-r0-artifact-archive-2024-v1
+release_assets: 29
+accepted_original_artifacts: 288
+source_day_artifacts: 261
+source_aggregate_artifacts: 12
+baseline_artifacts: 12
+authoritative_regression_artifacts: 3
+```
+
+Archive receipt:
+
+```text
+docs/research_reboot/artifact_archives/usdjpy_r0_2024_v1/
+```
+
+The excluded November artifact `8412658745` is recorded but is not archived as an accepted input. No 2025 artifact is present.
+
+## Accepted R0 canonical bundle
+
+```text
+run_id: 29639548804
+head_sha: 2d88fb846bbe77e256ee37abdf1dcbb462e3ebe4
+artifact_id: 8428199309
+artifact: usdjpy-r0-canonical-2024-v1-29639548804
+artifact_digest: sha256:d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015
+result: docs/research_reboot/usdjpy_r0_canonical_bundle_result_v1.md
+```
+
+R0 passed all twenty acceptance checks.
+
+Verified outputs:
+
+```text
+Release assets: 29 verified
+original artifact ZIPs: 288 verified
+source months: 12 / 12 at effective coverage 1.0
+unobserved records: 0
+hard source errors: 0
+canonical timeframes: M1, M5, M15, H1
+deterministic repeated builds: byte-identical
+same-priority conflicts: 0
+H1 candidate summary/monthly/normalized ledger: exact
+A1/E3 H2 required outputs/normalized ledger/decision: exact
+hard no-trade violations: H1 0, H2 0
+2025 artifact access: none
+```
+
+R0 unblocks R1 only. It does not promote any strategy to Core or MT4.
+
 ## Corrected H1 screen
 
 ```text
@@ -39,6 +93,8 @@ A1_impulse_breakout_lb3_hold6
 E3_trend_24h_resumption_hold6
 ```
 
+R0 reproduced the full thirteen-candidate summary, all seventy-eight monthly rows and the normalized trade ledger from the canonical M15 input.
+
 ## Accepted H1 entry-horizon diagnostic
 
 ```text
@@ -48,6 +104,8 @@ artifact_digest: sha256:f95a0a450aa3b821dbcb20ea4f3410f345668606bf5f20a766a3e01d
 ```
 
 The diagnostic passed all thirteen registered-hold regressions and showed that horizon materially changes candidate assessment. C4, C3, E2 and B2 showed slower positive regions. No strategy was promoted from the diagnostic.
+
+R0 locked its structure at thirteen registered candidates, twelve unique Entry definitions, no H2 read and no promotion decision.
 
 ## Accepted A1/E3 H2 result
 
@@ -64,9 +122,12 @@ Decision:
 A1_impulse_breakout_lb3_hold6: failed
 E3_trend_24h_resumption_hold6: failed
 advancing candidates: none
+decision: neither_advances
 ```
 
 A1 and E3 remain closed. Their direction, hours, lookback, hold or Exit may not be changed and presented as continuation of that H2 test.
+
+R0 reproduced the H1 regression, H2 summary, monthly results, gates, direction attribution, daily attribution, normalized trade ledger and final decision from the canonical M15 input.
 
 ## Correct interpretation of 2024 H2
 
@@ -102,11 +163,15 @@ docs/research_reboot/usdjpy_research_roadmap_h1_development_h2_validation_v3.md
 
 ```text
 R0 — canonical 2024 bundle and regression lock:
-  next
+  passed
+  run_id 29639548804
+  artifact_id 8428199309
 
 R1 — expanded Entry registry on 2024 H1 only:
+  next
   not started
   maximum sixty unique Entry definitions
+  registry and parameter bounds must be committed before opening results
 
 R2 — full fixed-horizon surface on 2024 H1:
   not started
@@ -151,13 +216,13 @@ The 2025 block is one unchanged full-year replication, not two separate mandator
 
 ## Immediate operations
 
-1. Build and hash the canonical January-December 2024 bundle.
-2. Reproduce all thirteen corrected H1 registered-hold results and the known A1/E3 H2 results.
-3. Commit the expanded H1 Entry registry before opening expanded results.
+1. Define the R1 family taxonomy, candidate-generation rules and hard parameter bounds without viewing new H1 results.
+2. Commit the expanded H1 Entry registry with at most sixty unique Entry definitions.
+3. Run the R1 Entry screen on canonical 2024 H1 only.
 4. Run the H1 horizon-surface and stability programme.
-5. Perform controlled Exit research on H1 survivors.
-6. Freeze at most five complete strategies and all H2 gates.
-7. Run those strategies once on their candidate-specific unused 2024 H2 data.
-8. Begin Research/Core and MT4 parity for H2 survivors.
-9. Run one unchanged full-year 2025 historical replication before live allocation.
-10. Move only replication and operational-gate survivors to live capital.
+5. Select at most eight Entry/horizon representatives.
+6. Perform controlled Exit research on H1 representatives.
+7. Freeze at most five complete strategies and all H2 gates.
+8. Run those strategies once on their candidate-specific unused 2024 H2 data.
+9. Begin Research/Core and MT4 parity only for H2 survivors.
+10. Run one unchanged full-year 2025 historical replication before live allocation.
