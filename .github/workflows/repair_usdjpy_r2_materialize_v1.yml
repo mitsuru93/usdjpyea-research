@@ -1,0 +1,183 @@
+name: Repair USDJPY R2 Materialization v1
+
+on:
+  push:
+    paths:
+      - '.github/workflows/repair_usdjpy_r2_materialize_v1.yml'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Materialize and compile frozen evaluator
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64
+          import gzip
+          import hashlib
+          from pathlib import Path
+
+          source = Path('.github/r2_stage/runner.py.gz.b64')
+          encoded = source.read_text(encoding='utf-8').strip()
+          encoded += '=' * (-len(encoded) % 4)
+          payload = base64.b64decode(encoded)
+          marker = b'R2RUNNER_SENTINEL_BEGIN_'
+          marker_index = payload.index(marker)
+          compressed = payload[:marker_index]
+          runner = gzip.decompress(compressed)
+          assert len(runner) == 32434, len(runner)
+          target = Path('tools/run_usdjpy_r2_horizon_surface_v1.py')
+          target.write_bytes(runner)
+          print({
+              'compressed_bytes': len(compressed),
+              'runner_bytes': len(runner),
+              'runner_sha256': hashlib.sha256(runner).hexdigest(),
+          })
+          PY
+          chmod +x tools/run_usdjpy_r2_horizon_surface_v1.py
+          python -m py_compile tools/run_usdjpy_r2_horizon_surface_v1.py
+
+      - name: Generate frozen R2 execution lock
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          paths = [
+              'configs/research/usdjpy_r2_horizon_surface_v1.json',
+              'tools/run_usdjpy_r2_horizon_surface_v1.py',
+              'docs/research_reboot/usdjpy_r2_horizon_surface_prereg_v1.md',
+              'configs/research/usdjpy_r1_entry_universe_v2.json',
+              'configs/research/usdjpy_h1_multi_family_candidates_v1.json',
+              'configs/market_sessions/fx_market_sessions_v1.json',
+          ]
+          for path in paths:
+              assert Path(path).is_file(), path
+
+          config = json.loads(Path(paths[0]).read_text(encoding='utf-8'))
+          assert config['surface']['candidate_count'] == 60
+          assert config['surface']['horizons_m15_bars'] == [1,2,3,4,6,8,12,16,24,32,48]
+          assert config['surface']['combination_count'] == 660
+          assert config['interpretation']['H2_access'] is False
+          assert config['interpretation']['2025_access'] is False
+          assert config['required_reporting']['promotion_decision'] is False
+
+          registry = json.loads(Path(paths[3]).read_text(encoding='utf-8'))
+          candidates = [c for f in registry['families'] for c in f['candidates']]
+          assert len(registry['families']) == 12
+          assert len(candidates) == 60
+          assert len({c['id'] for c in candidates}) == 60
+
+          code_blobs = {}
+          for path in paths:
+              if path == 'tools/run_usdjpy_r2_horizon_surface_v1.py':
+                  blob = subprocess.check_output(['git','hash-object',path], text=True).strip()
+              else:
+                  blob = subprocess.check_output(['git','rev-parse',f'HEAD:{path}'], text=True).strip()
+              code_blobs[path] = blob
+
+          content_sha256 = {
+              path: hashlib.sha256(Path(path).read_bytes()).hexdigest()
+              for path in paths
+          }
+          lock = {
+              'version': 'v1',
+              'research_stage': 'R2_fixed_horizon_surface',
+              'symbol': 'USDJPY',
+              'code_blobs': code_blobs,
+              'content_sha256': content_sha256,
+              'input_releases': {
+                  'r0': {
+                      'tag': config['inputs']['r0_release_tag'],
+                      'asset': config['inputs']['r0_release_asset'],
+                      'asset_sha256': config['inputs']['r0_release_asset_sha256'],
+                      'canonical_m15_gzip_sha256': config['inputs']['canonical_m15_gzip_sha256'],
+                      'legacy_horizon_trades_path': 'regression/horizon/horizon_trades.csv',
+                  },
+                  'r1_v2': {
+                      'tag': config['inputs']['r1_release_tag'],
+                      'asset': config['inputs']['r1_release_asset'],
+                      'asset_sha256': config['inputs']['r1_release_asset_sha256'],
+                      'signals_gzip_sha256': config['inputs']['r1_signal_gzip_sha256'],
+                      'registry_snapshot_sha256': config['inputs']['r1_registry_snapshot_sha256'],
+                  },
+              },
+              'surface_contract': {
+                  'candidates': 60,
+                  'horizons': config['surface']['horizons_m15_bars'],
+                  'combinations': 660,
+                  'monthly_rows': 3960,
+                  'direction_rows': 1320,
+                  'hash_rows': 660,
+                  'historical_candidates': 13,
+                  'historical_reference_horizons': [1,2,3,4,6,8,12,16,24],
+                  'historical_regression_rows': 117,
+                  'zero_trade_candidates_remain': True,
+              },
+              'required_outputs': [
+                  'candidate_horizon_trades.csv.gz',
+                  'candidate_horizon_summary.csv',
+                  'candidate_horizon_monthly.csv',
+                  'candidate_horizon_direction.csv',
+                  'candidate_horizon_surface.csv',
+                  'candidate_horizon_hashes.csv',
+                  'legacy_horizon_regression.csv',
+                  'r2_acceptance.json',
+                  'run_metadata.json',
+              ],
+              'research_firewall': {
+                  'H2_rows_parsed': 0,
+                  '2025_access': False,
+                  'candidate_selection_in_R2': False,
+                  'Core_promotion': False,
+                  'MT4_promotion': False,
+              },
+              'next_stage': 'R3_temporal_stability',
+          }
+          Path('configs/research/usdjpy_r2_horizon_lock_v1.json').write_text(
+              json.dumps(lock, indent=2, sort_keys=True) + '\n', encoding='utf-8'
+          )
+          print(json.dumps({'lock': 'PASS', 'code_blobs': code_blobs}, sort_keys=True))
+          PY
+
+      - name: Commit authoritative runner and lock
+        run: |
+          set -euo pipefail
+          rm -rf .github/r2_stage
+          rm -f .github/workflows/assemble_usdjpy_r2_runner_v1.yml
+          rm -f .github/workflows/assemble_usdjpy_r2_runner_v1b.yml
+          rm -f .github/workflows/freeze_usdjpy_r2_lock_v1.yml
+          rm -f .github/workflows/repair_usdjpy_r2_materialize_v1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'research: materialize and lock USDJPY R2 evaluator v1'
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Close superseded triggers
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment 107 --repo "$REPOSITORY" --body 'R2 evaluator and execution lock were materialized by the push-triggered repair workflow.' || true
+          gh issue close 107 --repo "$REPOSITORY" --reason completed || true
+          gh issue comment 105 --repo "$REPOSITORY" --body 'R2 execution lock was generated from repository blobs by the push-triggered repair workflow.' || true
+          gh issue close 105 --repo "$REPOSITORY" --reason completed || true
