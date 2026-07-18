@@ -1,0 +1,97 @@
+{
+  "code_blobs": {
+    "configs/market_sessions/fx_market_sessions_v1.json": "baead9fda40977a214d000dd7af127f05487f202",
+    "configs/research/usdjpy_h1_multi_family_candidates_v1.json": "68d2ad24ef278283f9addf190a2aadd26504efd6",
+    "configs/research/usdjpy_r1_entry_universe_v2.json": "0e130d4a0f23b84748a7861a477872d86549d3b3",
+    "configs/research/usdjpy_r2_horizon_surface_v1.json": "a16a7d87a945a841e43b7d5d24864cc3987d85e0",
+    "docs/research_reboot/usdjpy_r2_horizon_surface_prereg_v1.md": "b7bf6e9f849e50bd19249f2b8e7f55167d82a293",
+    "tools/run_usdjpy_r2_horizon_surface_v1.py": "2f629358edb861c74155319cc25ab77a3bd8e914"
+  },
+  "content_sha256": {
+    "configs/market_sessions/fx_market_sessions_v1.json": "e009ed1dd451a60d97bc8c021ae93ed2f28cf1996654464095647d5c1a30668d",
+    "configs/research/usdjpy_h1_multi_family_candidates_v1.json": "a09731dd61f0bbb5ecc6e7c410a4edb7934801ceeaa3e94fac68d326956ba7e9",
+    "configs/research/usdjpy_r1_entry_universe_v2.json": "b7f4e2453a0b11bfd360ce1b93c6345351800dc79564e4f0509bb5e3b36ca96e",
+    "configs/research/usdjpy_r2_horizon_surface_v1.json": "3e147db4385b2010c6ae78d9d6c844796e320c8f5f1915233945ea214d3b143b",
+    "docs/research_reboot/usdjpy_r2_horizon_surface_prereg_v1.md": "1ca74510f16db3c09ef17612c11715333fe0a5ba826ea607768b90b85396cf09",
+    "tools/run_usdjpy_r2_horizon_surface_v1.py": "fad3a5468fc819dfd7bede38021b78f49ad082080b753587d2a65fca56e35ff0"
+  },
+  "input_releases": {
+    "historical_horizon": {
+      "artifact_id": 8408094591,
+      "artifact_name": "usdjpy-h1-entry-horizon-diagnostic-v2-29583719940",
+      "artifact_sha256": "f95a0a450aa3b821dbcb20ea4f3410f345668606bf5f20a766a3e01d8a6e89e4",
+      "expected_cross_month_rows_excluded": 5,
+      "run_id": 29583719940,
+      "same_month_projection": true
+    },
+    "r0": {
+      "asset": "usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip",
+      "asset_sha256": "d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015",
+      "canonical_m15_gzip_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c",
+      "tag": "usdjpy-r0-canonical-2024-v1"
+    },
+    "r1_v2": {
+      "asset": "usdjpy-r1-entry-registry-v2-run-29642282221-artifact-8428977454.zip",
+      "asset_sha256": "0e0de71ccc56409a919d48d61e4dcb12502cefdb3944374b9163eda76d222d74",
+      "registry_snapshot_sha256": "3bb43eeb1234ec6d175e37df3b1bbdb385364857351938bd088247ab14567549",
+      "signals_gzip_sha256": "99c2e2d19bd76b2438c1cec6c777228f82cdca16eeb1b471257bd389d6b7dc9e",
+      "tag": "usdjpy-r1-entry-registry-v2"
+    }
+  },
+  "next_stage": "R3_temporal_stability",
+  "required_outputs": [
+    "candidate_horizon_trades.csv.gz",
+    "candidate_horizon_summary.csv",
+    "candidate_horizon_monthly.csv",
+    "candidate_horizon_direction.csv",
+    "candidate_horizon_surface.csv",
+    "candidate_horizon_hashes.csv",
+    "legacy_horizon_regression.csv",
+    "r2_acceptance.json",
+    "run_metadata.json"
+  ],
+  "research_firewall": {
+    "2025_access": false,
+    "Core_promotion": false,
+    "H2_rows_parsed": 0,
+    "MT4_promotion": false,
+    "candidate_selection_in_R2": false
+  },
+  "research_stage": "R2_fixed_horizon_surface",
+  "surface_contract": {
+    "candidates": 60,
+    "combinations": 660,
+    "direction_rows": 1320,
+    "hash_rows": 660,
+    "historical_candidates": 13,
+    "historical_reference_horizons": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      8,
+      12,
+      16,
+      24
+    ],
+    "historical_regression_rows": 117,
+    "horizons": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      8,
+      12,
+      16,
+      24,
+      32,
+      48
+    ],
+    "monthly_rows": 3960,
+    "same_month_reference_projection": true
+  },
+  "symbol": "USDJPY",
+  "version": "v1"
+}
