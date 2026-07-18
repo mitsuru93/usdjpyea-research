@@ -1,0 +1,34 @@
+name: Report R0 Run Failure v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  report:
+    if: github.event.issue.title == '[Diag] Report R0 run 29638957105'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report failed log tail
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: "29638957105"
+        run: |
+          set -euo pipefail
+          gh run view "${RUN_ID}" --repo "${REPOSITORY}" --log-failed > failed.log
+          tail -n 160 failed.log > failed-tail.log
+          {
+            echo 'Failed log tail:'
+            echo
+            echo '```text'
+            cat failed-tail.log
+            echo '```'
+          } > comment.md
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body-file comment.md
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
