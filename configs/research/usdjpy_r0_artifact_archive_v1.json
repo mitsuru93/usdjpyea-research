@@ -1,0 +1,228 @@
+{
+  "version": "v1",
+  "repository": "mitsuru93/usdjpyea-research",
+  "year": 2024,
+  "release_tag": "usdjpy-r0-artifact-archive-2024-v1",
+  "months": [
+    {
+      "month": "2024-01",
+      "source_run_id": 29189903048,
+      "day_artifact_regex": "public-fx-data-pilot-2024-01-USDJPY-d[0-9]+-29189903048",
+      "expected_day_artifact_count": 22,
+      "source_aggregate": {
+        "artifact_id": 8264942355,
+        "artifact_name": "public-fx-data-pilot-2024-01-USDJPY-aggregate-29189903048",
+        "digest": "sha256:8da1a7be2c2c3de931b8bd270bd84c2e785f0bd3d622709c49dc033143825318"
+      },
+      "baseline": {
+        "artifact_id": 8301048206,
+        "artifact_name": "fx-session-baseline-2024-01-USDJPY-29307131333",
+        "digest": "sha256:69c78151cfc7ae60e482535b7ee641f1e3113457c9f9268f86b7868bb851e2c7"
+      }
+    },
+    {
+      "month": "2024-02",
+      "source_run_id": 29329511595,
+      "day_artifact_regex": "public-fx-data-pilot-2024-02-USDJPY-d[0-9]+-29329511595",
+      "expected_day_artifact_count": 21,
+      "source_aggregate": {
+        "artifact_id": 8327476446,
+        "artifact_name": "public-fx-data-pilot-2024-02-USDJPY-aggregate-29329511595",
+        "digest": "sha256:9303d8c6f5f2ebc92e7bf0f092e0bc16ab80d710fb8382da5b49cbd216ca6d67"
+      },
+      "baseline": {
+        "artifact_id": 8331088231,
+        "artifact_name": "fx-session-baseline-2024-02-USDJPY-29383810487",
+        "digest": "sha256:6ad8f9afb8c5e96782e1885ce1f8e3dec2417f351c2cf73ea830791e8b9b47c9"
+      }
+    },
+    {
+      "month": "2024-03",
+      "source_run_id": 29386417671,
+      "day_artifact_regex": "public-fx-data-pilot-2024-03-USDJPY-d[0-9]+-29386417671",
+      "expected_day_artifact_count": 21,
+      "source_aggregate": {
+        "artifact_id": 8340886672,
+        "artifact_name": "public-fx-data-pilot-2024-03-USDJPY-aggregate-29386417671",
+        "digest": "sha256:35c7b7a3ec43997e4ffe82b12bbf7206f073c1a2936381bc9609955188b963e6"
+      },
+      "baseline": {
+        "artifact_id": 8345360140,
+        "artifact_name": "fx-session-baseline-2024-03-USDJPY-29421329471",
+        "digest": "sha256:684b836630b480b5086a59c44c4a37c1c8e4cd94271d756aa92dbc60b80aeb17"
+      }
+    },
+    {
+      "month": "2024-04",
+      "source_run_id": 29423451609,
+      "day_artifact_regex": "public-fx-data-pilot-2024-04-USDJPY-d[0-9]+-29423451609",
+      "expected_day_artifact_count": 22,
+      "source_aggregate": {
+        "artifact_id": 8357142099,
+        "artifact_name": "public-fx-data-pilot-2024-04-USDJPY-aggregate-29423451609",
+        "digest": "sha256:8a91be7d844efdb57df9bf650ee7e10d83c59897ea836fc6e6758c0c480da2e1"
+      },
+      "baseline": {
+        "artifact_id": 8359147323,
+        "artifact_name": "fx-session-baseline-2024-04-USDJPY-29455059447",
+        "digest": "sha256:d96813ab4d06216684805eede6f60c75f31051fd5a6fb9bb1bd57c9e383524ac"
+      }
+    },
+    {
+      "month": "2024-05",
+      "source_run_id": 29455212697,
+      "day_artifact_regex": "public-fx-data-pilot-2024-05-USDJPY-d[0-9]+-29455212697",
+      "expected_day_artifact_count": 23,
+      "source_aggregate": {
+        "artifact_id": 8362411168,
+        "artifact_name": "public-fx-data-pilot-2024-05-USDJPY-aggregate-29455212697",
+        "digest": "sha256:aed00c37ed33cc19dfc66b9773b229fe67be70c53525b3580bb539d2d97915f7"
+      },
+      "baseline": {
+        "artifact_id": 8364319250,
+        "artifact_name": "fx-session-baseline-2024-05-USDJPY-29469227483",
+        "digest": "sha256:d48d231309177ab27ca5914537e60efb4eb945d9b6c854021e463c1ce027f702"
+      }
+    },
+    {
+      "month": "2024-06",
+      "source_run_id": 29469210771,
+      "day_artifact_regex": "public-fx-data-pilot-2024-06-USDJPY-d[0-9]+-29469210771",
+      "expected_day_artifact_count": 20,
+      "source_aggregate": {
+        "artifact_id": 8366191121,
+        "artifact_name": "public-fx-data-pilot-2024-06-USDJPY-aggregate-29469210771",
+        "digest": "sha256:99c119030d3f61f597c74cb8b830b66bd58dbf81922bd7f18be5f84976d8cfbc"
+      },
+      "baseline": {
+        "artifact_id": 8366496997,
+        "artifact_name": "fx-session-baseline-2024-06-USDJPY-29475803893",
+        "digest": "sha256:a1c5b6812b801e003dd1db7ac2f2716ed332e275d2b0288f8220cbf8470885af"
+      }
+    },
+    {
+      "month": "2024-07",
+      "source_run_id": 29544395435,
+      "day_artifact_regex": "public-fx-data-pilot-2024-07-USDJPY-d[0-9]+-29544395435",
+      "expected_day_artifact_count": 23,
+      "source_aggregate": {
+        "artifact_id": 8395904175,
+        "artifact_name": "public-fx-data-pilot-2024-07-USDJPY-aggregate-29544395435",
+        "digest": "sha256:0698a05fc17d15cd9e3c405cb1367a02e6a10230ab69bbb29bceb61b62f34672"
+      },
+      "baseline": {
+        "artifact_id": 8397515234,
+        "artifact_name": "fx-session-baseline-2024-07-USDJPY-29556241138",
+        "digest": "sha256:e7dfc13f5186f29f0d9e83bf5554e30f615821638d4fde11fe0be353d1e6d6d2"
+      }
+    },
+    {
+      "month": "2024-08",
+      "source_run_id": 29556953388,
+      "day_artifact_regex": "public-fx-data-pilot-2024-08-USDJPY-d[0-9]+-29556953388",
+      "expected_day_artifact_count": 22,
+      "source_aggregate": {
+        "artifact_id": 8400512623,
+        "artifact_name": "public-fx-data-pilot-2024-08-USDJPY-aggregate-29556953388",
+        "digest": "sha256:a1769e23ffa5a1c5bacd1e45bbf86c58ee159a4021eb2a1c3ebe7bb331c79230"
+      },
+      "baseline": {
+        "artifact_id": 8401670704,
+        "artifact_name": "fx-session-baseline-2024-08-USDJPY-29567447264",
+        "digest": "sha256:e5dd5f183b4a414c2b25bb4f6e46f627c07660358533d9a097dec01a2968b7c6"
+      }
+    },
+    {
+      "month": "2024-09",
+      "source_run_id": 29569149852,
+      "day_artifact_regex": "public-fx-data-pilot-2024-09-USDJPY-d[0-9]+-29569149852",
+      "expected_day_artifact_count": 21,
+      "source_aggregate": {
+        "artifact_id": 8404664185,
+        "artifact_name": "public-fx-data-pilot-2024-09-USDJPY-aggregate-29569149852",
+        "digest": "sha256:c319547fdc00f1f77dd8c1574f0823a6ae5eab26837b9c8edfbc8ab4cddd8718"
+      },
+      "baseline": {
+        "artifact_id": 8423361030,
+        "artifact_name": "fx-session-baseline-2024-09-USDJPY-29569149852",
+        "digest": "sha256:1975d70dbbe40db942495fef8903078de73cf29af4cee65db176a18be6b45b31"
+      }
+    },
+    {
+      "month": "2024-10",
+      "source_run_id": 29569149852,
+      "day_artifact_regex": "public-fx-data-pilot-2024-10-USDJPY-d[0-9]+-29569149852",
+      "expected_day_artifact_count": 23,
+      "source_aggregate": {
+        "artifact_id": 8408558801,
+        "artifact_name": "public-fx-data-pilot-2024-10-USDJPY-aggregate-29569149852",
+        "digest": "sha256:e65c8c3941ee417db58a0692abcf40d08cb69b0833571d2a49768d51080fa52c"
+      },
+      "baseline": {
+        "artifact_id": 8423402213,
+        "artifact_name": "fx-session-baseline-2024-10-USDJPY-29569149852",
+        "digest": "sha256:fbae37c01ef7d342fd524b738116563cc99206850f7e200c7dd42e7fdb7ce57d"
+      }
+    },
+    {
+      "month": "2024-11",
+      "source_run_id": 29569149852,
+      "day_artifact_regex": "public-fx-data-pilot-2024-11-USDJPY-d[0-9]+-29569149852",
+      "expected_day_artifact_count": 21,
+      "source_aggregate": {
+        "artifact_id": 8421758330,
+        "artifact_name": "public-fx-data-pilot-2024-11-USDJPY-aggregate-29569149852",
+        "digest": "sha256:5c4f3e17100a63ff0f370d4810fb8f4ebca22ceb5192120ebfb8d58a788b12f4"
+      },
+      "baseline": {
+        "artifact_id": 8423419800,
+        "artifact_name": "fx-session-baseline-2024-11-USDJPY-29569149852",
+        "digest": "sha256:d83599f9080ed603fd5fc36cd0742a6281c26af4672bdf8e5216fcaf39779507"
+      }
+    },
+    {
+      "month": "2024-12",
+      "source_run_id": 29569149852,
+      "day_artifact_regex": "public-fx-data-pilot-2024-12-USDJPY-d[0-9]+-29569149852",
+      "expected_day_artifact_count": 22,
+      "source_aggregate": {
+        "artifact_id": 8423343357,
+        "artifact_name": "public-fx-data-pilot-2024-12-USDJPY-aggregate-29569149852",
+        "digest": "sha256:6778b097f3345a677d4a726e3d81156faf89dbeffbfeded24c3dd8a7fa347dfa"
+      },
+      "baseline": {
+        "artifact_id": 8423376366,
+        "artifact_name": "fx-session-baseline-2024-12-USDJPY-29569149852",
+        "digest": "sha256:49e4748b6cd197e406ad14c59a37f873c96592bae4da1ba548ca11a0fad454f5"
+      }
+    }
+  ],
+  "reference_artifacts": [
+    {
+      "role": "authoritative_h1_multi_family_screen_v2",
+      "artifact_id": 8394436272,
+      "artifact_name": "usdjpy-h1-multi-family-screen-v2-29547232643",
+      "digest": "sha256:b5fd40e7c37cd3c4c417b9e02547ce6d7195f0f989266e4f0e3ae0305947ec94"
+    },
+    {
+      "role": "authoritative_h1_entry_horizon_v2",
+      "artifact_id": 8408094591,
+      "artifact_name": "usdjpy-h1-entry-horizon-diagnostic-v2-29583719940",
+      "digest": "sha256:f95a0a450aa3b821dbcb20ea4f3410f345668606bf5f20a766a3e01d8a6e89e4"
+    },
+    {
+      "role": "authoritative_joint_h2_a1_e3_v1",
+      "artifact_id": 8424623578,
+      "artifact_name": "usdjpy-joint-h2-a1-e3-eval-v1-29628387393",
+      "digest": "sha256:182840ea48bf9d375ce718a5c940cee064fbccb4c36b659a80e7678938664364"
+    }
+  ],
+  "excluded_artifacts": [
+    {
+      "artifact_id": 8412658745,
+      "artifact_name": "public-fx-data-pilot-2024-11-USDJPY-aggregate-29569149852",
+      "digest": "sha256:8629b80f7196fe0fade05c0e31e2b1242e7b704edcb4229bc1bf74b0900e547e",
+      "reason": "2024-11-22 day artifact absent; superseded by accepted aggregate 8421758330"
+    }
+  ]
+}
