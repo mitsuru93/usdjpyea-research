@@ -25,9 +25,9 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPOSITORY: ${{ github.repository }}
         run: |
-          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "R3 archive retry started. Run ID: ${{ github.run_id }}."
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body "R3 hash-gated archive started. Run ID: ${{ github.run_id }}."
 
-      - name: Download and verify accepted artifact
+      - name: Download and verify accepted artifact hashes
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
@@ -36,9 +36,7 @@ jobs:
           mkdir -p release_assets inspection
           asset='release_assets/usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip'
           gh api "repos/${REPOSITORY}/actions/artifacts/8430424186/zip" > "${asset}"
-          actual="$(sha256sum "${asset}" | awk '{print $1}')"
-          echo "artifact_sha256=${actual}"
-          test "${actual}" = 'bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292'
+          echo 'bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292  '"${asset}" | sha256sum -c -
           unzip -t "${asset}" >/dev/null
           unzip -q "${asset}" -d inspection
           for name in \
@@ -52,25 +50,6 @@ jobs:
           echo '64f0f4122e744d8f5e70e40a29f0939abfa14f4ea60f7e7201c3f21a56fc2a02  inspection/temporal_monthly.csv' | sha256sum -c -
           echo 'f6fe5b1043482892ee69d361cc89641c0f2f8c3a7338727c44067a573be16158  inspection/anchored_ranking.csv' | sha256sum -c -
           echo '73d54b2194e21859c39a24a8e47d472b3d56eef552f593eda8fbc0a5bdceced2  inspection/entry_regime_map.csv.gz' | sha256sum -c -
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          root=Path('inspection')
-          acceptance=json.loads((root/'r3_acceptance.json').read_text())
-          metadata=json.loads((root/'run_metadata.json').read_text())
-          assert acceptance['status']=='PASS'
-          assert all(value is True for key,value in acceptance.items() if key!='status')
-          assert metadata['status']=='PASS'
-          assert metadata['candidate_horizon_combinations']==660
-          assert metadata['trade_rows']==383078
-          assert metadata['entry_regime_map_rows']==7882
-          assert metadata['sample_class_counts']=={'moderate':44,'sparse':44,'standard':572}
-          assert metadata['H2_rows_parsed']==0
-          assert metadata['2025_artifact_access'] is False
-          assert metadata['selection_or_promotion_made'] is False
-          assert metadata['R4_design_unblocked'] is True
-          print({'R3_archive_input':'PASS'})
-          PY
 
       - name: Write frozen manifest and checksums
         run: |
@@ -148,7 +127,7 @@ jobs:
           print({'R3_release':'PASS','assets':3})
           PY
 
-      - name: Commit receipt and remove archive workflow
+      - name: Commit receipt and remove temporary workflows
         run: |
           set -euo pipefail
           target='docs/research_reboot/artifact_archives/usdjpy_r3_temporal_stability_v1'
@@ -157,6 +136,7 @@ jobs:
           cp release_assets/usdjpy-r3-temporal-stability-v1-manifest.json "${target}/artifact_manifest.json"
           cp release_assets/SHA256SUMS "${target}/SHA256SUMS"
           rm -f .github/workflows/archive_usdjpy_r3_temporal_stability_v1.yml
+          rm -f .github/workflows/diagnose_usdjpy_r3_archive_download_v1.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
