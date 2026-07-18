@@ -1,6 +1,4 @@
-```text
 base64_chars=9280
 compressed_bytes=6958
 compressed_sha256=3b3ad130a4c733c559eaad4fa27039741d8dc6802ec8ff6f44fad4da4ff8cf7f
 gzip_decompress=FAIL:BadGzipFile:CRC check failed
-```
