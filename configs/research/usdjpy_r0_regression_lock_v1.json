@@ -2,14 +2,14 @@
   "version": "v1",
   "symbol": "USDJPY",
   "year": 2024,
-  "float_tolerance": 1e-9,
+  "float_tolerance": 1e-09,
   "code_blobs": {
     "configs/research/usdjpy_r0_canonicalization_v1.json": "4985ffb0bb3a91e96b8f59e523b9503a2633c41f",
     "configs/research/usdjpy_h1_multi_family_candidates_v1.json": "68d2ad24ef278283f9addf190a2aadd26504efd6",
     "configs/research/usdjpy_joint_h2_a1_e3_eval_v1.json": "2c346e8c39355795de18c73e494d3e0bebd23a27",
     "configs/market_sessions/fx_market_sessions_v1.json": "baead9fda40977a214d000dd7af127f05487f202",
     "tools/build_fx_annual_bar_bundle.py": "b99618535cae30b1bd7caa82594a43ca8509d6f0",
-    "tools/run_usdjpy_r0_canonical_bundle_v1.py": "e978aaddc46933a645d9262a9f514d40c5ee2663",
+    "tools/run_usdjpy_r0_canonical_bundle_v1.py": "6c9e9bbf8f6b47aa94c819a3b3a442f83076ff46",
     "tools/run_usdjpy_h1_multi_family_screen.py": "797c037b5db830778c7d45ebbad742b193e4c195",
     "tools/run_usdjpy_h1_multi_family_screen_v2.py": "ad5dc992a82692c84c3310b6fabe7a04bf4feb69",
     "tools/run_usdjpy_joint_h2_a1_e3_eval_v1.py": "137ba6c366ec395a58dc9d4c291549493611107a",
@@ -37,12 +37,17 @@
     "monthly_rows": 78,
     "summary_comparison": {
       "file": "candidate_summary.csv",
-      "keys": ["candidate_id"],
+      "keys": [
+        "candidate_id"
+      ],
       "all_columns": true
     },
     "monthly_comparison": {
       "file": "candidate_monthly.csv",
-      "keys": ["candidate_id", "month"],
+      "keys": [
+        "candidate_id",
+        "month"
+      ],
       "all_columns": true
     },
     "ledger": {
@@ -72,9 +77,18 @@
         "default_net_pips",
         "severe_net_pips"
       ],
-      "sort_keys": ["candidate_id", "entry_ts", "side", "exit_ts", "timestamp_utc"],
+      "sort_keys": [
+        "candidate_id",
+        "entry_ts",
+        "side",
+        "exit_ts",
+        "timestamp_utc"
+      ],
       "float_format": "%.12f",
-      "path_columns_excluded": ["_path", "_priority"]
+      "path_columns_excluded": [
+        "_path",
+        "_priority"
+      ]
     }
   },
   "h2": {
@@ -83,12 +97,46 @@
       "E3_trend_24h_resumption_hold6"
     ],
     "csv_comparisons": [
-      {"file": "h1_regression.csv", "keys": ["candidate_id"]},
-      {"file": "h2_candidate_summary.csv", "keys": ["candidate_id"]},
-      {"file": "h2_candidate_monthly.csv", "keys": ["candidate_id", "month"]},
-      {"file": "h2_gate_results.csv", "keys": ["candidate_id", "gate"]},
-      {"file": "h2_direction_attribution.csv", "keys": ["candidate_id", "direction"]},
-      {"file": "h2_daily_net_pips.csv", "keys": ["candidate_id", "entry_date_utc"]}
+      {
+        "file": "h1_regression.csv",
+        "keys": [
+          "candidate_id"
+        ]
+      },
+      {
+        "file": "h2_candidate_summary.csv",
+        "keys": [
+          "candidate_id"
+        ]
+      },
+      {
+        "file": "h2_candidate_monthly.csv",
+        "keys": [
+          "candidate_id",
+          "month"
+        ]
+      },
+      {
+        "file": "h2_gate_results.csv",
+        "keys": [
+          "candidate_id",
+          "gate"
+        ]
+      },
+      {
+        "file": "h2_direction_attribution.csv",
+        "keys": [
+          "candidate_id",
+          "direction"
+        ]
+      },
+      {
+        "file": "h2_daily_net_pips.csv",
+        "keys": [
+          "candidate_id",
+          "entry_date_utc"
+        ]
+      }
     ],
     "ledger": {
       "file": "h2_candidate_trades.csv",
@@ -117,9 +165,18 @@
         "default_net_pips",
         "severe_net_pips"
       ],
-      "sort_keys": ["candidate_id", "entry_ts", "side", "exit_ts", "timestamp_utc"],
+      "sort_keys": [
+        "candidate_id",
+        "entry_ts",
+        "side",
+        "exit_ts",
+        "timestamp_utc"
+      ],
       "float_format": "%.12f",
-      "path_columns_excluded": ["_path", "_priority"]
+      "path_columns_excluded": [
+        "_path",
+        "_priority"
+      ]
     },
     "expected_decision": "neither_advances",
     "expected_promotion_pass_count": 0,
@@ -133,7 +190,7 @@
     "registered_hold_status": "passed"
   },
   "acceptance_policy": {
-    "summary_abs_tolerance": 1e-9,
+    "summary_abs_tolerance": 1e-09,
     "normalized_ledgers": "exact_sha256",
     "decision_json": "exact_with_float_tolerance",
     "any_failure_blocks_r1": true,

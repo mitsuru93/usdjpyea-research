@@ -253,7 +253,11 @@ def run_source_coverage_audit(
     for month_spec in canonical_config["months"]:
         month = str(month_spec["month"])
         aggregate_root = restored_root / "aggregates" / month
-        manifests = list(aggregate_root.rglob("source_combined/download_manifest.jsonl"))
+        manifests = [
+    path
+    for path in aggregate_root.rglob("download_manifest.jsonl")
+    if path.parent.name.endswith("_combined") and path.parent.parent.name == "raw"
+]
         if len(manifests) != 1:
             raise AssertionError(f"expected one accepted source manifest for {month}, found {len(manifests)}")
         output = output_dir / f"{month}.json"
