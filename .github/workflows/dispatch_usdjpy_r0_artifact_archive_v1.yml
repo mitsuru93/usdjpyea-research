@@ -1,0 +1,53 @@
+name: Dispatch USDJPY R0 Artifact Archive v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+jobs:
+  dispatch:
+    if: github.event.issue.title == '[R0] Dispatch USDJPY 2024 artifact archive v1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch archive workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh workflow run archive_usdjpy_r0_artifacts_v1.yml \
+            --repo "${REPOSITORY}" \
+            --ref main
+
+      - name: Resolve dispatched run and comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          run_json=""
+          for attempt in $(seq 1 30); do
+            run_json="$(gh run list \
+              --repo "${REPOSITORY}" \
+              --workflow archive_usdjpy_r0_artifacts_v1.yml \
+              --event workflow_dispatch \
+              --limit 1 \
+              --json databaseId,url,status,conclusion,createdAt)"
+            if [ "$(printf '%s' "${run_json}" | jq 'length')" -ge 1 ]; then
+              break
+            fi
+            sleep 2
+          done
+          test "$(printf '%s' "${run_json}" | jq 'length')" -ge 1
+          run_id="$(printf '%s' "${run_json}" | jq -r '.[0].databaseId')"
+          run_url="$(printf '%s' "${run_json}" | jq -r '.[0].url')"
+          run_status="$(printf '%s' "${run_json}" | jq -r '.[0].status')"
+          gh issue comment "${ISSUE_NUMBER}" \
+            --repo "${REPOSITORY}" \
+            --body "Archive workflow dispatched. Run ID: ${run_id}. Status: ${run_status}. ${run_url}"
