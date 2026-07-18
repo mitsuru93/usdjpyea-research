@@ -1,0 +1,42 @@
+name: Diagnose USDJPY R5 Materialize Tail v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+jobs:
+  diagnose:
+    if: github.event.issue.title == '[Diag] Inspect R5 materialize tail v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Post final failed lines
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh run view 29665727132 --repo "${REPOSITORY}" --log-failed | tail -n 35 > tail.log
+          { echo '```text'; cat tail.log; echo '```'; } > body.txt
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body-file body.txt
+      - name: Cleanup
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          rm -f .github/workflows/diagnose_usdjpy_r5_materialize_tail_v1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'chore: remove R5 materialize tail diagnostic'
+          git pull --rebase origin main
+          git push origin HEAD:main
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
