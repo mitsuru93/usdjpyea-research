@@ -52,12 +52,16 @@ jobs:
 
           decode_one('.github/r1_stage/registry.json.gz.b64', 'configs/research/usdjpy_r1_entry_universe_v1.json')
           part0 = Path('.github/r1_stage/runner.py.gz.b64.00').read_text(encoding='utf-8').strip()
-          part1 = Path('.github/r1_stage/runner.py.gz.b64.01').read_text(encoding='utf-8').strip()
-          padding_record = Path('.github/r1_stage/runner.py.gz.b64.padding').read_text(encoding='utf-8').strip()
-          assert padding_record.endswith('X'), padding_record
-          explicit_padding = padding_record[:-1]
-          assert explicit_padding == '==', explicit_padding
-          runner_encoded = part0 + part1 + explicit_padding
+          part1_damaged = Path('.github/r1_stage/runner.py.gz.b64.01').read_text(encoding='utf-8').strip()
+          tail_record = Path('.github/r1_stage/runner.py.gz.b64.padding').read_text(encoding='utf-8').strip()
+          assert tail_record.endswith('X'), tail_record
+          exact_tail = tail_record[:-1]
+          assert len(part0) == 6000, len(part0)
+          assert len(part1_damaged) == 5446, len(part1_damaged)
+          assert len(exact_tail) == 64, len(exact_tail)
+          part1 = part1_damaged[:5384] + exact_tail
+          assert len(part1) == 5448, len(part1)
+          runner_encoded = part0 + part1
           assert len(runner_encoded) == 11448, len(runner_encoded)
           runner_compressed = base64.b64decode(runner_encoded, validate=True)
           assert len(runner_compressed) == 8584, len(runner_compressed)
