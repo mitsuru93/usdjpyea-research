@@ -236,7 +236,7 @@ def canonical_csv_bytes(frame: pd.DataFrame) -> bytes:
         text,
         index=False,
         columns=list(CANONICAL_COLUMNS),
-        float_format="%.15g",
+        float_format="%.17g",
         lineterminator="\n",
     )
     return text.getvalue().encode("utf-8")
@@ -352,7 +352,7 @@ def main() -> None:
         "serialization": {
             "encoding": "utf-8",
             "line_terminator": "LF",
-            "float_format": "%.15g",
+            "float_format": "%.17g",
             "gzip_compresslevel": 9,
             "gzip_mtime": 0,
             "gzip_filename": "",

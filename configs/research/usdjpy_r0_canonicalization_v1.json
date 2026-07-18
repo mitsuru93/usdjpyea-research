@@ -68,7 +68,7 @@
     "serialization": {
       "encoding": "utf-8",
       "line_terminator": "LF",
-      "float_format": "%.15g",
+      "float_format": "%.17g",
       "gzip_compresslevel": 9,
       "gzip_mtime": 0,
       "gzip_filename": ""
