@@ -1,0 +1,69 @@
+name: Apply R0 Ledger Normalization Patch v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  patch:
+    if: github.event.issue.title == '[Patch] Apply R0 ledger normalization v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch ledger precision and refresh lock
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          runner = Path("tools/run_usdjpy_r0_canonical_bundle_v1.py")
+          text = runner.read_text()
+          text = text.replace('LEDGER_FLOAT_FORMAT = "%.12f"', 'LEDGER_FLOAT_FORMAT = "%.10f"')
+          assert 'LEDGER_FLOAT_FORMAT = "%.10f"' in text
+          assert 'LEDGER_FLOAT_FORMAT = "%.12f"' not in text
+          runner.write_text(text)
+          subprocess.run(["python", "-m", "py_compile", str(runner)], check=True)
+
+          lock_path = Path("configs/research/usdjpy_r0_regression_lock_v1.json")
+          lock = json.loads(lock_path.read_text())
+          lock["h1"]["ledger"]["float_format"] = "%.10f"
+          lock["h1"]["ledger"]["reference_normalized_sha256"] = "sha256:98f67e110cb641263b629234b1b0401ece3a613f695f6c829bd007cc231894f8"
+          lock["h2"]["ledger"]["float_format"] = "%.10f"
+          lock["h2"]["ledger"]["reference_normalized_sha256"] = "sha256:e4eca229dc886abd239dc9a424a0ca7c2414f87acb761da952e11ab39a07ba04"
+          lock["code_blobs"][str(runner)] = subprocess.check_output(
+              ["git", "hash-object", str(runner)], text=True
+          ).strip()
+          lock_path.write_text(json.dumps(lock, indent=2, sort_keys=False) + "\n")
+          print(lock["code_blobs"][str(runner)])
+          PY
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/run_usdjpy_r0_canonical_bundle_v1.py configs/research/usdjpy_r0_regression_lock_v1.json
+          if git diff --cached --quiet; then
+            echo "Ledger normalization patch already applied"
+          else
+            git commit -m "fix: normalize R0 ledgers at ten decimal places"
+            git push origin HEAD:main
+          fi
+
+      - name: Report completion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "R0 ledger normalization changed to %.10f. H1 and H2 reference normalized SHA256 values and the runner blob lock were refreshed."
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
