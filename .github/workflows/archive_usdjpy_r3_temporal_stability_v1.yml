@@ -29,14 +29,15 @@ jobs:
           state="$(gh issue view 121 --repo "${REPOSITORY}" --json state,stateReason --jq '.state + ":" + (.stateReason // "")')"
           test "${state}" = 'CLOSED:COMPLETED'
           gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
-            --body "R3 Release upload started after completed diagnostic Issue #121. Run ID: ${{ github.run_id }}."
+            --body "Clean R3 Release rebuild started after diagnostic Issue #121. Run ID: ${{ github.run_id }}."
 
-      - name: Download accepted artifact and write Release assets
+      - name: Download accepted artifact and write exact Release assets
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
+          rm -rf release_assets
           mkdir -p release_assets
           asset='release_assets/usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip'
           gh api "repos/${REPOSITORY}/actions/artifacts/8430424186/zip" > "${asset}"
@@ -82,41 +83,78 @@ jobs:
             "MT4_promotion": false
           }
           JSON
-          (cd release_assets && sha256sum * > SHA256SUMS)
+          (
+            cd release_assets
+            sha256sum \
+              usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip \
+              usdjpy-r3-temporal-stability-v1-manifest.json \
+              > SHA256SUMS
+          )
 
-      - name: Create Release and verify uploaded asset digest
+      - name: Rebuild and verify clean Release
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
           TAG: usdjpy-r3-temporal-stability-v1
         run: |
           set -euo pipefail
-          if gh release view "${TAG}" --repo "${REPOSITORY}" >/dev/null 2>&1; then
-            gh release upload "${TAG}" release_assets/* --repo "${REPOSITORY}" --clobber
-          else
-            gh release create "${TAG}" release_assets/* --repo "${REPOSITORY}" \
+          if ! gh release view "${TAG}" --repo "${REPOSITORY}" >/dev/null 2>&1; then
+            gh release create "${TAG}" --repo "${REPOSITORY}" \
               --title 'USDJPY R3 Temporal Stability v1' \
-              --notes 'Accepted R3 run 29647304892. Complete diagnostics for all 660 R2 combinations. Artifact download and internal principal hashes were independently verified in completed Issue #121. No shortlist and no H2 or 2025 access.' \
+              --notes 'Accepted R3 run 29647304892. Complete diagnostics for all 660 R2 combinations. Artifact download and principal hashes verified in completed Issue #121. No shortlist and no H2 or 2025 access.' \
               --latest=false
           fi
-          gh release view "${TAG}" --repo "${REPOSITORY}" --json tagName,url,isDraft,isPrerelease,assets > release_receipt.json
+          mapfile -t EXISTING < <(gh release view "${TAG}" --repo "${REPOSITORY}" --json assets --jq '.assets[].name')
+          for name in "${EXISTING[@]}"; do
+            gh release delete-asset "${TAG}" "${name}" --repo "${REPOSITORY}" --yes
+          done
+          gh release upload "${TAG}" \
+            release_assets/usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip \
+            release_assets/usdjpy-r3-temporal-stability-v1-manifest.json \
+            release_assets/SHA256SUMS \
+            --repo "${REPOSITORY}"
+          for attempt in 1 2 3 4 5; do
+            gh release view "${TAG}" --repo "${REPOSITORY}" --json tagName,url,isDraft,isPrerelease,assets > release_receipt.json
+            if python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt=json.loads(Path('release_receipt.json').read_text())
+          assets={row['name']:row for row in receipt['assets']}
+          expected={
+              'usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip',
+              'usdjpy-r3-temporal-stability-v1-manifest.json',
+              'SHA256SUMS',
+          }
+          ok=(
+              receipt['tagName']=='usdjpy-r3-temporal-stability-v1'
+              and receipt['isDraft'] is False
+              and receipt['isPrerelease'] is False
+              and set(assets)==expected
+              and all(row['state']=='uploaded' for row in assets.values())
+              and assets['usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip'].get('digest')=='sha256:bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292'
+          )
+          raise SystemExit(0 if ok else 1)
+          PY
+            then
+              break
+            fi
+            sleep 5
+          done
           python - <<'PY'
           import json
           from pathlib import Path
           receipt=json.loads(Path('release_receipt.json').read_text())
           assets={row['name']:row for row in receipt['assets']}
-          assert receipt['tagName']=='usdjpy-r3-temporal-stability-v1'
-          assert receipt['isDraft'] is False and receipt['isPrerelease'] is False
           assert set(assets)=={
               'usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip',
               'usdjpy-r3-temporal-stability-v1-manifest.json',
               'SHA256SUMS',
           }
           assert assets['usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip']['digest']=='sha256:bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292'
-          print({'R3_release':'PASS','assets':3})
+          print({'R3_clean_release':'PASS','assets':3})
           PY
 
-      - name: Commit receipt and remove temporary workflows
+      - name: Commit receipt without work files
         run: |
           set -euo pipefail
           target='docs/research_reboot/artifact_archives/usdjpy_r3_temporal_stability_v1'
@@ -124,8 +162,10 @@ jobs:
           cp release_receipt.json "${target}/release_receipt.json"
           cp release_assets/usdjpy-r3-temporal-stability-v1-manifest.json "${target}/artifact_manifest.json"
           cp release_assets/SHA256SUMS "${target}/SHA256SUMS"
+          rm -rf release_assets release_receipt.json
           rm -f .github/workflows/archive_usdjpy_r3_temporal_stability_v1.yml
           rm -f .github/workflows/diagnose_usdjpy_r3_archive_download_v1.yml
+          rm -f .github/workflows/diagnose_usdjpy_r3_release_v1.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
@@ -140,5 +180,5 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         run: |
           gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
-            --body 'Accepted R3 artifact archived at Release usdjpy-r3-temporal-stability-v1 and receipt committed. R4 rule design is next; no shortlist was opened.'
+            --body 'R3 Release rebuilt with exactly three verified assets and receipt committed. R4 rule design is next; no shortlist was opened.'
           gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
