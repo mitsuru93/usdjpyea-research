@@ -1,0 +1,64 @@
+{
+  "version": "v2",
+  "research_stage": "R1_entry_registry_corrected",
+  "symbol": "USDJPY",
+  "excluded_predecessor": {
+    "run_id": 29641805182,
+    "artifact_id": 8428842719,
+    "reason": "entry_hours_utc was applied to signal-bar hour instead of actual next-bar Entry hour"
+  },
+  "code_blobs": {
+    "configs/research/usdjpy_r1_entry_universe_v2.json": "0e130d4a0f23b84748a7861a477872d86549d3b3",
+    "tools/run_usdjpy_r1_entry_registry_v2.py": "e406618a9441b2cbc22f0976d118d35754d6dd9b",
+    "docs/research_reboot/usdjpy_r1_entry_universe_prereg_v2.md": "5974a525a8c19a969c10e1451d8d1c2fa68b2cc4",
+    "configs/research/usdjpy_h1_multi_family_candidates_v1.json": "68d2ad24ef278283f9addf190a2aadd26504efd6",
+    "configs/market_sessions/fx_market_sessions_v1.json": "baead9fda40977a214d000dd7af127f05487f202"
+  },
+  "input_release": {
+    "tag": "usdjpy-r0-canonical-2024-v1",
+    "asset": "usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip",
+    "asset_sha256": "d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015",
+    "canonical_m15_gzip_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c",
+    "historical_reference_trades": "regression/h1/candidate_trades.csv"
+  },
+  "registry_contract": {
+    "families": 12,
+    "unique_entry_definitions": 60,
+    "legacy_unique_entries": 12,
+    "new_entries": 48,
+    "entry_hours_utc_applies_to": "actual_next_M15_entry_timestamp",
+    "session_start_end_hours_apply_to": "signal_close_timestamp"
+  },
+  "legacy_regression": {
+    "historical_candidates": 13,
+    "required_passed_rows": 13,
+    "comparison_key": ["signal_timestamp_utc", "side"],
+    "projection": "R1 signal ledger filtered to historical registered hold availability"
+  },
+  "research_firewall": {
+    "h2_rows_parsed": 0,
+    "2025_access": false,
+    "outcomes_opened": false,
+    "candidate_or_parameter_change_from_v1": false
+  },
+  "required_outputs": [
+    "r1_registry_snapshot.json",
+    "candidate_definition_audit.csv",
+    "candidate_signals.csv.gz",
+    "candidate_signal_summary.csv",
+    "candidate_monthly_signals.csv",
+    "candidate_hourly_signals.csv",
+    "family_signal_summary.csv",
+    "candidate_signal_hashes.csv",
+    "candidate_signal_equivalence.csv",
+    "pairwise_signal_overlap.csv",
+    "r1_acceptance.json",
+    "legacy_registered_hold_regression.csv",
+    "r1_v2_acceptance.json",
+    "run_metadata.json"
+  ],
+  "next_stage": {
+    "stage": "R2_fixed_horizon_surface",
+    "horizons_m15_bars": [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48]
+  }
+}
