@@ -1,0 +1,140 @@
+name: Freeze USDJPY R2 Execution Lock v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  freeze:
+    if: github.event.issue.title == '[R2] Freeze USDJPY horizon lock v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate and write lock
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/run_usdjpy_r2_horizon_surface_v1.py
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          paths = [
+              'configs/research/usdjpy_r2_horizon_surface_v1.json',
+              'tools/run_usdjpy_r2_horizon_surface_v1.py',
+              'docs/research_reboot/usdjpy_r2_horizon_surface_prereg_v1.md',
+              'configs/research/usdjpy_r1_entry_universe_v2.json',
+              'configs/research/usdjpy_h1_multi_family_candidates_v1.json',
+              'configs/market_sessions/fx_market_sessions_v1.json',
+          ]
+          for path in paths:
+              assert Path(path).is_file(), path
+
+          config = json.loads(Path(paths[0]).read_text())
+          assert config['surface']['candidate_count'] == 60
+          assert config['surface']['horizons_m15_bars'] == [1,2,3,4,6,8,12,16,24,32,48]
+          assert config['surface']['combination_count'] == 660
+          assert config['interpretation']['H2_access'] is False
+          assert config['interpretation']['2025_access'] is False
+          assert config['required_reporting']['promotion_decision'] is False
+
+          registry = json.loads(Path(paths[3]).read_text())
+          candidates = [c for f in registry['families'] for c in f['candidates']]
+          assert len(registry['families']) == 12
+          assert len(candidates) == 60
+          assert len({c['id'] for c in candidates}) == 60
+
+          code_blobs = {
+              path: subprocess.check_output(['git','rev-parse',f'HEAD:{path}'], text=True).strip()
+              for path in paths
+          }
+          content_sha256 = {
+              path: hashlib.sha256(Path(path).read_bytes()).hexdigest()
+              for path in paths
+          }
+          lock = {
+              'version': 'v1',
+              'research_stage': 'R2_fixed_horizon_surface',
+              'symbol': 'USDJPY',
+              'code_blobs': code_blobs,
+              'content_sha256': content_sha256,
+              'input_releases': {
+                  'r0': {
+                      'tag': config['inputs']['r0_release_tag'],
+                      'asset': config['inputs']['r0_release_asset'],
+                      'asset_sha256': config['inputs']['r0_release_asset_sha256'],
+                      'canonical_m15_gzip_sha256': config['inputs']['canonical_m15_gzip_sha256'],
+                      'legacy_horizon_trades_path': 'regression/horizon/horizon_trades.csv'
+                  },
+                  'r1_v2': {
+                      'tag': config['inputs']['r1_release_tag'],
+                      'asset': config['inputs']['r1_release_asset'],
+                      'asset_sha256': config['inputs']['r1_release_asset_sha256'],
+                      'signals_gzip_sha256': config['inputs']['r1_signal_gzip_sha256'],
+                      'registry_snapshot_sha256': config['inputs']['r1_registry_snapshot_sha256']
+                  }
+              },
+              'surface_contract': {
+                  'candidates': 60,
+                  'horizons': config['surface']['horizons_m15_bars'],
+                  'combinations': 660,
+                  'monthly_rows': 3960,
+                  'direction_rows': 1320,
+                  'hash_rows': 660,
+                  'historical_candidates': 13,
+                  'historical_reference_horizons': [1,2,3,4,6,8,12,16,24],
+                  'historical_regression_rows': 117,
+                  'zero_trade_candidates_remain': True
+              },
+              'required_outputs': [
+                  'candidate_horizon_trades.csv.gz',
+                  'candidate_horizon_summary.csv',
+                  'candidate_horizon_monthly.csv',
+                  'candidate_horizon_direction.csv',
+                  'candidate_horizon_surface.csv',
+                  'candidate_horizon_hashes.csv',
+                  'legacy_horizon_regression.csv',
+                  'r2_acceptance.json',
+                  'run_metadata.json'
+              ],
+              'research_firewall': {
+                  'H2_rows_parsed': 0,
+                  '2025_access': False,
+                  'candidate_selection_in_R2': False,
+                  'Core_promotion': False,
+                  'MT4_promotion': False
+              },
+              'next_stage': 'R3_temporal_stability'
+          }
+          Path('configs/research/usdjpy_r2_horizon_lock_v1.json').write_text(
+              json.dumps(lock, indent=2, sort_keys=True) + '\n'
+          )
+          print(json.dumps({'lock': 'PASS', 'code_blobs': code_blobs}, sort_keys=True))
+          PY
+      - name: Commit lock and remove workflow
+        run: |
+          rm -f .github/workflows/freeze_usdjpy_r2_lock_v1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'research: freeze USDJPY R2 execution lock v1'
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Close issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body 'USDJPY R2 execution lock frozen from repository Git blobs. The complete 60 x 11 surface and 117 historical horizon regressions are fixed.'
+          gh issue close "$ISSUE_NUMBER" --repo "$REPOSITORY" --reason completed
