@@ -1,0 +1,103 @@
+{
+  "version": "v1",
+  "repository": "mitsuru93/usdjpyea-research",
+  "symbol": "USDJPY",
+  "year": 2024,
+  "release": {
+    "tag": "usdjpy-r0-artifact-archive-2024-v1",
+    "expected_asset_count": 29,
+    "manifest_asset": "usdjpy-r0-artifact-archive-manifest-v1.json",
+    "manifest_sha256": "sha256:6c54aafd98b2d9187c340eb34109e9cc8ec85a785cc7c295654fd36d17b36ba3",
+    "sha256s_asset": "SHA256SUMS",
+    "download_policy": "same_repository_github_release_via_gh_release_download"
+  },
+  "artifact_inventory": {
+    "accepted_original_artifacts": 288,
+    "source_day_artifacts": 261,
+    "source_aggregate_artifacts": 12,
+    "baseline_artifacts": 12,
+    "authoritative_regression_artifacts": 3,
+    "excluded_artifact_id": 8412658745,
+    "excluded_artifact_digest": "sha256:8629b80f7196fe0fade05c0e31e2b1242e7b704edcb4229bc1bf74b0900e547e",
+    "excluded_reason": "2024-11-22 source day absent; superseded by accepted aggregate artifact 8421758330",
+    "allow_2025_artifacts": false
+  },
+  "canonicalization": {
+    "timeframes": ["M1", "M5", "M15", "H1"],
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2025-01-01T00:00:00Z",
+    "columns": [
+      "timestamp_utc",
+      "symbol",
+      "bid_open",
+      "bid_high",
+      "bid_low",
+      "bid_close",
+      "ask_open",
+      "ask_high",
+      "ask_low",
+      "ask_close",
+      "tick_count",
+      "spread_open_pips",
+      "spread_high_pips",
+      "spread_low_pips",
+      "spread_close_pips",
+      "spread_mean_pips",
+      "mid_open",
+      "mid_high",
+      "mid_low",
+      "mid_close",
+      "source",
+      "source_build_id"
+    ],
+    "source_priority": {
+      "normal_day_bar": 1,
+      "aggregate_repair": 2
+    },
+    "duplicate_policy": {
+      "repair_over_normal": true,
+      "identical_same_priority": "consolidate_and_record",
+      "different_same_priority": "hard_fail",
+      "different_multiple_repairs": "hard_fail"
+    },
+    "serialization": {
+      "encoding": "utf-8",
+      "line_terminator": "LF",
+      "float_format": "%.15g",
+      "gzip_compresslevel": 9,
+      "gzip_mtime": 0,
+      "gzip_filename": ""
+    },
+    "required_audits": [
+      "release_asset_verification",
+      "original_artifact_verification",
+      "source_coverage",
+      "duplicate_resolution",
+      "deterministic_repeatability",
+      "canonical_hashes"
+    ]
+  },
+  "months": [
+    {"month": "2024-01", "audit_start": "2024-01-01T00", "audit_end": "2024-02-01T00", "expected_weekday_hour_records": 552},
+    {"month": "2024-02", "audit_start": "2024-02-01T00", "audit_end": "2024-03-01T00", "expected_weekday_hour_records": 504},
+    {"month": "2024-03", "audit_start": "2024-03-01T00", "audit_end": "2024-04-01T00", "expected_weekday_hour_records": 504},
+    {"month": "2024-04", "audit_start": "2024-04-01T00", "audit_end": "2024-05-01T00", "expected_weekday_hour_records": 528},
+    {"month": "2024-05", "audit_start": "2024-05-01T00", "audit_end": "2024-06-01T00", "expected_weekday_hour_records": 552},
+    {"month": "2024-06", "audit_start": "2024-06-01T00", "audit_end": "2024-07-01T00", "expected_weekday_hour_records": 480},
+    {"month": "2024-07", "audit_start": "2024-07-01T00", "audit_end": "2024-08-01T00", "expected_weekday_hour_records": 552},
+    {"month": "2024-08", "audit_start": "2024-08-01T00", "audit_end": "2024-09-01T00", "expected_weekday_hour_records": 528},
+    {"month": "2024-09", "audit_start": "2024-09-01T00", "audit_end": "2024-10-01T00", "expected_weekday_hour_records": 504},
+    {"month": "2024-10", "audit_start": "2024-10-01T00", "audit_end": "2024-11-01T00", "expected_weekday_hour_records": 552},
+    {"month": "2024-11", "audit_start": "2024-11-01T00", "audit_end": "2024-12-01T00", "expected_weekday_hour_records": 504},
+    {"month": "2024-12", "audit_start": "2024-12-01T00", "audit_end": "2025-01-01T00", "expected_weekday_hour_records": 528}
+  ],
+  "acceptance": {
+    "effective_coverage": 1.0,
+    "unobserved_records": 0,
+    "hard_error_records": 0,
+    "same_priority_conflicts": 0,
+    "hard_no_trade_violations": 0,
+    "required_month_timeframe_rows": 48,
+    "r1_blocked_on_any_failure": true
+  }
+}
