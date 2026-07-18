@@ -17,7 +17,12 @@
     "r1_release_asset": "usdjpy-r1-entry-registry-v2-run-29642282221-artifact-8428977454.zip",
     "r1_release_asset_sha256": "0e0de71ccc56409a919d48d61e4dcb12502cefdb3944374b9163eda76d222d74",
     "r1_signal_gzip_sha256": "99c2e2d19bd76b2438c1cec6c777228f82cdca16eeb1b471257bd389d6b7dc9e",
-    "r1_registry_snapshot_sha256": "113f6f19fd549a6769e5a1ed617bc62e44f840feef46979ba1a2cecf995f9827"
+    "r1_registry_snapshot_sha256": "3bb43eeb1234ec6d175e37df3b1bbdb385364857351938bd088247ab14567549",
+    "historical_horizon_run_id": 29583719940,
+    "historical_horizon_artifact_id": 8408094591,
+    "historical_horizon_artifact_name": "usdjpy-h1-entry-horizon-diagnostic-v2-29583719940",
+    "historical_horizon_artifact_sha256": "f95a0a450aa3b821dbcb20ea4f3410f345668606bf5f20a766a3e01d8a6e89e4",
+    "historical_horizon_projection": "reference rows are restricted to entry and exit in the same UTC calendar month before R2 regression"
   },
   "surface": {
     "candidate_count": 60,
