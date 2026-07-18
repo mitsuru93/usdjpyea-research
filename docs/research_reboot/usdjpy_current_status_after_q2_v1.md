@@ -52,6 +52,7 @@ head_sha: 2d88fb846bbe77e256ee37abdf1dcbb462e3ebe4
 artifact_id: 8428199309
 artifact: usdjpy-r0-canonical-2024-v1-29639548804
 artifact_digest: sha256:d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015
+release_tag: usdjpy-r0-canonical-2024-v1
 result: docs/research_reboot/usdjpy_r0_canonical_bundle_result_v1.md
 ```
 
@@ -74,7 +75,49 @@ hard no-trade violations: H1 0, H2 0
 2025 artifact access: none
 ```
 
-R0 unblocks R1 only. It does not promote any strategy to Core or MT4.
+R0 did not promote any strategy to Core or MT4.
+
+## Accepted R1 Entry registry
+
+```text
+run_id: 29641805182
+head_sha: 50411297d1743518371b06f0eceb039ab185bd89
+artifact_id: 8428842719
+artifact: usdjpy-r1-entry-registry-v1-29641805182
+artifact_digest: sha256:a284e599c67910912d1e51c79d55ba4334e726ef423aba1b8ecb6a3e1ef9f27c
+release_tag: usdjpy-r1-entry-registry-v1
+result: docs/research_reboot/usdjpy_r1_entry_registry_result_v1.md
+```
+
+R1 passed all twenty acceptance checks.
+
+Frozen Entry universe:
+
+```text
+families: 12
+unique Entry definitions: 60
+legacy unique Entry definitions: 12
+new Entry definitions: 48
+functional-definition duplicates: 0
+exact signal-equivalent groups: 0
+Entry signal rows: 34,636
+H2 rows parsed: 0
+2025 access: none
+outcomes opened: false
+```
+
+All sixty definitions generated Entry signals. Fifty-nine were active in all six H1 months; one session-handoff definition was active in five months. The complete monthly, hourly and 1,770-pair overlap grids were generated. No Entry price, Exit, horizon, cost, PnL, profit factor, expectancy or promotion result was opened in R1.
+
+The accepted R1 artifact is preserved independently of Actions expiry:
+
+```text
+archive_run_id: 29641911300
+archive_audit_artifact_id: 8428870489
+archive_audit_digest: sha256:13a897ecf822f847fc607324d00c7375d637037261881770df85b9e0d4a557df
+receipt: docs/research_reboot/artifact_archives/usdjpy_r1_entry_registry_v1/
+```
+
+R1 unblocks R2 only. Signal count is not a performance ranking.
 
 ## Corrected H1 screen
 
@@ -86,7 +129,7 @@ artifact_digest: sha256:b5fd40e7c37cd3c4c417b9e02547ce6d7195f0f989266e4f0e3ae030
 
 The screen evaluated thirteen registered candidates, twelve unique Entry definitions and mostly six-bar time exits.
 
-Retained complete strategies:
+Retained historical complete strategies:
 
 ```text
 A1_impulse_breakout_lb3_hold6
@@ -133,7 +176,7 @@ R0 reproduced the H1 regression, H2 summary, monthly results, gates, direction a
 
 The 2024 H2 block has been opened only for A1+hold6 and E3+hold6.
 
-For all candidate definitions whose H2 results have never been opened, including C1-C4, B1-B3, D1-D2, E1-E2 and future H1-developed definitions, 2024 H2 remains candidate-specific unused validation data.
+For all candidate definitions whose H2 results have never been opened, including the new R1 definitions and the historical B/C/D/E definitions other than A1/E3, 2024 H2 remains candidate-specific unused validation data.
 
 Methodological distinction:
 
@@ -168,13 +211,16 @@ R0 — canonical 2024 bundle and regression lock:
   artifact_id 8428199309
 
 R1 — expanded Entry registry on 2024 H1 only:
-  next
-  not started
-  maximum sixty unique Entry definitions
-  registry and parameter bounds must be committed before opening results
+  passed
+  run_id 29641805182
+  artifact_id 8428842719
+  60 unique Entry definitions across 12 families
 
 R2 — full fixed-horizon surface on 2024 H1:
+  next
   not started
+  horizons: 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48 M15 bars
+  complete surface: 660 Entry/horizon combinations
 
 R3 — H1 temporal-stability diagnostics:
   not started
@@ -210,19 +256,18 @@ Live capital allocation:
 
 2025 does not replace 2024 and is not used before the 2024 programme is complete.
 
-2024 H1 plus candidate-specific unused 2024 H2 is sufficient to complete development, first confirmation and the decision to begin implementation parity. The full-year 2025 block is retained only because the expanded H1 programme will compare many Entry, horizon and controlled Exit configurations; a single six-month H2 pass may still reflect selection luck or a 2024-specific regime.
+2024 H1 plus candidate-specific unused 2024 H2 is sufficient to complete development, first confirmation and the decision to begin implementation parity. The full-year 2025 block is retained only because the expanded H1 programme compares sixty Entry definitions, eleven fixed horizons and controlled Exit configurations; a six-month H2 pass may still reflect selection luck or a 2024-specific regime.
 
 The 2025 block is one unchanged full-year replication, not two separate mandatory half-year gates and not an Exit-development block.
 
 ## Immediate operations
 
-1. Define the R1 family taxonomy, candidate-generation rules and hard parameter bounds without viewing new H1 results.
-2. Commit the expanded H1 Entry registry with at most sixty unique Entry definitions.
-3. Run the R1 Entry screen on canonical 2024 H1 only.
-4. Run the H1 horizon-surface and stability programme.
-5. Select at most eight Entry/horizon representatives.
-6. Perform controlled Exit research on H1 representatives.
-7. Freeze at most five complete strategies and all H2 gates.
-8. Run those strategies once on their candidate-specific unused 2024 H2 data.
-9. Begin Research/Core and MT4 parity only for H2 survivors.
-10. Run one unchanged full-year 2025 historical replication before live allocation.
+1. Freeze the R2 evaluator, cost rules, price-path outputs and all 660 Entry/horizon combinations before opening outcomes.
+2. Run the complete fixed-horizon surface on canonical 2024 H1 only.
+3. Run R3 monthly, Q1/Q2, rolling-block, spread and realized-volatility stability diagnostics.
+4. Select at most two representatives per family and eight overall using pre-registered common requirements.
+5. Perform controlled Exit research on the H1 representatives.
+6. Freeze at most five complete strategies and all H2 gates.
+7. Run those strategies once on their candidate-specific unused 2024 H2 data.
+8. Begin Research/Core and MT4 parity only for H2 survivors.
+9. Run one unchanged full-year 2025 historical replication before live allocation.
