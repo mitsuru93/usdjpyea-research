@@ -23,7 +23,12 @@
     "allow_2025_artifacts": false
   },
   "canonicalization": {
-    "timeframes": ["M1", "M5", "M15", "H1"],
+    "timeframes": [
+      "M1",
+      "M5",
+      "M15",
+      "H1"
+    ],
     "start_utc": "2024-01-01T00:00:00Z",
     "end_utc_exclusive": "2025-01-01T00:00:00Z",
     "columns": [
@@ -75,21 +80,82 @@
       "duplicate_resolution",
       "deterministic_repeatability",
       "canonical_hashes"
-    ]
+    ],
+    "coverage_manifest_authority": "accepted_monthly_baseline/source_combined/download_manifest.jsonl"
   },
   "months": [
-    {"month": "2024-01", "audit_start": "2024-01-01T00", "audit_end": "2024-02-01T00", "expected_weekday_hour_records": 552},
-    {"month": "2024-02", "audit_start": "2024-02-01T00", "audit_end": "2024-03-01T00", "expected_weekday_hour_records": 504},
-    {"month": "2024-03", "audit_start": "2024-03-01T00", "audit_end": "2024-04-01T00", "expected_weekday_hour_records": 504},
-    {"month": "2024-04", "audit_start": "2024-04-01T00", "audit_end": "2024-05-01T00", "expected_weekday_hour_records": 528},
-    {"month": "2024-05", "audit_start": "2024-05-01T00", "audit_end": "2024-06-01T00", "expected_weekday_hour_records": 552},
-    {"month": "2024-06", "audit_start": "2024-06-01T00", "audit_end": "2024-07-01T00", "expected_weekday_hour_records": 480},
-    {"month": "2024-07", "audit_start": "2024-07-01T00", "audit_end": "2024-08-01T00", "expected_weekday_hour_records": 552},
-    {"month": "2024-08", "audit_start": "2024-08-01T00", "audit_end": "2024-09-01T00", "expected_weekday_hour_records": 528},
-    {"month": "2024-09", "audit_start": "2024-09-01T00", "audit_end": "2024-10-01T00", "expected_weekday_hour_records": 504},
-    {"month": "2024-10", "audit_start": "2024-10-01T00", "audit_end": "2024-11-01T00", "expected_weekday_hour_records": 552},
-    {"month": "2024-11", "audit_start": "2024-11-01T00", "audit_end": "2024-12-01T00", "expected_weekday_hour_records": 504},
-    {"month": "2024-12", "audit_start": "2024-12-01T00", "audit_end": "2025-01-01T00", "expected_weekday_hour_records": 528}
+    {
+      "month": "2024-01",
+      "audit_start": "2024-01-02T00",
+      "audit_end": "2024-02-01T00",
+      "expected_weekday_hour_records": 528
+    },
+    {
+      "month": "2024-02",
+      "audit_start": "2024-02-01T00",
+      "audit_end": "2024-03-01T00",
+      "expected_weekday_hour_records": 504
+    },
+    {
+      "month": "2024-03",
+      "audit_start": "2024-03-01T00",
+      "audit_end": "2024-04-01T00",
+      "expected_weekday_hour_records": 504
+    },
+    {
+      "month": "2024-04",
+      "audit_start": "2024-04-01T00",
+      "audit_end": "2024-05-01T00",
+      "expected_weekday_hour_records": 528
+    },
+    {
+      "month": "2024-05",
+      "audit_start": "2024-05-01T00",
+      "audit_end": "2024-06-01T00",
+      "expected_weekday_hour_records": 552
+    },
+    {
+      "month": "2024-06",
+      "audit_start": "2024-06-01T00",
+      "audit_end": "2024-07-01T00",
+      "expected_weekday_hour_records": 480
+    },
+    {
+      "month": "2024-07",
+      "audit_start": "2024-07-01T00",
+      "audit_end": "2024-08-01T00",
+      "expected_weekday_hour_records": 552
+    },
+    {
+      "month": "2024-08",
+      "audit_start": "2024-08-01T00",
+      "audit_end": "2024-09-01T00",
+      "expected_weekday_hour_records": 528
+    },
+    {
+      "month": "2024-09",
+      "audit_start": "2024-09-01T00",
+      "audit_end": "2024-10-01T00",
+      "expected_weekday_hour_records": 504
+    },
+    {
+      "month": "2024-10",
+      "audit_start": "2024-10-01T00",
+      "audit_end": "2024-11-01T00",
+      "expected_weekday_hour_records": 552
+    },
+    {
+      "month": "2024-11",
+      "audit_start": "2024-11-01T00",
+      "audit_end": "2024-12-01T00",
+      "expected_weekday_hour_records": 504
+    },
+    {
+      "month": "2024-12",
+      "audit_start": "2024-12-01T00",
+      "audit_end": "2025-01-01T00",
+      "expected_weekday_hour_records": 528
+    }
   ],
   "acceptance": {
     "effective_coverage": 1.0,
