@@ -1,0 +1,256 @@
+name: Run EURUSD 2024 H1 Development H2 Validation v1
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+concurrency:
+  group: eurusd-h1-h2-screen-2024-v1
+  cancel-in-progress: false
+
+jobs:
+  screen:
+    if: github.event_name != 'issues' || github.event.issue.title == '[EURUSD] Run 2024 H1 development H2 validation v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      SOURCE_TAG: eurusd-2024-source-artifact-archive-v1
+      SOURCE_ASSET: eurusd-2024-source-artifact-id-8441596981.zip
+      SOURCE_SHA256: 7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685
+      RESULT_TAG: eurusd-h1-h2-screen-2024-v1
+      RESULT_ROOT: data/eurusd_h1_h2_screen_2024_v1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record run ID
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "EURUSD H1-development/H2-validation run started. Run ID: ${{ github.run_id }}. https://github.com/${REPOSITORY}/actions/runs/${{ github.run_id }}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy tabulate
+
+      - name: Compile and test runner
+        run: |
+          python -m py_compile \
+            tools/eurusd_h1_h2_data_v1.py \
+            tools/eurusd_h1_h2_eval_v1.py \
+            tools/run_eurusd_h1_h2_screen_v1.py \
+            tools/test_eurusd_h1_h2_screen_v1.py
+          python tools/test_eurusd_h1_h2_screen_v1.py
+
+      - name: Download exact accepted annual source Release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p data/eurusd_source
+          gh release download "${SOURCE_TAG}" --pattern "${SOURCE_ASSET}" --dir data/eurusd_source
+          echo "${SOURCE_SHA256}  data/eurusd_source/${SOURCE_ASSET}" | sha256sum -c -
+          unzip -q data/eurusd_source/${SOURCE_ASSET} -d data/eurusd_source/unpacked
+          test -f data/eurusd_source/unpacked/bundle/bars/H1/EURUSD_H1.csv.gz
+
+      - name: Create physically isolated H1 development input
+        run: |
+          set -euo pipefail
+          mkdir -p "${RESULT_ROOT}/source"
+          python - <<'PY'
+          import gzip
+          import io
+          import pandas as pd
+          from pathlib import Path
+
+          source = Path("data/eurusd_source/unpacked/bundle/bars/H1/EURUSD_H1.csv.gz")
+          target = Path("data/eurusd_h1_h2_screen_2024_v1/source/EURUSD_H1_2024H1.csv.gz")
+          frame = pd.read_csv(source)
+          ts = pd.to_datetime(frame["timestamp_utc"], utc=True, errors="raise")
+          development = frame[(ts >= pd.Timestamp("2024-01-01T00:00:00Z")) & (ts < pd.Timestamp("2024-07-01T00:00:00Z"))].copy()
+          assert len(frame) == 6112, len(frame)
+          assert len(development) == 3030, len(development)
+          assert pd.to_datetime(development["timestamp_utc"], utc=True).max() < pd.Timestamp("2024-07-01T00:00:00Z")
+          text = io.StringIO(newline="")
+          development.to_csv(text, index=False, float_format="%.15g", lineterminator="\n")
+          target.parent.mkdir(parents=True, exist_ok=True)
+          with target.open("wb") as raw:
+              with gzip.GzipFile(filename="", mode="wb", fileobj=raw, compresslevel=9, mtime=0) as compressed:
+                  compressed.write(text.getvalue().encode("utf-8"))
+          print({"annual_rows": len(frame), "development_rows": len(development), "development_max": development["timestamp_utc"].max()})
+          PY
+
+      - name: Run H1 development analysis and freeze lock
+        run: |
+          set -euo pipefail
+          python tools/run_eurusd_h1_h2_screen_v1.py \
+            --phase development \
+            --bars "${RESULT_ROOT}/source/EURUSD_H1_2024H1.csv.gz" \
+            --registry configs/research/eurusd_h1_prior_literature_candidates_v1.json \
+            --session-config configs/market_sessions/fx_market_sessions_v1.json \
+            --protocol configs/research/eurusd_h1_h2_analysis_protocol_v1.json \
+            --output-dir "${RESULT_ROOT}/development"
+          sha256sum "${RESULT_ROOT}/development/development_lock.json" > "${RESULT_ROOT}/development/development_lock.sha256"
+
+      - name: Run fixed H2 validation
+        run: |
+          set -euo pipefail
+          python tools/run_eurusd_h1_h2_screen_v1.py \
+            --phase validation \
+            --bars data/eurusd_source/unpacked/bundle/bars/H1/EURUSD_H1.csv.gz \
+            --registry configs/research/eurusd_h1_prior_literature_candidates_v1.json \
+            --session-config configs/market_sessions/fx_market_sessions_v1.json \
+            --protocol configs/research/eurusd_h1_h2_analysis_protocol_v1.json \
+            --development-lock "${RESULT_ROOT}/development/development_lock.json" \
+            --development-summary "${RESULT_ROOT}/development/h1_candidate_summary.csv" \
+            --development-trades "${RESULT_ROOT}/development/h1_candidate_trades.csv" \
+            --output-dir "${RESULT_ROOT}/validation"
+
+      - name: Write run metadata and deterministic result package
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["RESULT_ROOT"])
+          def digest(path):
+              h = hashlib.sha256()
+              with path.open("rb") as fh:
+                  for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                      h.update(chunk)
+              return h.hexdigest()
+          metadata = {
+              "version": "v1",
+              "workflow_run_id": int(os.environ["GITHUB_RUN_ID"]),
+              "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
+              "head_sha": os.environ["GITHUB_SHA"],
+              "source_release_tag": os.environ["SOURCE_TAG"],
+              "source_release_asset": os.environ["SOURCE_ASSET"],
+              "source_release_asset_sha256": "sha256:" + os.environ["SOURCE_SHA256"],
+              "development_lock_sha256": "sha256:" + digest(root / "development/development_lock.json"),
+              "validation_result": json.loads((root / "validation/validation_result.json").read_text()),
+          }
+          (root / "run_metadata.json").write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n")
+          PY
+          find "${RESULT_ROOT}" -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > "${RESULT_ROOT}/SHA256SUMS"
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
+            -C "$(dirname "${RESULT_ROOT}")" -cf - "$(basename "${RESULT_ROOT}")" \
+            | gzip -n > eurusd-h1-h2-screen-2024-v1.tar.gz
+          sha256sum eurusd-h1-h2-screen-2024-v1.tar.gz > eurusd-h1-h2-screen-2024-v1.tar.gz.sha256
+
+      - name: Create or update durable result Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cp "${RESULT_ROOT}/validation/analysis_summary.md" analysis_summary.md
+          cp "${RESULT_ROOT}/validation/validation_result.json" validation_result.json
+          cp "${RESULT_ROOT}/development/development_lock.json" development_lock.json
+          cp "${RESULT_ROOT}/SHA256SUMS" SHA256SUMS
+          cat > release-notes.md <<'EOF'
+          # EURUSD 2024 H1 Development / H2 Validation v1
+
+          Literature-derived H1-bar strategy screen. January-June 2024 is development; July-December 2024 is fixed validation. The development lock is written before H2 evaluation. Result assets are durable copies and are not dependent on Actions artifact retention.
+          EOF
+          if gh release view "${RESULT_TAG}" >/dev/null 2>&1; then
+            gh release upload "${RESULT_TAG}" eurusd-h1-h2-screen-2024-v1.tar.gz eurusd-h1-h2-screen-2024-v1.tar.gz.sha256 analysis_summary.md validation_result.json development_lock.json SHA256SUMS --clobber
+          else
+            gh release create "${RESULT_TAG}" eurusd-h1-h2-screen-2024-v1.tar.gz eurusd-h1-h2-screen-2024-v1.tar.gz.sha256 analysis_summary.md validation_result.json development_lock.json SHA256SUMS \
+              --title "EURUSD 2024 H1 Development H2 Validation v1" --notes-file release-notes.md --latest=false
+          fi
+
+      - name: Verify Release and commit receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release view "${RESULT_TAG}" --json tagName,url,isDraft,isPrerelease,assets > "${RESULT_ROOT}/release_receipt.json"
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          root = Path(os.environ["RESULT_ROOT"])
+          receipt = json.loads((root / "release_receipt.json").read_text())
+          assets = {a["name"]: a for a in receipt["assets"]}
+          required = {"eurusd-h1-h2-screen-2024-v1.tar.gz", "eurusd-h1-h2-screen-2024-v1.tar.gz.sha256", "analysis_summary.md", "validation_result.json", "development_lock.json", "SHA256SUMS"}
+          assert receipt["tagName"] == os.environ["RESULT_TAG"]
+          assert receipt["isDraft"] is False and receipt["isPrerelease"] is False
+          assert required <= set(assets), sorted(assets)
+          local = Path("eurusd-h1-h2-screen-2024-v1.tar.gz")
+          h = hashlib.sha256(local.read_bytes()).hexdigest()
+          assert assets[local.name]["digest"] == "sha256:" + h, assets[local.name]
+          assert assets[local.name]["size"] == local.stat().st_size
+          print({"release_verification": "PASS", "assets": sorted(required), "tar_sha256": h})
+          PY
+          git pull --rebase origin main
+          target=docs/research_reboot/artifact_archives/eurusd_h1_h2_screen_2024_v1
+          mkdir -p "${target}"
+          cp "${RESULT_ROOT}/release_receipt.json" "${target}/release_receipt.json"
+          cp "${RESULT_ROOT}/run_metadata.json" "${target}/run_metadata.json"
+          cp "${RESULT_ROOT}/development/development_lock.json" "${target}/development_lock.json"
+          cp "${RESULT_ROOT}/validation/validation_result.json" "${target}/validation_result.json"
+          cp "${RESULT_ROOT}/validation/analysis_summary.md" "${target}/analysis_summary.md"
+          cp "${RESULT_ROOT}/SHA256SUMS" "${target}/SHA256SUMS"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${target}"
+          if ! git diff --cached --quiet; then
+            git commit -m "research: record EURUSD H1 development H2 validation v1"
+            git push origin main
+          fi
+
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ -f "${RESULT_ROOT}/validation/analysis_summary.md" ]; then
+            cat "${RESULT_ROOT}/validation/analysis_summary.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Close trigger issue
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "EURUSD H1-development/H2-validation completed and archived in Release ${RESULT_TAG}. Receipt committed under docs/research_reboot/artifact_archives/eurusd_h1_h2_screen_2024_v1/."
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
+
+      - name: Upload audit copy
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-h1-h2-screen-2024-v1-${{ github.run_id }}-a${{ github.run_attempt }}
+          path: |
+            data/eurusd_h1_h2_screen_2024_v1/development/development_lock.json
+            data/eurusd_h1_h2_screen_2024_v1/development/h1_candidate_summary.csv
+            data/eurusd_h1_h2_screen_2024_v1/development/h1_family_summary.csv
+            data/eurusd_h1_h2_screen_2024_v1/validation/validation_result.json
+            data/eurusd_h1_h2_screen_2024_v1/validation/final_candidate_decisions.csv
+            data/eurusd_h1_h2_screen_2024_v1/validation/final_family_decisions.csv
+            data/eurusd_h1_h2_screen_2024_v1/validation/analysis_summary.md
+            data/eurusd_h1_h2_screen_2024_v1/run_metadata.json
+            data/eurusd_h1_h2_screen_2024_v1/release_receipt.json
+          if-no-files-found: warn
+          retention-days: 90
