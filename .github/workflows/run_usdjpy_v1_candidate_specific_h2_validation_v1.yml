@@ -1,219 +1,280 @@
-name: Run Committed USDJPY V1 Candidate-Specific H2 Validation v1
+name: Archive Accepted USDJPY V1 Candidate-Specific H2 Validation v1
 
 on:
   pull_request:
     types: [opened]
 
 permissions:
-  contents: read
+  actions: read
+  contents: write
   pull-requests: write
 
 concurrency:
-  group: usdjpy-v1-candidate-specific-h2-validation-v1
+  group: archive-usdjpy-v1-candidate-specific-h2-validation-v1
   cancel-in-progress: false
 
 jobs:
-  v1:
+  archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
-    env:
-      CONFIG_PATH: configs/research/usdjpy_v1_candidate_specific_h2_validation_v1.json
-      LOCK_PATH: configs/research/usdjpy_v1_candidate_specific_h2_validation_lock_v1.json
-      OUTPUT_DIR: data/experiments/usdjpy_v1_candidate_specific_h2_validation_v1
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pandas numpy
-
-      - name: Verify committed evaluator and execution lock
-        run: |
-          set -euo pipefail
-          python -m py_compile tools/run_usdjpy_v1_candidate_specific_h2_validation_v1.py
-          python - <<'PY'
-          import hashlib
-          import json
-          import subprocess
-          from pathlib import Path
-
-          lock=json.loads(Path('configs/research/usdjpy_v1_candidate_specific_h2_validation_lock_v1.json').read_text())
-          for path,expected in lock['code_blobs'].items():
-              actual=subprocess.check_output(['git','rev-parse',f'HEAD:{path}'],text=True).strip()
-              assert actual==expected,(path,actual,expected)
-          for path,expected in lock['content_sha256'].items():
-              actual=hashlib.sha256(Path(path).read_bytes()).hexdigest()
-              assert actual==expected,(path,actual,expected)
-          assert lock['strategy_contract']['strategy_count']==5
-          assert lock['strategy_contract']['h2_exposure_ordinal']==2
-          assert lock['strategy_contract']['H2_role']=='fixed_reusable_validation_gate'
-          assert lock['research_firewall']['2025_access'] is False
-          assert lock['research_firewall']['H2_parameter_optimization'] is False
-          assert lock['research_firewall']['H2_ranking'] is False
-          assert lock['research_firewall']['Core_promotion'] is False
-          assert lock['research_firewall']['MT4_promotion'] is False
-          print({'V1_lock':'PASS','files':len(lock['code_blobs'])})
-          PY
-
-      - name: Download and verify frozen R0 R1 R5 R6 inputs
+      - name: Download and independently verify accepted V1 artifact
         env:
           GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
-          mkdir -p releases/r0 releases/r1 releases/r5 releases/r6 input/r0 input/r1 input/r5 input/r6
-          python - <<'PY' > release.env
-          import json
-          from pathlib import Path
-          lock=json.loads(Path('configs/research/usdjpy_v1_candidate_specific_h2_validation_lock_v1.json').read_text())
-          for key,prefix in [('r0','R0'),('r1','R1'),('r5','R5'),('r6','R6')]:
-              row=lock['input_releases'][key]
-              print(f'{prefix}_TAG={row["tag"]}')
-              print(f'{prefix}_ASSET={row["asset"]}')
-              print(f'{prefix}_SHA={row["asset_sha256"]}')
-          PY
-          source release.env
-          for prefix in R0 R1 R5 R6; do
-            tag_var="${prefix}_TAG"; asset_var="${prefix}_ASSET"; sha_var="${prefix}_SHA"
-            tag="${!tag_var}"; asset="${!asset_var}"; sha="${!sha_var}"
-            lower="$(echo "${prefix}" | tr '[:upper:]' '[:lower:]')"
-            gh release download "${tag}" --repo "${GITHUB_REPOSITORY}" --pattern "${asset}" --dir "releases/${lower}"
-            echo "${sha}  releases/${lower}/${asset}" | sha256sum -c -
-            unzip -q "releases/${lower}/${asset}" -d "input/${lower}"
-          done
-          mapfile -t M15_FILES < <(find input/r0 -type f -path '*/canonical/bars/M15/USDJPY_M15.csv.gz' | sort)
-          mapfile -t R1_REGISTRY_FILES < <(find input/r1 -type f -name 'r1_registry_snapshot.json' | sort)
-          mapfile -t R1_SIGNAL_FILES < <(find input/r1 -type f -name 'candidate_signals.csv.gz' | sort)
-          mapfile -t R5_TRADE_FILES < <(find input/r5 -type f -name 'exit_trades.csv.gz' | sort)
-          mapfile -t R6_FROZEN_FILES < <(find input/r6 -type f -name 'frozen_complete_strategies.csv' | sort)
-          mapfile -t R6_PLAN_FILES < <(find input/r6 -type f -name 'h2_validation_plan.json' | sort)
-          mapfile -t R6_ACCEPTANCE_FILES < <(find input/r6 -type f -name 'r6_acceptance.json' | sort)
-          test "${#M15_FILES[@]}" -eq 1
-          test "${#R1_REGISTRY_FILES[@]}" -eq 1
-          test "${#R1_SIGNAL_FILES[@]}" -eq 1
-          test "${#R5_TRADE_FILES[@]}" -eq 1
-          test "${#R6_FROZEN_FILES[@]}" -eq 1
-          test "${#R6_PLAN_FILES[@]}" -eq 1
-          test "${#R6_ACCEPTANCE_FILES[@]}" -eq 1
-          echo "R0_RELEASE_ZIP=releases/r0/${R0_ASSET}" >> "${GITHUB_ENV}"
-          echo "R1_RELEASE_ZIP=releases/r1/${R1_ASSET}" >> "${GITHUB_ENV}"
-          echo "R5_RELEASE_ZIP=releases/r5/${R5_ASSET}" >> "${GITHUB_ENV}"
-          echo "R6_RELEASE_ZIP=releases/r6/${R6_ASSET}" >> "${GITHUB_ENV}"
-          echo "CANONICAL_M15=${M15_FILES[0]}" >> "${GITHUB_ENV}"
-          echo "R1_REGISTRY=${R1_REGISTRY_FILES[0]}" >> "${GITHUB_ENV}"
-          echo "R1_SIGNALS=${R1_SIGNAL_FILES[0]}" >> "${GITHUB_ENV}"
-          echo "R5_EXIT_TRADES=${R5_TRADE_FILES[0]}" >> "${GITHUB_ENV}"
-          echo "R6_FROZEN=${R6_FROZEN_FILES[0]}" >> "${GITHUB_ENV}"
-          echo "R6_H2_PLAN=${R6_PLAN_FILES[0]}" >> "${GITHUB_ENV}"
-          echo "R6_ACCEPTANCE=${R6_ACCEPTANCE_FILES[0]}" >> "${GITHUB_ENV}"
-
-      - name: Run preregistered V1 H2 validation
-        run: |
-          python tools/run_usdjpy_v1_candidate_specific_h2_validation_v1.py \
-            --r0-release-zip "${R0_RELEASE_ZIP}" \
-            --r1-release-zip "${R1_RELEASE_ZIP}" \
-            --r5-release-zip "${R5_RELEASE_ZIP}" \
-            --r6-release-zip "${R6_RELEASE_ZIP}" \
-            --canonical-m15 "${CANONICAL_M15}" \
-            --r1-registry "${R1_REGISTRY}" \
-            --r1-signals "${R1_SIGNALS}" \
-            --r5-exit-trades "${R5_EXIT_TRADES}" \
-            --r6-frozen "${R6_FROZEN}" \
-            --r6-h2-plan "${R6_H2_PLAN}" \
-            --r6-acceptance "${R6_ACCEPTANCE}" \
-            --session-config configs/market_sessions/fx_market_sessions_v1.json \
-            --config "${CONFIG_PATH}" \
-            --output-dir "${OUTPUT_DIR}"
-
-      - name: Verify V1 output contract
-        run: |
-          set -euo pipefail
+          rm -rf audit release_assets
+          mkdir -p audit release_assets
+          asset='release_assets/usdjpy-v1-candidate-specific-h2-validation-v1-run-29673802426-artifact-8438161821.zip'
+          gh api "repos/${REPOSITORY}/actions/artifacts/8438161821/zip" > "${asset}"
+          echo '19acb99e0ad286b3d2593b6f9df59a6675920eb3734d5901b70e4d8dc9a7c6b8  release_assets/usdjpy-v1-candidate-specific-h2-validation-v1-run-29673802426-artifact-8438161821.zip' | sha256sum -c -
+          unzip -t "${asset}" >/dev/null
+          unzip -q "${asset}" -d audit
           python - <<'PY'
+          import csv
+          import gzip
+          import hashlib
           import json
           from pathlib import Path
-          import pandas as pd
 
-          out=Path('data/experiments/usdjpy_v1_candidate_specific_h2_validation_v1')
-          lock=json.loads(Path('configs/research/usdjpy_v1_candidate_specific_h2_validation_lock_v1.json').read_text())
-          for name in lock['required_outputs']:
-              path=out/name
-              assert path.is_file() and path.stat().st_size>0,name
-          signal_reg=pd.read_csv(out/'h1_signal_regression.csv')
-          trade_reg=pd.read_csv(out/'h1_trade_regression.csv')
-          signals=pd.read_csv(out/'h2_candidate_signals.csv.gz',compression='gzip')
-          trades=pd.read_csv(out/'h2_candidate_trades.csv.gz',compression='gzip')
-          summary=pd.read_csv(out/'h2_candidate_summary.csv')
-          monthly=pd.read_csv(out/'h2_candidate_monthly.csv')
-          quarterly=pd.read_csv(out/'h2_candidate_quarterly.csv')
-          daily=pd.read_csv(out/'h2_daily_net_pips.csv')
-          direction=pd.read_csv(out/'h2_direction_attribution.csv')
-          gates=pd.read_csv(out/'h2_gate_results.csv')
-          portfolio=pd.read_csv(out/'h2_joint_portfolio_diagnostic.csv')
-          decision=json.loads((out/'h2_decision.json').read_text())
-          acceptance=json.loads((out/'v1_acceptance.json').read_text())
-          metadata=json.loads((out/'run_metadata.json').read_text())
-          assert len(signal_reg)==5 and signal_reg['passed'].all()
-          assert len(trade_reg)==5 and trade_reg['passed'].all()
-          assert signals['candidate_id'].nunique()==5
-          assert trades['strategy_id'].nunique()==5
-          assert len(summary)==5
-          assert len(monthly)==30
-          assert len(quarterly)==10
-          assert len(daily)==920
-          assert len(direction)==10
-          assert len(gates)==5
-          assert len(portfolio)==1 and not bool(portfolio.iloc[0]['individual_gate_role'])
-          assert acceptance['status']=='PASS'
+          root=Path('audit')
+          expected_files={
+              'h1_signal_regression.csv','h1_trade_regression.csv',
+              'h2_candidate_signals.csv.gz','h2_candidate_trades.csv.gz',
+              'h2_candidate_summary.csv','h2_candidate_monthly.csv',
+              'h2_candidate_quarterly.csv','h2_daily_net_pips.csv',
+              'h2_direction_attribution.csv','h2_gate_results.csv',
+              'h2_joint_portfolio_diagnostic.csv','h2_decision.json',
+              'v1_acceptance.json','run_metadata.json',
+          }
+          assert {p.name for p in root.iterdir() if p.is_file()}==expected_files
+
+          def rows(name):
+              with (root/name).open(newline='',encoding='utf-8') as fh:
+                  return list(csv.DictReader(fh))
+          def gzrows(name):
+              with gzip.open(root/name,'rt',newline='',encoding='utf-8') as fh:
+                  return list(csv.DictReader(fh))
+          def true(value):
+              return str(value).lower()=='true'
+
+          signal_reg=rows('h1_signal_regression.csv')
+          trade_reg=rows('h1_trade_regression.csv')
+          signals=gzrows('h2_candidate_signals.csv.gz')
+          trades=gzrows('h2_candidate_trades.csv.gz')
+          summary=rows('h2_candidate_summary.csv')
+          monthly=rows('h2_candidate_monthly.csv')
+          quarterly=rows('h2_candidate_quarterly.csv')
+          daily=rows('h2_daily_net_pips.csv')
+          direction=rows('h2_direction_attribution.csv')
+          gates=rows('h2_gate_results.csv')
+          portfolio=rows('h2_joint_portfolio_diagnostic.csv')
+          decision=json.loads((root/'h2_decision.json').read_text())
+          acceptance=json.loads((root/'v1_acceptance.json').read_text())
+          metadata=json.loads((root/'run_metadata.json').read_text())
+
+          expected_pass=[
+              'R1B02_legacy_asia_00_07_breakout__T0_fixed_time_cap',
+              'R1F05_donchian_96__T0_fixed_time_cap',
+          ]
+          expected_fail=[
+              'R1H04_ramom_32_64_z125__T0_fixed_time_cap',
+              'R1E02_legacy_trend_8h_resumption__T0_fixed_time_cap',
+              'R1E03_trend_12h_resumption__T0_fixed_time_cap',
+          ]
+          assert len(signal_reg)==5 and all(true(r['passed']) for r in signal_reg)
+          assert len(trade_reg)==5 and all(true(r['passed']) for r in trade_reg)
+          assert len(signals)==1879 and len({r['candidate_id'] for r in signals})==5
+          assert len(trades)==1859 and len({r['strategy_id'] for r in trades})==5
+          assert len(summary)==5 and len(monthly)==30 and len(quarterly)==10
+          assert len(daily)==920 and len(direction)==10 and len(gates)==5 and len(portfolio)==1
+          assert acceptance['status']=='PASS' and len(acceptance)==21
           assert all(value is True for key,value in acceptance.items() if key!='status')
           assert metadata['status']=='PASS'
           assert metadata['H1_signal_regressions_passed']==5
           assert metadata['H1_trade_regressions_passed']==5
           assert metadata['H2_exposure_ordinal']==2
+          assert metadata['H2_signal_rows']==1879
+          assert metadata['H2_trade_rows']==1859
+          assert metadata['passed_strategy_ids']==expected_pass
+          assert metadata['failed_strategy_ids']==expected_fail
           assert metadata['H2_reusable_fixed_validation_gate'] is True
           assert metadata['H2_parameter_optimization'] is False
           assert metadata['H2_ranking'] is False
           assert metadata['2025_artifact_access'] is False
           assert metadata['Core_promotion'] is False
           assert metadata['MT4_promotion'] is False
-          assert decision['passed_strategy_count']+decision['failed_strategy_count']==5
+          assert decision['passed_strategy_ids']==expected_pass
+          assert decision['failed_strategy_ids']==expected_fail
+          assert decision['passed_strategy_count']==2
+          assert decision['failed_strategy_count']==3
+          assert decision['decision']=='advance_passed_strategies_to_parity'
           assert decision['H2_reusable_fixed_validation_gate'] is True
           assert decision['2025_access'] is False
-          print({
-              'V1':'PASS',
-              'H2_exposure':decision['h2_exposure_ordinal'],
-              'signals':len(signals),
-              'trades':len(trades),
-              'passed':decision['passed_strategy_count'],
-              'failed':decision['failed_strategy_count'],
-          })
+          gate_map={r['strategy_id']:r for r in gates}
+          assert [r['strategy_id'] for r in gates if true(r['passed'])]==expected_pass
+          for name,expected in metadata['output_sha256'].items():
+              actual=hashlib.sha256((root/name).read_bytes()).hexdigest()
+              assert actual==expected,(name,actual,expected)
+
+          inspection={
+              'accepted_run_id':29673802426,
+              'workflow_head_sha':'64f63276968b0f7de4a7d27f7ebd7b86b6fab53a',
+              'evaluator_lock_commit':'64f37f0702678659d7523b5ad48e6b56896dff92',
+              'artifact_id':8438161821,
+              'artifact_name':'usdjpy-v1-candidate-specific-h2-validation-v1-29673802426',
+              'artifact_sha256':'19acb99e0ad286b3d2593b6f9df59a6675920eb3734d5901b70e4d8dc9a7c6b8',
+              'acceptance_checks':20,
+              'H1_signal_regressions':5,
+              'H1_trade_regressions':5,
+              'H2_exposure_ordinal':2,
+              'H2_signal_rows':1879,
+              'H2_trade_rows':1859,
+              'passed_strategy_ids':expected_pass,
+              'failed_strategy_ids':expected_fail,
+              'output_sha256':metadata['output_sha256'],
+              '2025_artifact_access':False,
+              'Core_promotion':False,
+              'MT4_promotion':False,
+          }
+          Path('inspection.json').write_text(json.dumps(inspection,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(inspection,sort_keys=True))
           PY
 
-      - name: Write job summary
-        if: always()
+      - name: Write Release manifest and V1 result document
         run: |
-          echo '# USDJPY V1 Candidate-Specific H2 Validation v1' >> "${GITHUB_STEP_SUMMARY}"
-          echo >> "${GITHUB_STEP_SUMMARY}"
-          if [ -f "${OUTPUT_DIR}/h2_decision.json" ]; then
-            cat "${OUTPUT_DIR}/h2_decision.json" >> "${GITHUB_STEP_SUMMARY}"
+          set -euo pipefail
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+
+          inspection=json.loads(Path('inspection.json').read_text())
+          manifest={
+              'version':'v1',
+              'repository':'mitsuru93/usdjpyea-research',
+              'release_tag':'usdjpy-v1-candidate-specific-h2-validation-v1',
+              'accepted_run_id':inspection['accepted_run_id'],
+              'workflow_head_sha':inspection['workflow_head_sha'],
+              'evaluator_lock_commit':inspection['evaluator_lock_commit'],
+              'actions_artifact_id':inspection['artifact_id'],
+              'actions_artifact_name':inspection['artifact_name'],
+              'actions_artifact_sha256':inspection['artifact_sha256'],
+              'v1_status':'PASS',
+              'acceptance_checks':inspection['acceptance_checks'],
+              'H1_signal_regressions':5,
+              'H1_trade_regressions':5,
+              'H2_exposure_ordinal':2,
+              'H2_signal_rows':1879,
+              'H2_trade_rows':1859,
+              'passed_strategy_ids':inspection['passed_strategy_ids'],
+              'failed_strategy_ids':inspection['failed_strategy_ids'],
+              'output_sha256':inspection['output_sha256'],
+              'H2_role':'fixed_reusable_validation_gate',
+              '2025_artifact_access':False,
+              'Core_promotion':False,
+              'MT4_promotion':False,
+              'next_stage':'Research_Core_MT4_parity_for_passed_strategies',
+          }
+          Path('release_assets/usdjpy-v1-candidate-specific-h2-validation-v1-manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+
+          def rows(name):
+              with Path('audit',name).open(newline='',encoding='utf-8') as fh:
+                  return list(csv.DictReader(fh))
+          summary=rows('h2_candidate_summary.csv')
+          gates={r['strategy_id']:r for r in rows('h2_gate_results.csv')}
+          decision=json.loads(Path('audit/h2_decision.json').read_text())
+          portfolio=rows('h2_joint_portfolio_diagnostic.csv')[0]
+          lines=[
+              '# USDJPY V1 Candidate-Specific 2024 H2 Validation Result v1','',
+              '## Decision','',
+              '```text','V1 execution contract: PASS','H2 exposure ordinal: 2','H1 signal regressions: 5 / 5','H1 fixed-time trade regressions: 5 / 5','H2 signals: 1,879','H2 trades: 1,859','individual passes: 2','individual failures: 3','2025 access: none','Core promotion in V1: false','MT4 promotion in V1: false','```','',
+              '## Accepted run','',
+              '```text','run_id: 29673802426','workflow_head_sha: 64f63276968b0f7de4a7d27f7ebd7b86b6fab53a','evaluator_lock_commit: 64f37f0702678659d7523b5ad48e6b56896dff92','artifact_id: 8438161821','artifact: usdjpy-v1-candidate-specific-h2-validation-v1-29673802426','artifact_digest: sha256:19acb99e0ad286b3d2593b6f9df59a6675920eb3734d5901b70e4d8dc9a7c6b8','release_tag: usdjpy-v1-candidate-specific-h2-validation-v1','```','',
+              '## Individual results','',
+              '| Freeze rank | Strategy | Trades | Avg default | Avg severe | Default PF | Severe PF | Default +months | Severe +months | Ex-best-two days | Decision |','|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---|',
+          ]
+          for row in summary:
+              gate=gates[row['strategy_id']]
+              lines.append(f"| {int(row['freeze_rank'])} | {row['strategy_id']} | {int(row['trades'])} | {float(row['avg_default_net_pips']):+.6f} | {float(row['avg_severe_net_pips']):+.6f} | {float(row['default_profit_factor']):.6f} | {float(row['severe_profit_factor']):.6f} | {int(row['default_positive_months'])} | {int(row['severe_positive_months'])} | {float(row['total_excluding_best_two_utc_entry_dates']):+.3f} | {'PASS' if gate['passed'].lower()=='true' else 'FAIL'} |")
+          lines += [
+              '',
+              'Passed unchanged strategies:','',
+              '- `R1B02_legacy_asia_00_07_breakout__T0_fixed_time_cap`','- `R1F05_donchian_96__T0_fixed_time_cap`','',
+              'Failed exact specifications and primary failed gates:','',
+              '- `R1H04_ramom_32_64_z125__T0_fixed_time_cap`: negative aggregate default/severe expectancy and PF, insufficient positive months, negative Q3, and negative total after excluding the best two Entry dates.','- `R1E02_legacy_trend_8h_resumption__T0_fixed_time_cap`: only three default-positive months and negative total after excluding the best two Entry dates.','- `R1E03_trend_12h_resumption__T0_fixed_time_cap`: Q3 was negative under both default and severe cost assumptions.','',
+              '## Joint diagnostic','',
+              f"The equal-weight five-strategy diagnostic produced default total {float(portfolio['total_default_pips']):+.3f} pips and severe total {float(portfolio['total_severe_pips']):+.3f} pips, with {int(portfolio['positive_default_months'])} default-positive months and {int(portfolio['positive_severe_months'])} severe-positive months. It is diagnostic only and did not rescue an individual failure.", '',
+              '## Research handling','',
+              'The two passing strategies may proceed unchanged to Research/Core and MT4 parity. V1 itself made no Core or MT4 promotion.','',
+              'The three failed exact specifications are not passed or rescued under V1. Research may return to H1 and create a new versioned, preregistered optimization or hypothesis branch, including designs informed by the validation feedback. The same 2024 H2 remains the fixed reusable validation gate for later branches; every exposure must be logged and direct H2 parameter sweeps or H2 ranking remain prohibited.','',
+              'Because H2 is reusable, it is not the final untouched holdout after repeated exposures. The 2025 period remains unopened and is reserved for the later unchanged replication after specification freeze and Research/Core/MT4 parity.',''
+          ]
+          Path('docs/research_reboot/usdjpy_v1_candidate_specific_h2_validation_result_v1.md').write_text('\n'.join(lines))
+          PY
+          (cd release_assets && sha256sum * > SHA256SUMS)
+
+      - name: Create clean durable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          TAG: usdjpy-v1-candidate-specific-h2-validation-v1
+        run: |
+          set -euo pipefail
+          if ! gh release view "${TAG}" --repo "${REPOSITORY}" >/dev/null 2>&1; then
+            gh release create "${TAG}" --repo "${REPOSITORY}" --title 'USDJPY V1 Candidate-Specific 2024 H2 Validation v1' --notes 'Accepted fixed reusable 2024 H2 validation exposure 2. Two unchanged strategies passed; 2025 remained unopened.' --latest=false
           fi
+          mapfile -t EXISTING < <(gh release view "${TAG}" --repo "${REPOSITORY}" --json assets --jq '.assets[].name')
+          for name in "${EXISTING[@]}"; do
+            gh release delete-asset "${TAG}" "${name}" --repo "${REPOSITORY}" --yes
+          done
+          gh release upload "${TAG}" release_assets/* --repo "${REPOSITORY}"
+          for attempt in 1 2 3 4 5; do
+            gh release view "${TAG}" --repo "${REPOSITORY}" --json tagName,url,isDraft,isPrerelease,assets > release_receipt.json
+            if python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('release_receipt.json').read_text())
+          assets={row['name']:row for row in r['assets']}
+          expected={'usdjpy-v1-candidate-specific-h2-validation-v1-run-29673802426-artifact-8438161821.zip','usdjpy-v1-candidate-specific-h2-validation-v1-manifest.json','SHA256SUMS'}
+          ok=(r['tagName']=='usdjpy-v1-candidate-specific-h2-validation-v1' and not r['isDraft'] and not r['isPrerelease'] and set(assets)==expected and all(row['state']=='uploaded' for row in assets.values()) and assets['usdjpy-v1-candidate-specific-h2-validation-v1-run-29673802426-artifact-8438161821.zip'].get('digest')=='sha256:19acb99e0ad286b3d2593b6f9df59a6675920eb3734d5901b70e4d8dc9a7c6b8')
+          raise SystemExit(0 if ok else 1)
+          PY
+            then break; fi
+            sleep 5
+          done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('release_receipt.json').read_text())
+          assets={row['name']:row for row in r['assets']}
+          expected={'usdjpy-v1-candidate-specific-h2-validation-v1-run-29673802426-artifact-8438161821.zip','usdjpy-v1-candidate-specific-h2-validation-v1-manifest.json','SHA256SUMS'}
+          assert r['tagName']=='usdjpy-v1-candidate-specific-h2-validation-v1'
+          assert set(assets)==expected
+          assert all(row['state']=='uploaded' for row in assets.values())
+          assert assets['usdjpy-v1-candidate-specific-h2-validation-v1-run-29673802426-artifact-8438161821.zip']['digest']=='sha256:19acb99e0ad286b3d2593b6f9df59a6675920eb3734d5901b70e4d8dc9a7c6b8'
+          PY
 
-      - name: Upload V1 artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: usdjpy-v1-candidate-specific-h2-validation-v1-${{ github.run_id }}
-          path: data/experiments/usdjpy_v1_candidate_specific_h2_validation_v1/**
-          if-no-files-found: error
-          retention-days: 90
+      - name: Commit archive receipt and remove one-time workflow
+        run: |
+          set -euo pipefail
+          mkdir -p docs/research_reboot/artifact_archives/usdjpy_v1_candidate_specific_h2_validation_v1
+          cp release_assets/usdjpy-v1-candidate-specific-h2-validation-v1-manifest.json docs/research_reboot/artifact_archives/usdjpy_v1_candidate_specific_h2_validation_v1/artifact_manifest.json
+          cp release_receipt.json docs/research_reboot/artifact_archives/usdjpy_v1_candidate_specific_h2_validation_v1/release_receipt.json
+          rm -f .github/workflows/run_usdjpy_v1_candidate_specific_h2_validation_v1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/research_reboot .github/workflows/run_usdjpy_v1_candidate_specific_h2_validation_v1.yml
+          git commit -m 'docs: archive accepted USDJPY V1 H2 validation v1'
+          git push origin HEAD:main
 
-      - name: Report result on marker PR
+      - name: Report archive result
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
@@ -221,7 +282,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           if [ "${{ job.status }}" = 'success' ]; then
-            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body "Formal committed V1 H2 validation run ${{ github.run_id }} passed its execution contract. Results are in the exact artifact; 2025 remained unopened and no H2 optimization or ranking occurred."
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body 'Accepted V1 H2 artifact was independently rechecked, archived in the durable Release, and documented. 2025 remained unopened.'
           else
-            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body "Formal committed V1 H2 validation run ${{ github.run_id }} failed. No V1 result is accepted and 2025 remains closed."
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body 'V1 archive failed. The accepted Actions artifact remains unchanged; 2025 remains closed.'
           fi
