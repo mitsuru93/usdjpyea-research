@@ -1,0 +1,1 @@
+Trigger the formal committed V1 candidate-specific 2024 H2 validation. The workflow uses the exact five frozen R6 strategies, logs H2 exposure ordinal 2, performs no H2 optimization or ranking, and keeps 2025 closed.
