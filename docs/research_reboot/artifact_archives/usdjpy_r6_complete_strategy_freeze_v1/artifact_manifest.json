@@ -1,0 +1,39 @@
+{
+  "2025_artifact_access": false,
+  "Core_promotion": false,
+  "H2_rows_parsed": 0,
+  "MT4_promotion": false,
+  "acceptance_checks": 20,
+  "accepted_run_id": 29672853145,
+  "actions_artifact_id": 8437864148,
+  "actions_artifact_name": "usdjpy-r6-complete-strategy-freeze-v1-29672853145",
+  "actions_artifact_sha256": "e15d63fb0fcebf18f623e10852548420ec21affef459de1f8912a78e16d02320",
+  "audit_rows": 32,
+  "eligible_complete_strategies": 9,
+  "eligible_pairwise_comparisons": 36,
+  "evaluator_lock_commit": "7cdbf84ae2da1eaf05cc3b901727b8e284f8fe93",
+  "frozen_complete_strategies": 5,
+  "frozen_strategy_ids": [
+    "R1H04_ramom_32_64_z125__T0_fixed_time_cap",
+    "R1B02_legacy_asia_00_07_breakout__T0_fixed_time_cap",
+    "R1E02_legacy_trend_8h_resumption__T0_fixed_time_cap",
+    "R1F05_donchian_96__T0_fixed_time_cap",
+    "R1E03_trend_12h_resumption__T0_fixed_time_cap"
+  ],
+  "next_stage": "V1_candidate_specific_unused_H2_validation",
+  "output_sha256": {
+    "complete_strategy_audit_all_32.csv": "86d1b4e942176c4fe42587cd73a59b86570dfa1f7130dc609bad7f277b3a2a09",
+    "eligible_complete_strategies.csv": "d63b54de0f0823a9186b755dd4f2170a1656d0c45ed8a9158affef71305d23f5",
+    "eligible_pairwise_similarity.csv.gz": "845c49a8333ed5b3edfc620f8a6cb09d210d0813afe410db1ecb851d58e496c0",
+    "family_freeze_summary.csv": "6a3b4337086409578b86e58a09b39077116c6d17b1c52727fde8ff5a7db71efd",
+    "frozen_complete_strategies.csv": "201c927db5ea7aea359d182d41fa760b2fed9c959b34928872cb02c367d0cbcc",
+    "h2_validation_plan.json": "d0aff9f0359fd23a7811cbef295b3e5aadfcf5eb5650e31a2f9d5edf060aad2a",
+    "r6_acceptance.json": "487a5474fee15e0203ed373fd0eb1a04c9b653809085ade049f507729bd24527",
+    "redundancy_decisions.csv": "0d2ad75c4bed424842be4febc4a3f3bca5c0f4f9a8f65cd8cbf2b9c21fa40c9e"
+  },
+  "r6_status": "PASS",
+  "release_tag": "usdjpy-r6-complete-strategy-freeze-v1",
+  "repository": "mitsuru93/usdjpyea-research",
+  "version": "v1",
+  "workflow_head_sha": "23e0933182aa43b3fa6f9f83611a8a0213ddeb19"
+}
