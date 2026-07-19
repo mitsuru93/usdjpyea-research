@@ -1,0 +1,423 @@
+name: Collect USDJPY Dukascopy Raw Ticks 2024 v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/collect_usdjpy_dukascopy_raw_ticks_2024_v1.yml"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Immutable Release tag for the 2024 raw tick dataset"
+        required: true
+        default: "usdjpy-dukascopy-raw-ticks-2024-v1"
+        type: string
+      replace_existing_release:
+        description: "Delete and recreate the tag/Release if it already exists"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usdjpy-dukascopy-raw-ticks-2024-v1
+  cancel-in-progress: false
+
+env:
+  SYMBOL: USDJPY
+  YEAR: "2024"
+  RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || 'usdjpy-dukascopy-raw-ticks-2024-v1' }}
+  REPLACE_EXISTING_RELEASE: ${{ github.event_name == 'workflow_dispatch' && inputs.replace_existing_release || false }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      h1_matrix: ${{ steps.matrix.outputs.h1_matrix }}
+      h2_matrix: ${{ steps.matrix.outputs.h2_matrix }}
+    steps:
+      - id: matrix
+        name: Build two day matrices below GitHub's 256-job matrix limit
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import json
+          import os
+
+          start = dt.date(2024, 1, 1)
+          split = dt.date(2024, 7, 1)
+          end = dt.date(2025, 1, 1)
+
+          def rows(a, b):
+              out = []
+              day = a
+              while day < b:
+                  nxt = day + dt.timedelta(days=1)
+                  out.append({
+                      "day": day.isoformat(),
+                      "next_day": nxt.isoformat(),
+                      "doy": f"{day.timetuple().tm_yday:03d}",
+                  })
+                  day = nxt
+              return out
+
+          h1 = rows(start, split)
+          h2 = rows(split, end)
+          assert len(h1) == 182
+          assert len(h2) == 184
+          assert len(h1) + len(h2) == 366
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+              fh.write("h1_matrix=" + json.dumps({"include": h1}, separators=(",", ":")) + "\n")
+              fh.write("h2_matrix=" + json.dumps({"include": h2}, separators=(",", ":")) + "\n")
+          print(json.dumps({"h1_days": len(h1), "h2_days": len(h2), "total_days": 366}))
+          PY
+
+  collect-h1:
+    name: H1 ${{ matrix.day }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.h1_matrix) }}
+      # max-parallel is deliberately omitted: use the repository/account maximum.
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download and preserve raw BI5 plus decoded Bid/Ask ticks
+        shell: bash
+        env:
+          DAY: ${{ matrix.day }}
+          NEXT_DAY: ${{ matrix.next_day }}
+        run: |
+          set -euo pipefail
+          day_dir="days/${DAY}"
+          python tools/download_dukascopy_bi5_ticks_raw_v1.py \
+            --symbol "${SYMBOL}" \
+            --start "${DAY}T00" \
+            --end "${NEXT_DAY}T00" \
+            --output-root "${day_dir}" \
+            --manifest-out "${day_dir}/download_manifest.jsonl" \
+            --retries 4 \
+            --request-timeout 45 \
+            --retry-sleep-seconds 1 \
+            --request-interval 0.05 \
+            --retry-error-passes 2 \
+            --max-errors 0
+
+          (
+            cd "${day_dir}"
+            find . -type f ! -name SHA256SUMS -print0 \
+              | sort -z \
+              | xargs -0 sha256sum > SHA256SUMS
+            sha256sum -c SHA256SUMS
+          )
+
+      - name: Upload one-day immutable source packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-raw-ticks-2024-${{ matrix.doy }}
+          path: days
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
+
+  collect-h2:
+    name: H2 ${{ matrix.day }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.h2_matrix) }}
+      # max-parallel is deliberately omitted: use the repository/account maximum.
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download and preserve raw BI5 plus decoded Bid/Ask ticks
+        shell: bash
+        env:
+          DAY: ${{ matrix.day }}
+          NEXT_DAY: ${{ matrix.next_day }}
+        run: |
+          set -euo pipefail
+          day_dir="days/${DAY}"
+          python tools/download_dukascopy_bi5_ticks_raw_v1.py \
+            --symbol "${SYMBOL}" \
+            --start "${DAY}T00" \
+            --end "${NEXT_DAY}T00" \
+            --output-root "${day_dir}" \
+            --manifest-out "${day_dir}/download_manifest.jsonl" \
+            --retries 4 \
+            --request-timeout 45 \
+            --retry-sleep-seconds 1 \
+            --request-interval 0.05 \
+            --retry-error-passes 2 \
+            --max-errors 0
+
+          (
+            cd "${day_dir}"
+            find . -type f ! -name SHA256SUMS -print0 \
+              | sort -z \
+              | xargs -0 sha256sum > SHA256SUMS
+            sha256sum -c SHA256SUMS
+          )
+
+      - name: Upload one-day immutable source packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-raw-ticks-2024-${{ matrix.doy }}
+          path: days
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
+
+  validate-package-release:
+    name: Validate, package 12 months, and publish Release
+    needs: [collect-h1, collect-h2]
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all 366 day packets
+        uses: actions/download-artifact@v4
+        with:
+          pattern: usdjpy-raw-ticks-2024-*
+          path: collected
+          merge-multiple: true
+
+      - name: Install packaging dependency
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zstd
+
+      - name: Verify all day packets and build dataset manifests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          actual_days="$(find collected -mindepth 1 -maxdepth 1 -type d -name '2024-*' | wc -l)"
+          test "${actual_days}" -eq 366
+
+          while IFS= read -r day_dir; do
+            (
+              cd "${day_dir}"
+              sha256sum -c SHA256SUMS
+            )
+          done < <(find collected -mindepth 1 -maxdepth 1 -type d -name '2024-*' | sort)
+
+          mkdir -p manifests
+          python - <<'PY'
+          import datetime as dt
+          import hashlib
+          import json
+          from collections import defaultdict
+          from pathlib import Path
+
+          root = Path("collected")
+          manifests = Path("manifests")
+
+          expected = []
+          day = dt.date(2024, 1, 1)
+          end = dt.date(2025, 1, 1)
+          while day < end:
+              expected.append(day.isoformat())
+              day += dt.timedelta(days=1)
+
+          actual = sorted(p.name for p in root.iterdir() if p.is_dir() and p.name.startswith("2024-"))
+          if actual != expected:
+              missing = sorted(set(expected) - set(actual))
+              extra = sorted(set(actual) - set(expected))
+              raise SystemExit(f"day directory mismatch missing={missing} extra={extra}")
+
+          month_rows = defaultdict(list)
+          annual_records = []
+          total_rows = 0
+          total_raw_bytes = 0
+          total_csv_bytes = 0
+          downloaded_hours = 0
+
+          for day_name in expected:
+              day_dir = root / day_name
+              manifest_path = day_dir / "download_manifest.jsonl"
+              records = [
+                  json.loads(line)
+                  for line in manifest_path.read_text(encoding="utf-8").splitlines()
+                  if line.strip()
+              ]
+              if len(records) != 24:
+                  raise SystemExit(f"{day_name}: expected 24 hourly records, got {len(records)}")
+
+              for row in records:
+                  if row["status"] == "error":
+                      raise SystemExit(f"{day_name}: terminal error record: {row}")
+                  if row["status"] == "downloaded":
+                      raw_path = day_dir / row["raw_bi5_path"]
+                      csv_path = day_dir / row["csv_ticks_path"]
+                      if not raw_path.is_file() or not csv_path.is_file():
+                          raise SystemExit(f"{day_name}: missing raw/csv payload for {row['hour_start_utc']}")
+
+                      def digest(path):
+                          h = hashlib.sha256()
+                          with path.open("rb") as fh:
+                              for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                                  h.update(chunk)
+                          return h.hexdigest()
+
+                      if digest(raw_path) != row["raw_bi5_sha256"]:
+                          raise SystemExit(f"{day_name}: raw SHA mismatch {raw_path}")
+                      if digest(csv_path) != row["csv_ticks_sha256"]:
+                          raise SystemExit(f"{day_name}: CSV SHA mismatch {csv_path}")
+
+                      downloaded_hours += 1
+                      total_rows += int(row["rows"])
+                      total_raw_bytes += int(row["raw_bi5_bytes"])
+                      total_csv_bytes += int(row["csv_ticks_bytes"])
+
+                  annual_records.append(row)
+                  month_rows[day_name[:7]].append(row)
+
+          for month in sorted(month_rows):
+              rows = month_rows[month]
+              payload = {
+                  "schema_version": "usdjpy_dukascopy_raw_ticks_month_v1",
+                  "dataset_id": f"usdjpy_dukascopy_{month}_raw_bi5_and_decoded_ticks_v1",
+                  "symbol": "USDJPY",
+                  "month": month,
+                  "source": "Dukascopy public Bid/Ask proxy",
+                  "hour_records": len(rows),
+                  "downloaded_hours": sum(r["status"] == "downloaded" for r in rows),
+                  "tick_rows": sum(int(r["rows"]) for r in rows),
+                  "raw_bi5_bytes": sum(int(r["raw_bi5_bytes"]) for r in rows),
+                  "csv_ticks_bytes": sum(int(r["csv_ticks_bytes"]) for r in rows),
+                  "terminal_errors": sum(r["status"] == "error" for r in rows),
+              }
+              (manifests / f"{month}.json").write_text(
+                  json.dumps(payload, indent=2, sort_keys=True) + "\n",
+                  encoding="utf-8",
+              )
+
+          annual = {
+              "schema_version": "usdjpy_dukascopy_raw_ticks_2024_v1",
+              "dataset_id": "usdjpy_dukascopy_2024_raw_bi5_and_decoded_ticks_v1",
+              "symbol": "USDJPY",
+              "start_utc": "2024-01-01T00:00:00Z",
+              "end_utc": "2025-01-01T00:00:00Z",
+              "calendar_days": 366,
+              "hour_records": len(annual_records),
+              "downloaded_hours": downloaded_hours,
+              "tick_rows": total_rows,
+              "raw_bi5_bytes": total_raw_bytes,
+              "csv_ticks_bytes": total_csv_bytes,
+              "terminal_errors": 0,
+              "source": "Dukascopy public Bid/Ask proxy; not Rakuten quotes",
+              "contents": ["raw hourly .bi5", "decoded hourly Bid/Ask .csv.gz", "daily manifests", "daily SHA256SUMS"],
+              "workflow_run_id": "${{ github.run_id }}",
+              "workflow_run_attempt": "${{ github.run_attempt }}",
+              "repository_commit": "${{ github.sha }}",
+          }
+          (manifests / "usdjpy-dukascopy-raw-ticks-2024-v1.json").write_text(
+              json.dumps(annual, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(annual, indent=2, sort_keys=True))
+          PY
+
+      - name: Package all 12 months in parallel
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release_assets package_roots
+
+          for month_num in $(seq -w 1 12); do
+            (
+              month="2024-${month_num}"
+              root="package_roots/${month}"
+              mkdir -p "${root}/days" "${root}/manifests"
+              cp -a collected/${month}-* "${root}/days/"
+              cp "manifests/${month}.json" "${root}/manifests/"
+              cp "manifests/usdjpy-dukascopy-raw-ticks-2024-v1.json" "${root}/manifests/"
+
+              archive="release_assets/usdjpy-dukascopy-${month}-raw-bi5-and-decoded-ticks-v1.tar.zst"
+              tar -I 'zstd -10 -T0' -cf "${archive}" -C "${root}" .
+            ) &
+          done
+          wait
+
+          cp manifests/usdjpy-dukascopy-raw-ticks-2024-v1.json release_assets/
+          (
+            cd release_assets
+            sha256sum usdjpy-dukascopy-2024-*-raw-bi5-and-decoded-ticks-v1.tar.zst \
+              usdjpy-dukascopy-raw-ticks-2024-v1.json \
+              > SHA256SUMS
+            sha256sum -c SHA256SUMS
+          )
+
+      - name: Create immutable GitHub Release and upload monthly source archives
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            if [ "${REPLACE_EXISTING_RELEASE}" = "true" ]; then
+              gh release delete "${RELEASE_TAG}" \
+                --repo "${GITHUB_REPOSITORY}" \
+                --cleanup-tag \
+                --yes
+            else
+              echo "Release already exists: ${RELEASE_TAG}" >&2
+              exit 1
+            fi
+          fi
+
+          cat > release_notes.md <<EOF
+          # USDJPY Dukascopy raw ticks 2024 v1
+
+          - Raw hourly Dukascopy `.bi5` payloads are preserved.
+          - Decoded hourly Bid/Ask tick CSV files are preserved as `.csv.gz`.
+          - Data is split into 12 monthly archives to remain below per-asset limits.
+          - `SHA256SUMS` and the annual dataset manifest are included.
+          - This is a public Dukascopy Bid/Ask proxy, not Rakuten quote data.
+          - Workflow run: ${GITHUB_RUN_ID}, attempt: ${GITHUB_RUN_ATTEMPT}
+          - Source commit: ${GITHUB_SHA}
+          EOF
+
+          gh release create "${RELEASE_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --target "${GITHUB_SHA}" \
+            --title "USDJPY Dukascopy Raw Ticks 2024 v1" \
+            --notes-file release_notes.md \
+            release_assets/*
+
+          gh release view "${RELEASE_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --json tagName,name,assets,url \
+            > release_receipt.json
+
+      - name: Upload compact validation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-dukascopy-raw-ticks-2024-v1-release-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            manifests
+            release_assets/SHA256SUMS
+            release_assets/usdjpy-dukascopy-raw-ticks-2024-v1.json
+            release_receipt.json
+          if-no-files-found: error
+          retention-days: 30
