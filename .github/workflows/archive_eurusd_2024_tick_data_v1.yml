@@ -1,0 +1,365 @@
+name: Archive EURUSD 2024 Tick Data v1
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: eurusd-2024-tick-data-archive-v1
+  cancel-in-progress: false
+
+env:
+  RELEASE_TAG: eurusd-2024-tick-data-archive-v1
+  BAR_RELEASE_TAG: eurusd-2024-source-artifact-archive-v1
+  BAR_ASSET: eurusd-2024-source-artifact-id-8441596981.zip
+
+jobs:
+  prepare:
+    if: github.event_name != 'issues' || github.event.issue.title == '[EURUSD] Archive 2024 tick data v1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record run ID
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "EURUSD 2024 Tick archive run started. Run ID: ${{ github.run_id }}. https://github.com/${REPOSITORY}/actions/runs/${{ github.run_id }}"
+
+      - name: Create durable Release shell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cat > /tmp/release-notes.md <<'EOF'
+          # EURUSD 2024 Tick Data Archive v1
+
+          Durable monthly archive of Dukascopy EURUSD 2024 hourly BI5 payloads and deterministic normalized bid/ask tick CSV.GZ files.
+
+          These are public-market proxy ticks, not Rakuten MT4 broker-native ticks. The normalized records are conversion input for a controlled MT4 FXT/HST or compatible tick-import workflow. Every monthly package must reproduce the accepted EURUSD 2024 M1/M5/M15/H1 bar bundle.
+          EOF
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            echo "Release already exists: ${RELEASE_TAG}"
+          else
+            gh release create "${RELEASE_TAG}" \
+              --title "EURUSD 2024 Tick Data Archive v1" \
+              --notes-file /tmp/release-notes.md \
+              --latest=false
+          fi
+
+  archive-month:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - month: "2024-01"
+            start: "2024-01-01T00"
+            end: "2024-02-01T00"
+          - month: "2024-02"
+            start: "2024-02-01T00"
+            end: "2024-03-01T00"
+          - month: "2024-03"
+            start: "2024-03-01T00"
+            end: "2024-04-01T00"
+          - month: "2024-04"
+            start: "2024-04-01T00"
+            end: "2024-05-01T00"
+          - month: "2024-05"
+            start: "2024-05-01T00"
+            end: "2024-06-01T00"
+          - month: "2024-06"
+            start: "2024-06-01T00"
+            end: "2024-07-01T00"
+          - month: "2024-07"
+            start: "2024-07-01T00"
+            end: "2024-08-01T00"
+          - month: "2024-08"
+            start: "2024-08-01T00"
+            end: "2024-09-01T00"
+          - month: "2024-09"
+            start: "2024-09-01T00"
+            end: "2024-10-01T00"
+          - month: "2024-10"
+            start: "2024-10-01T00"
+            end: "2024-11-01T00"
+          - month: "2024-11"
+            start: "2024-11-01T00"
+            end: "2024-12-01T00"
+          - month: "2024-12"
+            start: "2024-12-01T00"
+            end: "2025-01-01T00"
+    env:
+      MONTH: ${{ matrix.month }}
+      START: ${{ matrix.start }}
+      END: ${{ matrix.end }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy
+
+      - name: Compile archive tools
+        run: |
+          python -m py_compile \
+            tools/download_dukascopy_bi5_ticks.py \
+            tools/download_dukascopy_tick_archive_v1.py \
+            tools/summarize_download_manifest.py \
+            tools/resample_fx_ticks.py \
+            tools/build_fx_tick_month_archive_v1.py
+
+      - name: Download accepted annual bar bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p accepted/download accepted/extracted
+          gh release download "${BAR_RELEASE_TAG}" --pattern "${BAR_ASSET}" --dir accepted/download
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          path = Path("accepted/download/eurusd-2024-source-artifact-id-8441596981.zip")
+          digest = hashlib.sha256(path.read_bytes()).hexdigest()
+          expected = "7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685"
+          assert digest == expected, (digest, expected)
+          PY
+          unzip -q "accepted/download/${BAR_ASSET}" -d accepted/extracted
+
+      - name: Download exact BI5 and normalized ticks
+        run: |
+          set -euo pipefail
+          mkdir -p "data/tick_archive/${MONTH}/bi5" "data/tick_archive/${MONTH}/ticks" "data/tick_archive/${MONTH}/audit"
+          python tools/download_dukascopy_tick_archive_v1.py \
+            --symbols EURUSD \
+            --start "${START}" \
+            --end "${END}" \
+            --bi5-output-root "data/tick_archive/${MONTH}/bi5" \
+            --tick-output-root "data/tick_archive/${MONTH}/ticks" \
+            --manifest-out "data/tick_archive/${MONTH}/audit/download_manifest.jsonl" \
+            --retries 3 \
+            --sleep-seconds 1.0 \
+            --request-interval 0.10 \
+            --request-timeout 35 \
+            --max-errors 0 \
+            --error-retry-passes 8 \
+            --error-retry-sleep-seconds 8 \
+            --error-retry-request-timeout 60 \
+            --error-retry-retries 4
+
+      - name: Verify calendar-hour coverage
+        run: |
+          python tools/summarize_download_manifest.py \
+            --manifest "data/tick_archive/${MONTH}/audit/download_manifest.jsonl" \
+            --symbols EURUSD \
+            --start "${START}" \
+            --end "${END}" \
+            --output "data/tick_archive/${MONTH}/audit/download_summary.json" \
+            --min-coverage 1.0 \
+            --max-hard-errors 0 \
+            --expected-records-mode calendar
+
+      - name: Validate ticks, reproduce accepted bars, and package
+        run: |
+          python tools/build_fx_tick_month_archive_v1.py \
+            --symbol EURUSD \
+            --month "${MONTH}" \
+            --manifest "data/tick_archive/${MONTH}/audit/download_manifest.jsonl" \
+            --download-summary "data/tick_archive/${MONTH}/audit/download_summary.json" \
+            --bi5-root "data/tick_archive/${MONTH}/bi5" \
+            --tick-root "data/tick_archive/${MONTH}/ticks" \
+            --accepted-annual-root accepted/extracted \
+            --output-dir "data/tick_archive/${MONTH}/release_assets"
+
+      - name: Upload verified monthly package to durable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release upload "${RELEASE_TAG}" \
+            "data/tick_archive/${MONTH}/release_assets/eurusd-${MONTH}-ticks-v1.tar.gz" \
+            "data/tick_archive/${MONTH}/release_assets/eurusd-${MONTH}-ticks-receipt-v1.json" \
+            --clobber
+
+      - name: Verify uploaded monthly asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "${RELEASE_TAG}" --json assets > "/tmp/release-${MONTH}.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          month = os.environ["MONTH"]
+          local = json.loads(Path(f"data/tick_archive/{month}/release_assets/eurusd-{month}-ticks-receipt-v1.json").read_text())
+          release = json.loads(Path(f"/tmp/release-{month}.json").read_text())
+          by_name = {a["name"]: a for a in release["assets"]}
+          asset = by_name[local["asset_name"]]
+          assert asset["digest"] == "sha256:" + local["asset_sha256"], (asset, local)
+          assert asset["size"] == local["asset_size_in_bytes"], (asset, local)
+          print({"month": month, "release_asset_verification": "PASS", "ticks": local["total_ticks"]})
+          PY
+
+  finalize:
+    needs: [prepare, archive-month]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download all monthly receipts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/eurusd_tick_receipts /tmp/eurusd_tick_archive
+          gh release download "${RELEASE_TAG}" \
+            --pattern 'eurusd-2024-*-ticks-receipt-v1.json' \
+            --dir /tmp/eurusd_tick_receipts
+          gh release view "${RELEASE_TAG}" --json tagName,url,isDraft,isPrerelease,assets \
+            > /tmp/eurusd_tick_archive/release_receipt.json
+
+      - name: Build and verify master inventory
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          receipts = [json.loads(p.read_text()) for p in sorted(Path('/tmp/eurusd_tick_receipts').glob('*.json'))]
+          expected_months = [f'2024-{m:02d}' for m in range(1, 13)]
+          assert [r['month'] for r in receipts] == expected_months, [r['month'] for r in receipts]
+          assert all(r['status'] == 'verified' for r in receipts)
+          assert all(r['bar_equivalence_status'] == 'PASS' for r in receipts)
+
+          release = json.loads(Path('/tmp/eurusd_tick_archive/release_receipt.json').read_text())
+          assert release['tagName'] == 'eurusd-2024-tick-data-archive-v1'
+          assert release['isDraft'] is False
+          assert release['isPrerelease'] is False
+          assets = {a['name']: a for a in release['assets']}
+          for receipt in receipts:
+              asset = assets[receipt['asset_name']]
+              assert asset['digest'] == 'sha256:' + receipt['asset_sha256'], (asset, receipt)
+              assert asset['size'] == receipt['asset_size_in_bytes'], (asset, receipt)
+
+          manifest = {
+              'version': 'v1',
+              'status': 'PASS',
+              'symbol': 'EURUSD',
+              'year': 2024,
+              'source': 'Dukascopy public hourly BI5',
+              'representations': ['exact_vendor_bi5', 'deterministic_normalized_bid_ask_tick_csv_gz'],
+              'accepted_bar_equivalence_asset': 'eurusd-2024-source-artifact-id-8441596981.zip',
+              'months': receipts,
+              'month_count': len(receipts),
+              'total_ticks': sum(r['total_ticks'] for r in receipts),
+              'release_tag': 'eurusd-2024-tick-data-archive-v1',
+          }
+          out = Path('/tmp/eurusd_tick_archive')
+          manifest_path = out / 'eurusd-2024-tick-data-archive-manifest-v1.json'
+          manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
+          sums = ''.join(f"{r['asset_sha256']}  {r['asset_name']}\n" for r in receipts)
+          for path in sorted(Path('/tmp/eurusd_tick_receipts').glob('*.json')):
+              sums += f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n"
+          (out / 'SHA256SUMS').write_text(sums)
+          summary = {
+              'status': 'PASS',
+              'month_count': 12,
+              'monthly_tick_assets': 12,
+              'monthly_receipts': 12,
+              'total_ticks': manifest['total_ticks'],
+              'all_months_bar_equivalent': True,
+          }
+          (out / 'archive_summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n')
+          print(summary)
+          PY
+
+      - name: Upload master manifest and checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release upload "${RELEASE_TAG}" \
+            /tmp/eurusd_tick_archive/eurusd-2024-tick-data-archive-manifest-v1.json \
+            /tmp/eurusd_tick_archive/SHA256SUMS \
+            --clobber
+          gh release view "${RELEASE_TAG}" --json tagName,url,isDraft,isPrerelease,assets \
+            > /tmp/eurusd_tick_archive/release_receipt.json
+
+      - name: Commit durable archive receipt and update registry
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          target="docs/research_reboot/artifact_archives/eurusd_2024_ticks_v1"
+          mkdir -p "${target}"
+          cp /tmp/eurusd_tick_archive/release_receipt.json "${target}/release_receipt.json"
+          cp /tmp/eurusd_tick_archive/eurusd-2024-tick-data-archive-manifest-v1.json "${target}/artifact_manifest.json"
+          cp /tmp/eurusd_tick_archive/SHA256SUMS "${target}/SHA256SUMS"
+          cp /tmp/eurusd_tick_archive/archive_summary.json "${target}/archive_summary.json"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          config_path = Path('configs/research/eurusd_2024_tick_archive_v1.json')
+          config = json.loads(config_path.read_text())
+          manifest = json.loads(Path('/tmp/eurusd_tick_archive/eurusd-2024-tick-data-archive-manifest-v1.json').read_text())
+          receipt = json.loads(Path('/tmp/eurusd_tick_archive/release_receipt.json').read_text())
+          config['status'] = 'archived_and_verified'
+          config['workflow']['run_id'] = int('${{ github.run_id }}')
+          config['workflow']['run_attempt'] = int('${{ github.run_attempt }}')
+          config['result'] = {
+              'release_url': receipt['url'],
+              'month_count': 12,
+              'monthly_tick_assets': 12,
+              'total_ticks': manifest['total_ticks'],
+              'all_months_bar_equivalent': True,
+              'actions_artifact_expiry_dependency': False,
+              'receipt_path': 'docs/research_reboot/artifact_archives/eurusd_2024_ticks_v1/release_receipt.json'
+          }
+          config_path.write_text(json.dumps(config, indent=2, sort_keys=True) + '\n')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${target}" configs/research/eurusd_2024_tick_archive_v1.json
+          git commit -m "data: archive verified EURUSD 2024 tick source"
+          git push origin main
+
+      - name: Close trigger issue
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "EURUSD 2024 Tick archive completed and verified. Twelve monthly BI5 + normalized tick packages were stored in Release ${RELEASE_TAG}; every month reproduced the accepted M1/M5/M15/H1 bars. Receipt committed under docs/research_reboot/artifact_archives/eurusd_2024_ticks_v1/."
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
+
+      - name: Upload audit copy
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-2024-tick-archive-audit-${{ github.run_id }}
+          path: /tmp/eurusd_tick_archive
+          if-no-files-found: warn
+          retention-days: 90
