@@ -3,18 +3,22 @@ name: Indexed Bridge Assemble USDJPY R5 Evaluator v2
 on:
   issues:
     types: [opened]
+  pull_request:
+    types: [opened]
 
 permissions:
   contents: write
   issues: write
+  pull-requests: write
 
 jobs:
   assemble:
-    if: github.event.issue.title == '[R5] Run indexed evaluator assembly v2'
+    if: github.event_name == 'pull_request' || github.event.issue.title == '[R5] Run indexed evaluator assembly v2'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - uses: actions/setup-python@v5
@@ -99,11 +103,17 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
-      - name: Close trigger issue
+      - name: Close trigger
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body 'R5 evaluator was reconstructed from nine verified chunks, compiled, locked and committed before any formal Exit result.'
-          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
+          if [ "${{ github.event_name }}" = 'pull_request' ]; then
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body 'R5 evaluator was reconstructed from nine verified chunks, compiled, locked and committed to main before any formal Exit result.'
+            gh pr close "${PR_NUMBER}" --repo "${REPOSITORY}" --delete-branch
+          else
+            gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body 'R5 evaluator was reconstructed from nine verified chunks, compiled, locked and committed before any formal Exit result.'
+            gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
+          fi
