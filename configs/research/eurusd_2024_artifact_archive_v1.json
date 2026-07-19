@@ -1,0 +1,46 @@
+{
+  "version": "v1",
+  "status": "archive_requested",
+  "repository": "mitsuru93/usdjpyea-research",
+  "symbol": "EURUSD",
+  "year": 2024,
+  "source_artifact": {
+    "workflow_run_id": 29635629597,
+    "run_attempt": 1,
+    "head_sha": "7ea43919a2477a77ec4276a0fbe258061b5da29b",
+    "artifact_id": 8441596981,
+    "artifact_name": "public-fx-data-EURUSD-2024-annual-29635629597-a1",
+    "digest": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+    "size_in_bytes": 19261430,
+    "created_at_utc": "2026-07-19T11:01:45Z"
+  },
+  "durable_release": {
+    "tag": "eurusd-2024-source-artifact-archive-v1",
+    "title": "EURUSD 2024 Source Artifact Archive v1",
+    "asset_name": "eurusd-2024-source-artifact-id-8441596981.zip",
+    "manifest_name": "eurusd-2024-source-artifact-archive-manifest-v1.json",
+    "checksums_name": "SHA256SUMS",
+    "receipt_repository_path": "docs/research_reboot/artifact_archives/eurusd_2024_source_v1/release_receipt.json"
+  },
+  "required_content_checks": {
+    "annual_expected_records": 6288,
+    "annual_observed_records": 6288,
+    "annual_unobserved_records": 0,
+    "annual_hard_error_records": 0,
+    "annual_effective_coverage": 1.0,
+    "monthly_records": 12,
+    "timeframe_rows": {
+      "M1": 364717,
+      "M5": 73318,
+      "M15": 24446,
+      "H1": 6112
+    },
+    "validation_status": "ok"
+  },
+  "retention_policy": {
+    "actions_artifact_is_temporary": true,
+    "github_release_asset_is_durable_copy": true,
+    "release_asset_digest_must_match_source_artifact_digest": true,
+    "receipt_and_manifest_must_be_committed": true
+  }
+}
