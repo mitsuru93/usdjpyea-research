@@ -1,0 +1,177 @@
+name: Run Committed USDJPY R5 Controlled Exit v1
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: usdjpy-r5-controlled-exit-committed-v1
+  cancel-in-progress: false
+
+jobs:
+  r5:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      CONFIG_PATH: configs/research/usdjpy_r5_controlled_exit_v1.json
+      LOCK_PATH: configs/research/usdjpy_r5_controlled_exit_lock_v1.json
+      OUTPUT_DIR: data/experiments/usdjpy_r5_controlled_exit_v1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy
+
+      - name: Verify committed evaluator and execution lock
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/run_usdjpy_r5_controlled_exit_v1.py
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+          lock=json.loads(Path('configs/research/usdjpy_r5_controlled_exit_lock_v1.json').read_text())
+          for path,expected in lock['code_blobs'].items():
+              actual=subprocess.check_output(['git','rev-parse',f'HEAD:{path}'],text=True).strip()
+              assert actual==expected,(path,actual,expected)
+          for path,expected in lock['content_sha256'].items():
+              actual=hashlib.sha256(Path(path).read_bytes()).hexdigest()
+              assert actual==expected,(path,actual,expected)
+          assert lock['content_sha256']['tools/run_usdjpy_r5_controlled_exit_v1.py']=='61a08c41473f6895056b7c680f2d8a0730e6391b2f4e070e9bab4dd10f9c2a19'
+          assert len(lock['representatives'])==8
+          assert len(lock['policy_contract'])==4
+          assert lock['cohort_contract']['entry_rows_per_policy']==2982
+          assert lock['cohort_contract']['total_policy_trade_rows']==11928
+          assert lock['research_firewall']['H2_rows_parsed']==0
+          assert lock['research_firewall']['2025_access'] is False
+          print({'R5_lock':'PASS','files':len(lock['code_blobs'])})
+          PY
+
+      - name: Download and verify frozen R0 R2 and R4 inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p releases/r0 releases/r2 releases/r4 input/r0 input/r2 input/r4
+          python - <<'PY' > release.env
+          import json
+          from pathlib import Path
+          lock=json.loads(Path('configs/research/usdjpy_r5_controlled_exit_lock_v1.json').read_text())
+          for key,prefix in [('r0','R0'),('r2','R2'),('r4','R4')]:
+              row=lock['input_releases'][key]
+              print(f'{prefix}_TAG={row["tag"]}')
+              print(f'{prefix}_ASSET={row["asset"]}')
+              print(f'{prefix}_SHA={row["asset_sha256"]}')
+          PY
+          source release.env
+          gh release download "${R0_TAG}" --repo "${GITHUB_REPOSITORY}" --pattern "${R0_ASSET}" --dir releases/r0
+          gh release download "${R2_TAG}" --repo "${GITHUB_REPOSITORY}" --pattern "${R2_ASSET}" --dir releases/r2
+          gh release download "${R4_TAG}" --repo "${GITHUB_REPOSITORY}" --pattern "${R4_ASSET}" --dir releases/r4
+          echo "${R0_SHA}  releases/r0/${R0_ASSET}" | sha256sum -c -
+          echo "${R2_SHA}  releases/r2/${R2_ASSET}" | sha256sum -c -
+          echo "${R4_SHA}  releases/r4/${R4_ASSET}" | sha256sum -c -
+          unzip -q "releases/r0/${R0_ASSET}" -d input/r0
+          unzip -q "releases/r2/${R2_ASSET}" -d input/r2
+          unzip -q "releases/r4/${R4_ASSET}" -d input/r4
+          mapfile -t M15_FILES < <(find input/r0 -type f -path '*/canonical/bars/M15/USDJPY_M15.csv.gz' | sort)
+          mapfile -t R2_FILES < <(find input/r2 -type f -name 'candidate_horizon_trades.csv.gz' | sort)
+          mapfile -t R4_FILES < <(find input/r4 -type f -name 'selected_representatives.csv' | sort)
+          test "${#M15_FILES[@]}" -eq 1
+          test "${#R2_FILES[@]}" -eq 1
+          test "${#R4_FILES[@]}" -eq 1
+          echo "CANONICAL_M15=${M15_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R2_TRADES=${R2_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R4_SELECTED=${R4_FILES[0]}" >> "${GITHUB_ENV}"
+
+      - name: Run all 32 frozen Exit combinations
+        run: |
+          python tools/run_usdjpy_r5_controlled_exit_v1.py \
+            --canonical-m15 "${CANONICAL_M15}" \
+            --r2-trades "${R2_TRADES}" \
+            --r4-selected "${R4_SELECTED}" \
+            --config "${CONFIG_PATH}" \
+            --output-dir "${OUTPUT_DIR}"
+
+      - name: Verify R5 output contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          out=Path('data/experiments/usdjpy_r5_controlled_exit_v1')
+          lock=json.loads(Path('configs/research/usdjpy_r5_controlled_exit_lock_v1.json').read_text())
+          for name in lock['required_outputs']:
+              path=out/name
+              assert path.is_file() and path.stat().st_size>0,name
+          trades=pd.read_csv(out/'exit_trades.csv.gz',compression='gzip')
+          summary=pd.read_csv(out/'exit_summary.csv')
+          monthly=pd.read_csv(out/'exit_monthly.csv')
+          direction=pd.read_csv(out/'exit_direction.csv')
+          reasons=pd.read_csv(out/'exit_reason.csv')
+          baseline=pd.read_csv(out/'baseline_regression.csv')
+          trade_sets=pd.read_csv(out/'policy_trade_set_regression.csv')
+          acceptance=json.loads((out/'r5_acceptance.json').read_text())
+          metadata=json.loads((out/'run_metadata.json').read_text())
+          assert len(trades)==11928
+          assert len(summary)==32
+          assert len(monthly)==192
+          assert len(direction)==64
+          assert len(reasons)==96
+          assert len(baseline)==8 and baseline['passed'].all()
+          assert len(trade_sets)==32 and trade_sets['passed'].all()
+          assert acceptance['status']=='PASS'
+          assert all(value is True for key,value in acceptance.items() if key!='status')
+          assert metadata['H2_rows_parsed']==0
+          assert metadata['2025_artifact_access'] is False
+          assert metadata['R4_reselection'] is False
+          assert metadata['policy_parameter_optimization'] is False
+          assert metadata['R5_selection_or_promotion'] is False
+          assert metadata['R6_design_unblocked'] is True
+          print({'R5':'PASS','trade_rows':len(trades),'summary_rows':len(summary),'T0_regressions':int(baseline['passed'].sum())})
+          PY
+
+      - name: Write job summary
+        if: always()
+        run: |
+          echo '# USDJPY R5 Controlled Exit v1' >> "${GITHUB_STEP_SUMMARY}"
+          echo >> "${GITHUB_STEP_SUMMARY}"
+          if [ -f "${OUTPUT_DIR}/r5_acceptance.json" ]; then
+            cat "${OUTPUT_DIR}/r5_acceptance.json" >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Upload R5 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-r5-controlled-exit-v1-${{ github.run_id }}
+          path: data/experiments/usdjpy_r5_controlled_exit_v1/**
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Report result and close marker PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ "${{ job.status }}" = 'success' ]; then
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body "Formal committed R5 run ${{ github.run_id }} passed. All 32 Exit combinations were reported; no selection was made and H2/2025 remained unopened."
+          else
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body "Formal committed R5 run ${{ github.run_id }} failed. No R5 result is accepted and R6 remains blocked."
+          fi
+          gh pr close "${PR_NUMBER}" --repo "${REPOSITORY}" --delete-branch
