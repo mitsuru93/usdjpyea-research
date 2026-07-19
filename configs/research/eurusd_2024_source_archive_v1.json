@@ -1,0 +1,68 @@
+{
+  "version": "v1",
+  "status": "canonical_source_accepted",
+  "repository": "mitsuru93/usdjpyea-research",
+  "symbol": "EURUSD",
+  "year": 2024,
+  "accepted_at_jst": "2026-07-19",
+  "acceptance_basis": "Content-level inspection passed all project source-data requirements; project owner directed this verified artifact to be used as the canonical source bundle.",
+  "workflow": {
+    "run_id": 29635629597,
+    "run_attempt": 1,
+    "head_branch": "main",
+    "head_sha": "7ea43919a2477a77ec4276a0fbe258061b5da29b"
+  },
+  "annual_artifact": {
+    "artifact_id": 8441596981,
+    "artifact_name": "public-fx-data-EURUSD-2024-annual-29635629597-a1",
+    "digest": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+    "size_in_bytes": 19261430,
+    "created_at_utc": "2026-07-19T11:01:45Z",
+    "zip_digest_verified": true
+  },
+  "coverage": {
+    "expected_records_mode": "weekdays",
+    "expected_records": 6288,
+    "observed_records": 6288,
+    "downloaded_records": 6112,
+    "no_tick_records": 176,
+    "unobserved_records": 0,
+    "hard_error_records": 0,
+    "effective_coverage": 1.0,
+    "all_twelve_months_passed": true
+  },
+  "bars": {
+    "M1": {
+      "rows": 364717,
+      "validation_status": "ok"
+    },
+    "M5": {
+      "rows": 73318,
+      "validation_status": "ok"
+    },
+    "M15": {
+      "rows": 24446,
+      "validation_status": "ok"
+    },
+    "H1": {
+      "rows": 6112,
+      "validation_status": "ok"
+    }
+  },
+  "independent_checks": {
+    "duplicate_timestamps": 0,
+    "timestamps_monotonic_increasing": true,
+    "manifest_gzip_sha256_matches_files": true,
+    "metadata_source": "Dukascopy public bid/ask BI5",
+    "metadata_research_status": "source_data_only",
+    "metadata_strategy_assumptions": null,
+    "metadata_broker_spread_assumption": null
+  },
+  "research_authority": {
+    "canonical_for_eurusd_2024_research": true,
+    "h1_strategy_source_gate_passed": true,
+    "strategy_execution_blocked": false,
+    "must_not_be_replaced_without_explicit_project_decision": true,
+    "must_not_be_mixed_with_usdjpy_artifacts": true
+  }
+}
