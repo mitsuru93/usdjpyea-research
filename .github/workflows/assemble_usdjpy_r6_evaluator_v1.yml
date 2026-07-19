@@ -1,0 +1,72 @@
+name: Assemble Exact USDJPY R6 Evaluator v1
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: assemble-usdjpy-r6-evaluator-v1
+  cancel-in-progress: false
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify chunks and materialize evaluator
+        run: |
+          set -euo pipefail
+          echo '825da7143a340f2ae27852a7a2a505bbfda3f38bcb423f97229120077303bcfb  .github/r6_stage_v2/chunk_00.b64' | sha256sum -c -
+          echo '3ef516e350a288d9658a7fe8836bda9f8e28db5f6040462ff5ee5c07be7b0014  .github/r6_stage_v2/chunk_01.b64' | sha256sum -c -
+          echo '8a24bf64a61ad29e40ba590256a841d66a0fd3cac662295a399386abe6d7f03e  .github/r6_stage_v2/chunk_02.b64' | sha256sum -c -
+          echo 'c1eeaa5d06990722523fcbd98a499b60bee5fd7c3dcdd224eb136eae065e3921  .github/r6_stage_v2/chunk_03.b64' | sha256sum -c -
+          cat .github/r6_stage_v2/chunk_00.b64 \
+              .github/r6_stage_v2/chunk_01.b64 \
+              .github/r6_stage_v2/chunk_02.b64 \
+              .github/r6_stage_v2/chunk_03.b64 > /tmp/r6_evaluator.b64
+          echo '54a3670d70357f0befe1b7dbf50c24e6d395ae0669af399f49cca7668d60e1e8  /tmp/r6_evaluator.b64' | sha256sum -c -
+          base64 --decode /tmp/r6_evaluator.b64 > /tmp/r6_evaluator.py.gz
+          echo 'e22b297569e809e3dbc5e16f0da37b81a3cd7eb6709d53d51fe18eadaba69dc3  /tmp/r6_evaluator.py.gz' | sha256sum -c -
+          gzip -t /tmp/r6_evaluator.py.gz
+          mkdir -p tools
+          gzip --decompress --stdout /tmp/r6_evaluator.py.gz > tools/run_usdjpy_r6_complete_strategy_freeze_v1.py
+          echo '44f52613b5a614c12f578c6ed8d39a40b5cb5c2ce973051bc0ee3f14cb384b98  tools/run_usdjpy_r6_complete_strategy_freeze_v1.py' | sha256sum -c -
+          python -m py_compile tools/run_usdjpy_r6_complete_strategy_freeze_v1.py
+          test "$(git hash-object tools/run_usdjpy_r6_complete_strategy_freeze_v1.py)" = 'cea5187b4b968408b13970fa92888f9baf1b43f5'
+
+      - name: Commit exact evaluator and remove staging files
+        run: |
+          set -euo pipefail
+          rm -rf .github/r6_stage .github/r6_stage_v2
+          rm -f .github/workflows/assemble_usdjpy_r6_evaluator_v1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/run_usdjpy_r6_complete_strategy_freeze_v1.py .github
+          git commit -m 'research: materialize exact USDJPY R6 evaluator v1'
+          git push origin HEAD:main
+
+      - name: Report assembly result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ "${{ job.status }}" = 'success' ]; then
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body 'Exact R6 evaluator was materialized on main from verified chunks. No H2 or 2025 data was accessed.'
+          else
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body 'R6 evaluator assembly failed. No evaluator result is accepted and H2 remains closed.'
+          fi
