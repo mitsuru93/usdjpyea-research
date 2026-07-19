@@ -1,0 +1,195 @@
+{
+  "version": "v1",
+  "research_stage": "V1_candidate_specific_unused_H2_validation",
+  "symbol": "USDJPY",
+  "validation_period": {
+    "start_utc": "2024-07-01T00:00:00Z",
+    "end_utc_exclusive": "2025-01-01T00:00:00Z"
+  },
+  "inputs": {
+    "r0": {
+      "release_tag": "usdjpy-r0-canonical-2024-v1",
+      "release_asset": "usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip",
+      "release_asset_sha256": "d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015",
+      "canonical_m15_gzip_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c"
+    },
+    "r1": {
+      "release_tag": "usdjpy-r1-entry-registry-v2",
+      "release_asset": "usdjpy-r1-entry-registry-v2-run-29642282221-artifact-8428977454.zip",
+      "release_asset_sha256": "0e0de71ccc56409a919d48d61e4dcb12502cefdb3944374b9163eda76d222d74",
+      "registry_snapshot_sha256": "3bb43eeb1234ec6d175e37df3b1bbdb385364857351938bd088247ab14567549",
+      "h1_signal_ledger_sha256": "99c2e2d19bd76b2438c1cec6c777228f82cdca16eeb1b471257bd389d6b7dc9e"
+    },
+    "r5": {
+      "release_tag": "usdjpy-r5-controlled-exit-v1",
+      "release_asset": "usdjpy-r5-controlled-exit-v1-run-29666989206-artifact-8436023286.zip",
+      "release_asset_sha256": "0f0238a509c4bd6dc9bbe43c941001b7d2c54c66ba07b48f0aa9343f6c4a05cb",
+      "exit_trades_sha256": "f8cf80f58b3f95a94a15ba2b5faca331281a5f96024d0b6aecf421136d83b6a5"
+    },
+    "r6": {
+      "release_tag": "usdjpy-r6-complete-strategy-freeze-v1",
+      "release_asset": "usdjpy-r6-complete-strategy-freeze-v1-run-29672853145-artifact-8437864148.zip",
+      "release_asset_sha256": "e15d63fb0fcebf18f623e10852548420ec21affef459de1f8912a78e16d02320",
+      "frozen_complete_strategies_sha256": "201c927db5ea7aea359d182d41fa760b2fed9c959b34928872cb02c367d0cbcc",
+      "h2_validation_plan_sha256": "d0aff9f0359fd23a7811cbef295b3e5aadfcf5eb5650e31a2f9d5edf060aad2a",
+      "r6_acceptance_sha256": "487a5474fee15e0203ed373fd0eb1a04c9b653809085ade049f507729bd24527"
+    }
+  },
+  "strategies": [
+    {
+      "candidate_id": "R1H04_ramom_32_64_z125",
+      "eligible_rank": 1,
+      "entry_definition_sha256": "72b1ce40434c8d8869a1546d72051fdd2224e81fc7124d7af2255067e11f89d6",
+      "entry_specification": "unchanged accepted R4 definition",
+      "exit_specification": "unchanged accepted R5 policy and selected time cap",
+      "family": "volatility_adjusted_momentum",
+      "freeze_rank": 1,
+      "mechanism": "fixed_time",
+      "policy_id": "T0_fixed_time_cap",
+      "strategy_id": "R1H04_ramom_32_64_z125__T0_fixed_time_cap",
+      "time_cap_bars": 32
+    },
+    {
+      "candidate_id": "R1B02_legacy_asia_00_07_breakout",
+      "eligible_rank": 2,
+      "entry_definition_sha256": "b9abb7ac1a44d270dbee702758652a023dff24407d4764f7ac03547bb7aa7990",
+      "entry_specification": "unchanged accepted R4 definition",
+      "exit_specification": "unchanged accepted R5 policy and selected time cap",
+      "family": "session_range_breakout",
+      "freeze_rank": 2,
+      "mechanism": "fixed_time",
+      "policy_id": "T0_fixed_time_cap",
+      "strategy_id": "R1B02_legacy_asia_00_07_breakout__T0_fixed_time_cap",
+      "time_cap_bars": 48
+    },
+    {
+      "candidate_id": "R1E02_legacy_trend_8h_resumption",
+      "eligible_rank": 3,
+      "entry_definition_sha256": "23e3724d872de13027eb769e830b148786cec42dd471b0e34bc062718f364017",
+      "entry_specification": "unchanged accepted R4 definition",
+      "exit_specification": "unchanged accepted R5 policy and selected time cap",
+      "family": "trend_pullback_resumption",
+      "freeze_rank": 3,
+      "mechanism": "fixed_time",
+      "policy_id": "T0_fixed_time_cap",
+      "strategy_id": "R1E02_legacy_trend_8h_resumption__T0_fixed_time_cap",
+      "time_cap_bars": 48
+    },
+    {
+      "candidate_id": "R1F05_donchian_96",
+      "eligible_rank": 5,
+      "entry_definition_sha256": "688e5f47d6a80ef2a8cbd9ed190579e2ce60536ae5168ef6edf736f3d72b2f1e",
+      "entry_specification": "unchanged accepted R4 definition",
+      "exit_specification": "unchanged accepted R5 policy and selected time cap",
+      "family": "donchian_channel_breakout",
+      "freeze_rank": 4,
+      "mechanism": "fixed_time",
+      "policy_id": "T0_fixed_time_cap",
+      "strategy_id": "R1F05_donchian_96__T0_fixed_time_cap",
+      "time_cap_bars": 32
+    },
+    {
+      "candidate_id": "R1E03_trend_12h_resumption",
+      "eligible_rank": 6,
+      "entry_definition_sha256": "90d0f87208e9aff45443c6864be13ef853dec694ab5c5a2d97902e744cce55e8",
+      "entry_specification": "unchanged accepted R4 definition",
+      "exit_specification": "unchanged accepted R5 policy and selected time cap",
+      "family": "trend_pullback_resumption",
+      "freeze_rank": 5,
+      "mechanism": "fixed_time",
+      "policy_id": "T0_fixed_time_cap",
+      "strategy_id": "R1E03_trend_12h_resumption__T0_fixed_time_cap",
+      "time_cap_bars": 32
+    }
+  ],
+  "forbidden_previously_opened_complete_strategies": [
+    "A1_impulse_breakout_lb3_hold6",
+    "E3_trend_24h_resumption_hold6"
+  ],
+  "implementation_regressions": {
+    "regenerate_H1_signals_for_frozen_candidates": true,
+    "exact_match_to_accepted_R1_signal_keys_and_definitions": true,
+    "regenerate_H1_T0_trades_for_frozen_candidates": true,
+    "exact_match_to_accepted_R5_T0_trade_keys_prices_costs_and_returns": true,
+    "H2_outcomes_calculated_only_after_all_H1_regressions_pass": true
+  },
+  "execution_contract": {
+    "signal_timeframe": "M15",
+    "signal_uses_completed_bar": true,
+    "entry": "next_available_M15_mid_open",
+    "hard_no_trade_applied_to": "actual_next_M15_entry_timestamp",
+    "exit": "selected_time_cap_bar_mid_close",
+    "same_entry_and_exit_utc_month_required": true,
+    "independent_signal_trades": true,
+    "netting_or_concurrency_change": false,
+    "entry_and_exit_parameters_unchanged": true
+  },
+  "cost_contract": {
+    "entry_spread_field": "spread_mean_pips_at_entry",
+    "default_cost_pips": "max(0.5, entry_spread_pips)",
+    "severe_cost_pips": "default_cost_pips*3+1",
+    "gross_price_basis": "mid",
+    "unchanged_from_R2_R5": true
+  },
+  "individual_strategy_gates": {
+    "minimum_trades": 60,
+    "avg_default_net_pips_strictly_positive": true,
+    "avg_severe_net_pips_strictly_positive": true,
+    "default_profit_factor_strictly_above_one": true,
+    "severe_profit_factor_strictly_above_one": true,
+    "minimum_default_positive_months": 4,
+    "minimum_severe_positive_months": 3,
+    "Q3_and_Q4_default_positive": true,
+    "Q3_and_Q4_severe_positive": true,
+    "total_default_pips_excluding_best_two_utc_entry_dates_strictly_positive": true,
+    "maximum_largest_absolute_month_contribution_share": 0.6,
+    "maximum_top_two_utc_entry_dates_share_of_positive_daily_pips": 0.5,
+    "maximum_direction_absolute_contribution_share": 0.95
+  },
+  "decision_contract": {
+    "joint_single_run": true,
+    "each_strategy_passes_or_fails_independently": true,
+    "H2_ranking_prohibited": true,
+    "same_run_parameter_sweep_prohibited": true,
+    "failed_exact_strategy_closed": true,
+    "at_least_one_individual_pass_required_for_Core_MT4_parity": true,
+    "if_none_pass_return_to_H1_new_preregistered_branch": true,
+    "2025_not_used_for_redesign": true,
+    "joint_equal_weight_portfolio_diagnostic_not_an_individual_gate": true
+  },
+  "reusable_validation_policy": {
+    "H2_role": "fixed_reusable_validation_gate",
+    "new_H1_optimized_or_hypothesis_branch_may_reuse_same_H2": true,
+    "every_H2_exposure_must_be_versioned_and_logged": true,
+    "no_direct_H2_parameter_sweep_or_H2_ranking": true,
+    "a_failed_exact_specification_cannot_be_relabelled_as_passed": true,
+    "H2_after_reuse_is_not_claimed_as_final_untouched_holdout": true,
+    "final_untouched_period": "2025_after_specification_freeze_and_Core_MT4_parity"
+  },
+  "required_outputs": [
+    "h1_signal_regression.csv",
+    "h1_trade_regression.csv",
+    "h2_candidate_signals.csv.gz",
+    "h2_candidate_trades.csv.gz",
+    "h2_candidate_summary.csv",
+    "h2_candidate_monthly.csv",
+    "h2_candidate_quarterly.csv",
+    "h2_daily_net_pips.csv",
+    "h2_direction_attribution.csv",
+    "h2_gate_results.csv",
+    "h2_joint_portfolio_diagnostic.csv",
+    "h2_decision.json",
+    "v1_acceptance.json",
+    "run_metadata.json"
+  ],
+  "research_firewall": {
+    "2025_access": false,
+    "Core_promotion": false,
+    "MT4_promotion": false,
+    "R6_strategy_changes": false,
+    "H2_parameter_optimization": false,
+    "H2_ranking": false
+  },
+  "next_stage_if_any_pass": "Research_Core_MT4_parity",
+  "next_stage_if_none_pass": "new_preregistered_H1_research_branch_then_reuse_fixed_H2_gate"
+}
