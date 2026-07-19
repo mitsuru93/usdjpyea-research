@@ -1,0 +1,47 @@
+{
+  "2025_artifact_access": false,
+  "Core_promotion": false,
+  "H1_signal_regressions": 5,
+  "H1_trade_regressions": 5,
+  "H2_exposure_ordinal": 2,
+  "H2_role": "fixed_reusable_validation_gate",
+  "H2_signal_rows": 1879,
+  "H2_trade_rows": 1859,
+  "MT4_promotion": false,
+  "acceptance_checks": 20,
+  "accepted_run_id": 29673802426,
+  "actions_artifact_id": 8438161821,
+  "actions_artifact_name": "usdjpy-v1-candidate-specific-h2-validation-v1-29673802426",
+  "actions_artifact_sha256": "19acb99e0ad286b3d2593b6f9df59a6675920eb3734d5901b70e4d8dc9a7c6b8",
+  "evaluator_lock_commit": "64f37f0702678659d7523b5ad48e6b56896dff92",
+  "failed_strategy_ids": [
+    "R1H04_ramom_32_64_z125__T0_fixed_time_cap",
+    "R1E02_legacy_trend_8h_resumption__T0_fixed_time_cap",
+    "R1E03_trend_12h_resumption__T0_fixed_time_cap"
+  ],
+  "next_stage": "Research_Core_MT4_parity_for_passed_strategies",
+  "output_sha256": {
+    "h1_signal_regression.csv": "2b8578118558c5ab91380ebef992e1ea77f6f5224432547b126dd5ab2d5082ec",
+    "h1_trade_regression.csv": "96388af99491d882b9561148654fc974cda8618e5b6dde4d0096fd398c92813d",
+    "h2_candidate_monthly.csv": "ed7b6022951d778fdc533aba0d55a507da71604bb3aad5c30ec23e23c6bc3265",
+    "h2_candidate_quarterly.csv": "1d76f12893dfc80204a425369b12fa28fa726f9bcdfb4bc0a6b6d8b06d2f279d",
+    "h2_candidate_signals.csv.gz": "0c8e6afe5a759a736368e1222acf51e7968936a56e945cc8555e898972817f0f",
+    "h2_candidate_summary.csv": "7c86b8020bc7dbc379bc1b9173a57e708a4e1175dab64b79e7e5db84c90d07d0",
+    "h2_candidate_trades.csv.gz": "a709a5c064c00238dfcdd71995dcd9087740c35817b51fc4f9bafa4a8d049bd4",
+    "h2_daily_net_pips.csv": "9a4fd94a63d320555bc1ae596854752cfd1e14f24046c7a9943133cb87a63210",
+    "h2_decision.json": "b59a787d0467d50ef19d9099496ed4d4be86aed2f5a196924a2b819dde66bc40",
+    "h2_direction_attribution.csv": "290c1cb2ca27078b6fc5d8d7f505e2231e0dd4632e7673311f01c3180750c682",
+    "h2_gate_results.csv": "f2d263d6eaeb14b844e1c0ee7b2e8dafe6238cec5b831808d2f6c90bf127b822",
+    "h2_joint_portfolio_diagnostic.csv": "1ca0cb58e6a99f46c1c82954f4de98824f484297c3dad16d372f2575149dda69",
+    "v1_acceptance.json": "a09b0e8d6ad44441a906ac7dc7ffe9a6f8ea10712ee1119f5ee46e1b0cef5432"
+  },
+  "passed_strategy_ids": [
+    "R1B02_legacy_asia_00_07_breakout__T0_fixed_time_cap",
+    "R1F05_donchian_96__T0_fixed_time_cap"
+  ],
+  "release_tag": "usdjpy-v1-candidate-specific-h2-validation-v1",
+  "repository": "mitsuru93/usdjpyea-research",
+  "v1_status": "PASS",
+  "version": "v1",
+  "workflow_head_sha": "64f63276968b0f7de4a7d27f7ebd7b86b6fab53a"
+}
