@@ -1,0 +1,165 @@
+{
+  "version": "v1",
+  "research_stage": "R6_complete_strategy_freeze",
+  "symbol": "USDJPY",
+  "development_period": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z"
+  },
+  "inputs": {
+    "r4_release_tag": "usdjpy-r4-entry-horizon-selection-v1",
+    "r4_release_asset": "usdjpy-r4-entry-horizon-selection-v1-run-29665005273-artifact-8435465130.zip",
+    "r4_release_asset_sha256": "b201565ab5d1a531f54c066849e92223d0a4fa722f110bef7925cde7c10a4a97",
+    "r4_selected_representatives_sha256": "c9916dbec071a56e1931f3093f9f2e9152404ff1a4d19ed1d3ead8fc2d8a2d29",
+    "r5_release_tag": "usdjpy-r5-controlled-exit-v1",
+    "r5_release_asset": "usdjpy-r5-controlled-exit-v1-run-29666989206-artifact-8436023286.zip",
+    "r5_release_asset_sha256": "0f0238a509c4bd6dc9bbe43c941001b7d2c54c66ba07b48f0aa9343f6c4a05cb",
+    "r5_exit_trades_sha256": "f8cf80f58b3f95a94a15ba2b5faca331281a5f96024d0b6aecf421136d83b6a5",
+    "r5_exit_summary_sha256": "037c6cfa068c2ae35c01752fe195f71016541ae294844203f95854ec0033752a",
+    "r5_acceptance_sha256": "32fe407fa3daaa3a8be72cf461e71e81749c71a8adaec2bd0b45512c1504951e"
+  },
+  "surface_contract": {
+    "representatives": 8,
+    "policies": 4,
+    "complete_strategy_combinations": 32,
+    "maximum_frozen_strategies": 5,
+    "minimum_frozen_strategies": 0,
+    "maximum_per_family": 2,
+    "maximum_per_definition_sha256": 1,
+    "relaxation_if_too_few": false
+  },
+  "eligibility": {
+    "minimum_aggregate_trades": 60,
+    "minimum_monthly_trades": 5,
+    "aggregate": {
+      "avg_default_net_pips_strictly_positive": true,
+      "avg_severe_net_pips_strictly_positive": true,
+      "default_profit_factor_strictly_above_one": true,
+      "severe_profit_factor_strictly_above_one": true,
+      "minimum_default_positive_months": 4,
+      "minimum_severe_positive_months": 3,
+      "total_excluding_best_two_utc_days_strictly_positive": true
+    },
+    "quarters": {
+      "required_default_positive": 2,
+      "required_severe_positive": 2
+    },
+    "rolling_2month": {
+      "required_default_positive": 4,
+      "required_severe_positive": 3,
+      "total_windows": 5
+    },
+    "rolling_3month": {
+      "required_default_positive": 4,
+      "required_severe_positive": 3,
+      "total_windows": 4
+    },
+    "concentration": {
+      "maximum_largest_absolute_day_share": 0.25,
+      "maximum_largest_absolute_month_share": 0.50,
+      "maximum_top_two_days_share_of_positive_daily_pips": 0.50,
+      "maximum_direction_absolute_contribution_share": 0.90
+    },
+    "execution_evidence": {
+      "all_entry_sets_exact": true,
+      "all_exit_timestamps_no_later_than_time_cap": true,
+      "all_cost_fields_exact": true,
+      "same_bar_ambiguity_adverse_first": true,
+      "chandelier_prior_completed_data_only": true
+    }
+  },
+  "ranking": {
+    "method": "equal_weight_percentile_rank_aggregation",
+    "higher_is_better": true,
+    "components": [
+      "aggregate_avg_severe_net_pips",
+      "aggregate_severe_profit_factor",
+      "minimum_quarterly_avg_severe_net_pips",
+      "minimum_rolling_3month_avg_severe_net_pips",
+      "severe_positive_months",
+      "total_excluding_best_two_utc_days_per_trade",
+      "one_minus_largest_absolute_day_share",
+      "one_minus_largest_absolute_month_share",
+      "one_minus_top_two_positive_days_share",
+      "one_minus_direction_absolute_contribution_share"
+    ],
+    "component_weights": "equal",
+    "tie_break_order": [
+      "selection_score_desc",
+      "aggregate_avg_severe_net_pips_desc",
+      "minimum_quarterly_avg_severe_net_pips_desc",
+      "total_excluding_best_two_utc_days_per_trade_desc",
+      "candidate_id_asc",
+      "policy_id_asc"
+    ]
+  },
+  "redundancy": {
+    "daily_severe_net_pearson_threshold": 0.85,
+    "entry_timestamp_jaccard_threshold": 0.50,
+    "redundant_only_if_both_thresholds_met": true,
+    "daily_calendar": "all_UTC_dates_2024-01-01_through_2024-06-30_fill_missing_zero",
+    "keep": "higher_preregistered_rank"
+  },
+  "h2_validation_preregistration": {
+    "validation_period": {
+      "start_utc": "2024-07-01T00:00:00Z",
+      "end_utc_exclusive": "2025-01-01T00:00:00Z"
+    },
+    "joint_single_run": true,
+    "maximum_strategies": 5,
+    "entry_exit_parameters_unchanged": true,
+    "candidate_specific_unused_only": true,
+    "previously_opened_complete_strategies_forbidden": [
+      "A1_impulse_breakout_lb3_hold6",
+      "E3_trend_24h_resumption_hold6"
+    ],
+    "individual_strategy_gates": {
+      "minimum_trades": 60,
+      "avg_default_net_pips_strictly_positive": true,
+      "avg_severe_net_pips_strictly_positive": true,
+      "default_profit_factor_strictly_above_one": true,
+      "severe_profit_factor_strictly_above_one": true,
+      "minimum_default_positive_months": 4,
+      "minimum_severe_positive_months": 3,
+      "Q3_and_Q4_default_positive": true,
+      "Q3_and_Q4_severe_positive": true,
+      "total_excluding_best_two_utc_days_strictly_positive": true,
+      "maximum_largest_absolute_month_share": 0.60,
+      "maximum_top_two_days_share_of_positive_daily_pips": 0.50,
+      "maximum_direction_absolute_contribution_share": 0.95
+    },
+    "decision": {
+      "each_strategy_passes_or_fails_independently": true,
+      "no_reranking_on_H2": true,
+      "no_rescue_or_parameter_change": true,
+      "failed_strategy_closed": true,
+      "at_least_one_individual_pass_required_for_engineering": true,
+      "if_none_pass_stop_research_branch": true
+    },
+    "reporting": {
+      "equal_weight_joint_portfolio_diagnostic": true,
+      "portfolio_diagnostic_not_individual_gate": true
+    }
+  },
+  "required_outputs": [
+    "complete_strategy_audit_all_32.csv",
+    "eligible_complete_strategies.csv",
+    "frozen_complete_strategies.csv",
+    "redundancy_decisions.csv",
+    "eligible_pairwise_similarity.csv.gz",
+    "family_freeze_summary.csv",
+    "h2_validation_plan.json",
+    "r6_acceptance.json",
+    "run_metadata.json"
+  ],
+  "research_firewall": {
+    "H2_rows_parsed": 0,
+    "2025_access": false,
+    "R4_reselection": false,
+    "R5_policy_changes": false,
+    "policy_parameter_optimization": false,
+    "Core_promotion": false,
+    "MT4_promotion": false
+  },
+  "next_stage": "V1_candidate_specific_unused_H2_validation"
+}
