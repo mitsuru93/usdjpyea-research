@@ -1,0 +1,352 @@
+name: Repair USDJPY 2024 Raw Tick Gaps v1
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Durable Release tag after all 8,784 UTC hours validate
+        required: true
+        default: usdjpy-2024-raw-bidask-ticks-v1
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/repair_usdjpy_2024_raw_ticks_run_29689427642_v1.yml
+      - configs/data_sources/usdjpy_2024_raw_tick_repair_run_29689427642_v1.json
+      - tools/build_usdjpy_2024_raw_tick_repair_package_v1.py
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: usdjpy-2024-raw-tick-repair-run-29689427642-v1
+  cancel-in-progress: false
+
+env:
+  SYMBOL: USDJPY
+  SOURCE_RUN_ID: "29689427642"
+  SOURCE_RUN_ATTEMPT: "1"
+  RELEASE_TAG: ${{ github.event.inputs.release_tag || 'usdjpy-2024-raw-bidask-ticks-v1' }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      repair_dates: ${{ steps.matrix.outputs.repair_dates }}
+      months: ${{ steps.matrix.outputs.months }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read locked repair scope
+        id: matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          config = json.loads(
+              Path("configs/data_sources/usdjpy_2024_raw_tick_repair_run_29689427642_v1.json")
+              .read_text(encoding="utf-8")
+          )
+          dates = config["repair_scope"]["affected_dates"]
+          months = [f"{month:02d}" for month in range(1, 13)]
+          if len(config["repair_scope"]["failed_hours"]) != 43:
+              raise SystemExit("repair lock must contain exactly 43 failed hours")
+          if len(dates) != 28:
+              raise SystemExit("repair lock must contain exactly 28 affected dates")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+              fh.write("repair_dates=" + json.dumps(dates, separators=(",", ":")) + "\n")
+              fh.write("months=" + json.dumps(months, separators=(",", ":")) + "\n")
+          print(json.dumps({"repair_dates": len(dates), "failed_hours": 43, "months": 12}))
+          PY
+
+  repair-days:
+    name: repair-${{ matrix.date }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        date: ${{ fromJSON(needs.prepare.outputs.repair_dates) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile downloader
+        run: python -m py_compile tools/download_dukascopy_raw_tick_day_v1.py
+      - name: Recollect affected UTC day
+        shell: bash
+        run: |
+          set -euo pipefail
+          DATE='${{ matrix.date }}'
+          NEXT_DATE=$(date -u -d "$DATE + 1 day" +%F)
+          ROOT="${RUNNER_TEMP}/usdjpy-2024-raw-tick-repair/${DATE}"
+          mkdir -p "$ROOT"
+          python tools/download_dukascopy_raw_tick_day_v1.py \
+            --symbol "$SYMBOL" \
+            --start "${DATE}T00" \
+            --end "${NEXT_DATE}T00" \
+            --output-root "$ROOT" \
+            --manifest-out "$ROOT/download_manifest.jsonl" \
+            --summary-out "$ROOT/day_summary.json" \
+            --retries 6 \
+            --retry-passes 4 \
+            --request-timeout 60 \
+            --request-interval 0.5 \
+            --max-errors 0
+      - name: Write relative per-file checksums
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="${RUNNER_TEMP}/usdjpy-2024-raw-tick-repair/${{ matrix.date }}"
+          if [ -d "$ROOT" ]; then
+            (
+              cd "$ROOT"
+              find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+            )
+          fi
+      - name: Upload immutable repaired day packet
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-raw-ticks-repair-${{ matrix.date }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/usdjpy-2024-raw-tick-repair
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+  package-months:
+    name: package-repaired-2024-${{ matrix.month }}
+    needs: [prepare, repair-days]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        month: ${{ fromJSON(needs.prepare.outputs.months) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download original day packets from source run
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29689427642
+          pattern: usdjpy-raw-ticks-2024-${{ matrix.month }}-*-29689427642-1
+          path: staging
+          merge-multiple: true
+      - name: Download repaired day packets
+        uses: actions/download-artifact@v4
+        with:
+          pattern: usdjpy-raw-ticks-repair-2024-${{ matrix.month }}-*-${{ github.run_id }}-${{ github.run_attempt }}
+          path: repair
+          merge-multiple: true
+      - name: Overlay repaired days and validate month
+        shell: bash
+        env:
+          MONTH: ${{ matrix.month }}
+        run: |
+          set -euo pipefail
+          cp -a repair/. staging/
+          python -m py_compile tools/build_usdjpy_2024_raw_tick_repair_package_v1.py
+          python tools/build_usdjpy_2024_raw_tick_repair_package_v1.py \
+            --staging staging \
+            --month "$((10#$MONTH))" \
+            --out out \
+            --source-run-id "$SOURCE_RUN_ID" \
+            --repair-run-id "$GITHUB_RUN_ID" \
+            --repair-run-attempt "$GITHUB_RUN_ATTEMPT"
+
+          mapfile -t DAY_DIRS < <(
+            find staging -mindepth 1 -maxdepth 1 -type d -name "2024-${MONTH}-*" -printf '%f\n' | sort
+          )
+          if [ "${#DAY_DIRS[@]}" -ne "$(python - <<PY
+          import calendar
+          print(calendar.monthrange(2024, int("$MONTH"))[1])
+          PY
+          )" ]; then
+            echo "unexpected day directory count for month ${MONTH}" >&2
+            exit 1
+          fi
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
+            -cf - -C staging "${DAY_DIRS[@]}" \
+            | gzip -n > "out/usdjpy-2024-${MONTH}-raw-ticks-v1.tar.gz"
+          (
+            cd out
+            sha256sum \
+              "usdjpy-2024-${MONTH}-raw-ticks-v1.tar.gz" \
+              "usdjpy-2024-${MONTH}-raw-ticks-v1.manifest.json" \
+              > "usdjpy-2024-${MONTH}-raw-ticks-v1.SHA256SUMS"
+          )
+      - name: Upload validated repaired monthly package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-2024-raw-ticks-repaired-month-${{ matrix.month }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: out
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 0
+
+  publish-release:
+    name: publish-repaired-durable-release
+    needs: package-months
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download all validated repaired monthly packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: usdjpy-2024-raw-ticks-repaired-month-*-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release
+          merge-multiple: true
+      - name: Build and verify annual manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp configs/data_sources/usdjpy_2024_raw_tick_repair_run_29689427642_v1.json \
+            release/usdjpy-2024-raw-tick-repair-lock-v1.json
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("release")
+          manifests = sorted(root.glob("usdjpy-2024-??-raw-ticks-v1.manifest.json"))
+          archives = sorted(root.glob("usdjpy-2024-??-raw-ticks-v1.tar.gz"))
+          if len(manifests) != 12 or len(archives) != 12:
+              raise SystemExit(f"expected 12 manifests and 12 archives, got {len(manifests)} and {len(archives)}")
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+              with path.open("rb") as fh:
+                  for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          month_rows = []
+          annual_totals = {
+              "expected_days": 0,
+              "present_days": 0,
+              "expected_hours": 0,
+              "resolved_hours": 0,
+              "downloaded_hours": 0,
+              "missing_404_hours": 0,
+              "no_tick_hours": 0,
+              "error_hours": 0,
+              "tick_rows": 0,
+              "negative_spread_rows": 0,
+              "source_bi5_bytes": 0,
+              "decoded_csv_bytes": 0,
+          }
+          for path in manifests:
+              row = json.loads(path.read_text(encoding="utf-8"))
+              if not row.get("accepted"):
+                  raise SystemExit(f"unaccepted month: {row.get('month')}")
+              for key in annual_totals:
+                  annual_totals[key] += int(row["totals"][key])
+              month = row["month"]
+              archive = root / f"usdjpy-{month}-raw-ticks-v1.tar.gz"
+              month_rows.append(
+                  {
+                      "month": month,
+                      "manifest": path.name,
+                      "manifest_sha256": sha256_file(path),
+                      "archive": archive.name,
+                      "archive_sha256": sha256_file(archive),
+                      "totals": row["totals"],
+                  }
+              )
+
+          if annual_totals["expected_days"] != 366:
+              raise SystemExit(f"expected_days={annual_totals['expected_days']}")
+          if annual_totals["expected_hours"] != 8784:
+              raise SystemExit(f"expected_hours={annual_totals['expected_hours']}")
+          if annual_totals["resolved_hours"] != 8784:
+              raise SystemExit(f"resolved_hours={annual_totals['resolved_hours']}")
+          if annual_totals["error_hours"] != 0:
+              raise SystemExit(f"error_hours={annual_totals['error_hours']}")
+          if annual_totals["negative_spread_rows"] != 0:
+              raise SystemExit(f"negative_spread_rows={annual_totals['negative_spread_rows']}")
+
+          lock = json.loads(
+              (root / "usdjpy-2024-raw-tick-repair-lock-v1.json").read_text(encoding="utf-8")
+          )
+          annual = {
+              "schema_version": "usdjpy_2024_raw_tick_annual_repaired_v1",
+              "symbol": "USDJPY",
+              "period_start_utc": "2024-01-01T00:00:00Z",
+              "period_end_utc_exclusive": "2025-01-01T00:00:00Z",
+              "source": "Dukascopy BI5 public Bid/Ask ticks",
+              "source_workflow_run_id": 29689427642,
+              "source_workflow_run_attempt": 1,
+              "source_workflow_head_sha": "5adaea986b5e12b2c354d36ed69b705107085161",
+              "repair_workflow_run_id": int(os.environ["GITHUB_RUN_ID"]),
+              "repair_workflow_run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
+              "repair_scope": lock["repair_scope"],
+              "annual_totals": annual_totals,
+              "months": month_rows,
+              "accepted": True,
+              "boundaries": {
+                  "original_hourly_bi5_preserved": True,
+                  "decoded_bid_ask_csv_preserved": True,
+                  "rakuten_quote_equivalence": False,
+                  "standard_mt4_real_tick_input_ready": False,
+                  "requires_fxt_hst_or_tick_import_conversion": True,
+              },
+          }
+          (root / "usdjpy-2024-raw-ticks-v1.annual-manifest.json").write_text(
+              json.dumps(annual, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps({"accepted": True, **annual_totals}, sort_keys=True))
+          PY
+
+          cat > release/RELEASE_NOTES.md <<'EOF'
+          # USDJPY 2024 Raw Dukascopy Bid/Ask Ticks v1
+
+          This release preserves the original hourly Dukascopy BI5 payloads and deterministic decoded Bid/Ask CSV.GZ files for all 8,784 UTC hours of 2024.
+
+          Source run 29689427642 resolved 8,741 hours. This repair run recollected the 28 affected UTC days at maximum two-day parallelism and replaced the 43 terminal-error hours before rebuilding and revalidating all twelve monthly packages.
+
+          This dataset is a public Dukascopy proxy and is not equivalent to Rakuten Securities quotes. FXT/HST generation or a compatible tick-import conversion is still required before MT4 Strategy Tester use.
+          EOF
+
+          (
+            cd release
+            find . -maxdepth 1 -type f ! -name SHA256SUMS -print0 \
+              | sort -z | xargs -0 sha256sum > SHA256SUMS
+          )
+      - name: Upload annual repaired package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-2024-raw-ticks-repaired-annual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release
+          retention-days: 90
+          compression-level: 0
+      - name: Publish immutable GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "release tag already exists: $RELEASE_TAG" >&2
+            exit 1
+          fi
+          gh release create "$RELEASE_TAG" release/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "USDJPY 2024 Raw Dukascopy Bid/Ask Ticks v1" \
+            --notes-file release/RELEASE_NOTES.md
