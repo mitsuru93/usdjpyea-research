@@ -1,19 +1,15 @@
 name: Indexed Bridge Assemble USDJPY R5 Evaluator v2
 
 on:
-  issues:
-    types: [opened]
   pull_request:
     types: [opened]
 
 permissions:
   contents: write
-  issues: write
   pull-requests: write
 
 jobs:
   assemble:
-    if: github.event_name == 'pull_request' || github.event.issue.title == '[R5] Run indexed evaluator assembly v2'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +21,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Reassemble exact evaluator and freeze lock
+      - name: Validate chunks reassemble evaluator and freeze lock
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -35,10 +31,29 @@ jobs:
           import subprocess
           from pathlib import Path
 
+          expected_hashes=[
+              'c13d90bae5d5473d99210272bb96e604d9b66388039fa087dd4a3201e2a24a59',
+              'cb283da1d5b871f56094423f8de18d86616a35cf92770f38673cc112318ad857',
+              '88772cb4a9a31adcfc84592632d5c226de5ad97f249a23f60f8902e1363f7784',
+              'b67aebf9b473dce6ba4a8d11d924cc948f4dc3530467b29f717f8067cdbdc1ce',
+              'dd0b449f47b28017c29861555f1afd1edf47ec1217fc47b78a2fa6df75f9f6a8',
+              'a0599d3465c14e79f3e7474dcf9faed24668e14b301c8e15a57d0df2d0b2afbc',
+              '956a1af282fac2dbce4ab8c056bdd0610a32eda70da2beebe9c2dce205cb7040',
+              '1a547049f4b07f73ed2c8930aa712a409a3accdb888a3fc7c7bfe90ea84f16d0',
+              'dc3935f58fbe9fdce6767eeb52e05cf756974416394cc4cc72bc84695fa2da61',
+          ]
+          expected_lengths=[5600,5600,5600,5600,5600,5600,5600,5600,60]
           stage=Path('.github/r5_stage_v2')
-          chunks=sorted(stage.glob('chunk_*.b64'))
-          assert [p.name for p in chunks]==[f'chunk_{i:02d}.b64' for i in range(9)],chunks
-          encoded=''.join(path.read_text(encoding='utf-8').strip() for path in chunks)
+          chunks=[stage/f'chunk_{i:02d}.b64' for i in range(9)]
+          encoded_parts=[]
+          for index,(path,expected_hash,expected_length) in enumerate(zip(chunks,expected_hashes,expected_lengths)):
+              text=path.read_text(encoding='utf-8').strip()
+              actual_hash=hashlib.sha256(text.encode()).hexdigest()
+              print({'chunk':index,'chars':len(text),'sha256':actual_hash,'expected':expected_hash})
+              assert len(text)==expected_length,(index,len(text),expected_length)
+              assert actual_hash==expected_hash,(index,actual_hash,expected_hash)
+              encoded_parts.append(text)
+          encoded=''.join(encoded_parts)
           assert len(encoded)==44860,len(encoded)
           source=base64.b64decode(encoded,validate=True)
           assert len(source)==33643,len(source)
@@ -85,7 +100,7 @@ jobs:
           PY
           python -m py_compile tools/run_usdjpy_r5_controlled_exit_v1.py
 
-      - name: Commit exact evaluator and remove all assembly material
+      - name: Commit exact evaluator and remove assembly material
         run: |
           set -euo pipefail
           rm -rf .github/r5_stage .github/r5_stage_v2
@@ -103,17 +118,11 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
-      - name: Close trigger
+      - name: Close trigger PR
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          if [ "${{ github.event_name }}" = 'pull_request' ]; then
-            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body 'R5 evaluator was reconstructed from nine verified chunks, compiled, locked and committed to main before any formal Exit result.'
-            gh pr close "${PR_NUMBER}" --repo "${REPOSITORY}" --delete-branch
-          else
-            gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body 'R5 evaluator was reconstructed from nine verified chunks, compiled, locked and committed before any formal Exit result.'
-            gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
-          fi
+          gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body 'R5 evaluator was reconstructed from nine verified chunks, compiled, locked and committed to main before any formal Exit result.'
+          gh pr close "${PR_NUMBER}" --repo "${REPOSITORY}" --delete-branch
