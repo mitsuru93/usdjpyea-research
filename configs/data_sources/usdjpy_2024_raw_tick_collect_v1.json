@@ -1,0 +1,50 @@
+{
+  "schema_version": "usdjpy_2024_raw_tick_collect_v1",
+  "symbol": "USDJPY",
+  "source": "Dukascopy BI5 public Bid/Ask ticks",
+  "start_utc": "2024-01-01T00:00:00Z",
+  "end_utc": "2025-01-01T00:00:00Z",
+  "calendar_days": 366,
+  "collection_shards": {
+    "unit": "UTC calendar day",
+    "jobs": 366,
+    "matrix_split": [
+      {
+        "id": "h1",
+        "start": "2024-01-01",
+        "end_exclusive": "2024-07-01",
+        "days": 182
+      },
+      {
+        "id": "h2",
+        "start": "2024-07-01",
+        "end_exclusive": "2025-01-01",
+        "days": 184
+      }
+    ],
+    "max_parallel_policy": "no workflow max-parallel cap; GitHub schedules at the repository/account concurrency ceiling"
+  },
+  "preserved_formats": [
+    "original hourly .bi5 payload",
+    "decoded hourly Bid/Ask tick CSV.GZ",
+    "day manifest JSONL",
+    "day summary JSON",
+    "monthly TAR.GZ package",
+    "monthly manifest JSON"
+  ],
+  "release_tag": "usdjpy-2024-raw-bidask-ticks-v1",
+  "release_asset_granularity": "month",
+  "acceptance": {
+    "expected_hours": 8784,
+    "terminal_error_hours": 0,
+    "negative_spread_rows": 0,
+    "all_downloaded_hours_have_source_bi5": true,
+    "all_downloaded_hours_have_decoded_csv_gz": true,
+    "sha256_required_for_every_preserved_file": true
+  },
+  "boundaries": {
+    "rakuten_quote_equivalence": false,
+    "standard_mt4_real_tick_input_ready": false,
+    "requires_fxt_hst_or_tick_import_conversion": true
+  }
+}
