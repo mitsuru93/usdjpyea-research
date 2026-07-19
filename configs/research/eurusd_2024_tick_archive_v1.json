@@ -1,0 +1,75 @@
+{
+  "version": "v1",
+  "status": "collection_workflow_prepared",
+  "repository": "mitsuru93/usdjpyea-research",
+  "symbol": "EURUSD",
+  "year": 2024,
+  "purpose": "Preserve full-resolution tick inputs for MT4-compatible tick-backtest conversion. This is separate from the accepted H1 research bar bundle.",
+  "source": {
+    "provider": "Dukascopy public datafeed",
+    "format": "hourly BI5",
+    "broker_identity": "market_proxy_not_rakuten_mt4",
+    "url_template": "https://datafeed.dukascopy.com/datafeed/EURUSD/{year}/{zero_based_month}/{day}/{hour}h_ticks.bi5"
+  },
+  "representations_to_preserve": [
+    "exact_vendor_bi5_payload",
+    "deterministic_normalized_tick_csv_gz_with_utc_bid_ask_and_volumes"
+  ],
+  "coverage": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2025-01-01T00:00:00Z",
+    "months": 12,
+    "calendar_hour_manifest_required": true,
+    "terminal_errors_allowed": 0,
+    "unobserved_hours_allowed": 0
+  },
+  "validation": {
+    "bi5_to_normalized_tick_exact_decode_required": true,
+    "normalized_gzip_mtime": 0,
+    "bid_must_not_exceed_ask": true,
+    "timestamps_must_be_non_decreasing_within_hour": true,
+    "bar_equivalence_required": {
+      "accepted_bar_archive_tag": "eurusd-2024-source-artifact-archive-v1",
+      "accepted_bar_asset": "eurusd-2024-source-artifact-id-8441596981.zip",
+      "accepted_bar_asset_digest": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+      "timeframes": [
+        "M1",
+        "M5",
+        "M15",
+        "H1"
+      ],
+      "numeric_absolute_tolerance": 1e-10
+    }
+  },
+  "durable_release": {
+    "tag": "eurusd-2024-tick-data-archive-v1",
+    "title": "EURUSD 2024 Tick Data Archive v1",
+    "monthly_asset_pattern": "eurusd-2024-MM-ticks-v1.tar.gz",
+    "monthly_receipt_pattern": "eurusd-2024-MM-ticks-receipt-v1.json",
+    "master_manifest": "eurusd-2024-tick-data-archive-manifest-v1.json",
+    "checksums": "SHA256SUMS",
+    "receipt_repository_path": "docs/research_reboot/artifact_archives/eurusd_2024_ticks_v1/release_receipt.json"
+  },
+  "mt4_use": {
+    "status": "conversion_input",
+    "not_directly_importable_statement": "BI5 and normalized CSV.GZ are source tick records. A controlled conversion to the selected MT4 FXT/HST or compatible importer format is still required.",
+    "required_tick_fields_present": [
+      "timestamp_utc",
+      "bid",
+      "ask",
+      "bid_volume",
+      "ask_volume"
+    ],
+    "rakuten_mt4_quote_identity": false
+  },
+  "bar_archive_boundary": {
+    "accepted_bar_archive_remains_valid_for_h1_research": true,
+    "bar_archive_is_not_tick_archive": true,
+    "bar_archive_config": "configs/research/eurusd_2024_source_archive_v1.json"
+  },
+  "workflow": {
+    "path": ".github/workflows/archive_eurusd_2024_tick_data_v1.yml",
+    "run_id": null,
+    "run_attempt": null
+  }
+}
