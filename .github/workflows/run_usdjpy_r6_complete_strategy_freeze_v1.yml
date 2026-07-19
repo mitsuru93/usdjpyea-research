@@ -1,0 +1,187 @@
+name: Run Committed USDJPY R6 Complete Strategy Freeze v1
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: usdjpy-r6-complete-strategy-freeze-v1
+  cancel-in-progress: false
+
+jobs:
+  r6:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CONFIG_PATH: configs/research/usdjpy_r6_complete_strategy_freeze_v1.json
+      LOCK_PATH: configs/research/usdjpy_r6_complete_strategy_freeze_lock_v1.json
+      OUTPUT_DIR: data/experiments/usdjpy_r6_complete_strategy_freeze_v1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy
+
+      - name: Verify committed evaluator and execution lock
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/run_usdjpy_r6_complete_strategy_freeze_v1.py
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          lock = json.loads(Path('configs/research/usdjpy_r6_complete_strategy_freeze_lock_v1.json').read_text())
+          for path, expected in lock['code_blobs'].items():
+              actual = subprocess.check_output(['git', 'rev-parse', f'HEAD:{path}'], text=True).strip()
+              assert actual == expected, (path, actual, expected)
+          for path, expected in lock['content_sha256'].items():
+              actual = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+              assert actual == expected, (path, actual, expected)
+          assert lock['surface_contract']['complete_strategy_combinations'] == 32
+          assert lock['surface_contract']['maximum_frozen_strategies'] == 5
+          assert lock['surface_contract']['maximum_per_family'] == 2
+          assert lock['surface_contract']['maximum_per_definition_sha256'] == 1
+          assert len(lock['ranking_components']) == 10
+          assert lock['research_firewall']['H2_rows_parsed'] == 0
+          assert lock['research_firewall']['2025_access'] is False
+          assert lock['research_firewall']['Core_promotion'] is False
+          assert lock['research_firewall']['MT4_promotion'] is False
+          print({'R6_lock': 'PASS', 'files': len(lock['code_blobs'])})
+          PY
+
+      - name: Download and verify accepted R4 and R5 Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p releases/r4 releases/r5 input/r4 input/r5
+          python - <<'PY' > release.env
+          import json
+          from pathlib import Path
+          lock = json.loads(Path('configs/research/usdjpy_r6_complete_strategy_freeze_lock_v1.json').read_text())
+          for key, prefix in [('r4', 'R4'), ('r5', 'R5')]:
+              row = lock['input_releases'][key]
+              print(f'{prefix}_TAG={row["tag"]}')
+              print(f'{prefix}_ASSET={row["asset"]}')
+              print(f'{prefix}_SHA={row["asset_sha256"]}')
+          PY
+          source release.env
+          gh release download "${R4_TAG}" --repo "${GITHUB_REPOSITORY}" --pattern "${R4_ASSET}" --dir releases/r4
+          gh release download "${R5_TAG}" --repo "${GITHUB_REPOSITORY}" --pattern "${R5_ASSET}" --dir releases/r5
+          echo "${R4_SHA}  releases/r4/${R4_ASSET}" | sha256sum -c -
+          echo "${R5_SHA}  releases/r5/${R5_ASSET}" | sha256sum -c -
+          unzip -q "releases/r4/${R4_ASSET}" -d input/r4
+          unzip -q "releases/r5/${R5_ASSET}" -d input/r5
+          mapfile -t R4_SELECTED_FILES < <(find input/r4 -type f -name 'selected_representatives.csv' | sort)
+          mapfile -t R5_TRADES_FILES < <(find input/r5 -type f -name 'exit_trades.csv.gz' | sort)
+          mapfile -t R5_SUMMARY_FILES < <(find input/r5 -type f -name 'exit_summary.csv' | sort)
+          mapfile -t R5_ACCEPTANCE_FILES < <(find input/r5 -type f -name 'r5_acceptance.json' | sort)
+          test "${#R4_SELECTED_FILES[@]}" -eq 1
+          test "${#R5_TRADES_FILES[@]}" -eq 1
+          test "${#R5_SUMMARY_FILES[@]}" -eq 1
+          test "${#R5_ACCEPTANCE_FILES[@]}" -eq 1
+          echo "R4_RELEASE_ZIP=releases/r4/${R4_ASSET}" >> "${GITHUB_ENV}"
+          echo "R5_RELEASE_ZIP=releases/r5/${R5_ASSET}" >> "${GITHUB_ENV}"
+          echo "R4_SELECTED=${R4_SELECTED_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R5_TRADES=${R5_TRADES_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R5_SUMMARY=${R5_SUMMARY_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R5_ACCEPTANCE=${R5_ACCEPTANCE_FILES[0]}" >> "${GITHUB_ENV}"
+
+      - name: Run preregistered R6 freeze
+        run: |
+          python tools/run_usdjpy_r6_complete_strategy_freeze_v1.py \
+            --r4-release-zip "${R4_RELEASE_ZIP}" \
+            --r5-release-zip "${R5_RELEASE_ZIP}" \
+            --r4-selected "${R4_SELECTED}" \
+            --r5-exit-trades "${R5_TRADES}" \
+            --r5-exit-summary "${R5_SUMMARY}" \
+            --r5-acceptance "${R5_ACCEPTANCE}" \
+            --config "${CONFIG_PATH}" \
+            --output-dir "${OUTPUT_DIR}"
+
+      - name: Verify R6 output contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          out = Path('data/experiments/usdjpy_r6_complete_strategy_freeze_v1')
+          lock = json.loads(Path('configs/research/usdjpy_r6_complete_strategy_freeze_lock_v1.json').read_text())
+          for name in lock['required_outputs']:
+              path = out / name
+              assert path.is_file() and path.stat().st_size > 0, name
+          audit = pd.read_csv(out / 'complete_strategy_audit_all_32.csv')
+          eligible = pd.read_csv(out / 'eligible_complete_strategies.csv')
+          frozen = pd.read_csv(out / 'frozen_complete_strategies.csv')
+          pairwise = pd.read_csv(out / 'eligible_pairwise_similarity.csv.gz', compression='gzip')
+          acceptance = json.loads((out / 'r6_acceptance.json').read_text())
+          metadata = json.loads((out / 'run_metadata.json').read_text())
+          plan = json.loads((out / 'h2_validation_plan.json').read_text())
+          assert len(audit) == 32
+          assert len(frozen) <= 5
+          assert len(pairwise) == len(eligible) * (len(eligible) - 1) // 2
+          assert acceptance['status'] == 'PASS'
+          assert all(value is True for key, value in acceptance.items() if key != 'status')
+          assert metadata['status'] == 'PASS'
+          assert metadata['H2_rows_parsed'] == 0
+          assert metadata['2025_artifact_access'] is False
+          assert metadata['Core_promotion'] is False
+          assert metadata['MT4_promotion'] is False
+          assert plan['strategy_count'] == len(frozen)
+          assert [row['strategy_id'] for row in plan['strategies']] == list(frozen['strategy_id'])
+          print({
+              'R6': 'PASS',
+              'audit': len(audit),
+              'eligible': len(eligible),
+              'frozen': len(frozen),
+              'pairwise': len(pairwise),
+          })
+          PY
+
+      - name: Write job summary
+        if: always()
+        run: |
+          echo '# USDJPY R6 Complete Strategy Freeze v1' >> "${GITHUB_STEP_SUMMARY}"
+          echo >> "${GITHUB_STEP_SUMMARY}"
+          if [ -f "${OUTPUT_DIR}/run_metadata.json" ]; then
+            cat "${OUTPUT_DIR}/run_metadata.json" >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Upload R6 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-r6-complete-strategy-freeze-v1-${{ github.run_id }}
+          path: data/experiments/usdjpy_r6_complete_strategy_freeze_v1/**
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Report result on marker PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ "${{ job.status }}" = 'success' ]; then
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body "Formal committed R6 run ${{ github.run_id }} passed. The preregistered H1 audit and maximum-five freeze completed without opening H2 or 2025."
+          else
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body "Formal committed R6 run ${{ github.run_id }} failed. No R6 result is accepted and H2 remains closed."
+          fi
