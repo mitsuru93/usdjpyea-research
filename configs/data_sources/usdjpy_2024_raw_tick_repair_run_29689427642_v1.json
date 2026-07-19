@@ -1,0 +1,175 @@
+{
+  "schema_version": "usdjpy_2024_raw_tick_repair_v1",
+  "symbol": "USDJPY",
+  "source_run": {
+    "run_id": 29689427642,
+    "run_attempt": 1,
+    "head_sha": "5adaea986b5e12b2c354d36ed69b705107085161"
+  },
+  "source_result": {
+    "expected_hours": 8784,
+    "resolved_hours": 8741,
+    "terminal_error_hours": 43,
+    "http_503_hours": 42,
+    "timeout_hours": 1,
+    "missing_404_hours": 0,
+    "negative_spread_rows": 0
+  },
+  "repair_scope": {
+    "failed_hours": [
+      "2024-01-08T22:00:00Z",
+      "2024-01-11T05:00:00Z",
+      "2024-02-04T21:00:00Z",
+      "2024-02-04T22:00:00Z",
+      "2024-02-04T23:00:00Z",
+      "2024-02-08T02:00:00Z",
+      "2024-02-09T00:00:00Z",
+      "2024-03-05T07:00:00Z",
+      "2024-04-30T00:00:00Z",
+      "2024-05-05T14:00:00Z",
+      "2024-05-05T15:00:00Z",
+      "2024-05-05T21:00:00Z",
+      "2024-05-08T00:00:00Z",
+      "2024-05-08T10:00:00Z",
+      "2024-05-09T05:00:00Z",
+      "2024-06-27T01:00:00Z",
+      "2024-06-27T09:00:00Z",
+      "2024-07-04T15:00:00Z",
+      "2024-07-04T16:00:00Z",
+      "2024-07-06T07:00:00Z",
+      "2024-07-06T23:00:00Z",
+      "2024-07-20T01:00:00Z",
+      "2024-07-20T02:00:00Z",
+      "2024-07-20T07:00:00Z",
+      "2024-07-21T14:00:00Z",
+      "2024-07-21T19:00:00Z",
+      "2024-07-23T00:00:00Z",
+      "2024-07-30T14:00:00Z",
+      "2024-07-30T20:00:00Z",
+      "2024-08-29T16:00:00Z",
+      "2024-09-05T02:00:00Z",
+      "2024-09-05T04:00:00Z",
+      "2024-09-10T09:00:00Z",
+      "2024-09-10T20:00:00Z",
+      "2024-10-14T00:00:00Z",
+      "2024-10-18T17:00:00Z",
+      "2024-10-29T20:00:00Z",
+      "2024-10-29T21:00:00Z",
+      "2024-11-04T08:00:00Z",
+      "2024-11-30T23:00:00Z",
+      "2024-12-07T21:00:00Z",
+      "2024-12-16T20:00:00Z",
+      "2024-12-30T23:00:00Z"
+    ],
+    "affected_dates": [
+      "2024-01-08",
+      "2024-01-11",
+      "2024-02-04",
+      "2024-02-08",
+      "2024-02-09",
+      "2024-03-05",
+      "2024-04-30",
+      "2024-05-05",
+      "2024-05-08",
+      "2024-05-09",
+      "2024-06-27",
+      "2024-07-04",
+      "2024-07-06",
+      "2024-07-20",
+      "2024-07-21",
+      "2024-07-23",
+      "2024-07-30",
+      "2024-08-29",
+      "2024-09-05",
+      "2024-09-10",
+      "2024-10-14",
+      "2024-10-18",
+      "2024-10-29",
+      "2024-11-04",
+      "2024-11-30",
+      "2024-12-07",
+      "2024-12-16",
+      "2024-12-30"
+    ],
+    "affected_months": [
+      "2024-01",
+      "2024-02",
+      "2024-03",
+      "2024-04",
+      "2024-05",
+      "2024-06",
+      "2024-07",
+      "2024-08",
+      "2024-09",
+      "2024-10",
+      "2024-11",
+      "2024-12"
+    ]
+  },
+  "source_month_manifest_artifacts": {
+    "2024-01": {
+      "artifact_id": 8447484187,
+      "digest": "sha256:50d0fb83fd97febfe0e191577e190d6128118b8fa063f2fc5fab0a614dc6b55d"
+    },
+    "2024-02": {
+      "artifact_id": 8447349772,
+      "digest": "sha256:2a1acd197f80f56f4dca334a51a48147ece48aceebad14b1765ccedd171ebc2d"
+    },
+    "2024-03": {
+      "artifact_id": 8447485399,
+      "digest": "sha256:fa33d44199bf4dcf3546fcc2a7fb46384bf927a05013b7014c9bb5d32c6b05ce"
+    },
+    "2024-04": {
+      "artifact_id": 8447527442,
+      "digest": "sha256:f550aa523200df88759e5f629dc95523a41ae28f87c55502abcf351209f86fee"
+    },
+    "2024-05": {
+      "artifact_id": 8447456451,
+      "digest": "sha256:d453ee4902c87d5709cd54742ef25e87009ebae4f39136fbfc0a9f7cf279d649"
+    },
+    "2024-06": {
+      "artifact_id": 8447425977,
+      "digest": "sha256:748987c829667ba191a2e369723f2499fd4317d86a1d0e23b65f5933b1bf0bf7"
+    },
+    "2024-07": {
+      "artifact_id": 8447422061,
+      "digest": "sha256:a83ff84475909f80cfd76d3b19bd314fb64773d9ff8764b3686304814d45d41b"
+    },
+    "2024-08": {
+      "artifact_id": 8447427542,
+      "digest": "sha256:6945a1b1186c9e57105baae65a1234f7e2d1306b32ec5e28355d9e9d1a31357f"
+    },
+    "2024-09": {
+      "artifact_id": 8447480719,
+      "digest": "sha256:e1748bd55daf6815da82cc570b3aa9a17bf549bd32be7a7879b4e95dbc817ca0"
+    },
+    "2024-10": {
+      "artifact_id": 8447525538,
+      "digest": "sha256:0f9d1aa783a549df6fe9e6eba24efa625b4a3b1496a907ebb3657165afb587d2"
+    },
+    "2024-11": {
+      "artifact_id": 8447526884,
+      "digest": "sha256:f1a1a4c27fff6a37fa7318a7f24af6cdad6f7c26ed96d5053c7e4af821ca3698"
+    },
+    "2024-12": {
+      "artifact_id": 8447526229,
+      "digest": "sha256:ea2b7f8d0579c3b8488cce98a8bebe4e330f764ff22bc67caff288db6294c16a"
+    }
+  },
+  "repair_policy": {
+    "rerun_affected_days": true,
+    "maximum_parallel_days": 2,
+    "retries_per_request": 6,
+    "retry_passes": 4,
+    "request_timeout_seconds": 60,
+    "request_interval_seconds": 0.5,
+    "terminal_errors_allowed": 0
+  },
+  "publication": {
+    "release_tag": "usdjpy-2024-raw-bidask-ticks-v1",
+    "require_all_8784_hours_resolved": true,
+    "requires_original_bi5_and_decoded_bidask": true,
+    "rakuten_quote_equivalence": false,
+    "mt4_import_conversion_still_required": true
+  }
+}
