@@ -1,0 +1,73 @@
+{
+  "version": "v1",
+  "research_stage": "R6_complete_strategy_freeze",
+  "code_blobs": {
+    ".github/workflows/run_usdjpy_r6_complete_strategy_freeze_v1.yml": "cd34b945073dac6b906cb301b2ad366604d3bb74",
+    "configs/research/usdjpy_r6_complete_strategy_freeze_v1.json": "6313206bf21e614391063f305ce607ffa90e92f0",
+    "docs/research_reboot/usdjpy_r6_complete_strategy_freeze_prereg_v1.md": "71549855e6f72df312f3bf4022feca51c0443a4f",
+    "tools/run_usdjpy_r6_complete_strategy_freeze_v1.py": "cea5187b4b968408b13970fa92888f9baf1b43f5"
+  },
+  "content_sha256": {
+    ".github/workflows/run_usdjpy_r6_complete_strategy_freeze_v1.yml": "531edb8eecc332625a0afccc478ce829c4f5f614c96e0bf476f09f5255a92a1c",
+    "configs/research/usdjpy_r6_complete_strategy_freeze_v1.json": "51fae6fa4d25ab5e7103330d802b1a6ee024685be886965d09767c76acdd4fd3",
+    "tools/run_usdjpy_r6_complete_strategy_freeze_v1.py": "44f52613b5a614c12f578c6ed8d39a40b5cb5c2ce973051bc0ee3f14cb384b98"
+  },
+  "input_releases": {
+    "r4": {
+      "tag": "usdjpy-r4-entry-horizon-selection-v1",
+      "asset": "usdjpy-r4-entry-horizon-selection-v1-run-29665005273-artifact-8435465130.zip",
+      "asset_sha256": "b201565ab5d1a531f54c066849e92223d0a4fa722f110bef7925cde7c10a4a97",
+      "selected_representatives_sha256": "c9916dbec071a56e1931f3093f9f2e9152404ff1a4d19ed1d3ead8fc2d8a2d29"
+    },
+    "r5": {
+      "tag": "usdjpy-r5-controlled-exit-v1",
+      "asset": "usdjpy-r5-controlled-exit-v1-run-29666989206-artifact-8436023286.zip",
+      "asset_sha256": "0f0238a509c4bd6dc9bbe43c941001b7d2c54c66ba07b48f0aa9343f6c4a05cb",
+      "exit_trades_sha256": "f8cf80f58b3f95a94a15ba2b5faca331281a5f96024d0b6aecf421136d83b6a5",
+      "exit_summary_sha256": "037c6cfa068c2ae35c01752fe195f71016541ae294844203f95854ec0033752a",
+      "acceptance_sha256": "32fe407fa3daaa3a8be72cf461e71e81749c71a8adaec2bd0b45512c1504951e"
+    }
+  },
+  "surface_contract": {
+    "representatives": 8,
+    "policies": 4,
+    "complete_strategy_combinations": 32,
+    "maximum_frozen_strategies": 5,
+    "maximum_per_family": 2,
+    "maximum_per_definition_sha256": 1,
+    "relaxation_if_too_few": false
+  },
+  "ranking_components": [
+    "aggregate_avg_severe_net_pips",
+    "aggregate_severe_profit_factor",
+    "minimum_quarterly_avg_severe_net_pips",
+    "minimum_rolling_3month_avg_severe_net_pips",
+    "severe_positive_months",
+    "total_excluding_best_two_utc_days_per_trade",
+    "one_minus_largest_absolute_day_share",
+    "one_minus_largest_absolute_month_share",
+    "one_minus_top_two_positive_days_share",
+    "one_minus_direction_absolute_contribution_share"
+  ],
+  "required_outputs": [
+    "complete_strategy_audit_all_32.csv",
+    "eligible_complete_strategies.csv",
+    "frozen_complete_strategies.csv",
+    "redundancy_decisions.csv",
+    "eligible_pairwise_similarity.csv.gz",
+    "family_freeze_summary.csv",
+    "h2_validation_plan.json",
+    "r6_acceptance.json",
+    "run_metadata.json"
+  ],
+  "research_firewall": {
+    "H2_rows_parsed": 0,
+    "2025_access": false,
+    "R4_reselection": false,
+    "R5_policy_changes": false,
+    "policy_parameter_optimization": false,
+    "Core_promotion": false,
+    "MT4_promotion": false
+  },
+  "next_stage": "V1_candidate_specific_unused_H2_validation"
+}
