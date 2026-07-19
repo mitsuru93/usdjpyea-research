@@ -1,0 +1,114 @@
+{
+  "version": "v1",
+  "status": "pre_result_protocol",
+  "symbol": "EURUSD",
+  "bar_timeframe": "H1",
+  "period_definition": "H1 and H2 denote calendar half-years; the market data bar interval is one hour.",
+  "source_contract": {
+    "annual_release_tag": "eurusd-2024-source-artifact-archive-v1",
+    "annual_release_asset": "eurusd-2024-source-artifact-id-8441596981.zip",
+    "annual_release_asset_sha256": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+    "annual_h1_member": "bundle/bars/H1/EURUSD_H1.csv.gz",
+    "development_runner_must_receive_a_file_containing_no_timestamp_at_or_after_2024_07_01": true
+  },
+  "periods": {
+    "development": {
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc_exclusive": "2024-07-01T00:00:00Z"
+    },
+    "validation": {
+      "start_utc": "2024-07-01T00:00:00Z",
+      "end_utc_exclusive": "2025-01-01T00:00:00Z"
+    }
+  },
+  "period_months": {
+    "development": [
+      "2024-01",
+      "2024-02",
+      "2024-03",
+      "2024-04",
+      "2024-05",
+      "2024-06"
+    ],
+    "validation": [
+      "2024-07",
+      "2024-08",
+      "2024-09",
+      "2024-10",
+      "2024-11",
+      "2024-12"
+    ]
+  },
+  "anti_leakage": {
+    "h2_never_used_for_family_nomination": true,
+    "development_lock_required_before_h2": true,
+    "candidate_definitions_immutable_after_lock": true,
+    "h2_may_evaluate_only_h1_nominated_families": true,
+    "cross_boundary_trades_excluded": true,
+    "h2_indicators_may_use_pre_july_history_because_it_was_publicly_observed_before_h2_entry": true
+  },
+  "cost_grid": {
+    "spread_multipliers": [
+      1.0,
+      1.5,
+      2.0,
+      3.0
+    ],
+    "slippage_pips_per_side": [
+      0.0,
+      0.1,
+      0.3,
+      0.5
+    ]
+  },
+  "cost_cases": {
+    "default": {
+      "spread_multiplier": 1.0,
+      "slippage_pips_per_side": 0.0,
+      "net_column": "net_m1p0_s0p0_pips"
+    },
+    "severe": {
+      "spread_multiplier": 3.0,
+      "slippage_pips_per_side": 0.5,
+      "net_column": "net_m3p0_s0p5_pips"
+    }
+  },
+  "development_candidate_gate": {
+    "avg_net_pips_gt": 0.0,
+    "profit_factor_gte": 1.1,
+    "positive_months_gte": 3,
+    "trades_gte": 20,
+    "total_excluding_best_two_days_gt": 0.0,
+    "severe_profit_factor_gte": 0.9
+  },
+  "family_nomination_gate": {
+    "positive_registered_variants_gte": 2,
+    "max_representatives_per_family": 3,
+    "single_best_row_cannot_nominate_family": true
+  },
+  "validation_candidate_gate": {
+    "avg_net_pips_gt": 0.0,
+    "profit_factor_gte": 1.05,
+    "positive_months_gte": 3,
+    "trades_gte": 20
+  },
+  "full_year_candidate_gate": {
+    "profit_factor_gte": 1.1,
+    "positive_months_gte": 8,
+    "trades_gte": 60,
+    "total_excluding_best_two_days_gt": 0.0,
+    "severe_profit_factor_gte": 0.9
+  },
+  "family_final_gate": {
+    "positive_h2_registered_variants_gte": 2,
+    "at_least_one_h1_representative_must_survive_all_h2_and_full_year_gates": true
+  },
+  "implementation_resolutions": {
+    "rsi": "Wilder exponential smoothing with alpha 1/lookback.",
+    "kaufman_efficiency_ratio": "abs(close_t-close_t-n)/sum(abs(hourly close changes), n).",
+    "atr": "simple rolling mean of true range.",
+    "volatility_compression_comparable_sessions": "Prior-window range is compared with the same UTC-hour range width at 24-hour lags for the trailing 20 sessions.",
+    "one_position": "A new entry requires entry_bar_index greater than the prior exit_bar_index; entry at the open of an exit bar is not allowed.",
+    "exit_timestamp": "Exit occurs at the close of the registered hold bar; the CSV bar timestamp is the bar open and exit_time_utc is one hour later."
+  }
+}
