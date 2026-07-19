@@ -1,0 +1,282 @@
+name: Archive EURUSD 2024 Source Artifact v1
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+concurrency:
+  group: eurusd-2024-source-artifact-archive-v1
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    if: github.event_name != 'issues' || github.event.issue.title == '[EURUSD] Archive 2024 source artifact v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record run ID
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "EURUSD archive run started. Run ID: ${{ github.run_id }}. https://github.com/${REPOSITORY}/actions/runs/${{ github.run_id }}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Load archive specification
+        run: |
+          python - <<'PY' >> "$GITHUB_ENV"
+          import json
+          from pathlib import Path
+          cfg = json.loads(Path('configs/research/eurusd_2024_artifact_archive_v1.json').read_text())
+          src = cfg['source_artifact']
+          rel = cfg['durable_release']
+          print(f"ARTIFACT_ID={src['artifact_id']}")
+          print(f"EXPECTED_DIGEST={src['digest'].split(':', 1)[1]}")
+          print(f"EXPECTED_SIZE={src['size_in_bytes']}")
+          print(f"RELEASE_TAG={rel['tag']}")
+          print(f"RELEASE_TITLE={rel['title']}")
+          print(f"ASSET_NAME={rel['asset_name']}")
+          print(f"MANIFEST_NAME={rel['manifest_name']}")
+          print(f"CHECKSUMS_NAME={rel['checksums_name']}")
+          PY
+
+      - name: Download exact accepted Actions artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p data/eurusd_2024_artifact_archive_v1/release_assets
+          gh api "/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" \
+            > "data/eurusd_2024_artifact_archive_v1/release_assets/${ASSET_NAME}"
+
+      - name: Verify artifact digest, size, and accepted content
+        run: |
+          set -euo pipefail
+          asset="data/eurusd_2024_artifact_archive_v1/release_assets/${ASSET_NAME}"
+          echo "${EXPECTED_DIGEST}  ${asset}" | sha256sum -c -
+          test "$(stat -c%s "${asset}")" = "${EXPECTED_SIZE}"
+          python - <<'PY'
+          import json
+          import zipfile
+          from pathlib import Path
+
+          cfg = json.loads(Path('configs/research/eurusd_2024_artifact_archive_v1.json').read_text())
+          req = cfg['required_content_checks']
+          asset = Path('data/eurusd_2024_artifact_archive_v1/release_assets') / cfg['durable_release']['asset_name']
+          with zipfile.ZipFile(asset) as zf:
+              names = set(zf.namelist())
+              required = {
+                  'audit/annual_source_summary.json',
+                  'audit/monthly/monthly_audit_index.json',
+                  'bundle/annual_bundle_manifest.json',
+                  'bundle/validation_summary.json',
+                  'run_metadata.json',
+                  'bundle/bars/M1/EURUSD_M1.csv.gz',
+                  'bundle/bars/M5/EURUSD_M5.csv.gz',
+                  'bundle/bars/M15/EURUSD_M15.csv.gz',
+                  'bundle/bars/H1/EURUSD_H1.csv.gz',
+              }
+              missing = sorted(required - names)
+              assert not missing, missing
+              annual = json.loads(zf.read('audit/annual_source_summary.json'))
+              assert annual['expected_records_mode'] == 'weekdays', annual
+              assert annual['expected_records'] == req['annual_expected_records'], annual
+              assert annual['observed_records'] == req['annual_observed_records'], annual
+              assert annual['unobserved_records'] == req['annual_unobserved_records'], annual
+              assert annual['hard_error_records'] == req['annual_hard_error_records'], annual
+              assert annual['effective_coverage'] == req['annual_effective_coverage'], annual
+              monthly = json.loads(zf.read('audit/monthly/monthly_audit_index.json'))
+              assert len(monthly) == req['monthly_records'], len(monthly)
+              for row in monthly:
+                  assert row['expected_records_mode'] == 'weekdays', row
+                  assert row['observed_records'] == row['expected_records'], row
+                  assert row['unobserved_records'] == 0, row
+                  assert row['hard_error_records'] == 0, row
+                  assert row['effective_coverage'] == 1.0, row
+              manifest = json.loads(zf.read('bundle/annual_bundle_manifest.json'))
+              rows = {row['timeframe']: row['rows_after_dedup'] for row in manifest['files']}
+              assert rows == req['timeframe_rows'], rows
+              validation = json.loads(zf.read('bundle/validation_summary.json'))
+              assert validation['status'] == req['validation_status'], validation
+              assert len(validation['files']) == 4, validation
+              assert all(row['status'] == 'ok' for row in validation['files']), validation
+              metadata = json.loads(zf.read('run_metadata.json'))
+              assert metadata['workflow_run_id'] == str(cfg['source_artifact']['workflow_run_id']), metadata
+              assert metadata['run_attempt'] == str(cfg['source_artifact']['run_attempt']), metadata
+              assert metadata['head_sha'] == cfg['source_artifact']['head_sha'], metadata
+              assert metadata['symbol'] == 'EURUSD', metadata
+              assert metadata['research_status'] == 'source_data_only', metadata
+              assert metadata['strategy_assumptions'] is None, metadata
+              assert metadata['broker_spread_assumption'] is None, metadata
+              bad = zf.testzip()
+              assert bad is None, bad
+          print({'artifact_content_verification': 'PASS', 'zip_entries': len(names), 'rows': rows})
+          PY
+
+      - name: Write archive manifest and checksums
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          cfg_path = Path('configs/research/eurusd_2024_artifact_archive_v1.json')
+          cfg = json.loads(cfg_path.read_text())
+          root = Path('data/eurusd_2024_artifact_archive_v1/release_assets')
+          asset = root / cfg['durable_release']['asset_name']
+          digest = hashlib.sha256(asset.read_bytes()).hexdigest()
+          manifest = {
+              'version': 'v1',
+              'status': 'verified_for_release',
+              'created_at_utc': datetime.now(timezone.utc).isoformat(),
+              'repository': cfg['repository'],
+              'symbol': cfg['symbol'],
+              'year': cfg['year'],
+              'source_artifact': cfg['source_artifact'],
+              'durable_release': cfg['durable_release'],
+              'archived_asset': {
+                  'name': asset.name,
+                  'sha256': digest,
+                  'size_in_bytes': asset.stat().st_size,
+                  'byte_identical_to_actions_artifact_zip': True,
+              },
+              'content_checks': cfg['required_content_checks'],
+          }
+          manifest_path = root / cfg['durable_release']['manifest_name']
+          manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
+          files = [asset, manifest_path]
+          sums = []
+          for path in sorted(files, key=lambda p: p.name):
+              sums.append(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}")
+          (root / cfg['durable_release']['checksums_name']).write_text('\n'.join(sums) + '\n')
+          PY
+          cat > data/eurusd_2024_artifact_archive_v1/release-notes.md <<'EOF'
+          # EURUSD 2024 Source Artifact Archive v1
+
+          Durable archive of the accepted EURUSD 2024 annual Dukascopy public bid/ask source bundle from Actions artifact ID 8441596981.
+
+          The Release asset is byte-identical to the accepted Actions artifact ZIP. The original workflow run ID, attempt, head SHA, artifact ID, artifact name, digest, size, coverage checks, bar row counts, and validation requirements are recorded in the manifest. This Release copy remains available after the temporary Actions artifact expires.
+          EOF
+
+      - name: Create or update durable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          root="data/eurusd_2024_artifact_archive_v1/release_assets"
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            gh release upload "${RELEASE_TAG}" "${root}/${ASSET_NAME}" "${root}/${MANIFEST_NAME}" "${root}/${CHECKSUMS_NAME}" --clobber
+          else
+            gh release create "${RELEASE_TAG}" \
+              "${root}/${ASSET_NAME}" "${root}/${MANIFEST_NAME}" "${root}/${CHECKSUMS_NAME}" \
+              --title "${RELEASE_TITLE}" \
+              --notes-file data/eurusd_2024_artifact_archive_v1/release-notes.md \
+              --latest=false
+          fi
+
+      - name: Verify Release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release view "${RELEASE_TAG}" --json tagName,url,isDraft,isPrerelease,assets \
+            > data/eurusd_2024_artifact_archive_v1/release_receipt.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          receipt = json.loads(Path('data/eurusd_2024_artifact_archive_v1/release_receipt.json').read_text())
+          assets = {row['name']: row for row in receipt['assets']}
+          expected_names = {os.environ['ASSET_NAME'], os.environ['MANIFEST_NAME'], os.environ['CHECKSUMS_NAME']}
+          assert receipt['tagName'] == os.environ['RELEASE_TAG'], receipt
+          assert receipt['isDraft'] is False, receipt
+          assert receipt['isPrerelease'] is False, receipt
+          assert set(assets) == expected_names, sorted(assets)
+          source = assets[os.environ['ASSET_NAME']]
+          assert source['digest'] == 'sha256:' + os.environ['EXPECTED_DIGEST'], source
+          assert source['size'] == int(os.environ['EXPECTED_SIZE']), source
+          print({'release_verification': 'PASS', 'release_url': receipt['url'], 'assets': sorted(assets)})
+          PY
+
+      - name: Commit durable archive receipt
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          target="docs/research_reboot/artifact_archives/eurusd_2024_source_v1"
+          mkdir -p "${target}"
+          cp data/eurusd_2024_artifact_archive_v1/release_receipt.json "${target}/release_receipt.json"
+          cp "data/eurusd_2024_artifact_archive_v1/release_assets/${MANIFEST_NAME}" "${target}/artifact_manifest.json"
+          cp "data/eurusd_2024_artifact_archive_v1/release_assets/${CHECKSUMS_NAME}" "${target}/SHA256SUMS"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt = json.loads(Path('data/eurusd_2024_artifact_archive_v1/release_receipt.json').read_text())
+          cfg_path = Path('configs/research/eurusd_2024_artifact_archive_v1.json')
+          cfg = json.loads(cfg_path.read_text())
+          source_cfg_path = Path('configs/research/eurusd_2024_source_archive_v1.json')
+          source_cfg = json.loads(source_cfg_path.read_text())
+          asset = next(row for row in receipt['assets'] if row['name'] == cfg['durable_release']['asset_name'])
+          durable = {
+              'status': 'archived_and_verified',
+              'release_tag': receipt['tagName'],
+              'release_url': receipt['url'],
+              'release_asset_name': asset['name'],
+              'release_asset_digest': asset['digest'],
+              'release_asset_size_in_bytes': asset['size'],
+              'byte_identical_to_actions_artifact_zip': True,
+              'receipt_path': cfg['durable_release']['receipt_repository_path'],
+              'actions_artifact_expiry_no_longer_threatens_source_retention': True,
+          }
+          cfg['status'] = 'archived_and_verified'
+          cfg['durable_archive_result'] = durable
+          cfg_path.write_text(json.dumps(cfg, indent=2, sort_keys=True) + '\n')
+          source_cfg['durable_archive'] = durable
+          source_cfg_path.write_text(json.dumps(source_cfg, indent=2, sort_keys=True) + '\n')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${target}" configs/research/eurusd_2024_artifact_archive_v1.json configs/research/eurusd_2024_source_archive_v1.json
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: record durable EURUSD 2024 source archive"
+            git push origin main
+          fi
+
+      - name: Close trigger issue
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" \
+            --body "EURUSD 2024 source archive completed and verified. The accepted Actions artifact ZIP was copied byte-for-byte to Release ${RELEASE_TAG}; release receipt, manifest, and SHA256SUMS were committed under docs/research_reboot/artifact_archives/eurusd_2024_source_v1/."
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
+
+      - name: Upload audit copy
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-2024-source-artifact-archive-audit-v1-${{ github.run_id }}
+          path: |
+            data/eurusd_2024_artifact_archive_v1/release_receipt.json
+            data/eurusd_2024_artifact_archive_v1/release_assets/eurusd-2024-source-artifact-archive-manifest-v1.json
+            data/eurusd_2024_artifact_archive_v1/release_assets/SHA256SUMS
+          if-no-files-found: warn
+          retention-days: 90
