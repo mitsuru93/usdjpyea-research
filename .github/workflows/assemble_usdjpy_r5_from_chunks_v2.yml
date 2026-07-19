@@ -1,0 +1,138 @@
+name: Assemble USDJPY R5 Evaluator from Chunks v2
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  assemble:
+    if: github.event.issue.title == '[R5] Assemble evaluator from chunks v2'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Reassemble exact evaluator and freeze lock
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          stage=Path('.github/r5_stage_v2')
+          chunks=sorted(stage.glob('chunk_*.b64'))
+          assert [p.name for p in chunks]==[f'chunk_{i:02d}.b64' for i in range(9)],chunks
+          encoded=''.join(path.read_text(encoding='utf-8').strip() for path in chunks)
+          assert len(encoded)==44860,len(encoded)
+          source=base64.b64decode(encoded,validate=True)
+          assert len(source)==33643,len(source)
+          assert hashlib.sha256(source).hexdigest()=='61a08c41473f6895056b7c680f2d8a0730e6391b2f4e070e9bab4dd10f9c2a19'
+          runner=Path('tools/run_usdjpy_r5_controlled_exit_v1.py')
+          runner.write_bytes(source)
+          runner.chmod(0o755)
+
+          config_path=Path('configs/research/usdjpy_r5_controlled_exit_v1.json')
+          prereg_path=Path('docs/research_reboot/usdjpy_r5_controlled_exit_prereg_v1.md')
+          config=json.loads(config_path.read_text(encoding='utf-8'))
+          assert len(config['representatives'])==8
+          assert len(config['policies'])==4
+          assert config['cohort_contract']['entry_rows_per_policy']==2982
+          assert config['cohort_contract']['total_policy_trade_rows']==11928
+          assert config['policy_design']['parameter_sweep'] is False
+          assert config['research_firewall']['H2_rows_parsed']==0
+          assert config['research_firewall']['2025_access'] is False
+
+          paths=[str(config_path),str(prereg_path),str(runner)]
+          code_blobs={}
+          for path in paths:
+              if path==str(runner):
+                  code_blobs[path]=subprocess.check_output(['git','hash-object',path],text=True).strip()
+              else:
+                  code_blobs[path]=subprocess.check_output(['git','rev-parse',f'HEAD:{path}'],text=True).strip()
+          lock={
+              'version':'v1',
+              'research_stage':'R5_controlled_exit_research',
+              'symbol':'USDJPY',
+              'code_blobs':code_blobs,
+              'content_sha256':{path:hashlib.sha256(Path(path).read_bytes()).hexdigest() for path in paths},
+              'input_releases':{
+                  'r0':{
+                      'tag':config['inputs']['r0_release_tag'],
+                      'asset':config['inputs']['r0_release_asset'],
+                      'asset_sha256':config['inputs']['r0_release_asset_sha256'],
+                      'canonical_m15_gzip_sha256':config['inputs']['canonical_m15_gzip_sha256']
+                  },
+                  'r2':{
+                      'tag':config['inputs']['r2_release_tag'],
+                      'asset':config['inputs']['r2_release_asset'],
+                      'asset_sha256':config['inputs']['r2_release_asset_sha256'],
+                      'trade_ledger_sha256':config['inputs']['r2_trade_ledger_sha256']
+                  },
+                  'r4':{
+                      'tag':config['inputs']['r4_release_tag'],
+                      'asset':config['inputs']['r4_release_asset'],
+                      'asset_sha256':config['inputs']['r4_release_asset_sha256'],
+                      'selected_representatives_sha256':config['inputs']['r4_selected_representatives_sha256']
+                  }
+              },
+              'representatives':config['representatives'],
+              'cohort_contract':config['cohort_contract'],
+              'atr_contract':config['atr'],
+              'policy_contract':config['policies'],
+              'execution_contract':config['execution_semantics'],
+              'cost_contract':config['cost_semantics'],
+              'reporting_contract':config['reporting'],
+              'required_outputs':config['required_outputs'],
+              'research_firewall':config['research_firewall'],
+              'next_stage':config['next_stage']
+          }
+          Path('configs/research/usdjpy_r5_controlled_exit_lock_v1.json').write_text(
+              json.dumps(lock,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          print(json.dumps({
+              'R5_assembly':'PASS',
+              'encoded_chars':len(encoded),
+              'source_bytes':len(source),
+              'source_sha256':hashlib.sha256(source).hexdigest(),
+              'runner_blob':code_blobs[str(runner)]
+          },sort_keys=True))
+          PY
+          python -m py_compile tools/run_usdjpy_r5_controlled_exit_v1.py
+
+      - name: Commit evaluator and lock and remove staging
+        run: |
+          set -euo pipefail
+          rm -rf .github/r5_stage .github/r5_stage_v2
+          rm -f .github/workflows/assemble_usdjpy_r5_from_chunks_v2.yml
+          rm -f .github/workflows/assemble_usdjpy_r5_controlled_exit_v1.yml
+          rm -f .github/workflows/run_usdjpy_r5_controlled_exit_v1.yml
+          rm -f .github/workflows/run_usdjpy_r5_controlled_exit_final_v1.yml
+          rm -f .github/workflows/patch_usdjpy_r5_compressed_hash_v1.yml
+          rm -f .github/workflows/diagnose_and_patch_usdjpy_r5_payload_v1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'research: materialize and lock USDJPY R5 evaluator v1'
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Close trigger issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body 'R5 evaluator was reconstructed from nine verified chunks, compiled, locked and committed before any formal Exit result.'
+          gh issue close "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --reason completed
