@@ -191,5 +191,37 @@
     "H2_ranking": false
   },
   "next_stage_if_any_pass": "Research_Core_MT4_parity",
-  "next_stage_if_none_pass": "new_preregistered_H1_research_branch_then_reuse_fixed_H2_gate"
+  "next_stage_if_none_pass": "new_preregistered_H1_research_branch_then_reuse_fixed_H2_gate",
+  "h2_exposure_log": {
+    "fixed_validation_period": "2024-H2",
+    "prior_recorded_exposures": [
+      {
+        "exposure_ordinal": 1,
+        "run_id": 29628387393,
+        "artifact_id": 8424623578,
+        "cohort": [
+          "A1_impulse_breakout_lb3_hold6",
+          "E3_trend_24h_resumption_hold6"
+        ],
+        "outcomes_not_used_to_design_current_five_strategies": true
+      }
+    ],
+    "current_exposure_ordinal": 2,
+    "current_cohort_first_exposure": true
+  },
+  "joint_portfolio_diagnostic": {
+    "role": "diagnostic_only_not_an_individual_gate",
+    "strategy_weight": 0.2,
+    "daily_default_pips": "sum(each_strategy_daily_default_net_pips*0.2)",
+    "daily_severe_pips": "sum(each_strategy_daily_severe_net_pips*0.2)",
+    "inactive_strategy_day_value": 0.0,
+    "reported_metrics": [
+      "total_default_pips",
+      "total_severe_pips",
+      "positive_default_months",
+      "positive_severe_months",
+      "maximum_default_drawdown_pips",
+      "maximum_severe_drawdown_pips"
+    ]
+  }
 }
