@@ -1,0 +1,17 @@
+{
+  "development_lock_sha256": "fb1b1d791272e421a9f95d991542ce09723e95122a33dfbdaef1673106350fbf",
+  "final_pass_candidate_ids": [
+    "A2_europe_local_short_hold8"
+  ],
+  "final_pass_family_ids": [
+    "A"
+  ],
+  "h2_policy": "H2 was used only after the development lock and did not nominate families or alter parameters.",
+  "nominated_family_ids": [
+    "A",
+    "F",
+    "G",
+    "H"
+  ],
+  "version": "v1"
+}

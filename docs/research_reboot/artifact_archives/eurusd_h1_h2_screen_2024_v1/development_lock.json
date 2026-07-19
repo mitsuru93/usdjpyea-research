@@ -1,0 +1,37 @@
+{
+  "candidate_count": 46,
+  "created_by": "run_eurusd_h1_h2_screen_v1.py development",
+  "development_period": {
+    "end_utc_exclusive": "2024-07-01T00:00:00Z",
+    "start_utc": "2024-01-01T00:00:00Z"
+  },
+  "development_representative_candidate_ids": [
+    "A2_europe_local_short_hold8",
+    "F_z_lb72_thr2p0_hold12",
+    "F_z_lb72_thr2p0_hold6",
+    "F_z_lb72_thr1p5_hold12",
+    "G_rsi14_30_70_hold12",
+    "G_rsi14_30_70_hold6",
+    "H_failed_lb48_hold12",
+    "H_failed_lb24_hold6"
+  ],
+  "nominated_family_ids": [
+    "A",
+    "F",
+    "G",
+    "H"
+  ],
+  "rule": "H2 may validate only the H1-nominated families and may not alter candidate definitions or representatives.",
+  "source": {
+    "canonical_source_artifact_digest": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+    "development_frame_content_sha256": "fabf30f3f2daf83ff9584ca6ff7959ba7dd984be3335d73c7f947c73e2adabe9",
+    "protocol_sha256": "6ed7b0bdff10201b3f9ea780e15365bd7f2c13745e01212f2d5b772430b2936a",
+    "registry_sha256": "8a5bd98ce95f245ba7c37ddac6a003fa3b104d9628059950d8719ef75f2a2d62",
+    "session_config_sha256": "e009ed1dd451a60d97bc8c021ae93ed2f28cf1996654464095647d5c1a30668d"
+  },
+  "validation_period_locked_unread_for_nomination": {
+    "end_utc_exclusive": "2025-01-01T00:00:00Z",
+    "start_utc": "2024-07-01T00:00:00Z"
+  },
+  "version": "v1"
+}

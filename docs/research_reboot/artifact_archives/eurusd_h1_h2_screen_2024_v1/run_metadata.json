@@ -1,0 +1,27 @@
+{
+  "development_lock_sha256": "sha256:fb1b1d791272e421a9f95d991542ce09723e95122a33dfbdaef1673106350fbf",
+  "head_sha": "7095a0198d74ba74edcd2377cd551a91d4925b69",
+  "run_attempt": 1,
+  "source_release_asset": "eurusd-2024-source-artifact-id-8441596981.zip",
+  "source_release_asset_sha256": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+  "source_release_tag": "eurusd-2024-source-artifact-archive-v1",
+  "validation_result": {
+    "development_lock_sha256": "fb1b1d791272e421a9f95d991542ce09723e95122a33dfbdaef1673106350fbf",
+    "final_pass_candidate_ids": [
+      "A2_europe_local_short_hold8"
+    ],
+    "final_pass_family_ids": [
+      "A"
+    ],
+    "h2_policy": "H2 was used only after the development lock and did not nominate families or alter parameters.",
+    "nominated_family_ids": [
+      "A",
+      "F",
+      "G",
+      "H"
+    ],
+    "version": "v1"
+  },
+  "version": "v1",
+  "workflow_run_id": 29690800003
+}
