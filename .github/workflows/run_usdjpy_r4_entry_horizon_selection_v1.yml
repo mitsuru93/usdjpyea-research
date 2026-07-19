@@ -1,15 +1,15 @@
-name: Indexed Bridge Assemble USDJPY R5 Evaluator v2
+name: Indexed Bridge Report USDJPY R5 Chunk Hashes v2
 
 on:
   pull_request:
     types: [opened]
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 jobs:
-  assemble:
+  report:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,20 +17,11 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Validate chunks reassemble evaluator and freeze lock
+      - name: Build chunk report
         run: |
-          set -euo pipefail
-          python - <<'PY'
-          import base64
+          python - <<'PY' > report.md
           import hashlib
-          import json
-          import subprocess
           from pathlib import Path
-
           expected_hashes=[
               'c13d90bae5d5473d99210272bb96e604d9b66388039fa087dd4a3201e2a24a59',
               'cb283da1d5b871f56094423f8de18d86616a35cf92770f38673cc112318ad857',
@@ -43,86 +34,20 @@ jobs:
               'dc3935f58fbe9fdce6767eeb52e05cf756974416394cc4cc72bc84695fa2da61',
           ]
           expected_lengths=[5600,5600,5600,5600,5600,5600,5600,5600,60]
-          stage=Path('.github/r5_stage_v2')
-          chunks=[stage/f'chunk_{i:02d}.b64' for i in range(9)]
-          encoded_parts=[]
-          for index,(path,expected_hash,expected_length) in enumerate(zip(chunks,expected_hashes,expected_lengths)):
+          print('| chunk | chars | expected chars | actual SHA-256 | expected SHA-256 | match |')
+          print('|---:|---:|---:|---|---|---|')
+          for i,(expected_hash,expected_length) in enumerate(zip(expected_hashes,expected_lengths)):
+              path=Path(f'.github/r5_stage_v2/chunk_{i:02d}.b64')
               text=path.read_text(encoding='utf-8').strip()
-              actual_hash=hashlib.sha256(text.encode()).hexdigest()
-              print({'chunk':index,'chars':len(text),'sha256':actual_hash,'expected':expected_hash})
-              assert len(text)==expected_length,(index,len(text),expected_length)
-              assert actual_hash==expected_hash,(index,actual_hash,expected_hash)
-              encoded_parts.append(text)
-          encoded=''.join(encoded_parts)
-          assert len(encoded)==44860,len(encoded)
-          source=base64.b64decode(encoded,validate=True)
-          assert len(source)==33643,len(source)
-          assert hashlib.sha256(source).hexdigest()=='61a08c41473f6895056b7c680f2d8a0730e6391b2f4e070e9bab4dd10f9c2a19'
-          runner=Path('tools/run_usdjpy_r5_controlled_exit_v1.py')
-          runner.write_bytes(source)
-          runner.chmod(0o755)
-
-          config_path=Path('configs/research/usdjpy_r5_controlled_exit_v1.json')
-          prereg_path=Path('docs/research_reboot/usdjpy_r5_controlled_exit_prereg_v1.md')
-          config=json.loads(config_path.read_text(encoding='utf-8'))
-          assert len(config['representatives'])==8
-          assert len(config['policies'])==4
-          assert config['cohort_contract']['entry_rows_per_policy']==2982
-          assert config['cohort_contract']['total_policy_trade_rows']==11928
-          assert config['policy_design']['parameter_sweep'] is False
-          assert config['research_firewall']['H2_rows_parsed']==0
-          assert config['research_firewall']['2025_access'] is False
-
-          paths=[str(config_path),str(prereg_path),str(runner)]
-          code_blobs={}
-          for path in paths:
-              if path==str(runner):
-                  code_blobs[path]=subprocess.check_output(['git','hash-object',path],text=True).strip()
-              else:
-                  code_blobs[path]=subprocess.check_output(['git','rev-parse',f'HEAD:{path}'],text=True).strip()
-          lock={
-              'version':'v1','research_stage':'R5_controlled_exit_research','symbol':'USDJPY',
-              'code_blobs':code_blobs,
-              'content_sha256':{path:hashlib.sha256(Path(path).read_bytes()).hexdigest() for path in paths},
-              'input_releases':{
-                  'r0':{'tag':config['inputs']['r0_release_tag'],'asset':config['inputs']['r0_release_asset'],'asset_sha256':config['inputs']['r0_release_asset_sha256'],'canonical_m15_gzip_sha256':config['inputs']['canonical_m15_gzip_sha256']},
-                  'r2':{'tag':config['inputs']['r2_release_tag'],'asset':config['inputs']['r2_release_asset'],'asset_sha256':config['inputs']['r2_release_asset_sha256'],'trade_ledger_sha256':config['inputs']['r2_trade_ledger_sha256']},
-                  'r4':{'tag':config['inputs']['r4_release_tag'],'asset':config['inputs']['r4_release_asset'],'asset_sha256':config['inputs']['r4_release_asset_sha256'],'selected_representatives_sha256':config['inputs']['r4_selected_representatives_sha256']}
-              },
-              'representatives':config['representatives'],'cohort_contract':config['cohort_contract'],
-              'atr_contract':config['atr'],'policy_contract':config['policies'],
-              'execution_contract':config['execution_semantics'],'cost_contract':config['cost_semantics'],
-              'reporting_contract':config['reporting'],'required_outputs':config['required_outputs'],
-              'research_firewall':config['research_firewall'],'next_stage':config['next_stage']
-          }
-          Path('configs/research/usdjpy_r5_controlled_exit_lock_v1.json').write_text(json.dumps(lock,indent=2,sort_keys=True)+'\n',encoding='utf-8')
-          print({'R5_assembly':'PASS','encoded_chars':len(encoded),'source_bytes':len(source),'source_sha256':hashlib.sha256(source).hexdigest(),'runner_blob':code_blobs[str(runner)]})
+              actual=hashlib.sha256(text.encode()).hexdigest()
+              match=(len(text)==expected_length and actual==expected_hash)
+              print(f'| {i} | {len(text)} | {expected_length} | `{actual}` | `{expected_hash}` | {match} |')
           PY
-          python -m py_compile tools/run_usdjpy_r5_controlled_exit_v1.py
 
-      - name: Commit exact evaluator and remove assembly material
-        run: |
-          set -euo pipefail
-          rm -rf .github/r5_stage .github/r5_stage_v2
-          rm -f .github/workflows/assemble_usdjpy_r5_from_chunks_v2.yml
-          rm -f .github/workflows/assemble_usdjpy_r5_controlled_exit_v1.yml
-          rm -f .github/workflows/run_usdjpy_r5_controlled_exit_v1.yml
-          rm -f .github/workflows/run_usdjpy_r5_controlled_exit_final_v1.yml
-          rm -f .github/workflows/patch_usdjpy_r5_compressed_hash_v1.yml
-          rm -f .github/workflows/diagnose_and_patch_usdjpy_r5_payload_v1.yml
-          rm -f .github/workflows/run_usdjpy_r4_entry_horizon_selection_v1.yml
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          git commit -m 'research: materialize and lock USDJPY R5 evaluator v1'
-          git pull --rebase origin main
-          git push origin HEAD:main
-
-      - name: Close trigger PR
+      - name: Comment report
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body 'R5 evaluator was reconstructed from nine verified chunks, compiled, locked and committed to main before any formal Exit result.'
-          gh pr close "${PR_NUMBER}" --repo "${REPOSITORY}" --delete-branch
+          gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body-file report.md
