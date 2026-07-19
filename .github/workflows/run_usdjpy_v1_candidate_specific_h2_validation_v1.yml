@@ -1,0 +1,227 @@
+name: Run Committed USDJPY V1 Candidate-Specific H2 Validation v1
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: usdjpy-v1-candidate-specific-h2-validation-v1
+  cancel-in-progress: false
+
+jobs:
+  v1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CONFIG_PATH: configs/research/usdjpy_v1_candidate_specific_h2_validation_v1.json
+      LOCK_PATH: configs/research/usdjpy_v1_candidate_specific_h2_validation_lock_v1.json
+      OUTPUT_DIR: data/experiments/usdjpy_v1_candidate_specific_h2_validation_v1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy
+
+      - name: Verify committed evaluator and execution lock
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/run_usdjpy_v1_candidate_specific_h2_validation_v1.py
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          lock=json.loads(Path('configs/research/usdjpy_v1_candidate_specific_h2_validation_lock_v1.json').read_text())
+          for path,expected in lock['code_blobs'].items():
+              actual=subprocess.check_output(['git','rev-parse',f'HEAD:{path}'],text=True).strip()
+              assert actual==expected,(path,actual,expected)
+          for path,expected in lock['content_sha256'].items():
+              actual=hashlib.sha256(Path(path).read_bytes()).hexdigest()
+              assert actual==expected,(path,actual,expected)
+          assert lock['strategy_contract']['strategy_count']==5
+          assert lock['strategy_contract']['h2_exposure_ordinal']==2
+          assert lock['strategy_contract']['H2_role']=='fixed_reusable_validation_gate'
+          assert lock['research_firewall']['2025_access'] is False
+          assert lock['research_firewall']['H2_parameter_optimization'] is False
+          assert lock['research_firewall']['H2_ranking'] is False
+          assert lock['research_firewall']['Core_promotion'] is False
+          assert lock['research_firewall']['MT4_promotion'] is False
+          print({'V1_lock':'PASS','files':len(lock['code_blobs'])})
+          PY
+
+      - name: Download and verify frozen R0 R1 R5 R6 inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p releases/r0 releases/r1 releases/r5 releases/r6 input/r0 input/r1 input/r5 input/r6
+          python - <<'PY' > release.env
+          import json
+          from pathlib import Path
+          lock=json.loads(Path('configs/research/usdjpy_v1_candidate_specific_h2_validation_lock_v1.json').read_text())
+          for key,prefix in [('r0','R0'),('r1','R1'),('r5','R5'),('r6','R6')]:
+              row=lock['input_releases'][key]
+              print(f'{prefix}_TAG={row["tag"]}')
+              print(f'{prefix}_ASSET={row["asset"]}')
+              print(f'{prefix}_SHA={row["asset_sha256"]}')
+          PY
+          source release.env
+          for prefix in R0 R1 R5 R6; do
+            tag_var="${prefix}_TAG"; asset_var="${prefix}_ASSET"; sha_var="${prefix}_SHA"
+            tag="${!tag_var}"; asset="${!asset_var}"; sha="${!sha_var}"
+            lower="$(echo "${prefix}" | tr '[:upper:]' '[:lower:]')"
+            gh release download "${tag}" --repo "${GITHUB_REPOSITORY}" --pattern "${asset}" --dir "releases/${lower}"
+            echo "${sha}  releases/${lower}/${asset}" | sha256sum -c -
+            unzip -q "releases/${lower}/${asset}" -d "input/${lower}"
+          done
+          mapfile -t M15_FILES < <(find input/r0 -type f -path '*/canonical/bars/M15/USDJPY_M15.csv.gz' | sort)
+          mapfile -t R1_REGISTRY_FILES < <(find input/r1 -type f -name 'r1_registry_snapshot.json' | sort)
+          mapfile -t R1_SIGNAL_FILES < <(find input/r1 -type f -name 'candidate_signals.csv.gz' | sort)
+          mapfile -t R5_TRADE_FILES < <(find input/r5 -type f -name 'exit_trades.csv.gz' | sort)
+          mapfile -t R6_FROZEN_FILES < <(find input/r6 -type f -name 'frozen_complete_strategies.csv' | sort)
+          mapfile -t R6_PLAN_FILES < <(find input/r6 -type f -name 'h2_validation_plan.json' | sort)
+          mapfile -t R6_ACCEPTANCE_FILES < <(find input/r6 -type f -name 'r6_acceptance.json' | sort)
+          test "${#M15_FILES[@]}" -eq 1
+          test "${#R1_REGISTRY_FILES[@]}" -eq 1
+          test "${#R1_SIGNAL_FILES[@]}" -eq 1
+          test "${#R5_TRADE_FILES[@]}" -eq 1
+          test "${#R6_FROZEN_FILES[@]}" -eq 1
+          test "${#R6_PLAN_FILES[@]}" -eq 1
+          test "${#R6_ACCEPTANCE_FILES[@]}" -eq 1
+          echo "R0_RELEASE_ZIP=releases/r0/${R0_ASSET}" >> "${GITHUB_ENV}"
+          echo "R1_RELEASE_ZIP=releases/r1/${R1_ASSET}" >> "${GITHUB_ENV}"
+          echo "R5_RELEASE_ZIP=releases/r5/${R5_ASSET}" >> "${GITHUB_ENV}"
+          echo "R6_RELEASE_ZIP=releases/r6/${R6_ASSET}" >> "${GITHUB_ENV}"
+          echo "CANONICAL_M15=${M15_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R1_REGISTRY=${R1_REGISTRY_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R1_SIGNALS=${R1_SIGNAL_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R5_EXIT_TRADES=${R5_TRADE_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R6_FROZEN=${R6_FROZEN_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R6_H2_PLAN=${R6_PLAN_FILES[0]}" >> "${GITHUB_ENV}"
+          echo "R6_ACCEPTANCE=${R6_ACCEPTANCE_FILES[0]}" >> "${GITHUB_ENV}"
+
+      - name: Run preregistered V1 H2 validation
+        run: |
+          python tools/run_usdjpy_v1_candidate_specific_h2_validation_v1.py \
+            --r0-release-zip "${R0_RELEASE_ZIP}" \
+            --r1-release-zip "${R1_RELEASE_ZIP}" \
+            --r5-release-zip "${R5_RELEASE_ZIP}" \
+            --r6-release-zip "${R6_RELEASE_ZIP}" \
+            --canonical-m15 "${CANONICAL_M15}" \
+            --r1-registry "${R1_REGISTRY}" \
+            --r1-signals "${R1_SIGNALS}" \
+            --r5-exit-trades "${R5_EXIT_TRADES}" \
+            --r6-frozen "${R6_FROZEN}" \
+            --r6-h2-plan "${R6_H2_PLAN}" \
+            --r6-acceptance "${R6_ACCEPTANCE}" \
+            --session-config configs/market_sessions/fx_market_sessions_v1.json \
+            --config "${CONFIG_PATH}" \
+            --output-dir "${OUTPUT_DIR}"
+
+      - name: Verify V1 output contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          out=Path('data/experiments/usdjpy_v1_candidate_specific_h2_validation_v1')
+          lock=json.loads(Path('configs/research/usdjpy_v1_candidate_specific_h2_validation_lock_v1.json').read_text())
+          for name in lock['required_outputs']:
+              path=out/name
+              assert path.is_file() and path.stat().st_size>0,name
+          signal_reg=pd.read_csv(out/'h1_signal_regression.csv')
+          trade_reg=pd.read_csv(out/'h1_trade_regression.csv')
+          signals=pd.read_csv(out/'h2_candidate_signals.csv.gz',compression='gzip')
+          trades=pd.read_csv(out/'h2_candidate_trades.csv.gz',compression='gzip')
+          summary=pd.read_csv(out/'h2_candidate_summary.csv')
+          monthly=pd.read_csv(out/'h2_candidate_monthly.csv')
+          quarterly=pd.read_csv(out/'h2_candidate_quarterly.csv')
+          daily=pd.read_csv(out/'h2_daily_net_pips.csv')
+          direction=pd.read_csv(out/'h2_direction_attribution.csv')
+          gates=pd.read_csv(out/'h2_gate_results.csv')
+          portfolio=pd.read_csv(out/'h2_joint_portfolio_diagnostic.csv')
+          decision=json.loads((out/'h2_decision.json').read_text())
+          acceptance=json.loads((out/'v1_acceptance.json').read_text())
+          metadata=json.loads((out/'run_metadata.json').read_text())
+          assert len(signal_reg)==5 and signal_reg['passed'].all()
+          assert len(trade_reg)==5 and trade_reg['passed'].all()
+          assert signals['candidate_id'].nunique()==5
+          assert trades['strategy_id'].nunique()==5
+          assert len(summary)==5
+          assert len(monthly)==30
+          assert len(quarterly)==10
+          assert len(daily)==920
+          assert len(direction)==10
+          assert len(gates)==5
+          assert len(portfolio)==1 and not bool(portfolio.iloc[0]['individual_gate_role'])
+          assert acceptance['status']=='PASS'
+          assert all(value is True for key,value in acceptance.items() if key!='status')
+          assert metadata['status']=='PASS'
+          assert metadata['H1_signal_regressions_passed']==5
+          assert metadata['H1_trade_regressions_passed']==5
+          assert metadata['H2_exposure_ordinal']==2
+          assert metadata['H2_reusable_fixed_validation_gate'] is True
+          assert metadata['H2_parameter_optimization'] is False
+          assert metadata['H2_ranking'] is False
+          assert metadata['2025_artifact_access'] is False
+          assert metadata['Core_promotion'] is False
+          assert metadata['MT4_promotion'] is False
+          assert decision['passed_strategy_count']+decision['failed_strategy_count']==5
+          assert decision['H2_reusable_fixed_validation_gate'] is True
+          assert decision['2025_access'] is False
+          print({
+              'V1':'PASS',
+              'H2_exposure':decision['h2_exposure_ordinal'],
+              'signals':len(signals),
+              'trades':len(trades),
+              'passed':decision['passed_strategy_count'],
+              'failed':decision['failed_strategy_count'],
+          })
+          PY
+
+      - name: Write job summary
+        if: always()
+        run: |
+          echo '# USDJPY V1 Candidate-Specific H2 Validation v1' >> "${GITHUB_STEP_SUMMARY}"
+          echo >> "${GITHUB_STEP_SUMMARY}"
+          if [ -f "${OUTPUT_DIR}/h2_decision.json" ]; then
+            cat "${OUTPUT_DIR}/h2_decision.json" >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Upload V1 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-v1-candidate-specific-h2-validation-v1-${{ github.run_id }}
+          path: data/experiments/usdjpy_v1_candidate_specific_h2_validation_v1/**
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Report result on marker PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ "${{ job.status }}" = 'success' ]; then
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body "Formal committed V1 H2 validation run ${{ github.run_id }} passed its execution contract. Results are in the exact artifact; 2025 remained unopened and no H2 optimization or ranking occurred."
+          else
+            gh pr comment "${PR_NUMBER}" --repo "${REPOSITORY}" --body "Formal committed V1 H2 validation run ${{ github.run_id }} failed. No V1 result is accepted and 2025 remains closed."
+          fi
