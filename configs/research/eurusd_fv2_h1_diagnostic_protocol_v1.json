@@ -1,0 +1,75 @@
+{
+  "version": "v1",
+  "status": "preregistered_before_diagnostic_execution",
+  "symbol": "EURUSD",
+  "bar_timeframe": "H1",
+  "period": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z",
+    "H2_access_forbidden": true
+  },
+  "source": {
+    "release_tag": "eurusd-2024-source-artifact-archive-v1",
+    "release_asset": "eurusd-2024-source-artifact-id-8441596981.zip",
+    "release_asset_sha256": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+    "annual_h1_member": "bundle/bars/H1/EURUSD_H1.csv.gz",
+    "expected_H1_rows_after_slice": 3030
+  },
+  "authoritative_candidate_protocol": "configs/research/eurusd_h1_h2_v2_candidate_protocol.json",
+  "authoritative_candidate_lock_sha256": "sha256:d7babc976ba8524d35efedc2552d5284ed0153778ad557347d58dc6a8ec52055",
+  "candidate_ids": [
+    "F_v2_z72_1p5_mean_target_0p5_max12",
+    "F_v2_z72_1p5_mean_target_0p25_max12"
+  ],
+  "diagnostics": {
+    "monthly": true,
+    "daily_concentration": true,
+    "side": true,
+    "entry_utc_hour": true,
+    "session_bucket_utc": {
+      "asia": [0, 7],
+      "europe": [7, 13],
+      "us_overlap": [13, 20],
+      "late": [20, 24]
+    },
+    "entry_abs_z_bins": [1.5, 1.75, 2.0, 2.5],
+    "entry_efficiency_ratio_bins": [0.0, 0.15, 0.25, 0.35],
+    "holding_bars": true,
+    "exit_reason": true,
+    "bar_path_MFE_MAE": true,
+    "average_close_path_through_12_bars": true,
+    "candidate_entry_overlap": true,
+    "cost_grid": {
+      "spread_multipliers": [1.0, 1.5, 2.0, 3.0],
+      "slippage_pips_per_side": [0.0, 0.1, 0.3, 0.5]
+    }
+  },
+  "anti_leakage": {
+    "diagnostic_may_describe_H1": true,
+    "diagnostic_may_not_access_H2": true,
+    "diagnostic_may_not_change_candidate_rules": true,
+    "new_revision_requires_separate_preregistration": true,
+    "fixed_2024_H2_remains_reusable": true,
+    "2025_not_used_in_current_research": true,
+    "optional_2025_check_may_only_be_final_MT4_tester_run": true
+  },
+  "required_outputs": [
+    "candidate_summary.csv",
+    "trade_diagnostics.csv",
+    "monthly_breakdown.csv",
+    "side_breakdown.csv",
+    "hour_breakdown.csv",
+    "session_breakdown.csv",
+    "zscore_breakdown.csv",
+    "efficiency_breakdown.csv",
+    "holding_breakdown.csv",
+    "exit_reason_breakdown.csv",
+    "cost_grid.csv",
+    "average_path.csv",
+    "entry_overlap.json",
+    "diagnostic_result.json",
+    "analysis_summary.md",
+    "source_receipt.json",
+    "SHA256SUMS"
+  ]
+}
