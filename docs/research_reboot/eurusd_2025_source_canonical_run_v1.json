@@ -1,0 +1,26 @@
+{
+  "canonical_run": {
+    "attempt": 1,
+    "conclusion": "",
+    "createdAt": "2026-07-20T09:58:35Z",
+    "databaseId": 29733387996,
+    "event": "issues",
+    "headSha": "ce4ec1db76efbd283c161174e70057970ae7c469",
+    "status": "queued",
+    "updatedAt": "2026-07-20T09:58:45Z",
+    "url": "https://github.com/mitsuru93/usdjpyea-research/actions/runs/29733387996"
+  },
+  "decision": "retain earlier issue-triggered run; cancel later dispatcher duplicate",
+  "duplicate_run": {
+    "attempt": 1,
+    "conclusion": "cancelled",
+    "createdAt": "2026-07-20T10:02:40Z",
+    "databaseId": 29733632765,
+    "event": "workflow_dispatch",
+    "headSha": "3c45e23a32fe3bc0cd893ea461ca83a958269f81",
+    "status": "completed",
+    "updatedAt": "2026-07-20T10:03:01Z",
+    "url": "https://github.com/mitsuru93/usdjpyea-research/actions/runs/29733632765"
+  },
+  "schema_version": "eurusd_2025_source_canonical_run_v1"
+}
