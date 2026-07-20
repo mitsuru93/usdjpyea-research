@@ -1,0 +1,37 @@
+name: Capture EURUSD F v2 2025 Smoke Failure v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/capture_eurusd_fv2_2025_smoke_failure_v1.yml
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    env:
+      FAILED_RUN_ID: "29734199712"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Capture exact log tail
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p docs/research_reboot
+          gh run view "${FAILED_RUN_ID}" --log > /tmp/smoke.log
+          tail -n 160 /tmp/smoke.log > docs/research_reboot/eurusd_fv2_2025_replication_smoke_failure_tail_v1.txt
+          grep -nE 'Traceback|Error|Exception|FAILED|##\[error\]|ValueError|KeyError|RuntimeError' /tmp/smoke.log > docs/research_reboot/eurusd_fv2_2025_replication_smoke_failure_errors_v1.txt || true
+          cat docs/research_reboot/eurusd_fv2_2025_replication_smoke_failure_errors_v1.txt
+      - name: Commit captured diagnostics
+        run: |
+          git pull --rebase origin main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/research_reboot/eurusd_fv2_2025_replication_smoke_failure_tail_v1.txt docs/research_reboot/eurusd_fv2_2025_replication_smoke_failure_errors_v1.txt
+          git commit -m "ci: preserve EURUSD F v2 2025 smoke failure"
+          git push origin main
