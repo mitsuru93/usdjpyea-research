@@ -1,5 +1,11 @@
 # USDJPY Research Roadmap — 2024 Primary / 2025 Replication v4
 
+> **SUPERSEDED — 2026-07-20**
+>
+> The 2025 replication provisions in this document are no longer authorized. USDJPY must not collect, download, aggregate, inspect, or evaluate 2025 market data. The binding replacement is `docs/research_reboot/usdjpy_no_2025_data_mt4_tester_rule_v1.md`: 2024 H2 remains reusable validation data, and further implementation validation uses only the already-installed 2024 history in MT4 Strategy Tester.
+>
+> The remainder of this file is retained only as historical methodology documentation and must not be used to authorize 2025 work.
+
 ## 1. Methodological decision
 
 The prior v3 roadmap required separate unchanged replications on both 2025 H1 and 2025 H2 before Core or MT4 work. That requirement was stricter than necessary and incorrectly implied that 2024 was not enough to perform the primary research programme.
