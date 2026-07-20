@@ -1,0 +1,13 @@
+{
+  "candidate_lock_sha256": "d7babc976ba8524d35efedc2552d5284ed0153778ad557347d58dc6a8ec52055",
+  "final_pass_candidate_ids": [
+    "F_v2_z72_1p5_mean_target_0p5_max12",
+    "F_v2_z72_1p5_mean_target_0p25_max12"
+  ],
+  "fixed_validation_period": {
+    "end_utc_exclusive": "2025-01-01 00:00:00+00:00",
+    "start_utc": "2024-07-01 00:00:00+00:00"
+  },
+  "h2_reusable": true,
+  "version": "v2"
+}

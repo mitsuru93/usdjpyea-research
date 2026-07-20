@@ -1,0 +1,62 @@
+{
+  "candidate_definitions": [
+    {
+      "entry_abs_z": 1.5,
+      "exit_target_abs_z": 0.5,
+      "family": "F",
+      "id": "F_v2_z72_1p5_mean_target_0p5_max12",
+      "kind": "F",
+      "maximum_hold_bars": 12,
+      "rsi_confirmation": false
+    },
+    {
+      "entry_abs_z": 1.5,
+      "exit_target_abs_z": 0.25,
+      "family": "F",
+      "id": "F_v2_z72_1p5_mean_target_0p25_max12",
+      "kind": "F",
+      "maximum_hold_bars": 12,
+      "rsi_confirmation": false
+    },
+    {
+      "entry_abs_z": 1.5,
+      "exit_target_abs_z": 0.0,
+      "family": "F",
+      "id": "F_v2_z72_1p5_mean_target_0p0_max12",
+      "kind": "F",
+      "maximum_hold_bars": 12,
+      "rsi_confirmation": false
+    },
+    {
+      "family": "H",
+      "id": "H_v2_hier_48x12_24x6_fixed",
+      "kind": "H_hier",
+      "midpoint_exit": false,
+      "reentry_fraction": 0.0
+    },
+    {
+      "family": "H",
+      "id": "H_v2_hier_48x12_24x6_midpoint",
+      "kind": "H_hier",
+      "midpoint_exit": true,
+      "reentry_fraction": 0.0
+    }
+  ],
+  "candidate_ids": [
+    "F_v2_z72_1p5_mean_target_0p5_max12",
+    "F_v2_z72_1p5_mean_target_0p25_max12",
+    "F_v2_z72_1p5_mean_target_0p0_max12",
+    "H_v2_hier_48x12_24x6_fixed",
+    "H_v2_hier_48x12_24x6_midpoint"
+  ],
+  "candidate_lock_sha256": "d7babc976ba8524d35efedc2552d5284ed0153778ad557347d58dc6a8ec52055",
+  "created_by": "development_phase",
+  "development_frame_content_sha256": "fabf30f3f2daf83ff9584ca6ff7959ba7dd984be3335d73c7f947c73e2adabe9",
+  "development_period": {
+    "end_utc_exclusive": "2024-07-01 00:00:00+00:00",
+    "start_utc": "2024-01-01 00:00:00+00:00"
+  },
+  "protocol_sha256": "89117fa854d40fe67106424e6c95f84bc1b68ebf9ba95284f73da4ce3204f412",
+  "rule": "2024 H1 only; definitions frozen before reusable fixed 2024 H2 validation.",
+  "version": "v2"
+}
