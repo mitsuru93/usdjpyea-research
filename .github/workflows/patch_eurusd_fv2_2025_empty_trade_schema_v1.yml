@@ -1,0 +1,38 @@
+name: Patch EURUSD F v2 2025 Empty Trade Schema v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/patch_eurusd_fv2_2025_empty_trade_schema_v1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve the complete trade schema when no trades exist
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('tools/run_eurusd_fv2_2025_replication_v1.py')
+          text=path.read_text()
+          old='''    return pd.DataFrame(rows)\n\n\ndef profit_factor'''
+          new='''    columns = [\n        "candidate_id", "signal_ts", "entry_ts", "exit_time_utc", "side",\n        "hold_bars", "exit_reason", "signal_zscore",\n        "signal_efficiency_ratio", "entry_mid", "exit_mid", "gross_pips",\n        "spread_basis_pips", "default_cost_pips", "net_pips",\n        "severe_cost_pips", "severe_net_pips", "entry_date_utc",\n        "entry_month",\n    ]\n    return pd.DataFrame(rows, columns=columns)\n\n\ndef profit_factor'''
+          if text.count(old) != 1:
+              raise RuntimeError(f'expected one build_trades return block, found {text.count(old)}')
+          path.write_text(text.replace(old,new),encoding='utf-8')
+          PY
+          python -m py_compile tools/run_eurusd_fv2_2025_replication_v1.py
+      - name: Commit evaluator fix
+        run: |
+          git pull --rebase origin main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/run_eurusd_fv2_2025_replication_v1.py
+          git commit -m "fix: preserve empty EURUSD 2025 trade schema"
+          git push origin main
