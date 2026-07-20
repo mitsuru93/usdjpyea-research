@@ -1,0 +1,72 @@
+{
+  "H2_accessed": false,
+  "candidate_ids": [
+    "F_v2_z72_1p5_mean_target_0p5_max12",
+    "F_v2_z72_1p5_mean_target_0p25_max12"
+  ],
+  "candidate_rules_changed": false,
+  "candidate_summary": [
+    {
+      "avg_MAE_pips": -16.345555555555617,
+      "avg_MFE_pips": 19.965555555555543,
+      "avg_net_pips": 5.0182488405564,
+      "best_day_net_pips": 71.64999999999816,
+      "best_two_days_net_pips": 138.39999999999753,
+      "best_two_days_share_of_positive_total": 0.3064371310863988,
+      "candidate_id": "F_v2_z72_1p5_mean_target_0p25_max12",
+      "long_trades": 38,
+      "max_drawdown_pips": -116.95000000000283,
+      "mean_hold_bars": 10.566666666666666,
+      "median_MAE_pips": -11.299999999999644,
+      "median_MFE_pips": 16.800000000000146,
+      "median_hold_bars": 12.0,
+      "positive_months": 6,
+      "profit_factor": 1.6962187472777899,
+      "severe_profit_factor": 1.344661389124235,
+      "short_trades": 52,
+      "total_excluding_best_two_days": 313.2423956500785,
+      "total_net_pips": 451.642395650076,
+      "trades": 90
+    },
+    {
+      "avg_MAE_pips": -16.345555555555617,
+      "avg_MFE_pips": 18.384999999999973,
+      "avg_net_pips": 3.6760266183341668,
+      "best_day_net_pips": 66.74999999999936,
+      "best_two_days_net_pips": 129.84999999999923,
+      "best_two_days_share_of_positive_total": 0.3924829517234509,
+      "candidate_id": "F_v2_z72_1p5_mean_target_0p5_max12",
+      "long_trades": 38,
+      "max_drawdown_pips": -130.90000000000322,
+      "mean_hold_bars": 10.077777777777778,
+      "median_MAE_pips": -11.299999999999644,
+      "median_MFE_pips": 16.325000000000365,
+      "median_hold_bars": 12.0,
+      "positive_months": 5,
+      "profit_factor": 1.5100023391611366,
+      "severe_profit_factor": 1.180313515635415,
+      "short_trades": 52,
+      "total_excluding_best_two_days": 200.99239565007576,
+      "total_net_pips": 330.842395650075,
+      "trades": 90
+    }
+  ],
+  "entry_overlap": {
+    "candidate_1": "F_v2_z72_1p5_mean_target_0p5_max12",
+    "candidate_1_entries": 90,
+    "candidate_1_only": 0,
+    "candidate_2": "F_v2_z72_1p5_mean_target_0p25_max12",
+    "candidate_2_entries": 90,
+    "candidate_2_only": 0,
+    "common_entries": 90,
+    "jaccard": 1.0
+  },
+  "next_action": "interpret H1 diagnostics and preregister a bounded revision separately, or retain the frozen baseline if no structural revision is justified",
+  "period": {
+    "H2_access_forbidden": true,
+    "end_utc_exclusive": "2024-07-01T00:00:00Z",
+    "start_utc": "2024-01-01T00:00:00Z"
+  },
+  "revision_selected": false,
+  "schema_version": "eurusd_fv2_h1_diagnostic_result_v1"
+}
