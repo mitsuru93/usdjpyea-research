@@ -1,0 +1,218 @@
+name: Run EURUSD F v2 Untouched 2025 Replication v1
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Run EURUSD 2025 Full-Year Replication Source"]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: eurusd-fv2-2025-replication-v1
+  cancel-in-progress: false
+
+jobs:
+  replicate:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      SOURCE_2024_TAG: eurusd-2024-source-artifact-archive-v1
+      SOURCE_2024_ASSET: eurusd-2024-source-artifact-id-8441596981.zip
+      SOURCE_2024_SHA256: 7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685
+      SOURCE_2025_TAG: eurusd-2025-source-artifact-archive-v1
+      SOURCE_2025_ASSET: eurusd-2025-source-bundle-v1.tar.gz
+      RESULT_TAG: eurusd-fv2-2025-replication-v1
+      RESULT_ROOT: result/eurusd_fv2_2025_replication_v1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install evaluator dependencies and compile
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy tabulate
+          python -m py_compile tools/run_eurusd_fv2_2025_replication_v1.py
+      - name: Verify preregistration and archived source registry
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          protocol=json.loads(Path('configs/research/eurusd_fv2_2025_replication_protocol_v1.json').read_text())
+          registry=json.loads(Path('configs/research/eurusd_2025_source_archive_v1.json').read_text())
+          assert protocol['status']=='preregistered_before_2025_source_access', protocol
+          assert [x['id'] for x in protocol['candidate_definitions']]==[
+              'F_v2_z72_1p5_mean_target_0p5_max12',
+              'F_v2_z72_1p5_mean_target_0p25_max12',
+          ], protocol
+          assert protocol['anti_leakage']['2025_must_not_create_filters_parameters_or_exits'] is True
+          assert registry['status']=='archived_and_verified', registry
+          digest=registry['release']['bundle_sha256']
+          assert isinstance(digest,str) and digest.startswith('sha256:') and len(digest)==71, registry
+          print({'protocol':'LOCKED','source_registry':'ARCHIVED_AND_VERIFIED','source_digest':digest})
+          PY
+      - name: Download exact 2024 warmup and 2025 replication Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p inputs extracted/2024 extracted/2025
+          gh release download "${SOURCE_2024_TAG}" --pattern "${SOURCE_2024_ASSET}" --dir inputs
+          gh release download "${SOURCE_2025_TAG}" --pattern "${SOURCE_2025_ASSET}" --pattern eurusd_2025_source_receipt_v1.json --dir inputs
+          echo "${SOURCE_2024_SHA256}  inputs/${SOURCE_2024_ASSET}" | sha256sum -c -
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          registry=json.loads(Path('configs/research/eurusd_2025_source_archive_v1.json').read_text())
+          source_receipt=json.loads(Path('inputs/eurusd_2025_source_receipt_v1.json').read_text())
+          path=Path('inputs/eurusd-2025-source-bundle-v1.tar.gz')
+          digest=hashlib.sha256(path.read_bytes()).hexdigest()
+          expected=registry['release']['bundle_sha256'].removeprefix('sha256:')
+          assert digest==expected,(digest,expected)
+          assert source_receipt['bundle_sha256']=='sha256:'+digest,source_receipt
+          assert source_receipt['effective_coverage']==1.0,source_receipt
+          assert source_receipt['hard_error_records']==0,source_receipt
+          assert source_receipt['unobserved_records']==0,source_receipt
+          print({'source_2025_sha256':digest,'source_run_id':source_receipt['workflow_run_id']})
+          PY
+      - name: Extract exact H1 members
+        run: |
+          python - <<'PY'
+          import shutil,tarfile,zipfile
+          from pathlib import Path
+          zip_path=Path('inputs/eurusd-2024-source-artifact-id-8441596981.zip')
+          with zipfile.ZipFile(zip_path) as archive:
+              member='bundle/bars/H1/EURUSD_H1.csv.gz'
+              if member not in archive.namelist(): raise RuntimeError(member)
+              with archive.open(member) as source, Path('extracted/2024/EURUSD_H1.csv.gz').open('wb') as target:
+                  shutil.copyfileobj(source,target)
+          tar_path=Path('inputs/eurusd-2025-source-bundle-v1.tar.gz')
+          with tarfile.open(tar_path,'r:gz') as archive:
+              member='source/bundle/bars/H1/EURUSD_H1.csv.gz'
+              item=archive.getmember(member)
+              source=archive.extractfile(item)
+              if source is None: raise RuntimeError(member)
+              with source, Path('extracted/2025/EURUSD_H1.csv.gz').open('wb') as target:
+                  shutil.copyfileobj(source,target)
+          PY
+          test -s extracted/2024/EURUSD_H1.csv.gz
+          test -s extracted/2025/EURUSD_H1.csv.gz
+      - name: Run frozen 2025 replication
+        run: |
+          python tools/run_eurusd_fv2_2025_replication_v1.py \
+            --warmup-bars extracted/2024/EURUSD_H1.csv.gz \
+            --replication-bars extracted/2025/EURUSD_H1.csv.gz \
+            --protocol configs/research/eurusd_fv2_2025_replication_protocol_v1.json \
+            --output-dir "${RESULT_ROOT}"
+      - name: Enforce replication output contract
+        run: |
+          set -euo pipefail
+          for name in replication_summary.csv replication_trades.csv replication_result.json monthly_metrics.csv source_receipt.json analysis_summary.md SHA256SUMS; do
+            test -f "${RESULT_ROOT}/${name}"
+          done
+          (cd "${RESULT_ROOT}" && sha256sum -c SHA256SUMS)
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['RESULT_ROOT'])
+          result=json.loads((root/'replication_result.json').read_text())
+          assert result['schema_version']=='eurusd_fv2_2025_replication_result_v1',result
+          assert result['new_rule_or_parameter_selected_from_2025'] is False,result
+          assert result['candidate_ids']==[
+              'F_v2_z72_1p5_mean_target_0p5_max12',
+              'F_v2_z72_1p5_mean_target_0p25_max12',
+          ],result
+          print(result)
+          PY
+      - name: Write exact execution receipt
+        run: |
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['RESULT_ROOT'])
+          result=json.loads((root/'replication_result.json').read_text())
+          source=json.loads((root/'source_receipt.json').read_text())
+          receipt={
+              'schema_version':'eurusd_fv2_2025_replication_execution_receipt_v1',
+              'workflow_run_id':int(os.environ['GITHUB_RUN_ID']),
+              'run_attempt':int(os.environ['GITHUB_RUN_ATTEMPT']),
+              'head_sha':os.environ['GITHUB_SHA'],
+              'source_workflow_run_id':int(json.loads(Path('inputs/eurusd_2025_source_receipt_v1.json').read_text())['workflow_run_id']),
+              'protocol_sha256':source['protocol_sha256'],
+              'candidate_lock_sha256':source['candidate_lock_sha256'],
+              'warmup_file_sha256':source['warmup_file_sha256'],
+              'replication_file_sha256':source['replication_file_sha256'],
+              'family_pass':result['family_pass'],
+              'passing_candidate_ids':result['passing_candidate_ids'],
+              'new_rule_or_parameter_selected_from_2025':False,
+          }
+          (root/'execution_receipt.json').write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
+          lines=[]
+          for path in sorted(root.iterdir()):
+              if path.is_file() and path.name!='SHA256SUMS':
+                  lines.append(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}")
+          (root/'SHA256SUMS').write_text('\n'.join(lines)+'\n')
+          print(json.dumps(receipt,indent=2,sort_keys=True))
+          PY
+          (cd "${RESULT_ROOT}" && sha256sum -c SHA256SUMS)
+      - name: Upload complete replication evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-fv2-2025-replication-v1-${{ github.run_id }}-a${{ github.run_attempt }}
+          path: ${{ env.RESULT_ROOT }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: Package and publish durable replication Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner -C result -cf - eurusd_fv2_2025_replication_v1 | gzip -n > eurusd-fv2-2025-replication-v1.tar.gz
+          sha256sum eurusd-fv2-2025-replication-v1.tar.gz > eurusd-fv2-2025-replication-v1.tar.gz.sha256
+          cp "${RESULT_ROOT}/replication_result.json" eurusd_fv2_2025_replication_result_v1.json
+          cp "${RESULT_ROOT}/analysis_summary.md" eurusd_fv2_2025_replication_summary_v1.md
+          cp "${RESULT_ROOT}/execution_receipt.json" eurusd_fv2_2025_replication_execution_receipt_v1.json
+          cp "${RESULT_ROOT}/SHA256SUMS" SHA256SUMS
+          assets=(eurusd-fv2-2025-replication-v1.tar.gz eurusd-fv2-2025-replication-v1.tar.gz.sha256 eurusd_fv2_2025_replication_result_v1.json eurusd_fv2_2025_replication_summary_v1.md eurusd_fv2_2025_replication_execution_receipt_v1.json SHA256SUMS)
+          if gh release view "${RESULT_TAG}" >/dev/null 2>&1; then
+            gh release upload "${RESULT_TAG}" "${assets[@]}" --clobber
+          else
+            gh release create "${RESULT_TAG}" "${assets[@]}" --title "EURUSD F v2 untouched 2025 replication v1" --notes "Evaluation of the two frozen F v2 candidates on preregistered untouched 2025 H1 data. No rule or parameter was selected from 2025." --latest=false
+          fi
+          gh release view "${RESULT_TAG}" --json tagName,url,isDraft,isPrerelease,assets > "${RESULT_ROOT}/release_receipt.json"
+      - name: Commit replication result and advance roadmap state
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          cp "${RESULT_ROOT}/replication_result.json" docs/research_reboot/eurusd_fv2_2025_replication_result_v1.json
+          cp "${RESULT_ROOT}/analysis_summary.md" docs/research_reboot/eurusd_fv2_2025_replication_summary_v1.md
+          cp "${RESULT_ROOT}/execution_receipt.json" docs/research_reboot/eurusd_fv2_2025_replication_execution_receipt_v1.json
+          cp "${RESULT_ROOT}/release_receipt.json" docs/research_reboot/eurusd_fv2_2025_replication_release_receipt_v1.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          state_path=Path('docs/research_reboot/eurusd_fv2_roadmap_current_state_v1.json')
+          state=json.loads(state_path.read_text())
+          result=json.loads(Path('docs/research_reboot/eurusd_fv2_2025_replication_result_v1.json').read_text())
+          state['R3_result']={'family_pass':result['family_pass'],'passing_candidate_ids':result['passing_candidate_ids'],'decision':result['decision']}
+          if result['family_pass']:
+              state['current_stage']='R4_exit_policy_isolation'
+              state['next_action']='apply_pre_registered_bounded_exit_policy_decision_without_new_threshold_search'
+              if 'R3_untouched_2025_full_year_replication' not in state['completed_stages']:
+                  state['completed_stages'].append('R3_untouched_2025_full_year_replication')
+          else:
+              state['current_stage']='2024_H1_revision_required'
+              state['next_action']='derive_new_candidate_rules_from_2024_H1_only_then_reuse_fixed_2024_H2'
+          state_path.write_text(json.dumps(state,indent=2,sort_keys=True)+'\n')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/research_reboot/eurusd_fv2_2025_replication_result_v1.json docs/research_reboot/eurusd_fv2_2025_replication_summary_v1.md docs/research_reboot/eurusd_fv2_2025_replication_execution_receipt_v1.json docs/research_reboot/eurusd_fv2_2025_replication_release_receipt_v1.json docs/research_reboot/eurusd_fv2_roadmap_current_state_v1.json
+          git commit -m "research: record untouched EURUSD F v2 2025 replication"
+          git push origin main
