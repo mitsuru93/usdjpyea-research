@@ -1,0 +1,211 @@
+name: Resume USDJPY 2024 Raw Tick Repair Run 29707697472 v1
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Durable Release tag after all 8,784 UTC hours validate
+        required: true
+        default: usdjpy-2024-raw-bidask-ticks-v1
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/resume_usdjpy_2024_raw_tick_repair_run_29707697472_v1.yml
+      - tools/download_github_actions_day_artifacts_v1.py
+      - tools/build_usdjpy_2024_raw_tick_annual_release_v1.py
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: usdjpy-2024-raw-tick-repair-resume-run-29707697472-v1
+  cancel-in-progress: false
+
+env:
+  SOURCE_RUN_ID: "29689427642"
+  SOURCE_RUN_ATTEMPT: "1"
+  SOURCE_HEAD_SHA: "5adaea986b5e12b2c354d36ed69b705107085161"
+  REPAIR_DATA_RUN_ID: "29707697472"
+  REPAIR_DATA_RUN_ATTEMPT: "1"
+  RELEASE_TAG: ${{ github.event.inputs.release_tag || 'usdjpy-2024-raw-bidask-ticks-v1' }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      months: ${{ steps.matrix.outputs.months }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lock twelve calendar months
+        id: matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'months=["01","02","03","04","05","06","07","08","09","10","11","12"]' >> "$GITHUB_OUTPUT"
+          python -m py_compile \
+            tools/download_github_actions_day_artifacts_v1.py \
+            tools/build_usdjpy_2024_raw_tick_repair_package_v1.py \
+            tools/build_usdjpy_2024_raw_tick_annual_release_v1.py
+
+  package-months:
+    name: recover-package-2024-${{ matrix.month }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        month: ${{ fromJSON(needs.prepare.outputs.months) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download every original day packet with REST pagination
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MONTH: ${{ matrix.month }}
+        run: |
+          set -euo pipefail
+          mkdir -p receipts
+          python tools/download_github_actions_day_artifacts_v1.py \
+            --repository "$GITHUB_REPOSITORY" \
+            --run-id "$SOURCE_RUN_ID" \
+            --run-attempt "$SOURCE_RUN_ATTEMPT" \
+            --month "$((10#$MONTH))" \
+            --mode source-month \
+            --output staging \
+            --receipt "receipts/source-${MONTH}.json"
+
+      - name: Download repaired day packets from run 29707697472
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MONTH: ${{ matrix.month }}
+        run: |
+          set -euo pipefail
+          python tools/download_github_actions_day_artifacts_v1.py \
+            --repository "$GITHUB_REPOSITORY" \
+            --run-id "$REPAIR_DATA_RUN_ID" \
+            --run-attempt "$REPAIR_DATA_RUN_ATTEMPT" \
+            --month "$((10#$MONTH))" \
+            --mode repair-month \
+            --lock configs/data_sources/usdjpy_2024_raw_tick_repair_run_29689427642_v1.json \
+            --output repair \
+            --receipt "receipts/repair-${MONTH}.json"
+
+      - name: Overlay repaired days and validate complete month
+        shell: bash
+        env:
+          MONTH: ${{ matrix.month }}
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' day_dir; do
+            cp -a "$day_dir" staging/
+          done < <(find repair -mindepth 1 -maxdepth 1 -type d -name "2024-${MONTH}-*" -print0)
+
+          python tools/build_usdjpy_2024_raw_tick_repair_package_v1.py \
+            --staging staging \
+            --month "$((10#$MONTH))" \
+            --out out \
+            --source-run-id "$SOURCE_RUN_ID" \
+            --repair-run-id "$REPAIR_DATA_RUN_ID" \
+            --repair-run-attempt "$REPAIR_DATA_RUN_ATTEMPT"
+
+          mapfile -t DAY_DIRS < <(
+            find staging -mindepth 1 -maxdepth 1 -type d -name "2024-${MONTH}-*" -printf '%f\n' | sort
+          )
+          EXPECTED_DAYS=$(python - <<PY
+          import calendar
+          print(calendar.monthrange(2024, int("$MONTH"))[1])
+          PY
+          )
+          if [ "${#DAY_DIRS[@]}" -ne "$EXPECTED_DAYS" ]; then
+            echo "unexpected day directory count for month ${MONTH}: ${#DAY_DIRS[@]} != ${EXPECTED_DAYS}" >&2
+            exit 1
+          fi
+
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
+            -cf - -C staging "${DAY_DIRS[@]}" \
+            | gzip -n > "out/usdjpy-2024-${MONTH}-raw-ticks-v1.tar.gz"
+          cp "receipts/source-${MONTH}.json" "out/usdjpy-2024-${MONTH}-source-artifacts.json"
+          cp "receipts/repair-${MONTH}.json" "out/usdjpy-2024-${MONTH}-repair-artifacts.json"
+          (
+            cd out
+            sha256sum \
+              "usdjpy-2024-${MONTH}-raw-ticks-v1.tar.gz" \
+              "usdjpy-2024-${MONTH}-raw-ticks-v1.manifest.json" \
+              "usdjpy-2024-${MONTH}-source-artifacts.json" \
+              "usdjpy-2024-${MONTH}-repair-artifacts.json" \
+              > "usdjpy-2024-${MONTH}-raw-ticks-v1.SHA256SUMS"
+          )
+
+      - name: Upload recovered validated monthly package
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-2024-raw-ticks-recovered-month-${{ matrix.month }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: out
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+  publish-release:
+    name: publish-recovered-durable-release
+    needs: package-months
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download all recovered monthly packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: usdjpy-2024-raw-ticks-recovered-month-*-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release
+          merge-multiple: true
+
+      - name: Build and verify annual release package
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/build_usdjpy_2024_raw_tick_annual_release_v1.py \
+            --release-dir release \
+            --lock configs/data_sources/usdjpy_2024_raw_tick_repair_run_29689427642_v1.json \
+            --source-run-id "$SOURCE_RUN_ID" \
+            --source-run-attempt "$SOURCE_RUN_ATTEMPT" \
+            --source-head-sha "$SOURCE_HEAD_SHA" \
+            --repair-run-id "$REPAIR_DATA_RUN_ID" \
+            --repair-run-attempt "$REPAIR_DATA_RUN_ATTEMPT" \
+            --package-run-id "$GITHUB_RUN_ID" \
+            --package-run-attempt "$GITHUB_RUN_ATTEMPT"
+
+      - name: Upload recovered annual package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-2024-raw-ticks-recovered-annual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Publish immutable GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "release tag already exists: $RELEASE_TAG" >&2
+            exit 1
+          fi
+          gh release create "$RELEASE_TAG" release/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "USDJPY 2024 Raw Dukascopy Bid/Ask Ticks v1" \
+            --notes-file release/RELEASE_NOTES.md
