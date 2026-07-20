@@ -1,0 +1,82 @@
+{
+  "schema_version": "usdjpy_2024_raw_ticks_archive_receipt_v1",
+  "repository": "mitsuru93/usdjpyea-research",
+  "dataset": {
+    "symbol": "USDJPY",
+    "period_start_utc": "2024-01-01T00:00:00Z",
+    "period_end_utc_exclusive": "2025-01-01T00:00:00Z",
+    "source": "Dukascopy BI5 public Bid/Ask ticks",
+    "original_hourly_bi5_preserved": true,
+    "decoded_bid_ask_csv_gz_preserved": true,
+    "rakuten_quote_equivalence": false,
+    "standard_mt4_real_tick_input_ready": false,
+    "requires_fxt_hst_or_tick_import_conversion": true
+  },
+  "provenance": {
+    "source_workflow_run_id": 29689427642,
+    "source_workflow_run_attempt": 1,
+    "source_workflow_head_sha": "5adaea986b5e12b2c354d36ed69b705107085161",
+    "repair_data_workflow_run_id": 29707697472,
+    "repair_data_workflow_run_attempt": 1,
+    "package_workflow_run_id": 29717760185,
+    "package_workflow_run_attempt": 1,
+    "package_workflow_head_sha": "634ab0612288d54a4b48a074e89fed3d6313d486"
+  },
+  "durable_release": {
+    "tag": "usdjpy-2024-raw-bidask-ticks-v1",
+    "title": "USDJPY 2024 Raw Dukascopy Bid/Ask Ticks v1",
+    "release_url": "https://github.com/mitsuru93/usdjpyea-research/releases/tag/usdjpy-2024-raw-bidask-ticks-v1",
+    "published_at_utc": "2026-07-20T04:53:19Z",
+    "asset_count": 64,
+    "asset_layout": {
+      "monthly_assets": 60,
+      "monthly_formula": "12 months x (raw-ticks tar.gz + manifest.json + source-artifacts.json + repair-artifacts.json + SHA256SUMS)",
+      "annual_assets": [
+        "usdjpy-2024-raw-ticks-v1.annual-manifest.json",
+        "usdjpy-2024-raw-tick-repair-lock-v1.json",
+        "RELEASE_NOTES.md",
+        "SHA256SUMS"
+      ]
+    },
+    "actions_artifact_expiry_independent": true
+  },
+  "annual_validation": {
+    "accepted": true,
+    "expected_days": 366,
+    "present_days": 366,
+    "expected_hours": 8784,
+    "resolved_hours": 8784,
+    "downloaded_hours": 6250,
+    "no_tick_hours": 2534,
+    "missing_404_hours": 0,
+    "error_hours": 0,
+    "tick_rows": 40969081,
+    "negative_spread_rows": 0,
+    "source_bi5_bytes": 178738706,
+    "decoded_csv_bytes": 359586218
+  },
+  "actions_artifacts": {
+    "annual": {
+      "id": 8451237093,
+      "name": "usdjpy-2024-raw-ticks-recovered-annual-29717760185-1",
+      "size_bytes": 539042664,
+      "sha256": "64e12eb8cb74dd7212f112b94ba216c790b85d196a157c25b0ce54bfff3c095c",
+      "expires_at_utc": "2026-10-18T04:49:28Z"
+    },
+    "months": [
+      {"month": "01", "id": 8451198009, "size_bytes": 49822907, "sha256": "1ed1f36e508327df177120fe2a321308f2ef58c737755e61fb918b8d1b1827e8"},
+      {"month": "02", "id": 8451198094, "size_bytes": 41557745, "sha256": "0811d52e43c3c346fadfea5642b0be340025cfeb593ca98353698ebc82c5681f"},
+      {"month": "03", "id": 8451201892, "size_bytes": 36010309, "sha256": "e31d024cabc0874c46a514e7d2bf3b64ee73b5d802f841e32f084ef81e82cce5"},
+      {"month": "04", "id": 8451201605, "size_bytes": 31564879, "sha256": "8f9e763585a7bca36eea213e3962d7e4f2d1ab7c9c32ba17001b709344278385"},
+      {"month": "05", "id": 8451210948, "size_bytes": 29478531, "sha256": "2a697cbe458abe2f107f73dcf8f93f645c4d68f4624d2a371802bbbc1917d252"},
+      {"month": "06", "id": 8451205259, "size_bytes": 29257678, "sha256": "3bd9e072c481d58e7ae7ff09c0df0fb15aa57a7dac18e2ddc1a7ca0b359d5125"},
+      {"month": "07", "id": 8451209300, "size_bytes": 44894473, "sha256": "183f000c8c04de0fd4e526442c5447baf148e69d237ed14a71c14419db2d9cfd"},
+      {"month": "08", "id": 8451216949, "size_bytes": 65528759, "sha256": "431943b1b166dd8553c78d9f309b3e2c6b97ab5337f795b424249d604b05d1ac"},
+      {"month": "09", "id": 8451223436, "size_bytes": 59472086, "sha256": "8141713820685c76dfa6be907a8e56938430bed52ce45ef72124c107501720d7"},
+      {"month": "10", "id": 8451228792, "size_bytes": 46709171, "sha256": "f918776ad741bcc8956697b37f5b0450092380557959cdaf276a23c61ff478a7"},
+      {"month": "11", "id": 8451229518, "size_bytes": 58524731, "sha256": "0732e925168a9ca53a4b131e49c3cfaca03e9b6dd3629486bc4dd61ccf91df0b"},
+      {"month": "12", "id": 8451232909, "size_bytes": 46194602, "sha256": "ef6262eec5c843b7fdc0b1a594d64efc5ea9eb0dbfddfd774c5db59833679ab6"}
+    ]
+  },
+  "archive_status": "durably_archived_in_github_release_and_receipt_committed"
+}
