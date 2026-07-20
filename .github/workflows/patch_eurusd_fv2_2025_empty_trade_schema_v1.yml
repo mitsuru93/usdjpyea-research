@@ -17,6 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Preserve the complete trade schema when no trades exist
         run: |
+          echo "Applying empty-trade schema fix v1"
           python - <<'PY'
           from pathlib import Path
           path=Path('tools/run_eurusd_fv2_2025_replication_v1.py')
