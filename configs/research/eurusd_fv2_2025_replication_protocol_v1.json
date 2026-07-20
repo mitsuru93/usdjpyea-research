@@ -1,0 +1,101 @@
+{
+  "version": "v1",
+  "status": "preregistered_before_2025_source_access",
+  "symbol": "EURUSD",
+  "bar_timeframe": "H1",
+  "purpose": "Untouched full-year replication of the two frozen EURUSD F v2 candidates before production EA promotion.",
+  "authoritative_predecessors": {
+    "candidate_protocol": "configs/research/eurusd_h1_h2_v2_candidate_protocol.json",
+    "candidate_lock_sha256": "sha256:d7babc976ba8524d35efedc2552d5284ed0153778ad557347d58dc6a8ec52055",
+    "formal_2024_validation_release_tag": "eurusd-h1-h2-v2-validation-2024-v1",
+    "formal_2024_validation_release_sha256": "sha256:a9bb8dd69525fd4382eea41f09ec4f7a90dad0571dd07fd823636c6e6c0cecb8",
+    "mt4_parity_repository": "mitsuru93/usdjpyea-core",
+    "mt4_parity_run_id": 29729701567,
+    "mt4_parity_release_tag": "mt4-eurusd-fv2-h2-reference-parity-v4"
+  },
+  "period": {
+    "replication_start_utc": "2025-01-01T00:00:00Z",
+    "replication_end_utc_exclusive": "2026-01-01T00:00:00Z",
+    "indicator_warmup_may_use_pre_2025_history": true,
+    "warmup_history_may_not_contribute_trades_or_metrics": true
+  },
+  "candidate_definitions": [
+    {
+      "id": "F_v2_z72_1p5_mean_target_0p5_max12",
+      "family": "F",
+      "entry_abs_z": 1.5,
+      "zscore_lookback_bars": 72,
+      "efficiency_ratio_lookback_bars": 24,
+      "efficiency_ratio_maximum": 0.35,
+      "rsi_confirmation": false,
+      "exit_target_abs_z": 0.5,
+      "maximum_hold_bars": 12,
+      "implementation_priority": "primary"
+    },
+    {
+      "id": "F_v2_z72_1p5_mean_target_0p25_max12",
+      "family": "F",
+      "entry_abs_z": 1.5,
+      "zscore_lookback_bars": 72,
+      "efficiency_ratio_lookback_bars": 24,
+      "efficiency_ratio_maximum": 0.35,
+      "rsi_confirmation": false,
+      "exit_target_abs_z": 0.25,
+      "maximum_hold_bars": 12,
+      "implementation_priority": "neighboring_robustness_control"
+    }
+  ],
+  "execution": {
+    "signal_information": "completed_h1_bars_only",
+    "entry": "next_h1_bar_open",
+    "one_open_position_per_candidate": true,
+    "entry_on_exit_bar_forbidden": true,
+    "cross_period_trades_excluded": true,
+    "hard_no_trade_window": "America/New_York 16:00 inclusive to 19:00 exclusive",
+    "base_spread_pips": 0.6,
+    "spread_basis": "max_base_public_entry_spread_mean",
+    "default_cost": {
+      "spread_multiplier": 1.0,
+      "slippage_pips_per_side": 0.0
+    },
+    "severe_cost": {
+      "spread_multiplier": 3.0,
+      "slippage_pips_per_side": 0.5
+    }
+  },
+  "replication_gate": {
+    "profit_factor_gte": 1.1,
+    "positive_months_gte": 8,
+    "trades_gte": 60,
+    "total_excluding_best_two_days_gt": 0.0,
+    "severe_profit_factor_gte": 0.9
+  },
+  "family_decision": {
+    "at_least_one_candidate_must_pass": true,
+    "2025_must_not_rank_or_tune_new_thresholds": true,
+    "if_both_pass": "retain target 0.5 as primary and target 0.25 as neighboring robustness control until the separately registered exit-policy decision",
+    "if_neither_passes": "return to 2024 H1 for a new locked iteration and reuse fixed 2024 H2"
+  },
+  "anti_leakage": {
+    "candidate_rules_immutable_before_2025_access": true,
+    "2025_may_only_accept_or_reject_frozen_candidates": true,
+    "2025_must_not_create_filters_parameters_or_exits": true,
+    "2024_H2_remains_reusable_and_has_no_consumed_state": true,
+    "no_candidate_is_removed_before_2025_evaluation": true
+  },
+  "required_outputs": [
+    "replication_summary.csv",
+    "replication_trades.csv",
+    "replication_result.json",
+    "monthly_metrics.csv",
+    "source_receipt.json",
+    "SHA256SUMS"
+  ],
+  "source_target": {
+    "planned_release_tag": "eurusd-2025-source-artifact-archive-v1",
+    "planned_annual_member": "bundle/bars/H1/EURUSD_H1.csv.gz",
+    "source_kind": "Dukascopy public bid/ask derived bars",
+    "broker_native": false,
+    "mt4_tick_source": false
+  }
+}
