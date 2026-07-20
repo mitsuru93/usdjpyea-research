@@ -1,0 +1,65 @@
+{
+  "schema_version": "usdjpy_2024_mt4_tick_import_receipt_v1",
+  "repository": "mitsuru93/usdjpyea-research",
+  "source_release_tag": "usdjpy-2024-raw-bidask-ticks-v1",
+  "output_release": {
+    "tag": "usdjpy-2024-mt4-tick-import-v1",
+    "title": "USDJPY 2024 MT4 Tick Import v1",
+    "url": "https://github.com/mitsuru93/usdjpyea-research/releases/tag/usdjpy-2024-mt4-tick-import-v1",
+    "actions_expiry_independent": true,
+    "asset_count": 15,
+    "asset_bytes": 349047339
+  },
+  "conversion_workflow": {
+    "run_id": 29735621573,
+    "run_attempt": 1,
+    "head_sha": "8a4201bc58d25d55e2cb74f2a3bdf67ba5b6536f",
+    "job_id": 88330111243,
+    "conclusion": "success"
+  },
+  "actions_artifact": {
+    "id": 8458310265,
+    "name": "usdjpy-2024-mt4-tick-import-29735621573-1",
+    "size_bytes": 349049839,
+    "sha256": "002493b24e508de6db3807315793d44d756f76d9fee058d9b546f0a8c07d40b2",
+    "expires_at_utc": "2026-10-18T10:36:03Z"
+  },
+  "dataset": {
+    "symbol": "USDJPY",
+    "year": 2024,
+    "annual_rows": 40969081,
+    "accepted": true,
+    "timestamp_timezone": "UTC",
+    "datetime_format": "yyyy.MM.dd HH:mm:ss.fff",
+    "price_digits": 3,
+    "columns": [
+      "datetime_utc",
+      "bid",
+      "ask",
+      "bid_volume",
+      "ask_volume"
+    ],
+    "contains_real_bid_and_ask": true,
+    "contains_variable_spread": true,
+    "intended_importer": "Tick Data Suite custom CSV import",
+    "direct_standard_mt4_import": false
+  },
+  "assets": [
+    {"name":"IMPORT_GUIDE.md","size_bytes":769,"sha256":"55379c3302bb2fafb49e78e57d39e8cb1e8371b52f937cd29ee9aeaf986207b0"},
+    {"name":"SHA256SUMS","size_bytes":1477,"sha256":"12908bdd910151c96d7949668ea69ade993c622db1e440aab951a08c1770a36c"},
+    {"name":"USDJPY-2024-01-mt4-tick-import-v1.csv.gz","rows":3725512,"size_bytes":32191275,"sha256":"bd008d96b8620bfea362b58e89c3d6a2869a758347ea5efd329c50414efd1df1"},
+    {"name":"USDJPY-2024-02-mt4-tick-import-v1.csv.gz","rows":3134539,"size_bytes":26806675,"sha256":"ef732b8d806f52d86e0c73f57222f9c5076ac986a636ba11ba9856d31a077069"},
+    {"name":"USDJPY-2024-03-mt4-tick-import-v1.csv.gz","rows":2734951,"size_bytes":23227995,"sha256":"81c7ab72927780c2590b9f363c07d8d5fb94af899ec627b013aee7a477c0fb53"},
+    {"name":"USDJPY-2024-04-mt4-tick-import-v1.csv.gz","rows":2373704,"size_bytes":20291117,"sha256":"1a8f674d3daf5bbbef268054a980386f15bfec2c6151bc400eb4b87cd2638c83"},
+    {"name":"USDJPY-2024-05-mt4-tick-import-v1.csv.gz","rows":2214265,"size_bytes":18904362,"sha256":"d29a0fe11304ad76de63758683fc01ac7e43195ad2fb03c73d9ef5d085ac3009"},
+    {"name":"USDJPY-2024-06-mt4-tick-import-v1.csv.gz","rows":2209019,"size_bytes":18823453,"sha256":"4f3e067bb26fbb59571de0e032b010be75f3c6e5281d1711d5f21b4be1cc5710"},
+    {"name":"USDJPY-2024-07-mt4-tick-import-v1.csv.gz","rows":3423501,"size_bytes":29100069,"sha256":"7b1a1938c60fe6523a30400a5e83e865824c8c195586cee74fe68f74f62536f3"},
+    {"name":"USDJPY-2024-08-mt4-tick-import-v1.csv.gz","rows":5087969,"size_bytes":42871126,"sha256":"618bd2ba4156c92f58d42df0d6aab264a6a1ee8d243e917859091e6343e1175e"},
+    {"name":"USDJPY-2024-09-mt4-tick-import-v1.csv.gz","rows":4551867,"size_bytes":38682547,"sha256":"8e48c5db68c617f5a9f6aa270742cdf82f47d9410d6857209c84ccc02702e6d6"},
+    {"name":"USDJPY-2024-10-mt4-tick-import-v1.csv.gz","rows":3560647,"size_bytes":30209952,"sha256":"4dd4efa380c6dc96d4452ec6056dac7759e5fd9854cbc71bdbf845d396ea86b3"},
+    {"name":"USDJPY-2024-11-mt4-tick-import-v1.csv.gz","rows":4433776,"size_bytes":38026933,"sha256":"9cfe8ce7669e94ee1b73b385fd0fa48b53a789ff06d08750b2c044410498e8b2"},
+    {"name":"USDJPY-2024-12-mt4-tick-import-v1.csv.gz","rows":3519331,"size_bytes":29901688,"sha256":"f4cc0d233ea953e92167ad4243b9ddfcab7278b3d175203b7e006c3d08db72d3"},
+    {"name":"USDJPY-2024-mt4-tick-import-v1.manifest.json","size_bytes":7901,"sha256":"fc54b5adea145509e4792ccf35843fbad07c64cb58bcc6abc67810f1bea2da0d"}
+  ],
+  "archive_status": "durably_archived_in_github_release_and_receipt_committed"
+}
