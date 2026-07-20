@@ -1,0 +1,87 @@
+{
+  "version": "v2",
+  "status": "pre_h2_candidate_protocol",
+  "symbol": "EURUSD",
+  "bar_timeframe": "H1",
+  "source": {
+    "release_tag": "eurusd-2024-source-artifact-archive-v1",
+    "release_asset": "eurusd-2024-source-artifact-id-8441596981.zip",
+    "release_asset_sha256": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+    "member": "bundle/bars/H1/EURUSD_H1.csv.gz"
+  },
+  "period_policy": {
+    "development_start_utc": "2024-01-01T00:00:00Z",
+    "development_end_utc_exclusive": "2024-07-01T00:00:00Z",
+    "fixed_validation_start_utc": "2024-07-01T00:00:00Z",
+    "fixed_validation_end_utc_exclusive": "2025-01-01T00:00:00Z",
+    "h2_is_reusable_across_iterations": true,
+    "h2_has_no_consumed_state": true,
+    "candidate_rules_must_be_locked_before_h2": true,
+    "rule_creation_and_modification_source": "2024_H1_only"
+  },
+  "execution": {
+    "signal_information": "completed_h1_bars_only",
+    "entry": "next_h1_bar_open",
+    "one_open_position_per_candidate": true,
+    "entry_on_exit_bar_forbidden": true,
+    "cross_period_trades_excluded": true,
+    "hard_no_trade_windows": "configs/market_sessions/fx_market_sessions_v1.json",
+    "base_spread_pips": 0.6,
+    "spread_basis": "max_base_public_entry_spread_mean",
+    "default_cost": {"spread_multiplier": 1.0, "slippage_pips_per_side": 0.0},
+    "severe_cost": {"spread_multiplier": 3.0, "slippage_pips_per_side": 0.5}
+  },
+  "development_gate": {
+    "avg_net_pips_gt": 0.0,
+    "profit_factor_gte": 1.1,
+    "positive_months_gte": 3,
+    "trades_gte": 20,
+    "total_excluding_best_two_days_gt": 0.0,
+    "severe_profit_factor_gte": 0.9
+  },
+  "validation_gate": {
+    "avg_net_pips_gt": 0.0,
+    "profit_factor_gte": 1.05,
+    "positive_months_gte": 3,
+    "trades_gte": 20
+  },
+  "full_year_gate": {
+    "profit_factor_gte": 1.1,
+    "positive_months_gte": 8,
+    "trades_gte": 60,
+    "total_excluding_best_two_days_gt": 0.0,
+    "severe_profit_factor_gte": 0.9
+  },
+  "diagnostic_baselines": [
+    {"id": "A2_base_fixed8", "family": "A", "kind": "A", "checkpoint_bars": null, "weak_threshold_pips": null, "maximum_hold_bars": 8},
+    {"id": "F_base_z72_1p5_fixed12", "family": "F", "kind": "F", "entry_abs_z": 1.5, "rsi_confirmation": false, "exit_target_abs_z": null, "maximum_hold_bars": 12},
+    {"id": "H_base_failed24_hold6", "family": "H", "kind": "H_single", "reference_lookback_bars": 24, "hold_bars": 6},
+    {"id": "H_base_failed48_hold12", "family": "H", "kind": "H_single", "reference_lookback_bars": 48, "hold_bars": 12}
+  ],
+  "v2_candidates": [
+    {"id": "A_v2_stage4_weak_le_m1p0_max8", "family": "A", "kind": "A", "checkpoint_bars": 4, "weak_threshold_pips": -1.0, "maximum_hold_bars": 8},
+    {"id": "A_v2_stage4_weak_le_0p0_max8", "family": "A", "kind": "A", "checkpoint_bars": 4, "weak_threshold_pips": 0.0, "maximum_hold_bars": 8},
+    {"id": "A_v2_stage4_weak_le_1p0_max8", "family": "A", "kind": "A", "checkpoint_bars": 4, "weak_threshold_pips": 1.0, "maximum_hold_bars": 8},
+    {"id": "F_v2_z72_1p5_mean_target_0p5_max12", "family": "F", "kind": "F", "entry_abs_z": 1.5, "rsi_confirmation": false, "exit_target_abs_z": 0.5, "maximum_hold_bars": 12},
+    {"id": "F_v2_z72_1p5_mean_target_0p25_max12", "family": "F", "kind": "F", "entry_abs_z": 1.5, "rsi_confirmation": false, "exit_target_abs_z": 0.25, "maximum_hold_bars": 12},
+    {"id": "F_v2_z72_1p5_mean_target_0p0_max12", "family": "F", "kind": "F", "entry_abs_z": 1.5, "rsi_confirmation": false, "exit_target_abs_z": 0.0, "maximum_hold_bars": 12},
+    {"id": "F_v2_z72_2p0_rsi_confirm_target_0p5_max12", "family": "F", "kind": "F", "entry_abs_z": 2.0, "rsi_confirmation": true, "exit_target_abs_z": 0.5, "maximum_hold_bars": 12},
+    {"id": "F_v2_z72_2p0_rsi_confirm_target_0p0_max12", "family": "F", "kind": "F", "entry_abs_z": 2.0, "rsi_confirmation": true, "exit_target_abs_z": 0.0, "maximum_hold_bars": 12},
+    {"id": "H_v2_hier_48x12_24x6_fixed", "family": "H", "kind": "H_hier", "reentry_fraction": 0.0, "midpoint_exit": false},
+    {"id": "H_v2_hier_48x12_24x6_midpoint", "family": "H", "kind": "H_hier", "reentry_fraction": 0.0, "midpoint_exit": true},
+    {"id": "H_v2_hier_reentry25_midpoint", "family": "H", "kind": "H_hier", "reentry_fraction": 0.25, "midpoint_exit": true}
+  ],
+  "implementation_constants": {
+    "A_timezone": "Europe/Berlin",
+    "A_entry_local_hour": 8,
+    "A_side": "short",
+    "F_lookback_bars": 72,
+    "F_efficiency_ratio_lookback_bars": 24,
+    "F_efficiency_ratio_maximum": 0.35,
+    "F_rsi_lookback_bars": 14,
+    "F_rsi_thresholds": [30, 70],
+    "H_atr_lookback_bars": 24,
+    "H_minimum_excursion_atr_fraction": 0.1,
+    "H_priority": "48_hour_signal_first_otherwise_24_hour_signal"
+  }
+}
