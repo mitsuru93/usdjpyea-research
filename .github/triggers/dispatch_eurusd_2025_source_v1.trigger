@@ -1,0 +1,3 @@
+request=eurusd_2025_replication_source_v1
+protocol_sha_reference=8d7c1d5339a269f81955036441dc6e1edef84037
+sequence=1
