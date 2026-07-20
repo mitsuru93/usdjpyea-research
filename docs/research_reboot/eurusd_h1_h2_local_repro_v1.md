@@ -12,10 +12,13 @@ It is recorded immediately so the H1/H2 research does not wait behind the concur
 
 - Development: 2024-01-01T00:00:00Z through 2024-07-01T00:00:00Z exclusive.
 - Validation: 2024-07-01T00:00:00Z through 2025-01-01T00:00:00Z exclusive.
-- Calendar H2 is validation-only.
-- H2 did not nominate families, select parameters, or modify rules.
+- Calendar H2 is the permanent fixed validation period and may be used repeatedly across research iterations.
+- Strategy analysis, rule creation and parameter modification use H1 only.
+- Before each H2 run, the complete H1-derived candidate definition must be locked.
+- H2 may accept or reject a locked candidate but must not generate or tune the next rule.
 - The development runner received a physically separate file containing no timestamp at or after 2024-07-01.
 - `development_lock.json` was generated before H2 evaluation.
+- Authoritative iteration policy: `configs/research/eurusd_2024_h1_h2_iteration_policy_v1.json`.
 
 Market bars are one-hour bars. In this document, H1 and H2 refer to the first and second calendar half-years of 2024.
 
@@ -109,12 +112,13 @@ The family failed the required H2 neighboring-variant support and representative
 
 This result identifies one candidate that survived this specific 2024 H1-development/H2-validation protocol. It is not yet evidence of stability across years, broker execution, or independent market regimes.
 
-The immediate next research stage must preserve 2024 H2 as consumed validation data. It must not be reused for further parameter selection. Any subsequent refinement requires a new development period and a new untouched validation period.
+2024 H2 remains the permanent fixed validation benchmark. Subsequent candidates may be redesigned from H1 evidence, locked as a new iteration, and validated again on the same H2. There is no consumed or retired state for H2. H2 outcomes must not be used to invent or tune the next candidate rule.
 
 ## Reproduction files
 
 - `configs/research/eurusd_h1_prior_literature_candidates_v1.json`
 - `configs/research/eurusd_h1_h2_analysis_protocol_v1.json`
+- `configs/research/eurusd_2024_h1_h2_iteration_policy_v1.json`
 - `tools/eurusd_h1_h2_data_v1.py`
 - `tools/eurusd_h1_h2_eval_v1.py`
 - `tools/run_eurusd_h1_h2_screen_v1.py`
