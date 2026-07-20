@@ -1,0 +1,395 @@
+name: Collect USDJPY Dukascopy Raw Ticks 2025 v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/collect_usdjpy_dukascopy_raw_ticks_2025_v1.yml
+      - tools/download_dukascopy_bi5_ticks_raw_v1.py
+      - tools/verify_usdjpy_2025_replication_prereg_lock_v1.py
+      - configs/research/usdjpy_2025_full_year_replication_v1.json
+      - configs/research/usdjpy_2025_full_year_replication_prereg_lock_v1.json
+      - docs/research_reboot/usdjpy_2025_full_year_replication_prereg_v1.md
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect-usdjpy-dukascopy-raw-ticks-2025-v1
+  cancel-in-progress: false
+
+jobs:
+  verify-preregistration-lock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out research source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify 2025 replication preregistration lock
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/usdjpy-2025-prereg-lock-v1"
+          rm -rf "$root"
+          mkdir -p "$root"
+          python tools/verify_usdjpy_2025_replication_prereg_lock_v1.py \
+            --repo-root "$GITHUB_WORKSPACE" \
+            --output "$root/prereg_lock_verification.json" \
+            | tee "$root/prereg_lock_stdout.json"
+
+      - name: Upload preregistration lock evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-2025-prereg-lock-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/usdjpy-2025-prereg-lock-v1
+          if-no-files-found: error
+          retention-days: 90
+
+  collect-month:
+    needs: verify-preregistration-lock
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - month: "01"
+            start: "2025-01-01T00:00:00Z"
+            end: "2025-02-01T00:00:00Z"
+          - month: "02"
+            start: "2025-02-01T00:00:00Z"
+            end: "2025-03-01T00:00:00Z"
+          - month: "03"
+            start: "2025-03-01T00:00:00Z"
+            end: "2025-04-01T00:00:00Z"
+          - month: "04"
+            start: "2025-04-01T00:00:00Z"
+            end: "2025-05-01T00:00:00Z"
+          - month: "05"
+            start: "2025-05-01T00:00:00Z"
+            end: "2025-06-01T00:00:00Z"
+          - month: "06"
+            start: "2025-06-01T00:00:00Z"
+            end: "2025-07-01T00:00:00Z"
+          - month: "07"
+            start: "2025-07-01T00:00:00Z"
+            end: "2025-08-01T00:00:00Z"
+          - month: "08"
+            start: "2025-08-01T00:00:00Z"
+            end: "2025-09-01T00:00:00Z"
+          - month: "09"
+            start: "2025-09-01T00:00:00Z"
+            end: "2025-10-01T00:00:00Z"
+          - month: "10"
+            start: "2025-10-01T00:00:00Z"
+            end: "2025-11-01T00:00:00Z"
+          - month: "11"
+            start: "2025-11-01T00:00:00Z"
+            end: "2025-12-01T00:00:00Z"
+          - month: "12"
+            start: "2025-12-01T00:00:00Z"
+            end: "2026-01-01T00:00:00Z"
+
+    steps:
+      - name: Check out research source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install archive tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq zstd
+
+      - name: Collect exact hourly BI5 and decoded tick CSV for month
+        shell: bash
+        env:
+          MONTH: ${{ matrix.month }}
+          START_UTC: ${{ matrix.start }}
+          END_UTC: ${{ matrix.end }}
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/usdjpy-raw-ticks-2025-$MONTH-v1"
+          data="$root/data"
+          evidence="$root/evidence"
+          rm -rf "$root"
+          mkdir -p "$data" "$evidence"
+
+          python tools/download_dukascopy_bi5_ticks_raw_v1.py \
+            --symbol USDJPY \
+            --start "$START_UTC" \
+            --end "$END_UTC" \
+            --output-root "$data" \
+            --manifest-out "$data/hourly_manifest.jsonl" \
+            --retries 5 \
+            --request-timeout 60 \
+            --retry-sleep-seconds 1.5 \
+            --request-interval 0.08 \
+            --retry-error-passes 3 \
+            --max-errors 0 \
+            | tee "$evidence/downloader_stdout.jsonl"
+
+          echo "MONTH_ROOT=$root" >> "$GITHUB_ENV"
+          echo "MONTH_DATA=$data" >> "$GITHUB_ENV"
+          echo "MONTH_EVIDENCE=$evidence" >> "$GITHUB_ENV"
+
+      - name: Verify complete monthly source ledger and file identities
+        shell: bash
+        env:
+          MONTH: ${{ matrix.month }}
+          START_UTC: ${{ matrix.start }}
+          END_UTC: ${{ matrix.end }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def parse(value: str) -> datetime:
+              return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
+
+          def sha256(path: Path) -> str:
+              digest = hashlib.sha256()
+              with path.open("rb") as handle:
+                  for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          data = Path(os.environ["MONTH_DATA"])
+          manifest_path = data / "hourly_manifest.jsonl"
+          summary_path = data / "day_summary.json"
+          rows = [json.loads(line) for line in manifest_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+          start = parse(os.environ["START_UTC"])
+          end = parse(os.environ["END_UTC"])
+          expected_hours = int((end - start).total_seconds() // 3600)
+          if len(rows) != expected_hours:
+              raise RuntimeError(f"hour ledger count mismatch: {len(rows)} != {expected_hours}")
+          if len({row["hour_start_utc"] for row in rows}) != expected_hours:
+              raise RuntimeError("hour ledger contains duplicate timestamps")
+          allowed = {"downloaded", "missing_404", "empty_response", "decoded_no_ticks"}
+          bad = [row for row in rows if row["status"] not in allowed]
+          if bad:
+              raise RuntimeError(f"terminal or unsupported hourly states remain: {bad[:5]}")
+
+          downloaded = [row for row in rows if row["status"] == "downloaded"]
+          if not downloaded:
+              raise RuntimeError("month contains no downloaded tick hours")
+          total_ticks = 0
+          for row in downloaded:
+              raw = data / row["raw_bi5_path"]
+              csv = data / row["csv_ticks_path"]
+              if not raw.is_file() or not csv.is_file():
+                  raise RuntimeError(f"downloaded hour is missing files: {row['hour_start_utc']}")
+              if raw.stat().st_size != int(row["raw_bi5_bytes"]):
+                  raise RuntimeError(f"raw size mismatch: {raw}")
+              if csv.stat().st_size != int(row["csv_ticks_bytes"]):
+                  raise RuntimeError(f"csv size mismatch: {csv}")
+              if sha256(raw) != row["raw_bi5_sha256"]:
+                  raise RuntimeError(f"raw SHA mismatch: {raw}")
+              if sha256(csv) != row["csv_ticks_sha256"]:
+                  raise RuntimeError(f"csv SHA mismatch: {csv}")
+              total_ticks += int(row["rows"])
+          if total_ticks <= 0:
+              raise RuntimeError("monthly tick count is zero")
+
+          summary = json.loads(summary_path.read_text(encoding="utf-8"))
+          if int(summary["expected_hours"]) != expected_hours or int(summary["terminal_errors"]) != 0:
+              raise RuntimeError(f"downloader summary failed: {summary}")
+          if int(summary["rows"]) != total_ticks:
+              raise RuntimeError("downloader and verified tick totals differ")
+
+          receipt = {
+              "schema_version": "usdjpy_dukascopy_raw_ticks_2025_month_v1",
+              "status": "PASS",
+              "symbol": "USDJPY",
+              "month": f"2025-{os.environ['MONTH']}",
+              "start_utc": os.environ["START_UTC"],
+              "end_utc_exclusive": os.environ["END_UTC"],
+              "expected_hours": expected_hours,
+              "downloaded_hours": len(downloaded),
+              "missing_or_empty_hours": expected_hours - len(downloaded),
+              "terminal_errors": 0,
+              "tick_rows": total_ticks,
+              "raw_bi5_bytes": sum(int(row["raw_bi5_bytes"]) for row in downloaded),
+              "csv_ticks_bytes": sum(int(row["csv_ticks_bytes"]) for row in downloaded),
+              "hourly_manifest_sha256": sha256(manifest_path),
+              "downloader_summary_sha256": sha256(summary_path),
+              "2025_strategy_results_opened": False,
+          }
+          receipt_path = Path(os.environ["MONTH_EVIDENCE"]) / "month_receipt.json"
+          receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(json.dumps(receipt, indent=2, sort_keys=True))
+          PY
+
+      - name: Package immutable monthly data archive
+        shell: bash
+        env:
+          MONTH: ${{ matrix.month }}
+        run: |
+          set -euo pipefail
+          cp "$MONTH_EVIDENCE/month_receipt.json" "$MONTH_DATA/month_receipt.json"
+          archive="$MONTH_ROOT/usdjpy-dukascopy-raw-ticks-2025-$MONTH-v1.tar.zst"
+          tar --sort=name --mtime='UTC 2025-01-01' --owner=0 --group=0 --numeric-owner \
+            -C "$MONTH_DATA" -I 'zstd -19 -T0' -cf "$archive" .
+          sha256sum "$archive" | tee "$MONTH_EVIDENCE/archive_sha256.txt"
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          month = os.environ["MONTH"]
+          archive = Path(os.environ["MONTH_ROOT"]) / f"usdjpy-dukascopy-raw-ticks-2025-{month}-v1.tar.zst"
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+          receipt_path = Path(os.environ["MONTH_EVIDENCE"]) / "month_receipt.json"
+          receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+          receipt["archive_name"] = archive.name
+          receipt["archive_sha256"] = digest
+          receipt["archive_bytes"] = archive.stat().st_size
+          receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(json.dumps(receipt, indent=2, sort_keys=True))
+          PY
+
+      - name: Upload monthly archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-raw-ticks-2025-${{ matrix.month }}-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.MONTH_ROOT }}/usdjpy-dukascopy-raw-ticks-2025-${{ matrix.month }}-v1.tar.zst
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload monthly evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-raw-ticks-2025-${{ matrix.month }}-evidence-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.MONTH_EVIDENCE }}
+          if-no-files-found: error
+          retention-days: 90
+
+  publish-immutable-release:
+    needs: collect-month
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out research source
+        uses: actions/checkout@v4
+
+      - name: Download all monthly archives and evidence
+        uses: actions/download-artifact@v4
+        with:
+          pattern: usdjpy-raw-ticks-2025-*-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/usdjpy-raw-ticks-2025-v1/archives
+          merge-multiple: true
+
+      - name: Download all monthly evidence
+        uses: actions/download-artifact@v4
+        with:
+          pattern: usdjpy-raw-ticks-2025-*-evidence-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/usdjpy-raw-ticks-2025-v1/evidence
+
+      - name: Verify twelve archives and build release manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/usdjpy-raw-ticks-2025-v1"
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["RUNNER_TEMP"]) / "usdjpy-raw-ticks-2025-v1"
+          archives = root / "archives"
+          evidence = root / "evidence"
+          rows = []
+          for month_number in range(1, 13):
+              month = f"{month_number:02d}"
+              archive = archives / f"usdjpy-dukascopy-raw-ticks-2025-{month}-v1.tar.zst"
+              receipts = list(evidence.rglob("month_receipt.json"))
+              matching = []
+              for path in receipts:
+                  payload = json.loads(path.read_text(encoding="utf-8"))
+                  if payload.get("month") == f"2025-{month}":
+                      matching.append((path, payload))
+              if len(matching) != 1:
+                  raise RuntimeError(f"month {month} receipt count={len(matching)}")
+              path, receipt = matching[0]
+              if receipt["status"] != "PASS" or receipt["2025_strategy_results_opened"] is not False:
+                  raise RuntimeError(f"month {month} receipt failed: {receipt}")
+              if not archive.is_file():
+                  raise RuntimeError(f"month {month} archive is missing")
+              digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+              if digest != receipt["archive_sha256"] or archive.stat().st_size != receipt["archive_bytes"]:
+                  raise RuntimeError(f"month {month} archive identity mismatch")
+              rows.append(receipt)
+
+          manifest = {
+              "schema_version": "usdjpy_dukascopy_raw_ticks_2025_release_v1",
+              "status": "PASS",
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "run_id": int(os.environ["GITHUB_RUN_ID"]),
+              "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
+              "commit_sha": os.environ["GITHUB_SHA"],
+              "symbol": "USDJPY",
+              "start_utc": "2025-01-01T00:00:00Z",
+              "end_utc_exclusive": "2026-01-01T00:00:00Z",
+              "months": rows,
+              "month_count": len(rows),
+              "expected_hours": sum(row["expected_hours"] for row in rows),
+              "downloaded_hours": sum(row["downloaded_hours"] for row in rows),
+              "terminal_errors": sum(row["terminal_errors"] for row in rows),
+              "tick_rows": sum(row["tick_rows"] for row in rows),
+              "raw_bi5_bytes": sum(row["raw_bi5_bytes"] for row in rows),
+              "csv_ticks_bytes": sum(row["csv_ticks_bytes"] for row in rows),
+              "2025_strategy_results_opened": False,
+              "next_authorized_stage": "build_and_lock_canonical_USDJPY_2025_M15_bundle",
+          }
+          if manifest["month_count"] != 12 or manifest["expected_hours"] != 8760 or manifest["terminal_errors"] != 0:
+              raise RuntimeError(f"release aggregate failed: {manifest}")
+          manifest_path = root / "usdjpy-dukascopy-raw-ticks-2025-v1-manifest.json"
+          manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(json.dumps(manifest, indent=2, sort_keys=True))
+          PY
+
+      - name: Publish immutable 2025 raw tick Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/usdjpy-raw-ticks-2025-v1"
+          tag="usdjpy-raw-ticks-2025-v1"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release tag already exists; refusing mutation: $tag" >&2
+            exit 1
+          fi
+          gh release create "$tag" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "USDJPY immutable Dukascopy raw ticks 2025 v1" \
+            --notes "Immutable raw BI5 and decoded tick CSV.GZ archives for all twelve months of 2025. No strategy outcomes were calculated."
+          gh release upload "$tag" "$root"/archives/*.tar.zst \
+            "$root/usdjpy-dukascopy-raw-ticks-2025-v1-manifest.json" \
+            --repo "$GITHUB_REPOSITORY"
+
+      - name: Upload release evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-raw-ticks-2025-release-evidence-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/usdjpy-raw-ticks-2025-v1/usdjpy-dukascopy-raw-ticks-2025-v1-manifest.json
+          if-no-files-found: error
+          retention-days: 90
