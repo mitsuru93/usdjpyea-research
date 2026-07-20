@@ -1,0 +1,145 @@
+name: Resume EURUSD 2024 Raw Ticks Run 29749870784 v1
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Durable Release tag after all 8,784 UTC hours validate
+        required: true
+        default: eurusd-2024-raw-bidask-ticks-v1
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/resume_eurusd_2024_raw_ticks_run_29749870784_v1.yml
+      - tools/recover_eurusd_2024_raw_tick_month_v1.py
+      - tools/build_eurusd_2024_raw_tick_annual_release_v1.py
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: eurusd-2024-raw-ticks-resume-run-29749870784-v1
+  cancel-in-progress: false
+
+env:
+  SOURCE_RUN_ID: "29749870784"
+  SOURCE_RUN_ATTEMPT: "1"
+  SOURCE_HEAD_SHA: "b0999d9ddc0602ef9f5ed09a5f9327fa64f90703"
+  RELEASE_TAG: ${{ github.event.inputs.release_tag || 'eurusd-2024-raw-bidask-ticks-v1' }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      months: ${{ steps.matrix.outputs.months }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lock twelve calendar months
+        id: matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'months=["01","02","03","04","05","06","07","08","09","10","11","12"]' >> "$GITHUB_OUTPUT"
+          python -m py_compile \
+            tools/recover_eurusd_2024_raw_tick_month_v1.py \
+            tools/build_eurusd_2024_raw_tick_annual_release_v1.py \
+            tools/download_dukascopy_bi5_ticks.py \
+            tools/download_dukascopy_tick_archive_v1.py
+
+  recover-package-months:
+    name: recover-package-2024-${{ matrix.month }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        month: ${{ fromJSON(needs.prepare.outputs.months) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download source day packets, recover invalid days, and package month
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MONTH: ${{ matrix.month }}
+        run: |
+          set -euo pipefail
+          python tools/recover_eurusd_2024_raw_tick_month_v1.py \
+            --repository "$GITHUB_REPOSITORY" \
+            --source-run-id "$SOURCE_RUN_ID" \
+            --source-run-attempt "$SOURCE_RUN_ATTEMPT" \
+            --month "$((10#$MONTH))" \
+            --staging staging \
+            --out out \
+            --package-run-id "$GITHUB_RUN_ID" \
+            --package-run-attempt "$GITHUB_RUN_ATTEMPT"
+
+      - name: Upload recovered validated monthly package
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-2024-raw-ticks-recovered-month-${{ matrix.month }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: out
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+  publish-release:
+    name: publish-recovered-durable-release
+    needs: recover-package-months
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download all recovered monthly packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: eurusd-2024-raw-ticks-recovered-month-*-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release
+          merge-multiple: true
+
+      - name: Build and verify annual release inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/build_eurusd_2024_raw_tick_annual_release_v1.py \
+            --release-dir release \
+            --source-run-id "$SOURCE_RUN_ID" \
+            --source-run-attempt "$SOURCE_RUN_ATTEMPT" \
+            --source-head-sha "$SOURCE_HEAD_SHA" \
+            --package-run-id "$GITHUB_RUN_ID" \
+            --package-run-attempt "$GITHUB_RUN_ATTEMPT"
+
+      - name: Upload recovered annual package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-2024-raw-ticks-recovered-annual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Create or update durable GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "EURUSD 2024 Raw Dukascopy Bid/Ask Ticks v1" \
+              --notes-file release/RELEASE_NOTES.md
+          fi
+          gh release upload "$RELEASE_TAG" release/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
