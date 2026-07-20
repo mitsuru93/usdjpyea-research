@@ -4,6 +4,9 @@ on:
   workflow_dispatch:
   issues:
     types: [opened]
+  push:
+    paths:
+      - '.github/triggers/run_eurusd_h1_h2_v2_validation.trigger'
 
 permissions:
   contents: write
