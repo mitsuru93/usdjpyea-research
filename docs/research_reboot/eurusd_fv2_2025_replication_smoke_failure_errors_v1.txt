@@ -1,0 +1,4 @@
+227:check	Execute evaluator smoke test	2026-07-20T10:11:53.0360853Z Traceback (most recent call last):
+240:check	Execute evaluator smoke test	2026-07-20T10:11:53.0380010Z     raise KeyError(key)
+241:check	Execute evaluator smoke test	2026-07-20T10:11:53.0380249Z KeyError: 'entry_month'
+242:check	Execute evaluator smoke test	2026-07-20T10:11:53.0824385Z ##[error]Process completed with exit code 1.
