@@ -1,0 +1,331 @@
+name: Collect EURUSD 2024 Raw Ticks Max Parallel v2
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Durable Release tag for the validated 2024 EURUSD Tick archive
+        required: true
+        default: eurusd-2024-raw-bidask-ticks-v1
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: eurusd-2024-raw-ticks-max-parallel-v2
+  cancel-in-progress: false
+
+env:
+  EXPECTED_HOURS: "8784"
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      h1_dates: ${{ steps.matrix.outputs.h1_dates }}
+      h2_dates: ${{ steps.matrix.outputs.h2_dates }}
+      months: ${{ steps.matrix.outputs.months }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build locked 366-day matrices
+        id: matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from datetime import date, timedelta
+
+          start = date(2024, 1, 1)
+          split = date(2024, 7, 1)
+          end = date(2025, 1, 1)
+          h1, h2 = [], []
+          current = start
+          while current < end:
+              (h1 if current < split else h2).append(current.isoformat())
+              current += timedelta(days=1)
+          if len(h1) != 182 or len(h2) != 184 or len(h1) + len(h2) != 366:
+              raise SystemExit(f"unexpected matrix sizes h1={len(h1)} h2={len(h2)}")
+          months = [f"{month:02d}" for month in range(1, 13)]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+              fh.write("h1_dates=" + json.dumps(h1, separators=(",", ":")) + "\n")
+              fh.write("h2_dates=" + json.dumps(h2, separators=(",", ":")) + "\n")
+              fh.write("months=" + json.dumps(months, separators=(",", ":")) + "\n")
+          PY
+
+  collect-h1:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        date: ${{ fromJSON(needs.prepare.outputs.h1_dates) }}
+    uses: ./.github/workflows/_collect_eurusd_2024_raw_tick_day_v1.yml
+    with:
+      date: ${{ matrix.date }}
+
+  collect-h2:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        date: ${{ fromJSON(needs.prepare.outputs.h2_dates) }}
+    uses: ./.github/workflows/_collect_eurusd_2024_raw_tick_day_v1.yml
+    with:
+      date: ${{ matrix.date }}
+
+  package-months:
+    name: package-2024-${{ matrix.month }}
+    needs: [prepare, collect-h1, collect-h2]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        month: ${{ fromJSON(needs.prepare.outputs.months) }}
+    steps:
+      - name: Download all day packets for month
+        uses: actions/download-artifact@v4
+        with:
+          pattern: eurusd-raw-ticks-2024-${{ matrix.month }}-*-${{ github.run_id }}-${{ github.run_attempt }}
+          path: staging
+          merge-multiple: true
+
+      - name: Validate month and build deterministic package
+        shell: bash
+        env:
+          MONTH: ${{ matrix.month }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import calendar
+          import hashlib
+          import json
+          import os
+          import subprocess
+          from datetime import date
+          from pathlib import Path
+
+          month = int(os.environ["MONTH"])
+          staging = Path("staging")
+          expected_days = calendar.monthrange(2024, month)[1]
+          expected_dates = [date(2024, month, day).isoformat() for day in range(1, expected_days + 1)]
+          failures = []
+          totals = {
+              "expected_days": expected_days,
+              "present_days": 0,
+              "expected_hours": expected_days * 24,
+              "resolved_hours": 0,
+              "downloaded_hours": 0,
+              "missing_404_hours": 0,
+              "no_tick_hours": 0,
+              "error_hours": 0,
+              "tick_rows": 0,
+              "negative_spread_rows": 0,
+              "source_bi5_bytes": 0,
+              "decoded_csv_bytes": 0,
+          }
+          day_summaries = []
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+              with path.open("rb") as fh:
+                  for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          for day in expected_dates:
+              root = staging / day
+              summary_path = root / "day_summary.json"
+              manifest_path = root / "download_manifest.jsonl"
+              checksums_path = root / "SHA256SUMS"
+              if not summary_path.exists() or not manifest_path.exists() or not checksums_path.exists():
+                  failures.append(f"missing day packet: {day}")
+                  continue
+              totals["present_days"] += 1
+              check = subprocess.run(["sha256sum", "-c", "SHA256SUMS"], cwd=root, text=True, capture_output=True)
+              if check.returncode != 0:
+                  failures.append(f"checksum verification failed: {day}")
+                  continue
+              summary = json.loads(summary_path.read_text(encoding="utf-8"))
+              day_summaries.append(summary)
+              if summary.get("symbol") != "EURUSD" or summary.get("date") != day or not summary.get("accepted"):
+                  failures.append(f"unaccepted day summary: {day}")
+              if sha256_file(manifest_path) != summary.get("manifest_sha256"):
+                  failures.append(f"manifest digest mismatch: {day}")
+              rows = [json.loads(line) for line in manifest_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+              if len(rows) != 24:
+                  failures.append(f"terminal hour count mismatch: {day} rows={len(rows)}")
+              for row in rows:
+                  if row.get("status") == "downloaded":
+                      source = root / row["source_bi5_path"]
+                      tick = root / row["decoded_csv_path"]
+                      if not source.exists() or sha256_file(source) != row.get("source_bi5_sha256"):
+                          failures.append(f"BI5 verification failed: {row.get('hour_start_utc')}")
+                      if not tick.exists() or sha256_file(tick) != row.get("decoded_csv_sha256"):
+                          failures.append(f"Tick verification failed: {row.get('hour_start_utc')}")
+                  elif row.get("status") not in {"missing_404", "no_ticks"}:
+                      failures.append(f"terminal error status: {row.get('hour_start_utc')} {row.get('status')}")
+              for key in (
+                  "resolved_hours", "downloaded_hours", "missing_404_hours", "no_tick_hours",
+                  "error_hours", "tick_rows", "negative_spread_rows", "source_bi5_bytes", "decoded_csv_bytes"
+              ):
+                  totals[key] += int(summary.get(key, 0))
+
+          accepted = (
+              not failures
+              and totals["present_days"] == totals["expected_days"]
+              and totals["resolved_hours"] == totals["expected_hours"]
+              and totals["error_hours"] == 0
+              and totals["negative_spread_rows"] == 0
+          )
+          manifest = {
+              "schema_version": "eurusd_2024_raw_tick_month_v1",
+              "symbol": "EURUSD",
+              "month": f"2024-{month:02d}",
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+              "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "source": "Dukascopy BI5 public Bid/Ask ticks",
+              "totals": totals,
+              "failures": failures,
+              "day_summaries": day_summaries,
+              "accepted": accepted,
+          }
+          out = Path("out") / f"eurusd-2024-{month:02d}-raw-ticks-v1.manifest.json"
+          out.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          if not accepted:
+              raise SystemExit("month validation failed: " + "; ".join(failures[:20]))
+          PY
+          mapfile -t DAY_DIRS < <(find staging -mindepth 1 -maxdepth 1 -type d -name "2024-${MONTH}-*" -printf '%f\n' | sort)
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
+            -cf - -C staging "${DAY_DIRS[@]}" \
+            | gzip -n > "out/eurusd-2024-${MONTH}-raw-ticks-v1.tar.gz"
+          (
+            cd out
+            sha256sum \
+              "eurusd-2024-${MONTH}-raw-ticks-v1.tar.gz" \
+              "eurusd-2024-${MONTH}-raw-ticks-v1.manifest.json" \
+              > "eurusd-2024-${MONTH}-raw-ticks-v1.SHA256SUMS"
+          )
+
+      - name: Upload validated monthly package
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-2024-raw-ticks-month-${{ matrix.month }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: out
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+  publish-release:
+    name: publish-durable-release
+    needs: package-months
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Download all validated monthly packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: eurusd-2024-raw-ticks-month-*-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release-assets
+          merge-multiple: true
+
+      - name: Build and verify annual inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("release-assets")
+          packages = sorted(root.glob("eurusd-2024-??-raw-ticks-v1.tar.gz"))
+          manifests = sorted(root.glob("eurusd-2024-??-raw-ticks-v1.manifest.json"))
+          if len(packages) != 12 or len(manifests) != 12:
+              raise SystemExit(f"expected 12 packages and manifests, got packages={len(packages)} manifests={len(manifests)}")
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+              with path.open("rb") as fh:
+                  for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          monthly = []
+          expected_days = expected_hours = resolved_hours = tick_rows = 0
+          for manifest_path in manifests:
+              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+              if manifest.get("symbol") != "EURUSD" or not manifest.get("accepted"):
+                  raise SystemExit(f"unaccepted month manifest: {manifest_path}")
+              month = manifest["month"]
+              package = root / f"eurusd-{month}-raw-ticks-v1.tar.gz"
+              totals = manifest["totals"]
+              expected_days += int(totals["expected_days"])
+              expected_hours += int(totals["expected_hours"])
+              resolved_hours += int(totals["resolved_hours"])
+              tick_rows += int(totals["tick_rows"])
+              monthly.append({
+                  "month": month,
+                  "package": package.name,
+                  "package_sha256": sha256_file(package),
+                  "package_bytes": package.stat().st_size,
+                  "manifest": manifest_path.name,
+                  "manifest_sha256": sha256_file(manifest_path),
+                  "totals": totals,
+              })
+
+          accepted = expected_days == 366 and expected_hours == 8784 and resolved_hours == 8784
+          annual = {
+              "schema_version": "eurusd_2024_raw_tick_annual_v1",
+              "symbol": "EURUSD",
+              "start_utc": "2024-01-01T00:00:00Z",
+              "end_utc": "2025-01-01T00:00:00Z",
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+              "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "source": "Dukascopy BI5 public Bid/Ask ticks",
+              "expected_days": expected_days,
+              "expected_hours": expected_hours,
+              "resolved_hours": resolved_hours,
+              "tick_rows": tick_rows,
+              "accepted": accepted,
+              "months": monthly,
+              "mt4_boundary": "Raw BI5 and deterministic decoded Bid/Ask Tick CSV.GZ files are preserved. FXT/HST or the selected importer conversion is still required before MT4 Strategy Tester use.",
+          }
+          if not accepted:
+              raise SystemExit(f"annual validation failed days={expected_days} expected={expected_hours} resolved={resolved_hours}")
+          (root / "eurusd-2024-raw-ticks-v1.annual-manifest.json").write_text(json.dumps(annual, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          with (root / "SHA256SUMS").open("w", encoding="utf-8", newline="\n") as fh:
+              for path in sorted(root.iterdir()):
+                  if path.is_file() and path.name != "SHA256SUMS":
+                      fh.write(f"{sha256_file(path)}  {path.name}\n")
+          PY
+
+      - name: Upload validated annual package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-2024-raw-ticks-annual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release-assets
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Create or update durable Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag || 'eurusd-2024-raw-bidask-ticks-v1' }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "EURUSD 2024 Raw Dukascopy Bid/Ask Ticks v1" \
+              --notes "2024-01-01 through 2025-01-01 UTC. Preserves exact hourly Dukascopy BI5 payloads and deterministic decoded Bid/Ask Tick CSV.GZ files. This is a public Dukascopy proxy, not Rakuten quotes. MT4 Strategy Tester use still requires FXT/HST or the selected importer conversion."
+          fi
+          gh release upload "$RELEASE_TAG" release-assets/* --repo "$GITHUB_REPOSITORY" --clobber
