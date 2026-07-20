@@ -1,0 +1,166 @@
+name: Run EURUSD H1-derived v2 Fixed H2 Validation
+
+on:
+  workflow_dispatch:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: eurusd-h1-h2-v2-validation
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name != 'issues' || github.event.issue.title == '[EURUSD] Run H1-derived v2 fixed H2 validation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      SOURCE_TAG: eurusd-2024-source-artifact-archive-v1
+      SOURCE_ASSET: eurusd-2024-source-artifact-id-8441596981.zip
+      SOURCE_SHA256: 7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685
+      PROTOCOL: configs/research/eurusd_h1_h2_v2_candidate_protocol.json
+      RESULT_ROOT: data/eurusd_h1_h2_v2_validation
+      RESULT_TAG: eurusd-h1-h2-v2-validation-2024-v1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record run ID
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "EURUSD v2 H1/H2 validation started. Run ID ${{ github.run_id }}: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install and compile
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy tabulate
+          python -m py_compile tools/run_eurusd_h1_h2_v2_validation.py
+
+      - name: Download exact canonical source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p data/source
+          gh release download "$SOURCE_TAG" --pattern "$SOURCE_ASSET" --dir data/source
+          echo "$SOURCE_SHA256  data/source/$SOURCE_ASSET" | sha256sum -c -
+          unzip -q "data/source/$SOURCE_ASSET" -d data/source/unpacked
+          test -f data/source/unpacked/bundle/bars/H1/EURUSD_H1.csv.gz
+
+      - name: Create physically isolated H1 development file
+        run: |
+          set -euo pipefail
+          mkdir -p "$RESULT_ROOT/source"
+          python - <<'PY'
+          import gzip, io
+          from pathlib import Path
+          import pandas as pd
+          src=Path('data/source/unpacked/bundle/bars/H1/EURUSD_H1.csv.gz')
+          dst=Path('data/eurusd_h1_h2_v2_validation/source/EURUSD_2024_H1.csv.gz')
+          d=pd.read_csv(src); ts=pd.to_datetime(d.timestamp_utc,utc=True,errors='raise')
+          x=d[(ts>=pd.Timestamp('2024-01-01T00:00:00Z'))&(ts<pd.Timestamp('2024-07-01T00:00:00Z'))].copy()
+          assert len(d)==6112, len(d); assert len(x)==3030, len(x)
+          buf=io.StringIO(newline=''); x.to_csv(buf,index=False,float_format='%.15g',lineterminator='\n')
+          with dst.open('wb') as raw:
+              with gzip.GzipFile(filename='',mode='wb',fileobj=raw,compresslevel=9,mtime=0) as z: z.write(buf.getvalue().encode())
+          PY
+
+      - name: Analyze H1 and freeze candidate lock
+        run: |
+          python tools/run_eurusd_h1_h2_v2_validation.py \
+            --phase development \
+            --bars "$RESULT_ROOT/source/EURUSD_2024_H1.csv.gz" \
+            --protocol "$PROTOCOL" \
+            --output-dir "$RESULT_ROOT/development"
+          sha256sum "$RESULT_ROOT/development/development_lock.json" > "$RESULT_ROOT/development/development_lock.sha256"
+
+      - name: Validate locked candidates on reusable fixed H2
+        run: |
+          python tools/run_eurusd_h1_h2_v2_validation.py \
+            --phase validation \
+            --bars data/source/unpacked/bundle/bars/H1/EURUSD_H1.csv.gz \
+            --protocol "$PROTOCOL" \
+            --development-lock "$RESULT_ROOT/development/development_lock.json" \
+            --output-dir "$RESULT_ROOT/validation"
+
+      - name: Package deterministic evidence
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['RESULT_ROOT'])
+          meta={'version':'v2','workflow_run_id':int(os.environ['GITHUB_RUN_ID']),'run_attempt':int(os.environ['GITHUB_RUN_ATTEMPT']),'head_sha':os.environ['GITHUB_SHA'],'source_sha256':'sha256:'+os.environ['SOURCE_SHA256'],'protocol':os.environ['PROTOCOL'],'development_lock_sha256':'sha256:'+hashlib.sha256((root/'development/development_lock.json').read_bytes()).hexdigest(),'validation_result':json.loads((root/'validation/validation_result.json').read_text())}
+          (root/'run_metadata.json').write_text(json.dumps(meta,indent=2,sort_keys=True)+'\n')
+          PY
+          find "$RESULT_ROOT" -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > "$RESULT_ROOT/SHA256SUMS"
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner -C data -cf - eurusd_h1_h2_v2_validation | gzip -n > eurusd-h1-h2-v2-validation-2024-v1.tar.gz
+          sha256sum eurusd-h1-h2-v2-validation-2024-v1.tar.gz > eurusd-h1-h2-v2-validation-2024-v1.tar.gz.sha256
+
+      - name: Publish durable result release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp "$RESULT_ROOT/validation/analysis_summary.md" analysis_summary.md
+          cp "$RESULT_ROOT/validation/validation_result.json" validation_result.json
+          cp "$RESULT_ROOT/development/development_lock.json" development_lock.json
+          cp "$RESULT_ROOT/SHA256SUMS" SHA256SUMS
+          if gh release view "$RESULT_TAG" >/dev/null 2>&1; then
+            gh release upload "$RESULT_TAG" eurusd-h1-h2-v2-validation-2024-v1.tar.gz eurusd-h1-h2-v2-validation-2024-v1.tar.gz.sha256 analysis_summary.md validation_result.json development_lock.json SHA256SUMS --clobber
+          else
+            gh release create "$RESULT_TAG" eurusd-h1-h2-v2-validation-2024-v1.tar.gz eurusd-h1-h2-v2-validation-2024-v1.tar.gz.sha256 analysis_summary.md validation_result.json development_lock.json SHA256SUMS --title 'EURUSD H1-derived v2 Fixed H2 Validation' --notes 'H1-derived candidate lock followed by reusable fixed 2024 H2 validation.' --latest=false
+          fi
+          gh release view "$RESULT_TAG" --json tagName,url,isDraft,isPrerelease,assets > "$RESULT_ROOT/release_receipt.json"
+
+      - name: Commit result receipt
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          target=docs/research_reboot/artifact_archives/eurusd_h1_h2_v2_validation_2024_v1
+          mkdir -p "$target"
+          cp "$RESULT_ROOT/release_receipt.json" "$target/release_receipt.json"
+          cp "$RESULT_ROOT/run_metadata.json" "$target/run_metadata.json"
+          cp "$RESULT_ROOT/development/development_lock.json" "$target/development_lock.json"
+          cp "$RESULT_ROOT/development/development_summary.csv" "$target/development_summary.csv"
+          cp "$RESULT_ROOT/validation/validation_result.json" "$target/validation_result.json"
+          cp "$RESULT_ROOT/validation/validation_summary.csv" "$target/validation_summary.csv"
+          cp "$RESULT_ROOT/validation/analysis_summary.md" "$target/analysis_summary.md"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$target"
+          if ! git diff --cached --quiet; then
+            git commit -m 'research: record EURUSD H1-derived v2 H2 validation'
+            git push origin main
+          fi
+
+      - name: Close issue
+        if: github.event_name == 'issues' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "EURUSD v2 H1/H2 validation completed and archived in Release $RESULT_TAG."
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
+
+      - name: Upload audit copy
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-h1-h2-v2-validation-${{ github.run_id }}-a${{ github.run_attempt }}
+          path: |
+            data/eurusd_h1_h2_v2_validation/development/development_lock.json
+            data/eurusd_h1_h2_v2_validation/development/development_summary.csv
+            data/eurusd_h1_h2_v2_validation/validation/validation_summary.csv
+            data/eurusd_h1_h2_v2_validation/validation/validation_result.json
+            data/eurusd_h1_h2_v2_validation/validation/analysis_summary.md
+            data/eurusd_h1_h2_v2_validation/run_metadata.json
+            data/eurusd_h1_h2_v2_validation/release_receipt.json
+          if-no-files-found: warn
+          retention-days: 90
