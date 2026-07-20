@@ -1,0 +1,43 @@
+name: Snapshot EURUSD H1-derived v2 Run Status
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/snapshot_eurusd_h1_h2_v2_run_status.yml
+      - .github/triggers/snapshot_eurusd_h1_h2_v2_run_status.trigger
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Query exact target workflow runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p docs/research_reboot
+          gh run list \
+            --repo "${GITHUB_REPOSITORY}" \
+            --workflow run_eurusd_h1_h2_v2_validation.yml \
+            --limit 10 \
+            --json databaseId,status,conclusion,headSha,event,createdAt,updatedAt,url,attempt,workflowName \
+            > docs/research_reboot/eurusd_h1_h2_v2_run_status_snapshot.json
+          cat docs/research_reboot/eurusd_h1_h2_v2_run_status_snapshot.json
+      - name: Commit status snapshot
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/research_reboot/eurusd_h1_h2_v2_run_status_snapshot.json
+          if ! git diff --cached --quiet; then
+            git commit -m "ci: record EURUSD v2 H1 H2 run status"
+            git push origin main
+          fi
