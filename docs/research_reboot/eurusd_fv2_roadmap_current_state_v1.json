@@ -1,6 +1,6 @@
 {
   "schema_version": "eurusd_fv2_roadmap_current_state_v1",
-  "current_stage": "R3_untouched_2025_full_year_replication",
+  "current_stage": "R3_2024_H1_diagnosis_and_bounded_revision",
   "completed_stages": [
     "2024_H1_development",
     "reusable_2024_H2_validation",
@@ -10,9 +10,8 @@
     "F_v2_z72_1p5_mean_target_0p5_max12",
     "F_v2_z72_1p5_mean_target_0p25_max12"
   ],
-  "next_action": "collect_audit_and_archive_EURUSD_2025_annual_bar_source_before_replication",
+  "next_action": "analyze_2024_H1_only_and_preregister_bounded_revision_before_reusing_fixed_2024_H2",
   "2024_H2_policy": "reusable_fixed_validation_with_no_consumed_state",
-  "roadmap_document": "docs/research_reboot/eurusd_fv2_implementation_roadmap_v1.md",
-  "replication_protocol": "configs/research/eurusd_fv2_2025_replication_protocol_v1.json",
-  "source_registry": "configs/research/eurusd_2025_source_archive_v1.json"
+  "2025_data_policy": "prohibited_not_part_of_workflow",
+  "roadmap_document": "docs/research_reboot/eurusd_fv2_implementation_roadmap_v1.md"
 }

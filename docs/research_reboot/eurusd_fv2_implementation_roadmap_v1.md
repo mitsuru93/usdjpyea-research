@@ -1,108 +1,62 @@
-# EURUSD F v2: research-to-implementation roadmap v1
+# EURUSD F v2: 2024-only research-to-implementation roadmap v1
 
-## Purpose
+## Governing boundary
 
-This document defines the remaining path from the accepted EURUSD H1 mean-reversion family to a deployable Rakuten MT4 Expert Advisor.
+- Strategy analysis and revision use 2024 H1 only.
+- Every revision is locked before evaluation.
+- 2024 H2 is the permanent fixed validation period.
+- 2024 H2 has no consumed or retired state and is reused for every locked iteration.
+- 2024 H2 may accept or reject an H1-derived revision but may not generate rules.
+- 2025 data is outside this research and implementation workflow and must not be collected, inspected, evaluated, or used as a gate.
 
-The authoritative iteration rule remains unchanged:
+## Current accepted evidence
 
-- strategy creation and modification use 2024 H1 only;
-- every candidate definition is locked before evaluation;
-- 2024 H2 is the permanent fixed validation period and has no consumed or retired state;
-- 2024 H2 may accept or reject an H1-derived candidate but must not generate or tune rules;
-- a failed iteration may be revised only from 2024 H1 evidence and then compared again on the same 2024 H2.
+1. 2024 H1 development protocol is registered.
+2. The retained F v2 candidates were evaluated on fixed 2024 H2.
+3. Research-to-MT4 exact ledger parity has been established for the two retained exits.
 
-## Current accepted state
+Retained candidates:
 
-| Stage | Evidence | Status |
-|---|---|---|
-| 2024 H1 development | `eurusd_h1_h2_v2_candidate_protocol.json` and formal development lock | Complete |
-| Reusable 2024 H2 validation | Research run `29724004316`, Release `eurusd-h1-h2-v2-validation-2024-v1` | Complete |
-| Research-to-MT4 implementation parity | Core run `29729701567`, Release `mt4-eurusd-fv2-h2-reference-parity-v4` | Complete |
-| Exact ledger parity | target 0.5: 114/114; target 0.25: 112/112 | Complete |
-
-The retained candidates are:
-
-1. `F_v2_z72_1p5_mean_target_0p5_max12` — primary candidate.
-2. `F_v2_z72_1p5_mean_target_0p25_max12` — neighboring robustness candidate.
-
-No parameter ranking or rule change is authorized from the 2024 H2 outcome.
+- `F_v2_z72_1p5_mean_target_0p5_max12`
+- `F_v2_z72_1p5_mean_target_0p25_max12`
 
 ## Remaining roadmap
 
-### R3 — Untouched 2025 full-year replication
+### R3 — 2024 H1 diagnosis and bounded revision
 
-Run the two unchanged candidates over 2025-01-01 through 2026-01-01 using canonical EURUSD H1 bars. 2024 history may be supplied only as indicator warm-up. No 2025 observation may alter a rule, parameter, gate, cost assumption, or candidate priority.
+Analyze 2024 H1 trade structure, monthly behavior, adverse excursions, holding-time distribution, entry z-score, efficiency ratio, session effects and cost sensitivity. Any proposed revision must be derived solely from this H1 evidence and preregistered before H2 evaluation.
 
-Required outputs:
+### R4 — Fixed 2024 H2 revalidation
 
-- full trade ledger;
-- monthly metrics;
-- default and severe cost metrics;
-- concentration result excluding the best two UTC entry days;
-- maximum drawdown in pips;
-- exact source and protocol digests.
+Apply the locked H1-derived revision to the same 2024 H2 period. Compare it with the current frozen baseline without ranking or tuning from H2. A failed candidate returns to R3; H2 remains unchanged and reusable.
 
-Primary gate: the existing full-year gate from the v2 protocol, applied unchanged.
+### R5 — Exit-policy and neighboring-rule confirmation
 
-### R4 — Exit-policy isolation
+Retain only bounded, preregistered comparisons. The registered target-0.5 and target-0.25 exits may be compared as an exit-policy pair. No new threshold may be created from H2.
 
-Only after R3 is complete, compare the already registered target-0.5 and target-0.25 exits as a bounded exit-policy pair. This stage may select an implementation default but may not introduce a new exit threshold from 2024 H2 or 2025 results.
+### R6 — Cost and execution stress
 
-Decision rule:
+Apply the registered spread/slippage grid and broker-operational tests without modifying the signal rule:
 
-- if only one candidate passes R3, retain that candidate;
-- if both pass, retain target 0.5 as the primary implementation and target 0.25 as the neighboring robustness control unless a pre-registered operational criterion resolves otherwise;
-- if neither passes, return to 2024 H1 for a new locked iteration and reuse fixed 2024 H2.
-
-### R5 — Execution and cost stress
-
-Evaluate the retained implementation under the registered spread/slippage grid:
-
-- spread multiplier: 1.0, 1.5, 2.0, 3.0;
-- slippage per side: 0.0, 0.1, 0.3, 0.5 pips;
-- spread basis: `max(0.6 pips, public entry spread mean)`.
-
-Add broker-operational diagnostics without changing the signal rule:
-
+- spread multipliers 1.0, 1.5, 2.0 and 3.0;
+- slippage per side 0.0, 0.1, 0.3 and 0.5 pips;
 - Rakuten GMT+2/GMT+3 conversion;
-- weekend and session boundary handling;
-- restart and duplicate-order prevention;
-- missing-bar behavior;
-- maximum-spread entry rejection as a separately registered operational overlay;
-- order-send and close retry logging.
+- weekend and H1-boundary handling;
+- restart, duplicate-order and missing-bar behavior;
+- order-send and close retry auditing.
 
-### R6 — Production EA construction
+### R7 — Production EA construction
 
-Promote the chosen candidate from the diagnostic parity EA into a production EA in `mitsuru93/usdjpyea-core`.
+Promote the selected locked candidate into a production EA with completed-H1-only evaluation, next-H1-boundary execution, one-position state, persistent restart recovery, deterministic magic-number filtering and Research-compatible audit rows.
 
-The production implementation must contain:
+### R8 — Rakuten MT4 verification
 
-- completed-H1-only signal evaluation;
-- next-H1-open execution;
-- one open position per strategy instance;
-- locked z-score, efficiency-ratio and maximum-hold logic;
-- fixed no-trade window;
-- deterministic magic number and symbol/timeframe checks;
-- persistent state sufficient to survive terminal restart;
-- CSV audit rows compatible with the Research ledger schema;
-- configurable fixed-lot and risk-based sizing modes, with sizing separated from strategy validation.
+Run pure signal parity, Strategy Tester automation, DST/boundary tests, restart/fault injection and demo-forward reconciliation. These tests validate implementation and execution, not strategy discovery.
 
-### R7 — Broker-history and forward verification
+### R9 — Limited live deployment
 
-Run the production EA through:
+Begin only after the implementation gates pass, using a separately approved fixed-lot configuration and a preregistered operational-error gate.
 
-1. historical Rakuten MT4 Strategy Tester reproduction;
-2. a demo forward run with audit logging;
-3. reconciliation of every generated signal, attempted order, fill and close;
-4. operational fault tests covering restart, connection interruption and duplicate ticks.
+## Current position
 
-The demo stage tests implementation behavior, not parameter discovery.
-
-### R8 — Limited live deployment and promotion
-
-Begin with a separately approved minimum-risk live configuration. Promotion requires a pre-registered observation count and operational error gate. Lot-size escalation is a risk-management decision and must not be presented as additional strategy validation.
-
-## Promotion boundary
-
-A candidate is not deployable merely because Research and MT4 produce the same 2024 H2 ledger. Deployment requires completion of R3 through R7. The current project position is the boundary between R2 and R3.
+The current stage is R3: analyze 2024 H1 and preregister bounded revisions, then reuse fixed 2024 H2 for validation. No 2025 data is part of the workflow.
