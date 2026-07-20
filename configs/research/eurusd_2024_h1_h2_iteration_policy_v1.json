@@ -1,0 +1,48 @@
+{
+  "version": "v1",
+  "status": "authoritative_project_policy",
+  "symbol": "EURUSD",
+  "bar_timeframe": "H1",
+  "periods": {
+    "development": {
+      "label": "2024_H1",
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc_exclusive": "2024-07-01T00:00:00Z"
+    },
+    "fixed_validation": {
+      "label": "2024_H2",
+      "start_utc": "2024-07-01T00:00:00Z",
+      "end_utc_exclusive": "2025-01-01T00:00:00Z"
+    }
+  },
+  "rules": {
+    "strategy_analysis_and_modification_source": "2024_H1_only",
+    "validation_period": "2024_H2_always",
+    "h2_is_reusable_across_iterations": true,
+    "h2_has_no_consumed_or_retired_state": true,
+    "candidate_definition_must_be_locked_before_each_h2_run": true,
+    "h2_may_accept_or_reject_h1_derived_candidates": true,
+    "h2_must_not_generate_or_tune_candidate_rules": true,
+    "failed_candidates_may_be_revised_using_h1_evidence_and_retested_on_the_same_h2": true,
+    "same_h2_is_retained_for_iteration_to_iteration_comparability": true
+  },
+  "prohibited_interpretations": [
+    "2024_H2_is_consumed_after_one_validation_run",
+    "2024_H2_cannot_be_used_again",
+    "every_refinement_requires_a_new_validation_period"
+  ],
+  "iteration_recording": {
+    "required_before_validation": [
+      "candidate_ids",
+      "complete_rule_definitions",
+      "parameter_values",
+      "development_evidence",
+      "candidate_lock_sha256"
+    ],
+    "required_after_validation": [
+      "H2_metrics",
+      "pass_fail_decision",
+      "comparison_with_prior_locked_iterations"
+    ]
+  }
+}
