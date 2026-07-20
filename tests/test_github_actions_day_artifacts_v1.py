@@ -4,6 +4,8 @@ import importlib.util
 import json
 from pathlib import Path
 
+import pytest
+
 
 def load_module():
     path = Path(__file__).resolve().parents[1] / "tools" / "download_github_actions_day_artifacts_v1.py"
@@ -36,3 +38,17 @@ def test_repair_month_filters_locked_dates(tmp_path: Path) -> None:
     assert module.expected_name("repair-month", "2024-02-04", 29707697472, 1) == (
         "usdjpy-raw-ticks-repair-2024-02-04-29707697472-1"
     )
+
+
+def test_signed_storage_request_never_contains_github_authorization() -> None:
+    module = load_module()
+    request = module.storage_request("https://example.blob.core.windows.net/container/file.zip?sig=abc")
+    assert request.full_url.startswith("https://")
+    assert "Authorization" not in request.headers
+    assert "X-Github-Api-Version" not in request.headers
+
+
+def test_signed_storage_request_rejects_non_https() -> None:
+    module = load_module()
+    with pytest.raises(RuntimeError, match="invalid signed artifact URL"):
+        module.storage_request("http://example.com/file.zip")
