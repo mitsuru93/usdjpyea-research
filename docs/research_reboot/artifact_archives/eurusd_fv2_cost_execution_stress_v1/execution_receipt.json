@@ -1,0 +1,14 @@
+{
+  "annual_frame_sha256": "sha256:b6dfb9ff13c55a62a1690db2f1e2d0bd870ff411fef3df3d9f5c14a2e1acd64f",
+  "authoritative_candidate_lock_sha256": "sha256:d7babc976ba8524d35efedc2552d5284ed0153778ad557347d58dc6a8ec52055",
+  "candidate_rules_changed": false,
+  "head_sha": "e66e1d4e04b27ec235d750927f383f449e08192a",
+  "new_filter_selected": false,
+  "production_primary_candidate_id": "F_v2_z72_1p5_mean_target_0p5_max12",
+  "production_primary_pass": true,
+  "run_attempt": 1,
+  "schema_version": "eurusd_fv2_cost_execution_stress_execution_receipt_v1",
+  "source_asset_sha256": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+  "stress_protocol_sha256": "sha256:38e6e5e71df82d11edcd2cb8337e0e6c6a0b90ea2f64dc383c3052e677945878",
+  "workflow_run_id": 29743806954
+}
