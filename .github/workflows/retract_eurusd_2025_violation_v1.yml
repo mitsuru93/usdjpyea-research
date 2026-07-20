@@ -1,0 +1,181 @@
+name: Retract Unauthorized EURUSD 2025 Work v1
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  issues: write
+
+jobs:
+  retract:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.issue.title == '[EURUSD] Retract unauthorized 2025 work v1' }}
+    runs-on: ubuntu-latest
+    env:
+      UNAUTHORIZED_RUN_ID: "29733387996"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cancel unauthorized 2025 collection and delete its artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api -X POST "/repos/${GITHUB_REPOSITORY}/actions/runs/${UNAUTHORIZED_RUN_ID}/cancel" || true
+          sleep 3
+          gh api --paginate "/repos/${GITHUB_REPOSITORY}/actions/runs/${UNAUTHORIZED_RUN_ID}/artifacts?per_page=100" \
+            --jq '.artifacts[].id' | while read -r artifact_id; do
+              [ -n "${artifact_id}" ] && gh api -X DELETE "/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}" || true
+            done
+          gh release delete eurusd-2025-source-artifact-archive-v1 --cleanup-tag -y || true
+          gh release delete eurusd-fv2-2025-replication-v1 --cleanup-tag -y || true
+      - name: Remove unauthorized 2025 files and restore the 2024-only roadmap
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          rm -f \
+            configs/research/eurusd_fv2_2025_replication_protocol_v1.json \
+            configs/research/eurusd_2025_source_archive_v1.json \
+            tools/run_eurusd_fv2_2025_replication_v1.py \
+            .github/workflows/run_eurusd_2025_full_year_collect.yml \
+            .github/workflows/watch_eurusd_2025_source_v1.yml \
+            .github/workflows/probe_eurusd_2025_source_runs_v1.yml \
+            .github/workflows/run_eurusd_fv2_2025_replication_v1.yml \
+            .github/workflows/check_eurusd_fv2_2025_replication_v1.yml \
+            .github/workflows/probe_eurusd_fv2_2025_smoke_v1.yml \
+            .github/triggers/eurusd_2025_source_collection_v1.trigger \
+            .github/triggers/eurusd_2025_issue_creation_pending.trigger \
+            .github/triggers/probe_eurusd_2025_source_runs_v1.trigger \
+            .github/triggers/probe_eurusd_fv2_2025_smoke_v1.trigger \
+            docs/research_reboot/eurusd_2025_source_collection_launch_v1.md \
+            docs/research_reboot/eurusd_2025_replication_next_step_v1.md \
+            docs/research_reboot/eurusd_2025_issue_trigger_ready_v1.md \
+            docs/research_reboot/eurusd_2025_source_trigger_issue_body_v1.md \
+            docs/research_reboot/eurusd_2025_source_runs_probe_v1.json \
+            docs/research_reboot/eurusd_2025_source_dispatch_receipt_v1.json \
+            docs/research_reboot/eurusd_2025_source_canonical_run_v1.json \
+            docs/research_reboot/eurusd_2025_source_workflow_completion_v1.json \
+            docs/research_reboot/eurusd_fv2_2025_replication_smoke_receipt_v1.json \
+            docs/research_reboot/eurusd_fv2_2025_replication_smoke_runs_v1.json \
+            docs/research_reboot/eurusd_fv2_2025_replication_smoke_failure_tail_v1.txt \
+            docs/research_reboot/eurusd_fv2_2025_replication_smoke_failure_errors_v1.txt \
+            docs/research_reboot/eurusd_fv2_2025_empty_schema_patch_runs_v1.json
+
+          cat > docs/research_reboot/eurusd_fv2_implementation_roadmap_v1.md <<'EOF'
+          # EURUSD F v2: 2024-only research-to-implementation roadmap v1
+
+          ## Governing boundary
+
+          - Strategy analysis and revision use 2024 H1 only.
+          - Every revision is locked before evaluation.
+          - 2024 H2 is the permanent fixed validation period.
+          - 2024 H2 has no consumed or retired state and is reused for every locked iteration.
+          - 2024 H2 may accept or reject an H1-derived revision but may not generate rules.
+          - 2025 data is outside this research and implementation workflow and must not be collected, inspected, evaluated, or used as a gate.
+
+          ## Current accepted evidence
+
+          1. 2024 H1 development protocol is registered.
+          2. The retained F v2 candidates were evaluated on fixed 2024 H2.
+          3. Research-to-MT4 exact ledger parity has been established for the two retained exits.
+
+          Retained candidates:
+
+          - `F_v2_z72_1p5_mean_target_0p5_max12`
+          - `F_v2_z72_1p5_mean_target_0p25_max12`
+
+          ## Remaining roadmap
+
+          ### R3 — 2024 H1 diagnosis and bounded revision
+
+          Analyze 2024 H1 trade structure, monthly behavior, adverse excursions, holding-time distribution, entry z-score, efficiency ratio, session effects and cost sensitivity. Any proposed revision must be derived solely from this H1 evidence and preregistered before H2 evaluation.
+
+          ### R4 — Fixed 2024 H2 revalidation
+
+          Apply the locked H1-derived revision to the same 2024 H2 period. Compare it with the current frozen baseline without ranking or tuning from H2. A failed candidate returns to R3; H2 remains unchanged and reusable.
+
+          ### R5 — Exit-policy and neighboring-rule confirmation
+
+          Retain only bounded, preregistered comparisons. The registered target-0.5 and target-0.25 exits may be compared as an exit-policy pair. No new threshold may be created from H2.
+
+          ### R6 — Cost and execution stress
+
+          Apply the registered spread/slippage grid and broker-operational tests without modifying the signal rule:
+
+          - spread multipliers 1.0, 1.5, 2.0 and 3.0;
+          - slippage per side 0.0, 0.1, 0.3 and 0.5 pips;
+          - Rakuten GMT+2/GMT+3 conversion;
+          - weekend and H1-boundary handling;
+          - restart, duplicate-order and missing-bar behavior;
+          - order-send and close retry auditing.
+
+          ### R7 — Production EA construction
+
+          Promote the selected locked candidate into a production EA with completed-H1-only evaluation, next-H1-boundary execution, one-position state, persistent restart recovery, deterministic magic-number filtering and Research-compatible audit rows.
+
+          ### R8 — Rakuten MT4 verification
+
+          Run pure signal parity, Strategy Tester automation, DST/boundary tests, restart/fault injection and demo-forward reconciliation. These tests validate implementation and execution, not strategy discovery.
+
+          ### R9 — Limited live deployment
+
+          Begin only after the implementation gates pass, using a separately approved fixed-lot configuration and a preregistered operational-error gate.
+
+          ## Current position
+
+          The current stage is R3: analyze 2024 H1 and preregister bounded revisions, then reuse fixed 2024 H2 for validation. No 2025 data is part of the workflow.
+          EOF
+          sed -i 's/^          //' docs/research_reboot/eurusd_fv2_implementation_roadmap_v1.md
+
+          cat > docs/research_reboot/eurusd_fv2_roadmap_current_state_v1.json <<'EOF'
+          {
+            "schema_version": "eurusd_fv2_roadmap_current_state_v1",
+            "current_stage": "R3_2024_H1_diagnosis_and_bounded_revision",
+            "completed_stages": [
+              "2024_H1_development",
+              "reusable_2024_H2_validation",
+              "Research_to_MT4_exact_ledger_parity"
+            ],
+            "retained_candidates": [
+              "F_v2_z72_1p5_mean_target_0p5_max12",
+              "F_v2_z72_1p5_mean_target_0p25_max12"
+            ],
+            "next_action": "analyze_2024_H1_only_and_preregister_bounded_revision_before_reusing_fixed_2024_H2",
+            "2024_H2_policy": "reusable_fixed_validation_with_no_consumed_state",
+            "2025_data_policy": "prohibited_not_part_of_workflow",
+            "roadmap_document": "docs/research_reboot/eurusd_fv2_implementation_roadmap_v1.md"
+          }
+          EOF
+          sed -i 's/^          //' docs/research_reboot/eurusd_fv2_roadmap_current_state_v1.json
+
+          cat > docs/research_reboot/eurusd_2025_work_retraction_v1.md <<EOF
+          # EURUSD 2025 work retraction v1
+
+          The 2025 collection and replication work was created contrary to the established project boundary. It is not accepted research evidence and must not be used in strategy selection, validation, implementation promotion or later analysis.
+
+          Actions taken:
+
+          - cancelled workflow run \`${UNAUTHORIZED_RUN_ID}\`;
+          - deleted artifacts created by that run;
+          - removed the 2025 source, replication, evaluator and monitoring files;
+          - removed any 2025 release if it existed;
+          - restored the roadmap to the 2024 H1 development and fixed 2024 H2 validation loop.
+
+          The authoritative rule is: 2024 H1 for analysis and revision; the same 2024 H2 for every locked validation; no 2025 data.
+          EOF
+
+          git rm -f .github/workflows/retract_eurusd_2025_violation_v1.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "research: retract unauthorized EURUSD 2025 work"
+          git push origin main
+      - name: Close source trigger issue
+        if: ${{ github.event_name == 'issues' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close 169 --comment "Cancelled and retracted. 2025 data is outside the authorized workflow and will not be used." || true
+          gh issue close "${{ github.event.issue.number }}" --comment "Unauthorized 2025 work cancelled, artifacts deleted, files removed, and the 2024-only roadmap restored."
