@@ -6,12 +6,16 @@ on:
     paths:
       - .github/workflows/patch_eurusd_fv2_2025_empty_trade_schema_v1.yml
   workflow_dispatch:
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   patch:
+    if: ${{ github.event_name != 'issues' || github.event.issue.title == '[EURUSD] Patch 2025 replication empty trade schema v1' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,3 +41,8 @@ jobs:
           git add tools/run_eurusd_fv2_2025_replication_v1.py
           git commit -m "fix: preserve empty EURUSD 2025 trade schema"
           git push origin main
+      - name: Close trigger issue
+        if: ${{ github.event_name == 'issues' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --comment "Empty-trade schema patch committed; the replication smoke test was triggered by the evaluator change."
