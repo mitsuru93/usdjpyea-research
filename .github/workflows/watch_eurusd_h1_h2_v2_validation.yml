@@ -1,0 +1,36 @@
+name: Watch EURUSD H1-derived v2 Fixed H2 Validation
+
+on:
+  workflow_run:
+    workflows: ["Run EURUSD H1-derived v2 Fixed H2 Validation"]
+    types: [completed]
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create exact-run tracking issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+        run: |
+          set -euo pipefail
+          gh issue create --repo "$REPOSITORY" \
+            --title "[EURUSD] H1-derived v2 H2 run ${RUN_ID} ${CONCLUSION}" \
+            --body "Workflow run: ${RUN_URL}
+
+- run ID: ${RUN_ID}
+- attempt: ${ATTEMPT}
+- conclusion: ${CONCLUSION}
+- head SHA: ${HEAD_SHA}
+
+On success, the durable Release receipt and result files are committed under docs/research_reboot/artifact_archives/eurusd_h1_h2_v2_validation_2024_v1/. On failure, inspect this exact run and its job logs."
