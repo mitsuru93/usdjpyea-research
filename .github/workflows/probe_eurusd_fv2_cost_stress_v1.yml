@@ -1,0 +1,40 @@
+name: Probe EURUSD F v2 Cost Stress v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/probe_eurusd_fv2_cost_stress_v1.yml
+      - .github/triggers/probe_eurusd_fv2_cost_stress_v1.trigger
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Query exact stress runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p docs/research_reboot
+          gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/run_eurusd_fv2_cost_execution_stress_v1.yml/runs?per_page=10" \
+            --jq '{queried_at_utc: now | todateiso8601, runs: [.workflow_runs[] | {id,run_attempt,status,conclusion,head_sha,event,created_at,updated_at,html_url}]}' \
+            > docs/research_reboot/eurusd_fv2_cost_stress_runs_v1.json
+          cat docs/research_reboot/eurusd_fv2_cost_stress_runs_v1.json
+      - name: Commit probe
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/research_reboot/eurusd_fv2_cost_stress_runs_v1.json
+          if ! git diff --cached --quiet; then
+            git commit -m "ci: record EURUSD F v2 cost stress runs"
+            git push origin main
+          fi
