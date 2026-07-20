@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  actions: write
+  actions: read
   contents: write
 
 jobs:
@@ -17,25 +17,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Dispatch pending evaluator patch and query smoke-test runs
+      - name: Query smoke and empty-schema patch runs
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh workflow run patch_eurusd_fv2_2025_empty_trade_schema_v1.yml --ref main
-          sleep 5
           mkdir -p docs/research_reboot
           gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/check_eurusd_fv2_2025_replication_v1.yml/runs?per_page=10" \
             --jq '{queried_at_utc: now | todateiso8601, runs: [.workflow_runs[] | {id,run_attempt,status,conclusion,head_sha,event,created_at,updated_at,html_url}]}' \
             > docs/research_reboot/eurusd_fv2_2025_replication_smoke_runs_v1.json
+          gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/patch_eurusd_fv2_2025_empty_trade_schema_v1.yml/runs?per_page=10" \
+            --jq '{queried_at_utc: now | todateiso8601, runs: [.workflow_runs[] | {id,run_attempt,status,conclusion,head_sha,event,created_at,updated_at,html_url}]}' \
+            > docs/research_reboot/eurusd_fv2_2025_empty_schema_patch_runs_v1.json
           cat docs/research_reboot/eurusd_fv2_2025_replication_smoke_runs_v1.json
+          cat docs/research_reboot/eurusd_fv2_2025_empty_schema_patch_runs_v1.json
       - name: Commit probe
         run: |
           git pull --rebase origin main
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/research_reboot/eurusd_fv2_2025_replication_smoke_runs_v1.json
+          git add docs/research_reboot/eurusd_fv2_2025_replication_smoke_runs_v1.json docs/research_reboot/eurusd_fv2_2025_empty_schema_patch_runs_v1.json
           if ! git diff --cached --quiet; then
-            git commit -m "ci: record EURUSD F v2 2025 smoke runs"
+            git commit -m "ci: record EURUSD F v2 2025 smoke and patch runs"
             git push origin main
           fi
