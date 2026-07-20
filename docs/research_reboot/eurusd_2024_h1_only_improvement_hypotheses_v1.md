@@ -4,7 +4,9 @@ Created: 2026-07-20 JST
 
 ## Boundary
 
-This note uses only January-June 2024 development data. July-December 2024 is consumed validation data and is not used to choose or modify any rule in this note. Every modified rule below is a new hypothesis and requires a new untouched out-of-sample period before promotion.
+This note uses only January-June 2024 development data to create and modify strategy rules. July-December 2024 is the permanent fixed validation period and may be used repeatedly to test each newly locked H1-derived iteration. H2 has no consumed or retired state. H2 may accept or reject a candidate, but it must not be used to generate or tune the next rule.
+
+Authoritative iteration policy: `configs/research/eurusd_2024_h1_h2_iteration_policy_v1.json`.
 
 The formal H1 screen expanded the registered A-J universe to 46 candidates and nominated A, F, G and H. The H1 source is the canonical one-hour EURUSD bar bundle with the project hard no-trade window and the registered cost model.
 
@@ -39,7 +41,7 @@ The best two days contributed 170.85 of 257.46 total pips, about 66.4%. May was 
 H1-only improvement hypotheses:
 
 1. Keep the Europe short and remove the unsupported U.S. long branch.
-2. Test a causal staged exit: enter at 08:00 Berlin, inspect the completed European-morning path at a fixed checkpoint, and close weak trades while retaining the original eight-hour maximum hold. Checkpoint and threshold must be preregistered before a new OOS run.
+2. Test a causal staged exit: enter at 08:00 Berlin, inspect the completed European-morning path at a fixed checkpoint, and close weak trades while retaining the original eight-hour maximum hold. Checkpoint and threshold must be locked before the next H2 validation run.
 3. Test a compact exit neighborhood around 6/8/10/12 hours or an exit anchored to the European-session close, rather than optimizing a broad hold grid.
 4. Add a spread/transaction-quality gate because severe costs erase the H1 average edge.
 5. Diagnose the concentration by prior 8/24-hour return, realized volatility, day of week and scheduled macro dates, but do not create a filter from a single H1 slice.
@@ -64,14 +66,14 @@ H1-only improvement hypotheses:
 
 The 30/70 variants passed; the 25/75 variants produced only four trades each and were negative. `G_rsi14_30_70_hold12` produced 35 trades, +7.165714 pips/trade, PF 2.087833 and severe-cost PF 1.655231. The 12-bar hold was stronger than the 6-bar hold in H1.
 
-G overlaps materially with F. Sixteen of the 35 G hold-12 entries coincided with `F_z_lb72_thr1p5_hold12`, and 12 coincided with `F_z_lb72_thr2p0_hold12`; coincident entries always had the same direction. The subset where z >= 2.0 and RSI also confirmed contained 12 H1 trades with +20.445833 pips/trade and PF 4.568727, but this is a small, H1-selected subset and cannot be promoted without new OOS data.
+G overlaps materially with F. Sixteen of the 35 G hold-12 entries coincided with `F_z_lb72_thr1p5_hold12`, and 12 coincided with `F_z_lb72_thr2p0_hold12`; coincident entries always had the same direction. The subset where z >= 2.0 and RSI also confirmed contained 12 H1 trades with +20.445833 pips/trade and PF 4.568727, but this is a small, H1-selected subset and must be locked and tested on the fixed H2 period before promotion.
 
 H1-only improvement hypotheses:
 
 1. Do not tighten RSI to 25/75; H1 shows sparse and poor behavior.
 2. Use RSI primarily as a confirmation or position-sizing tier for F rather than running F and G as independent full-size positions.
 3. Keep 30/70 and a 12-bar maximum hold as the core region.
-4. Separate long and short diagnostics in the next development period before considering directional asymmetry; the H1 short side was stronger, but the sample is too small for a hard rule.
+4. Separate long and short diagnostics within H1 before considering directional asymmetry; the H1 short side was stronger, but the sample is too small for a hard rule.
 
 ### H
 
@@ -83,7 +85,7 @@ A hierarchical H1-only prototype was therefore tested:
 - otherwise, failed 24-hour range: hold 6 hours;
 - one position at a time.
 
-On H1 this prototype produced 117 trades, +2.697863 pips/trade, PF 1.371004, five positive months, +143.35 pips after removing the best two days, maximum drawdown -136.15 pips and severe-cost PF 1.059245. This is a new development hypothesis, not a validated result.
+On H1 this prototype produced 117 trades, +2.697863 pips/trade, PF 1.371004, five positive months, +143.35 pips after removing the best two days, maximum drawdown -136.15 pips and severe-cost PF 1.059245. This is a new H1-derived candidate and must be locked before validation on the fixed H2 period.
 
 H1-only improvement hypotheses:
 
@@ -100,11 +102,11 @@ H1-only improvement hypotheses:
 3. G should confirm or scale F, not duplicate it.
 4. H should be a single hierarchical failed-breakout engine, not two overlapping EAs.
 5. Conflict policy must be explicit: one aggregate EURUSD position, with deterministic priority and net exposure limits across A/F/G/H.
-6. New overlays must be developed only on a new development period. The next untouched validation period must not be 2024 H2.
+6. Every new overlay or modified candidate must be derived from H1, locked as a distinct iteration, and then evaluated on the same fixed 2024 H2 validation period.
 
 ## Recommended next candidate set
 
-For a future development/OOS cycle, keep the search bounded to the following hypotheses:
+For the next H1-derived/H2-validation iteration, keep the search bounded to the following hypotheses:
 
 - `A_europe_short_staged_exit_v2`
 - `F_z72_mean_cross_max12_v2`
@@ -112,4 +114,4 @@ For a future development/OOS cycle, keep the search bounded to the following hyp
 - `H_failed_hierarchical_24x6_48x12_v2`
 - one aggregate portfolio rule combining A, F and H with G as confirmation
 
-The original v1 candidates and the 2024 H2 result remain unchanged.
+The original v1 candidates and the prior 2024 H2 result remain unchanged as the comparison baseline. The same H2 period may be used again for the locked v2 candidates.
