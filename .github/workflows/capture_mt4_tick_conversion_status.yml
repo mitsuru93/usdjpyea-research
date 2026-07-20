@@ -1,0 +1,34 @@
+name: Capture MT4 Tick Conversion Status
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/capture_mt4_tick_conversion_status.yml
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Capture recent workflow runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          target='docs/research_reboot/artifact_archives/usdjpy_2024_mt4_tick_import_v1/actions-runs.json'
+          mkdir -p "$(dirname "$target")"
+          gh run list --repo "$GITHUB_REPOSITORY" --limit 30 \
+            --json databaseId,workflowName,status,conclusion,headSha,event,createdAt,updatedAt,url \
+            > "$target"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$target"
+          git commit -m 'ci: capture MT4 tick conversion run status'
+          git push origin HEAD:main
