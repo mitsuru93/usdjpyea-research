@@ -1,0 +1,87 @@
+{
+  "version": "v1",
+  "status": "preregistered_before_stress_execution",
+  "symbol": "EURUSD",
+  "bar_timeframe": "H1",
+  "purpose": "Characterize cost degradation for the unchanged production-primary and neighboring robustness candidates after fixed-H2 acceptance.",
+  "source": {
+    "release_tag": "eurusd-2024-source-artifact-archive-v1",
+    "release_asset": "eurusd-2024-source-artifact-id-8441596981.zip",
+    "release_asset_sha256": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+    "member": "bundle/bars/H1/EURUSD_H1.csv.gz"
+  },
+  "periods": {
+    "development_H1": ["2024-01-01T00:00:00Z", "2024-07-01T00:00:00Z"],
+    "fixed_validation_H2": ["2024-07-01T00:00:00Z", "2025-01-01T00:00:00Z"],
+    "full_2024": ["2024-01-01T00:00:00Z", "2025-01-01T00:00:00Z"]
+  },
+  "authoritative_candidate_protocol": "configs/research/eurusd_h1_h2_v2_candidate_protocol.json",
+  "authoritative_candidate_lock_sha256": "sha256:d7babc976ba8524d35efedc2552d5284ed0153778ad557347d58dc6a8ec52055",
+  "candidates": [
+    {
+      "id": "F_v2_z72_1p5_mean_target_0p5_max12",
+      "role": "production_primary"
+    },
+    {
+      "id": "F_v2_z72_1p5_mean_target_0p25_max12",
+      "role": "neighboring_robustness_control"
+    }
+  ],
+  "cost_grid": {
+    "spread_multipliers": [1.0, 1.5, 2.0, 3.0],
+    "slippage_pips_per_side": [0.0, 0.1, 0.3, 0.5],
+    "spread_basis": "max(0.6 pips, public entry spread mean)"
+  },
+  "registered_scenarios": {
+    "default": {
+      "spread_multiplier": 1.0,
+      "slippage_pips_per_side": 0.0
+    },
+    "moderate": {
+      "spread_multiplier": 1.5,
+      "slippage_pips_per_side": 0.1
+    },
+    "severe": {
+      "spread_multiplier": 3.0,
+      "slippage_pips_per_side": 0.5
+    }
+  },
+  "production_primary_acceptance": {
+    "fixed_H2_default_total_net_pips_gt": 0.0,
+    "fixed_H2_default_profit_factor_gte": 1.05,
+    "fixed_H2_moderate_total_net_pips_gt": 0.0,
+    "fixed_H2_moderate_profit_factor_gte": 1.0,
+    "full_2024_severe_total_net_pips_gt": 0.0,
+    "full_2024_severe_profit_factor_gte": 0.9
+  },
+  "robustness_control_policy": {
+    "reported_at_all_grid_points": true,
+    "not_a_promotion_gate": true,
+    "may_not_replace_primary_from_stress_result": true
+  },
+  "operational_tests_deferred_to_core": [
+    "Rakuten GMT+2/GMT+3 conversion",
+    "DST and H1 boundary assignment",
+    "duplicate-order prevention",
+    "missing-bar behavior",
+    "injected order-send and close errors",
+    "simulated EA state reinitialization without terminal disconnect or account re-login"
+  ],
+  "prohibited_operations": [
+    "change entry or exit rules from stress results",
+    "create a spread filter from H2",
+    "disconnect the logged-in Rakuten terminal",
+    "force account logout or re-login",
+    "perform a forward test",
+    "download a separate 2025 Research dataset"
+  ],
+  "optional_final_2025_policy": "Only after all 2024 Research and production-EA tests, a separately authorized Rakuten MT4 Strategy Tester run may use MT4's existing 2025 history. It is not part of this stress run or a promotion gate.",
+  "required_outputs": [
+    "stress_grid.csv",
+    "registered_scenarios.csv",
+    "stress_result.json",
+    "analysis_summary.md",
+    "source_receipt.json",
+    "SHA256SUMS"
+  ]
+}
