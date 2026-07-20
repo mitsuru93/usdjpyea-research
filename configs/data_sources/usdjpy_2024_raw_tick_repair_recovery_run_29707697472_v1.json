@@ -1,0 +1,23 @@
+{
+  "version": "v1",
+  "purpose": "package_only_recovery",
+  "source_run": {
+    "run_id": 29689427642,
+    "run_attempt": 1,
+    "head_sha": "5adaea986b5e12b2c354d36ed69b705107085161"
+  },
+  "repair_data_run": {
+    "run_id": 29707697472,
+    "run_attempt": 1,
+    "affected_dates": 28,
+    "failed_hours_repaired": 43
+  },
+  "recovery": {
+    "recollect_market_data": false,
+    "artifact_enumeration": "paginated_GitHub_REST_exact_name_match",
+    "months": 12,
+    "expected_days": 366,
+    "expected_hours": 8784,
+    "release_tag": "usdjpy-2024-raw-bidask-ticks-v1"
+  }
+}
