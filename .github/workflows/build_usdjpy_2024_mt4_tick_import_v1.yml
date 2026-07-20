@@ -80,17 +80,79 @@ jobs:
           retention-days: 90
           compression-level: 0
 
-      - name: Publish immutable converted-data release
+      - name: Publish or verify immutable converted-data release
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
+          manifest='USDJPY-2024-mt4-tick-import-v1.manifest.json'
           if gh release view "$OUTPUT_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "release tag already exists: $OUTPUT_RELEASE_TAG" >&2
-            exit 1
+            mkdir -p existing-release
+            gh release download "$OUTPUT_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern "$manifest" \
+              --dir existing-release
+            expected=$(sha256sum "out/$manifest" | awk '{print $1}')
+            existing=$(sha256sum "existing-release/$manifest" | awk '{print $1}')
+            if [ "$existing" != "$expected" ]; then
+              echo "existing release manifest digest mismatch: $existing != $expected" >&2
+              exit 1
+            fi
+            echo "verified existing immutable release $OUTPUT_RELEASE_TAG"
+          else
+            gh release create "$OUTPUT_RELEASE_TAG" out/* \
+              --repo "$GITHUB_REPOSITORY" \
+              --title 'USDJPY 2024 MT4 Tick Import v1' \
+              --notes-file out/IMPORT_GUIDE.md
           fi
-          gh release create "$OUTPUT_RELEASE_TAG" out/* \
-            --repo "$GITHUB_REPOSITORY" \
-            --title 'USDJPY 2024 MT4 Tick Import v1' \
-            --notes-file out/IMPORT_GUIDE.md
+
+      - name: Commit durable conversion receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          receipt_dir='docs/research_reboot/artifact_archives/usdjpy_2024_mt4_tick_import_v1'
+          mkdir -p "$receipt_dir"
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          output = Path('out')
+          manifest_path = output / 'USDJPY-2024-mt4-tick-import-v1.manifest.json'
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+          receipt = {
+              'schema_version': 'usdjpy_2024_mt4_tick_import_receipt_v1',
+              'repository': os.environ['GITHUB_REPOSITORY'],
+              'workflow': os.environ['GITHUB_WORKFLOW'],
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'run_attempt': int(os.environ['GITHUB_RUN_ATTEMPT']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'source_release_tag': os.environ['SOURCE_RELEASE_TAG'],
+              'output_release_tag': os.environ['OUTPUT_RELEASE_TAG'],
+              'output_release_url': f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/releases/tag/{os.environ['OUTPUT_RELEASE_TAG']}",
+              'manifest_sha256': digest,
+              'annual_rows': manifest['annual_rows'],
+              'month_count': len(manifest['months']),
+              'accepted': manifest['accepted'],
+              'format': manifest['output_format'],
+              'boundaries': manifest['boundaries'],
+              'assets': [
+                  {'name': path.name, 'size_bytes': path.stat().st_size, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+                  for path in sorted(output.iterdir()) if path.is_file()
+              ],
+          }
+          target = Path('docs/research_reboot/artifact_archives/usdjpy_2024_mt4_tick_import_v1/receipt.json')
+          target.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$receipt_dir/receipt.json"
+          if git diff --cached --quiet; then
+            echo 'receipt already current'
+          else
+            git commit -m 'data: record USDJPY 2024 MT4 tick import release'
+            git push origin HEAD:main
+          fi
