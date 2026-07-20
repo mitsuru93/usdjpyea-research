@@ -1,0 +1,54 @@
+name: Cancel Duplicate EURUSD 2025 Source Run v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/cancel_duplicate_eurusd_2025_source_v1.yml
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    env:
+      CANONICAL_RUN_ID: "29733387996"
+      DUPLICATE_RUN_ID: "29733632765"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cancel duplicate run and record canonical run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run cancel "${DUPLICATE_RUN_ID}" || true
+          sleep 3
+          mkdir -p docs/research_reboot
+          python - <<'PY'
+          import json, os, subprocess
+          def view(run_id):
+              raw=subprocess.check_output(['gh','run','view',run_id,'--json','databaseId,attempt,status,conclusion,headSha,event,createdAt,updatedAt,url'],text=True)
+              return json.loads(raw)
+          payload={
+              'schema_version':'eurusd_2025_source_canonical_run_v1',
+              'canonical_run':view(os.environ['CANONICAL_RUN_ID']),
+              'duplicate_run':view(os.environ['DUPLICATE_RUN_ID']),
+              'decision':'retain earlier issue-triggered run; cancel later dispatcher duplicate'
+          }
+          open('docs/research_reboot/eurusd_2025_source_canonical_run_v1.json','w').write(json.dumps(payload,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(payload,indent=2,sort_keys=True))
+          PY
+      - name: Commit cancellation receipt
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/research_reboot/eurusd_2025_source_canonical_run_v1.json
+          if ! git diff --cached --quiet; then
+            git commit -m "ci: record canonical EURUSD 2025 source run"
+            git push origin main
+          fi
