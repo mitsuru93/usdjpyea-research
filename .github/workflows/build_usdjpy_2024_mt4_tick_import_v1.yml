@@ -1,0 +1,96 @@
+name: Build USDJPY 2024 MT4 Tick Import v1
+
+on:
+  workflow_dispatch:
+    inputs:
+      output_release_tag:
+        description: Immutable release tag for converted MT4 tick import files
+        required: true
+        default: usdjpy-2024-mt4-tick-import-v1
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/build_usdjpy_2024_mt4_tick_import_v1.yml
+      - tools/build_usdjpy_2024_mt4_tick_import_v1.py
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usdjpy-2024-mt4-tick-import-v1
+  cancel-in-progress: false
+
+env:
+  SOURCE_RELEASE_TAG: usdjpy-2024-raw-bidask-ticks-v1
+  OUTPUT_RELEASE_TAG: ${{ github.event.inputs.output_release_tag || 'usdjpy-2024-mt4-tick-import-v1' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate converter
+        run: python -m py_compile tools/build_usdjpy_2024_mt4_tick_import_v1.py
+
+      - name: Download twelve durable raw-tick archives
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          gh release download "$SOURCE_RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'usdjpy-2024-??-raw-ticks-v1.tar.gz' \
+            --dir source
+          count=$(find source -maxdepth 1 -type f -name 'usdjpy-2024-??-raw-ticks-v1.tar.gz' | wc -l)
+          if [ "$count" -ne 12 ]; then
+            echo "expected 12 monthly source archives, got $count" >&2
+            exit 1
+          fi
+          sha256sum source/* | sort > source/SHA256SUMS.downloaded
+
+      - name: Convert and validate 40,969,081 Bid Ask ticks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/build_usdjpy_2024_mt4_tick_import_v1.py \
+            --input-dir source \
+            --output-dir out \
+            --symbol USDJPY \
+            --year 2024
+          gzip -t out/USDJPY-2024-??-mt4-tick-import-v1.csv.gz
+
+      - name: Upload converted package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-2024-mt4-tick-import-${{ github.run_id }}-${{ github.run_attempt }}
+          path: out
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Publish immutable converted-data release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$OUTPUT_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "release tag already exists: $OUTPUT_RELEASE_TAG" >&2
+            exit 1
+          fi
+          gh release create "$OUTPUT_RELEASE_TAG" out/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title 'USDJPY 2024 MT4 Tick Import v1' \
+            --notes-file out/IMPORT_GUIDE.md
