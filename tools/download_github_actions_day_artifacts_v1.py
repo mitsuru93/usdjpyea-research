@@ -21,9 +21,18 @@ import zipfile
 from datetime import date
 from pathlib import Path, PurePosixPath
 from typing import Any
+from urllib.parse import urlparse
 
 API_ROOT = "https://api.github.com"
 USER_AGENT = "usdjpyea-research-artifact-recovery-v1"
+REDIRECT_CODES = {301, 302, 303, 307, 308}
+
+
+class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Expose GitHub's signed artifact redirect instead of following it with auth."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: ANN001
+        return None
 
 
 def api_request(url: str, token: str) -> urllib.request.Request:
@@ -36,6 +45,13 @@ def api_request(url: str, token: str) -> urllib.request.Request:
             "User-Agent": USER_AGENT,
         },
     )
+
+
+def storage_request(url: str) -> urllib.request.Request:
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
+        raise RuntimeError(f"invalid signed artifact URL: {url!r}")
+    return urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
 
 
 def read_json(url: str, token: str) -> dict[str, Any]:
@@ -110,15 +126,41 @@ def safe_extract(zip_path: Path, destination: Path) -> None:
                 shutil.copyfileobj(source, output, length=1024 * 1024)
 
 
-def download_artifact(repository: str, artifact_id: int, token: str, target_zip: Path) -> None:
+def resolve_artifact_download_url(repository: str, artifact_id: int, token: str) -> str:
     url = f"{API_ROOT}/repos/{repository}/actions/artifacts/{artifact_id}/zip"
+    opener = urllib.request.build_opener(NoRedirectHandler())
     try:
-        with urllib.request.urlopen(api_request(url, token), timeout=300) as response, target_zip.open("wb") as output:
+        with opener.open(api_request(url, token), timeout=120) as response:
+            location = response.headers.get("Location")
+            if location:
+                return location
+            raise RuntimeError(
+                f"GitHub artifact endpoint returned HTTP {response.status} without a redirect for artifact {artifact_id}"
+            )
+    except urllib.error.HTTPError as exc:
+        if exc.code in REDIRECT_CODES:
+            location = exc.headers.get("Location")
+            if not location:
+                raise RuntimeError(
+                    f"GitHub artifact redirect has no Location header for artifact {artifact_id}"
+                ) from exc
+            return location
+        body = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(
+            f"GitHub artifact redirect HTTP {exc.code} for artifact {artifact_id}: {body[:1000]}"
+        ) from exc
+
+
+def download_artifact(repository: str, artifact_id: int, token: str, target_zip: Path) -> None:
+    signed_url = resolve_artifact_download_url(repository, artifact_id, token)
+    request = storage_request(signed_url)
+    try:
+        with urllib.request.urlopen(request, timeout=300) as response, target_zip.open("wb") as output:
             shutil.copyfileobj(response, output, length=1024 * 1024)
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="replace")
         raise RuntimeError(
-            f"GitHub artifact download HTTP {exc.code} for artifact {artifact_id}: {body[:1000]}"
+            f"signed artifact download HTTP {exc.code} for artifact {artifact_id}: {body[:1000]}"
         ) from exc
     if target_zip.stat().st_size == 0:
         raise RuntimeError(f"downloaded artifact ZIP is empty: {artifact_id}")
@@ -173,6 +215,7 @@ def main() -> None:
             artifact_id = int(artifact["id"])
             name = str(artifact["name"])
             zip_path = temp_root / f"{artifact_id}.zip"
+            print(json.dumps({"event": "download_start", "date": day, "artifact_id": artifact_id, "name": name}))
             download_artifact(args.repository, artifact_id, token, zip_path)
             safe_extract(zip_path, args.output)
             day_root = args.output / day
