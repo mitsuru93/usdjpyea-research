@@ -1,0 +1,83 @@
+name: Recover EURUSD 2024 June Diagnostic Run 29749870784 v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/recover_eurusd_2024_june_diagnostic_run_29749870784_v1.yml
+      - tools/recover_eurusd_2024_raw_tick_month_v1.py
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: eurusd-2024-june-diagnostic-run-29749870784-v1
+  cancel-in-progress: false
+
+env:
+  SOURCE_RUN_ID: "29749870784"
+  SOURCE_RUN_ATTEMPT: "1"
+
+jobs:
+  recover-june:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Recover June and capture complete diagnostics
+        id: recover
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+          mkdir -p diagnostics out staging
+          set +e
+          python tools/recover_eurusd_2024_raw_tick_month_v1.py \
+            --repository "$GITHUB_REPOSITORY" \
+            --source-run-id "$SOURCE_RUN_ID" \
+            --source-run-attempt "$SOURCE_RUN_ATTEMPT" \
+            --month 6 \
+            --staging staging \
+            --out out \
+            --package-run-id "$GITHUB_RUN_ID" \
+            --package-run-attempt "$GITHUB_RUN_ATTEMPT" \
+            2>&1 | tee diagnostics/recover-june.log
+          rc=${PIPESTATUS[0]}
+          set -e
+          printf '{"run_id":"%s","run_attempt":"%s","source_run_id":"%s","exit_code":%s}\n' \
+            "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$SOURCE_RUN_ID" "$rc" \
+            > diagnostics/run-summary.json
+          find staging -maxdepth 2 -name day_summary.json -print -exec cp --parents {} diagnostics/ \; || true
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+
+      - name: Upload June diagnostic bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-2024-june-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          path: diagnostics
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Upload recovered June package
+        if: steps.recover.outputs.exit_code == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-2024-raw-ticks-recovered-month-06-${{ github.run_id }}-${{ github.run_attempt }}
+          path: out
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Propagate recovery failure
+        if: steps.recover.outputs.exit_code != '0'
+        shell: bash
+        run: exit "${{ steps.recover.outputs.exit_code }}"
