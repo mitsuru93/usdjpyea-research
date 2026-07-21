@@ -1,17 +1,63 @@
 {
   "schema_version": "eurusd_fv2_roadmap_current_state_v1",
-  "current_stage": "R3_2024_H1_diagnosis_and_bounded_revision",
+  "current_stage": "A_lot_sizing_complete_lot_decision_pending",
   "completed_stages": [
-    "2024_H1_development",
-    "reusable_2024_H2_validation",
-    "Research_to_MT4_exact_ledger_parity"
+    "2024_H1_development_and_candidate_lock",
+    "reusable_fixed_2024_H2_validation",
+    "cost_execution_stress",
+    "production_EA_implementation",
+    "Research_to_MT4_canonical_reference_parity",
+    "live_BidAsk_synthetic_mid_path_verification",
+    "Strategy_Tester_same_process_pseudo_reinitialization",
+    "production_release_and_main_promotion",
+    "JPY_100000_fixed_2024_H2_lot_sizing_comparison"
   ],
   "retained_candidates": [
     "F_v2_z72_1p5_mean_target_0p5_max12",
     "F_v2_z72_1p5_mean_target_0p25_max12"
   ],
-  "next_action": "analyze_2024_H1_only_and_preregister_bounded_revision_before_reusing_fixed_2024_H2",
-  "2024_H2_policy": "reusable_fixed_validation_with_no_consumed_state",
-  "2025_data_policy": "prohibited_not_part_of_workflow",
-  "roadmap_document": "docs/research_reboot/eurusd_fv2_implementation_roadmap_v1.md"
+  "production_candidate": "F_v2_z72_1p5_mean_target_0p5_max12",
+  "lot_sizing": {
+    "status": "complete",
+    "lot_selected": false,
+    "account_currency": "JPY",
+    "initial_deposit": 100000,
+    "fixed_validation_period": "2024-07-01T00:00:00Z/2025-01-01T00:00:00Z",
+    "tester_warmup_start": "2024-06-20",
+    "lots_tested": [
+      0.01,
+      0.02,
+      0.03,
+      0.05,
+      0.1
+    ],
+    "core_merge_commit": "ffbba00817bb1fa7f40dad92590ebe7eec8ae58a",
+    "core_pull_request": 70,
+    "workflow_run_id": 29838120096,
+    "artifact_id": 8498351187,
+    "artifact_digest": "sha256:ff8fb010cdaa21f955fcacd50c8854d38fe7d1fbad8e486892ca0239667d1924",
+    "release_tag": "mt4-eurusd-fv2-lot-sizing-v1",
+    "release_tar_digest": "sha256:92d0136c93d265b804f66b1f3aa6bee5875c823867d101fc825ef05aec2c8b98",
+    "research_rule_or_parameter_change_performed": false
+  },
+  "next_action": "review_lot_sizing_results_without_automatic_lot_selection_then_prepare_TradingEnabled_false_predeployment_checks",
+  "predeployment_constraints": [
+    "do_not_terminate_the_real_account_terminal",
+    "do_not_disconnect_the_account",
+    "do_not_sign_out_of_Windows",
+    "do_not_log_out_or_force_relogin",
+    "verify_initialization_audit_state_symbol_timeframe_magic_server_time_and_H1_boundary_with_TradingEnabled_false"
+  ],
+  "2024_H2_policy": "reusable_fixed_validation_with_no_consumed_state_and_no_H2_derived_rule_creation",
+  "2025_data_policy": "only_after_lot_sizing_predeployment_and_all_2024_work_are_complete_and_only_when_user_instructs; use_existing_Rakuten_MT4_tester_history_only; no_external_download; no_Research_storage; no_rule_or_parameter_change; not_a_promotion_condition",
+  "forward_test_policy": "not_performed_and_removed_from_roadmap",
+  "roadmap_document": "docs/research_reboot/eurusd_fv2_implementation_roadmap_v1.md",
+  "core_evidence_files": [
+    "docs/promotions/mt4_eurusd_fv2_production_verification_v1.json",
+    "docs/promotions/mt4_eurusd_fv2_production_execution_receipt_v1.json",
+    "docs/promotions/mt4_eurusd_fv2_production_release_receipt_v1.json",
+    "docs/promotions/mt4_eurusd_fv2_lot_sizing_v1.json",
+    "docs/promotions/mt4_eurusd_fv2_lot_sizing_execution_receipt_v1.json",
+    "docs/promotions/mt4_eurusd_fv2_lot_sizing_release_receipt_v1.json"
+  ]
 }
