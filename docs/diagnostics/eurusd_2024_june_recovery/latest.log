@@ -1,0 +1,33 @@
+{"event": "download_source_day", "date": "2024-06-01", "artifact_id": 8470354921, "name": "eurusd-raw-ticks-2024-06-01-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-02", "artifact_id": 8470263240, "name": "eurusd-raw-ticks-2024-06-02-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-03", "artifact_id": 8470642154, "name": "eurusd-raw-ticks-2024-06-03-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-04", "artifact_id": 8469954027, "name": "eurusd-raw-ticks-2024-06-04-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-05", "artifact_id": 8469527157, "name": "eurusd-raw-ticks-2024-06-05-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-06", "artifact_id": 8470654417, "name": "eurusd-raw-ticks-2024-06-06-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-07", "artifact_id": 8469482610, "name": "eurusd-raw-ticks-2024-06-07-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-08", "artifact_id": 8469479636, "name": "eurusd-raw-ticks-2024-06-08-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-09", "artifact_id": 8470239547, "name": "eurusd-raw-ticks-2024-06-09-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-10", "artifact_id": 8469926550, "name": "eurusd-raw-ticks-2024-06-10-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-11", "artifact_id": 8470207021, "name": "eurusd-raw-ticks-2024-06-11-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-12", "artifact_id": 8469889293, "name": "eurusd-raw-ticks-2024-06-12-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-13", "artifact_id": 8470355671, "name": "eurusd-raw-ticks-2024-06-13-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-14", "artifact_id": 8470873407, "name": "eurusd-raw-ticks-2024-06-14-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-15", "artifact_id": 8470426021, "name": "eurusd-raw-ticks-2024-06-15-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-16", "artifact_id": 8469332816, "name": "eurusd-raw-ticks-2024-06-16-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-17", "artifact_id": 8470788944, "name": "eurusd-raw-ticks-2024-06-17-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-18", "artifact_id": 8469933124, "name": "eurusd-raw-ticks-2024-06-18-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-19", "artifact_id": 8470250048, "name": "eurusd-raw-ticks-2024-06-19-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-20", "artifact_id": 8470786239, "name": "eurusd-raw-ticks-2024-06-20-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-21", "artifact_id": 8469536456, "name": "eurusd-raw-ticks-2024-06-21-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-22", "artifact_id": 8469697976, "name": "eurusd-raw-ticks-2024-06-22-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-23", "artifact_id": 8469692595, "name": "eurusd-raw-ticks-2024-06-23-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-24", "artifact_id": 8469929400, "name": "eurusd-raw-ticks-2024-06-24-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-25", "artifact_id": 8470351765, "name": "eurusd-raw-ticks-2024-06-25-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-26", "artifact_id": 8470443670, "name": "eurusd-raw-ticks-2024-06-26-29749870784-1"}
+{"event": "download_source_day", "date": "2024-06-27", "artifact_id": 8469407353, "name": "eurusd-raw-ticks-2024-06-27-29749870784-1"}
+Traceback (most recent call last):
+  File "/home/runner/work/usdjpyea-research/usdjpyea-research/tools/recover_eurusd_2024_raw_tick_month_v1.py", line 514, in <module>
+    main()
+  File "/home/runner/work/usdjpyea-research/usdjpyea-research/tools/recover_eurusd_2024_raw_tick_month_v1.py", line 425, in main
+    raise RuntimeError(f"{name}: expected exactly one artifact, found {len(matches)}")
+RuntimeError: eurusd-raw-ticks-2024-06-28-29749870784-1: expected exactly one artifact, found 3
