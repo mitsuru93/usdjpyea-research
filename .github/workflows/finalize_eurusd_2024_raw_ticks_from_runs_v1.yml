@@ -1,0 +1,126 @@
+name: Finalize EURUSD 2024 Raw Ticks from Recovered Runs v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/finalize_eurusd_2024_raw_ticks_from_runs_v1.yml
+      - tools/build_eurusd_2024_raw_tick_annual_release_v1.py
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: finalize-eurusd-2024-raw-ticks-from-recovered-runs-v1
+  cancel-in-progress: true
+
+env:
+  SOURCE_RUN_ID: "29749870784"
+  SOURCE_RUN_ATTEMPT: "1"
+  SOURCE_HEAD_SHA: "b0999d9ddc0602ef9f5ed09a5f9327fa64f90703"
+  ELEVEN_MONTH_RUN_ID: "29783506646"
+  ELEVEN_MONTH_RUN_ATTEMPT: "1"
+  JUNE_RUN_ID: "29790935572"
+  JUNE_RUN_ATTEMPT: "1"
+  RELEASE_TAG: eurusd-2024-raw-bidask-ticks-v1
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download eleven validated monthly packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: eurusd-2024-raw-ticks-recovered-month-*-${{ env.ELEVEN_MONTH_RUN_ID }}-${{ env.ELEVEN_MONTH_RUN_ATTEMPT }}
+          run-id: ${{ env.ELEVEN_MONTH_RUN_ID }}
+          github-token: ${{ github.token }}
+          path: release
+          merge-multiple: true
+
+      - name: Download validated June package
+        uses: actions/download-artifact@v4
+        with:
+          name: eurusd-2024-raw-ticks-recovered-month-06-${{ env.JUNE_RUN_ID }}-${{ env.JUNE_RUN_ATTEMPT }}
+          run-id: ${{ env.JUNE_RUN_ID }}
+          github-token: ${{ github.token }}
+          path: release
+          merge-multiple: true
+
+      - name: Verify exact twelve-month inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('release')
+          expected = {f'{month:02d}' for month in range(1, 13)}
+          for suffix in ('raw-ticks-v1.tar.gz', 'raw-ticks-v1.manifest.json', 'source-artifacts.json'):
+              found = {
+                  path.name.split('-')[2]
+                  for path in root.glob(f'eurusd-2024-??-{suffix}')
+              }
+              if found != expected:
+                  raise SystemExit(f'inventory mismatch for {suffix}: found={sorted(found)} expected={sorted(expected)}')
+          print({'months': sorted(expected), 'files': len(list(root.iterdir()))})
+          PY
+
+      - name: Build and verify annual release inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/build_eurusd_2024_raw_tick_annual_release_v1.py \
+            --release-dir release \
+            --source-run-id "$SOURCE_RUN_ID" \
+            --source-run-attempt "$SOURCE_RUN_ATTEMPT" \
+            --source-head-sha "$SOURCE_HEAD_SHA" \
+            --package-run-id "$GITHUB_RUN_ID" \
+            --package-run-attempt "$GITHUB_RUN_ATTEMPT"
+
+      - name: Upload validated annual package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-2024-raw-ticks-recovered-annual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Create or update durable GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "EURUSD 2024 Raw Dukascopy Bid/Ask Ticks v1" \
+              --notes-file release/RELEASE_NOTES.md
+          fi
+          gh release upload "$RELEASE_TAG" release/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+
+      - name: Persist finalizer result
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET=docs/diagnostics/eurusd_2024_finalizer
+          mkdir -p "$TARGET"
+          printf '{"run_id":"%s","run_attempt":"%s","status":"%s","source_run_id":"%s","eleven_month_run_id":"%s","june_run_id":"%s"}\n' \
+            "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "${{ job.status }}" "$SOURCE_RUN_ID" "$ELEVEN_MONTH_RUN_ID" "$JUNE_RUN_ID" \
+            > "$TARGET/latest-run-summary.json"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add "$TARGET/latest-run-summary.json"
+          git commit -m "diag: persist EURUSD 2024 finalizer result ${GITHUB_RUN_ID}"
+          git push
