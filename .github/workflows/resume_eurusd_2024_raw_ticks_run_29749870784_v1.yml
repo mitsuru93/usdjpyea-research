@@ -8,12 +8,6 @@ on:
         required: true
         default: eurusd-2024-raw-bidask-ticks-v1
         type: string
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/resume_eurusd_2024_raw_ticks_run_29749870784_v1.yml
-      - tools/recover_eurusd_2024_raw_tick_month_v1.py
-      - tools/build_eurusd_2024_raw_tick_annual_release_v1.py
 
 permissions:
   actions: read
