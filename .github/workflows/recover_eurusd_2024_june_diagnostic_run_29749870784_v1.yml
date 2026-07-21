@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/recover_eurusd_2024_june_diagnostic_run_29749870784_v1.yml
       - tools/recover_eurusd_2024_raw_tick_month_v1.py
+      - tools/recover_eurusd_2024_raw_tick_month_v2.py
 
 permissions:
   actions: read
@@ -39,7 +40,7 @@ jobs:
           set -uo pipefail
           mkdir -p diagnostics out staging
           set +e
-          python tools/recover_eurusd_2024_raw_tick_month_v1.py \
+          python tools/recover_eurusd_2024_raw_tick_month_v2.py \
             --repository "$GITHUB_REPOSITORY" \
             --source-run-id "$SOURCE_RUN_ID" \
             --source-run-attempt "$SOURCE_RUN_ATTEMPT" \
