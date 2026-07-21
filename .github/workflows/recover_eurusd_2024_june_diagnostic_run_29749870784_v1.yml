@@ -10,7 +10,7 @@ on:
 
 permissions:
   actions: read
-  contents: read
+  contents: write
 
 concurrency:
   group: eurusd-2024-june-diagnostic-run-29749870784-v1
@@ -66,6 +66,21 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           compression-level: 6
+
+      - name: Persist failure diagnostic in repository
+        if: steps.recover.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET=docs/diagnostics/eurusd_2024_june_recovery
+          mkdir -p "$TARGET"
+          cp diagnostics/recover-june.log "$TARGET/latest.log"
+          cp diagnostics/run-summary.json "$TARGET/latest-run-summary.json"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add "$TARGET/latest.log" "$TARGET/latest-run-summary.json"
+          git commit -m "diag: persist EURUSD June recovery failure ${GITHUB_RUN_ID}"
+          git push
 
       - name: Upload recovered June package
         if: steps.recover.outputs.exit_code == '0'
