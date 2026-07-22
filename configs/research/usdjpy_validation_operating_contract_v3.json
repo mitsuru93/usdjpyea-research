@@ -1,0 +1,205 @@
+{
+  "schema_version": "usdjpy_validation_operating_contract_v3",
+  "status": "ACTIVE_FOR_NEW_SUCCESSOR_CANDIDATES",
+  "effective_after_candidate": "F05_MFE20_BOR1_EXIT_v1",
+  "supersedes_for_new_candidates": [
+    "configs/research/usdjpy_three_stage_gate_policy_v2.json",
+    "docs/research/usdjpy_2024h1_validation_roadmap_v2.md"
+  ],
+  "period_roles": {
+    "2024_H1": "mechanism_diagnosis_candidate_development_and_exact_mt4_parity",
+    "2024_H2": "single_binding_validation_of_frozen_exact_specification",
+    "2025_H1": "rakuten_mt4_binding_adverse_regime_stress_after_unchanged_h2_pass",
+    "2025_H2": "closed"
+  },
+  "mandatory_stage_sequence": [
+    "S0_CURRENT_STATE_AND_LINEAGE_LOCK",
+    "S1_H1_BASELINE_AND_MECHANISM_DIAGNOSIS",
+    "S2_FINITE_FAMILY_PREREGISTRATION",
+    "S3_H1_RESEARCH_SCREEN_AND_PARAMETER_IDENTIFIABILITY",
+    "S4_H1_FINALIST_COMPARISON_AND_USER_EXPLANATION",
+    "S5_REUSABLE_MT4_WORKFLOW_PREFLIGHT",
+    "S6_H1_EXACT_MT4_PARITY",
+    "S7_H2_AND_2025H1_READINESS_FREEZE",
+    "S8_SINGLE_UNCHANGED_H2_RAKUTEN_MT4_VALIDATION",
+    "S9_UNCHANGED_2025H1_RAKUTEN_MT4_VALIDATION_AFTER_H2_PASS",
+    "S10_ATOMIC_REGISTRY_RESULT_AND_NEXT_STATE_UPDATE"
+  ],
+  "S0_current_state_and_lineage_lock": {
+    "required_outputs": [
+      "current candidate registry",
+      "closed candidate and mechanism matrix",
+      "period access ledger",
+      "accepted baseline Run artifact and digest identities",
+      "one exact next action"
+    ],
+    "blockers": [
+      "registry status does not match completed evidence",
+      "candidate lineage is ambiguous",
+      "same mechanism has already been closed without a declared independent distinction"
+    ]
+  },
+  "S1_h1_baseline_and_mechanism_diagnosis": {
+    "required_before_family_grid": true,
+    "required_outputs": [
+      "baseline reconciliation",
+      "loss decomposition by B02 F05 and P1 P2 P3 path class",
+      "winner sacrifice analysis",
+      "month quarter session direction and exposure-state attribution",
+      "mechanism-specific causal hypothesis",
+      "explicit difference from every relevant closed candidate",
+      "expected route to the frozen 2025 H1 gates without candidate-specific 2025 execution"
+    ],
+    "prohibited": [
+      "starting from a generic parameter grid without a committed mechanism diagnosis",
+      "using candidate-specific 2025 H1 outcomes to select mechanism or thresholds"
+    ]
+  },
+  "S2_finite_family_preregistration": {
+    "required": [
+      "finite grid or deterministic generator",
+      "candidate count",
+      "feature and outcome information boundary",
+      "ranking order",
+      "H1 gates",
+      "maximum finalists",
+      "all prohibited interpretations"
+    ]
+  },
+  "S3_h1_research_screen_and_parameter_identifiability": {
+    "required_metrics": [
+      "affected positions and affected entry dates by month and quarter",
+      "positive negative and zero effect counts",
+      "benefit harm ratio",
+      "median mean quantiles and maximum absolute effect",
+      "net PF target and non-target strategy deltas",
+      "ex-best-two effect-date delta",
+      "leave-one-month-out minimum delta",
+      "largest and top-two positive-date shares",
+      "activation rate by strategy month quarter and direction"
+    ],
+    "parameter_identifiability": {
+      "required": true,
+      "equivalence_definition": "same affected trade keys same outcome times and same P/L effects",
+      "rule": "adjacent or competing parameter cells that are equivalent must be collapsed into one equivalence class before a threshold-specific candidate ID is frozen",
+      "tie_break_only_selection_prohibited": true
+    },
+    "fragility_classification": {
+      "required": true,
+      "report_gate_margins_not_only_boolean_pass": true,
+      "minimum_labels": [
+        "ROBUST_H1_PASS",
+        "FRAGILE_H1_PASS_REQUIRES_REVIEW",
+        "H1_FAIL"
+      ],
+      "automatic_fragility_flags": [
+        "ex-best-two delta is small relative to total delta",
+        "leave-one-month-out minimum is small relative to total delta",
+        "one month or date dominates benefit",
+        "selected parameter is not identified",
+        "positive and negative effect counts are nearly balanced",
+        "mechanism activation is sparse or highly uneven"
+      ]
+    }
+  },
+  "S4_h1_finalist_comparison_and_user_explanation": {
+    "required_before_mt4_or_h2": true,
+    "required_comparisons": [
+      "all H1-eligible cells in the family",
+      "relevant closed S1 S2 S3 and successor-family mechanisms",
+      "baseline loss-path targets",
+      "effect concentration and robustness margins",
+      "portfolio invariance and expected trade-offs"
+    ],
+    "required_user_facing_sections": [
+      "what is changed",
+      "which baseline problem it is intended to solve",
+      "why this finalist was selected",
+      "where H1 is weak",
+      "what H2 must confirm",
+      "what 2025 H1 must confirm if H2 passes"
+    ]
+  },
+  "S5_reusable_mt4_workflow_preflight": {
+    "binding_run_must_not_be_first_full_workflow_execution": true,
+    "required_preflight": [
+      "source materialization on the actual runner class",
+      "MetaEditor compile",
+      "artifact download with explicit repository run_id artifact_id digest and internal path checks",
+      "period-end audit schema fixture",
+      "evaluator execution on H1 or synthetic non-holdout evidence",
+      "receipt creation",
+      "artifact upload and digest retrieval"
+    ],
+    "prohibited": [
+      "candidate-specific watcher workflows",
+      "ad hoc audit workflows for run discovery",
+      "protected-main direct push from a workflow",
+      "implicit artifact source Run selection",
+      "fixed extraction-directory assumptions"
+    ],
+    "technical_failure_rule": "after the first technical failure reproduce and correct the exact failure in preflight before another binding-period run"
+  },
+  "S6_h1_exact_mt4_parity": {
+    "required": [
+      "research and MT4 affected-trade key parity",
+      "exact changed outcome times and P/L parity",
+      "unaffected trade invariance",
+      "B02 or non-target invariance as specified",
+      "direct tick-equity DD comparison",
+      "minimum tick equity comparison",
+      "zero execution failures"
+    ]
+  },
+  "S7_h2_and_2025h1_readiness_freeze": {
+    "required_before_h2_dispatch": [
+      "exact candidate rule thresholds target strategy and processing order",
+      "H1 result comparison and fragility report",
+      "builder evaluator workflow MQ4 and evidence identities",
+      "H2 gates",
+      "inert 2025 H1 Rakuten MT4 workflow plan",
+      "accepted 2025 H1 baseline identity and evaluator gate contract",
+      "explicit H2 PASS unlock and H2 FAIL closure actions"
+    ],
+    "2025_h1_data_access_before_h2_pass": false
+  },
+  "S8_h2_binding_validation": {
+    "execution": "Rakuten MT4 Strategy Tester",
+    "exact_specification_exposure_max": 1,
+    "parameter_search": false,
+    "gate_change": false,
+    "repair_or_retune_from_result": false,
+    "failure_action": "CLOSED_FAIL_H2"
+  },
+  "S9_2025h1_binding_validation": {
+    "unlock_condition": "UNCHANGED_H2_PASS",
+    "execution": "Rakuten MT4 Strategy Tester",
+    "python_only_substitution": false,
+    "candidate_rule_change": false,
+    "gate_change": false,
+    "failure_action": "CLOSED_FAIL_2025H1",
+    "pass_action": "THREE_STAGE_PASS"
+  },
+  "S10_atomic_registry_result_and_next_state_update": {
+    "same_research_pr_required": [
+      "binding result JSON",
+      "human-readable result report",
+      "candidate registry update",
+      "period access ledger update",
+      "next action declaration"
+    ],
+    "no_unmerged_closure_state": true
+  },
+  "current_candidate_disposition": {
+    "candidate_id": "F05_MFE20_BOR1_EXIT_v1",
+    "status": "CLOSED_FAIL_H2",
+    "h1_research_run_id": 29886163522,
+    "h1_mt4_run_id": 29893008498,
+    "h1_parity_decision_run_id": 29893833236,
+    "h2_mt4_run_id": 29895387329,
+    "h2_decision_run_id": 29896667418,
+    "2025_h1_accessed": false,
+    "2025_h1_execution_authorized": false
+  },
+  "live_order_authorized": false
+}

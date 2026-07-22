@@ -1,0 +1,89 @@
+{
+  "schema_version": "usdjpy_f05_mfe20_bor1_exit_h2_result_v1",
+  "status": "CLOSED_FAIL_H2",
+  "candidate_id": "F05_MFE20_BOR1_EXIT_v1",
+  "exact_specification_exposure_ordinal": 1,
+  "source_mt4_evidence": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "run_id": 29895387329,
+    "run_attempt": 1,
+    "head_sha": "0eb320b079a8921d9a3ff804a9eadb29f9f3b8b5",
+    "artifact_id": 8519879009,
+    "artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981",
+    "baseline_mt4_completed": true,
+    "candidate_mt4_completed": true
+  },
+  "binding_decision_evidence": {
+    "run_id": 29896667418,
+    "head_sha": "7e97df42bfaf56ddae3569934a2a079f0855e77a",
+    "artifact_id": 8520231535,
+    "artifact_digest": "sha256:0614d69f460889e6f93a490325c3436979669effa76a3cd7d9804d7448b5faef",
+    "mt4_rerun_performed": false,
+    "authorized_normalization": "copy blank signal_utc and entry_utc on the unique period_end_open_position row from the same-ticket order_opened row",
+    "candidate_logic_changed": false,
+    "parameter_changed": false,
+    "gate_changed": false
+  },
+  "baseline": {
+    "opened": 494,
+    "closed": 493,
+    "closed_net_jpy": 38358,
+    "complete_marked_net_jpy": 38109,
+    "closed_pf": 1.3549628916732988,
+    "complete_pf": 1.3518479194172337,
+    "tick_equity_dd_jpy": 19603,
+    "minimum_tick_equity_jpy": 95271,
+    "final_equity_jpy": 138109,
+    "B02_closed_net_jpy": 15627,
+    "F05_closed_net_jpy": 22731
+  },
+  "candidate": {
+    "opened": 494,
+    "closed": 493,
+    "closed_net_jpy": 41676,
+    "complete_marked_net_jpy": 41427,
+    "closed_pf": 1.4308220310949389,
+    "complete_pf": 1.4271485281229057,
+    "tick_equity_dd_jpy": 15063,
+    "minimum_tick_equity_jpy": 95271,
+    "final_equity_jpy": 141427,
+    "B02_closed_net_jpy": 15627,
+    "F05_closed_net_jpy": 26049
+  },
+  "comparison": {
+    "changed_F05_positions": 76,
+    "closed_net_delta_jpy": 3318,
+    "complete_marked_net_delta_jpy": 3318,
+    "tick_equity_dd_delta_jpy": -4540,
+    "minimum_tick_equity_delta_jpy": 0,
+    "benefit_jpy": 15906,
+    "harm_jpy": 12588,
+    "q3_delta_jpy": 2708,
+    "q4_delta_jpy": 610,
+    "monthly_effect_jpy": {
+      "2024-07": 73,
+      "2024-08": -3560,
+      "2024-09": 6195,
+      "2024-10": -354,
+      "2024-11": 1695,
+      "2024-12": -731
+    },
+    "positive_effect_months": 3,
+    "negative_effect_months": 3,
+    "ex_best_two_positive_entry_dates_delta_jpy": -1944,
+    "largest_positive_entry_date_share_of_benefit": 0.1970954356846473
+  },
+  "failed_gates": [
+    "negative_effect_months_at_most_1",
+    "ex_best_two_positive_entry_dates_delta_positive"
+  ],
+  "decision": "FAIL",
+  "closure_rule": "The exact MFE20 one-close one-pip-inside F05 structural-exit specification is closed. No H2 repair retuning combination or candidate-specific 2025 H1 execution is authorized.",
+  "selection_boundary": {
+    "2024_h2_accessed": true,
+    "2025_h1_accessed": false,
+    "2025_h1_execution_authorized": false,
+    "2025_h2_accessed": false,
+    "live_order_authorized": false
+  }
+}
