@@ -1,0 +1,90 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v8",
+  "status": "ACTIVE_FAMILY_E_2025_H1_BINDING_EXECUTION_AUTHORIZED_PENDING_RUN",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v7.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "period_roles": {
+    "2024_H1": "DEVELOPMENT_AND_MECHANISM_ANALYSIS",
+    "2024_H2": "DEVELOPMENT_AND_CROSS_REGIME_ANALYSIS",
+    "2025_H1": "FIRST_BINDING_RAKUTEN_MT4_STRESS_GATE_AUTHORIZED",
+    "2025_H2": "FINAL_BINDING_RAKUTEN_MT4_VALIDATION_LOCKED_UNTIL_UNCHANGED_2025_H1_PASS"
+  },
+  "2025_gate_status": {
+    "exact_candidate_available": true,
+    "MT4_parity_passed": true,
+    "standalone_2025_H1_preflight_receipt_available": false,
+    "2025_H1_atomic_precheck_required": true,
+    "2025_H1_execution_authorized": true,
+    "2025_H1_execution_completed": false,
+    "2025_H1_decision": "PENDING",
+    "2025_H2_execution_authorized": false
+  },
+  "access_authorization": {
+    "2024_H1_MT4_parity": true,
+    "2024_H2_MT4_parity": true,
+    "candidate_specific_2025_H1": true,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "active_family": {
+    "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "status": "EXACT_2024_MT4_PARITY_PASS_AND_2025_H1_BINDING_GATE_AUTHORIZED",
+    "research_result_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_research_result_v2.json",
+    "mt4_parity_result_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_result_v1.json",
+    "2025_H1_gate_freeze_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_freeze_v1.json"
+  },
+  "current_candidate": {
+    "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+    "canonical_equivalent_label": "E2_ADAPTIVE_60_90__A15_B5_C20_R0",
+    "target_strategy": "F05",
+    "rule_summary": "30m<=-15 and 60m<=-5; unsupported exposure exits at 60m; same-direction-supported exposure exits at 90m only when 90m<=-15 and 60m-to-90m recovery is <=0; every checkpoint requires the exact UTC M15 bar",
+    "entries_unchanged": true,
+    "B02_unchanged": true,
+    "exact_2024_MT4_parity_passed": true,
+    "2024_net_delta_jpy": 8058,
+    "2024_candidate_pf": 1.429420042591,
+    "2024_changed_positions": 37,
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false,
+    "status": "FROZEN_UNCHANGED_AND_AUTHORIZED_FOR_FIRST_BINDING_2025_H1_GATE"
+  },
+  "2025_H1_execution": {
+    "authorization_source": "explicit user instruction: 25年に進んでください",
+    "freeze_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_freeze_v1.json",
+    "core_pull_request": 138,
+    "core_frozen_head_commit": "929ff0c415a0aafb2cc3db3b4abfec4bbe8e7f0e",
+    "execution": "Rakuten MT4 Strategy Tester on interactive self-hosted runner",
+    "baseline_and_candidate_same_run": true,
+    "spread_points": 5,
+    "fixed_lots_each_strategy": 0.01,
+    "atomic_precheck_before_tester": true,
+    "parameter_search_performed": false
+  },
+  "binding_mt4_2024_evidence": {
+    "core_main_commit": "2434df896f71cb67de279cae9d516569ebd5e187",
+    "run_id": 29924434439,
+    "artifact_id": 8531451951,
+    "artifact_digest": "sha256:cbac9ba7341fb7d9172e112b4050c33caa64fa32f4ad943e9d19f37dd91c2a01",
+    "receipt_issue": 131
+  },
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE"
+  ],
+  "next_required_state": {
+    "stage": "EXECUTE_AND_RECORD_2025_H1_BINDING_RAKUTEN_MT4_GATE",
+    "required_actions": [
+      "merge the exact frozen Core execution package without modifying candidate parameters or gates",
+      "allow the workflow atomic precheck to verify cached HST identities, candidate build hashes and baseline reproduction",
+      "execute baseline and Family E candidate on 2025 H1 in the same Rakuten MT4 run",
+      "apply every minimum gate in usdjpy_period_role_policy_v4",
+      "record Run ID, artifact ID, digest, receipt, metrics and PASS/FAIL atomically in Research",
+      "access 2025 H2 only after an unchanged 2025 H1 PASS is recorded"
+    ]
+  },
+  "failure_action": "Close Family E exact specification and keep candidate-specific 2025 H2 locked.",
+  "pass_action": "Authorize a separate unchanged 2025 H2 final validation freeze and Rakuten MT4 run.",
+  "live_order_authorized": false
+}
