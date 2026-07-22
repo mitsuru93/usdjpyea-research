@@ -1,0 +1,43 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v10",
+  "status": "ACTIVE_FAMILY_E_2025_H1_BINDING_EXECUTION_AUTHORIZED_PENDING_REGISTERED_WORKFLOW_MARKER_RUN",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v9.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "current_candidate": {
+    "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+    "target_strategy": "F05",
+    "exact_2024_MT4_parity_passed": true,
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false,
+    "status": "FROZEN_UNCHANGED_AND_AUTHORIZED_FOR_REGISTERED_WORKFLOW_2025_H1_GATE"
+  },
+  "2025_H1_execution": {
+    "binding_gate_freeze_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_freeze_v1.json",
+    "registered_workflow_amendment_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_registered_workflow_amendment_v1.json",
+    "core_pull_request": 141,
+    "core_frozen_head_commit": "3f62e2fed322300a3fa72aa3666c9cc67781199b",
+    "registered_workflow_path": ".github/workflows/assemble_usdjpy_v1_parity_packet_v1.yml",
+    "marker_branch_exact": "agent/run-family-e-2025h1-binding-gate-v2",
+    "execution_authorized": true,
+    "execution_completed": false,
+    "decision": "PENDING"
+  },
+  "access_authorization": {
+    "candidate_specific_2025_H1": true,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "next_required_state": {
+    "stage": "MERGE_REGISTERED_WORKFLOW_JOB_OPEN_EXACT_MARKER_PR_EXECUTE_AND_RECORD",
+    "required_actions": [
+      "merge Core PR 141 without changing the registered workflow job or binding execution package",
+      "open marker-only PR from the exact branch agent/run-family-e-2025h1-binding-gate-v2",
+      "track the pull-request-triggered Run and the family-e-2025h1-binding-gate job",
+      "inspect artifact, receipt and all policy metrics",
+      "record the binding 2025 H1 PASS or FAIL atomically in Research"
+    ]
+  },
+  "failure_action": "Close the exact Family E specification and keep candidate-specific 2025 H2 locked.",
+  "pass_action": "Freeze and authorize a separate unchanged 2025 H2 final Rakuten MT4 validation gate.",
+  "live_order_authorized": false
+}
