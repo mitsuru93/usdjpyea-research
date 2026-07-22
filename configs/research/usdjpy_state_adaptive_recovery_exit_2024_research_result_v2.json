@@ -1,0 +1,173 @@
+{
+  "baseline": {
+    "H1_net_jpy": 22797,
+    "H1_pf": 1.3774150290548484,
+    "H2_complete_marked_net_jpy": 38109,
+    "H2_complete_pf": 1.3518479194172337,
+    "full_year_net_jpy": 60906
+  },
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "canonical_equivalence": {
+    "canonical_selection_reason": "C=15 is equal to A=15 and was the preregistered canonical representative when C=15 and C=20 produce identical changed keys, checkpoints and candidate P/L",
+    "empirically_identical_on_2024": true,
+    "equivalence_class_id": "EQ035",
+    "members": [
+      "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+      "E2_ADAPTIVE_60_90__A15_B5_C20_R0"
+    ]
+  },
+  "decision": "FREEZE_EXACT_SPECIFICATION_FOR_2024_RESEARCH_TO_MT4_PARITY",
+  "evaluation": {
+    "candidate_labels": 63,
+    "dynamic_state_changes_without_selected_outcome_change": {
+      "H1": 3,
+      "H2": 7,
+      "candidate_pl_changed": false,
+      "selected_trade_keys_changed": false
+    },
+    "eligible_candidate_labels": 6,
+    "eligible_equivalence_classes": 4,
+    "every_frozen_2024_gate_passed": true,
+    "parameter_equivalence_classes": 43,
+    "selected_class_rank": 1
+  },
+  "evidence": {
+    "H1_entry_state_atlas": {
+      "artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981",
+      "artifact_id": 8516049893,
+      "csv_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd",
+      "run_id": 29884556860
+    },
+    "H2_Rakuten_MT4_source": {
+      "artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981",
+      "artifact_id": 8519879009,
+      "baseline_audit_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+      "run_id": 29895387329
+    },
+    "core_evaluator_git_blob_sha1": "221aa85914d3ab62fdbc13fc49219a8654ca6f86",
+    "core_evaluator_merge_commit": "af1eed32cb015347fc6c1770f705808aae43e02c",
+    "core_evaluator_path": "tools/evaluate_usdjpy_state_adaptive_recovery_exit_2024_v2.py",
+    "core_evaluator_sha256": "2231a5fa5c8bed33a6486caaf3781a054a98f9f8fee8dc2c9b587914127abd84",
+    "derived_population": {
+      "rows": 922,
+      "sha256": "792bd3efe830e4f22ce807c8dd7c640bb66f985d65b5ea3988d7c9abb83da380"
+    },
+    "output_sha256": {
+      "all_candidates_json": "a3d94fc47b8fc957abf1d13fdc30b1bdd1231a21c30388eb0a756e4b238aeeb8",
+      "candidate_metrics_csv": "b1da5cfcc3aaebb73f038209d6649d4ad055f25b989ee48c1b5dd0745307b951",
+      "equivalence_json": "ca0651a9f6df38554ac164b170494d3b465df1811bf95ca3033c77513bd896a3",
+      "finalist_changed_positions_csv": "396b9c412f18c2ddad8517c535977297a37edc10707f8354920ea71ceb443e5d",
+      "local_result_json": "f77b397dcc2bb706620637cfb05d28f92e668aa795966fe2e36261635448f203"
+    },
+    "preregistration_git_blob_sha1": "6b4403c00755e66516c26ba9171b482617c7ef4f",
+    "preregistration_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_prereg_v2.json",
+    "preregistration_sha256": "fcadc31d840bdef498aee37b4905b6357784d8dbba511971eff0e8a9fdac144f",
+    "prior_candidate_union": {
+      "rows": 191,
+      "sha256": "84b9351e512246c37d7b0fdef2018fefacc2ec69c05edaf6d51aab93bc103083"
+    },
+    "research_input_commit": "07259d0d67e7be521341f343fc0e70aebceec65a",
+    "source_manifest_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_source_manifest_v2.json"
+  },
+  "exact_rule": {
+    "B02": "entries and exits unchanged",
+    "dynamic_state_contract": "later entry states use candidate-adjusted close times; same-timestamp unchanged entries remain simultaneous peers",
+    "dynamic_supported_states": [
+      "same_direction_stack",
+      "simultaneous_same_direction"
+    ],
+    "dynamic_unsupported_states": [
+      "standalone",
+      "opposite_overlap",
+      "mixed_overlap"
+    ],
+    "entry_trade_set": "unchanged",
+    "initial_condition": "at 30 minutes executable marked P/L <= -15 pips and at 60 minutes <= -5 pips",
+    "normal_exit_when_not_triggered": "retain baseline F05 fixed-time exit at 32 M15 bars",
+    "processing_order": [
+      "normal fixed-time exits",
+      "Family E exits",
+      "new B02 and F05 entries"
+    ],
+    "supported_action": "defer at 60 minutes; at 90 minutes close only when executable marked P/L <= -15 pips and pips_90m - pips_60m <= 0 pips",
+    "target_strategy": "F05",
+    "unsupported_action": "close at the exact 60-minute M15 bar-open executable price"
+  },
+  "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+  "research_boundary": {
+    "2025_H1_accessed": false,
+    "2025_H1_execution_authorized": false,
+    "2025_H2_accessed": false,
+    "2025_H2_execution_authorized": false,
+    "direct_MT4_executed": false,
+    "independent_validation_claimed": false,
+    "live_order_authorized": false,
+    "next_stage": "EXACT_2024_RESEARCH_TO_MT4_PARITY_AND_REUSABLE_WORKFLOW_PREFLIGHT"
+  },
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2024_research_result_v2",
+  "selected_metrics": {
+    "H1": {
+      "candidate_net_jpy": 25085.0,
+      "candidate_pf": 1.431644153833,
+      "changed_positions": 11,
+      "ex_best_two_entry_dates_delta_jpy": 755.0,
+      "leave_one_month_out_min_delta_jpy": 999.0,
+      "net_delta_jpy": 2288.0
+    },
+    "H2": {
+      "candidate_net_jpy": 43879.0,
+      "candidate_pf": 1.428158816584,
+      "changed_positions": 26,
+      "ex_best_two_entry_dates_delta_jpy": 3643.0,
+      "leave_one_month_out_min_delta_jpy": 3527.0,
+      "net_delta_jpy": 5770.0
+    },
+    "full_2024": {
+      "affected_P2_or_P3_share": 0.837837837838,
+      "affected_final_loser_share": 0.972972972973,
+      "benefit_jpy": 10045.0,
+      "candidate_net_jpy": 68964.0,
+      "candidate_pf": 1.429420042591,
+      "changed_entry_dates": 36,
+      "changed_positions": 37,
+      "ex_best_two_entry_dates_delta_jpy": 5862.0,
+      "harm_jpy": 1987.0,
+      "largest_positive_date_share_of_benefit": 0.1168740667,
+      "leave_one_month_out_min_delta_jpy": 5815.0,
+      "minimum_quarter_effect_jpy": 537.0,
+      "monthly_effect_jpy": {
+        "2024-01": 1289.0,
+        "2024-03": 462.0,
+        "2024-04": 501.0,
+        "2024-05": 11.0,
+        "2024-06": 25.0,
+        "2024-07": 1249.0,
+        "2024-08": 1168.0,
+        "2024-09": 2243.0,
+        "2024-10": -65.0,
+        "2024-11": 613.0,
+        "2024-12": 562.0
+      },
+      "negative_effect_months": 1,
+      "net_delta_jpy": 8058.0,
+      "path_effect_jpy": {
+        "P1_GIVEBACK_TO_LOSS": 952.0,
+        "P2_MINOR_FAVORABLE_THEN_LOSS": -49.0,
+        "P3_NEVER_PROFITABLE": 7428.0,
+        "WINNER": -273.0
+      },
+      "positive_effect_months": 10,
+      "prior_candidate_overlap_share": 0.351351351351,
+      "quarter_effect_jpy": {
+        "2024Q1": 1751.0,
+        "2024Q2": 537.0,
+        "2024Q3": 4660.0,
+        "2024Q4": 1110.0
+      },
+      "top_two_positive_dates_share_of_benefit": 0.218616226979,
+      "trigger_months": 11,
+      "winner_harm_jpy": 273.0
+    }
+  },
+  "status": "PASS_2024_DEVELOPMENT_FINALIST_PENDING_MT4_PARITY"
+}
