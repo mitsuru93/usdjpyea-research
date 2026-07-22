@@ -1,0 +1,52 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v13",
+  "status": "ACTIVE_FAMILY_E_2025_H1_BINDING_EXECUTION_AUTHORIZED_PENDING_EX4_REPRO_REPAIRED_RERUN",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v12.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "current_candidate": {
+    "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+    "target_strategy": "F05",
+    "exact_2024_MT4_parity_passed": true,
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false,
+    "status": "FROZEN_UNCHANGED_AND_AUTHORIZED_FOR_EX4_REPRO_REPAIRED_2025_H1_GATE"
+  },
+  "latest_2025_H1_attempt": {
+    "run_id": 29933179966,
+    "status": "INCOMPLETE",
+    "terminal_stage": "BUILD_AND_COMPILE",
+    "artifact_id": 8534982452,
+    "receipt_issue": 148,
+    "strategy_tester_runs_started": 0,
+    "result_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_run_29933179966_incomplete_and_ex4_repro_repair_v1.json"
+  },
+  "technical_gate_amendment": {
+    "core_pull_request": 149,
+    "core_frozen_head_commit": "3fe981e36539a57ae530f15ffc7170852d499520",
+    "orchestrator_wrapper_git_blob_sha1": "cf53bbc298123e637c5865f58adcb7e7c328635e",
+    "exact_MQ4_source_hashes_retained": true,
+    "zero_error_zero_warning_compile_required": true,
+    "EX4_exists_and_minimum_size_required": true,
+    "actual_EX4_hash_recorded": true,
+    "byte_exact_EX4_recompile_hash_required": false,
+    "scientific_contract_changed": false
+  },
+  "access_authorization": {
+    "candidate_specific_2025_H1": true,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "next_required_state": {
+    "stage": "MERGE_EX4_REPRO_GATE_REPAIR_RERUN_SAME_2025_H1_BINDING_GATE",
+    "required_actions": [
+      "merge Core PR 149 unchanged",
+      "open a new marker-only PR using the existing v3 marker path",
+      "confirm exact MQ4 identity and successful EX4 generation",
+      "run the same baseline and candidate Strategy Tester gate",
+      "record PASS or FAIL atomically in Research"
+    ]
+  },
+  "failure_action": "Close the exact Family E specification and keep candidate-specific 2025 H2 locked.",
+  "pass_action": "Freeze and authorize a separate unchanged 2025 H2 final Rakuten MT4 validation gate.",
+  "live_order_authorized": false
+}
