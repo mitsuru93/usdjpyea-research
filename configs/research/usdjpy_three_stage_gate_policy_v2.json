@@ -1,0 +1,101 @@
+{
+  "schema_version": "usdjpy_three_stage_gate_policy_v2",
+  "status": "ACTIVE_FOR_NEW_SUCCESSOR_CANDIDATES",
+  "created_after_closed_candidates": [
+    "SC70_C240_exact",
+    "F05_SW70_R10_E90_A240_v1",
+    "B02F05_DSHOCK60_R20_E90_EXIT_v1",
+    "F05_EXTATR25_LOC80_F30_v1"
+  ],
+  "stages": [
+    {
+      "ordinal": 1,
+      "name": "2024_H1_DEVELOPMENT",
+      "purpose": "candidate construction, finite screening and exact MT4 parity"
+    },
+    {
+      "ordinal": 2,
+      "name": "2024_H2_BINDING_VALIDATION",
+      "unlock_condition": "2024_H1_FREEZE_ELIGIBLE_AND_EXACT_MT4_PARITY_PASS",
+      "failure_action": "CLOSE_EXACT_SPECIFICATION"
+    },
+    {
+      "ordinal": 3,
+      "name": "2025_H1_BINDING_STRESS",
+      "unlock_condition": "UNCHANGED_2024_H2_PASS",
+      "failure_action": "CLOSED_FAIL_2025H1"
+    }
+  ],
+  "data_boundary": {
+    "2025_h1_pristine_blind_holdout_claim": false,
+    "reason": "2025 H1 has already been inspected for loss-mechanism diagnosis and closed S1-S3 diagnostics",
+    "candidate_specific_tuning_from_2025_h1": false,
+    "candidate_specific_rule_and_gate_freeze_before_2025_h1": true
+  },
+  "h1_screening_gates": {
+    "entry_min_affected_trades": 12,
+    "exit_min_changed_positions": 10,
+    "min_entry_dates": 8,
+    "min_effect_months": 4,
+    "net_delta_positive": true,
+    "pf_not_below_baseline": true,
+    "tick_dd_not_above_baseline": true,
+    "q1_delta_nonnegative": true,
+    "q2_delta_nonnegative": true,
+    "positive_effect_months_min": 3,
+    "negative_effect_months_max": 1,
+    "ex_best_two_effect_dates_delta_positive": true,
+    "leave_one_month_out_min_delta_positive": true,
+    "largest_positive_effect_date_share_max": 0.5,
+    "top_two_positive_effect_date_share_max": 0.6,
+    "exact_mt4_affected_trade_parity": true
+  },
+  "h2_binding_gates": {
+    "exact_h1_parity_before_h2_access": true,
+    "candidate_net_positive": true,
+    "candidate_beats_same_run_baseline": true,
+    "pf_at_least_baseline": true,
+    "tick_dd_not_worse": true,
+    "q3_candidate_positive": true,
+    "q4_candidate_positive": true,
+    "q3_delta_nonnegative": true,
+    "q4_delta_nonnegative": true,
+    "positive_effect_months_min": 3,
+    "negative_effect_months_max": 1,
+    "ex_best_two_effect_dates_delta_positive": true,
+    "largest_positive_effect_date_share_max": 0.5,
+    "benefit_exceeds_harm": true,
+    "target_strategy_delta_positive": true,
+    "non_target_strategy_delta_nonnegative_or_unchanged": true
+  },
+  "2025_h1_binding_gates": {
+    "frozen_identity_equal_to_h2": true,
+    "accepted_baseline_reproduced": true,
+    "unexpected_extra_trades": 0,
+    "trade_execution_failures": 0,
+    "candidate_net_positive": true,
+    "candidate_beats_same_run_baseline": true,
+    "pf_min": 1.0,
+    "pf_at_least_baseline": true,
+    "tick_dd_strictly_below_baseline": true,
+    "minimum_tick_equity_strictly_above_baseline": true,
+    "jan_mar_candidate_net_nonnegative": true,
+    "apr_jun_candidate_net_nonnegative": true,
+    "jan_mar_delta_positive": true,
+    "apr_jun_delta_positive": true,
+    "positive_effect_months_min": 4,
+    "negative_effect_months_max": 1,
+    "ex_best_two_effect_dates_delta_positive": true,
+    "largest_positive_effect_date_share_max": 0.5,
+    "benefit_exceeds_harm": true,
+    "target_strategy_delta_positive": true,
+    "non_target_strategy_delta_nonnegative_or_unchanged": true
+  },
+  "prohibitions": {
+    "h2_repair_or_retune": true,
+    "2025_h1_repair_or_retune": true,
+    "combine_before_independent_h2_and_2025_h1_pass": true,
+    "reopen_closed_exact_specification": true,
+    "live_order_authorization": false
+  }
+}
