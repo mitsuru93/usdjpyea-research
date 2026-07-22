@@ -1,0 +1,241 @@
+{
+  "schema_version": "usdjpy_early_failure_persistence_2024h1_prereg_v2",
+  "status": "FROZEN_TECHNICAL_EVIDENCE_REVISION_BEFORE_FORMAL_GRID_RANKING",
+  "supersedes": {
+    "path": "configs/research/usdjpy_early_failure_persistence_2024h1_prereg_v1.json",
+    "commit": "017240420b075b71cbca07e8bb4df2fedb195bac",
+    "git_blob_sha1": "1426f2048e800844271c16a9f3230d1a1c580ca9",
+    "scope": "adds exact prior-candidate union evidence identities only"
+  },
+  "technical_revision": {
+    "candidate_mechanisms_changed": false,
+    "grid_changed": false,
+    "candidate_count_changed": false,
+    "eligibility_changed": false,
+    "binding_gates_changed": false,
+    "ranking_changed": false,
+    "fragility_rules_changed": false,
+    "period_role_changed": false,
+    "2024_H2_new_evidence_accessed": false,
+    "2025_H1_candidate_specific_evidence_accessed": false
+  },
+  "operating_contract": {
+    "path": "configs/research/usdjpy_validation_operating_contract_v3.json",
+    "commit": "8e6d86422fa64fce36ddb1a171846866cd706f2a"
+  },
+  "diagnostic_report": {
+    "path": "docs/research/usdjpy_2024h1_residual_mechanism_diagnostic_v1.md",
+    "exploratory_h1_snapshot_counterfactuals_inspected": true,
+    "formal_grid_metrics_and_ranking_inspected_before_freeze": false,
+    "2024_H2_new_evidence_accessed": false,
+    "2025_H1_candidate_specific_evidence_accessed": false
+  },
+  "source": {
+    "accepted_2024h1_run_id": 29787357305,
+    "accepted_2024h1_artifact_id": 8479048161,
+    "accepted_2024h1_artifact_digest": "sha256:e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+    "entry_state_atlas_run_id": 29884556860,
+    "entry_state_atlas_artifact_id": 8516049893,
+    "entry_state_atlas_artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981",
+    "combined_atlas_csv_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd"
+  },
+  "prior_candidate_union": {
+    "path": "configs/research/usdjpy_early_failure_persistence_2024h1_prior_union_v1.csv",
+    "git_blob_sha1": "dd0c2d22361e69aff6052a8d8f7af89c615c8942",
+    "sha256": "0877086e34723cdbebf8ac8544a22f9a0c4d8afa33290649d3c404e57fa83580",
+    "row_count": 55,
+    "candidate_labels": [
+      "S1",
+      "S2",
+      "S3",
+      "F05_MFE20_BOR1_EXIT_v1"
+    ],
+    "source_artifacts": [
+      {
+        "candidate_label": "S1",
+        "repository": "mitsuru93/usdjpyea-core",
+        "run_id": 29832346854,
+        "artifact_id": 8496097327,
+        "artifact_digest": "sha256:d9a8824585cde78ab5a7f0fd0a0177d556e1831aeac5136f361f53b9200b3354",
+        "internal_path": "h1_parity/removed_trade_keys.csv",
+        "rows": 11
+      },
+      {
+        "candidate_label": "S2",
+        "repository": "mitsuru93/usdjpyea-core",
+        "run_id": 29839862828,
+        "artifact_id": 8499182318,
+        "artifact_digest": "sha256:a3c05e82622f91788a72c04a0d044681641ce19fbbe9b3a0c250ce86b4d5e85f",
+        "internal_path": "h1_regression/changed_trades.csv",
+        "rows": 12
+      },
+      {
+        "candidate_label": "S3",
+        "repository": "mitsuru93/usdjpyea-core",
+        "run_id": 29873856877,
+        "artifact_id": 8512432416,
+        "artifact_digest": "sha256:9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b",
+        "internal_path": "h1_parity/removed_trade_keys.csv",
+        "rows": 20
+      },
+      {
+        "candidate_label": "F05_MFE20_BOR1_EXIT_v1",
+        "repository": "mitsuru93/usdjpyea-core",
+        "run_id": 29886163522,
+        "artifact_id": 8516578659,
+        "artifact_digest": "sha256:ba436166bdbb367e02bf376879f2ae6dc2780c4f3fd55b45076d616cf38eb3be",
+        "internal_path": "output/usdjpy_family_c_structural_exit_finalist_changed_trades_v1.csv",
+        "rows": 24
+      }
+    ],
+    "purpose": "overlap accounting only",
+    "new_family_must_be_independent_of_h2_results": true
+  },
+  "shared_contract": {
+    "family_id": "D_EARLY_FAILURE_PERSISTENCE",
+    "period": "2024_H1",
+    "target_strategy": "F05",
+    "non_target_strategy": "B02",
+    "candidate_type": "existing_position_time_conditioned_early_failure_exit",
+    "entry_trade_set": "unchanged",
+    "lot_mode": "fixed_0p01_each",
+    "test_spread_points": 5,
+    "pip_size": 0.01,
+    "marked_pl_definition": "executable marked P/L at the exact M15 bar-open checkpoint; long uses Bid and short uses Ask under fixed five-point spread",
+    "B02_entry_or_exit_change_authorized": false,
+    "F05_new_entry_block_authorized": false,
+    "new_or_extra_entry_authorized": false,
+    "intrabar_fixed_stop_authorized": false,
+    "2024_H2_access_authorized": false,
+    "2025_H1_access_authorized": false,
+    "2025_H2_access_authorized": false
+  },
+  "processing_order": [
+    "at each M15 bar open apply the normal fixed-time-cap exit first",
+    "for each still-open F05 position calculate exact age from entry_utc",
+    "evaluate the frozen early-failure rule only at its specified checkpoint",
+    "if triggered close at the current executable Bid for long or Ask for short",
+    "evaluate new B02 and F05 entries only after all exits"
+  ],
+  "mechanisms": [
+    {
+      "mechanism_id": "D1_SINGLE_30M_DEEP_ADVERSE",
+      "economic_hypothesis": "a deep executable loss already present at the exact 30-minute checkpoint identifies early entry failure before the normal F05 time exit",
+      "rule": "at the exact 30-minute checkpoint close an open F05 position when marked executable P/L is at or below minus L pips",
+      "grid": {
+        "L_adverse_pips": [
+          15,
+          20,
+          25
+        ]
+      },
+      "candidate_count": 3
+    },
+    {
+      "mechanism_id": "D2_PERSISTENT_30M_60M_ADVERSE",
+      "economic_hypothesis": "adverse state that is present after 30 minutes and remains adverse after 60 minutes distinguishes persistent failed acceptance from transient early noise",
+      "rule": "record marked executable P/L at the exact 30-minute checkpoint; at the exact 60-minute checkpoint close the still-open F05 position when the 30-minute value is at or below minus A pips and the current 60-minute value is at or below minus B pips",
+      "grid": {
+        "A_30m_adverse_pips": [
+          10,
+          15,
+          20
+        ],
+        "B_60m_adverse_pips": [
+          5,
+          10,
+          15
+        ]
+      },
+      "candidate_count": 9
+    }
+  ],
+  "total_candidate_count": 12,
+  "formal_research_evaluation": {
+    "candidate_effect": "candidate checkpoint marked P/L in JPY minus baseline final P/L in JPY for every changed position",
+    "parameter_equivalence_definition": "same changed trade keys, same checkpoint close time and same candidate P/L for every changed position",
+    "equivalent_cells_must_be_collapsed_before_finalist_selection": true,
+    "eligibility": {
+      "changed_positions_min": 10,
+      "changed_entry_dates_min": 8,
+      "trigger_months_min": 4
+    },
+    "binding_h1_gates": {
+      "net_delta_positive": true,
+      "candidate_net_positive": true,
+      "pf_not_below_baseline": true,
+      "q1_delta_nonnegative": true,
+      "q2_delta_nonnegative": true,
+      "target_F05_delta_positive": true,
+      "B02_exactly_unchanged": true,
+      "positive_effect_months_min": 3,
+      "negative_effect_months_max": 1,
+      "ex_best_two_entry_dates_delta_positive": true,
+      "leave_one_month_out_min_delta_positive": true,
+      "largest_positive_entry_date_share_of_benefit_max": 0.5,
+      "top_two_positive_entry_date_share_of_benefit_max": 0.6,
+      "benefit_exceeds_harm": true,
+      "affected_final_loser_share_min": 0.75,
+      "affected_P2_or_P3_share_min": 0.6,
+      "prior_candidate_union_overlap_share_max": 0.5
+    },
+    "required_outputs": [
+      "all 12 candidate metrics",
+      "parameter equivalence classes",
+      "changed position keys and checkpoint close values",
+      "path-class attribution",
+      "exposure-state attribution",
+      "month and quarter effects",
+      "benefit and harm decomposition",
+      "prior-candidate overlap",
+      "gate margins",
+      "fragility classification"
+    ],
+    "fragility_labels": [
+      "ROBUST_H1_PASS",
+      "FRAGILE_H1_PASS_REQUIRES_PERIOD_ROLE_REVIEW",
+      "H1_FAIL"
+    ],
+    "automatic_fragility_conditions": [
+      "changed_positions_below_20",
+      "ex_best_two_delta_below_25pct_of_total_delta",
+      "leave_one_month_out_min_below_25pct_of_total_delta",
+      "selected_equivalence_class_contains_multiple_threshold_labels",
+      "ranking_winner_changes_across_primary_robustness_metrics"
+    ],
+    "finalist_limit_per_mechanism": 1,
+    "family_finalist_limit": 1,
+    "ranking_order": [
+      "ex_best_two_entry_dates_delta_jpy descending",
+      "leave_one_month_out_min_delta_jpy descending",
+      "net_delta_jpy descending",
+      "winner_harm_jpy ascending",
+      "changed_positions ascending",
+      "candidate_id ascending"
+    ]
+  },
+  "period_role_review_after_formal_h1": {
+    "default_before_review": "retain_2024_H2_as_binding_validation",
+    "reclassification_option": "use_2024_H1_and_H2_as_development_then_2025_H1_stress_and_2025_H2_final_validation",
+    "review_triggers": [
+      "no formal H1 cell passes",
+      "eligible finalist has fewer than 20 changed positions",
+      "adjacent parameter cells remain outcome-equivalent or ranking-unstable",
+      "ex-best-two or leave-one-month-out residual is below 25 percent of total H1 improvement",
+      "selected rule changes materially by ranking metric"
+    ],
+    "decision_must_precede_any_new_2024_H2_access": true
+  },
+  "prohibited_interpretations": [
+    "ordinary intrabar fixed stop-loss",
+    "repair of S2 degraded-shock exit",
+    "repair of Family C MFE20 breakout-origin exit",
+    "entry suppression or stack prohibition",
+    "B02 modification",
+    "threshold selection from 2024 H2 or candidate-specific 2025 evidence",
+    "combination with any closed candidate"
+  ],
+  "direct_mt4_executed": false,
+  "candidate_frozen_for_H2": false,
+  "live_order_authorized": false
+}
