@@ -1,0 +1,137 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v3",
+  "status": "ACTIVE_NO_CURRENT_CANDIDATE",
+  "operating_contract": "configs/research/usdjpy_validation_operating_contract_v3.json",
+  "period_roles": {
+    "2024_H1": "mechanism_diagnosis_candidate_development_and_exact_mt4_parity",
+    "2024_H2": "binding_validation",
+    "2025_H1": "rakuten_mt4_binding_stress_after_h2_pass",
+    "2025_H2": "closed"
+  },
+  "accepted_baselines": {
+    "2024_H1": {
+      "run_id": 29787357305,
+      "artifact_id": 8479048161,
+      "artifact_digest": "sha256:e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+      "opened": 429,
+      "closed": 428,
+      "net_jpy": 22797,
+      "B02_closed": 97,
+      "B02_net_jpy": 9554,
+      "F05_closed": 331,
+      "F05_net_jpy": 13243
+    }
+  },
+  "closed_exact_specifications": [
+    {
+      "candidate_id": "SC70_C240_exact",
+      "status": "CLOSED_FAIL",
+      "successor_rule": "new_candidate_id_and_return_to_2024_H1"
+    },
+    {
+      "candidate_id": "F05_SW70_R10_E90_A240_v1",
+      "alias": "S1",
+      "status": "CLOSED_FAIL_H2",
+      "h2_run_id": 29832346854,
+      "2025_h1_candidate_specific_execution": false
+    },
+    {
+      "candidate_id": "B02F05_DSHOCK60_R20_E90_EXIT_v1",
+      "alias": "S2",
+      "status": "CLOSED_FAIL_H2",
+      "h1_run_id": 29836855789,
+      "h2_run_id": 29839862828,
+      "2025_h1_candidate_specific_execution": false
+    },
+    {
+      "candidate_id": "F05_EXTATR25_LOC80_F30_v1",
+      "alias": "S3",
+      "status": "CLOSED_FAIL_H2",
+      "h1_run_id": 29838578431,
+      "h2_run_id": 29873856877,
+      "2025_h1_candidate_specific_execution": false
+    },
+    {
+      "candidate_id": "F05_MFE20_BOR1_EXIT_v1",
+      "parent_family": "C_STRUCTURAL_EXIT",
+      "status": "CLOSED_FAIL_H2",
+      "h1_research_run_id": 29886163522,
+      "h1_mt4_run_id": 29893008498,
+      "h1_parity_decision_run_id": 29893833236,
+      "h2_mt4_run_id": 29895387329,
+      "h2_decision_run_id": 29896667418,
+      "h2_result_path": "configs/research/usdjpy_f05_mfe20_bor1_exit_h2_result_v1.json",
+      "failed_h2_gates": [
+        "negative_effect_months_at_most_1",
+        "ex_best_two_positive_entry_dates_delta_positive"
+      ],
+      "2025_h1_accessed": false,
+      "2025_h1_execution_authorized": false,
+      "successor_rule": "do_not_retune_MFE20_BOR1_from_H2; new_candidate_id_and_return_to_2024_H1"
+    }
+  ],
+  "completed_successor_family_work": [
+    {
+      "family_id": "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+      "status": "CLOSED_H1_NO_ELIGIBLE_SPECIFICATION",
+      "run_id": 29885440528,
+      "artifact_id": 8516341842,
+      "evaluated_specifications": 52,
+      "research_eligible_specifications": 0,
+      "2024_H2_accessed": false,
+      "2025_H1_accessed": false
+    },
+    {
+      "family_id": "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+      "status": "CLOSED_H1_NO_ELIGIBLE_SPECIFICATION",
+      "run_id": 29885440528,
+      "artifact_id": 8516341842,
+      "evaluated_specifications": 22,
+      "research_eligible_specifications": 0,
+      "2024_H2_accessed": false,
+      "2025_H1_accessed": false
+    },
+    {
+      "family_id": "C_STRUCTURAL_EXIT",
+      "status": "CLOSED_AFTER_FINALIST_H2_FAIL",
+      "preregistration_commit": "c9ef978a22dc01a6957b1441f5e08f73c62c9f2b",
+      "h1_run_id": 29886163522,
+      "h1_artifact_id": 8516578659,
+      "evaluated_specifications": 48,
+      "research_eligible_specifications": 3,
+      "selected_finalist": "F05_MFE20_BOR1_EXIT_v1",
+      "h2_decision_run_id": 29896667418,
+      "2025_H1_accessed": false
+    }
+  ],
+  "diagnostic_only_2025_h1_evidence": [
+    {
+      "purpose": "closed_S1_S3_2025_H1_comparison",
+      "run_id": 29880733653,
+      "artifact_id": 8514811165,
+      "candidate_selection_authorized": false,
+      "parameter_change_authorized": false,
+      "note": "2025 H1 is not pristine blind, but candidate-specific execution remains binding and locked until unchanged H2 PASS"
+    }
+  ],
+  "current_candidate": null,
+  "next_required_state": {
+    "stage": "S1_H1_BASELINE_AND_MECHANISM_DIAGNOSIS",
+    "required_before_new_grid": [
+      "mechanism-specific H1 diagnostic report",
+      "loss-path and winner-sacrifice attribution",
+      "prior-candidate overlap matrix",
+      "parameter-identifiability plan",
+      "2025 H1 readiness thesis without candidate-specific 2025 execution"
+    ],
+    "H2_execution_authorized": false,
+    "2025_H1_execution_authorized": false
+  },
+  "combination_policy": {
+    "authorized_now": false,
+    "require_each_component_h2_pass": true,
+    "require_each_component_2025_h1_pass": true,
+    "combined_candidate_requires_new_id_and_preregistration": true
+  },
+  "live_order_authorized": false
+}
