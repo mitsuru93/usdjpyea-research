@@ -1,0 +1,48 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v15",
+  "status": "FAMILY_F_EVENT_CONFIRMATION_2024_H1_SEARCH_PREREGISTERED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v14.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "period_roles": {
+    "2024_H1": "FAMILY_F_DEVELOPMENT_AND_FINITE_SEARCH",
+    "2024_H2": "FAMILY_F_CROSS_REGIME_VALIDATION_ONLY_FOR_ONE_H1_FINALIST",
+    "2025_H1": "FAMILY_E_BINDING_RESULT_CONSUMED; NO_FAMILY_F_ACCESS_AUTHORIZED",
+    "2025_H2": "LOCKED"
+  },
+  "active_family": "F_EVENT_CONFIRMATION_ADMISSION",
+  "current_candidate": null,
+  "active_preregistration": "configs/research/usdjpy_family_f_event_confirmation_2024_prereg_v1.json",
+  "architecture_diagnostic": "docs/research/usdjpy_post_family_e_2024_architecture_diagnostic_v1.md",
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT"
+  ],
+  "Family_F_scope": {
+    "target_strategy": "F05",
+    "B02_unchanged": true,
+    "exit_logic_unchanged": true,
+    "candidate_count": 54,
+    "H1_finalist_limit": 1,
+    "event_memory_includes_blocked_probe_signals": true,
+    "first_signal_is_probe_not_trade": true
+  },
+  "access_authorization": {
+    "2024_H1_Family_F_candidate_evaluation": true,
+    "2024_H2_Family_F_access": false,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "H2_unlock_condition": "one exact Family F specification passes every preregistered 2024 H1 gate and is frozen unchanged",
+  "2023_fallback": {
+    "status": "CONDITIONAL_NOT_YET_ACTIVATED",
+    "activation_condition": "Family F has no exact H1/H2 passer",
+    "preferred_data": "compressed M1 OHLC bars; derive M15 deterministically",
+    "tick_required_for_initial_research": false
+  },
+  "next_action": "implement an outcome evaluator for the 54 frozen Family F specifications and evaluate 2024 H1 only",
+  "live_order_authorized": false
+}

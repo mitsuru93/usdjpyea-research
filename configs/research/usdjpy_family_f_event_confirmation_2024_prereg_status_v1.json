@@ -1,0 +1,7 @@
+{
+  "schema_version": "usdjpy_family_f_event_confirmation_2024_prereg_status_v1",
+  "status": "READY_FOR_PR_AND_MERGE",
+  "branch_head": "36801ef32372db5223ae22930acc6c7f4d84bfcc",
+  "candidate_count": 54,
+  "outcome_evaluation_started": false
+}

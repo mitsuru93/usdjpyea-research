@@ -1,0 +1,8 @@
+{
+  "schema_version": "usdjpy_family_f_event_confirmation_2024_final_lock_v1",
+  "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+  "branch_head_before_pr": "0637791d594d91332c0830e8e2d28ed53e83f5d5",
+  "candidate_count": 54,
+  "evaluation_started": false,
+  "locked": true
+}

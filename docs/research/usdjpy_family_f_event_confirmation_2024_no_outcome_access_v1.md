@@ -1,0 +1,1 @@
+No Family F candidate outcome evaluation occurred before the finite 54-specification grid and source identities were frozen.

@@ -1,0 +1,1 @@
+Candidate outcome evaluation begins only after this preregistration branch is merged to main.

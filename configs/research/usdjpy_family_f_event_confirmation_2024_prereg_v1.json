@@ -1,0 +1,119 @@
+{
+  "schema_version": "usdjpy_family_f_event_confirmation_2024_prereg_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOME_EVALUATION",
+  "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+  "research_main_before_preregistration": "9222f56fb3adbab8bb38b1aa6697e6aa87d053ea",
+  "diagnostic_report": "docs/research/usdjpy_post_family_e_2024_architecture_diagnostic_v1.md",
+  "sources": {
+    "H1_atlas_artifact_id": 8516049893,
+    "H1_atlas_artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981",
+    "H1_atlas_csv_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd",
+    "H1_baseline_audit_sha256": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "H2_source_artifact_id": 8519879009,
+    "H2_source_artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981",
+    "H2_baseline_audit_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd"
+  },
+  "scope": {
+    "symbol": "USDJPY",
+    "development_period": "2024_H1",
+    "cross_regime_period": "2024_H2",
+    "target_strategy": "F05",
+    "non_target_strategy": "B02",
+    "candidate_type": "entry_admission_with_signal_event_memory",
+    "fixed_lots_each_strategy": 0.01,
+    "common_exit_changes_authorized": false,
+    "extra_trade_authorized": false,
+    "B02_changes_authorized": false,
+    "2025_H1_access_authorized": false,
+    "2025_H2_access_authorized": false
+  },
+  "event_state": {
+    "state_basis": "all chronological F05 signals, including blocked probe signals",
+    "active_event": "one F05 event with direction, anchor signal UTC, anchor signal close and accepted-trade count",
+    "new_event": "when no event exists, the event expired, or an opposite-direction F05 signal occurs",
+    "new_event_action": "record the current F05 signal as the probe anchor and block that F05 trade",
+    "same_direction_signal_action": "evaluate confirmation and event trade budget",
+    "opposite_signal_action": "terminate the old event, create a new opposite-direction probe and block the current F05 trade",
+    "expiry_basis": "minutes from anchor signal UTC",
+    "event_memory_dependency": "does not require an accepted/open position and survives blocking of the probe trade",
+    "processing_order_same_timestamp": [
+      "process and always accept B02 using unchanged baseline logic",
+      "process F05 event state",
+      "apply optional same-time B02 confirmation override",
+      "record accepted or blocked F05 signal in audit"
+    ]
+  },
+  "candidate_rule": {
+    "default": "the first F05 signal of each event is a non-trading probe",
+    "confirmation": "a later same-direction F05 signal is eligible when side * (current_signal_close - anchor_signal_close) in pips is at least C and event age is at most A",
+    "trade_budget": "accepted F05 count within the event must be below N",
+    "same_time_B02_override": "when enabled, a same-time same-direction B02 signal may confirm the current F05 without a prior F05 probe; the F05 is accepted and initializes the event anchor at its signal close",
+    "accepted_trade_exit": "unchanged accepted baseline F05 fixed time-cap exit",
+    "blocked_trade_effect": "the baseline F05 trade and its P/L are removed; no later event state is removed because all F05 signals remain observational events"
+  },
+  "finite_grid": {
+    "confirmation_distance_C_pips": [5, 10, 15],
+    "maximum_event_age_A_minutes": [120, 240, 480],
+    "maximum_accepted_F05_per_event_N": [1, 2, 3],
+    "same_time_B02_confirmation_override": [false, true],
+    "candidate_count": 54
+  },
+  "H1_freeze_eligibility": {
+    "removed_F05_trades_min": 20,
+    "retained_F05_trades_min": 60,
+    "affected_entry_dates_min": 12,
+    "effect_months_min": 4
+  },
+  "H1_binding_research_gates": {
+    "candidate_total_net_positive": true,
+    "candidate_pf_not_below_baseline": true,
+    "net_delta_positive": true,
+    "Q1_delta_nonnegative": true,
+    "Q2_delta_nonnegative": true,
+    "target_F05_delta_positive": true,
+    "non_target_B02_exact": true,
+    "positive_effect_months_min": 4,
+    "negative_effect_months_max": 1,
+    "ex_best_two_entry_dates_delta_positive": true,
+    "leave_one_month_out_min_delta_positive": true,
+    "largest_positive_entry_date_share_of_benefit_max": 0.50,
+    "top_two_positive_entry_date_share_of_benefit_max": 0.65,
+    "benefit_exceeds_harm": true
+  },
+  "H1_ranking": [
+    "ex_best_two_entry_dates_delta_jpy descending",
+    "leave_one_month_out_min_delta_jpy descending",
+    "net_delta_jpy descending",
+    "removed_F05_trades ascending",
+    "candidate_id ascending"
+  ],
+  "H1_finalist_limit": 1,
+  "H2_cross_regime_gates": {
+    "exact_H1_specification_unchanged": true,
+    "candidate_total_net_positive": true,
+    "candidate_pf_not_below_baseline": true,
+    "net_delta_positive": true,
+    "Q3_delta_nonnegative": true,
+    "Q4_delta_nonnegative": true,
+    "target_F05_delta_positive": true,
+    "non_target_B02_exact": true,
+    "positive_effect_months_min": 4,
+    "negative_effect_months_max": 1,
+    "ex_best_two_entry_dates_delta_positive": true,
+    "benefit_exceeds_harm": true,
+    "retained_F05_trades_min": 60
+  },
+  "post_H2_action": {
+    "H2_fail": "close Family F and do not access 2025; activate the 2023 low-download M1-bar fallback plan",
+    "H2_pass": "freeze one exact specification for Core implementation and exact 2024 MT4 parity before any new 2025 H1 execution authorization"
+  },
+  "2023_fallback": {
+    "authorized_now": false,
+    "trigger": "no Family F specification passes 2024 H1 and H2",
+    "preferred_data": "compressed 2023 M1 OHLC bars with deterministic M15 derivation",
+    "tick_data_required_for_initial_2023_research": false,
+    "M15_only_acceptable_for_event_logic": true,
+    "tick_data_deferred_until": "a later candidate requires intrabar ordering, variable spread, stop/target/trailing execution, or tick-equity validation"
+  },
+  "live_order_authorized": false
+}
