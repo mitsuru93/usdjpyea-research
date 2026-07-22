@@ -1,0 +1,125 @@
+{
+  "schema_version": "usdjpy_family_c_structural_exit_2024h1_prereg_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOME_EVALUATION",
+  "validation_policy": {
+    "path": "configs/research/usdjpy_three_stage_gate_policy_v2.json",
+    "commit": "b136d348738d420adb65bd9ee72a24c230103dde",
+    "git_blob_sha1": "2e8d3cf6a286d0068c4d3bb145960a7e73499e7b"
+  },
+  "source": {
+    "entry_state_atlas_run_id": 29884556860,
+    "entry_state_atlas_artifact_id": 8516049893,
+    "entry_state_atlas_artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981",
+    "combined_atlas_csv_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd",
+    "accepted_2024h1_source_run_id": 29787357305,
+    "accepted_2024h1_source_artifact_id": 8479048161,
+    "accepted_2024h1_source_artifact_digest": "sha256:e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+    "m15_utc_csv_sha256": "766be5ebba158e5b40f5da5d66929b4da8a25d42a8716b1e591d7c09dd87c2a3",
+    "candidate_results_inspected_before_preregistration": false
+  },
+  "shared_contract": {
+    "period": "2024_H1",
+    "target_strategy": "F05",
+    "non_target_strategy": "B02",
+    "candidate_type": "existing_position_structural_exit",
+    "entry_trade_set": "unchanged",
+    "lot_mode": "fixed_0p01_each",
+    "test_spread_points": 5,
+    "pip_size": 0.01,
+    "B02_exit_change_authorized": false,
+    "F05_new_entry_block_authorized": false,
+    "new_or_extra_entry_authorized": false,
+    "2024_H2_access_authorized": false,
+    "2025_H1_access_authorized": false
+  },
+  "processing_order": [
+    "at each M15 bar open apply the normal fixed-time-cap exit first",
+    "for each still-open F05 position evaluate the structural rule from completed M15 bars only",
+    "if triggered close at the current executable Bid for long or Ask for short",
+    "evaluate new B02 and F05 entries only after all exits"
+  ],
+  "marked_MFE_definition": "maximum executable marked P/L observed at M15 bar-open boundaries after entry and strictly before the current structural-exit decision; long uses Bid and short uses Ask under fixed five-point spread",
+  "mechanisms": [
+    {
+      "mechanism_id": "C1_BREAKOUT_ORIGIN_INVALIDATION",
+      "rule": "close an open F05 position when the latest N completed M15 closes are each at least X pips inside the entry-specific breakout level against the position direction",
+      "grid": {
+        "X_inside_pips": [0, 1, 2, 3, 5],
+        "N_consecutive_closes": [1, 2]
+      },
+      "candidate_count": 10
+    },
+    {
+      "mechanism_id": "C2_FAILED_ACCEPTANCE_AFTER_MFE",
+      "rule": "after prior marked MFE reaches G pips, close an open F05 position when the latest N completed M15 closes are each at least X pips inside the entry-specific breakout level against the position direction",
+      "grid": {
+        "G_prior_marked_MFE_pips": [5, 10, 15, 20],
+        "X_inside_pips": [0, 1, 2, 3],
+        "N_consecutive_closes": [1, 2]
+      },
+      "candidate_count": 32
+    },
+    {
+      "mechanism_id": "C3_SIGNAL_BAR_STRUCTURE_INVALIDATION",
+      "rule": "close an open F05 position when the latest N completed M15 closes are beyond the selected signal-bar structural reference against the position direction",
+      "grid": {
+        "structural_reference": [
+          "signal_midpoint",
+          "signal_open",
+          "signal_opposite_extreme"
+        ],
+        "N_consecutive_closes": [1, 2]
+      },
+      "candidate_count": 6
+    }
+  ],
+  "total_candidate_count": 48,
+  "research_screening": {
+    "freeze_eligibility": {
+      "changed_positions_min": 10,
+      "entry_dates_min": 8,
+      "effect_months_min": 4
+    },
+    "binding_research_gates_before_mt4": {
+      "net_delta_positive": true,
+      "candidate_net_positive": true,
+      "pf_not_below_baseline": true,
+      "q1_delta_nonnegative": true,
+      "q2_delta_nonnegative": true,
+      "target_F05_delta_positive": true,
+      "B02_exactly_unchanged": true,
+      "positive_effect_months_min": 3,
+      "negative_effect_months_max": 1,
+      "ex_best_two_entry_dates_delta_positive": true,
+      "leave_one_month_out_min_delta_positive": true,
+      "largest_positive_entry_date_share_of_benefit_max": 0.50,
+      "top_two_positive_entry_date_share_of_benefit_max": 0.60,
+      "benefit_exceeds_harm": true
+    },
+    "metrics_requiring_mt4_before_H2_freeze": [
+      "entry_trade_set_exactly_unchanged",
+      "changed_exit_trade_keys_exact_parity",
+      "all_unaffected_close_times_and_PL_unchanged",
+      "direct_tick_equity_drawdown_not_above_baseline",
+      "minimum_tick_equity_not_below_baseline",
+      "zero_order_execution_failures"
+    ],
+    "finalist_limit_per_mechanism": 1,
+    "family_H2_candidate_limit": 1,
+    "ranking_order": [
+      "ex_best_two_entry_dates_delta_jpy descending",
+      "leave_one_month_out_min_delta_jpy descending",
+      "net_delta_jpy descending",
+      "changed_position_count ascending",
+      "candidate_id ascending"
+    ]
+  },
+  "prohibited_interpretations": [
+    "fixed-pip stop-loss retest",
+    "fixed-pip giveback retest",
+    "S2 degraded-shock Exit repair",
+    "H2 or 2025 evidence used to choose thresholds",
+    "combination with a closed Entry filter"
+  ],
+  "live_order_authorized": false
+}
