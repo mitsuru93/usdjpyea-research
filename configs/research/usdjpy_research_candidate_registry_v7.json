@@ -1,0 +1,101 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v7",
+  "status": "ACTIVE_EXACT_2024_MT4_PARITY_PASS_PENDING_2025_H1_WORKFLOW_PREFLIGHT",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v6.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "period_roles": {
+    "2024_H1": "DEVELOPMENT_AND_MECHANISM_ANALYSIS",
+    "2024_H2": "DEVELOPMENT_AND_CROSS_REGIME_ANALYSIS",
+    "2025_H1": "FIRST_BINDING_RAKUTEN_MT4_STRESS_GATE",
+    "2025_H2": "FINAL_BINDING_RAKUTEN_MT4_VALIDATION_LOCKED_UNTIL_2025_H1_PASS"
+  },
+  "2025_gate_status": {
+    "exact_candidate_available": true,
+    "MT4_parity_passed": true,
+    "reusable_2025_H1_workflow_preflight_passed": false,
+    "2025_H1_execution_authorized": false,
+    "2025_H2_execution_authorized": false
+  },
+  "access_authorization": {
+    "2024_H1_MT4_parity": true,
+    "2024_H2_MT4_parity": true,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "2025_H1_workflow_preflight_without_execution": true,
+    "live_orders": false
+  },
+  "active_family": {
+    "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "status": "2024_DEVELOPMENT_AND_EXACT_RAKUTEN_MT4_PARITY_PASS",
+    "diagnostic_path": "docs/research/usdjpy_2024_full_year_recovery_path_diagnostic_v1.md",
+    "preregistration_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_prereg_v2.json",
+    "research_result_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_research_result_v2.json",
+    "ranking_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_ranking_summary_v2.json",
+    "mt4_parity_freeze_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_freeze_v1.json",
+    "mt4_parity_result_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_result_v1.json",
+    "mt4_parity_document_path": "docs/research/usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_result_v1.md",
+    "evaluated_candidate_labels": 63,
+    "equivalence_classes": 43,
+    "eligible_candidate_labels": 6,
+    "eligible_equivalence_classes": 4
+  },
+  "current_candidate": {
+    "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+    "canonical_equivalent_label": "E2_ADAPTIVE_60_90__A15_B5_C20_R0",
+    "target_strategy": "F05",
+    "rule_summary": "30m<=-15 and 60m<=-5; dynamic unsupported state exits at 60m; dynamic same-direction-supported state exits at 90m only when 90m<=-15 and recovery from 60m is <=0; exact UTC checkpoint bar must exist",
+    "entries_unchanged": true,
+    "B02_unchanged": true,
+    "direct_MT4_executed": true,
+    "exact_2024_MT4_parity_passed": true,
+    "2024_net_delta_jpy": 8058,
+    "2024_candidate_pf": 1.429420042591,
+    "2024_changed_positions": 37,
+    "2024_H1_candidate_net_jpy": 25085,
+    "2024_H1_candidate_pf": 1.4316441538329174,
+    "2024_H2_candidate_complete_net_jpy": 43879,
+    "2024_H2_candidate_pf": 1.428158816584214,
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false,
+    "status": "FROZEN_EXACT_MT4_PARITY_PASS_PENDING_2025_H1_WORKFLOW_PREFLIGHT"
+  },
+  "binding_mt4_evidence": {
+    "core_main_commit": "2434df896f71cb67de279cae9d516569ebd5e187",
+    "run_id": 29924434439,
+    "run_attempt": 1,
+    "job_id": 88937828542,
+    "artifact_id": 8531451951,
+    "artifact_digest": "sha256:cbac9ba7341fb7d9172e112b4050c33caa64fa32f4ad943e9d19f37dd91c2a01",
+    "receipt_issue": 131,
+    "runner_name": "onamae-mt4-ui-01",
+    "candidate_ex4_sha256": "a441141b5e51fb70de94cc3ca4829b95d669ff8ccefefd02bc471d110f4ac2c8",
+    "builder_git_blob_sha1": "bd82b9267b51a21065e4c1688ce4feb9feb94a5c",
+    "evaluator_git_blob_sha1": "bd296be5e3ed28f2ee8b23228a1386bb2a575ae5",
+    "failed_gates": []
+  },
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE"
+  ],
+  "current_findings": [
+    "Uniform early-adverse exits fail because all nine diagnosed late-recovery positions occurred with unopposed same-direction support.",
+    "Unsupported or conflicted early-adverse positions can be closed at 60 minutes, while same-direction-supported positions require a 90-minute no-recovery confirmation.",
+    "The selected state-adaptive rule improves both 2024 halves and reproduced the frozen 37 changed positions exactly on Rakuten MT4.",
+    "Exact UTC checkpoint existence is part of the implementation contract; missing checkpoints must not be substituted by another elapsed bar.",
+    "2024 remains development evidence; independent validation has not started."
+  ],
+  "next_required_state": {
+    "stage": "REUSABLE_2025_H1_WORKFLOW_PREFLIGHT",
+    "required_actions": [
+      "build the reusable Rakuten MT4 2025 H1 workflow without a candidate-execution trigger",
+      "pin Core main, candidate MQ4 and EX4 hashes, evaluator, preset, installation receipt and period boundaries",
+      "prove the workflow cannot access 2025 H2 and cannot authorize live orders",
+      "run only non-candidate identity and configuration checks required for preflight",
+      "record the preflight artifact and receipt atomically in Research",
+      "keep candidate-specific 2025 H1 execution locked until a later explicit registry authorization"
+    ]
+  },
+  "live_order_authorized": false
+}

@@ -1,0 +1,124 @@
+{
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_result_v1",
+  "status": "PASS",
+  "decision": "PASS_EXACT_2024_RESEARCH_TO_RAKUTEN_MT4_PARITY",
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+  "research_freeze": {
+    "commit": "f23abdf24e757601a9ed0c35d81bfb688737c762",
+    "freeze_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_freeze_v1.json",
+    "freeze_git_blob_sha1": "20dfb76cedf8fcc6217f9dc24e9d43ca6f95d8a0",
+    "expected_rows_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_expected_v1.csv",
+    "expected_rows_git_blob_sha1": "1fc2221f7dc9d91daf45b97ebf7a058d81c552e5",
+    "expected_rows_sha256": "0b71c50c677140071e9e37923ac0a6b0c4e571dd0052ead03806c43d447af3a8"
+  },
+  "core": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "parity_run_pr": 121,
+    "run_branch_head_commit": "bebe3cc8c77d85d7f1d2a919a34b4f33c26b2a16",
+    "run_pull_request_merge_sha": "9d949e5b7121a9b641f56c7cf856dc9668d33d7f",
+    "final_main_commit": "2434df896f71cb67de279cae9d516569ebd5e187",
+    "builder_path": "tools/build_usdjpy_state_adaptive_recovery_exit_v2.py",
+    "builder_git_blob_sha1": "bd82b9267b51a21065e4c1688ce4feb9feb94a5c",
+    "evaluator_path": "tools/evaluate_usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_v2.py",
+    "evaluator_git_blob_sha1": "bd296be5e3ed28f2ee8b23228a1386bb2a575ae5",
+    "orchestrator_path": "scripts/mt4/Invoke-UsdjpyFamilyE2024ParityV5.ps1",
+    "workflow_path": ".github/workflows/mt4_usdjpy_family_e_2024_parity_v1.yml"
+  },
+  "binding_run": {
+    "run_id": 29924434439,
+    "run_attempt": 1,
+    "job_id": 88937828542,
+    "event": "pull_request",
+    "workflow_name": "MT4 USDJPY Family E 2024 Parity v4",
+    "runner_name": "onamae-mt4-ui-01",
+    "runner_labels": ["self-hosted", "Windows", "X64", "mt4-ui", "rakuten", "interactive"],
+    "terminal_version": "4.0.0.1470",
+    "artifact_id": 8531451951,
+    "artifact_name": "mt4-usdjpy-family-e-2024-parity-v4-29924434439-1",
+    "artifact_digest": "sha256:cbac9ba7341fb7d9172e112b4050c33caa64fa32f4ad943e9d19f37dd91c2a01",
+    "receipt_issue": 131,
+    "job_conclusion": "success",
+    "manifest_status": "PASS",
+    "manifest_terminal_stage": "COMPLETE"
+  },
+  "baseline_reproduction": {
+    "run_id": 29921533322,
+    "artifact_id": 8530397157,
+    "artifact_digest": "sha256:f013dce841f5b898b7a173a300afaf8c9aacb5b5ebb2a86246c63d32c3fdf9ce",
+    "2024_H1_audit_sha256": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "2024_H2_audit_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "2024_H1_exact": true,
+    "2024_H2_exact": true
+  },
+  "source_artifacts": {
+    "2024_H1": {
+      "run_id": 29884556860,
+      "artifact_id": 8516049893,
+      "artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981"
+    },
+    "2024_H2": {
+      "run_id": 29895387329,
+      "artifact_id": 8519879009,
+      "artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981"
+    }
+  },
+  "execution_contract": {
+    "symbol": "USDJPY",
+    "period": "M15",
+    "model": 0,
+    "spread_points": 5,
+    "spread_pips": 0.5,
+    "2024_H1_from": "2024.01.01",
+    "2024_H1_to": "2024.07.01",
+    "2024_H2_from": "2024.07.01",
+    "2024_H2_to": "2025.01.01",
+    "exact_utc_checkpoint_required": true,
+    "checkpoint_minutes": [30, 60, 90],
+    "entry_set_unchanged": true,
+    "B02_unchanged": true
+  },
+  "metrics": {
+    "changed_positions": 37,
+    "2024_H1_changed_positions": 11,
+    "2024_H2_changed_positions": 26,
+    "2024_H1_baseline_net_jpy": 22797,
+    "2024_H1_candidate_net_jpy": 25085,
+    "2024_H1_delta_jpy": 2288,
+    "2024_H1_candidate_pf": 1.4316441538329174,
+    "2024_H2_baseline_complete_net_jpy": 38109,
+    "2024_H2_candidate_complete_net_jpy": 43879,
+    "2024_H2_delta_jpy": 5770,
+    "2024_H2_candidate_pf": 1.428158816584214,
+    "2024_full_year_delta_jpy": 8058,
+    "failed_gates": []
+  },
+  "candidate_binary": {
+    "base_mq4_sha256": "95740f62f03a791613593d200e1cb2762a2f4cd223f417f7d4c242fd5815465b",
+    "wrapper_mq4_sha256": "d956f54dc7c61c9b22712c32ab10a768911fe8526cdab68d38fdd932a3fae29b",
+    "ex4_sha256": "a441141b5e51fb70de94cc3ca4829b95d669ff8ccefefd02bc471d110f4ac2c8",
+    "compile_success": true,
+    "compile_log_has_errors": false
+  },
+  "audit_sha256": {
+    "2024_H1_candidate": "1ca20456f820b43ba5aadc3e5a6e897fce77be61c6cee50ec9e1677a22ea052c",
+    "2024_H2_candidate": "56e4531865bb82580bca9a99d71954475ce1e63cf7d4bf7ace99ef1a041dcaf9",
+    "validation_result_json": "f1c7d41c6a50562dcec54c528d4f6bbf4a9945869396563bc1053a54a1421280",
+    "changed_outcomes_csv": "1943e128b70e959f9cd5f23028e02152188dfb2a03ef2d1dfc25df05f2f64477"
+  },
+  "technical_reconciliation": {
+    "candidate_logic_or_threshold_changed": false,
+    "repair_1": "Require the exact UTC 30, 60 and 90 minute M15 checkpoint bar to exist instead of substituting a different bar by elapsed bar count.",
+    "repair_2": "Normalize dotted MT4 timestamp formatting before exact comparison with the frozen hyphenated CSV timestamps.",
+    "superseded_runs_are_candidate_failures": false,
+    "receipt_metadata_note": "Receipt issue 131 inherited the v1 builder/evaluator environment values. The uploaded run_manifest.json and core_identity_verification.json bind the executed v2 builder/evaluator blobs and are authoritative for code identity."
+  },
+  "access_boundary": {
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false,
+    "2025_H1_execution_authorized": false,
+    "2025_H2_execution_authorized": false,
+    "live_orders_authorized": false,
+    "next_authorized_action": "Build and execute a non-running reusable 2025 H1 workflow preflight; do not run candidate-specific 2025 H1 yet."
+  }
+}
