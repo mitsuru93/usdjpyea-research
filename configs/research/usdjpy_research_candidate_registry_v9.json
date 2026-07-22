@@ -1,0 +1,46 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v9",
+  "status": "ACTIVE_FAMILY_E_2025_H1_BINDING_EXECUTION_AUTHORIZED_PENDING_OBSERVABLE_PR_RUN",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v8.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "period_roles": {
+    "2024_H1": "DEVELOPMENT_AND_MECHANISM_ANALYSIS",
+    "2024_H2": "DEVELOPMENT_AND_CROSS_REGIME_ANALYSIS",
+    "2025_H1": "FIRST_BINDING_RAKUTEN_MT4_STRESS_GATE_AUTHORIZED",
+    "2025_H2": "FINAL_BINDING_RAKUTEN_MT4_VALIDATION_LOCKED_UNTIL_UNCHANGED_2025_H1_PASS"
+  },
+  "current_candidate": {
+    "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+    "target_strategy": "F05",
+    "exact_2024_MT4_parity_passed": true,
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false,
+    "status": "FROZEN_UNCHANGED_AND_AUTHORIZED_FOR_OBSERVABLE_2025_H1_GATE"
+  },
+  "2025_H1_execution": {
+    "binding_gate_freeze_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_freeze_v1.json",
+    "trigger_transport_amendment_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_trigger_transport_amendment_v1.json",
+    "core_main_commit": "ed67d130e93d6c26813b13cf7ee9fa5b0896cb20",
+    "trigger": "same-repository pull_request marker",
+    "marker_path": "configs/run_markers/usdjpy_family_e_2025h1_binding_gate_pr_v1.json",
+    "execution_authorized": true,
+    "execution_completed": false,
+    "decision": "PENDING"
+  },
+  "access_authorization": {
+    "candidate_specific_2025_H1": true,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "next_required_state": {
+    "stage": "OPEN_MARKER_PR_EXECUTE_AND_RECORD_2025_H1_BINDING_GATE",
+    "required_actions": [
+      "open the exact marker-only PR",
+      "track the pull-request-triggered Run ID and job steps",
+      "inspect artifact ID, digest, receipt and all binding gate metrics",
+      "record PASS or FAIL atomically in Research",
+      "keep 2025 H2 locked unless the unchanged candidate passes every 2025 H1 gate"
+    ]
+  },
+  "live_order_authorized": false
+}
