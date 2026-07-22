@@ -1,0 +1,166 @@
+{
+  "schema_version": "usdjpy_family_ab_2024h1_search_prereg_v1",
+  "status": "FROZEN_BEFORE_OUTCOME_EVALUATION",
+  "validation_policy": {
+    "path": "configs/research/usdjpy_three_stage_gate_policy_v2.json",
+    "commit": "b136d348738d420adb65bd9ee72a24c230103dde",
+    "git_blob_sha1": "2e8d3cf6a286d0068c4d3bb145960a7e73499e7b"
+  },
+  "atlas": {
+    "core_run_id": 29884556860,
+    "core_artifact_id": 8516049893,
+    "core_artifact_name": "usdjpy-2024h1-entry-state-atlas-v2-29884556860-1",
+    "core_artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981",
+    "combined_csv_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd",
+    "closed_trades": 428,
+    "baseline_net_jpy": 22797,
+    "outcomes_inspected_before_this_preregistration": false,
+    "feature_distribution_inspection_only": true
+  },
+  "shared_scope": {
+    "period": "2024_H1",
+    "target_strategy": "F05",
+    "non_target_strategy": "B02",
+    "candidate_type": "new_entry_block",
+    "lot_mode": "fixed_0p01_each",
+    "common_trade_exit_and_pl_change_authorized": false,
+    "candidate_extra_trade_authorized": false,
+    "2024_H2_access_authorized": false,
+    "2025_H1_candidate_specific_access_authorized": false
+  },
+  "family_A": {
+    "family_id": "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "nonshock_definition": {
+      "pre_1h_directional_move_pips_lt": 60,
+      "pre_4h_directional_move_pips_lt": 100
+    },
+    "mechanisms": [
+      {
+        "mechanism_id": "A1_WEAK_OUTSIDE_CLOSE_COUNTERWICK",
+        "rule": "block F05 when nonshock and signal_close_outside_level_pips <= D and counter_wick_ratio >= W",
+        "grid": {
+          "D_pips": [0.5, 1.0, 1.5, 2.0, 3.0],
+          "W_min": [0.05, 0.10, 0.15, 0.20]
+        },
+        "candidate_count": 20
+      },
+      {
+        "mechanism_id": "A2_NEXT_BAR_RETENTION_FAILURE",
+        "rule": "block F05 when nonshock and entry_retention_from_signal_close_pips <= R and signal_close_outside_level_pips <= D",
+        "grid": {
+          "R_max_pips": [-0.25, -0.10, 0.00, 0.10],
+          "D_pips": [1.5, 3.0, 5.0, 8.0]
+        },
+        "candidate_count": 16
+      },
+      {
+        "mechanism_id": "A3_RECENT_SAME_SIDE_FAILED_BREAK",
+        "rule": "block F05 when nonshock and bars_since_prior_failed_break_same_side <= K and signal_close_outside_level_pips <= D",
+        "grid": {
+          "K_bars": [1, 2, 4, 8],
+          "D_pips": [1.5, 3.0, 5.0, 8.0]
+        },
+        "candidate_count": 16
+      }
+    ],
+    "total_candidate_count": 52,
+    "distinct_from_closed_specs": [
+      "does not require a shock window",
+      "does not use S1 retracement-efficiency-age conjunction",
+      "does not use S3 30-pip / ATR2.5 extension conjunction",
+      "uses explicit breakout-level acceptance or failed-break state"
+    ]
+  },
+  "family_B": {
+    "family_id": "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "dynamic_counterfactual": true,
+    "processing_order": [
+      "remove positions whose accepted baseline close time is <= current entry time",
+      "evaluate B02 first and never block B02",
+      "evaluate F05 second using only surviving accepted positions, including same-time accepted B02",
+      "if F05 is blocked it is absent from all later portfolio-state calculations"
+    ],
+    "mechanisms": [
+      {
+        "mechanism_id": "B1_STALE_SAME_DIRECTION_WEAK_ADDON",
+        "rule": "block F05 when surviving preexisting same-direction count >= 1, minutes since first active same-direction entry >= M, and signal_close_outside_level_pips <= D",
+        "grid": {
+          "M_min_minutes": [240, 360, 480],
+          "D_pips": [1.5, 3.0, 5.0]
+        },
+        "candidate_count": 9
+      },
+      {
+        "mechanism_id": "B2_HIGH_ORDINAL_WEAK_ADDON",
+        "rule": "block F05 when dynamic same-direction stack ordinal >= O and signal_close_outside_level_pips <= D",
+        "grid": {
+          "O_min": [3, 4, 5],
+          "D_pips": [1.5, 3.0, 5.0]
+        },
+        "candidate_count": 9
+      },
+      {
+        "mechanism_id": "B3_OPPOSITE_OR_MIXED_WEAK_ENTRY",
+        "rule": "block F05 when at least one surviving opposite-direction position exists and signal_close_outside_level_pips <= D",
+        "grid": {
+          "D_pips": [1.5, 3.0, 5.0, 8.0]
+        },
+        "candidate_count": 4
+      }
+    ],
+    "diagnostic_only_not_freeze_eligible": {
+      "mechanism_id": "B4_SIMULTANEOUS_SAME_DIRECTION_F05",
+      "reason": "accepted 2024 H1 contains only 10 affected F05 entries, below the fixed 12-trade eligibility floor"
+    },
+    "discarded_before_outcome_evaluation": {
+      "mechanism_id": "UNDERWATER_SAME_DIRECTION_ADDON",
+      "reason": "accepted Entry-State Atlas contains only one such entry, below the fixed action-breadth floor"
+    },
+    "total_candidate_count": 22
+  },
+  "research_screening": {
+    "freeze_eligibility": {
+      "affected_trades_min": 12,
+      "entry_dates_min": 8,
+      "effect_months_min": 4
+    },
+    "binding_research_gates_before_mt4": {
+      "net_delta_positive": true,
+      "pf_not_below_baseline": true,
+      "q1_delta_nonnegative": true,
+      "q2_delta_nonnegative": true,
+      "target_F05_delta_positive": true,
+      "B02_exactly_unchanged": true,
+      "positive_effect_months_min": 3,
+      "negative_effect_months_max": 1,
+      "ex_best_two_entry_dates_delta_positive": true,
+      "leave_one_month_out_min_delta_positive": true,
+      "largest_positive_entry_date_share_of_benefit_max": 0.50,
+      "top_two_positive_entry_date_share_of_benefit_max": 0.60,
+      "benefit_exceeds_harm": true
+    },
+    "metrics_requiring_mt4_before_H2_freeze": [
+      "direct_tick_equity_drawdown_not_above_baseline",
+      "minimum_tick_equity_not_below_baseline",
+      "exact_affected_trade_parity",
+      "zero_common_trade_PL_or_close_change",
+      "zero_unexpected_extra_trades"
+    ],
+    "finalist_limit_per_mechanism": 1,
+    "ranking_order": [
+      "ex_best_two_entry_dates_delta_jpy descending",
+      "leave_one_month_out_min_delta_jpy descending",
+      "net_delta_jpy descending",
+      "affected_trade_count ascending",
+      "candidate_id ascending"
+    ],
+    "family_H2_candidate_limit": 1
+  },
+  "decision_rules": {
+    "no_research_eligible_candidate": "close the mechanism grid at 2024 H1 and do not access H2",
+    "research_eligible_candidate": "retain one preregistered finalist for exact MT4 implementation",
+    "mt4_gate_failure": "close finalist and do not access H2",
+    "mt4_gate_pass": "rank eligible mechanism finalists and freeze at most one candidate per family for H2"
+  },
+  "live_order_authorized": false
+}
