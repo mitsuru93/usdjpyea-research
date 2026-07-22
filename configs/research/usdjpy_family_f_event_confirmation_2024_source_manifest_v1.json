@@ -1,0 +1,34 @@
+{
+  "schema_version": "usdjpy_family_f_event_confirmation_2024_source_manifest_v1",
+  "status": "FROZEN_WITH_PREREGISTRATION",
+  "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+  "research_base_commit": "9222f56fb3adbab8bb38b1aa6697e6aa87d053ea",
+  "H1": {
+    "core_run_id": 29884556860,
+    "core_artifact_id": 8516049893,
+    "core_artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981",
+    "entry_state_atlas_csv_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd",
+    "baseline_event_audit_sha256": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "closed_trades": 428,
+    "baseline_net_jpy": 22797,
+    "B02_trades": 97,
+    "B02_net_jpy": 9554,
+    "F05_trades": 331,
+    "F05_net_jpy": 13243
+  },
+  "H2": {
+    "core_run_id": 29895387329,
+    "core_artifact_id": 8519879009,
+    "core_artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981",
+    "baseline_event_audit_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "closed_trades": 493,
+    "baseline_net_jpy": 38358,
+    "B02_trades": 102,
+    "B02_net_jpy": 15627,
+    "F05_trades": 391,
+    "F05_net_jpy": 22731
+  },
+  "2025_H1_source_used_for_candidate_selection": false,
+  "2025_H2_accessed": false,
+  "live_order_authorized": false
+}
