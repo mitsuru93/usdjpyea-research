@@ -1,0 +1,48 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v12",
+  "status": "ACTIVE_FAMILY_E_2025_H1_BINDING_EXECUTION_AUTHORIZED_PENDING_COMPILE_REPAIRED_RERUN",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v11.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "current_candidate": {
+    "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+    "target_strategy": "F05",
+    "exact_2024_MT4_parity_passed": true,
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false,
+    "status": "FROZEN_UNCHANGED_AND_AUTHORIZED_FOR_COMPILE_REPAIRED_2025_H1_GATE"
+  },
+  "latest_2025_H1_attempt": {
+    "run_id": 29932286502,
+    "status": "INCOMPLETE",
+    "terminal_stage": "BUILD_AND_COMPILE",
+    "artifact_id": 8534624052,
+    "receipt_issue": 145,
+    "strategy_tester_runs_started": 0,
+    "result_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_run_29932286502_incomplete_and_repair_v1.json"
+  },
+  "technical_repair": {
+    "core_pull_request": 146,
+    "core_frozen_head_commit": "2855da95e036d41eb676ecd0efef08bbef2e9396",
+    "new_wrapper_git_blob_sha1": "8385078185e6c0df68953e4de8eb72bec932fdd4",
+    "workflow_git_blob_sha1": "eb47790213b0e4693c67479cffedb278df05c1c8",
+    "scientific_contract_changed": false
+  },
+  "access_authorization": {
+    "candidate_specific_2025_H1": true,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "next_required_state": {
+    "stage": "MERGE_COMPILE_TARGET_REPAIR_RERUN_SAME_2025_H1_BINDING_GATE",
+    "required_actions": [
+      "merge Core PR 146 unchanged",
+      "open a new marker-only PR using the existing v3 marker path",
+      "confirm baseline and candidate compile before Strategy Tester execution",
+      "execute the unchanged binding gate and inspect artifact and receipt",
+      "record PASS or FAIL atomically in Research"
+    ]
+  },
+  "failure_action": "Close the exact Family E specification and keep candidate-specific 2025 H2 locked.",
+  "pass_action": "Freeze and authorize a separate unchanged 2025 H2 final Rakuten MT4 validation gate.",
+  "live_order_authorized": false
+}
