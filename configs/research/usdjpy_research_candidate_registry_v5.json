@@ -1,0 +1,83 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v5",
+  "status": "ACTIVE_2024_FULL_YEAR_MECHANISM_DIAGNOSIS",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v4.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "period_roles": {
+    "2024_H1": "DEVELOPMENT_AND_MECHANISM_ANALYSIS",
+    "2024_H2": "DEVELOPMENT_AND_CROSS_REGIME_ANALYSIS",
+    "2025_H1": "FIRST_BINDING_RAKUTEN_MT4_STRESS_GATE",
+    "2025_H2": "FINAL_BINDING_RAKUTEN_MT4_VALIDATION_LOCKED_UNTIL_2025_H1_PASS"
+  },
+  "closed_exact_specifications": [
+    "SC70_C240_exact",
+    "F05_SW70_R10_E90_A240_v1",
+    "B02F05_DSHOCK60_R20_E90_EXIT_v1",
+    "F05_EXTATR25_LOC80_F30_v1",
+    "F05_MFE20_BOR1_EXIT_v1"
+  ],
+  "closed_families": [
+    {
+      "family_id": "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+      "status": "CLOSED_H1_NO_ELIGIBLE_SPECIFICATION",
+      "evaluated_specifications": 52
+    },
+    {
+      "family_id": "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+      "status": "CLOSED_H1_NO_ELIGIBLE_SPECIFICATION",
+      "evaluated_specifications": 22
+    },
+    {
+      "family_id": "C_STRUCTURAL_EXIT",
+      "status": "CLOSED_AFTER_FINALIST_H2_FAIL",
+      "evaluated_specifications": 48
+    },
+    {
+      "family_id": "D_EARLY_FAILURE_PERSISTENCE",
+      "status": "CLOSED_2024_FULL_YEAR_NO_ELIGIBLE_SPECIFICATION",
+      "h1_result": "configs/research/usdjpy_early_failure_persistence_2024h1_result_v1.json",
+      "h2_atlas_result": "configs/research/usdjpy_2024h2_d_entry_state_atlas_v1_result.json",
+      "full_year_result": "configs/research/usdjpy_early_failure_persistence_2024_full_year_result_v1.json",
+      "evaluated_specifications": 12,
+      "H1_eligible_specifications": 2,
+      "full_year_eligible_specifications": 0,
+      "exact_candidate_frozen": false,
+      "direct_MT4_executed": false,
+      "2025_H1_accessed": false,
+      "2025_H2_accessed": false
+    }
+  ],
+  "current_candidate": null,
+  "current_family": null,
+  "current_findings": [
+    "Prior candidate families concentrated on F05 P1 giveback and left much of F05 P2/P3 untreated.",
+    "Persistent first-hour adverse state identified P3 losses in H1 but did not generalize to H2.",
+    "In H2 the same state also contained eight late-recovery winners whose sacrificed profit exceeded saved loss.",
+    "All 12 D-family threshold cells had negative H2 deltas, so the failure cannot be repaired by selecting a different threshold inside the frozen family.",
+    "The next mechanism must distinguish permanent P3 failure from temporary early adverse movement that later recovers."
+  ],
+  "next_required_state": {
+    "stage": "FULL_YEAR_RECOVERY_PATH_DIAGNOSIS",
+    "required_before_new_family": [
+      "compare H1 and H2 early-adverse positions at 60m 90m 120m 240m and final outcome",
+      "identify features available before a proposed decision checkpoint that separate P3 losses from late-recovery winners",
+      "attribute differences by entry extension breakout-origin position volatility direction and exposure state",
+      "compare the proposed mechanism against S1 S2 S3 Family C and closed D",
+      "commit a mechanism-specific report before preregistering any new grid"
+    ]
+  },
+  "access_authorization": {
+    "2024_H1_analysis": true,
+    "2024_H2_analysis": true,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "direct_MT4": false,
+    "live_orders": false
+  },
+  "2025_gate_status": {
+    "exact_candidate_available": false,
+    "2025_H1_execution_authorized": false,
+    "2025_H2_execution_authorized": false
+  },
+  "live_order_authorized": false
+}

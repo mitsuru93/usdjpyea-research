@@ -1,0 +1,61 @@
+{
+  "schema_version": "usdjpy_2024h2_d_entry_state_atlas_v1_result",
+  "status": "PASS",
+  "purpose": "D-family 30-minute and 60-minute post-entry state analysis after period policy v4 reclassified 2024 H2 as development",
+  "source": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "source_run_id": 29873856877,
+    "source_artifact_id": 8512432416,
+    "source_artifact_digest": "sha256:9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b",
+    "source_audit_internal_path": "h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv",
+    "source_audit_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd"
+  },
+  "method": {
+    "portfolio_snapshot_price": "Bid at each processed M15 bar open",
+    "long_mark": "Bid minus entry Ask",
+    "short_mark": "entry Bid minus current Ask under fixed 5-point spread",
+    "checkpoint_rule": "Only an exact 30-minute or 60-minute portfolio snapshot is eligible. Missing exact checkpoint rows remain null and cannot trigger a D-family rule.",
+    "period_end_open_position": "ticket 494 uses the accepted JPY -249 period-end marked outcome",
+    "H1_method_validation": {
+      "population": 428,
+      "pips_30m_exact_matches": 428,
+      "pips_60m_exact_matches": 428,
+      "maximum_absolute_numeric_error": 3.2e-12
+    }
+  },
+  "reconciliation": {
+    "opened_positions": 494,
+    "closed_positions": 493,
+    "complete_marked_net_jpy": 38109,
+    "B02_positions": 102,
+    "B02_complete_net_jpy": 15627,
+    "F05_positions": 392,
+    "F05_complete_net_jpy": 22482,
+    "missing_exact_30m_checkpoint_positions": 2,
+    "missing_exact_60m_checkpoint_positions": 2,
+    "missing_checkpoint_tickets": [168, 169]
+  },
+  "path_class_counts": {
+    "P1_GIVEBACK_TO_LOSS": 130,
+    "P2_MINOR_FAVORABLE_THEN_LOSS": 43,
+    "P3_NEVER_PROFITABLE": 57,
+    "WINNER": 264
+  },
+  "exposure_state_counts": {
+    "same_direction_stack": 316,
+    "standalone": 102,
+    "simultaneous_same_direction": 34,
+    "opposite_overlap": 24,
+    "mixed_overlap": 18
+  },
+  "output": {
+    "atlas_csv_sha256": "759a17e3567de900c98577e9a72b8c9abc5913077de3edffe827d69950d52940",
+    "result_json_sha256": "98117f352330c161bc3323ff6638342c5bf509801957dbc665a9877a99602ae4",
+    "builder_sha256": "d2a4fb46dcca9f987913fd19233b1e8bdbad8296f26ad5e35f11718cadc8cf10"
+  },
+  "candidate_selected": false,
+  "2025_H1_accessed": false,
+  "2025_H2_accessed": false,
+  "direct_mt4_executed": false,
+  "live_order_authorized": false
+}
