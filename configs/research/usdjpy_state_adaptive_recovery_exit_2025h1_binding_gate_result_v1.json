@@ -1,0 +1,219 @@
+{
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_result_v1",
+  "status": "BINDING_2025_H1_FAIL_EXACT_SPECIFICATION_CLOSED",
+  "decision": "FAIL",
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+  "period": {
+    "role": "FIRST_BINDING_RAKUTEN_MT4_STRESS_GATE",
+    "start_utc": "2025-01-01T00:00:00",
+    "end_utc_exclusive": "2025-07-01T00:00:00"
+  },
+  "binding_evidence": {
+    "core_repository": "mitsuru93/usdjpyea-core",
+    "core_main_execution_package_commit": "317b83a89e4f80fbb67aefe83c9180461aab5227",
+    "marker_pull_request": 150,
+    "marker_head_commit": "25f9f8b89a5b2fe847d6e8cd5a082979ca0d131b",
+    "run_merge_sha": "05d83323a18daed5219fdeec40f5a7f44f586fac",
+    "run_id": 29934029169,
+    "run_attempt": 1,
+    "job_id": 88970802800,
+    "workflow_id": 318119335,
+    "runner_name": "onamae-mt4-ui-01",
+    "artifact_id": 8535486772,
+    "artifact_name": "mt4-usdjpy-family-e-2025h1-binding-gate-v1-29934029169-1",
+    "artifact_digest": "sha256:79238df0ffaff1df6fdb8034b63e4dd191270b5364c1ab3e12c3f04f47acc4bc",
+    "receipt_issue": 151,
+    "terminal_stage": "COMPLETE",
+    "artifact_upload": "SUCCESS"
+  },
+  "execution_contract": {
+    "symbol": "USDJPY",
+    "timeframe": "M15",
+    "tester_model": 0,
+    "spread_points": 5,
+    "spread_pips": 0.5,
+    "fixed_lots_B02": 0.01,
+    "fixed_lots_F05": 0.01,
+    "virtual_initial_balance_jpy": 100000,
+    "virtual_leverage": 25,
+    "virtual_stopout_level_percent": 100,
+    "market_data_source": "pre-existing Rakuten MT4 cached HST only",
+    "external_market_data_download": false,
+    "tick_data_collection": false,
+    "source_hst_modified": false,
+    "baseline_and_candidate_same_run": true
+  },
+  "cached_history_identity": {
+    "server_folder": "RakutenSecurities-Live",
+    "M1_sha256": "db00b63e9e7ff2dd3f785563ad7f392a7e79ccef8a2c3e696f662b397b2b5af0",
+    "M15_sha256": "b22e9fb9a6d0f397b4186ba17f6e71cae9eb38aa59f214dfd1eb5173e4e7f165",
+    "M1_2025_H1_records": 183828,
+    "M15_2025_H1_records": 12269
+  },
+  "compiled_identity": {
+    "candidate_base_mq4_sha256": "95740f62f03a791613593d200e1cb2762a2f4cd223f417f7d4c242fd5815465b",
+    "candidate_wrapper_mq4_sha256": "d956f54dc7c61c9b22712c32ab10a768911fe8526cdab68d38fdd932a3fae29b",
+    "candidate_ex4_sha256_used": "0e718786f629fddb05b87faaf6873d045f5cb00ddd1a2f7e0422c6c0fa548b78",
+    "baseline_compile_success": true,
+    "candidate_compile_success": true,
+    "baseline_compile_errors": 0,
+    "candidate_compile_errors": 0,
+    "baseline_compile_warnings": 0,
+    "candidate_compile_warnings": 0
+  },
+  "baseline_reproduction": {
+    "entries": 463,
+    "B02_entries": 105,
+    "F05_entries": 358,
+    "net_jpy": -20808,
+    "pf": 0.8294076655052265,
+    "maximum_tick_equity_drawdown_jpy": 42737,
+    "maximum_tick_equity_drawdown_percent": 42.7092,
+    "minimum_equity_jpy": 57328,
+    "all_reproduction_gates_passed": true
+  },
+  "candidate_metrics": {
+    "entries": 463,
+    "B02_entries": 105,
+    "F05_entries": 358,
+    "net_jpy": -15866,
+    "pf": 0.8630257614476138,
+    "maximum_tick_equity_drawdown_jpy": 39246,
+    "maximum_tick_equity_drawdown_percent": 39.2205,
+    "minimum_equity_jpy": 60819,
+    "minimum_free_margin_jpy": 26102.58,
+    "minimum_margin_level_percent": 164.7046,
+    "stopout_breached": false,
+    "trade_failures": 0,
+    "state_missing": 0
+  },
+  "candidate_vs_baseline": {
+    "net_delta_jpy": 4942,
+    "pf_delta": 0.0336180959423873,
+    "maximum_tick_equity_drawdown_reduction_jpy": 3491,
+    "minimum_equity_improvement_jpy": 3491,
+    "F05_baseline_net_jpy": -13844,
+    "F05_candidate_net_jpy": -8902,
+    "F05_delta_jpy": 4942,
+    "B02_net_jpy_unchanged": -6964,
+    "B02_outcomes_exact": true
+  },
+  "quarter_metrics": {
+    "Q1_baseline_net_jpy": -28637,
+    "Q1_candidate_net_jpy": -26013,
+    "Q1_delta_jpy": 2624,
+    "Q2_baseline_net_jpy": 7829,
+    "Q2_candidate_net_jpy": 10147,
+    "Q2_delta_jpy": 2318
+  },
+  "monthly_candidate_net_jpy": {
+    "2025-01": -13038,
+    "2025-02": 4607,
+    "2025-03": -17582,
+    "2025-04": -9105,
+    "2025-05": 15795,
+    "2025-06": 3457
+  },
+  "monthly_effect_by_entry_month_jpy": {
+    "2025-01": 1589,
+    "2025-02": 132,
+    "2025-03": 903,
+    "2025-04": 867,
+    "2025-05": 482,
+    "2025-06": 969
+  },
+  "changed_trade_metrics": {
+    "changed_positions": 40,
+    "candidate_exit_positions": 40,
+    "exit_60m_positions": 23,
+    "exit_60m_effect_jpy": 4368,
+    "exit_90m_positions": 17,
+    "exit_90m_effect_jpy": 574,
+    "beneficial_positions": 23,
+    "harmful_positions": 17,
+    "benefit_jpy": 10355,
+    "harm_jpy": 5413,
+    "positive_effect_months": 6,
+    "negative_effect_months": 0,
+    "ex_best_two_entry_dates_delta_jpy": 3352
+  },
+  "dynamic_state_attribution": [
+    {
+      "state": "standalone",
+      "exit_minutes": 60,
+      "positions": 16,
+      "effect_jpy": 4024,
+      "benefit_jpy": 5321,
+      "harm_jpy": 1297
+    },
+    {
+      "state": "mixed_overlap",
+      "exit_minutes": 60,
+      "positions": 2,
+      "effect_jpy": 762,
+      "benefit_jpy": 828,
+      "harm_jpy": 66
+    },
+    {
+      "state": "opposite_overlap",
+      "exit_minutes": 60,
+      "positions": 5,
+      "effect_jpy": -418,
+      "benefit_jpy": 1373,
+      "harm_jpy": 1791
+    },
+    {
+      "state": "same_direction_stack",
+      "exit_minutes": 90,
+      "positions": 15,
+      "effect_jpy": -336,
+      "benefit_jpy": 1755,
+      "harm_jpy": 2091
+    },
+    {
+      "state": "simultaneous_same_direction",
+      "exit_minutes": 90,
+      "positions": 2,
+      "effect_jpy": 910,
+      "benefit_jpy": 1078,
+      "harm_jpy": 168
+    }
+  ],
+  "passed_binding_policy_gates": [
+    "candidate_net_above_baseline",
+    "candidate_pf_not_below_baseline",
+    "tick_equity_drawdown_below_baseline",
+    "minimum_tick_equity_above_baseline",
+    "april_to_june_net_nonnegative",
+    "q1_delta_positive",
+    "q2_delta_positive",
+    "positive_effect_months_min_4",
+    "negative_effect_months_max_1",
+    "ex_best_two_entry_dates_delta_positive",
+    "target_F05_delta_positive",
+    "non_target_B02_exact",
+    "benefit_exceeds_harm"
+  ],
+  "failed_binding_policy_gates": [
+    "candidate_net_positive",
+    "candidate_pf_at_least_1",
+    "january_to_march_net_nonnegative"
+  ],
+  "technical_and_parity_gates_all_passed": true,
+  "interpretation": [
+    "The exact Family E exit mechanism generalized as a loss-compression overlay: it improved F05 by JPY 4,942, reduced maximum tick-equity drawdown by JPY 3,491, improved every entry month, and remained positive after removing the two best entry dates.",
+    "The mechanism did not establish a viable 2025 H1 portfolio. Candidate net remained JPY -15,866, PF remained below 1 at 0.863025761448, and January through March remained JPY -26,013.",
+    "The 2025 H1 failure is not caused by B02 drift, entry drift, trade errors, HST changes, concentration in one or two dates, or a technical execution defect. All corresponding gates passed.",
+    "The strongest generalizing component was the unsupported standalone 60-minute exit at JPY +4,024. Same-direction-stack 90-minute exits were net harmful by JPY -336, but post-gate threshold or state modifications are prohibited for this exact specification.",
+    "Because the first binding 2025 H1 gate failed, the exact Family E specification is closed and candidate-specific 2025 H2 access remains prohibited."
+  ],
+  "decision_actions": {
+    "exact_candidate_status": "CLOSED_2025_H1_BINDING_FAIL",
+    "candidate_specific_2025_H2_execution_authorized": false,
+    "2025_H2_accessed": false,
+    "parameter_changes_after_binding_access": false,
+    "live_orders_authorized": false,
+    "next_research_stage": "RETURN_TO_2024_DEVELOPMENT_FOR_NEW_PREREGISTERED_FAMILY_OR_ARCHITECTURE_DIAGNOSIS"
+  }
+}
