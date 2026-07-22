@@ -1,0 +1,120 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v4",
+  "status": "ACTIVE_2024_FULL_YEAR_DEVELOPMENT",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v3.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "period_roles": {
+    "2024_H1": "DEVELOPMENT_AND_MECHANISM_ANALYSIS",
+    "2024_H2": "DEVELOPMENT_AND_CROSS_REGIME_ANALYSIS",
+    "2025_H1": "FIRST_BINDING_RAKUTEN_MT4_STRESS_GATE",
+    "2025_H2": "FINAL_BINDING_RAKUTEN_MT4_VALIDATION_LOCKED_UNTIL_2025_H1_PASS"
+  },
+  "accepted_baselines": {
+    "2024_H1": {
+      "run_id": 29787357305,
+      "artifact_id": 8479048161,
+      "artifact_digest": "sha256:e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+      "closed": 428,
+      "net_jpy": 22797,
+      "pf": 1.3774150290548484,
+      "B02_net_jpy": 9554,
+      "F05_net_jpy": 13243
+    },
+    "2024_H2": {
+      "opened": 494,
+      "closed": 493,
+      "closed_net_jpy": 38358,
+      "closed_pf": 1.3549628916732988,
+      "complete_marked_net_jpy": 38109,
+      "complete_pf": 1.3518479194172337,
+      "B02_closed_net_jpy": 15627,
+      "F05_closed_net_jpy": 22731,
+      "source_identity_must_be_frozen_in_H2_atlas_build": true
+    }
+  },
+  "closed_exact_specifications": [
+    {
+      "candidate_id": "SC70_C240_exact",
+      "status": "CLOSED_FAIL_H2"
+    },
+    {
+      "candidate_id": "F05_SW70_R10_E90_A240_v1",
+      "alias": "S1",
+      "status": "CLOSED_FAIL_H2"
+    },
+    {
+      "candidate_id": "B02F05_DSHOCK60_R20_E90_EXIT_v1",
+      "alias": "S2",
+      "status": "CLOSED_FAIL_H2"
+    },
+    {
+      "candidate_id": "F05_EXTATR25_LOC80_F30_v1",
+      "alias": "S3",
+      "status": "CLOSED_FAIL_H2"
+    },
+    {
+      "candidate_id": "F05_MFE20_BOR1_EXIT_v1",
+      "status": "CLOSED_FAIL_H2",
+      "2025_H1_accessed": false
+    }
+  ],
+  "completed_families": [
+    {
+      "family_id": "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+      "status": "CLOSED_H1_NO_ELIGIBLE_SPECIFICATION",
+      "evaluated_specifications": 52
+    },
+    {
+      "family_id": "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+      "status": "CLOSED_H1_NO_ELIGIBLE_SPECIFICATION",
+      "evaluated_specifications": 22
+    },
+    {
+      "family_id": "C_STRUCTURAL_EXIT",
+      "status": "CLOSED_AFTER_FINALIST_H2_FAIL",
+      "evaluated_specifications": 48
+    }
+  ],
+  "active_family": {
+    "family_id": "D_EARLY_FAILURE_PERSISTENCE",
+    "status": "H1_FRAGILE_PASS_PENDING_2024_H2_ATLAS_AND_FULL_YEAR_EVALUATION",
+    "target_strategy": "F05",
+    "candidate_count": 12,
+    "h1_preregistration": "configs/research/usdjpy_early_failure_persistence_2024h1_prereg_v2.json",
+    "h1_result": "configs/research/usdjpy_early_failure_persistence_2024h1_result_v1.json",
+    "full_year_preregistration": "configs/research/usdjpy_early_failure_persistence_2024_full_year_development_prereg_v1.json",
+    "leading_h1_cell": "D2_PERSISTENT_30M_60M_ADVERSE__A_30m_adverse_pips_15__B_60m_adverse_pips_5",
+    "leading_h1_cell_preselected_for_final_validation": false,
+    "h1_formal_eligible_count": 2,
+    "h1_fragility": "changed_positions_below_20",
+    "current_candidate_id": null,
+    "direct_mt4_executed": false
+  },
+  "current_research_finding": {
+    "primary_unresolved_loss_path": "F05 persistent early adverse P3 never-profitable failure",
+    "leading_H1_mechanism_effect": "Most H1 benefit came from P3 protection; P2 and the one affected winner were harmed.",
+    "why_H2_is_now_analysis": "The leading H1 cell changed only 17 positions. Full-year 2024 analysis is required to identify the threshold and confirm that the P3 effect persists outside H1."
+  },
+  "next_required_state": {
+    "stage": "BUILD_2024_H2_ENTRY_STATE_ATLAS",
+    "requirements": [
+      "freeze accepted H2 baseline audit and installed HST identities",
+      "reconcile H2 opened closed net PF and period-end marked outcome",
+      "derive exact 30m and 60m marked P/L without future leakage",
+      "do not evaluate the D-family grid until H2 Atlas reconciliation passes",
+      "after Atlas PASS evaluate the unchanged 12 cells separately on H2 and pooled 2024"
+    ]
+  },
+  "access_authorization": {
+    "new_D_family_2024_H2_analysis": true,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "diagnostic_only_2025_H1_evidence": {
+    "existing_closed_candidate_run_id": 29880733653,
+    "artifact_id": 8514811165,
+    "candidate_selection_authorized": false,
+    "note": "The D-family exact specification has not been executed on 2025 H1."
+  }
+}
