@@ -1,0 +1,71 @@
+{
+  "H1_entry_state_atlas": {
+    "artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981",
+    "artifact_id": 8516049893,
+    "csv_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd",
+    "repository": "mitsuru93/usdjpyea-core",
+    "rows": 428,
+    "run_id": 29884556860
+  },
+  "H2_Rakuten_MT4_source": {
+    "artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981",
+    "artifact_id": 8519879009,
+    "baseline_audit_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "period_end_marked_pl_jpy": -249,
+    "period_end_ticket": 494,
+    "repository": "mitsuru93/usdjpyea-core",
+    "rows": 494,
+    "run_id": 29895387329
+  },
+  "access": {
+    "2025_H1_candidate_specific": false,
+    "2025_H2_candidate_specific": false,
+    "direct_MT4": false,
+    "live_orders": false
+  },
+  "core_evaluator": {
+    "git_blob_sha1": "221aa85914d3ab62fdbc13fc49219a8654ca6f86",
+    "merge_commit": "af1eed32cb015347fc6c1770f705808aae43e02c",
+    "path": "tools/evaluate_usdjpy_state_adaptive_recovery_exit_2024_v2.py",
+    "sha256": "2231a5fa5c8bed33a6486caaf3781a054a98f9f8fee8dc2c9b587914127abd84"
+  },
+  "derived_population": {
+    "rows": 922,
+    "sha256": "792bd3efe830e4f22ce807c8dd7c640bb66f985d65b5ea3988d7c9abb83da380"
+  },
+  "derived_prior_candidate_union": {
+    "rows": 191,
+    "sha256": "84b9351e512246c37d7b0fdef2018fefacc2ec69c05edaf6d51aab93bc103083"
+  },
+  "dynamic_evaluator_outputs": {
+    "all_candidates_json_sha256": "a3d94fc47b8fc957abf1d13fdc30b1bdd1231a21c30388eb0a756e4b238aeeb8",
+    "candidate_metrics_csv_sha256": "b1da5cfcc3aaebb73f038209d6649d4ad055f25b989ee48c1b5dd0745307b951",
+    "equivalence_json_sha256": "ca0651a9f6df38554ac164b170494d3b465df1811bf95ca3033c77513bd896a3",
+    "finalist_changed_positions_csv_sha256": "396b9c412f18c2ddad8517c535977297a37edc10707f8354920ea71ceb443e5d",
+    "local_result_json_sha256": "f77b397dcc2bb706620637cfb05d28f92e668aa795966fe2e36261635448f203"
+  },
+  "period_policy": {
+    "commit": "d88960659fe2d94ff0df323383fd29502e422c2c",
+    "path": "configs/research/usdjpy_period_role_policy_v4.json"
+  },
+  "preregistration": {
+    "commit": "07259d0d67e7be521341f343fc0e70aebceec65a",
+    "git_blob_sha1": "6b4403c00755e66516c26ba9171b482617c7ef4f",
+    "path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_prereg_v2.json",
+    "sha256": "fcadc31d840bdef498aee37b4905b6357784d8dbba511971eff0e8a9fdac144f"
+  },
+  "recovery_diagnostic": {
+    "csv_sha256": "bef4bffd5660f9ab28ccb78e302c2fcde6689b8e6cf8430fbaffcc6caa4e6462",
+    "report_path": "docs/research/usdjpy_2024_full_year_recovery_path_diagnostic_v1.md",
+    "report_sha256": "d1c0f2d2836d3c839193bdb7105a3200facde0f469310bbf367a762b874584ab",
+    "rows": 63
+  },
+  "research_outputs": {
+    "ranking_summary_sha256": "3e2f9c7fa32bd45ed8f4fb15f187ee8bab09f5adda930f01d23e421703005944",
+    "registry_v6_sha256": "27efb46041d0e141ff3286ccae7bdf4f439674fc2252fc392fb698cddbc35b37",
+    "report_v2_sha256": "a1274c2b92e7ab622fbe3a8b0e6f554379c4600f18b38a4352f123cb903f4527",
+    "result_v2_sha256": "d22ebfca0e3c979b72fd7754cb921ba4f085c2577de302c5c57a2b03437aa625"
+  },
+  "research_base_commit": "d50662fdfa0802d1ba30fa8cbc4d31b7f8f87f5b",
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2024_source_manifest_v2"
+}
