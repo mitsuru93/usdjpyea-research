@@ -9,7 +9,8 @@
     "accepted_baseline_net_jpy": 22797,
     "accepted_baseline_run_id": 29787357305,
     "accepted_baseline_artifact_id": 8479048161,
-    "accepted_baseline_artifact_digest": "sha256:e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5"
+    "accepted_baseline_artifact_digest": "sha256:e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+    "marked_path_definition": "M15 bar-open executable Bid/Ask marks plus exact close; no intrabar high/low is used for MFE/MAE"
   },
   "canonical_trade_key": ["strategy", "signal_utc", "entry_utc", "side"],
   "entry_time_only_feature_groups": {
@@ -68,6 +69,8 @@
       "active_total_open_pl_pips",
       "active_same_direction_worst_mae_pips_to_entry",
       "active_same_direction_best_mfe_pips_to_entry",
+      "active_same_direction_max_individual_giveback_pips_to_entry",
+      "active_same_direction_count_peak10_current_negative",
       "entry_exposure_state"
     ],
     "context": [
@@ -107,6 +110,9 @@
     "B02_net_jpy": 9554,
     "F05_closed": 331,
     "F05_net_jpy": 13243,
+    "P1_GIVEBACK_TO_LOSS_count": 60,
+    "P2_MINOR_FAVORABLE_THEN_LOSS_count": 84,
+    "P3_NEVER_PROFITABLE_count": 47,
     "duplicate_trade_keys": 0,
     "missing_trade_keys": 0,
     "unexpected_trade_keys": 0,
