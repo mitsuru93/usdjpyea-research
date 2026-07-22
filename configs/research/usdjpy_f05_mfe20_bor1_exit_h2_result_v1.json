@@ -1,0 +1,144 @@
+{
+  "schema_version": "usdjpy_f05_mfe20_bor1_exit_h2_result_v1",
+  "status": "CLOSED_FAIL_H2",
+  "candidate_id": "F05_MFE20_BOR1_EXIT_v1",
+  "exact_specification_exposure_ordinal": 1,
+  "decision": "FAIL",
+  "candidate_rule_changed_after_preregistration": false,
+  "parameter_changed_after_preregistration": false,
+  "gate_changed_after_preregistration": false,
+  "mt4_rerun_for_evaluator_repair": false,
+  "research_preregistration": {
+    "path": "configs/research/usdjpy_f05_mfe20_bor1_exit_h2_prereg_v2.json",
+    "commit": "05d1cf2661f57ed68281bdce7db02ade9b8f6025",
+    "git_blob_sha1": "8fa45ef528d7eb652139f3380aa912998ea0d6f7"
+  },
+  "source_mt4_evidence": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "run_id": 29895387329,
+    "run_attempt": 1,
+    "head_sha": "0eb320b079a8921d9a3ff804a9eadb29f9f3b8b5",
+    "artifact_id": 8519879009,
+    "artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981",
+    "baseline_audit_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "candidate_audit_sha256": "bfd65081b2d086cd2264406653f236c3d655edcc0de70d8f92b5f3c2dc50abdd",
+    "baseline_mt4_completed": true,
+    "candidate_mt4_completed": true,
+    "2025_H1_accessed": false
+  },
+  "binding_evaluation_evidence": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "run_id": 29896667418,
+    "head_sha": "7e97df42bfaf56ddae3569934a2a079f0855e77a",
+    "artifact_id": 8520231535,
+    "artifact_digest": "sha256:0614d69f460889e6f93a490325c3436979669effa76a3cd7d9804d7448b5faef",
+    "receipt_issue": 95,
+    "result_sha256": "ddeb00dd18b25a2dcc025d9a2d4671ebb3a4e2843165b5d91922f5d99a341f69",
+    "changed_outcomes_sha256": "755e916aa54799c72bb40284335db03eeeb47adeac7e4fb430055be57c7b55eb",
+    "evaluator_repair_manifest_sha256": "a44bc7ad4147e6bb5594afc5e68eddcbd9135f66ca5ba74a94ce3687fb8667f9",
+    "normalized_baseline_audit_sha256": "b88ad4f37b1e10842a5cd75b90ba05987e6628243971209b5474fd5f45e9dbb2",
+    "normalized_candidate_audit_sha256": "678b1ce718e832f77baab2b1676918e3ba2b6f9987400ffb126e30c63b13efa2",
+    "normalization": {
+      "source_audits_overwritten": false,
+      "normalized_cells_per_audit": 2,
+      "fields": ["signal_utc", "entry_utc"],
+      "event": "period_end_open_position",
+      "ticket": "494",
+      "source": "same-ticket order_opened row",
+      "other_semantics_changed": false
+    }
+  },
+  "baseline_metrics": {
+    "opened": 494,
+    "closed": 493,
+    "closed_net_jpy": 38358,
+    "closed_pf": 1.3549628916732988,
+    "complete_outcome_net_jpy": 38109,
+    "complete_outcome_pf": 1.3518479194172337,
+    "tick_equity_dd_jpy": 19603,
+    "minimum_equity_jpy": 95271,
+    "final_equity_jpy": 138109,
+    "B02_complete_net_jpy": 15627,
+    "F05_complete_net_jpy": 22482
+  },
+  "candidate_metrics": {
+    "opened": 494,
+    "closed": 493,
+    "closed_net_jpy": 41676,
+    "closed_pf": 1.4308220310949389,
+    "complete_outcome_net_jpy": 41427,
+    "complete_outcome_pf": 1.4271485281229057,
+    "tick_equity_dd_jpy": 15063,
+    "minimum_equity_jpy": 95271,
+    "final_equity_jpy": 141427,
+    "B02_complete_net_jpy": 15627,
+    "F05_complete_net_jpy": 25800
+  },
+  "comparison": {
+    "changed_F05_positions": 76,
+    "closed_net_delta_jpy": 3318,
+    "complete_outcome_net_delta_jpy": 3318,
+    "final_equity_delta_jpy": 3318,
+    "tick_equity_dd_delta_jpy": -4540,
+    "minimum_equity_delta_jpy": 0,
+    "q3_delta_jpy": 2708,
+    "q4_delta_jpy": 610,
+    "positive_effect_months": 3,
+    "negative_effect_months": 3,
+    "monthly_effect_jpy": {
+      "2024-07": 73,
+      "2024-08": -3560,
+      "2024-09": 6195,
+      "2024-10": -354,
+      "2024-11": 1695,
+      "2024-12": -731
+    },
+    "benefit_jpy": 15906,
+    "harm_jpy": 12588,
+    "ex_best_two_positive_entry_dates_delta_jpy": -1944,
+    "largest_positive_entry_date_share_of_benefit": 0.1970954356846473
+  },
+  "failed_gates": [
+    {
+      "gate": "negative_effect_months_at_most_1",
+      "observed": 3,
+      "required": "at most 1"
+    },
+    {
+      "gate": "ex_best_two_positive_entry_dates_delta_positive",
+      "observed_jpy": -1944,
+      "required": "> 0"
+    }
+  ],
+  "passed_gate_summary": {
+    "baseline_contract_reproduced": true,
+    "entry_set_exactly_unchanged": true,
+    "B02_exactly_unchanged": true,
+    "candidate_closed_net_above_baseline": true,
+    "candidate_complete_net_above_baseline": true,
+    "candidate_closed_pf_at_least_baseline": true,
+    "candidate_complete_pf_at_least_baseline": true,
+    "candidate_tick_dd_not_worse": true,
+    "candidate_minimum_equity_not_worse": true,
+    "candidate_final_equity_above_baseline": true,
+    "both_quarters_positive_and_nonnegative_delta": true,
+    "F05_complete_net_delta_positive": true,
+    "largest_positive_entry_date_share_at_most_0p50": true,
+    "benefit_exceeds_harm": true,
+    "zero_execution_failures": true
+  },
+  "closure": {
+    "exact_specification_closed": true,
+    "H2_repair_or_retuning_authorized": false,
+    "threshold_change_from_H2_authorized": false,
+    "candidate_combination_authorized": false,
+    "2025_H1_execution_authorized": false,
+    "successor_rule": "any successor requires a new candidate ID, a distinct mechanism or independently preregistered finite procedure, and a return to 2024 H1"
+  },
+  "selection_boundary": {
+    "2024_H2_accessed": true,
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false,
+    "live_order_authorized": false
+  }
+}
