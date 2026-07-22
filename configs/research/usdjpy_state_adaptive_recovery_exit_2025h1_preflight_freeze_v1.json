@@ -1,0 +1,75 @@
+{
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2025h1_preflight_freeze_v1",
+  "status": "FROZEN_BEFORE_PREFLIGHT_EXECUTION",
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+  "research_registry_commit": "55c9e61d943054159d933622dd7e013bcb47a56b",
+  "2024_mt4_parity_result_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_result_v1.json",
+  "core": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "commit": "934f516bd7822835d9df51bf241ec94c835fd217",
+    "workflow_path": ".github/workflows/mt4_usdjpy_family_e_2025h1_preflight_v1.yml",
+    "workflow_git_blob_sha1": "7bd2504087f760b76bed79183878c5158b3b0d1b",
+    "preflight_script_path": "scripts/mt4/Invoke-UsdjpyFamilyE2025H1PreflightV1.ps1",
+    "preflight_script_git_blob_sha1": "f2c1f34af6611c38f0b3e16083f5f263803456c9",
+    "builder_path": "tools/build_usdjpy_state_adaptive_recovery_exit_v2.py",
+    "builder_git_blob_sha1": "bd82b9267b51a21065e4c1688ce4feb9feb94a5c",
+    "evaluator_path": "tools/evaluate_usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_v2.py",
+    "evaluator_git_blob_sha1": "bd296be5e3ed28f2ee8b23228a1386bb2a575ae5",
+    "history_selector_path": "tools/select_cached_usdjpy_2025h1_history_v1.py",
+    "history_selector_git_blob_sha1": "72342a7a9be7ffdd3f018b162cc61475a3a7116d",
+    "preset_path": "configs/mt4/usdjpy/family_e/JPY100K_2025H1_E2_A15_B5_C15_R0_fixed_001_each_v1.set",
+    "preset_git_blob_sha1": "23b90b0e4162fdeb2c3018592c4945ccb9fb603d"
+  },
+  "candidate_hashes": {
+    "base_mq4_sha256": "95740f62f03a791613593d200e1cb2762a2f4cd223f417f7d4c242fd5815465b",
+    "wrapper_mq4_sha256": "d956f54dc7c61c9b22712c32ab10a768911fe8526cdab68d38fdd932a3fae29b",
+    "ex4_sha256": "a441141b5e51fb70de94cc3ca4829b95d669ff8ccefefd02bc471d110f4ac2c8"
+  },
+  "cached_history_identity": {
+    "server_folder": "RakutenSecurities-Live",
+    "M1_sha256": "db00b63e9e7ff2dd3f785563ad7f392a7e79ccef8a2c3e696f662b397b2b5af0",
+    "M15_sha256": "b22e9fb9a6d0f397b4186ba17f6e71cae9eb38aa59f214dfd1eb5173e4e7f165",
+    "M1_2025_H1_records": 183828,
+    "M15_2025_H1_records": 12269,
+    "period_start_utc": "2025-01-01T00:00:00",
+    "period_end_utc_exclusive": "2025-07-01T00:00:00"
+  },
+  "future_execution_contract": {
+    "symbol": "USDJPY",
+    "timeframe": "M15",
+    "tester_model": 0,
+    "spread_points": 5,
+    "spread_pips": 0.5,
+    "from_date": "2025.01.01",
+    "to_date_exclusive": "2025.07.01",
+    "audit_filename": "fx2_usdjpy_family_e_2025h1_candidate_v1.csv",
+    "fixed_lots_B02": 0.01,
+    "fixed_lots_F05": 0.01,
+    "virtual_initial_balance_jpy": 100000,
+    "virtual_leverage": 25,
+    "virtual_stopout_level_percent": 100
+  },
+  "preflight_gates": [
+    "exact Core and preset git blobs",
+    "exact cached M1 and M15 hashes and record counts",
+    "exact 2025 H1 UTC interval",
+    "no external market-data download",
+    "no tick-data collection",
+    "no Strategy Tester invocation path",
+    "candidate MQ4 and EX4 hashes equal 2024 parity",
+    "source HST hashes unchanged after preflight",
+    "future execution contract keeps 2025 H2 and live orders locked",
+    "artifact and immutable receipt produced"
+  ],
+  "selection_boundary": {
+    "2025_H1_candidate_executed": false,
+    "2025_H1_profit_or_trade_result_access_authorized": false,
+    "2025_H2_accessed": false,
+    "2025_H1_execution_authorized": false,
+    "2025_H2_execution_authorized": false,
+    "live_orders_authorized": false
+  },
+  "next_state_on_pass": "PREFLIGHT_PASS_PENDING_EXPLICIT_2025_H1_EXECUTION_AUTHORIZATION",
+  "next_state_on_fail": "PREFLIGHT_REPAIR_WITHOUT_CANDIDATE_EXECUTION"
+}
