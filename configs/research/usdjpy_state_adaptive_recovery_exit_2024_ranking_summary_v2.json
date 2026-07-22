@@ -1,0 +1,83 @@
+{
+  "2025_H1_accessed": false,
+  "2025_H2_accessed": false,
+  "candidate_labels": 63,
+  "eligible_candidate_labels": [
+    {
+      "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+      "class": "EQ035",
+      "full_year_delta_jpy": 8058,
+      "minimum_H1_H2_ex_best_two_jpy": 755,
+      "minimum_H1_H2_leave_one_month_out_jpy": 999,
+      "minimum_quarter_jpy": 537,
+      "selected": true
+    },
+    {
+      "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C20_R0",
+      "class": "EQ035",
+      "equivalent_to_selected": true,
+      "full_year_delta_jpy": 8058,
+      "minimum_H1_H2_ex_best_two_jpy": 755,
+      "minimum_H1_H2_leave_one_month_out_jpy": 999,
+      "minimum_quarter_jpy": 537,
+      "selected": false
+    },
+    {
+      "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R5",
+      "class": "EQ036",
+      "full_year_delta_jpy": 8325,
+      "minimum_H1_H2_ex_best_two_jpy": 517,
+      "minimum_H1_H2_leave_one_month_out_jpy": 637,
+      "minimum_quarter_jpy": 175,
+      "selected": false
+    },
+    {
+      "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C20_R5",
+      "class": "EQ037",
+      "full_year_delta_jpy": 7968,
+      "minimum_H1_H2_ex_best_two_jpy": 393,
+      "minimum_H1_H2_leave_one_month_out_jpy": 637,
+      "minimum_quarter_jpy": 175,
+      "selected": false
+    },
+    {
+      "candidate_id": "E2_ADAPTIVE_60_90__A15_B10_C15_R0",
+      "class": "EQ027",
+      "full_year_delta_jpy": 7557,
+      "minimum_H1_H2_ex_best_two_jpy": 254,
+      "minimum_H1_H2_leave_one_month_out_jpy": 498,
+      "minimum_quarter_jpy": 36,
+      "selected": false
+    },
+    {
+      "candidate_id": "E2_ADAPTIVE_60_90__A15_B10_C20_R0",
+      "class": "EQ027",
+      "equivalent_to_class_representative": true,
+      "full_year_delta_jpy": 7557,
+      "minimum_H1_H2_ex_best_two_jpy": 254,
+      "minimum_H1_H2_leave_one_month_out_jpy": 498,
+      "minimum_quarter_jpy": 36,
+      "selected": false
+    }
+  ],
+  "eligible_equivalence_classes": [
+    "EQ035",
+    "EQ036",
+    "EQ037",
+    "EQ027"
+  ],
+  "equivalence_classes": 43,
+  "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+  "ranking_priority": [
+    "minimum H1/H2 ex-best-two delta",
+    "minimum H1/H2 leave-one-month-out delta",
+    "minimum quarter effect",
+    "winner harm",
+    "full-year delta",
+    "changed positions",
+    "candidate ID"
+  ],
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2024_ranking_summary_v2",
+  "selected": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "selection_note": "The R=5 candidate has higher aggregate delta but ranks lower because its weakest-half concentration residuals and minimum quarter effect are smaller. C=15 and C=20 with R=0 are outcome-equivalent; C=15 is the preregistered canonical representative."
+}
