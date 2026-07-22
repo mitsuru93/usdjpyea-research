@@ -117,7 +117,10 @@
   "active_family": {
     "family_id": "D_EARLY_FAILURE_PERSISTENCE",
     "status": "PREREGISTERED_PENDING_FORMAL_H1_EVALUATION",
-    "preregistration_path": "configs/research/usdjpy_early_failure_persistence_2024h1_prereg_v1.json",
+    "preregistration_path": "configs/research/usdjpy_early_failure_persistence_2024h1_prereg_v2.json",
+    "preregistration_git_blob_sha1": "a90cabb46650340d8aa2e7c27bc455c2c4659307",
+    "prior_candidate_union_path": "configs/research/usdjpy_early_failure_persistence_2024h1_prior_union_v1.csv",
+    "prior_candidate_union_sha256": "0877086e34723cdbebf8ac8544a22f9a0c4d8afa33290649d3c404e57fa83580",
     "target_strategy": "F05",
     "candidate_count": 12,
     "mechanisms": [
