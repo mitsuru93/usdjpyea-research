@@ -1,0 +1,115 @@
+{
+  "schema_version": "usdjpy_entry_state_atlas_v2_spec",
+  "status": "FROZEN_BEFORE_BUILD",
+  "scope": {
+    "symbol": "USDJPY",
+    "period": "2024_H1",
+    "strategies": ["B02", "F05"],
+    "accepted_closed_trade_count": 428,
+    "accepted_baseline_net_jpy": 22797,
+    "accepted_baseline_run_id": 29787357305,
+    "accepted_baseline_artifact_id": 8479048161,
+    "accepted_baseline_artifact_digest": "sha256:e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5"
+  },
+  "canonical_trade_key": ["strategy", "signal_utc", "entry_utc", "side"],
+  "entry_time_only_feature_groups": {
+    "explicit_breakout_structure": [
+      "reference_range_start_utc",
+      "reference_range_end_utc",
+      "breakout_level",
+      "breakout_side",
+      "signal_high_beyond_level_pips",
+      "signal_low_beyond_level_pips",
+      "signal_close_outside_level_pips",
+      "signal_close_inside_level_pips",
+      "signal_closed_outside_breakout_level",
+      "signal_rejected_back_inside_reference_range"
+    ],
+    "signal_bar_acceptance": [
+      "signal_range_pips",
+      "signal_body_pips",
+      "signal_close_location_entry_side",
+      "counter_wick_ratio",
+      "body_to_range_ratio",
+      "outside_close_to_atr16",
+      "breakout_excursion_to_atr16"
+    ],
+    "pre_entry_path": [
+      "atr16_pips",
+      "pre_1h_directional_move_pips",
+      "pre_1h_path_efficiency",
+      "pre_4h_directional_move_pips",
+      "pre_4h_path_efficiency",
+      "reference_range_width_pips",
+      "reference_range_width_to_atr16",
+      "bars_since_prior_failed_break_same_side",
+      "bars_since_prior_failed_break_opposite_side"
+    ],
+    "portfolio_state": [
+      "preexisting_B02_count",
+      "preexisting_F05_count",
+      "preexisting_same_direction_count",
+      "preexisting_opposite_direction_count",
+      "simultaneous_same_direction_peers",
+      "simultaneous_opposite_direction_peers",
+      "same_direction_stack_ordinal",
+      "minutes_since_first_active_same_direction_entry",
+      "minutes_since_last_same_direction_entry",
+      "active_same_direction_open_pl_pips",
+      "active_opposite_direction_open_pl_pips",
+      "active_total_open_pl_pips",
+      "active_same_direction_worst_mae_pips_to_entry",
+      "active_same_direction_best_mfe_pips_to_entry",
+      "entry_exposure_state"
+    ],
+    "context": [
+      "entry_month",
+      "entry_quarter",
+      "entry_weekday",
+      "entry_hour_utc",
+      "us_dst",
+      "hard_excluded_time_check",
+      "volatility_percentile_2024H1"
+    ]
+  },
+  "descriptive_outcomes_not_allowed_as_entry_features": [
+    "final_pl_jpy",
+    "mfe_pips",
+    "mae_pips",
+    "time_to_mfe_minutes",
+    "time_to_mae_minutes",
+    "pips_15m",
+    "pips_30m",
+    "pips_60m",
+    "pips_120m",
+    "pips_240m",
+    "giveback_pips",
+    "path_class"
+  ],
+  "outcome_labels_for_post_build_analysis": [
+    "winner",
+    "loser",
+    "P1_GIVEBACK_TO_LOSS",
+    "P2_MINOR_FAVORABLE_THEN_LOSS",
+    "P3_NEVER_PROFITABLE"
+  ],
+  "reconciliation_gates": {
+    "closed_trade_count": 428,
+    "net_jpy": 22797,
+    "B02_closed": 97,
+    "B02_net_jpy": 9554,
+    "F05_closed": 331,
+    "F05_net_jpy": 13243,
+    "duplicate_trade_keys": 0,
+    "missing_trade_keys": 0,
+    "unexpected_trade_keys": 0,
+    "future_information_in_entry_feature_columns": 0
+  },
+  "candidate_family_outputs": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP"
+  ],
+  "2024_H2_access_authorized": false,
+  "2025_H1_candidate_specific_access_authorized": false,
+  "live_order_authorized": false
+}
