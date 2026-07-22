@@ -1,0 +1,50 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v16",
+  "status": "FAMILY_F_CLOSED_2024_H1_ROBUSTNESS_FAIL_2023_FAST_M1_FALLBACK_ACTIVE",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v15.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "period_roles": {
+    "2023": "ADDITIONAL_DEVELOPMENT_AND_FALSIFICATION_USING_FAST_M1_BARS",
+    "2024_H1": "FAMILY_F_FINITE_SEARCH_CONSUMED_AND_FAILED",
+    "2024_H2": "FAMILY_F_NOT_ACCESSED_AFTER_H1_FAIL",
+    "2025_H1": "FAMILY_E_BINDING_RESULT_CONSUMED; NO_NEW_CANDIDATE_ACCESS",
+    "2025_H2": "LOCKED"
+  },
+  "active_family": null,
+  "current_candidate": null,
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION"
+  ],
+  "latest_research_result": {
+    "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+    "decision": "FAIL_NO_H1_FINALIST",
+    "candidate_count": 54,
+    "research_eligible_count": 0,
+    "result_path": "configs/research/usdjpy_family_f_event_confirmation_2024h1_result_v1.json",
+    "metrics_path": "configs/research/usdjpy_family_f_event_confirmation_2024h1_candidate_metrics_v1.csv",
+    "report_path": "docs/research/usdjpy_family_f_event_confirmation_2024h1_result_v1.md",
+    "H2_accessed": false
+  },
+  "2023_fallback": {
+    "status": "ACTIVE_DATA_ACQUISITION_CONTRACT_REQUIRED",
+    "preferred_data": "compressed USDJPY M1 bid OHLC bars with deterministic UTC M15 aggregation",
+    "M15_only_acceptable": true,
+    "tick_data_required_for_initial_research": false,
+    "data_use": "development_and_falsification_only"
+  },
+  "access_authorization": {
+    "2023_bar_data_acquisition": true,
+    "2023_candidate_outcome_evaluation": false,
+    "2024_H2_Family_F": false,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "next_action": "freeze an exact 2023 M1 bar acquisition and normalization contract, then acquire and audit data before any 2023 candidate outcome evaluation",
+  "live_order_authorized": false
+}
