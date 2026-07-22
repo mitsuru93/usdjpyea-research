@@ -1,0 +1,12 @@
+{
+  "schema_version": "usdjpy_family_f_event_confirmation_2024_lock_v1",
+  "status": "LOCKED_PENDING_MERGE",
+  "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+  "branch_head": "76d5d61f1e11d705e53323412acad45a7f38417c",
+  "candidate_grid_locked": true,
+  "source_identities_locked": true,
+  "H1_outcome_evaluation_after_merge_only": true,
+  "H2_locked": true,
+  "2025_locked": true,
+  "live_orders_locked": true
+}
