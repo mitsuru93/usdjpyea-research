@@ -1,0 +1,34 @@
+{
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2025h1_trigger_transport_amendment_v1",
+  "status": "FROZEN_BEFORE_OBSERVABLE_MARKER_RUN",
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "binding_gate_freeze_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_freeze_v1.json",
+  "reason": "The push-triggered merge produced neither an observable Run ID nor an immutable receipt after ten minutes. The execution job is unchanged; only the transport is changed to a same-repository pull-request marker so the exact Run can be tracked from its head SHA.",
+  "core": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "main_commit": "ed67d130e93d6c26813b13cf7ee9fa5b0896cb20",
+    "pull_request": 139,
+    "workflow_path": ".github/workflows/mt4_usdjpy_2025h1_cached_portfolio_test_v1.yml",
+    "previous_workflow_git_blob_sha1": "196ba92ac52d43395e628d6878c8705b8eb3187f",
+    "amended_workflow_git_blob_sha1": "977f522efd4f85f35e62b29cb711ae51145f04d4",
+    "marker_path": "configs/run_markers/usdjpy_family_e_2025h1_binding_gate_pr_v1.json",
+    "orchestrator_git_blob_sha1_unchanged": "c2e8eb1337a4673cc2c92d616079d32d6f8cd6a9",
+    "evaluator_git_blob_sha1_unchanged": "f0c1a7052070906f2222f8f35a9bfee7af2cae76",
+    "builder_git_blob_sha1_unchanged": "bd82b9267b51a21065e4c1688ce4feb9feb94a5c"
+  },
+  "changes": {
+    "removed_push_trigger": true,
+    "added_same_repository_pull_request_marker_trigger": true,
+    "execution_job_changed": false,
+    "candidate_parameters_changed": false,
+    "cached_history_identity_changed": false,
+    "baseline_reproduction_gates_changed": false,
+    "binding_policy_gates_changed": false,
+    "aggregation_contract_changed": false
+  },
+  "authorization_boundary": {
+    "2025_H1_execution_authorized": true,
+    "2025_H2_execution_authorized": false,
+    "live_orders_authorized": false
+  }
+}
