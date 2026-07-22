@@ -1,0 +1,77 @@
+{
+  "2025_gate_status": {
+    "2025_H1_execution_authorized": false,
+    "2025_H2_execution_authorized": false,
+    "MT4_parity_passed": false,
+    "exact_candidate_available": true
+  },
+  "access_authorization": {
+    "2024_H1_MT4_parity": true,
+    "2024_H2_MT4_parity": true,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "active_family": {
+    "diagnostic_path": "docs/research/usdjpy_2024_full_year_recovery_path_diagnostic_v1.md",
+    "eligible_candidate_labels": 6,
+    "eligible_equivalence_classes": 4,
+    "equivalence_classes": 43,
+    "evaluated_candidate_labels": 63,
+    "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "preregistration_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_prereg_v2.json",
+    "ranking_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_ranking_summary_v2.json",
+    "result_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_research_result_v2.json",
+    "status": "2024_DEVELOPMENT_PASS_EXACT_SPECIFICATION_FROZEN_FOR_MT4_PARITY"
+  },
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE"
+  ],
+  "current_candidate": {
+    "2024_candidate_pf": 1.429420042591,
+    "2024_changed_positions": 37,
+    "2024_net_delta_jpy": 8058,
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false,
+    "B02_unchanged": true,
+    "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+    "canonical_equivalent_label": "E2_ADAPTIVE_60_90__A15_B5_C20_R0",
+    "direct_MT4_executed": false,
+    "entries_unchanged": true,
+    "rule_summary": "30m<=-15 and 60m<=-5; dynamic unsupported state exits at 60m; dynamic same-direction-supported state exits at 90m only when 90m<=-15 and recovery from 60m is <=0",
+    "status": "FROZEN_PENDING_EXACT_2024_MT4_PARITY",
+    "target_strategy": "F05"
+  },
+  "current_findings": [
+    "Uniform early-adverse exits fail because all nine diagnosed late-recovery positions occurred with unopposed same-direction support.",
+    "Unsupported or conflicted early-adverse positions can be closed at 60 minutes, while same-direction-supported positions require a 90-minute no-recovery confirmation.",
+    "The selected state-adaptive rule improves both 2024 halves, all four quarters, and ten of eleven active months.",
+    "Candidate-adjusted exits alter ten later baseline entry-state labels, but exact dynamic recomputation leaves the selected 37 changed trade keys and candidate P/L unchanged.",
+    "2024 is development evidence; the selected specification is not independently validated."
+  ],
+  "live_order_authorized": false,
+  "next_required_state": {
+    "required_actions": [
+      "implement the exact dynamic state-adaptive rule in the MT4 EA without changing entries or B02",
+      "run 2024 H1 and H2 Rakuten MT4 parity against the frozen 37 changed trade keys, close checkpoints and candidate P/L",
+      "prove dynamic exposure-state transitions and exit-before-entry ordering",
+      "prove baseline entries and B02 outcomes are exact",
+      "build and preflight the reusable 2025 H1 workflow without candidate-specific 2025 execution",
+      "atomically record parity PASS or close the specification before any 2025 access"
+    ],
+    "stage": "EXACT_2024_RESEARCH_TO_MT4_PARITY_AND_REUSABLE_WORKFLOW_PREFLIGHT"
+  },
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "period_roles": {
+    "2024_H1": "DEVELOPMENT_AND_MECHANISM_ANALYSIS",
+    "2024_H2": "DEVELOPMENT_AND_CROSS_REGIME_ANALYSIS",
+    "2025_H1": "FIRST_BINDING_RAKUTEN_MT4_STRESS_GATE",
+    "2025_H2": "FINAL_BINDING_RAKUTEN_MT4_VALIDATION_LOCKED_UNTIL_2025_H1_PASS"
+  },
+  "schema_version": "usdjpy_research_candidate_registry_v6",
+  "status": "ACTIVE_EXACT_2024_DEVELOPMENT_FINALIST_PENDING_MT4_PARITY",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v5.json"
+}

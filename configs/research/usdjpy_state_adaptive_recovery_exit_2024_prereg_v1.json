@@ -1,0 +1,164 @@
+{
+  "diagnostic_disclosure": {
+    "exploratory_counterfactuals_inspected": true,
+    "full_2024_outcomes_inspected": true,
+    "independent_validation_claimed": false,
+    "purpose": "freeze a finite canonical family after mechanism discovery; only 2025 H1 and H2 remain binding",
+    "source_report": "docs/research/usdjpy_2024_full_year_recovery_path_diagnostic_v1.md"
+  },
+  "direct_MT4_authorized_at_this_stage": false,
+  "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+  "formal_2024_development_gates": {
+    "B02_exactly_unchanged": true,
+    "H1_candidate_pf_not_below_baseline": true,
+    "H1_changed_positions_min": 10,
+    "H1_ex_best_two_entry_dates_delta_positive": true,
+    "H1_leave_one_month_out_min_positive": true,
+    "H1_net_delta_positive": true,
+    "H2_candidate_pf_not_below_baseline": true,
+    "H2_changed_positions_min": 20,
+    "H2_ex_best_two_entry_dates_delta_positive": true,
+    "H2_leave_one_month_out_min_positive": true,
+    "H2_net_delta_positive": true,
+    "affected_P2_or_P3_share_min": 0.75,
+    "affected_final_loser_share_min": 0.9,
+    "all_four_calendar_quarter_effects_positive": true,
+    "full_year_benefit_exceeds_harm": true,
+    "full_year_changed_entry_dates_min": 24,
+    "full_year_changed_positions_min": 30,
+    "full_year_negative_effect_months_max": 2,
+    "full_year_positive_effect_months_min": 8,
+    "full_year_trigger_months_min": 8,
+    "largest_positive_entry_date_share_of_benefit_max": 0.25,
+    "prior_candidate_union_overlap_share_max": 0.5,
+    "top_two_positive_entry_date_share_of_benefit_max": 0.4,
+    "winner_harm_share_of_benefit_max": 0.25
+  },
+  "live_order_authorized": false,
+  "mechanisms": [
+    {
+      "candidate_count": 9,
+      "grid": {
+        "A_30m_adverse_pips": [10, 15, 20],
+        "B_60m_adverse_pips": [5, 10, 15]
+      },
+      "mechanism_id": "E1_UNSUPPORTED_60M_ONLY",
+      "rule": "when pips_30m <= -A and pips_60m <= -B, close at 60 minutes only for unsupported entry states; leave same-direction-supported positions unchanged"
+    },
+    {
+      "candidate_count": 54,
+      "grid": {
+        "A_30m_adverse_pips": [10, 15, 20],
+        "B_60m_adverse_pips": [5, 10, 15],
+        "C_90m_adverse_pips": [10, 15, 20],
+        "R_60m_to_90m_max_recovery_pips": [0, 5]
+      },
+      "mechanism_id": "E2_ADAPTIVE_60M_90M",
+      "rule": "apply the E1 60-minute unsupported exit; for same-direction-supported positions with the same initial adverse condition, close at 90 minutes when pips_90m <= -C and pips_90m - pips_60m <= R"
+    }
+  ],
+  "parameter_equivalence": {
+    "canonical_representative_rule": [
+      "prefer A=15 over A=10 or A=20 when tied because it preserves the diagnosed deep-adverse threshold",
+      "prefer B=5 when tied because it is the weakest persistence confirmation",
+      "prefer C equal to A when the threshold labels are behaviorally equivalent",
+      "prefer R=0 when tied because it expresses literal no-recovery without tolerance"
+    ],
+    "collapse_before_selection": true,
+    "definition": "same changed trade keys, same exit checkpoint, and same candidate P/L for every 2024 position"
+  },
+  "period_policy": {
+    "commit": "d88960659fe2d94ff0df323383fd29502e422c2c",
+    "path": "configs/research/usdjpy_period_role_policy_v4.json"
+  },
+  "processing_order": [
+    "at each M15 bar open apply the normal fixed-time-cap exit first",
+    "for still-open F05 positions calculate exact age and executable marked P/L",
+    "at 60 minutes evaluate the frozen initial adverse condition",
+    "if the initial condition is true and entry state is unsupported close at the 60-minute executable price",
+    "if the initial condition is true and entry state is same-direction-supported defer the decision",
+    "at 90 minutes close the deferred position only when the 90-minute adverse and recovery conditions are true",
+    "evaluate new B02 and F05 entries only after all exits"
+  ],
+  "prohibited": [
+    "changing the 63-cell family after canonical reproduction",
+    "adding a signal or volatility exemption from the single harmed winner",
+    "combining with closed S1 S2 S3 Family C or D candidates",
+    "using 2025 H1 or H2 to choose thresholds",
+    "executing candidate-specific 2025 evidence before exact MT4 parity"
+  ],
+  "ranking_order": [
+    "minimum of H1 and H2 ex-best-two-entry-date delta descending",
+    "minimum of H1 and H2 leave-one-month-out delta descending",
+    "minimum calendar-quarter effect descending",
+    "winner harm JPY ascending",
+    "full-year net delta descending",
+    "changed positions ascending",
+    "candidate ID ascending"
+  ],
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2024_prereg_v1",
+  "selection": {
+    "candidate_must_be_reproduced_in_research_and_exact_mt4_parity_before_2025_H1": true,
+    "candidate_must_pass_every_gate": true,
+    "exact_candidate_id_assigned_only_after_all_63_cells_are_reproduced": true,
+    "maximum_finalists": 1
+  },
+  "shared_contract": {
+    "2025_H1_access_authorized": false,
+    "2025_H2_access_authorized": false,
+    "B02_entry_or_exit_change_authorized": false,
+    "F05_entry_change_authorized": false,
+    "candidate_type": "existing_position_state_adaptive_early_failure_exit",
+    "entry_trade_set": "unchanged",
+    "intrabar_fixed_stop_authorized": false,
+    "lot_mode": "fixed_0p01_each",
+    "new_or_extra_entry_authorized": false,
+    "non_target_strategy": "B02",
+    "normal_F05_time_cap": "32 M15 bars",
+    "pip_size": 0.01,
+    "same_direction_supported_states": [
+      "same_direction_stack",
+      "simultaneous_same_direction"
+    ],
+    "target_strategy": "F05",
+    "test_spread_points": 5,
+    "unsupported_entry_states": [
+      "standalone",
+      "opposite_overlap",
+      "mixed_overlap"
+    ]
+  },
+  "source_evidence": {
+    "H1_entry_state_atlas": {
+      "artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981",
+      "artifact_id": 8516049893,
+      "csv_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd",
+      "run_id": 29884556860
+    },
+    "H2_source_mt4_audit": {
+      "artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981",
+      "artifact_id": 8519879009,
+      "audit_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+      "run_id": 29895387329
+    },
+    "diagnostic_rows": {
+      "materialization": "retained in the immutable analysis packet; diagnostic findings are recorded in docs/research/usdjpy_2024_full_year_recovery_path_diagnostic_v1.md",
+      "rows": 63,
+      "sha256": "bef4bffd5660f9ab28ccb78e302c2fcde6689b8e6cf8430fbaffcc6caa4e6462"
+    },
+    "prior_candidate_union": {
+      "materialization": "derived from the frozen H1/H2 changed-trade evidence for S1, S2, S3 and Family C; exact source identities are bound in the source manifest",
+      "rows": 191,
+      "sha256": "84b9351e512246c37d7b0fdef2018fefacc2ec69c05edaf6d51aab93bc103083"
+    },
+    "recovery_population": {
+      "H1_rows": 428,
+      "H2_rows": 494,
+      "materialization": "deterministically derived from the frozen H1 Entry-State Atlas and H2 Rakuten MT4 audit; exact reconstruction is required in the 2024 MT4 parity workflow",
+      "rows": 922,
+      "sha256": "792bd3efe830e4f22ce807c8dd7c640bb66f985d65b5ea3988d7c9abb83da380"
+    }
+  },
+  "status": "FROZEN_AFTER_OUTCOME_INFORMED_2024_MECHANISM_DIAGNOSTIC_BEFORE_CANONICAL_GRID_REPRODUCTION",
+  "total_candidate_count": 63
+}
