@@ -1,0 +1,109 @@
+{
+  "schema_version": "usdjpy_period_role_policy_v4",
+  "status": "ACTIVE",
+  "effective_after_research_commit": "5c14ebd323e66a4ebdf3b9e81d888c281b36ca17",
+  "supersedes_period_roles_in": [
+    "configs/research/usdjpy_three_stage_gate_policy_v2.json",
+    "configs/research/usdjpy_validation_operating_contract_v3.json"
+  ],
+  "reason": {
+    "triggering_family": "D_EARLY_FAILURE_PERSISTENCE",
+    "h1_result_path": "configs/research/usdjpy_early_failure_persistence_2024h1_result_v1.json",
+    "formal_h1_eligible_count": 2,
+    "leading_h1_changed_positions": 17,
+    "fragility_flag": "changed_positions_below_20",
+    "decision": "The mechanism is coherent but the exact threshold is not identifiable from 2024 H1 alone. The known 2024 H2 evidence is already non-pristine because several closed candidates were tested on it; retaining it as a one-shot holdout now provides less value than using it to improve mechanism and threshold identification."
+  },
+  "period_roles": {
+    "2024_H1": {
+      "role": "DEVELOPMENT_AND_MECHANISM_ANALYSIS",
+      "candidate_selection_allowed": true,
+      "parameter_selection_allowed_only_within_preregistered_finite_families": true
+    },
+    "2024_H2": {
+      "role": "DEVELOPMENT_AND_CROSS_REGIME_ANALYSIS",
+      "candidate_selection_allowed": true,
+      "new_access_condition": "A family-specific full-year development preregistration must be merged before candidate-specific H2 analysis.",
+      "binding_validation_status": "RETIRED"
+    },
+    "2025_H1": {
+      "role": "FIRST_BINDING_ADVERSE_REGIME_STRESS_GATE",
+      "execution": "Rakuten MT4 Strategy Tester",
+      "candidate_specific_access_before_exact_freeze": false,
+      "python_only_substitution": false,
+      "note": "The baseline and closed-candidate diagnostics are known, so this is not a pristine blind holdout. It remains binding because the D-family exact specification has not been executed on candidate-specific 2025 H1 evidence."
+    },
+    "2025_H2": {
+      "role": "FINAL_BINDING_VALIDATION_GATE",
+      "execution": "Rakuten MT4 Strategy Tester",
+      "unlock_condition": "UNCHANGED_2025_H1_PASS",
+      "candidate_specific_access_before_unlock": false,
+      "python_only_substitution": false,
+      "status": "OPENED_BY_POLICY_BUT_LOCKED"
+    }
+  },
+  "development_controls": {
+    "all_2024_candidate_families_must_be_preregistered": true,
+    "finite_grid_required": true,
+    "post_H2_grid_expansion_within_same_family": false,
+    "separate_H1_H2_and_full_year_metrics_required": true,
+    "parameter_equivalence_required": true,
+    "rolling_month_and_leave_block_out_analysis_required": true,
+    "prior_candidate_overlap_required": true,
+    "one_finalist_per_family": true,
+    "exact_specification_frozen_only_after_full_year_analysis": true
+  },
+  "binding_sequence": [
+    "freeze exact specification after 2024 full-year development",
+    "preflight reusable MT4 workflow without 2025 candidate access",
+    "execute unchanged exact specification on 2025 H1 with Rakuten MT4",
+    "if and only if every 2025 H1 gate passes execute the same specification on 2025 H2 with Rakuten MT4",
+    "record pass or closure atomically in Research"
+  ],
+  "2025_H1_minimum_gates": {
+    "candidate_net_positive": true,
+    "candidate_net_above_baseline": true,
+    "candidate_pf_at_least_1": true,
+    "candidate_pf_not_below_baseline": true,
+    "tick_equity_drawdown_below_baseline": true,
+    "minimum_tick_equity_above_baseline": true,
+    "january_to_march_net_nonnegative": true,
+    "april_to_june_net_nonnegative": true,
+    "both_half_period_deltas_positive": true,
+    "positive_effect_months_min": 4,
+    "negative_effect_months_max": 1,
+    "ex_best_two_entry_dates_delta_positive": true,
+    "target_strategy_delta_positive": true,
+    "non_target_strategy_unchanged_or_nonnegative": true,
+    "benefit_exceeds_harm": true
+  },
+  "2025_H2_minimum_gates": {
+    "candidate_net_positive": true,
+    "candidate_net_above_baseline": true,
+    "candidate_pf_at_least_1": true,
+    "candidate_pf_not_below_baseline": true,
+    "tick_equity_drawdown_not_above_baseline": true,
+    "minimum_tick_equity_not_below_baseline": true,
+    "q3_net_nonnegative": true,
+    "q4_net_nonnegative": true,
+    "q3_delta_nonnegative": true,
+    "q4_delta_nonnegative": true,
+    "positive_effect_months_min": 4,
+    "negative_effect_months_max": 1,
+    "ex_best_two_entry_dates_delta_positive": true,
+    "target_strategy_delta_positive": true,
+    "non_target_strategy_unchanged_or_nonnegative": true,
+    "benefit_exceeds_harm": true
+  },
+  "failure_actions": {
+    "2025_H1_FAIL": "close exact specification; do not access candidate-specific 2025 H2 evidence",
+    "2025_H2_FAIL": "close exact specification; no repair from 2025 evidence",
+    "success": "THREE_PERIOD_DEVELOPMENT_STRESS_VALIDATION_PASS"
+  },
+  "closed_candidate_policy": {
+    "reopen_closed_candidates": false,
+    "combine_closed_candidates": false,
+    "reuse_H2_results_to_repair_closed_exact_specs": false
+  },
+  "live_order_authorized": false
+}
