@@ -1,0 +1,39 @@
+{
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2025h1_registered_workflow_amendment_v1",
+  "status": "FROZEN_BEFORE_REGISTERED_WORKFLOW_MERGE_AND_MARKER_RUN",
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "binding_gate_freeze_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_freeze_v1.json",
+  "previous_trigger_amendment_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_trigger_transport_amendment_v1.json",
+  "reason": "The dedicated 2025 H1 workflow did not register a pull-request Run. The unchanged binding job is therefore attached as an independently conditioned second job to a workflow that demonstrably creates a Run on every newly opened pull request.",
+  "core": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "pull_request": 141,
+    "frozen_head_commit": "3f62e2fed322300a3fa72aa3666c9cc67781199b",
+    "registered_workflow_path": ".github/workflows/assemble_usdjpy_v1_parity_packet_v1.yml",
+    "registered_workflow_previous_git_blob_sha1": "b92ecd068cfef58a40319a86824a146ff6e85185",
+    "registered_workflow_amended_git_blob_sha1": "63b2d0326cc69f62f8164af962aeb7f557a11aaa",
+    "marker_branch_exact": "agent/run-family-e-2025h1-binding-gate-v2",
+    "marker_path": "configs/run_markers/usdjpy_family_e_2025h1_binding_gate_pr_v2.json",
+    "orchestrator_git_blob_sha1_unchanged": "c2e8eb1337a4673cc2c92d616079d32d6f8cd6a9",
+    "evaluator_git_blob_sha1_unchanged": "f0c1a7052070906f2222f8f35a9bfee7af2cae76",
+    "builder_git_blob_sha1_unchanged": "bd82b9267b51a21065e4c1688ce4feb9feb94a5c",
+    "execution_package_main_commit": "ed67d130e93d6c26813b13cf7ee9fa5b0896cb20"
+  },
+  "job_isolation": {
+    "existing_assemble_job_changed": false,
+    "new_job_id": "family-e-2025h1-binding-gate",
+    "new_job_runs_only_on_exact_head_ref": "agent/run-family-e-2025h1-binding-gate-v2",
+    "runner_labels": ["self-hosted", "Windows", "X64", "mt4-ui", "rakuten", "interactive"],
+    "shared_mt4_concurrency_group": "onamae-mt4-ui-single"
+  },
+  "unchanged_contract": {
+    "candidate_parameters_changed": false,
+    "candidate_hashes_changed": false,
+    "cached_history_identity_changed": false,
+    "baseline_reproduction_gates_changed": false,
+    "binding_policy_gates_changed": false,
+    "aggregation_contract_changed": false,
+    "2025_H2_access_authorized": false,
+    "live_orders_authorized": false
+  }
+}
