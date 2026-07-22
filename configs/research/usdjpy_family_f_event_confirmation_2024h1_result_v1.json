@@ -1,0 +1,56 @@
+{
+  "schema_version": "usdjpy_family_f_event_confirmation_2024h1_result_v1",
+  "status": "COMPLETE_NO_RESEARCH_ELIGIBLE_CANDIDATE",
+  "decision": "FAIL_NO_H1_FINALIST",
+  "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+  "research_preregistration_commit": "143bcb7b6415f4fa9f4bb00ddffd73075e1eed7f",
+  "period": "2024_H1",
+  "baseline": {
+    "trades": 428,
+    "B02_trades": 97,
+    "F05_trades": 331,
+    "net_jpy": 22797,
+    "pf": 1.3774150290548484
+  },
+  "candidate_count": 54,
+  "research_eligible_count": 0,
+  "H1_finalist": null,
+  "H2_access_authorized": false,
+  "H2_accessed": false,
+  "2025_accessed_for_family_F": false,
+  "best_headline_candidate": {
+    "candidate_id": "F_C5_A480_N3_B1",
+    "candidate_net_jpy": 27212,
+    "candidate_pf": 1.859833,
+    "net_delta_jpy": 4415,
+    "Q1_delta_jpy": 3476,
+    "Q2_delta_jpy": 939,
+    "removed_F05_trades": 158,
+    "retained_F05_trades": 173,
+    "positive_effect_months": 3,
+    "negative_effect_months": 3,
+    "ex_best_two_entry_dates_delta_jpy": -1422,
+    "leave_one_month_out_min_delta_jpy": -1376,
+    "monthly_effect_jpy": {
+      "2024-01": 5791,
+      "2024-02": -770,
+      "2024-03": -1545,
+      "2024-04": 2144,
+      "2024-05": -2495,
+      "2024-06": 1290
+    },
+    "failed_gates": [
+      "positive_effect_months_min",
+      "negative_effect_months_max",
+      "ex_best_two_entry_dates_delta_positive",
+      "leave_one_month_out_min_delta_positive"
+    ]
+  },
+  "decision_action": {
+    "family_F_status": "CLOSED_2024_H1_ROBUSTNESS_FAIL",
+    "evaluate_2024_H2": false,
+    "activate_2023_fast_M1_bar_fallback": true,
+    "tick_data_required_for_initial_2023_stage": false,
+    "live_orders_authorized": false
+  }
+}
