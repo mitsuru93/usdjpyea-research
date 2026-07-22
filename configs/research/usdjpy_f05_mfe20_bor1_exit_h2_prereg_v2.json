@@ -1,0 +1,205 @@
+{
+  "schema_version": "usdjpy_f05_mfe20_bor1_exit_h2_prereg_v1",
+  "technical_revision": 2,
+  "status": "FROZEN_BEFORE_H2_EXECUTION",
+  "candidate_id": "F05_MFE20_BOR1_EXIT_v1",
+  "exact_specification_exposure_ordinal": 1,
+  "supersedes_preregistration": {
+    "path": "configs/research/usdjpy_f05_mfe20_bor1_exit_h2_prereg_v1.json",
+    "commit": "a86a153e95d2698fbdaf0e492a102f3101b7c0dc",
+    "git_blob_sha1": "5ce3ca36b73e43630fe7c6850868099e63929251"
+  },
+  "technical_repair": {
+    "superseded_run_id": 29894813832,
+    "superseded_artifact_id": 8519567054,
+    "superseded_artifact_digest": "sha256:bec8837e1205ed998e57cceec2adc4be4b9d94d0b91d21c2ac327c084dd04fad",
+    "failure_step": "Verify archived H1 exact MT4 parity",
+    "repair": "add source run-id 29893833236 to actions/download-artifact for H1 parity artifact 8519210754",
+    "HST_verified_before_failure": false,
+    "H2_baseline_executed_before_failure": false,
+    "H2_candidate_executed_before_failure": false,
+    "candidate_specific_H2_result_generated": false,
+    "candidate_logic_changed": false,
+    "gate_changed": false,
+    "parameter_changed": false
+  },
+  "validation_policy": {
+    "path": "configs/research/usdjpy_three_stage_gate_policy_v2.json",
+    "commit": "b136d348738d420adb65bd9ee72a24c230103dde",
+    "git_blob_sha1": "2e8d3cf6a286d0068c4d3bb145960a7e73499e7b"
+  },
+  "development_period": {
+    "start_utc": "2024-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-07-01T00:00:00Z",
+    "role": "development_and_exact_mt4_parity"
+  },
+  "validation_period": {
+    "start_utc": "2024-07-01T00:00:00Z",
+    "end_utc_exclusive": "2025-01-01T00:00:00Z",
+    "role": "binding_validation",
+    "policy": "the unchanged exact specification is evaluated once after technical pre-H2 evidence verification succeeds; no H2 sweep, threshold change, scope change, processing-order change, gate change or combination"
+  },
+  "candidate_rule": {
+    "target_strategy": "F05",
+    "entry_set": "unchanged",
+    "processing_order": [
+      "normal fixed-time-cap exits",
+      "structural exits for still-open F05 positions",
+      "B02 and F05 new-entry evaluation"
+    ],
+    "prior_marked_mfe_threshold_pips": 20.0,
+    "marked_mfe_definition": "maximum executable marked P/L at M15 bar-open boundaries after entry and strictly before current decision; long uses Bid and short uses Ask with fixed five-point spread",
+    "breakout_level_definition": "entry-specific F05 breakout level stored from the accepted signal: current_high for long, current_low for short",
+    "invalidation_condition": "latest completed M15 close is at least 1.0 pip inside the breakout level against position direction",
+    "consecutive_completed_closes": 1,
+    "exit_time": "current M15 open",
+    "exit_price": "Bid for long; Ask for short",
+    "B02": "unchanged"
+  },
+  "base_contract": {
+    "symbol": "USDJPY",
+    "period": "M15",
+    "mt4_model": 0,
+    "spread_points": 5,
+    "virtual_initial_balance_jpy": 100000,
+    "virtual_leverage": 25,
+    "virtual_stopout_level_percent": 100,
+    "B02_lots": 0.01,
+    "F05_lots": 0.01,
+    "B02_time_cap_bars": 48,
+    "F05_time_cap_bars": 32,
+    "broker_side_sl": 0,
+    "broker_side_tp": 0,
+    "hard_excluded_entry_window": "unchanged DST-aware accepted Asia-preopen / New-York-rollover rule",
+    "execution_engine": "Rakuten MT4 Strategy Tester on interactive self-hosted Windows runner"
+  },
+  "h1_exact_mt4_parity": {
+    "status": "PASS",
+    "source_mt4_run_id": 29893008498,
+    "source_mt4_artifact_id": 8518973150,
+    "source_mt4_artifact_digest": "sha256:ed1701d68710863a0bb60c1af7686ff3c0dc9c0e17a70ba1af7586012e7d3c0b",
+    "evaluator_repair_run_id": 29893833236,
+    "evaluator_repair_artifact_id": 8519210754,
+    "evaluator_repair_artifact_digest": "sha256:76d1c5f0cffb86e90f5243f3d54409b645dd9c6a16ce77bcad140f021febe622",
+    "result_sha256": "14a3f704d239d1d872ca1e0fe6a204ec0af5dcdb0fab66992c94bf864603cf02",
+    "changed_trades_sha256": "bd32e55aabf7118857d2160363123f1e7f19c1c006b22d57449e5b1d883ecf1d",
+    "baseline": {
+      "opened": 429,
+      "closed": 428,
+      "net_jpy": 22797,
+      "pf": 1.3774150290548484,
+      "tick_dd_jpy": 11159,
+      "minimum_tick_equity_jpy": 97597
+    },
+    "candidate": {
+      "opened": 429,
+      "closed": 428,
+      "net_jpy": 26119,
+      "pf": 1.4656955389936883,
+      "tick_dd_jpy": 11079,
+      "minimum_tick_equity_jpy": 99256
+    },
+    "changed_positions": 24,
+    "net_delta_jpy": 3322,
+    "candidate_logic_changed": false,
+    "selection_or_parameter_change": false
+  },
+  "accepted_reusable_h2_baseline_contract": {
+    "opened": 494,
+    "closed": 493,
+    "closed_net_jpy": 38358,
+    "closed_pf": 1.3549628916732988,
+    "period_end_marked_total_net_jpy": 38109,
+    "complete_outcome_pf": 1.3518479194172337,
+    "tick_dd_jpy": 19603,
+    "minimum_tick_equity_jpy": 95271,
+    "final_equity_jpy": 138109,
+    "B02": {"opened": 102, "closed": 102, "closed_net_jpy": 15627},
+    "F05": {"opened": 392, "closed": 391, "closed_net_jpy": 22731},
+    "monthly_closed_net_jpy": {
+      "2024-07": 5722,
+      "2024-08": 12899,
+      "2024-09": -12054,
+      "2024-10": 16236,
+      "2024-11": 7830,
+      "2024-12": 7725
+    }
+  },
+  "outcome_comparison_contract": {
+    "canonical_trade_key": ["strategy", "signal_utc", "entry_utc", "side"],
+    "entry_key_relation": "candidate opened keys must exactly equal baseline opened keys",
+    "complete_outcome_definition": "each opened key is represented by closed P/L or period_end_open_position floating P/L at 2024 H2 end",
+    "changed_outcome_definition": "only F05 keys carrying the frozen candidate structural_exit audit detail may differ",
+    "unaffected_outcome_rule": "every non-structural outcome kind, time and P/L remains identical",
+    "monthly_and_quarter_definition": "closed-trade P/L grouped by close month; Q3 July-September and Q4 October-December",
+    "entry_date_concentration_definition": "complete-outcome candidate-minus-baseline effect aggregated by entry UTC date"
+  },
+  "frozen_evidence": {
+    "research_freeze_v2": {
+      "path": "configs/research/usdjpy_f05_mfe20_bor1_exit_h1_freeze_v2.json",
+      "commit": "4edb8caacc48218a704f9cc6a9d252243e79d59c",
+      "git_blob_sha1": "dbe1b1f0a1a263e6fad34a657a0c8a4501c61ab2"
+    },
+    "core_reference_commit_before_run_marker": "b99b473615474873e542378269ee322094f74b52",
+    "core_git_blob_sha1": {
+      "tools/build_usdjpy_f05_mfe20_bor1_exit_v1.py": "e1d7f029fa62d00945fc6ea347886d563c225074",
+      "tools/evaluate_usdjpy_f05_mfe20_bor1_exit_h1_v1.py": "90e65300747e71193cfcee59ecca33888cf8451e",
+      "tools/evaluate_usdjpy_f05_mfe20_bor1_exit_h2_v1.py": "e0e18c6931b5c30c7982aa080b3826514a4400c3",
+      ".github/workflows/mt4_usdjpy_f05_mfe20_bor1_exit_h2_validation_v2.yml": "6a1fd38c3dae7771a785c0cdfe9318e47bc4acc9",
+      "mql4/Experts/MT4_USDJPY_B02_F05_Portfolio_Tester_v1.mq4": "ceaca2c0e3a259451a879a90deb7929a1941dd7e",
+      "mql4/Experts/MT4_USDJPY_B02_F05_Portfolio_Tester_2025H1_v1.mq4": "fe7e96b0d4ae22e585b09074959cb3b734994b22",
+      "configs/mt4/usdjpy/portfolio/JPY100K_fixed_001_each_v1.set": "f26468ea6d7cf29bb77c0eaaf73e44085e3c085f",
+      "scripts/mt4/Invoke-MetaEditorCompileSmoke.ps1": "e1c13f9faff805276700ef8434aeaa278f494acc",
+      "scripts/mt4/Invoke-Mt4PortableHistoryProbe.ps1": "d91c2ba40dfd7b168e68453faba144f332d987a9"
+    },
+    "generated_candidate_base_mq4_sha256": "393cbd019539ed98f4c1acbb5873fbe918dd9d9b9f6b381b7ffea049c21c303b",
+    "generated_candidate_wrapper_mq4_sha256": "048850aac57e8486832f69c127d3b77bea2ed82cba6124809d224750bd04e498",
+    "installed_usdjpy15_hst_sha256": "7a20a337e3b002eb55b2440d2be4f00ff770845aeb76d85f67550bc98a8a5ef7",
+    "ex4_hash_binding": false
+  },
+  "fixed_h2_gates": {
+    "decision_rule": "PASS only if every binding gate implemented by the frozen evaluator passes; otherwise the exact specification closes as FAIL",
+    "positive_effect_months_minimum": 3,
+    "negative_effect_months_maximum": 1,
+    "largest_positive_entry_date_share_maximum": 0.5,
+    "required": [
+      "accepted reusable H2 baseline contract is reproduced exactly",
+      "candidate entry set exactly equals baseline entry set",
+      "exactly one candidate_contract row is present",
+      "all changed outcomes reconcile to F05 structural_exit rows carrying the frozen candidate ID",
+      "every unaffected outcome kind, time and P/L remains unchanged",
+      "B02 remains exactly unchanged",
+      "candidate closed net is positive and exceeds baseline",
+      "candidate complete marked net is positive and exceeds baseline",
+      "candidate closed PF and complete-outcome PF are each at least baseline",
+      "direct tick-equity DD and minimum equity are not worse",
+      "candidate final equity exceeds baseline",
+      "candidate Q3 and Q4 are positive and both deltas are nonnegative",
+      "at least three effect months are positive and at most one is negative",
+      "F05 complete-outcome delta is positive",
+      "ex-best-two positive entry-date delta is positive",
+      "largest positive entry-date share is at most 50 percent",
+      "benefit exceeds harm",
+      "zero order-send and order-close failures"
+    ]
+  },
+  "selection_boundary": {
+    "2024_h2_accessed": false,
+    "2024_h2_used_to_define_candidate": false,
+    "2024_h2_parameter_search_authorized": false,
+    "2024_h2_gate_change_authorized": false,
+    "threshold_change_authorized": false,
+    "strategy_scope_change_authorized": false,
+    "processing_order_change_authorized": false,
+    "combined_rule_authorized": false,
+    "2025_h1_accessed": false,
+    "2025_h1_execution_authorized": false,
+    "2025_h2_accessed": false,
+    "live_orders_authorized": false
+  },
+  "post_h2_rule": {
+    "H2_PASS": "freeze the unchanged H2 identities and result, preregister all 2025 H1 gates, then execute the unchanged candidate with Rakuten MT4 Strategy Tester on accepted 2025 H1 history",
+    "H2_FAIL": "close F05_MFE20_BOR1_EXIT_v1 without H2 repair, retuning, gate change or 2025 H1 execution"
+  },
+  "live_order_authorized": false
+}
