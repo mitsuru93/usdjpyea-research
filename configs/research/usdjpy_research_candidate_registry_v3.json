@@ -1,12 +1,12 @@
 {
   "schema_version": "usdjpy_research_candidate_registry_v3",
-  "status": "ACTIVE_NO_CURRENT_CANDIDATE",
+  "status": "ACTIVE_H1_FAMILY_PREREGISTERED",
   "operating_contract": "configs/research/usdjpy_validation_operating_contract_v3.json",
   "period_roles": {
     "2024_H1": "mechanism_diagnosis_candidate_development_and_exact_mt4_parity",
-    "2024_H2": "binding_validation",
-    "2025_H1": "rakuten_mt4_binding_stress_after_h2_pass",
-    "2025_H2": "closed"
+    "2024_H2": "binding_validation_pending_period_role_review",
+    "2025_H1": "rakuten_mt4_binding_stress_after_preceding_gate",
+    "2025_H2": "closed_pending_explicit_period_role_change"
   },
   "accepted_baselines": {
     "2024_H1": {
@@ -104,6 +104,30 @@
       "2025_H1_accessed": false
     }
   ],
+  "completed_diagnostics": [
+    {
+      "diagnostic_id": "H1_RESIDUAL_MECHANISM_DIAGNOSTIC_v1",
+      "status": "PASS_MECHANISM_IDENTIFIED",
+      "path": "docs/research/usdjpy_2024h1_residual_mechanism_diagnostic_v1.md",
+      "finding": "prior candidates concentrate on F05 P1 while persistent early-adverse F05 P2/P3 remains materially untreated",
+      "2024_H2_new_evidence_accessed": false,
+      "2025_H1_candidate_specific_accessed": false
+    }
+  ],
+  "active_family": {
+    "family_id": "D_EARLY_FAILURE_PERSISTENCE",
+    "status": "PREREGISTERED_PENDING_FORMAL_H1_EVALUATION",
+    "preregistration_path": "configs/research/usdjpy_early_failure_persistence_2024h1_prereg_v1.json",
+    "target_strategy": "F05",
+    "candidate_count": 12,
+    "mechanisms": [
+      "D1_SINGLE_30M_DEEP_ADVERSE",
+      "D2_PERSISTENT_30M_60M_ADVERSE"
+    ],
+    "direct_mt4_executed": false,
+    "H2_execution_authorized": false,
+    "2025_H1_execution_authorized": false
+  },
   "diagnostic_only_2025_h1_evidence": [
     {
       "purpose": "closed_S1_S3_2025_H1_comparison",
@@ -111,21 +135,30 @@
       "artifact_id": 8514811165,
       "candidate_selection_authorized": false,
       "parameter_change_authorized": false,
-      "note": "2025 H1 is not pristine blind, but candidate-specific execution remains binding and locked until unchanged H2 PASS"
+      "note": "2025 H1 is not pristine blind, but candidate-specific execution remains binding and locked until the preceding gate and period-role policy are fixed"
     }
   ],
   "current_candidate": null,
   "next_required_state": {
-    "stage": "S1_H1_BASELINE_AND_MECHANISM_DIAGNOSIS",
-    "required_before_new_grid": [
-      "mechanism-specific H1 diagnostic report",
-      "loss-path and winner-sacrifice attribution",
-      "prior-candidate overlap matrix",
-      "parameter-identifiability plan",
-      "2025 H1 readiness thesis without candidate-specific 2025 execution"
+    "stage": "S3_H1_RESEARCH_SCREEN_AND_PARAMETER_IDENTIFIABILITY",
+    "required_action": "run the frozen 12-cell D_EARLY_FAILURE_PERSISTENCE evaluator on immutable Entry-State Atlas v2",
+    "required_outputs": [
+      "all candidate metrics",
+      "parameter equivalence classes",
+      "path and exposure attribution",
+      "prior-candidate overlap",
+      "gate margins",
+      "fragility classification",
+      "period-role review recommendation"
     ],
     "H2_execution_authorized": false,
     "2025_H1_execution_authorized": false
+  },
+  "period_role_review": {
+    "decision": "DEFERRED_UNTIL_FORMAL_D_FAMILY_H1_RESULT",
+    "current_default": "retain_2024_H2_as_binding_validation",
+    "alternative_under_review": "use_2024_H1_H2_as_development_2025_H1_as_stress_and_2025_H2_as_final_validation",
+    "no_new_H2_access_before_decision": true
   },
   "combination_policy": {
     "authorized_now": false,
