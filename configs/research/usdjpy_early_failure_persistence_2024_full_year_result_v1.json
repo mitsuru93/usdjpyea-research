@@ -1,0 +1,103 @@
+{
+  "schema_version": "usdjpy_early_failure_persistence_2024_full_year_result_v1",
+  "status": "CLOSED_NO_FULL_YEAR_ELIGIBLE_SPECIFICATION",
+  "family_id": "D_EARLY_FAILURE_PERSISTENCE",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "preregistration": "configs/research/usdjpy_early_failure_persistence_2024_full_year_development_prereg_v1.json",
+  "source": {
+    "H1_atlas_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd",
+    "H2_atlas_result": "configs/research/usdjpy_2024h2_d_entry_state_atlas_v1_result.json",
+    "H2_atlas_sha256": "759a17e3567de900c98577e9a72b8c9abc5913077de3edffe827d69950d52940",
+    "H1_prior_union_sha256": "0877086e34723cdbebf8ac8544a22f9a0c4d8afa33290649d3c404e57fa83580",
+    "H2_prior_union_sha256": "e253856a8092d088b9bfee4ea315a14af7d79b5b5804409e2e15e008b930da00",
+    "evaluator_sha256": "cd385776075a5d1ca7fb17ed5b34366de17346f1405e3211822f5c98f22be502",
+    "result_json_sha256": "97c7817e4420cb8b38b3aaa4b81556cae26d16e170ce7863fd0b96baaf14c8a1",
+    "candidate_summary_sha256": "dcf252588622accc728a10fe22926c3b184d8fb52c2ab19327a276ca9f220fa9"
+  },
+  "evaluation": {
+    "candidate_count": 12,
+    "parameter_equivalence_class_count": 12,
+    "full_year_eligible_count": 0,
+    "grid_expanded_after_H2": false,
+    "selected_candidate_id": null
+  },
+  "leading_H1_cell_full_year_result": {
+    "candidate_id": "D2_PERSISTENT_30M_60M_ADVERSE__A_30m_adverse_pips_15__B_60m_adverse_pips_5",
+    "H1": {
+      "changed_positions": 17,
+      "net_delta_jpy": 2416,
+      "ex_best_two_delta_jpy": 780,
+      "leave_one_month_out_min_jpy": 869
+    },
+    "H2": {
+      "changed_positions": 46,
+      "net_delta_jpy": -751,
+      "ex_best_two_delta_jpy": -2883,
+      "leave_one_month_out_min_jpy": -3756,
+      "benefit_jpy": 10768,
+      "harm_jpy": 11519,
+      "positive_effect_months": 4,
+      "negative_effect_months": 2
+    },
+    "full_year": {
+      "changed_positions": 63,
+      "net_delta_jpy": 1665,
+      "candidate_pf": 1.3928365143144148,
+      "positive_effect_months": 9,
+      "negative_effect_months": 3,
+      "affected_final_loser_share": 0.8571428571428571,
+      "affected_P2_or_P3_share": 0.7142857142857143
+    },
+    "failed_full_year_gates": [
+      "H2_net_delta_positive",
+      "H2_ex_best_two_delta_positive",
+      "H2_leave_one_month_out_min_positive",
+      "full_year_negative_effect_months_max_2"
+    ]
+  },
+  "H2_mechanism_attribution_for_leading_H1_cell": {
+    "changed_positions": 46,
+    "final_winners": 8,
+    "final_losers": 38,
+    "path_counts": {
+      "P1_GIVEBACK_TO_LOSS": 9,
+      "P2_MINOR_FAVORABLE_THEN_LOSS": 3,
+      "P3_NEVER_PROFITABLE": 26,
+      "WINNER": 8
+    },
+    "effect_by_path_jpy": {
+      "P1_GIVEBACK_TO_LOSS": 1579,
+      "P2_MINOR_FAVORABLE_THEN_LOSS": 678,
+      "P3_NEVER_PROFITABLE": 7123,
+      "WINNER": -10131
+    },
+    "effect_by_month_jpy": {
+      "2024-07": 1572,
+      "2024-08": -6183,
+      "2024-09": 3005,
+      "2024-10": 40,
+      "2024-11": -232,
+      "2024-12": 1047
+    },
+    "largest_harmful_entry_dates_jpy": {
+      "2024-08-02": -5163,
+      "2024-08-05": -2964
+    },
+    "interpretation": "The rule continued to protect persistent P3 failures, but in H2 it also exited eight positions that recovered after the first hour and finished profitable. Those late-recovery winners exceeded the saved loss."
+  },
+  "family_level_finding": {
+    "all_H2_net_deltas_negative": true,
+    "best_H2_net_delta_jpy": -751,
+    "worst_H2_net_delta_jpy": -5736,
+    "conclusion": "No depth or persistence threshold in the preregistered 12-cell family distinguishes permanent early failure from temporary first-hour adverse movement across both 2024 halves."
+  },
+  "research_handling": {
+    "family_status": "CLOSED_2024_DEVELOPMENT_FAIL",
+    "exact_candidate_frozen": false,
+    "direct_MT4_execution_authorized": false,
+    "2025_H1_access_authorized": false,
+    "2025_H2_access_authorized": false,
+    "next_research_question": "Identify entry-state or post-entry recovery features that distinguish persistent P3 failure from first-hour adverse positions that later recover strongly."
+  },
+  "live_order_authorized": false
+}
