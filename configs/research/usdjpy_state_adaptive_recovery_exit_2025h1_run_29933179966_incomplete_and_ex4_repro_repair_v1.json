@@ -1,0 +1,67 @@
+{
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2025h1_run_incomplete_and_ex4_repro_repair_v1",
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "run": {
+    "run_id": 29933179966,
+    "job_id": 88967883275,
+    "pull_request": 147,
+    "marker_head_commit": "f50f4bbe2b9e699a8e9a8910b76721cb18616145",
+    "status": "INCOMPLETE",
+    "terminal_stage": "BUILD_AND_COMPILE",
+    "artifact_id": 8534982452,
+    "artifact_digest": "sha256:261d74d1940b96582852174845f27a54912cccfaf9026ba219137c3a664adef8",
+    "receipt_issue": 148,
+    "baseline_compile_success": true,
+    "candidate_compile_success": true,
+    "baseline_compile_errors": 0,
+    "candidate_compile_errors": 0,
+    "baseline_compile_warnings": 0,
+    "candidate_compile_warnings": 0,
+    "2025_H1_strategy_tester_runs_started": 0,
+    "candidate_specific_trade_or_pl_evidence_produced": false,
+    "2025_H2_accessed": false
+  },
+  "source_identity": {
+    "candidate_base_mq4_sha256_2024_and_2025": "95740f62f03a791613593d200e1cb2762a2f4cd223f417f7d4c242fd5815465b",
+    "candidate_wrapper_mq4_sha256_2024_and_2025": "d956f54dc7c61c9b22712c32ab10a768911fe8526cdab68d38fdd932a3fae29b",
+    "source_exact_across_compiles": true,
+    "runner_name_both_runs": "onamae-mt4-ui-01",
+    "compile_target_relative_path_both_runs": "MQL4/Experts/_automation/compile-smoke/MT4_USDJPY_B02_F05_E2_A15_B5_C15_R0_Tester_v1.ex4"
+  },
+  "ex4_recompile_evidence": {
+    "binding_2024_run_id": 29924434439,
+    "binding_2024_ex4_sha256": "a441141b5e51fb70de94cc3ca4829b95d669ff8ccefefd02bc471d110f4ac2c8",
+    "binding_2024_ex4_size_bytes": 63506,
+    "2025_attempt_run_id": 29933179966,
+    "2025_attempt_ex4_sha256": "4c46edf480e6e99f761f253af32c762399051bf606b8bc92c5043707385422e9",
+    "2025_attempt_ex4_size_bytes": 63480,
+    "conclusion": "Byte-exact EX4 output is not reproducible across MetaEditor recompilations despite exact Base and Wrapper MQ4 source hashes and successful zero-error compilation."
+  },
+  "technical_gate_amendment": {
+    "core_pull_request": 149,
+    "core_frozen_head_commit": "3fe981e36539a57ae530f15ffc7170852d499520",
+    "orchestrator_wrapper_path": "scripts/mt4/Invoke-UsdjpyFamilyE2025H1GateV2.ps1",
+    "orchestrator_wrapper_git_blob_sha1": "cf53bbc298123e637c5865f58adcb7e7c328635e",
+    "removed_gate": "candidate EX4 SHA-256 must equal the 2024 recompilation byte hash",
+    "replacement_gates": [
+      "candidate Base MQ4 SHA-256 equals the frozen exact source",
+      "candidate Wrapper MQ4 SHA-256 equals the frozen exact source",
+      "MetaEditor compile reports zero errors and zero warnings",
+      "candidate EX4 exists after compile",
+      "candidate EX4 size is at least 10000 bytes",
+      "actual candidate EX4 SHA-256 is recorded in compiled_candidate_hashes.json and the artifact"
+    ]
+  },
+  "unchanged_scientific_contract": {
+    "history_identity_changed": false,
+    "candidate_parameters_changed": false,
+    "candidate_source_changed": false,
+    "evaluator_changed": false,
+    "baseline_reproduction_gates_changed": false,
+    "binding_policy_gates_changed": false,
+    "aggregation_contract_changed": false,
+    "2025_H2_access_authorized": false,
+    "live_orders_authorized": false
+  },
+  "next_action": "Merge Core PR 149 and rerun the unchanged 2025 H1 binding gate."
+}
