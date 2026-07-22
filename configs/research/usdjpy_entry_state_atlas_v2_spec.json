@@ -23,7 +23,14 @@
       "signal_close_outside_level_pips",
       "signal_close_inside_level_pips",
       "signal_closed_outside_breakout_level",
-      "signal_rejected_back_inside_reference_range"
+      "signal_rejected_back_inside_reference_range",
+      "entry_bid",
+      "entry_ask",
+      "entry_executable_price",
+      "entry_mid_outside_level_pips",
+      "entry_executable_outside_level_pips",
+      "entry_reentered_reference_range",
+      "entry_retention_from_signal_close_pips"
     ],
     "signal_bar_acceptance": [
       "signal_range_pips",
@@ -36,6 +43,7 @@
     ],
     "pre_entry_path": [
       "atr16_pips",
+      "atr16_percentile_prior_1920_bars",
       "pre_1h_directional_move_pips",
       "pre_1h_path_efficiency",
       "pre_4h_directional_move_pips",
@@ -68,8 +76,7 @@
       "entry_weekday",
       "entry_hour_utc",
       "us_dst",
-      "hard_excluded_time_check",
-      "volatility_percentile_2024H1"
+      "hard_excluded_time_check"
     ]
   },
   "descriptive_outcomes_not_allowed_as_entry_features": [
