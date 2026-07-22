@@ -1,0 +1,10 @@
+{
+  "schema_version": "usdjpy_family_f_event_confirmation_2024_branch_manifest_v1",
+  "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+  "base_commit": "9222f56fb3adbab8bb38b1aa6697e6aa87d053ea",
+  "final_branch_head": "b4bd926b67f78dff51b3922fbab04977b4cecc9e",
+  "frozen_candidate_count": 54,
+  "outcome_evaluation_started": false,
+  "H2_accessed": false,
+  "2025_accessed_for_family_F": false
+}
