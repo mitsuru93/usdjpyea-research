@@ -1,0 +1,115 @@
+{
+  "schema_version": "usdjpy_early_failure_persistence_2024h1_result_v1",
+  "status": "FRAGILE_H1_PASS_REQUIRES_PERIOD_ROLE_REVIEW",
+  "family_id": "D_EARLY_FAILURE_PERSISTENCE",
+  "evidence": {
+    "source_type": "deterministic_reproduction_from_frozen_github_artifacts",
+    "accepted_2024h1_run_id": 29787357305,
+    "accepted_2024h1_artifact_id": 8479048161,
+    "entry_state_atlas_run_id": 29884556860,
+    "entry_state_atlas_artifact_id": 8516049893,
+    "entry_state_atlas_artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981",
+    "atlas_csv_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd",
+    "preregistration_path": "configs/research/usdjpy_early_failure_persistence_2024h1_prereg_v2.json",
+    "preregistration_git_blob_sha1": "a90cabb46650340d8aa2e7c27bc455c2c4659307",
+    "preregistration_sha256": "c84a1bac593573f46274653dfac169707870d0f8b64548842b9da8e6db25341b",
+    "prior_union_path": "configs/research/usdjpy_early_failure_persistence_2024h1_prior_union_v1.csv",
+    "prior_union_sha256": "0877086e34723cdbebf8ac8544a22f9a0c4d8afa33290649d3c404e57fa83580",
+    "core_evaluator_path": "tools/evaluate_usdjpy_early_failure_persistence_2024h1_v1.py",
+    "core_evaluator_merge_commit": "08b12e61da1b80b957caf886a4a94a02dafdaa35",
+    "actions_receipt_status": "PENDING_TECHNICAL_RECONCILIATION",
+    "actions_note": "The deterministic evaluator completed locally against the exact frozen GitHub artifacts. The primary Actions workflow was repaired after setup-python cache initialization failed; no later-period evidence was accessed."
+  },
+  "output_sha256": {
+    "result_json": "313787d8be9e76f5e00e69508d781724ea4c7ab77e174703503009b989665220",
+    "report_md": "4bbdf2c8050441f4ecd4690e11cef4c4e0d85a86d3d86c09e186e44533e3a011",
+    "candidate_metrics_csv": "9507ed993d8ee70d1b0d6dcd65969eb024077f51543d4551627f2e3467fb753b",
+    "all_candidates_json": "cefdf6bb9ee2f219a13e71bd2c17bc3a784970e3bf2331eb02234621ff011e16",
+    "equivalence_json": "2609ac077869c9f1b19f33da06632fcb64c0d10f070e753818a03500afe4f0e8",
+    "finalist_changed_positions_csv": "ae2219d07bdb5b81bb2ce8fe7c8594182e884dedf7b99bec750003accf73881a"
+  },
+  "baseline": {
+    "closed": 428,
+    "net_jpy": 22797,
+    "pf": 1.3774150290548484,
+    "B02_closed": 97,
+    "B02_net_jpy": 9554,
+    "F05_closed": 331,
+    "F05_net_jpy": 13243,
+    "Q1_net_jpy": 8730,
+    "Q2_net_jpy": 14067
+  },
+  "formal_evaluation": {
+    "candidate_count": 12,
+    "equivalence_class_count": 12,
+    "formal_h1_eligible_count": 2,
+    "formal_h1_eligible_candidate_ids": [
+      "D2_PERSISTENT_30M_60M_ADVERSE__A_30m_adverse_pips_15__B_60m_adverse_pips_5",
+      "D2_PERSISTENT_30M_60M_ADVERSE__A_30m_adverse_pips_20__B_60m_adverse_pips_5"
+    ],
+    "parameter_equivalence_detected": false,
+    "ranking_winner_stable_across_primary_metrics": true
+  },
+  "leading_h1_cell": {
+    "candidate_id": "D2_PERSISTENT_30M_60M_ADVERSE__A_30m_adverse_pips_15__B_60m_adverse_pips_5",
+    "rule": "For F05 only, record executable marked P/L at 30 minutes; at exactly 60 minutes close the still-open position when the 30-minute value was at or below -15 pips and the 60-minute value is at or below -5 pips.",
+    "changed_positions": 17,
+    "changed_entry_dates": 15,
+    "trigger_months": 6,
+    "candidate_net_jpy": 25213,
+    "net_delta_jpy": 2416,
+    "candidate_pf": 1.4353223522911702,
+    "q1_delta_jpy": 2296,
+    "q2_delta_jpy": 120,
+    "benefit_jpy": 3469,
+    "harm_jpy": 1053,
+    "benefit_to_harm": 3.2943969610636277,
+    "ex_best_two_entry_dates_delta_jpy": 780,
+    "leave_one_month_out_min_delta_jpy": 869,
+    "affected_final_loser_share": 0.9411764705882353,
+    "affected_P2_or_P3_share": 0.9411764705882353,
+    "prior_candidate_union_overlap_share": 0.23529411764705882,
+    "winner_harm_jpy": 157,
+    "monthly_effect_jpy": {
+      "2024-01": 1547,
+      "2024-02": 26,
+      "2024-03": 723,
+      "2024-04": 501,
+      "2024-05": -438,
+      "2024-06": 57
+    },
+    "path_effect_jpy": {
+      "P2_MINOR_FAVORABLE_THEN_LOSS": -785,
+      "P3_NEVER_PROFITABLE": 3358,
+      "WINNER": -157
+    },
+    "all_binding_h1_gates_passed": true
+  },
+  "secondary_h1_cell": {
+    "candidate_id": "D2_PERSISTENT_30M_60M_ADVERSE__A_30m_adverse_pips_20__B_60m_adverse_pips_5",
+    "changed_positions": 10,
+    "net_delta_jpy": 1868,
+    "candidate_pf": 1.421372,
+    "q1_delta_jpy": 1586,
+    "q2_delta_jpy": 282,
+    "ex_best_two_entry_dates_delta_jpy": 504,
+    "leave_one_month_out_min_delta_jpy": 694,
+    "affected_final_loser_share": 1.0,
+    "affected_P2_or_P3_share": 1.0,
+    "prior_candidate_union_overlap_share": 0.4,
+    "all_binding_h1_gates_passed": true
+  },
+  "fragility": {
+    "classification": "FRAGILE_H1_PASS_REQUIRES_PERIOD_ROLE_REVIEW",
+    "flags": [
+      "changed_positions_below_20"
+    ],
+    "interpretation": "The mechanism is coherent and broad across H1 months, but 17 affected positions are not enough to freeze the exact -15/-5 threshold for later-period validation."
+  },
+  "period_role_recommendation": "RECLASSIFY_2024_H2_AS_DEVELOPMENT",
+  "2024_H2_new_evidence_accessed": false,
+  "2025_H1_candidate_specific_evidence_accessed": false,
+  "direct_mt4_executed": false,
+  "candidate_frozen_for_2025": false,
+  "live_order_authorized": false
+}
