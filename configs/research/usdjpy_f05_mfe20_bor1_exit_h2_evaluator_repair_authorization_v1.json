@@ -1,0 +1,91 @@
+{
+  "schema_version": "usdjpy_f05_mfe20_bor1_exit_h2_evaluator_repair_authorization_v1",
+  "status": "FROZEN_BEFORE_EVALUATOR_REPAIR",
+  "candidate_id": "F05_MFE20_BOR1_EXIT_v1",
+  "exact_specification_exposure_ordinal": 1,
+  "source_mt4_evidence": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "run_id": 29895387329,
+    "run_attempt": 1,
+    "head_sha": "0eb320b079a8921d9a3ff804a9eadb29f9f3b8b5",
+    "artifact_id": 8519879009,
+    "artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981",
+    "baseline_audit_path": "h2_baseline/fx2_usdjpy_f05_mfe20_bor1_exit_h2_baseline_v1.csv",
+    "baseline_audit_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "candidate_audit_path": "h2_candidate/fx2_usdjpy_f05_mfe20_bor1_exit_h2_candidate_v1.csv",
+    "candidate_audit_sha256": "bfd65081b2d086cd2264406653f236c3d655edcc0de70d8f92b5f3c2dc50abdd",
+    "identity_verification_passed": true,
+    "H1_parity_verification_passed": true,
+    "2024_only_HST_verification_passed": true,
+    "baseline_mt4_completed": true,
+    "candidate_mt4_completed": true,
+    "candidate_specific_H2_result_exists_in_immutable_audits": true,
+    "2025_H1_accessed": false
+  },
+  "technical_defect": {
+    "failed_step": "Evaluate frozen H2 gates",
+    "defect": "the unique period_end_open_position audit row retained strategy, side and ticket but omitted signal_utc and entry_utc; the frozen evaluator requires the canonical trade key and stopped before writing validation_result.json",
+    "source_data_defect_scope": "two blank cells in each immutable audit CSV",
+    "affected_event": "period_end_open_position",
+    "affected_ticket": "494",
+    "fields_present_and_required_equal_to_order_opened": ["strategy", "side", "ticket"],
+    "fields_blank_and_authorized_for_backfill": ["signal_utc", "entry_utc"],
+    "authoritative_backfill_source": "the unique order_opened row with the same ticket in the same source audit CSV",
+    "MT4_rerun_required": false
+  },
+  "normalization_contract": {
+    "source_audits_are_immutable": true,
+    "write_normalized_copies_only": true,
+    "row_order_change_authorized": false,
+    "row_count_change_authorized": false,
+    "event_change_authorized": false,
+    "ticket_change_authorized": false,
+    "strategy_change_authorized": false,
+    "side_change_authorized": false,
+    "price_change_authorized": false,
+    "lots_change_authorized": false,
+    "PL_change_authorized": false,
+    "risk_summary_change_authorized": false,
+    "order_opened_or_closed_change_authorized": false,
+    "authorized_cell_changes_per_audit": 2,
+    "authorized_fields": ["signal_utc", "entry_utc"],
+    "authorized_row_predicate": "event == period_end_open_position and ticket == 494",
+    "authorized_values": "copy exact values from the unique same-ticket order_opened row",
+    "all_other_cells_must_remain_semantically_unchanged": true
+  },
+  "h2_preregistration": {
+    "path": "configs/research/usdjpy_f05_mfe20_bor1_exit_h2_prereg_v2.json",
+    "commit": "05d1cf2661f57ed68281bdce7db02ade9b8f6025",
+    "git_blob_sha1": "8fa45ef528d7eb652139f3380aa912998ea0d6f7"
+  },
+  "frozen_core_reference_commit": "04cfabf631403891d52022ddf6a45dbc80fa79ac",
+  "frozen_core_git_blob_sha1": {
+    "tools/normalize_usdjpy_period_end_open_audit_v1.py": "47a77bbf7c81c5cf7f29c9a0a5bb951f0da5316c",
+    "tools/evaluate_usdjpy_f05_mfe20_bor1_exit_h2_v1.py": "e0e18c6931b5c30c7982aa080b3826514a4400c3",
+    ".github/workflows/evaluate_mt4_usdjpy_f05_mfe20_bor1_exit_h2_repair_v1.yml": "e132046637cb5beef9691d16ea2b3db5fea4b91c"
+  },
+  "binding_evaluation_rule": {
+    "evaluator_gate_logic_changed": false,
+    "candidate_rule_changed": false,
+    "parameter_changed": false,
+    "processing_order_changed": false,
+    "strategy_scope_changed": false,
+    "gate_changed": false,
+    "source_mt4_audits_changed": false,
+    "MT4_rerun_authorized": false,
+    "decision": "the unchanged frozen evaluator result after authorized normalization is the binding 2024 H2 decision",
+    "H2_PASS": "freeze the result and identities, preregister all 2025 H1 gates, then execute the unchanged candidate using Rakuten MT4 Strategy Tester",
+    "H2_FAIL": "close F05_MFE20_BOR1_EXIT_v1 without H2 repair, retuning, gate change or 2025 H1 execution"
+  },
+  "selection_boundary": {
+    "2024_H2_accessed": true,
+    "2024_H2_parameter_search_performed": false,
+    "2024_H2_gate_change_performed": false,
+    "candidate_combination_performed": false,
+    "2025_H1_accessed": false,
+    "2025_H1_execution_authorized": false,
+    "2025_H2_accessed": false,
+    "live_order_authorized": false
+  },
+  "live_order_authorized": false
+}
