@@ -1,0 +1,18 @@
+{
+  "schema_version": "usdjpy_family_f_event_confirmation_2024_prereg_index_v1",
+  "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+  "files": [
+    "docs/research/usdjpy_post_family_e_2024_architecture_diagnostic_v1.md",
+    "configs/research/usdjpy_family_f_event_confirmation_2024_prereg_v1.json",
+    "configs/research/usdjpy_family_f_event_confirmation_2024_source_manifest_v1.json",
+    "docs/research/usdjpy_2023_fast_bar_data_fallback_v1.md",
+    "configs/research/usdjpy_research_candidate_registry_v15.json",
+    "configs/research/usdjpy_family_f_event_confirmation_2024_prereg_receipt_v1.json",
+    "docs/research/usdjpy_family_f_event_confirmation_2024_prereg_summary_v1.md"
+  ],
+  "candidate_count": 54,
+  "H1_evaluation_authorized": true,
+  "H2_evaluation_authorized": false,
+  "2025_access_authorized": false,
+  "live_order_authorized": false
+}
