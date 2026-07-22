@@ -1,0 +1,13 @@
+{
+  "schema_version": "usdjpy_family_f_event_confirmation_2024_prereg_receipt_v1",
+  "status": "PREREGISTRATION_BRANCH_COMPLETE",
+  "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+  "branch": "agent/preregister-family-f-event-confirmation-v1",
+  "branch_head_before_merge": "f80e73d1b57477168c608532a5304018e2533451",
+  "candidate_count": 54,
+  "outcome_evaluation_executed_before_freeze": false,
+  "2024_H2_candidate_evaluation_executed": false,
+  "2025_H1_accessed_for_family_F": false,
+  "2025_H2_accessed": false,
+  "live_order_authorized": false
+}
