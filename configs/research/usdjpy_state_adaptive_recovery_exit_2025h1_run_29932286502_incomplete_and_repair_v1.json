@@ -1,0 +1,46 @@
+{
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2025h1_run_incomplete_and_repair_v1",
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "run": {
+    "run_id": 29932286502,
+    "job_id": 88964847809,
+    "head_branch": "agent/run-family-e-2025h1-binding-gate-v3",
+    "marker_head_commit": "5fabe26fb04af5ab8f5dc002f654000a9dd9e82a",
+    "pull_request": 144,
+    "status": "INCOMPLETE",
+    "terminal_stage": "BUILD_AND_COMPILE",
+    "artifact_id": 8534624052,
+    "artifact_digest": "sha256:26e9e5861e31de4fcff0469e9b037c2ab3aaaaca0fd98024e30994009d5b4b48",
+    "receipt_issue": 145,
+    "2025_H1_strategy_tester_runs_started": 0,
+    "candidate_specific_trade_or_pl_evidence_produced": false,
+    "2025_H2_accessed": false
+  },
+  "root_cause": {
+    "compile_wrapper_directory": "MQL4/Experts/_automation/compile-smoke",
+    "base_include_directory": "MQL4/Experts/_automation/family-e-2025h1-gate-v1",
+    "metaeditor_error": "error 106: cannot open MT4_USDJPY_B02_F05_Portfolio_Tester_v1.mq4 include file",
+    "consequence": "Baseline EX4 was not created and the binding gate stopped before baseline or candidate Strategy Tester execution."
+  },
+  "technical_repair": {
+    "core_pull_request": 146,
+    "core_frozen_head_commit": "2855da95e036d41eb676ecd0efef08bbef2e9396",
+    "new_wrapper_path": "scripts/mt4/Invoke-UsdjpyFamilyE2025H1GateV2.ps1",
+    "new_wrapper_git_blob_sha1": "8385078185e6c0df68953e4de8eb72bec932fdd4",
+    "workflow_path": ".github/workflows/mt4_usdjpy_family_e_2024_parity_v1.yml",
+    "workflow_git_blob_sha1": "eb47790213b0e4693c67479cffedb278df05c1c8",
+    "repair": "Materialize the unchanged v1 orchestrator with both compile and tester paths set to _automation/compile-smoke."
+  },
+  "unchanged_contract": {
+    "history_identity_changed": false,
+    "candidate_parameters_changed": false,
+    "candidate_source_hashes_changed": false,
+    "evaluator_changed": false,
+    "baseline_reproduction_gates_changed": false,
+    "binding_policy_gates_changed": false,
+    "aggregation_contract_changed": false,
+    "2025_H2_access_authorized": false,
+    "live_orders_authorized": false
+  },
+  "next_action": "Merge the exact technical repair and rerun the same binding 2025 H1 gate from a new marker-only PR."
+}
