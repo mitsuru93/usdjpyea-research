@@ -1,0 +1,107 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v2",
+  "status": "ACTIVE",
+  "validation_policy": "configs/research/usdjpy_three_stage_gate_policy_v2.json",
+  "period_roles": {
+    "2024_H1": "development_and_exact_mt4_parity",
+    "2024_H2": "binding_validation",
+    "2025_H1": "binding_adverse_regime_stress_after_h2_pass",
+    "2025_H2": "closed"
+  },
+  "closed_exact_specifications": [
+    {
+      "candidate_id": "SC70_C240_exact",
+      "status": "CLOSED_FAIL",
+      "successor_rule": "new_candidate_id_and_return_to_2024_H1"
+    },
+    {
+      "candidate_id": "F05_SW70_R10_E90_A240_v1",
+      "alias": "S1",
+      "status": "CLOSED_FAIL",
+      "h2_run_id": 29832346854,
+      "successor_rule": "do_not_retune_shock_retracement_efficiency_or_age_from_H2_or_2025"
+    },
+    {
+      "candidate_id": "B02F05_DSHOCK60_R20_E90_EXIT_v1",
+      "alias": "S2",
+      "status": "CLOSED_FAIL",
+      "h1_run_id": 29836855789,
+      "h2_run_id": 29839862828,
+      "successor_rule": "do_not_retune_60pip_20pct_0p90_exit_from_H2_or_2025"
+    },
+    {
+      "candidate_id": "F05_EXTATR25_LOC80_F30_v1",
+      "alias": "S3",
+      "status": "CLOSED_FAIL",
+      "h1_run_id": 29838578431,
+      "h2_run_id": 29873856877,
+      "successor_rule": "do_not_retune_30pip_ATR2p5_location0p80_from_H2_or_2025"
+    }
+  ],
+  "diagnostic_only_runs": [
+    {
+      "purpose": "closed_S1_S3_2025_H1_comparison",
+      "run_id": 29880733653,
+      "artifact_id": 8514811165,
+      "candidate_selection_authorized": false,
+      "parameter_change_authorized": false
+    }
+  ],
+  "active_successor_families": [
+    {
+      "family_id": "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+      "priority": 1,
+      "status": "ATLAS_BUILD_PENDING",
+      "allowed_mechanisms": [
+        "breakout_rejection",
+        "weak_acceptance_outside_breakout_level",
+        "ordinary_range_reentry_after_failed_break"
+      ],
+      "excluded_as_retest": [
+        "S1_fixed_shock_window",
+        "S3_ATR_extension_weak_close_exact_rule"
+      ],
+      "max_h2_candidates": 1
+    },
+    {
+      "family_id": "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+      "priority": 2,
+      "status": "ATLAS_BUILD_PENDING",
+      "allowed_mechanisms": [
+        "underwater_same_direction_addon",
+        "conditional_simultaneous_B02_F05_separation",
+        "stale_same_direction_stack",
+        "mixed_or_counter_exposure_stress"
+      ],
+      "excluded_as_retest": [
+        "uniform_stack_cap",
+        "uniform_entry_spacing",
+        "unconditional_simultaneous_entry_deletion"
+      ],
+      "max_h2_candidates": 1
+    },
+    {
+      "family_id": "C_STRUCTURAL_EXIT",
+      "priority": 3,
+      "status": "WAIT_FOR_ENTRY_FAMILY_SCREEN",
+      "allowed_mechanisms": [
+        "breakout_origin_invalidation",
+        "failed_acceptance_after_MFE",
+        "structure_conditioned_giveback_protection"
+      ],
+      "excluded_as_retest": [
+        "fixed_pip_early_stop",
+        "fixed_pip_giveback",
+        "S2_degraded_shock_exit_exact_rule"
+      ],
+      "max_h2_candidates": 1
+    }
+  ],
+  "combination_policy": {
+    "authorized_now": false,
+    "require_each_component_h2_pass": true,
+    "require_each_component_2025_h1_pass": true,
+    "combined_candidate_requires_new_id_and_preregistration": true
+  },
+  "live_order_authorized": false
+}
