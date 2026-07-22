@@ -1,0 +1,107 @@
+{
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_freeze_v1",
+  "status": "EXACT_2024_DEVELOPMENT_FINALIST_FROZEN_FOR_MT4_PARITY",
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+  "research_identity": {
+    "merge_commit": "d2a32b4fd852c343e2234d6a75f9625d991b5afd",
+    "result_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_research_result_v2.json",
+    "result_git_blob_sha1": "739065a4b71090b3db22f658e58382c23d4a2fc6",
+    "result_sha256": "d22ebfca0e3c979b72fd7754cb921ba4f085c2577de302c5c57a2b03437aa625",
+    "preregistration_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_prereg_v2.json",
+    "preregistration_git_blob_sha1": "6b4403c00755e66516c26ba9171b482617c7ef4f",
+    "preregistration_sha256": "fcadc31d840bdef498aee37b4905b6357784d8dbba511971eff0e8a9fdac144f"
+  },
+  "expected_changed_positions": {
+    "path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_mt4_parity_expected_v1.csv",
+    "git_blob_sha1": "1fc2221f7dc9d91daf45b97ebf7a058d81c552e5",
+    "sha256": "0b71c50c677140071e9e37923ac0a6b0c4e571dd0052ead03806c43d447af3a8",
+    "rows": 37,
+    "H1_rows": 11,
+    "H2_rows": 26,
+    "primary_key": ["period", "strategy", "signal_utc", "entry_utc", "side"],
+    "gross_pips_tolerance": 0.000001,
+    "utc_tolerance_seconds": 0
+  },
+  "exact_rule": {
+    "target_strategy": "F05",
+    "entry_trade_set": "unchanged",
+    "B02_entries_and_exits": "unchanged",
+    "normal_F05_time_cap_bars": 32,
+    "initial_condition": {
+      "pips_30m_lte": -15.0,
+      "pips_60m_lte": -5.0
+    },
+    "unsupported_states": ["standalone", "opposite_overlap", "mixed_overlap"],
+    "unsupported_action": "close at exact 60-minute M15 bar open",
+    "same_direction_supported_states": ["same_direction_stack", "simultaneous_same_direction"],
+    "supported_action": {
+      "defer_at_60m": true,
+      "pips_90m_lte": -15.0,
+      "pips_90m_minus_pips_60m_lte": 0.0,
+      "close_at": "exact 90-minute M15 bar open"
+    },
+    "dynamic_state_contract": {
+      "candidate_adjusted_close_times": true,
+      "active_position_definition": "candidate close time strictly after the new entry time",
+      "same_timestamp_unchanged_entries": "simultaneous peers",
+      "supported_definition": "at least one same-direction active or simultaneous position and no opposite-direction active or simultaneous position",
+      "unsupported_definition": "all other exposure states"
+    },
+    "processing_order": [
+      "normal fixed-time-cap exits",
+      "Family E exits",
+      "B02 entry evaluation",
+      "F05 entry evaluation"
+    ],
+    "pricing": {
+      "long_mark_and_close": "Bid",
+      "short_mark_and_close": "Ask",
+      "spread_points": 5,
+      "pip_size": 0.01
+    }
+  },
+  "expected_research_metrics": {
+    "H1": {
+      "baseline_net_jpy": 22797,
+      "candidate_net_jpy": 25085,
+      "net_delta_jpy": 2288,
+      "baseline_pf": 1.3774150290548484,
+      "candidate_pf": 1.431644153833
+    },
+    "H2": {
+      "baseline_complete_marked_net_jpy": 38109,
+      "candidate_complete_marked_net_jpy": 43879,
+      "net_delta_jpy": 5770,
+      "baseline_complete_pf": 1.3518479194172337,
+      "candidate_complete_pf": 1.428158816584
+    },
+    "full_2024_delta_jpy": 8058
+  },
+  "parity_gates": {
+    "baseline_H1_reproduction_exact": true,
+    "baseline_H2_complete_marked_reproduction_exact": true,
+    "baseline_entry_keys_exact": true,
+    "candidate_entry_keys_exactly_baseline": true,
+    "B02_open_close_and_PL_exactly_baseline": true,
+    "candidate_changed_position_keys_exact": true,
+    "candidate_exit_utc_exact": true,
+    "candidate_gross_pips_within_tolerance": true,
+    "dynamic_entry_state_exact_for_expected_changed_positions": true,
+    "candidate_H1_net_and_PF_match_research": true,
+    "candidate_H2_complete_marked_net_and_PF_match_research": true,
+    "candidate_order_send_failures_zero": true,
+    "candidate_order_close_failures_zero": true,
+    "unexpected_candidate_exit_count_zero": true
+  },
+  "execution_authorization": {
+    "2024_H1_Rakuten_MT4_parity": true,
+    "2024_H2_Rakuten_MT4_parity": true,
+    "reusable_2025_H1_workflow_preflight_without_candidate_execution": true,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "failure_action": "close the exact specification or repair only a proven implementation/evaluator defect without changing candidate logic, parameters, expected rows, gates or period roles",
+  "success_action": "record exact 2024 Research-to-MT4 parity PASS in Research before any candidate-specific 2025 H1 execution"
+}
