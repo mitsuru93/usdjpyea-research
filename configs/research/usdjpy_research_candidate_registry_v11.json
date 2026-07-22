@@ -1,0 +1,43 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v11",
+  "status": "ACTIVE_FAMILY_E_2025_H1_BINDING_EXECUTION_AUTHORIZED_PENDING_PROVEN_WORKFLOW_MARKER_RUN",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v10.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "current_candidate": {
+    "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+    "target_strategy": "F05",
+    "exact_2024_MT4_parity_passed": true,
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false,
+    "status": "FROZEN_UNCHANGED_AND_AUTHORIZED_FOR_PROVEN_WORKFLOW_2025_H1_GATE"
+  },
+  "2025_H1_execution": {
+    "binding_gate_freeze_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_freeze_v1.json",
+    "proven_workflow_restoration_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_proven_workflow_restoration_v1.json",
+    "core_pull_request": 143,
+    "core_frozen_head_commit": "c331bb49edd884941320def93654079c0142bbca",
+    "workflow_path": ".github/workflows/mt4_usdjpy_family_e_2024_parity_v1.yml",
+    "marker_path": "configs/run_markers/usdjpy_family_e_2025h1_binding_gate_pr_v3.json",
+    "execution_authorized": true,
+    "execution_completed": false,
+    "decision": "PENDING"
+  },
+  "access_authorization": {
+    "candidate_specific_2025_H1": true,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "next_required_state": {
+    "stage": "MERGE_PROVEN_WORKFLOW_RESTORATION_OPEN_MARKER_V3_EXECUTE_AND_RECORD",
+    "required_actions": [
+      "merge Core PR 143 unchanged",
+      "open marker-only PR for usdjpy_family_e_2025h1_binding_gate_pr_v3.json",
+      "track the pull-request-triggered parity job and inspect every step",
+      "download and inspect the binding evidence artifact and receipt",
+      "record 2025 H1 PASS or FAIL atomically in Research"
+    ]
+  },
+  "failure_action": "Close the exact Family E specification and keep candidate-specific 2025 H2 locked.",
+  "pass_action": "Freeze and authorize a separate unchanged 2025 H2 final Rakuten MT4 validation gate.",
+  "live_order_authorized": false
+}
