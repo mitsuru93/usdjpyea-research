@@ -1,0 +1,46 @@
+{
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2025h1_proven_workflow_restoration_v1",
+  "status": "FROZEN_BEFORE_CORE_MERGE_AND_MARKER_RUN",
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "binding_gate_freeze_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_freeze_v1.json",
+  "reason": "The dedicated 2025 H1 workflow and the registered packet-workflow attachment did not create an observable Run. Core PR 143 restores the exact workflow file and structural pattern that produced the binding 2024 Family E parity Run, changing only the trigger marker, evidence root and invoked 2025 H1 orchestrator.",
+  "core": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "pull_request": 143,
+    "frozen_head_commit": "c331bb49edd884941320def93654079c0142bbca",
+    "workflow_path": ".github/workflows/mt4_usdjpy_family_e_2024_parity_v1.yml",
+    "successful_2024_workflow_git_blob_sha1": "397cfcdf1617d380d61fb4a36b27e3d566cf0dce",
+    "restored_2025_workflow_git_blob_sha1": "85787aaedd3fd34eb7dd1ebbed71bb1e0d6851ca",
+    "marker_path": "configs/run_markers/usdjpy_family_e_2025h1_binding_gate_pr_v3.json",
+    "orchestrator_git_blob_sha1_unchanged": "c2e8eb1337a4673cc2c92d616079d32d6f8cd6a9",
+    "evaluator_git_blob_sha1_unchanged": "f0c1a7052070906f2222f8f35a9bfee7af2cae76",
+    "builder_git_blob_sha1_unchanged": "bd82b9267b51a21065e4c1688ce4feb9feb94a5c"
+  },
+  "structural_equivalence_to_successful_2024_workflow": {
+    "same_workflow_file": true,
+    "same_pull_request_path_filter_pattern": true,
+    "same_runner_labels": true,
+    "same_setup_python_pattern": true,
+    "same_authenticated_merge_sha_zipball_materialization": true,
+    "same_artifact_upload_pattern": true,
+    "same_immutable_issue_receipt_pattern": true
+  },
+  "changed_transport_fields_only": {
+    "workflow_name": true,
+    "marker_path": true,
+    "evidence_root": true,
+    "required_source_files": true,
+    "invoked_orchestrator": true,
+    "artifact_and_receipt_names": true
+  },
+  "unchanged_scientific_contract": {
+    "candidate_parameters_changed": false,
+    "candidate_hashes_changed": false,
+    "cached_history_identity_changed": false,
+    "baseline_reproduction_gates_changed": false,
+    "binding_policy_gates_changed": false,
+    "aggregation_contract_changed": false,
+    "2025_H2_access_authorized": false,
+    "live_orders_authorized": false
+  }
+}
