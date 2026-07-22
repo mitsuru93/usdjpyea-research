@@ -1,0 +1,127 @@
+{
+  "schema_version": "usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_freeze_v1",
+  "status": "FROZEN_AND_USER_AUTHORIZED_BEFORE_CANDIDATE_SPECIFIC_2025_H1_EXECUTION",
+  "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+  "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+  "authorization": {
+    "source": "explicit user instruction in FX2 project conversation",
+    "instruction": "25年に進んでください",
+    "authorized_period": "2025_H1",
+    "authorized_execution": "Rakuten MT4 Strategy Tester binding stress gate",
+    "authorized_at_utc_date": "2026-07-22",
+    "2025_H2_execution_authorized": false,
+    "live_orders_authorized": false
+  },
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "research_base_commit": "089a18eade0b143f7c3bbd06c754d0540795347c",
+  "core": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "pull_request": 138,
+    "frozen_head_commit": "929ff0c415a0aafb2cc3db3b4abfec4bbe8e7f0e",
+    "workflow_path": ".github/workflows/mt4_usdjpy_2025h1_cached_portfolio_test_v1.yml",
+    "workflow_git_blob_sha1": "196ba92ac52d43395e628d6878c8705b8eb3187f",
+    "orchestrator_path": "scripts/mt4/Invoke-UsdjpyFamilyE2025H1GateV1.ps1",
+    "orchestrator_git_blob_sha1": "c2e8eb1337a4673cc2c92d616079d32d6f8cd6a9",
+    "evaluator_path": "tools/evaluate_usdjpy_family_e_2025h1_gate_v1.py",
+    "evaluator_git_blob_sha1": "f0c1a7052070906f2222f8f35a9bfee7af2cae76",
+    "builder_path": "tools/build_usdjpy_state_adaptive_recovery_exit_v2.py",
+    "builder_git_blob_sha1": "bd82b9267b51a21065e4c1688ce4feb9feb94a5c",
+    "history_selector_path": "tools/select_cached_usdjpy_2025h1_history_v1.py",
+    "history_selector_git_blob_sha1": "72342a7a9be7ffdd3f018b162cc61475a3a7116d"
+  },
+  "candidate_hashes": {
+    "base_mq4_sha256": "95740f62f03a791613593d200e1cb2762a2f4cd223f417f7d4c242fd5815465b",
+    "wrapper_mq4_sha256": "d956f54dc7c61c9b22712c32ab10a768911fe8526cdab68d38fdd932a3fae29b",
+    "ex4_sha256": "a441141b5e51fb70de94cc3ca4829b95d669ff8ccefefd02bc471d110f4ac2c8"
+  },
+  "execution_contract": {
+    "runner_labels": ["self-hosted", "Windows", "X64", "mt4-ui", "rakuten", "interactive"],
+    "symbol": "USDJPY",
+    "timeframe": "M15",
+    "tester_model": 0,
+    "spread_points": 5,
+    "spread_pips": 0.5,
+    "from_date": "2025.01.01",
+    "to_date_exclusive": "2025.07.01",
+    "virtual_initial_balance_jpy": 100000,
+    "virtual_leverage": 25,
+    "virtual_stopout_level_percent": 100,
+    "fixed_lots_B02": 0.01,
+    "fixed_lots_F05": 0.01,
+    "baseline_and_candidate_same_run": true,
+    "external_market_data_download": false,
+    "tick_data_collection": false
+  },
+  "cached_history_identity": {
+    "server_folder": "RakutenSecurities-Live",
+    "M1_sha256": "db00b63e9e7ff2dd3f785563ad7f392a7e79ccef8a2c3e696f662b397b2b5af0",
+    "M15_sha256": "b22e9fb9a6d0f397b4186ba17f6e71cae9eb38aa59f214dfd1eb5173e4e7f165",
+    "M1_2025_H1_records": 183828,
+    "M15_2025_H1_records": 12269
+  },
+  "baseline_reproduction_gates": {
+    "entries": 463,
+    "B02_entries": 105,
+    "F05_entries": 358,
+    "net_jpy": -20808,
+    "pf_reference": 0.829408,
+    "pf_tolerance": 0.0000005,
+    "maximum_tick_equity_drawdown_jpy": 42737,
+    "minimum_equity_jpy": 57328
+  },
+  "binding_policy_gates": [
+    "candidate_net_positive",
+    "candidate_net_above_baseline",
+    "candidate_pf_at_least_1",
+    "candidate_pf_not_below_baseline",
+    "tick_equity_drawdown_below_baseline",
+    "minimum_tick_equity_above_baseline",
+    "january_to_march_net_nonnegative",
+    "april_to_june_net_nonnegative",
+    "q1_delta_positive",
+    "q2_delta_positive",
+    "positive_effect_months_min_4",
+    "negative_effect_months_max_1",
+    "ex_best_two_entry_dates_delta_positive",
+    "target_F05_delta_positive",
+    "non_target_B02_exact",
+    "benefit_exceeds_harm"
+  ],
+  "technical_gates": [
+    "exact cached M1 and M15 identities and record counts",
+    "baseline reproduction before candidate interpretation",
+    "candidate entries exact baseline",
+    "candidate and baseline trade failures zero",
+    "candidate state missing zero",
+    "candidate entry state recorded for every F05 entry",
+    "changed positions are F05 only",
+    "candidate exit keys equal changed outcome keys",
+    "B02 outcomes exact",
+    "source HST hashes unchanged after both tests",
+    "candidate MQ4 and EX4 hashes equal the exact 2024 parity build"
+  ],
+  "aggregation_contract": {
+    "candidate_Q1_and_Q2_net": "outcome P/L attributed by actual close UTC month; period-end floating positions, if any, are attributed to June",
+    "effect_months": "candidate-minus-baseline trade effect attributed by entry UTC month",
+    "effect_dates": "candidate-minus-baseline trade effect attributed by entry UTC date",
+    "ex_best_two_entry_dates": "remove the two entry dates with the largest positive aggregate effect and require the remaining aggregate effect to remain positive",
+    "benefit": "sum of positive candidate-minus-baseline trade effects",
+    "harm": "absolute sum of negative candidate-minus-baseline trade effects"
+  },
+  "preflight_handling": {
+    "standalone_preflight_receipt_available": false,
+    "execution_model": "ATOMIC_PRECHECK_BEFORE_STRATEGY_TESTER_IN_THE_SAME_BINDING_RUN",
+    "candidate_test_must_not_start_until_history_identity_build_hash_and_terminal_clone_checks_pass": true,
+    "reason": "The standalone preflight workflow was implemented and frozen but did not yield a registered Actions Run. The user explicitly authorized proceeding to 2025; the binding workflow therefore enforces the entire preflight before launching the baseline or candidate tester."
+  },
+  "decision_actions": {
+    "PASS": "unlock unchanged candidate for the separate 2025 H2 final binding Rakuten MT4 gate after the 2025 H1 result is recorded in Research",
+    "FAIL": "close the exact Family E specification and prohibit candidate-specific 2025 H2 access",
+    "INCOMPLETE": "repair only the technical execution path without changing candidate parameters or inspecting 2025 H2"
+  },
+  "selection_boundary": {
+    "parameter_changes_after_2025_H1_access": false,
+    "candidate_specific_2025_H2_access_before_unchanged_2025_H1_PASS": false,
+    "live_orders_authorized": false
+  }
+}
