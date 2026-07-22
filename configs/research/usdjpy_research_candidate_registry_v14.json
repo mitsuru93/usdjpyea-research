@@ -1,0 +1,87 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v14",
+  "status": "ACTIVE_2024_ONLY_ARCHITECTURE_DIAGNOSIS_AFTER_FAMILY_E_2025_H1_FAIL",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v13.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "period_roles": {
+    "2024_H1": "DEVELOPMENT_AND_MECHANISM_ANALYSIS",
+    "2024_H2": "DEVELOPMENT_AND_CROSS_REGIME_ANALYSIS",
+    "2025_H1": "FIRST_BINDING_RAKUTEN_MT4_STRESS_GATE_FAMILY_E_CONSUMED_AND_FAILED",
+    "2025_H2": "FINAL_BINDING_RAKUTEN_MT4_VALIDATION_NOT_ACCESSED_AND_LOCKED"
+  },
+  "2025_gate_status": {
+    "exact_candidate_available": false,
+    "Family_E_2024_MT4_parity_passed": true,
+    "Family_E_2025_H1_execution_completed": true,
+    "Family_E_2025_H1_decision": "FAIL",
+    "Family_E_2025_H2_execution_authorized": false,
+    "Family_E_2025_H2_accessed": false,
+    "candidate_specific_2025_H2_globally_locked_without_a_future_unchanged_2025_H1_PASS": true
+  },
+  "access_authorization": {
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "active_family": null,
+  "current_candidate": null,
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT"
+  ],
+  "latest_binding_result": {
+    "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "candidate_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+    "result_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_result_v1.json",
+    "changed_outcomes_path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_changed_outcomes_v1.csv",
+    "report_path": "docs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_result_v1.md",
+    "run_id": 29934029169,
+    "artifact_id": 8535486772,
+    "artifact_digest": "sha256:79238df0ffaff1df6fdb8034b63e4dd191270b5364c1ab3e12c3f04f47acc4bc",
+    "receipt_issue": 151,
+    "decision": "FAIL",
+    "baseline_net_jpy": -20808,
+    "candidate_net_jpy": -15866,
+    "candidate_delta_jpy": 4942,
+    "baseline_pf": 0.8294076655052265,
+    "candidate_pf": 0.8630257614476138,
+    "baseline_max_tick_dd_jpy": 42737,
+    "candidate_max_tick_dd_jpy": 39246,
+    "failed_policy_gates": [
+      "candidate_net_positive",
+      "candidate_pf_at_least_1",
+      "january_to_march_net_nonnegative"
+    ],
+    "2025_H2_accessed": false
+  },
+  "binding_failure_findings": [
+    "Family E generalized as a loss-compression overlay and improved F05 by JPY 4,942 across all six entry months.",
+    "The improvement survived removal of the two best entry dates and reduced maximum tick-equity drawdown by JPY 3,491.",
+    "The portfolio still lost JPY 15,866 with PF 0.863025761448, and Q1 remained JPY -26,013.",
+    "B02 remained exactly unchanged at JPY -6,964 and the improved F05 still lost JPY 8,902.",
+    "The binding failure therefore points to an entry or portfolio architecture problem that cannot be repaired by this exit overlay alone."
+  ],
+  "research_boundary_after_binding_failure": {
+    "may_use_2025_H1_to_retune_Family_E": false,
+    "may_expand_Family_E_threshold_grid": false,
+    "may_access_2025_H2_for_Family_E": false,
+    "may_develop_new_mechanisms_using_2024_only": true,
+    "new_family_requires_finite_preregistration_before_any_candidate_specific_2025_access": true,
+    "repeated_2025_H1_candidate_screening_is_prohibited": true
+  },
+  "next_required_state": {
+    "stage": "POST_BINDING_FAILURE_2024_ONLY_ARCHITECTURE_DIAGNOSIS",
+    "required_actions": [
+      "return to immutable 2024 H1 and H2 evidence without using 2025 H1 for parameter or family selection",
+      "separate entry-edge failure from exit-loss-management failure for B02 and F05",
+      "determine whether the next research unit should replace F05 entry logic, remove or replace B02, or redesign portfolio admission and exposure",
+      "compare the 2024 signatures of the 2025 Q1 failure regime without importing candidate-specific 2025 thresholds",
+      "commit an architecture-level diagnostic report before preregistering any new finite family",
+      "do not access 2025 H2 unless a future exact candidate passes a preregistered unchanged 2025 H1 gate"
+    ]
+  },
+  "live_order_authorized": false
+}
