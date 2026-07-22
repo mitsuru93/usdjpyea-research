@@ -1,0 +1,106 @@
+{
+  "schema_version": "usdjpy_early_failure_persistence_2024_full_year_development_prereg_v1",
+  "status": "FROZEN_BEFORE_NEW_D_FAMILY_2024_H2_ANALYSIS",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "family_id": "D_EARLY_FAILURE_PERSISTENCE",
+  "source_family_preregistration": "configs/research/usdjpy_early_failure_persistence_2024h1_prereg_v2.json",
+  "h1_result": "configs/research/usdjpy_early_failure_persistence_2024h1_result_v1.json",
+  "candidate_grid_change_from_h1": false,
+  "candidate_count": 12,
+  "mechanisms": [
+    {
+      "mechanism_id": "D1_SINGLE_30M_DEEP_ADVERSE",
+      "L_adverse_pips": [15, 20, 25]
+    },
+    {
+      "mechanism_id": "D2_PERSISTENT_30M_60M_ADVERSE",
+      "A_30m_adverse_pips": [10, 15, 20],
+      "B_60m_adverse_pips": [5, 10, 15]
+    }
+  ],
+  "target_strategy": "F05",
+  "B02_change_authorized": false,
+  "entry_set_change_authorized": false,
+  "candidate_effect": "checkpoint executable marked P/L minus unchanged baseline final or period-end marked P/L",
+  "required_next_build": {
+    "artifact": "USDJPY 2024 H2 Entry-State Atlas compatible with H1 Atlas v2",
+    "requirements": [
+      "reconcile accepted H2 baseline opened closed and marked period-end outcomes",
+      "derive exact 30-minute and 60-minute executable marked P/L without future information",
+      "retain the same trade key and path-class semantics as H1",
+      "record installed HST and source audit identities",
+      "do not evaluate D-family thresholds until the Atlas reconciliation passes"
+    ]
+  },
+  "required_candidate_metrics": {
+    "per_period": [
+      "H1 net delta and PF",
+      "H2 net delta and PF",
+      "H1 and H2 changed positions dates and months",
+      "H1 and H2 benefit harm and winner harm",
+      "H1 and H2 ex-best-two residual",
+      "H1 and H2 leave-one-month-out minimum",
+      "H1 and H2 path and exposure attribution",
+      "H1 and H2 prior-candidate overlap"
+    ],
+    "full_year": [
+      "full-year net delta and PF",
+      "monthly effects across all twelve months",
+      "rolling-quarter effects",
+      "leave-one-month-out and leave-one-quarter-out minimum",
+      "top-date concentration",
+      "parameter-equivalence classes",
+      "H1-to-H2 activation-rate change",
+      "H1-to-H2 benefit-harm stability"
+    ]
+  },
+  "full_year_eligibility": {
+    "changed_positions_min": 25,
+    "changed_entry_dates_min": 20,
+    "trigger_months_min": 8,
+    "H1_net_delta_positive": true,
+    "H2_net_delta_positive": true,
+    "H1_candidate_pf_not_below_baseline": true,
+    "H2_candidate_pf_not_below_baseline": true,
+    "H1_ex_best_two_delta_positive": true,
+    "H2_ex_best_two_delta_positive": true,
+    "H1_leave_one_month_out_min_positive": true,
+    "H2_leave_one_month_out_min_positive": true,
+    "full_year_benefit_exceeds_harm": true,
+    "full_year_positive_effect_months_min": 8,
+    "full_year_negative_effect_months_max": 2,
+    "affected_final_loser_share_min": 0.75,
+    "affected_P2_or_P3_share_min": 0.60,
+    "B02_exactly_unchanged": true
+  },
+  "ranking_order": [
+    "minimum of H1 and H2 ex-best-two delta descending",
+    "minimum of H1 and H2 leave-one-month-out delta descending",
+    "leave-one-quarter-out full-year minimum descending",
+    "full-year net delta descending",
+    "winner harm ascending",
+    "changed positions ascending",
+    "candidate ID ascending"
+  ],
+  "parameter_identifiability": {
+    "equivalence_definition": "same changed trade keys, checkpoint close times and candidate P/L across full 2024",
+    "collapse_equivalent_cells": true,
+    "threshold_specific_freeze_requires_distinct_full_year_outcomes": true
+  },
+  "selection": {
+    "maximum_finalists": 1,
+    "H1_leading_cell_is_not_preselected": true,
+    "exact_candidate_id_assigned_only_after_full_year_result": true
+  },
+  "prohibited": [
+    "expanding the 12-cell grid after viewing H2",
+    "adding a B02 rule from H2",
+    "combining with S1 S2 S3 or Family C",
+    "using 2025 H1 or H2 to choose thresholds",
+    "treating 2024 H2 as binding validation after this policy change"
+  ],
+  "2025_H1_access_authorized": false,
+  "2025_H2_access_authorized": false,
+  "direct_mt4_authorized_at_this_stage": false,
+  "live_order_authorized": false
+}
