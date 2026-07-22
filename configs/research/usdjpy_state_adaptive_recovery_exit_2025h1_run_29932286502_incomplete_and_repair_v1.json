@@ -26,7 +26,7 @@
     "core_pull_request": 146,
     "core_frozen_head_commit": "2855da95e036d41eb676ecd0efef08bbef2e9396",
     "new_wrapper_path": "scripts/mt4/Invoke-UsdjpyFamilyE2025H1GateV2.ps1",
-    "new_wrapper_git_blob_sha1": "2701b585e045af58549f0df1c18fd9690e7e7f3d",
+    "new_wrapper_git_blob_sha1": "8385078185e6c0df68953e4de8eb72bec932fdd4",
     "workflow_path": ".github/workflows/mt4_usdjpy_family_e_2024_parity_v1.yml",
     "workflow_git_blob_sha1": "eb47790213b0e4693c67479cffedb278df05c1c8",
     "repair": "Materialize the unchanged v1 orchestrator with both compile and tester paths set to _automation/compile-smoke."
