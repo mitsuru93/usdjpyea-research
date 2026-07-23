@@ -1,0 +1,85 @@
+{
+  "schema_version": "usdjpy_2024h1_canonical_field_audit_prereg_v1",
+  "status": "FROZEN_BEFORE_BINDING_EXECUTION",
+  "purpose": "reconstruct canonical 2024 H1 M15 UTC timestamps and verify all accepted corrected MT4 signal and entry keys before any cross-year architecture comparison",
+  "source_inputs": {
+    "binding_timezone_audit_run_id": 29993711777,
+    "binding_timezone_artifact_id": 8558119922,
+    "binding_timezone_artifact_sha256": "03aec8194ebdfadac5c0be73050ed9b94837de6030df89624ace9bf6b5e47fe6",
+    "nested_accepted_legacy_artifact_id": 8479048161,
+    "nested_accepted_legacy_artifact_sha256": "e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+    "legacy_m15_relative_path": "m15_utc_2024h1.csv",
+    "legacy_m15_sha256": "766be5ebba158e5b40f5da5d66929b4da8a25d42a8716b1e591d7c09dd87c2a3",
+    "corrected_mt4_audit_relative_path": "tester/fx2_usdjpy_2024h1_timezone_corrected_fixed_001_each_v1.csv",
+    "corrected_mt4_audit_sha256": "cec287f4cd0870d04159cbc12f968718ce093c921977c44323d26261da25e848"
+  },
+  "conversion_contract": {
+    "legacy_export_inverse": "legacy UTC plus 3 hours during US DST, otherwise plus 2 hours, recovers MT4 server time",
+    "canonical_forward": "server time converted by Europe/EET-EEST UTC+2/+3 contract",
+    "ambiguous_or_nonexistent_policy": "fail",
+    "row_order_or_price_change_allowed": false
+  },
+  "frozen_expected_result": {
+    "input_rows": 11884,
+    "canonical_output_rows": 11884,
+    "canonical_m15_sha256": "e78ea13781de968235d026c8b5686e6f9574e09dcb090d39f069d00726f89a50",
+    "first_server_time": "2024-01-02 03:00:00",
+    "first_canonical_utc": "2024-01-02 01:00:00",
+    "last_server_time": "2024-06-28 23:45:00",
+    "last_canonical_utc": "2024-06-28 20:45:00",
+    "changed_timestamp_rows": 1400,
+    "unchanged_timestamp_rows": 10484,
+    "duplicate_canonical_utc": 0,
+    "nonascending_canonical_utc": 0,
+    "changed_windows": [
+      {
+        "legacy_start": "2024-03-11T00:00:00Z",
+        "legacy_end": "2024-03-29T20:45:00Z",
+        "canonical_start": "2024-03-11T01:00:00Z",
+        "canonical_end": "2024-03-29T21:45:00Z",
+        "rows": 1400,
+        "delta_hours": 1
+      }
+    ],
+    "corrected_mt4_opened": 427,
+    "corrected_mt4_closed": 426,
+    "unique_corrected_open_trade_keys": 427,
+    "duplicate_corrected_open_trade_keys": 0,
+    "missing_corrected_signal_times_in_canonical_m15": 0,
+    "missing_corrected_entry_times_in_canonical_m15": 0
+  },
+  "pass_gates": {
+    "exact_input_artifact_sha": true,
+    "exact_nested_artifact_sha": true,
+    "exact_legacy_m15_sha": true,
+    "exact_corrected_audit_sha": true,
+    "row_count_exact": 11884,
+    "canonical_output_sha_exact": "e78ea13781de968235d026c8b5686e6f9574e09dcb090d39f069d00726f89a50",
+    "changed_rows_exact": 1400,
+    "changed_window_exact": true,
+    "duplicate_canonical_utc": 0,
+    "nonascending_canonical_utc": 0,
+    "OHLC_volume_spread_real_volume_bytewise_preserved_after_serialization": true,
+    "corrected_open_trade_keys_unique": 427,
+    "all_corrected_signal_times_present": true,
+    "all_corrected_entry_times_present": true
+  },
+  "non_gate_observation": {
+    "corrected_close_server_time_not_on_M15_open": "2024.05.03 00:04:00",
+    "classification": "valid intrabar Strategy Tester close timestamp; not required to match an M15 bar-open timestamp"
+  },
+  "decision_rule": {
+    "all_gates_pass": "AUTHORIZE_2024_H1_CANONICAL_ENTRY_FIELD_REBUILD",
+    "any_gate_fail": "STOP_AND_DIAGNOSE_TIME_OR_SERIALIZATION_RECONSTRUCTION",
+    "result_driven_adjustment_allowed": false
+  },
+  "boundaries": {
+    "candidate_generated": false,
+    "candidate_evaluated": false,
+    "parameter_search": false,
+    "cross_year_comparison": false,
+    "2024_H2_accessed": false,
+    "2025_accessed": false,
+    "live_orders": false
+  }
+}
