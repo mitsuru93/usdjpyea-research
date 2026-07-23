@@ -1,0 +1,37 @@
+{
+  "schema_version": "usdjpy_2023_fast_m1_proven_assemble_transport_v1",
+  "status": "FROZEN_BEFORE_DATA_ACQUISITION",
+  "research_base_commit": "5b4596649c227fd884f2a5fe8a41f1da72d14f91",
+  "core_pull_request": 158,
+  "core_base_commit": "c65f63c165a99cf84e8ca633f18e189b8bb65415",
+  "core_frozen_head_commit": "514747a4f86d0bd37741e9131f9b4e72b728c416",
+  "workflow": {
+    "path": ".github/workflows/assemble_usdjpy_v1_parity_packet_v1.yml",
+    "git_blob_sha1": "51955bb5fe4c3a538fbbcab8099255f9c5a66dc3",
+    "name": "Assemble USDJPY V1 Parity Packet v1",
+    "event": "pull_request opened",
+    "job": "assemble",
+    "condition": "PR title contains USDJPY",
+    "marker_path": "configs/run_markers/usdjpy_2023_fast_m1_acquisition_pr_v4.json"
+  },
+  "unchanged_execution": {
+    "acquisition_client_blob": "7e82057e3b949b9f33b25fd9c878c932d7df51e6",
+    "normalizer_blob": "03c634694c3192d15ce3d3cd3cef9b84befbd0f4",
+    "source_client": "dukascopy-node@1.49.0",
+    "instrument": "usdjpy",
+    "period": "2023",
+    "timeframe": "m1",
+    "price_type": "bid",
+    "timezone": "UTC",
+    "derive_M15": true,
+    "data_gates_changed": false,
+    "artifact_contract_changed": false
+  },
+  "superseded_marker_prs_without_data_access": [153, 155, 157],
+  "tick_data_authorized": false,
+  "ask_series_authorized": false,
+  "candidate_outcome_evaluation_authorized": false,
+  "2024_H2_access_authorized": false,
+  "2025_access_authorized": false,
+  "live_order_authorized": false
+}
