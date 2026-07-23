@@ -1,0 +1,89 @@
+{
+  "schema_version": "usdjpy_2024_timezone_conversion_mt4_result_v1",
+  "status": "TIMEZONE_BEHAVIORAL_IMPACT_CONFIRMED_MT4",
+  "decision": "ACCEPT_EUROPE_EET_EEST_SERVER_CLOCK_AS_CANONICAL",
+  "research_prereg_commit": "f2afd3d0752abdd51e4eac35c0a8535f7330d395",
+  "core_run": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "run_id": 29993711777,
+    "run_attempt": 1,
+    "job_id": 89162334758,
+    "head_sha": "a0a28bde29ec07a5cfbdfa8cf57abcb7461af255",
+    "runner_name": "onamae-mt4-ui-01",
+    "terminal_version": "4.0.0.1470",
+    "receipt_issue": 180
+  },
+  "artifact": {
+    "artifact_id": 8558119922,
+    "artifact_name": "usdjpy-2024-timezone-conversion-mt4-v2-29993711777-1",
+    "artifact_digest": "sha256:03aec8194ebdfadac5c0be73050ed9b94837de6030df89624ace9bf6b5e47fe6",
+    "downloaded_zip_sha256": "03aec8194ebdfadac5c0be73050ed9b94837de6030df89624ace9bf6b5e47fe6",
+    "google_drive_file_id": "1-Gg-P4dnqyEtKS2pDBf7C_A0yryNTZtE",
+    "google_drive_file_name": "usdjpy-2024-timezone-conversion-mt4-pass-run-29993711777.zip",
+    "google_drive_readback_sha256": "03aec8194ebdfadac5c0be73050ed9b94837de6030df89624ace9bf6b5e47fe6",
+    "byte_identity_pass": true
+  },
+  "corrected_metrics": {
+    "opened_trades": 427,
+    "B02_opened": 96,
+    "F05_opened": 331,
+    "closed_trades": 426,
+    "net_jpy": 22730.0,
+    "gross_profit_jpy": 83511.0,
+    "gross_loss_jpy": 60781.0,
+    "profit_factor": 1.373965548444415,
+    "wins": 234,
+    "losses": 190,
+    "flat": 2,
+    "order_send_failures": 0,
+    "order_close_failures": 0
+  },
+  "server_bar_signal_relation": {
+    "common": 422,
+    "legacy_only": 7,
+    "corrected_only": 5
+  },
+  "all_preregistered_gates": {
+    "build_status_pass": true,
+    "build_non_timezone_logic_unchanged": true,
+    "compile_success": true,
+    "opened_exact": true,
+    "B02_opened_exact": true,
+    "F05_opened_exact": true,
+    "closed_exact": true,
+    "net_jpy_exact": true,
+    "profit_factor_exact": true,
+    "common_exact": true,
+    "legacy_only_exact": true,
+    "corrected_only_exact": true,
+    "order_send_failures_zero": true,
+    "order_close_failures_zero": true
+  },
+  "identities": {
+    "accepted_legacy_artifact_zip_sha256": "e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+    "corrected_source_sha256": "207652c3dda2aa6802f909b5cc86fa5aab68652d38ed10b3f74b7907ce6968ec",
+    "corrected_ex4_sha256": "e2b158cdb96bcdbbcffa407563e80461eaf703bfdf95a3fc7b00fff247e0f886",
+    "corrected_audit_sha256": "cec287f4cd0870d04159cbc12f968718ce093c921977c44323d26261da25e848",
+    "build_manifest_sha256": "b84b6aa18f9bfb461ab4655a0966a9f33348084ccc516f0db0c5985405c71725",
+    "compile_summary_sha256": "e0be1481e82ec66db03fc1b4982af543fc7e59773fa002196a41f7f8ca7b7eff",
+    "research_prereg_sha256": "cf07d2f7d9bb012cff86810a782889f3e4517932c72f8df3e3cfbaf2500158d5"
+  },
+  "independent_readback": {
+    "artifact_digest_match": true,
+    "audit_rows": 12644,
+    "opened_recomputed": 427,
+    "B02_recomputed": 96,
+    "F05_recomputed": 331,
+    "closed_recomputed": 426,
+    "net_jpy_recomputed": 22730.0,
+    "profit_factor_recomputed": 1.373965548444415,
+    "order_failures_recomputed": 0
+  },
+  "boundaries": {
+    "candidate_evaluated": false,
+    "2024_H2_accessed": false,
+    "2025_accessed": false,
+    "live_orders": false
+  },
+  "next_action": "apply the accepted server-time conversion to the canonical Core baseline source, freeze its exact identity, then preregister and execute unchanged B02/F05 2023 baseline reconstruction"
+}
