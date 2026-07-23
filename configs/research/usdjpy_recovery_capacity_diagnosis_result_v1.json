@@ -28,9 +28,9 @@
   "decision": "PREREGISTER_FINITE_FAMILY_H_PERSISTENT_STRUCTURAL_INVALIDATION",
   "boundaries": {"candidate_evaluated": false, "parameter_selected": false, "2025_accessed": false, "2024_source_mutated": false},
   "output_sha256": {
-    "usdjpy_crossyear_recovery_capacity_features_v1.csv": "d84f5cf2c5a5db4d7b7781874a65b2f43c49f434aa77f79596a2f0fa6f7ed58c",
-    "usdjpy_structural_persistence_descriptive_v1.csv": "5e32cac85e79e563b5361e7699cd3e51bd1a7c85c5cf2ae57ed6c80f093cc36f",
-    "usdjpy_shadow_health_descriptive_v1.csv": "b658e5dd0d3261cc4cf2fc661f5cbac6fc598f47d97cb5383f963058ae5355f1",
-    "usdjpy_shadow_health_consistency_v1.csv": "ff7642543f7e493171bbef83884270c59500f7299f0792ec369355e726669860"
+    "usdjpy_crossyear_recovery_capacity_features_v1.csv": "21164436b87b8aeb2210e4de4a78225a9bd6e85ae3ada986fe4f90452b1427fd",
+    "usdjpy_structural_persistence_descriptive_v1.csv": "da8f0c11548ee89e5b71a87ba9179c490fd472446acb4dc37e38d67f3608193a",
+    "usdjpy_shadow_health_descriptive_v1.csv": "2dc233c04cf48cd0e5e92123e49d2357c5861d91e125cfa8d222c8ff536f0d89",
+    "usdjpy_shadow_health_consistency_v1.csv": "79d17871bcf2233fc1c616938bafb6e3fa97fe915ebbe7f7b8ede16f9001ccd0"
   }
 }
