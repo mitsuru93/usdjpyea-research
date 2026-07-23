@@ -1,0 +1,49 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v19",
+  "status": "USDJPY_2023_RAKUTEN_MT4_HST_NORMALIZED_PASS_BASELINE_RECONSTRUCTION_ACTIVE",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v18.json",
+  "period_roles": {
+    "2023": "ACCEPTED_RAKUTEN_MT4_UTC_NORMALIZED_DATA; BASELINE_RECONSTRUCTION_AND_ARCHITECTURE_ATLAS",
+    "2024_H1": "FAMILY_F_FINITE_SEARCH_CONSUMED_AND_FAILED; FUTURE_NEW_FAMILY_SCREENING_ONLY_AFTER_2023_DIAGNOSIS",
+    "2024_H2": "LOCKED_UNTIL_A_NEW_EXACT_SPECIFICATION_PASSES_2024_H1",
+    "2025_H1": "KNOWN_BINDING_STRESS_PERIOD; NO_NEW_CANDIDATE_ACCESS_BEFORE_UNCHANGED_H2_PASS",
+    "2025_H2": "LOCKED"
+  },
+  "active_family": null,
+  "current_candidate": null,
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION"
+  ],
+  "accepted_2023_data": {
+    "contract": "configs/research/usdjpy_2023_rakuten_mt4_hst_normalization_contract_v1.json",
+    "receipt": "configs/research/usdjpy_2023_rakuten_mt4_hst_normalization_receipt_v1.json",
+    "report": "docs/research/usdjpy_2023_rakuten_mt4_hst_data_acceptance_v1.md",
+    "source_core_run_id": 29987402745,
+    "source_artifact_id": 8555630385,
+    "source_artifact_sha256": "e944ceb6c0c0423b3a65814ea880d8d8f951532350485c423ff427999ea6eaf4",
+    "normalized_package_sha256": "4d75f3f67f6c81fe97a2b540846723162c17482430b4cc201b577ab4e00b68e8",
+    "M1_records": 371128,
+    "M15_records": 24825,
+    "timezone": "canonical UTC from audited GMT+2/GMT+3 Europe/EET-EEST server-clock conversion"
+  },
+  "run_authorization": {
+    "2023_baseline_reconstruction": true,
+    "2023_architecture_atlas": true,
+    "2023_candidate_signal_generation": false,
+    "2023_candidate_outcome_evaluation": false,
+    "new_family_preregistration": false,
+    "2024_H2": false,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "tick_download": false,
+    "ask_download": false,
+    "live_orders": false
+  },
+  "next_action": "freeze and execute unchanged B02/F05 2023 baseline reconstruction against the accepted UTC-normalized Rakuten MT4 bars; require exact research/MT4 trade-key parity before architecture-atlas outcome analysis",
+  "live_order_authorized": false
+}
