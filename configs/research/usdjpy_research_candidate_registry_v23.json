@@ -1,0 +1,54 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v23",
+  "status": "USDJPY_2023_CANONICAL_BASELINE_PARITY_ACCEPTED_ARCHITECTURE_ATLAS_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v22.json",
+  "active_family": null,
+  "current_candidate": null,
+  "canonical_time_contract": "configs/research/usdjpy_mt4_server_time_contract_v1.json",
+  "baseline_2023": {
+    "preregistration": "configs/research/usdjpy_2023_canonical_baseline_prereg_v1.json",
+    "expected_result": "configs/research/usdjpy_2023_canonical_baseline_expected_v1.json",
+    "binding_result": "configs/research/usdjpy_2023_canonical_baseline_mt4_result_v1.json",
+    "binding_report": "docs/research/usdjpy_2023_canonical_baseline_mt4_result_v1.md",
+    "canonical_run_id": 29998477805,
+    "canonical_artifact_id": 8560057457,
+    "canonical_artifact_sha256": "bf2cd6e94ba4a15f764e784f4a82b8d07edd3070ab198bbf9bc27112e931f63b",
+    "repeat_run_id": 29998718769,
+    "repeat_artifact_id": 8560162845,
+    "audit_sha256_reproduced": true,
+    "parity_status": "PASS"
+  },
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION"
+  ],
+  "run_authorization": {
+    "2023_architecture_atlas_build": true,
+    "2023_architecture_descriptive_analysis": true,
+    "2024_H1_canonical_UTC_field_audit": true,
+    "2023_2024_cross_year_comparison": false,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "parameter_search": false,
+    "parameter_selection": false,
+    "new_family_preregistration": false,
+    "2024_H2": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "tick_download": false,
+    "ask_download": false,
+    "live_orders": false
+  },
+  "instrumentation_boundary": {
+    "deinit_TimeCurrent_regression_known": true,
+    "deinit_timestamp_columns_allowed_as_atlas_features": false,
+    "entry_signal_and_close_trade_keys_reconciled": true,
+    "period_end_open_trade_in_closed_outcome_atlas": false
+  },
+  "next_action": "freeze and build the 2023 closed-trade Architecture Atlas from 963 exact-parity trades, then audit the corresponding 2024 H1 UTC-derived fields before cross-year interpretation",
+  "live_order_authorized": false
+}
