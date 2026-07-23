@@ -1,0 +1,120 @@
+{
+  "schema_version": "usdjpy_family_j_b02_weak_short_false_break_reversal_prereg_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOME_EVALUATION",
+  "family_id": "J_B02_WEAK_SHORT_FALSE_BREAK_REVERSAL",
+  "lineage_id": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "origin_diagnosis": "B02 shorts with at most 20 pips of side-aligned four-hour M15-open movement have negative baseline P/L in 2023 and both 2024 halves. Blocking them improves every period but leaves 2023 negative. The 20-to-40-pip band has no stable pre-entry discriminator, so Family I cannot be repaired.",
+  "causal_hypothesis": "A downside B02 session breakout without an established four-hour downtrend is a false break. Executing an opposite long mean-reversion trade at the same entry time and fixed horizon should convert the recurring short-trade loss into positive expectancy rather than merely avoiding it.",
+  "target_signal": "accepted B02 short signal",
+  "target_action": "replace the short with a long",
+  "B02_long_action": "unchanged",
+  "F05_action": "unchanged",
+  "prior_work_reviewed": [
+    "legacy B02 session-range breakout",
+    "R1 generic failed-excursion and trend candidate universe",
+    "USDJPY-HYP-005 non-shock false-break acceptance",
+    "USDJPY-HYP-018-RESULT-001 Family I admission block",
+    "USDJPY-RQ-019 incremental-band diagnosis"
+  ],
+  "novelty": {
+    "not_family_I": "Family I suppressed the B02 short; Family J opens an opposite long and asserts a positive mean-reversion payoff.",
+    "not_family_A": "Family A tested F05 pre-entry candle-acceptance filters, not B02 direction reversal after a weak-trend session break.",
+    "not_generic_failed_excursion": "The accepted B02 close outside its session range is retained as the event; reversal is conditioned on four-hour trend insufficiency and does not require an intrabar return inside the range before entry.",
+    "not_threshold_repair": "The thresholds are the already frozen countertrend boundary 0 and recurring-loss boundary 20; the new information is the opposite action and its execution payoff."
+  },
+  "feature_contract": {
+    "source": "configs/research/usdjpy_b02_open_path_diagnosis_result_v1.json",
+    "feature": "side_aligned_open_move_4h_pips",
+    "formula": "side * (signal_bar_open - M15_open_16_bars_before_signal) / 0.01",
+    "information_time": "signal close",
+    "lookahead": false
+  },
+  "finite_grid": {
+    "reverse_if": "strategy == B02 and original_side == -1 and side_aligned_open_move_4h_pips <= threshold_pips",
+    "threshold_pips": [0, 20],
+    "candidate_count": 2,
+    "candidate_ids": ["J_B02_WEAKSHORT_REV_M4LE0", "J_B02_WEAKSHORT_REV_M4LE20"]
+  },
+  "execution_contract": {
+    "entry_time": "same accepted B02 entry UTC",
+    "candidate_side": 1,
+    "entry_price": "Ask at the accepted entry M15 bar-open",
+    "exit_time": "same accepted B02 fixed 48-bar exit UTC",
+    "exit_price": "Bid at the exit M15 bar-open",
+    "lot_size": 0.01,
+    "spread_points": 5,
+    "JPY_per_pip": 10,
+    "direct_market_formula": "candidate_pl_jpy = (exit_bid - entry_ask) / 0.01 * 10",
+    "fixed_spread_crosscheck": "candidate_pl_jpy + original_short_pl_jpy = -10 JPY",
+    "signal_generation": "unchanged",
+    "later_signals": "unchanged because accepted B02/F05 signal definitions are market-data-only",
+    "portfolio_exposure": "recompute candidate position direction for overlap and drawdown attribution"
+  },
+  "development_periods": {
+    "2023": "historical-2024-compatible development/falsification year",
+    "2024_H1": "historical development period",
+    "2024_H2": "development and cross-regime period under policy v4"
+  },
+  "required_metrics": [
+    "candidate total, B02 and reversal-component net/PF by period",
+    "reversed positions and entry dates by month and quarter",
+    "replacement effect versus original short",
+    "positive negative and zero effects",
+    "long B02 and F05 invariance",
+    "candidate realized balance drawdown",
+    "ex-best-two-entry-dates delta",
+    "leave-one-month-out minimum delta",
+    "largest and top-two positive-date shares",
+    "market-price versus fixed-spread algebra crosscheck",
+    "parameter equivalence classes"
+  ],
+  "gates": {
+    "each_period": [
+      "candidate_total_net_positive",
+      "candidate_profit_factor_at_least_1",
+      "candidate_net_above_baseline",
+      "reversal_component_net_positive",
+      "replacement_benefit_exceeds_harm",
+      "reversed_positions_at_least_10",
+      "market_price_and_algebra_PL_exact"
+    ],
+    "monthly_breadth": {
+      "2023": ["positive_effect_months_at_least_8", "negative_effect_months_at_most_4"],
+      "2024_H1": ["positive_effect_months_at_least_4", "negative_effect_months_at_most_2"],
+      "2024_H2": ["positive_effect_months_at_least_4", "negative_effect_months_at_most_2"]
+    },
+    "pooled": [
+      "ex_best_two_entry_dates_delta_positive",
+      "leave_one_month_out_min_delta_positive",
+      "largest_positive_date_share_at_most_0_35",
+      "B02_original_long_unchanged",
+      "F05_unchanged",
+      "candidate_realized_balance_drawdown_below_baseline_in_at_least_two_periods"
+    ],
+    "parameter_identifiability": "collapse cells with identical reversed trade keys and identical candidate outcomes before ranking",
+    "maximum_finalists": 1
+  },
+  "ranking": [
+    "minimum candidate total net across the three periods",
+    "minimum period net delta",
+    "pooled net delta",
+    "pooled ex-best-two-entry-dates delta",
+    "pooled leave-one-month-out minimum delta"
+  ],
+  "falsification": [
+    "no cell makes every development period profitable with PF at least 1",
+    "the reversal component loses in any development period",
+    "monthly breadth or concentration gates fail",
+    "market-price execution does not match the fixed-spread algebra",
+    "the selected threshold is not identifiable"
+  ],
+  "prohibited": [
+    "No thresholds other than 0 and 20",
+    "No reversal of B02 longs or F05 signals",
+    "No exit-horizon change",
+    "No use of the 20-to-40-pip band",
+    "No combination with closed F05 candidates",
+    "No 2025 outcome use before exact Research-to-MT4 parity and explicit registry authorization"
+  ],
+  "boundaries": {"candidate_outcomes_computed_before_freeze": false, "2025_accessed": false, "2024_source_mutated": false, "live_orders": false}
+}
