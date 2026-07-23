@@ -1,0 +1,53 @@
+{
+  "schema_version": "usdjpy_family_h_persistent_structural_invalidation_prereg_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOME_EVALUATION",
+  "family_id": "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE",
+  "lineage_id": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "origin_diagnosis": "Family G showed that a single return inside the original breakout level removes losses but also cuts recovery winners. Descriptive cross-year diagnosis found that trades remaining inside at two checkpoints without intervening reacceptance had negative baseline outcomes in 2023, 2024 H1 and 2024 H2.",
+  "causal_hypothesis": "Persistent structural invalidation without reacceptance identifies permanent F05 failure more reliably than a single structural checkpoint.",
+  "prior_hypothesis_ids_reviewed": ["USDJPY-HYP-005", "USDJPY-HYP-006", "USDJPY-HYP-007", "USDJPY-HYP-008", "USDJPY-HYP-009", "USDJPY-HYP-010", "USDJPY-HYP-012", "USDJPY-RQ-013"],
+  "novelty": {
+    "not_family_G": "two structural states plus the intervening reacceptance path, rather than a single checkpoint or nearby buffer",
+    "not_family_D": "distance is measured against the original breakout level and requires structural non-reacceptance, not absolute entry P/L adversity",
+    "not_family_E": "trigger does not use exposure support or defer exits based on portfolio state",
+    "not_family_F": "post-entry persistence, not pre-entry probe/confirmation",
+    "shadow_strategy_health_excluded": true
+  },
+  "target_strategy": "F05",
+  "B02_action": "unchanged",
+  "entry_trade_set": "unchanged",
+  "processing_order": ["baseline fixed-time exits", "Family H exits", "new B02/F05 entries"],
+  "trigger_contract": {
+    "first_condition": "first-checkpoint executable structural outside pips <= 0",
+    "second_condition": "second-checkpoint executable structural outside pips <= 0",
+    "path_condition": "maximum executable structural outside pips between first and second checkpoints <= reacceptance_threshold_pips",
+    "exit_time": "second checkpoint",
+    "exit_price": "actual second-checkpoint M15 bar-open executable Bid for long and Ask for short",
+    "baseline_close_before_second_checkpoint": "no candidate effect",
+    "candidate_adjusted_exposure_state": true,
+    "missing_checkpoint_policy": "inherit configs/research/usdjpy_family_g_missing_checkpoint_execution_amendment_v1.json"
+  },
+  "finite_grid": {
+    "checkpoint_pairs_minutes": [[30, 60], [30, 90], [60, 90]],
+    "reacceptance_threshold_pips": [0, 5],
+    "candidate_count": 6,
+    "candidate_ids": ["H_A30_B60_R0", "H_A30_B60_R5", "H_A30_B90_R0", "H_A30_B90_R5", "H_A60_B90_R0", "H_A60_B90_R5"]
+  },
+  "development_periods": {
+    "2023": "historical-2024-compatible development/falsification year",
+    "2024_H1": "historical development period",
+    "2024_H2": "development and cross-regime analysis under period policy v4"
+  },
+  "required_metrics": ["affected positions and entry dates by period/month", "positive negative and zero effects", "benefit and harm", "net and PF by period", "path-class effects", "ex-best-two-entry-dates delta", "leave-one-month-out minimum delta", "largest and top-two positive-date shares", "execution-delay inventory", "B02 invariance"],
+  "gates": {
+    "each_period": ["candidate_total_net_positive", "candidate_profit_factor_at_least_1", "net_delta_positive", "benefit_exceeds_harm", "affected_positions_at_least_10"],
+    "pooled_24_months": ["positive_effect_months_at_least_20", "negative_effect_months_at_most_3", "ex_best_two_entry_dates_delta_positive", "leave_one_month_out_min_delta_positive", "loss_avoided_exceeds_winner_harm", "B02_unchanged", "execution_delay_not_determining_eligibility"],
+    "execution_delay_not_determining_eligibility": "after excluding every changed position with a delayed first or second checkpoint, pooled delta, ex-best-two delta and leave-one-month-out minimum must remain positive",
+    "parameter_identifiability": "collapse outcome-equivalent cells before selection",
+    "maximum_finalists": 1
+  },
+  "ranking": ["minimum candidate net across the three periods", "minimum period net delta", "pooled net delta", "pooled ex-best-two-entry-dates delta", "pooled leave-one-month-out minimum delta"],
+  "falsification": ["no cell passes every period and pooled gate", "benefit depends on two dates or one month", "winner harm is not below loss avoided", "best cell is not parameter-identifiable", "execution-delay cases determine eligibility"],
+  "prohibited": ["No additional checkpoints, buffers, scopes or shadow-health filters after results", "No 2025 outcome use for mechanism, threshold or ranking", "No repair or reopening of Families D through G", "No MT4 or 2025 access unless one exact finalist passes and is separately frozen"],
+  "boundaries": {"candidate_outcomes_computed_before_freeze": false, "2025_accessed": false, "2024_source_mutated": false, "live_orders": false}
+}

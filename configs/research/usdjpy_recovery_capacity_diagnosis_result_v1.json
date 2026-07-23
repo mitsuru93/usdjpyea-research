@@ -1,0 +1,36 @@
+{
+  "schema_version": "usdjpy_recovery_capacity_diagnosis_result_v1",
+  "status": "DESCRIPTIVE_DIAGNOSIS_COMPLETE",
+  "open_question": "USDJPY-RQ-013",
+  "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "purpose": "Identify a genuinely new observable that separates temporary breakout invalidation followed by recovery from permanent failure, without candidate replacement P/L evaluation or 2025 access.",
+  "period_rows": {"2023": 960, "2024_H1": 428, "2024_H2": 493},
+  "structural_persistence_findings": [
+    {"sequence": "inside_at_30_and_60_no_reaccept_above_0", "2023": {"n": 171, "baseline_net_jpy": -34090.0}, "2024_H1": {"n": 67, "baseline_net_jpy": -6969.0}, "2024_H2": {"n": 74, "baseline_net_jpy": -17012.0}},
+    {"sequence": "inside_at_30_and_90_no_reaccept_above_0", "2023": {"n": 142, "baseline_net_jpy": -32072.0}, "2024_H1": {"n": 61, "baseline_net_jpy": -6642.0}, "2024_H2": {"n": 59, "baseline_net_jpy": -19303.0}},
+    {"sequence": "inside_at_60_and_90_no_reaccept_above_0", "2023": {"n": 199, "baseline_net_jpy": -44547.0}, "2024_H1": {"n": 96, "baseline_net_jpy": -8593.0}, "2024_H2": {"n": 95, "baseline_net_jpy": -26994.0}}
+  ],
+  "shadow_strategy_health_finding": {
+    "decision": "REJECT_AS_SUCCESSOR_MECHANISM",
+    "reason": "The relationship between trailing virtual strategy performance and the next trade outcome changed sign across 2023, 2024 H1 and 2024 H2 for both B02 and F05.",
+    "tested_descriptive_windows": ["last_20_closed", "last_40_closed", "last_60_closed", "30_days", "60_days", "90_days"]
+  },
+  "new_observable": {
+    "name": "post_entry_structural_persistence_without_reacceptance",
+    "definition": "Executable price is inside the original breakout reference level at two frozen checkpoints and does not reaccept above a frozen level between them.",
+    "why_distinct": [
+      "Family G used a single structural checkpoint; this uses a two-state sequence and intervening path.",
+      "Family D used absolute adverse P/L persistence, not the original breakout level or reacceptance path.",
+      "Family E used exposure support and recovery timing, not structural reacceptance.",
+      "Family F used pre-entry event confirmation, not post-entry invalidation persistence."
+    ]
+  },
+  "decision": "PREREGISTER_FINITE_FAMILY_H_PERSISTENT_STRUCTURAL_INVALIDATION",
+  "boundaries": {"candidate_evaluated": false, "parameter_selected": false, "2025_accessed": false, "2024_source_mutated": false},
+  "output_sha256": {
+    "usdjpy_crossyear_recovery_capacity_features_v1.csv": "21164436b87b8aeb2210e4de4a78225a9bd6e85ae3ada986fe4f90452b1427fd",
+    "usdjpy_structural_persistence_descriptive_v1.csv": "da8f0c11548ee89e5b71a87ba9179c490fd472446acb4dc37e38d67f3608193a",
+    "usdjpy_shadow_health_descriptive_v1.csv": "2dc233c04cf48cd0e5e92123e49d2357c5861d91e125cfa8d222c8ff536f0d89",
+    "usdjpy_shadow_health_consistency_v1.csv": "79d17871bcf2233fc1c616938bafb6e3fa97fe915ebbe7f7b8ede16f9001ccd0"
+  }
+}
