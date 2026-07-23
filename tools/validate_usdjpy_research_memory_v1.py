@@ -50,6 +50,7 @@ def main() -> None:
     registry_path = pointers["current_candidate_registry"]
     contract_path = pointers["operating_contract"]
     ledger_path = pointers["hypothesis_ledger"]
+    addendum_path = pointers.get("hypothesis_ledger_addendum")
 
     registry = load_json(root, registry_path)
     contract = load_json(root, contract_path)
@@ -62,15 +63,26 @@ def main() -> None:
         raise RuntimeError("latest registry does not point to the canonical hypothesis ledger")
     if memory.get("operating_contract") != contract_path:
         raise RuntimeError("latest registry does not point to the canonical operating contract")
+    if addendum_path and memory.get("hypothesis_ledger_addendum") != addendum_path:
+        raise RuntimeError("latest registry does not point to the canonical hypothesis-ledger addendum")
     if contract.get("research_memory_manifest") != manifest_path:
         raise RuntimeError("operating contract does not point to the canonical memory manifest")
     if contract.get("hypothesis_ledger") != ledger_path:
         raise RuntimeError("operating contract does not point to the canonical hypothesis ledger")
 
     required_entry_fields = set(ledger.get("entry_required_fields", []))
-    entries = ledger.get("entries")
-    if not isinstance(entries, list) or not entries:
+    base_entries = ledger.get("entries")
+    if not isinstance(base_entries, list) or not base_entries:
         raise RuntimeError("hypothesis ledger has no entries")
+    entries = list(base_entries)
+    if addendum_path:
+        addendum = load_json(root, addendum_path)
+        if addendum.get("base_ledger") != ledger_path:
+            raise RuntimeError("hypothesis-ledger addendum points to the wrong base ledger")
+        addendum_entries = addendum.get("entries")
+        if not isinstance(addendum_entries, list):
+            raise RuntimeError("hypothesis-ledger addendum entries are not a list")
+        entries.extend(addendum_entries)
 
     ids: set[str] = set()
     family_to_ids: dict[str, list[str]] = {}
@@ -117,6 +129,8 @@ def main() -> None:
         "registry_status": registry.get("status"),
         "operating_contract": contract_path,
         "hypothesis_ledger": ledger_path,
+        "hypothesis_ledger_addendum": addendum_path,
+        "base_hypothesis_count": len(base_entries),
         "hypothesis_count": len(entries),
         "closed_family_count": len(closed_families),
         "current_open_research_question": open_question,

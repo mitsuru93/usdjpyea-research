@@ -1,0 +1,76 @@
+{
+  "schema_version": "usdjpy_family_g_structural_breakout_invalidation_result_v1",
+  "status": "CLOSED_NO_ELIGIBLE_SPEC",
+  "decision": "CLOSE_FAMILY_G_NO_MT4_OR_2025_ACCESS",
+  "candidate_count": 18,
+  "eligible_count": 0,
+  "eligible_equivalence_classes": 0,
+  "finalist": null,
+  "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "period_baselines": {
+    "2023": {"rows": 960, "net_jpy": -9279.0},
+    "2024H1": {"rows": 428, "net_jpy": 22797.0},
+    "2024H2": {"rows": 493, "net_jpy": 38358.0}
+  },
+  "best_by_minimum_period_delta": {
+    "candidate_id": "G1_C30_I10",
+    "mechanism": "G1_ANY_STATE",
+    "unsupported_checkpoint": 30,
+    "supported_checkpoint": 30,
+    "inside_buffer_pips": 10,
+    "minimum_period_delta_jpy": -2146.0,
+    "pooled_net_delta_jpy": -107.0,
+    "pooled_benefit_jpy": 23487.0,
+    "pooled_harm_jpy": 23594.0,
+    "pooled_changed_positions": 134,
+    "pooled_changed_dates": 119,
+    "pooled_positive_effect_months": 14,
+    "pooled_negative_effect_months": 10,
+    "pooled_ex_best_two_entry_dates_delta_jpy": -3053.0,
+    "pooled_leave_one_month_out_min_delta_jpy": -4455.0,
+    "pooled_loss_avoided_jpy": 23487.0,
+    "pooled_winner_harm_jpy": 19575.0,
+    "per_period": {
+      "2023": {"net_delta_jpy": 1655.0, "changed_positions": 75, "benefit_jpy": 12774.0, "harm_jpy": 11119.0},
+      "2024H1": {"net_delta_jpy": -2146.0, "changed_positions": 17, "benefit_jpy": 1279.0, "harm_jpy": 3425.0},
+      "2024H2": {"net_delta_jpy": 384.0, "changed_positions": 42, "benefit_jpy": 9434.0, "harm_jpy": 9050.0}
+    },
+    "equivalence_class_id": "EQG001"
+  },
+  "failed_gates_best_cell": [
+    "minimum_period_delta_positive",
+    "positive_effect_months_at_least_20_of_24",
+    "negative_effect_months_at_most_3",
+    "ex_best_two_entry_dates_delta_positive",
+    "leave_one_month_out_min_delta_positive",
+    "benefit_exceeds_harm_pooled"
+  ],
+  "retained_findings": [
+    "Simple post-entry return inside the original breakout level does not separate failed entries from recovery winners across 2023 and both 2024 halves.",
+    "The best cell improved 2023 and slightly improved 2024 H2 but harmed 2024 H1 by JPY 2,146.",
+    "State-adaptive checkpoint timing did not solve the sign reversal.",
+    "Loss avoided and winner harm were approximately balanced even at the best cell."
+  ],
+  "prohibited_reuse": [
+    "Do not expand the same checkpoint or inside-buffer grid.",
+    "Do not repair Family G from 2025 outcomes.",
+    "Do not treat structural return alone as a causal invalidation signal."
+  ],
+  "evaluator": {
+    "path_proposed": "tools/evaluate_usdjpy_family_g_v1.py",
+    "sha256": "c45e5d4d48a0637a5aa094404dd1e762bfdea1b84bbfe5ba4505a0a5cff3e2eb",
+    "dynamic_candidate_adjusted_exposure_state": true,
+    "missing_checkpoint_policy": "first available market M15 bar-open at or after scheduled checkpoint"
+  },
+  "evidence": {
+    "2023_legacy2024_atlas": {"path": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json", "joined_csv_sha256": "3cc1df9e39cc77efb33eba6cd3c3e98c9d5bfb18d05997c6550c4c6e19394097"},
+    "2024_H1_entry_state_atlas": {"run_id": 29884556860, "artifact_id": 8516049893, "artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981", "csv_sha256": "a9f78991fbf23cb5fb0af96b6b36fc4c3f9185e499a9ca44bdd3d33fcaa40efd"},
+    "2024_H2_Rakuten_MT4_source": {"run_id": 29895387329, "artifact_id": 8519879009, "artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981", "baseline_audit_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd"}
+  },
+  "output_sha256": {
+    "usdjpy_family_g_candidate_summary_v1.csv": "6690b951c9fbba87784c3c4e44190c57228f0b843ebc61e3a992689acd5df749",
+    "usdjpy_family_g_equivalence_classes_v1.json": "07a94be828642dd0da7d71c42a599151106b75f4c6d820e54f0478711c6ce004",
+    "usdjpy_family_g_period_metrics_v1.csv": "ef5f1ae430a04ca5c29cd7c48893d2d010fdd0c2cbe1f5d30be5330fb3fa0f9f"
+  },
+  "boundaries": {"2024_source_mutated": false, "2025_accessed": false, "B02_changed": false, "grid_expanded_after_result": false}
+}
