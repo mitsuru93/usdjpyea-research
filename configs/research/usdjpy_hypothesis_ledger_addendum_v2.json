@@ -21,6 +21,23 @@
       "prohibited_reuse": ["Do not expand nearby checkpoints or buffers", "Do not repair from 2025", "Do not relabel structural return alone"],
       "successor_questions": ["Which post-invalidation observable predicts recovery capacity across 2023 and both 2024 halves?"],
       "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_g_structural_breakout_invalidation_result_v1.json"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_g_structural_breakout_invalidation_prereg_v1.json"}]
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-013",
+      "family_ids": [],
+      "candidate_ids": [],
+      "status": "OPEN_RESEARCH_QUESTION",
+      "origin_analysis": "Family G showed that structural invalidation removes real losses but sacrifices recovery winners at approximately equal value and reverses sign across development periods.",
+      "causal_hypothesis": "No candidate hypothesis is active. Diagnose which post-invalidation recovery-capacity observable distinguishes temporary structural failure from permanent failure across 2023 and both 2024 halves.",
+      "target_failure_mode": ["winner sacrifice after structural invalidation", "cross-period sign reversal", "temporary versus permanent F05 failure"],
+      "pre_result_predictions": ["benefit and harm populations differ in at least one pre-result observable not already closed in Families A-G", "the distinction is visible in all three development periods", "2025 is not needed to select the mechanism"],
+      "tests": [],
+      "decision": "Remain descriptive until a duplicate-research and novelty audit supports a finite successor family.",
+      "falsified_or_unsupported_claims": [],
+      "retained_findings": ["structural return alone is insufficient", "state-adaptive checkpoint timing is insufficient", "recovery capacity is the unresolved causal gap"],
+      "prohibited_reuse": ["do not expand Family G thresholds", "do not use 2025 outcomes for feature or threshold selection", "do not relabel Families C-G"],
+      "successor_questions": ["Does shadow strategy health, post-invalidation re-acceptance, or directional support predict recovery without lookahead?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_g_structural_breakout_invalidation_result_v1.json"}]
     }
   ]
 }
