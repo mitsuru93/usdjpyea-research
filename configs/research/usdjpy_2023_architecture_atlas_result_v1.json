@@ -1,0 +1,230 @@
+{
+  "schema_version": "usdjpy_2023_architecture_atlas_result_v1",
+  "status": "PASS",
+  "decision": "ACCEPT_2023_ARCHITECTURE_ATLAS_AND_PROCEED_TO_2024_H1_CANONICAL_FIELD_AUDIT",
+  "binding_execution": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "run_id": 30001786384,
+    "run_attempt": 1,
+    "job_id": 89188413852,
+    "head_sha": "9329579b68c8d7e526b63276e0afe306dfda7045",
+    "runner_name": "GitHub Actions 1000004626",
+    "receipt_issue": 194,
+    "artifact_id": 8561286612,
+    "artifact_name": "usdjpy-2023-architecture-atlas-v2-30001786384-1",
+    "artifact_digest": "sha256:9e6aa5cebccc44a51e8e0aa86fd87653d2e471446c4a92cd62d8699f4c6bf591",
+    "downloaded_zip_sha256": "9e6aa5cebccc44a51e8e0aa86fd87653d2e471446c4a92cd62d8699f4c6bf591",
+    "google_drive_file_id": "14lqKAS28FZT2f-gAuxKe1izcckyTkwRV",
+    "google_drive_file_name": "usdjpy-2023-architecture-atlas-pass-run-30001786384.zip",
+    "google_drive_readback_sha256": "9e6aa5cebccc44a51e8e0aa86fd87653d2e471446c4a92cd62d8699f4c6bf591"
+  },
+  "superseded_technical_runs": [
+    {
+      "run_id": 30000786333,
+      "event": "push",
+      "reason": "self-hosted service runner accepted the job but reported no workflow step for more than thirteen minutes",
+      "research_result_generated": false
+    },
+    {
+      "run_id": 30000878692,
+      "event": "workflow_dispatch",
+      "reason": "pending behind the stalled concurrency holder",
+      "research_result_generated": false
+    }
+  ],
+  "frozen_inputs": {
+    "builder_commit": "2a5d29410144f809e9be4c3bdcb0fc059b3c253e",
+    "builder_path": "tools/build_usdjpy_2023_architecture_atlas_v1.py",
+    "builder_git_blob_sha1": "abf9bc95fd17465067cf3fc508981277e526382e",
+    "builder_sha256": "c9dbbdebb375ac040739669bb7f248e7ece78106b492943de8f846132116e9fa",
+    "research_preregistration_commit": "e43fc7de8593bdb0edf16ffde8a22664348f4d64",
+    "research_preregistration_git_blob_sha1": "878a2ffddd959ef90164297b310dbf76619f9634",
+    "research_preregistration_sha256": "a36bf2760f28cd157d9123c27101e907ad5bc17a3bc7842aa127c970b5ffd79b",
+    "binding_mt4_artifact_id": 8560057457,
+    "binding_mt4_artifact_sha256": "bf2cd6e94ba4a15f764e784f4a82b8d07edd3070ab198bbf9bc27112e931f63b",
+    "preparation_artifact_id": 8559483151,
+    "preparation_artifact_sha256": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+    "mt4_audit_sha256": "a7349269db2072e24e694847e0c5517a90d10edd387aedb8baffa788caf008ff",
+    "expected_trade_ledger_sha256": "33d08d580d584f533bc5f9dda510184fb86c668608f76f8e9b7c014924c5f1b8",
+    "normalized_m15_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78"
+  },
+  "reconciliation": {
+    "closed_trade_count": 963,
+    "B02_closed": 232,
+    "F05_closed": 731,
+    "realized_net_jpy": -9904.0,
+    "duplicate_trade_keys": 0,
+    "missing_trade_keys": 0,
+    "unexpected_trade_keys": 0,
+    "gross_pips_mismatches": 0,
+    "future_information_columns_in_entry_features": 0,
+    "hard_excluded_time_violations": 0,
+    "deinit_regressed_timestamp_rows_used": 0,
+    "failed_gates": []
+  },
+  "strategy_summary": [
+    {
+      "strategy": "B02",
+      "trade_count": 232,
+      "net_jpy": -13266.0,
+      "gross_profit_jpy": 52575.0,
+      "gross_loss_jpy": 65841.0,
+      "profit_factor": 0.7985146033626463,
+      "wins": 119,
+      "losses": 113,
+      "flat": 0,
+      "win_rate": 0.5129310344827587,
+      "mean_mfe_pips": 41.060775862068965,
+      "mean_mae_pips": -47.63620689655172,
+      "path_classes": {
+        "WINNER": 119,
+        "P1_GIVEBACK_TO_LOSS": 56,
+        "P2_MINOR_FAVORABLE_THEN_LOSS": 37,
+        "P3_NEVER_PROFITABLE": 20
+      }
+    },
+    {
+      "strategy": "F05",
+      "trade_count": 731,
+      "net_jpy": 3362.0,
+      "gross_profit_jpy": 145004.0,
+      "gross_loss_jpy": 141642.0,
+      "profit_factor": 1.0237358975445137,
+      "wins": 350,
+      "losses": 380,
+      "flat": 1,
+      "win_rate": 0.478796169630643,
+      "mean_mfe_pips": 32.60861833105335,
+      "mean_mae_pips": -32.3484268125855,
+      "path_classes": {
+        "WINNER": 351,
+        "P1_GIVEBACK_TO_LOSS": 167,
+        "P2_MINOR_FAVORABLE_THEN_LOSS": 128,
+        "P3_NEVER_PROFITABLE": 85
+      }
+    }
+  ],
+  "exposure_state_summary": [
+    {
+      "entry_exposure_state": "standalone",
+      "trade_count": 222,
+      "net_jpy": -14672.0,
+      "profit_factor": 0.7558857294976956,
+      "wins": 107,
+      "losses": 115
+    },
+    {
+      "entry_exposure_state": "same_direction_stack",
+      "trade_count": 514,
+      "net_jpy": -3342.0,
+      "profit_factor": 0.9680585688480249,
+      "wins": 243,
+      "losses": 270,
+      "flat": 1
+    },
+    {
+      "entry_exposure_state": "opposite_overlap",
+      "trade_count": 69,
+      "net_jpy": -1226.0,
+      "profit_factor": 0.9320361439104163,
+      "wins": 28,
+      "losses": 41
+    },
+    {
+      "entry_exposure_state": "simultaneous_same_direction",
+      "trade_count": 60,
+      "net_jpy": 2313.0,
+      "profit_factor": 1.207760711398545,
+      "wins": 36,
+      "losses": 24
+    },
+    {
+      "entry_exposure_state": "mixed_overlap",
+      "trade_count": 98,
+      "net_jpy": 7023.0,
+      "profit_factor": 1.5171956697842257,
+      "wins": 55,
+      "losses": 43
+    }
+  ],
+  "path_class_summary": {
+    "WINNER": {
+      "trade_count": 470,
+      "net_jpy": 197579.0,
+      "wins": 469,
+      "flat": 1,
+      "mean_mfe_pips": 56.35787234042553,
+      "mean_mae_pips": -13.707659574468085
+    },
+    "P1_GIVEBACK_TO_LOSS": {
+      "trade_count": 223,
+      "net_jpy": -87013.0,
+      "mean_mfe_pips": 27.647533632286994,
+      "mean_mae_pips": -52.61973094170404
+    },
+    "P2_MINOR_FAVORABLE_THEN_LOSS": {
+      "trade_count": 165,
+      "net_jpy": -57863.0,
+      "mean_mfe_pips": 4.606666666666667,
+      "mean_mae_pips": -51.29575757575757
+    },
+    "P3_NEVER_PROFITABLE": {
+      "trade_count": 105,
+      "net_jpy": -62607.0,
+      "mean_mfe_pips": -0.4828571428571429,
+      "mean_mae_pips": -76.74
+    }
+  },
+  "monthly_net_jpy": {
+    "2023-01": -10685.0,
+    "2023-02": -182.0,
+    "2023-03": -12923.0,
+    "2023-04": -2531.0,
+    "2023-05": 5558.0,
+    "2023-06": -6424.0,
+    "2023-07": 38.0,
+    "2023-08": -4551.0,
+    "2023-09": -5117.0,
+    "2023-10": 2833.0,
+    "2023-11": 6696.0,
+    "2023-12": 17384.0
+  },
+  "data_quality": {
+    "gap_record_count": 445,
+    "maximum_missing_minutes": 2997,
+    "entry_on_incomplete_M15_count": 2,
+    "entry_on_incomplete_M15_net_jpy": 160.0,
+    "complete_M15_entry_count": 961
+  },
+  "output_sha256": {
+    "entry_features_csv": "e7fdfd46fda776a224ca222cb84e462d9bf7f762ae4c0a5f780557f22f725c05",
+    "outcomes_csv": "70813368940164c5c26d993b92dbf3d1256ff0851604e475048fa269ab28b3ec",
+    "joined_atlas_csv": "c8fc37d937d34ccf22686d7eb22108530006be86a83154cef9cdf3adf0c36aa4",
+    "strategy_summary_csv": "a0e2fa72fc02fb8a614cfe63435b3c4c37c3a0320ccf2c83a24a5293fab23393",
+    "exposure_state_summary_csv": "3f79d2a8c30fe1d114f3014f66a58a17235400a2d0eeffac772194a5b88be124",
+    "path_class_summary_csv": "b8b263023094d220460c24d1f6e3b5f33ea2a10a7d2788e23f4479c715e631ae",
+    "monthly_summary_csv": "b895c1772766d3f807d1123583d1134cac2923912caa0a59c822e2d8ea3192a9",
+    "gap_incomplete_summary_json": "0a7900aa59321f9a6d5f0d6aa2e06dcf5a7bbce195bdf93886cec7ba34a36c23",
+    "overall_summary_json": "4c1fb9b67c80083ed787733234c99a7f374aea8a24178e2d5d05023acf910ccc",
+    "reconciliation_json": "f6ea65750304f1d22df48ab0a3a95b4c7a3aebbf16f93f0b59b06df1af3a1ed0"
+  },
+  "descriptive_findings": [
+    "The 2023 portfolio loss is concentrated in B02; F05 is slightly positive before any candidate-level selection.",
+    "Standalone entries are the largest exposure-state loss bucket, while mixed overlap and simultaneous same-direction entries are positive in this single year.",
+    "Giveback losses, minor-favorable losses and never-profitable losses are all economically material; no single path class alone explains the full deficit.",
+    "Monthly performance is strongly nonstationary, with large losses in January and March and large gains in November and December.",
+    "Incomplete M15 source buckets affected only two closed trades and do not explain the 2023 deficit."
+  ],
+  "interpretation_boundary": {
+    "descriptive_not_causal": true,
+    "single_year_group_profitability_not_a_candidate_rule": true,
+    "candidate_generated": false,
+    "candidate_evaluated": false,
+    "parameter_search": false,
+    "cross_year_comparison": false,
+    "2024_H2_accessed": false,
+    "2025_accessed": false,
+    "live_orders": false
+  },
+  "next_action": "rebuild and audit the corresponding 2024 H1 UTC-derived trade keys, session fields and entry-state Atlas columns under the canonical server clock before cross-year interpretation or new candidate formulation"
+}
