@@ -1,0 +1,32 @@
+{
+  "schema_version": "usdjpy_family_g_missing_checkpoint_execution_amendment_v1",
+  "status": "FROZEN_BEFORE_ANY_FAMILY_G_CANDIDATE_OUTCOME_WAS_COMPUTED",
+  "parent_preregistration": "configs/research/usdjpy_family_g_structural_breakout_invalidation_prereg_v1.json",
+  "trigger": "Technical preflight found source histories where the exact scheduled 30/60/90-minute M15 bar-open does not exist. Candidate evaluation stopped before metrics were generated.",
+  "observed_missing_checkpoint_population": {
+    "2023": [
+      {"trade_key": "F05|2023-05-18T19:15:00Z|2023-05-18T19:30:00Z|1", "scheduled_checkpoint_minutes": 90, "next_available_delay_minutes": 1}
+    ],
+    "2024_H1": [],
+    "2024_H2": [
+      {"trade_key": "F05|2024-09-12T07:15:00Z|2024-09-12T07:30:00Z|-1", "scheduled_checkpoint_minutes": 30, "next_available_delay_minutes": 60},
+      {"trade_key": "F05|2024-09-12T07:15:00Z|2024-09-12T07:30:00Z|-1", "scheduled_checkpoint_minutes": 60, "next_available_delay_minutes": 30}
+    ]
+  },
+  "execution_policy": {
+    "normal_case": "Use the exact scheduled checkpoint M15 bar-open executable Bid/Ask.",
+    "missing_exact_checkpoint": "Use the first available market M15 bar-open at or after the scheduled checkpoint, because no executable market bar exists at the scheduled time.",
+    "record_required": ["scheduled_checkpoint_utc", "actual_execution_utc", "execution_delay_minutes", "actual_executable_pips", "actual_structural_outside_pips"],
+    "candidate_state_effect": "The actual delayed close time is used when computing candidate-adjusted exposure state for later entries.",
+    "no_synthetic_bar": true,
+    "no_interpolation": true,
+    "no_outcome_based_choice": true
+  },
+  "boundaries": {
+    "candidate_metrics_computed_before_freeze": false,
+    "grid_changed": false,
+    "thresholds_changed": false,
+    "2025_accessed": false,
+    "2024_source_mutated": false
+  }
+}
