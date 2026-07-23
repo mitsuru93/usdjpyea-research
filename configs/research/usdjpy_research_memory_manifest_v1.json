@@ -20,7 +20,8 @@
     {"ordinal": 6, "path": "configs/research/usdjpy_hypothesis_ledger_v1.json", "reason": "prior hypotheses, falsifications, retained findings and prohibited reuse"},
     {"ordinal": 7, "path": "configs/research/usdjpy_period_role_policy_v4.json", "reason": "period roles and protected-period boundaries"},
     {"ordinal": 8, "path": "configs/research/usdjpy_2025h1_result_inventory_v1.json", "reason": "complete known adverse-regime result population and Release archive identity"},
-    {"ordinal": 9, "path": "configs/research/usdjpy_2023_canonical_baseline_mt4_result_v1.json", "reason": "current 2023 exact-parity baseline evidence"}
+    {"ordinal": 9, "path": "configs/research/usdjpy_2023_canonical_baseline_mt4_result_v1.json", "reason": "accepted 2023 exact-parity baseline evidence"},
+    {"ordinal": 10, "path": "configs/research/usdjpy_2023_architecture_atlas_result_v1.json", "reason": "accepted current 2023 Architecture Atlas evidence"}
   ],
   "startup_read_receipt_required": {
     "required_before": [
@@ -54,6 +55,8 @@
     "known_2025h1_inventory": "configs/research/usdjpy_2025h1_result_inventory_v1.json",
     "current_2023_baseline_result": "configs/research/usdjpy_2023_canonical_baseline_mt4_result_v1.json",
     "current_2023_baseline_report": "docs/research/usdjpy_2023_canonical_baseline_mt4_result_v1.md",
+    "current_2023_atlas_result": "configs/research/usdjpy_2023_architecture_atlas_result_v1.json",
+    "current_2023_atlas_report": "docs/research/usdjpy_2023_architecture_atlas_result_v1.md",
     "release_archive_receipt": "mitsuru93/usdjpyea-core:docs/research/artifact_archives/usdjpy_2025h1_evidence_v1/receipt.json"
   },
   "lineage_rules": {
@@ -96,11 +99,11 @@
     "technical_incomplete_runs": "record separately; never count as scientific results"
   },
   "current_state_snapshot": {
-    "registry_status": "USDJPY_2023_CANONICAL_BASELINE_PARITY_ACCEPTED_ARCHITECTURE_ATLAS_AUTHORIZED",
+    "registry_status": "USDJPY_2023_ATLAS_ACCEPTED_2024_H1_CANONICAL_FIELD_AUDIT_AUTHORIZED",
     "active_family": null,
     "current_candidate": null,
     "current_open_research_question": "USDJPY-RQ-011",
-    "next_action": "freeze and build the 2023 closed-trade Architecture Atlas from 963 exact-parity trades, then audit the corresponding 2024 H1 UTC-derived fields before cross-year interpretation",
+    "next_action": "reconstruct 2024 H1 canonical M15 UTC timestamps from the accepted legacy M15 export and verify all corrected MT4 signal and entry keys before rebuilding 2024 entry-state fields",
     "candidate_signal_generation_authorized": false,
     "candidate_outcome_evaluation_authorized": false,
     "2024_H2_authorized": false,
