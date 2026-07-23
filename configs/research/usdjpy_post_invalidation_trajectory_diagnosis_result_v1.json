@@ -1,0 +1,47 @@
+{
+  "schema_version": "usdjpy_post_invalidation_trajectory_diagnosis_result_v1",
+  "status": "DESCRIPTIVE_DIAGNOSIS_COMPLETE_NO_SUCCESSOR_FAMILY",
+  "open_question": "USDJPY-RQ-016",
+  "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "purpose": "Compare Family H loss-avoidance and late-recovery-winner populations using only trajectory features observable by the second checkpoint.",
+  "scope": {
+    "parent_family_cells": 6,
+    "fixed_trajectory_partitions": 11,
+    "periods": ["2023", "2024H1", "2024H2"],
+    "2025_accessed": false,
+    "2024_source_mutated": false
+  },
+  "only_partition_with_positive_exit_effect_in_all_periods": {
+    "parent_cells": ["H_A30_B60_R0", "H_A30_B60_R5"],
+    "rule": "recovery_from_interval_min_at_60m_at_least_20_pips",
+    "interpretation": "a material rebound occurred after the interval trough but the trade still had not structurally reaccepted the breakout level by 60 minutes",
+    "exit_effect_jpy": {"2023": 1077.0, "2024H1": 1115.0, "2024H2": 534.0, "pooled": 2726.0},
+    "implied_2023_portfolio_net_jpy": -8202.0,
+    "hard_gate_consequence": "candidate_total_net_positive_2023 remains false"
+  },
+  "rejected_successor_reasons": [
+    "The only cross-period-positive partition is too small to make the 2023 portfolio profitable.",
+    "Every other fixed trajectory partition failed to produce positive exit effect in all three periods.",
+    "Continuing to subdivide Family H would be threshold repair rather than a route to the 2023 portfolio gate.",
+    "The principal 2023 deficit is B02 JPY -12,459 while F05 is already JPY +3,180."
+  ],
+  "decision": "DO_NOT_PREREGISTER_AN_F05_EXIT_SUCCESSOR; SHIFT_TO_CROSS_YEAR_B02_LOSS_STRUCTURE_DIAGNOSIS",
+  "retained_findings": [
+    "Failed rebound after a deep trough is more informative than persistence alone.",
+    "The magnitude is insufficient to solve the portfolio deficit.",
+    "B02 must be addressed to create a plausible 2023-positive architecture."
+  ],
+  "prohibited_reuse": [
+    "Do not create Family I by adding rebound thresholds to Family H.",
+    "Do not keep partitioning F05 exit populations until a positive 2023 result appears.",
+    "Do not use 2025 to select a rebound threshold."
+  ],
+  "diagnostic_script_sha256": "deb41109707036f94c07460216b56bf61434310c92acdb6f365d71841849d08f",
+  "output_sha256": {
+    "usdjpy_family_h_trigger_trajectory_rows_v1.csv": "1c42dfefe77f0a8d03a3103b03e268d3ca5c410b7fa6880e2f3e0ef1806c2fdf",
+    "usdjpy_family_h_trajectory_continuous_comparison_v1.csv": "d2152eecca9e0d05549fbc5959e3535abc4b262a8cb9a9d34b4a249ec621024f",
+    "usdjpy_family_h_trajectory_fixed_partitions_v1.csv": "102fed9df135ec027a2359223516dc1374f20ed41c0ba9aac20e20e7361ec8c0",
+    "usdjpy_family_h_trajectory_partition_consistency_v1.csv": "500bcd28017ee602b6fb73289a73c9b57f0e2608afffe94cf0c235a786b3b41b"
+  },
+  "boundaries": {"candidate_family_evaluated": false, "new_threshold_selected": false, "2025_accessed": false, "2024_source_mutated": false}
+}
