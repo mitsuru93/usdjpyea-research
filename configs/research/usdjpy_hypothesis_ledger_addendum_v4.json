@@ -1,0 +1,64 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v4",
+  "status": "ACTIVE_APPEND_ONLY_ADDENDUM",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json"
+  ],
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-012",
+      "family_ids": ["G_STRUCTURAL_BREAKOUT_INVALIDATION"],
+      "candidate_ids": [],
+      "status": "CLOSED_NO_ELIGIBLE_SPEC",
+      "origin_analysis": "Family G tested whether a single return inside the original breakout level was a structural invalidation signal.",
+      "causal_hypothesis": "A single structural return identifies permanent F05 failure.",
+      "target_failure_mode": ["F05 P2/P3 structural failure", "temporary versus permanent invalidation"],
+      "pre_result_predictions": ["one cell is positive in all three development periods", "benefit exceeds winner harm"],
+      "tests": [{"period": "2023_and_2024_full_development", "type": "frozen_18_cell_grid", "result_path": "configs/research/usdjpy_family_g_structural_breakout_invalidation_result_v1.json", "result": {"eligible_count": 0, "best_pooled_delta_jpy": -107.0}}],
+      "decision": "Closed before MT4 or 2025 access.",
+      "falsified_or_unsupported_claims": ["single-checkpoint structural return separates permanent failure from recovery winners"],
+      "retained_findings": ["the trigger removes losses but sacrifices similar winner value"],
+      "prohibited_reuse": ["do not expand Family G thresholds", "do not repair from 2025"],
+      "successor_questions": ["does persistent invalidation without reacceptance improve discrimination?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_g_structural_breakout_invalidation_result_v1.json"}]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-014-RESULT-001",
+      "family_ids": ["H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE"],
+      "candidate_ids": ["H_A30_B60_R0", "H_A30_B60_R5", "H_A30_B90_R0", "H_A30_B90_R5", "H_A60_B90_R0", "H_A60_B90_R5"],
+      "status": "CLOSED_NO_ELIGIBLE_SPEC",
+      "origin_analysis": "Persistent no-reacceptance populations were negative in all three development periods, motivating a fixed two-checkpoint exit family.",
+      "causal_hypothesis": "Persistent structural invalidation without reacceptance identifies permanent F05 failure more reliably than one checkpoint.",
+      "target_failure_mode": ["F05 permanent post-entry breakout failure", "late recovery winner sacrifice"],
+      "pre_result_predictions": ["one frozen cell produces positive net and PF at least 1 in every period", "pooled concentration gates pass", "B02 remains unchanged"],
+      "tests": [{"period": "2023_and_2024_full_development", "type": "frozen_6_cell_grid", "result_path": "configs/research/usdjpy_family_h_persistent_structural_invalidation_result_v1.json", "result": {"eligible_count": 0, "best_candidate": "H_A30_B60_R5", "best_pooled_delta_jpy": -1073.0, "best_2023_candidate_net_jpy": -7655.0}}],
+      "decision": "Close Family H before MT4 parity or 2025 access.",
+      "falsified_or_unsupported_claims": ["two-checkpoint non-reacceptance is a robust fixed early-exit rule", "negative subgroup baseline P/L implies positive replacement-exit value"],
+      "retained_findings": ["persistent invalidation identifies weak populations", "late recovery after the second checkpoint remains the decisive winner-sacrifice source", "delayed checkpoints did not determine the result"],
+      "prohibited_reuse": ["do not expand Family H checkpoints or thresholds", "do not add shadow strategy health", "do not repair from 2025"],
+      "successor_questions": ["which trajectory feature available by the second checkpoint predicts late recovery?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_h_persistent_structural_invalidation_result_v1.json"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_h_persistent_structural_invalidation_prereg_v1.json"}]
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-016",
+      "family_ids": [],
+      "candidate_ids": [],
+      "status": "OPEN_RESEARCH_QUESTION",
+      "origin_analysis": "Family H improved some 2023 trades but harmed both 2024 halves because positions that remained invalidated through 60 or 90 minutes could still recover later.",
+      "causal_hypothesis": "No candidate hypothesis is active. Diagnose trajectory features observable by the second checkpoint that distinguish late recovery from permanent failure.",
+      "target_failure_mode": ["late recovery winner sacrifice", "cross-period exit sign reversal"],
+      "pre_result_predictions": ["recovery winners and permanent failures differ in at least one no-lookahead trajectory feature across all three periods", "the feature is distinct from closed Families D-H", "2025 is unnecessary for mechanism selection"],
+      "tests": [],
+      "decision": "Remain descriptive until duplicate-research and novelty audit supports a finite successor family.",
+      "falsified_or_unsupported_claims": [],
+      "retained_findings": ["single and persistent invalidation are insufficient", "the unresolved gap is late recovery capacity after the second checkpoint"],
+      "prohibited_reuse": ["do not expand Families G/H", "do not use 2025 for feature selection", "do not infer exit value from subgroup baseline loss"],
+      "successor_questions": ["does recovery velocity, rebound quality or checkpoint-to-checkpoint trajectory separate the populations?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_h_persistent_structural_invalidation_result_v1.json"}]
+    }
+  ]
+}
