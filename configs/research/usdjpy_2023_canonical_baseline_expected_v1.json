@@ -1,0 +1,54 @@
+{
+  "schema_version": "usdjpy_2023_canonical_baseline_expected_v1",
+  "status": "FROZEN_EXPECTATION_NOT_YET_BINDING_MT4_EXECUTED",
+  "preparation_run_id": 29997167048,
+  "preparation_artifact_id": 8559483151,
+  "preparation_artifact_sha256": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+  "hst": {
+    "M1_sha256": "f6711747dad368f7f108f8088b8e6aa09f9c86ce9347468dd32e1c6816456e06",
+    "M15_sha256": "c82c88307289b698cf2c71ae13050d9ad006b412d35f6a36a4e358c046e65571",
+    "M1_records": 371128,
+    "M15_records": 24825
+  },
+  "trade_ledger_sha256": "33d08d580d584f533bc5f9dda510184fb86c668608f76f8e9b7c014924c5f1b8",
+  "metrics": {
+    "opened_trades": 964,
+    "B02_opened": 232,
+    "F05_opened": 732,
+    "closed_trades": 963,
+    "end_open_trades": 1,
+    "net_jpy": -9904.0,
+    "gross_profit_jpy": 197579.0,
+    "gross_loss_jpy": 207483.0,
+    "profit_factor": 0.9522659687781649,
+    "wins": 469,
+    "losses": 493,
+    "flat": 1
+  },
+  "period_end_open_positions": [
+    {
+      "trade_ordinal": 964,
+      "trade_key": "F05|2023-12-29T16:30:00Z|-1",
+      "strategy": "F05",
+      "signal_utc": "2023-12-29T16:30:00Z",
+      "entry_utc": "2023-12-29T16:45:00Z",
+      "side": -1,
+      "entry_bid": 140.835,
+      "entry_price": 140.835,
+      "cap_bars": 32,
+      "detail": "current_high=141.913;current_low=140.870;previous_high=141.913;previous_low=140.870;signal_close=140.836;previous_close=140.970"
+    }
+  ],
+  "first_trade": {
+    "trade_key": "B02|2023-01-03T12:00:00Z|1",
+    "entry_utc": "2023-01-03T12:15:00Z",
+    "gross_pips": -12.9,
+    "realized_pl_jpy": -129.0
+  },
+  "boundaries": {
+    "candidate_evaluated": false,
+    "2024_H2_accessed": false,
+    "2025_accessed": false,
+    "live_order_authorized": false
+  }
+}
