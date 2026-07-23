@@ -1,0 +1,97 @@
+{
+  "schema_version": "usdjpy_family_h_persistent_structural_invalidation_result_v1",
+  "status": "CLOSED_NO_ELIGIBLE_SPEC",
+  "decision": "CLOSE_FAMILY_H_NO_MT4_OR_2025_ACCESS",
+  "candidate_count": 6,
+  "eligible_count": 0,
+  "eligible_equivalence_classes": 0,
+  "finalist": null,
+  "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "period_baselines": {
+    "2023": {"rows": 960, "net_jpy": -9279.0},
+    "2024H1": {"rows": 428, "net_jpy": 22797.0},
+    "2024H2": {"rows": 493, "net_jpy": 38358.0}
+  },
+  "best_by_ranking": {
+    "candidate_id": "H_A30_B60_R5",
+    "first_checkpoint_minutes": 30,
+    "second_checkpoint_minutes": 60,
+    "reacceptance_threshold_pips": 5,
+    "minimum_candidate_net_jpy": -7655.0,
+    "minimum_period_delta_jpy": -1669.0,
+    "pooled_net_delta_jpy": -1073.0,
+    "pooled_affected_positions": 329,
+    "pooled_affected_entry_dates": 250,
+    "pooled_benefit_jpy": 51253.0,
+    "pooled_harm_jpy": 52326.0,
+    "pooled_positive_effect_months": 14,
+    "pooled_negative_effect_months": 10,
+    "pooled_ex_best_two_entry_dates_delta_jpy": -5838.0,
+    "pooled_leave_one_month_out_min_delta_jpy": -4956.0,
+    "pooled_loss_avoided_jpy": 51253.0,
+    "pooled_winner_harm_jpy": 45868.0,
+    "delayed_checkpoint_changed_positions": 1,
+    "delayed_checkpoint_effect_jpy": 36.0,
+    "no_delay_pooled_delta_jpy": -1109.0,
+    "no_delay_ex_best_two_delta_jpy": -5874.0,
+    "no_delay_leave_one_month_out_min_delta_jpy": -4992.0,
+    "equivalence_class_id": "EQH005",
+    "per_period": {
+      "2023": {"candidate_net_jpy": -7655.0, "net_delta_jpy": 1624.0, "candidate_profit_factor": 0.958854, "affected_positions": 182, "benefit_jpy": 32073.0, "harm_jpy": 30449.0},
+      "2024H1": {"candidate_net_jpy": 21769.0, "net_delta_jpy": -1028.0, "candidate_profit_factor": 1.386489, "affected_positions": 71, "benefit_jpy": 6993.0, "harm_jpy": 8021.0},
+      "2024H2": {"candidate_net_jpy": 36689.0, "net_delta_jpy": -1669.0, "candidate_profit_factor": 1.362278, "affected_positions": 76, "benefit_jpy": 12187.0, "harm_jpy": 13856.0}
+    }
+  },
+  "failed_gates_best_cell": [
+    "candidate_total_net_positive_2023",
+    "candidate_profit_factor_at_least_1_2023",
+    "net_delta_positive_2024H1",
+    "benefit_exceeds_harm_2024H1",
+    "net_delta_positive_2024H2",
+    "benefit_exceeds_harm_2024H2",
+    "positive_effect_months_at_least_20",
+    "negative_effect_months_at_most_3",
+    "ex_best_two_entry_dates_delta_positive",
+    "leave_one_month_out_min_delta_positive",
+    "execution_delay_not_determining_eligibility"
+  ],
+  "retained_findings": [
+    "Persistent structural invalidation without reacceptance identifies large negative baseline populations but does not create a robust early-exit rule.",
+    "The 30-to-60-minute R5 cell improved 2023 by JPY 1,624 but remained loss-making and harmed both 2024 halves.",
+    "The remaining winner sacrifice comes from positions that reaccept only after the second checkpoint.",
+    "Delayed-checkpoint cases were immaterial and did not cause the failure."
+  ],
+  "prohibited_reuse": [
+    "Do not expand checkpoint pairs or reacceptance thresholds within Family H.",
+    "Do not add shadow strategy health to Family H.",
+    "Do not repair Family H from 2025 outcomes.",
+    "Do not treat negative baseline membership as proof that a fixed early exit improves replacement P/L."
+  ],
+  "technical_incomplete_attempts": [
+    {
+      "scope": "local deterministic evaluator before any result metrics were written",
+      "reason": "period subsets retained non-contiguous pandas indices and candidate_pl.iloc attempted to use source indices",
+      "scientific_result_generated": false,
+      "correction": "reset each period subset index before simulation; grid, gates, inputs and formulas unchanged"
+    }
+  ],
+  "evaluator": {
+    "path_proposed": "tools/evaluate_usdjpy_family_h_v1.py",
+    "sha256": "8c371508c14fd27bb4bc161a8a66c9ba61a8b37de1b0ba9cb7779741309aa0ca",
+    "candidate_adjusted_exposure_state": true,
+    "missing_checkpoint_policy": "first available market M15 bar-open at or after scheduled checkpoint"
+  },
+  "evidence": {
+    "diagnosis_features_sha256": "21164436b87b8aeb2210e4de4a78225a9bd6e85ae3ada986fe4f90452b1427fd",
+    "preregistration": "configs/research/usdjpy_family_h_persistent_structural_invalidation_prereg_v1.json",
+    "2023_legacy2024_atlas": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json",
+    "2024_H1_entry_state_atlas": {"run_id": 29884556860, "artifact_id": 8516049893, "artifact_digest": "sha256:ee54d2608c38750776366c27bde03e046a44c6bebec6964f33f1f04b4f115981"},
+    "2024_H2_Rakuten_MT4_source": {"run_id": 29895387329, "artifact_id": 8519879009, "artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981"}
+  },
+  "output_sha256": {
+    "usdjpy_family_h_candidate_summary_v1.csv": "b3e9fcda570724ca45cabf6f49f0a55ac87155de85b60fec6f416350095fecde",
+    "usdjpy_family_h_equivalence_classes_v1.json": "cc5fa42cb47a4536fb2606462517895b30582f83e49d820c1ec8dbaf8eb1886c",
+    "usdjpy_family_h_period_metrics_v1.csv": "b47d89de42af836965975c2fe0e8bd4f8c46a1cf963688509bb587ac03c1ca46"
+  },
+  "boundaries": {"2024_source_mutated": false, "2025_accessed": false, "B02_changed": false, "grid_expanded_after_result": false}
+}
