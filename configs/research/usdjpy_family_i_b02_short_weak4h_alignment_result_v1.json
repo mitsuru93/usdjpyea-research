@@ -1,0 +1,85 @@
+{
+  "schema_version": "usdjpy_family_i_b02_short_weak4h_alignment_result_v1",
+  "status": "CLOSED_NO_ELIGIBLE_SPEC",
+  "decision": "CLOSE_FAMILY_I_NO_MT4_OR_2025_ACCESS",
+  "candidate_count": 3,
+  "eligible_count": 0,
+  "eligible_equivalence_classes": 0,
+  "finalist": null,
+  "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "period_baselines": {
+    "2023": {"portfolio_net_jpy": -9279.0, "B02_net_jpy": -12459.0, "F05_net_jpy": 3180.0},
+    "2024H1": {"portfolio_net_jpy": 22797.0, "B02_net_jpy": 9554.0},
+    "2024H2": {"portfolio_net_jpy": 38358.0, "B02_net_jpy": 15627.0}
+  },
+  "candidate_results": [
+    {
+      "candidate_id": "I_B02_SHORT_M4LE0",
+      "threshold_pips": 0,
+      "periods": {
+        "2023": {"candidate_net_jpy": -8999.0, "net_delta_jpy": 280.0, "candidate_pf": 0.955601, "blocked_positions": 11},
+        "2024H1": {"candidate_net_jpy": 23492.0, "net_delta_jpy": 695.0, "candidate_pf": 1.393837, "blocked_positions": 2},
+        "2024H2": {"candidate_net_jpy": 39210.0, "net_delta_jpy": 852.0, "candidate_pf": 1.368726, "blocked_positions": 3}
+      },
+      "pooled_delta_jpy": 1827.0,
+      "positive_effect_months": 7,
+      "negative_effect_months": 5,
+      "ex_best_two_delta_jpy": -1439.0
+    },
+    {
+      "candidate_id": "I_B02_SHORT_M4LE20",
+      "threshold_pips": 20,
+      "periods": {
+        "2023": {"candidate_net_jpy": -1487.0, "net_delta_jpy": 7792.0, "candidate_pf": 0.991953, "blocked_positions": 62},
+        "2024H1": {"candidate_net_jpy": 28129.0, "net_delta_jpy": 5332.0, "candidate_pf": 1.521448, "blocked_positions": 22},
+        "2024H2": {"candidate_net_jpy": 39838.0, "net_delta_jpy": 1480.0, "candidate_pf": 1.387081, "blocked_positions": 17}
+      },
+      "pooled_delta_jpy": 14604.0,
+      "positive_effect_months": 17,
+      "negative_effect_months": 7,
+      "ex_best_two_delta_jpy": 9061.0,
+      "leave_one_month_out_min_delta_jpy": 10859.0,
+      "failed_gates": ["candidate_total_net_positive_2023", "candidate_pf_at_least_1_2023", "positive_effect_months_at_least_18", "negative_effect_months_at_most_4"]
+    },
+    {
+      "candidate_id": "I_B02_SHORT_M4LE40",
+      "threshold_pips": 40,
+      "periods": {
+        "2023": {"candidate_net_jpy": 731.0, "net_delta_jpy": 10010.0, "candidate_pf": 1.004099, "blocked_positions": 89},
+        "2024H1": {"candidate_net_jpy": 26159.0, "net_delta_jpy": 3362.0, "candidate_pf": 1.486579, "blocked_positions": 27},
+        "2024H2": {"candidate_net_jpy": 37162.0, "net_delta_jpy": -1196.0, "candidate_pf": 1.369062, "blocked_positions": 29}
+      },
+      "pooled_delta_jpy": 12176.0,
+      "positive_effect_months": 15,
+      "negative_effect_months": 9,
+      "ex_best_two_delta_jpy": 6633.0,
+      "leave_one_month_out_min_delta_jpy": 8361.0,
+      "failed_gates": ["candidate_net_above_baseline_2024H2", "B02_net_delta_positive_2024H2", "loss_avoided_exceeds_profit_sacrificed_2024H2", "positive_effect_months_at_least_18", "negative_effect_months_at_most_4"]
+    }
+  ],
+  "retained_findings": [
+    "The 20-pip rule improves all three periods and is broadly positive after date/month removal, but leaves the 2023 portfolio negative with PF below 1.",
+    "The 40-pip rule is the first development rule to make the 2023 portfolio positive, but the incremental 20-to-40-pip band contains profitable 2024 trades and harms 2024 H2.",
+    "The unresolved mechanism is a regime distinction within B02 shorts whose four-hour side-aligned move lies between 20 and 40 pips.",
+    "B02 longs and all F05 trades were exactly invariant."
+  ],
+  "prohibited_reuse": [
+    "Do not add a threshold between or outside 0, 20 and 40 within Family I.",
+    "Do not select the 40-pip rule from its 2023 result while ignoring the 2024 H2 reversal.",
+    "Do not combine Family I with closed F05 families from development results.",
+    "Do not use 2025 to distinguish the 20-to-40-pip band."
+  ],
+  "evaluator": {
+    "path_proposed": "tools/evaluate_usdjpy_family_i_v1.py",
+    "sha256": "31a9bb17dc364955d35293b369cbe6c1e377747d628eb77fa27fb147d7016f41",
+    "technical_incomplete_attempts": []
+  },
+  "output_sha256": {
+    "usdjpy_family_i_b02_short_weak4h_alignment_result_v1.json": "98bf3acef6bfb90170ee013a861fdca168c8d2ad0aa17888738e44e714503611",
+    "usdjpy_family_i_blocked_trade_effects_v1.csv": "ea6a2ec00f569c4bbb87188f8320974309bd1c667d85808c16763889fdfc3a29",
+    "usdjpy_family_i_candidate_summary_v1.csv": "9ecdb83b1ceda95170e1cf2f0105745fea19d1b2ebd8512e4061f0c2fe92801f",
+    "usdjpy_family_i_period_metrics_v1.csv": "76fc56517ed33008569abda3dd3c6b58486c1d7f54f6dc46890cc5428cf3c73f",
+    "usdjpy_family_i_equivalence_classes_v1.json": "de0319d8273187ae7d18c4765744d726a6d96bccce49b428b884d754c90c921a"
+  },
+  "boundaries": {"2024_source_mutated": false, "2025_accessed": false, "B02_long_changed": false, "F05_changed": false, "grid_expanded_after_result": false}
+}
