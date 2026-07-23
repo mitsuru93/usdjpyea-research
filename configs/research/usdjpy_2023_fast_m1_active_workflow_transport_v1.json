@@ -1,0 +1,47 @@
+{
+  "schema_version": "usdjpy_2023_fast_m1_active_workflow_transport_v1",
+  "status": "FROZEN_BEFORE_DATA_ACQUISITION",
+  "research_base_commit": "6952b9551600472da8cd64bf9fe44c13fc8bc560",
+  "core_pull_request": 156,
+  "core_base_commit": "b82f47d2e01b239a17d39df9913fc3da6f59eeb2",
+  "core_frozen_head_commit": "1026bf65cba9557833840446e42a0cd5801af3fe",
+  "workflow": {
+    "path": ".github/workflows/assemble_usdjpy_v1_parity_packet_v1.yml",
+    "git_blob_sha1": "58387597e539b7c5c497970dd3d867a5b6cb22a9",
+    "recent_PR_run_history_observed": true,
+    "events": ["opened", "synchronize", "reopened"],
+    "marker_branch": "agent/run-usdjpy-2023-fast-m1-acquisition-v3",
+    "job": "acquire-usdjpy-2023-m1"
+  },
+  "unchanged_execution": {
+    "acquisition_client_blob": "7e82057e3b949b9f33b25fd9c878c932d7df51e6",
+    "normalizer_blob": "03c634694c3192d15ce3d3cd3cef9b84befbd0f4",
+    "source_client": "dukascopy-node@1.49.0",
+    "instrument": "usdjpy",
+    "period": "2023",
+    "timeframe": "m1",
+    "price_type": "bid",
+    "timezone": "UTC",
+    "derive_M15": true,
+    "data_gates_changed": false,
+    "artifact_contract_changed": false
+  },
+  "superseded_attempts": [
+    {
+      "core_marker_pr": 153,
+      "run_created": false,
+      "data_accessed": false
+    },
+    {
+      "core_marker_pr": 155,
+      "run_created": false,
+      "data_accessed": false
+    }
+  ],
+  "tick_data_authorized": false,
+  "ask_series_authorized": false,
+  "candidate_outcome_evaluation_authorized": false,
+  "2024_H2_access_authorized": false,
+  "2025_access_authorized": false,
+  "live_order_authorized": false
+}
