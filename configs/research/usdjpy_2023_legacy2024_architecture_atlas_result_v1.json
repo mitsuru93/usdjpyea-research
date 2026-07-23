@@ -1,0 +1,75 @@
+{
+  "boundaries": {
+    "2024_source_mutated": false,
+    "2025_accessed": false,
+    "candidate_evaluated": false,
+    "candidate_generated": false,
+    "2023_2024_cross_year_diagnosis_authorized_next": true,
+    "family_G_frozen_grid_authorized_next": true
+  },
+  "historical_2024_reproduction": {
+    "B02_opened": 98,
+    "F05_opened": 331,
+    "closed": 428,
+    "missing_trade_keys": 0,
+    "net_jpy": 22797.0,
+    "opened": 429,
+    "unexpected_trade_keys": 0
+  },
+  "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "metrics": {
+    "B02_closed": 230,
+    "F05_closed": 730,
+    "closed": 960,
+    "net_jpy": -9279.0,
+    "opened": 961,
+    "path_classes": {
+      "P1_GIVEBACK_TO_LOSS": 222,
+      "P2_MINOR_FAVORABLE_THEN_LOSS": 164,
+      "P3_NEVER_PROFITABLE": 106,
+      "WINNER": 468
+    },
+    "profit_factor": 0.9549943251816427
+  },
+  "outputs": {
+    "usdjpy_2023_legacy2024_atlas_joined_v1.csv": "3cc1df9e39cc77efb33eba6cd3c3e98c9d5bfb18d05997c6550c4c6e19394097",
+    "usdjpy_2023_legacy2024_entry_features_v1.csv": "7c6f5a557fc3a24db42d2562769f4f5de060b6bcc778a81af167d055439135a5",
+    "usdjpy_2023_legacy2024_exposure_state_summary_v1.csv": "5b004c5e48542a493ac247d92f38330b1a769ae7560d7663dad972f31973b9b6",
+    "usdjpy_2023_legacy2024_monthly_summary_v1.csv": "2de9363dd9c06c70f20d742beda9d957ab97f76a1984d656b750903830504e81",
+    "usdjpy_2023_legacy2024_outcomes_v1.csv": "b573e428fc9237eec48bfcbbc6d60a63ecc2d562e991d56820764159dfceac39",
+    "usdjpy_2023_legacy2024_path_class_summary_v1.csv": "ff7d524f6377655a2128bea96badaa0429438ca91fac4a4381debfb13fc77eae",
+    "usdjpy_2023_legacy2024_strategy_summary_v1.csv": "42a637192ad43bcb31ae3fa1ed134991092ecdaa912111ff8e2e2e9b1c96e199"
+  },
+  "schema_version": "usdjpy_2023_legacy2024_architecture_atlas_result_v1",
+  "source_2024_unchanged": true,
+  "source_identities": {
+    "accepted_2024_H1_M15_sha256": "766be5ebba158e5b40f5da5d66929b4da8a25d42a8716b1e591d7c09dd87c2a3",
+    "accepted_2024_H1_ledger_sha256": "0b3e7235be48c1113ce77367fda1922d27a347f480344a2ca5c4f86e995e7eb5",
+    "normalized_2023_M15_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78"
+  },
+  "status": "PASS",
+  "time_reconciliation": {
+    "bars_shifted_from_true_utc": 1543,
+    "duplicates": 0,
+    "nonascending": 0
+  },
+  "decision": "ACCEPT_2023_LEGACY2024_COMPATIBLE_BASELINE_AND_ATLAS_FOR_CROSS_YEAR_DIAGNOSIS",
+  "builder": {
+    "execution_script_sha256": "7cb022bbe0ed59fff588f495b4dd212e66d66e5bc640ff68963db64aea25c8b8",
+    "repository_commit_status": "NOT_COMMITTED_IN_THIS_RESULT_PR",
+    "reproduction_contract": "accepted input artifact identities plus exact 2024 H1 parity gates and output hashes"
+  },
+  "comparison_to_separate_canonical_2023_lineage": {
+    "canonical_opened": 964,
+    "canonical_closed": 963,
+    "canonical_net_jpy": -9904.0,
+    "legacy2024_opened": 961,
+    "legacy2024_closed": 960,
+    "legacy2024_net_jpy": -9279.0,
+    "common_open_trade_keys": 906,
+    "legacy2024_only_open_trade_keys": 55,
+    "canonical_only_open_trade_keys": 58,
+    "net_difference_jpy": 625.0,
+    "interpretation": "Distinct lineages. Do not mix individual trades or P/L."
+  }
+}
