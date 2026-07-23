@@ -1,0 +1,64 @@
+{
+  "schema_version": "usdjpy_b02_open_path_diagnosis_result_v1",
+  "status": "DESCRIPTIVE_DIAGNOSIS_COMPLETE",
+  "open_question": "USDJPY-RQ-017",
+  "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "purpose": "Reconstruct a common no-lookahead B02 M15 open-path feature contract across 2023 and both historical 2024 halves, then identify admission states whose baseline outcomes are negative in every development period before any candidate evaluation.",
+  "reconciliation": [
+    {"period": "2023", "market_rows": 24825, "b02_rows_expected": 230, "b02_rows_built": 230, "missing_signal_times": 0, "missing_entry_times": 0, "non_next_bar_entries": 0, "net_jpy": -12459.0},
+    {"period": "2024H1", "market_rows": 11884, "b02_rows_expected": 97, "b02_rows_built": 97, "missing_signal_times": 0, "missing_entry_times": 0, "non_next_bar_entries": 0, "net_jpy": 9554.0},
+    {"period": "2024H2", "market_rows": 12250, "b02_rows_expected": 102, "b02_rows_built": 102, "missing_signal_times": 0, "missing_entry_times": 0, "non_next_bar_entries": 0, "net_jpy": 15627.0}
+  ],
+  "feature_contract": {
+    "market_input": "historical-lineage M15 Bid bar opens",
+    "feature_information_time": "signal close or earlier",
+    "features": [
+      "side-aligned M15 open move over 15m, 30m, 1h and 4h",
+      "prior 1h side-aligned open move",
+      "1h acceleration versus prior 1h",
+      "open-path efficiency and aligned-step fraction",
+      "open range and total path length",
+      "entry executable distance outside the B02 session range",
+      "side, entry hour and pre-entry exposure state"
+    ],
+    "lookahead_columns": 0
+  },
+  "strategy_net_jpy": {"2023": -12459.0, "2024H1": 9554.0, "2024H2": 15627.0},
+  "negative_all_period_fixed_rules": [
+    {
+      "rule": "B02 short and side-aligned 4h M15-open move <= 20 pips",
+      "2023": {"trade_count": 62, "baseline_net_jpy": -7792.0},
+      "2024H1": {"trade_count": 22, "baseline_net_jpy": -5332.0},
+      "2024H2": {"trade_count": 17, "baseline_net_jpy": -1480.0},
+      "pooled_trade_count": 101,
+      "pooled_net_jpy": -14604.0,
+      "minimum_period_trade_count": 17,
+      "maximum_period_net_jpy": -1480.0
+    }
+  ],
+  "interpretation": {
+    "mechanism": "B02 short breakouts entered without an established side-aligned four-hour downward open-path are weak-trend or counter-regime admissions.",
+    "direction_asymmetry": "Short direction alone is not consistently negative because 2024 H2 shorts are positive; the weakness appears only when short direction and insufficient four-hour alignment coincide.",
+    "threshold_20_is_descriptive_not_selected": true,
+    "candidate_replacement_effect_computed": false
+  },
+  "duplicate_research_audit": {
+    "reviewed": [
+      "legacy B02 session-range breakout definition",
+      "R1 generic momentum, trend and ATR directional-change candidate universe",
+      "closed Families A through H"
+    ],
+    "distinct_information": "This does not introduce a new generic trend-following signal or reopen the R1 universe. It conditions the accepted B02 short session-range breakout on its own pre-entry four-hour side-aligned open path under the current historical MT4 lineage.",
+    "not_threshold_only_relabeling": true
+  },
+  "decision": "PREREGISTER_FINITE_FAMILY_I_B02_SHORT_WEAK_4H_ALIGNMENT_ADMISSION",
+  "boundaries": {"candidate_evaluated": false, "parameter_selected": false, "2025_accessed": false, "2024_source_mutated": false},
+  "diagnostic_script_sha256": "c315f942c8f83ca36682aa1f5da1d4e36db0284a21a2afa761d536b1b309cf37",
+  "output_sha256": {
+    "usdjpy_b02_common_open_path_features_v1.csv": "a75138402da4b2447c497bfa1254c411501c319ae6fd0933048b1897652cd88a",
+    "usdjpy_b02_open_path_reconciliation_v1.csv": "8e6eebdd2ba0a74fdd64c8cee8a94db0bc184f3e39e2bc640ae28bb7d4cd6445",
+    "usdjpy_b02_fixed_rule_baseline_subgroups_v1.csv": "b236c901f58ae98ef7a04fee4d3194d38b855b0de6dc67d62445bb33e5a1651f",
+    "usdjpy_b02_fixed_rule_consistency_v1.csv": "a5e0b5a0b177962d8fb74d66ce407ec554105ade3df83fa2ee4ae5ea033815f3",
+    "usdjpy_b02_continuous_winner_loss_comparison_v1.csv": "e4aed4f028b223ce28c9bcf896f640585c1144c31068642160c10a67995c2089"
+  }
+}
