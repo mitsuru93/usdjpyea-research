@@ -1,0 +1,63 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v1",
+  "status": "ACTIVE_APPEND_ONLY_ADDENDUM",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-RQ-011-ERRATUM-001",
+      "parent_id": "USDJPY-RQ-011",
+      "status": "RETAINED_FINDING_ONLY",
+      "origin_analysis": "User corrected the intended cross-year lineage: 2024 is the original research authority and must remain unchanged; 2023 must be transformed to the historical 2024 contract.",
+      "causal_hypothesis": "No candidate claim. Rebuilding only 2023 under the exact historical 2024 time/trade-key contract creates the comparable population required for cross-year diagnosis.",
+      "target_failure_mode": [
+        "time-lineage mismatch",
+        "silent mutation of historical 2024 evidence"
+      ],
+      "pre_result_predictions": [
+        "historical 2024 H1 reproduction is exact",
+        "2023 compatible population differs from canonical-clock 2023",
+        "2024 source remains unchanged"
+      ],
+      "tests": [
+        {
+          "type": "deterministic historical-2024 reproduction and 2023 rebuild",
+          "result_path": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json",
+          "result": {
+            "2024_missing_keys": 0,
+            "2024_unexpected_keys": 0,
+            "2024_net_jpy": 22797.0,
+            "2023_opened": 961,
+            "2023_closed": 960,
+            "2023_net_jpy": -9279.0
+          }
+        }
+      ],
+      "decision": "Accept the 2023 legacy2024-compatible baseline and Atlas for current cross-year work. Preserve canonical-clock 2023 as a separate audit lineage.",
+      "falsified_or_unsupported_claims": [
+        "The v24 approach of changing 2024 was the intended lineage for current cross-year research."
+      ],
+      "retained_findings": [
+        "2024 historical reproduction is exact",
+        "2023 lineages differ by 55 versus 58 open keys and JPY 625",
+        "2024 must remain immutable for current research"
+      ],
+      "prohibited_reuse": [
+        "Do not rewrite 2024 timestamps or trade keys for current lineage",
+        "Do not mix canonical-clock and historical-2024-compatible 2023 counts/P&L"
+      ],
+      "successor_questions": [
+        "Does frozen Family G structural invalidation generalize across 2023, 2024 H1 and 2024 H2?"
+      ],
+      "evidence_refs": [
+        {
+          "repository": "mitsuru93/usdjpyea-research",
+          "path": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json"
+        },
+        {
+          "repository": "mitsuru93/usdjpyea-research",
+          "path": "configs/research/usdjpy_2023_legacy2024_lineage_prereg_v1.json"
+        }
+      ]
+    }
+  ]
+}
