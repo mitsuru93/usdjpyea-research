@@ -1,0 +1,112 @@
+{
+  "schema_version": "usdjpy_family_i_b02_short_weak4h_alignment_prereg_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOME_EVALUATION",
+  "family_id": "I_B02_SHORT_WEAK_4H_ALIGNMENT_ADMISSION",
+  "lineage_id": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "origin_diagnosis": "B02 loses JPY 12,459 in 2023 while remaining positive in both 2024 halves. The only fixed common-feature subgroup with negative baseline P/L in all three periods was B02 shorts whose side-aligned four-hour M15-open movement was at most 20 pips.",
+  "causal_hypothesis": "A B02 short breakout without an established four-hour downward open-path is a weak-trend or counter-regime admission whose expected loss exceeds the continuation profit sacrificed by blocking it.",
+  "target_strategy": "B02",
+  "target_side": -1,
+  "B02_long_action": "unchanged",
+  "F05_action": "unchanged",
+  "signal_generation": "unchanged; blocked signals remain observable but do not create positions",
+  "prior_work_reviewed": [
+    "legacy B02 session-range breakout",
+    "R1 generic impulse, momentum, trend and ATR directional-change entry universe",
+    "USDJPY-HYP-001 through USDJPY-HYP-012",
+    "USDJPY-HYP-014-RESULT-001",
+    "USDJPY-RQ-016-RESULT-001",
+    "USDJPY-RQ-017"
+  ],
+  "novelty": {
+    "not_generic_trend_strategy": "The four-hour path does not create an independent entry signal; it gates only accepted B02 short breakouts.",
+    "not_R1_atr_directional_change": "No ATR state machine or independent directional-change entry is used.",
+    "not_F05_families": "The target is B02 pre-entry admission, not F05 entry, exposure or exit behavior.",
+    "new_information": "direction-specific interaction between the accepted B02 short breakout and the immediately preceding side-aligned four-hour open path under a three-year-compatible historical lineage"
+  },
+  "feature_contract": {
+    "source": "configs/research/usdjpy_b02_open_path_diagnosis_result_v1.json",
+    "feature": "side_aligned_open_move_4h_pips",
+    "formula": "side * (signal_bar_open - M15_open_16_bars_before_signal) / 0.01",
+    "information_time": "signal close",
+    "lookahead": false
+  },
+  "finite_grid": {
+    "block_if": "strategy == B02 and side == -1 and side_aligned_open_move_4h_pips <= threshold_pips",
+    "threshold_pips": [0, 20, 40],
+    "candidate_count": 3,
+    "candidate_ids": ["I_B02_SHORT_M4LE0", "I_B02_SHORT_M4LE20", "I_B02_SHORT_M4LE40"],
+    "threshold_interpretation": {
+      "0": "countertrend or no net four-hour downward alignment",
+      "20": "descriptive recurring-loss boundary",
+      "40": "require a materially established four-hour downward trend"
+    }
+  },
+  "candidate_counterfactual": {
+    "blocked_trade_pl": "remove the accepted B02 trade's realized P/L from portfolio and strategy totals",
+    "future_signal_generation": "unchanged because accepted B02/F05 signals are market-data-defined",
+    "lot_size": "fixed 0.01 each, unchanged",
+    "exposure_state": "recompute for attribution only; no Family I rule depends on exposure state",
+    "equity_path": "recompute from unchanged trade ledgers after removing blocked B02 positions"
+  },
+  "development_periods": {
+    "2023": "historical-2024-compatible development/falsification year",
+    "2024_H1": "historical development period",
+    "2024_H2": "development and cross-regime period under policy v4"
+  },
+  "required_metrics": [
+    "candidate total and B02 net/PF by period",
+    "blocked trades and entry dates by month/quarter",
+    "positive negative and zero effects",
+    "loss avoided and profit sacrificed",
+    "long B02 and F05 exact invariance",
+    "candidate balance/equity drawdown",
+    "ex-best-two-entry-dates delta",
+    "leave-one-month-out minimum delta",
+    "largest and top-two positive-date shares",
+    "parameter equivalence classes"
+  ],
+  "gates": {
+    "each_period": [
+      "candidate_total_net_positive",
+      "candidate_profit_factor_at_least_1",
+      "candidate_net_above_baseline",
+      "B02_net_delta_positive",
+      "loss_avoided_exceeds_profit_sacrificed",
+      "blocked_positions_at_least_10"
+    ],
+    "pooled_24_months": [
+      "positive_effect_months_at_least_18",
+      "negative_effect_months_at_most_4",
+      "ex_best_two_entry_dates_delta_positive",
+      "leave_one_month_out_min_delta_positive",
+      "largest_positive_date_share_at_most_0_35",
+      "B02_long_unchanged",
+      "F05_unchanged"
+    ],
+    "parameter_identifiability": "collapse cells with identical blocked trade keys before ranking",
+    "maximum_finalists": 1
+  },
+  "ranking": [
+    "minimum candidate total net across 2023, 2024 H1 and 2024 H2",
+    "minimum period net delta",
+    "pooled net delta",
+    "pooled ex-best-two-entry-dates delta",
+    "pooled leave-one-month-out minimum delta"
+  ],
+  "falsification": [
+    "no cell makes every development period candidate total net positive with PF at least 1",
+    "2024 profit sacrifice exceeds avoided loss",
+    "benefit is date or month concentrated",
+    "the selected threshold is outcome-equivalent to another cell",
+    "the 2023 deficit remains negative after the strongest eligible cell"
+  ],
+  "prohibited": [
+    "No threshold other than 0, 20 or 40 after results",
+    "No long-side or F05 changes",
+    "No combination with closed Families G or H",
+    "No 2025 outcome use for mechanism, threshold or ranking",
+    "No MT4 or 2025 access unless one exact finalist passes and is separately frozen"
+  ],
+  "boundaries": {"candidate_outcomes_computed_before_freeze": false, "2025_accessed": false, "2024_source_mutated": false, "live_orders": false}
+}
