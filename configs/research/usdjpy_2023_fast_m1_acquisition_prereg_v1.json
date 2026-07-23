@@ -1,0 +1,99 @@
+{
+  "schema_version": "usdjpy_2023_fast_m1_acquisition_prereg_v1",
+  "status": "FROZEN_BEFORE_DATA_ACQUISITION",
+  "research_base_commit": "e0d5a68b3f8357eeb959d6c1b5465d965cbbbf62",
+  "purpose": "additional development and falsification after Family F 2024 H1 robustness failure",
+  "period": {
+    "start_utc_inclusive": "2023-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-01-01T00:00:00Z"
+  },
+  "source": {
+    "upstream_market_data": "Dukascopy public historical data API",
+    "client": "dukascopy-node",
+    "client_version": "1.49.0",
+    "client_repository": "Leo4815162342/dukascopy-node",
+    "client_affiliation": "third-party open-source client; not affiliated with Dukascopy Bank SA",
+    "instrument": "usdjpy",
+    "timeframe": "m1",
+    "price_type": "bid",
+    "timezone": "UTC",
+    "format_requested": "array",
+    "volume_requested": true,
+    "ignore_flat_records": true,
+    "package_dist_integrity_must_be_recorded_at_runtime": true
+  },
+  "normalization": {
+    "canonical_M1_columns": [
+      "timestamp_utc",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume"
+    ],
+    "timestamp_format": "ISO-8601 UTC to whole minute",
+    "sort_order": "strict ascending",
+    "duplicate_policy": "fail; do not deduplicate silently",
+    "out_of_range_policy": "filter to the exact half-open interval and report removed count",
+    "flat_fill_policy": "no forward fill and no synthetic M1 bars",
+    "M15_alignment": "UTC quarter-hour floor",
+    "M15_open": "first M1 open",
+    "M15_high": "maximum M1 high",
+    "M15_low": "minimum M1 low",
+    "M15_close": "last M1 close",
+    "M15_volume": "sum of M1 volume",
+    "M15_source_count": "record the number of source M1 bars in each M15 bar",
+    "incomplete_M15_policy": "retain and flag; do not synthesize missing M1 bars"
+  },
+  "hard_data_gates": {
+    "M1_record_count_min": 300000,
+    "M1_record_count_max": 400000,
+    "timestamp_minute_alignment_required": true,
+    "strict_ascending_required": true,
+    "duplicate_timestamps_allowed": 0,
+    "invalid_OHLC_allowed": 0,
+    "non_finite_price_allowed": 0,
+    "first_record_within_first_7_calendar_days": true,
+    "last_record_within_last_7_calendar_days": true,
+    "M15_reaggregation_deterministic": true,
+    "M1_M15_SHA256_required": true,
+    "gap_inventory_required": true,
+    "source_package_version_and_integrity_required": true
+  },
+  "artifact_contract": {
+    "raw_normalized_M1_csv_gzip": "usdjpy_2023_m1_bid_utc_v1.csv.gz",
+    "derived_M15_csv_gzip": "usdjpy_2023_m15_bid_utc_v1.csv.gz",
+    "gap_inventory_csv": "usdjpy_2023_m1_gap_inventory_v1.csv",
+    "data_manifest_json": "usdjpy_2023_m1_data_manifest_v1.json",
+    "acquisition_log": "usdjpy_2023_m1_acquisition_v1.log",
+    "npm_package_metadata": "dukascopy_node_1_49_0_metadata.json",
+    "retention_days": 90,
+    "immutable_GitHub_Actions_receipt_required": true
+  },
+  "prohibited_in_this_stage": {
+    "tick_download": true,
+    "ask_series_download": true,
+    "candidate_signal_generation": true,
+    "candidate_outcome_evaluation": true,
+    "parameter_selection": true,
+    "2024_H2_access": true,
+    "2025_access": true,
+    "live_orders": true
+  },
+  "fallback": {
+    "HistData_annual_M1_zip": "not authorized in this contract; requires a separate source/timezone freeze if the primary acquisition fails technically",
+    "M15_only_download": "not used because M1 is preferred for gap auditing and deterministic M15 construction"
+  },
+  "tick_data_boundary": {
+    "required_now": false,
+    "becomes_required_if_future_candidate_depends_on": [
+      "intrabar stop-loss/take-profit ordering",
+      "intrabar trailing decisions",
+      "variable spread at decision or execution",
+      "tick-level slippage or execution sequencing",
+      "tick-equity drawdown, margin or stop-out as a development variable"
+    ]
+  },
+  "next_action_after_data_PASS": "record exact data identities in Research and run a 2023 architecture atlas before preregistering any new candidate family",
+  "live_order_authorized": false
+}
