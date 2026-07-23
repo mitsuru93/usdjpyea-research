@@ -1,0 +1,26 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v2",
+  "status": "ACTIVE_APPEND_ONLY_ADDENDUM",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "preserved_entries": ["USDJPY-RQ-011-ERRATUM-001"],
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-012",
+      "family_ids": ["G_STRUCTURAL_BREAKOUT_INVALIDATION"],
+      "candidate_ids": [],
+      "status": "CLOSED_NO_ELIGIBLE_SPEC",
+      "origin_analysis": "P2/P3 losses remained untreated after Family C, while absolute-adverse and recovery-timing rules in D/E were not sufficient. Family G tested whether return inside the original breakout level was a more structural invalidation signal.",
+      "causal_hypothesis": "An F05 position whose executable price returns inside its original breakout reference level at a frozen checkpoint has structurally failed and should be closed.",
+      "target_failure_mode": ["F05 P2/P3 structural failure", "temporary versus permanent breakout invalidation"],
+      "pre_result_predictions": ["at least one cell is positive in 2023 and both 2024 halves", "benefit exceeds winner harm", "month/date robustness gates pass", "B02 remains unchanged"],
+      "tests": [{"period": "2023_and_2024_full_development", "type": "frozen_18_cell_dynamic_state_grid", "result_path": "configs/research/usdjpy_family_g_structural_breakout_invalidation_result_v1.json", "result": {"candidate_count": 18, "eligible_count": 0, "best_candidate": "G1_C30_I10", "best_minimum_period_delta_jpy": -2146.0, "best_pooled_delta_jpy": -107.0}}],
+      "decision": "Close Family G before MT4 parity or 2025 access.",
+      "falsified_or_unsupported_claims": ["Structural return inside the breakout level alone separates permanent failure from recovery winners", "State-adaptive checkpoint timing resolves the cross-period sign reversal"],
+      "retained_findings": ["The trigger removes real losses", "Winner harm is approximately as large as benefit", "A successor needs a recovery-capacity observable after invalidation"],
+      "prohibited_reuse": ["Do not expand nearby checkpoints or buffers", "Do not repair from 2025", "Do not relabel structural return alone"],
+      "successor_questions": ["Which post-invalidation observable predicts recovery capacity across 2023 and both 2024 halves?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_g_structural_breakout_invalidation_result_v1.json"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_g_structural_breakout_invalidation_prereg_v1.json"}]
+    }
+  ]
+}
