@@ -1,0 +1,251 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_v1",
+  "status": "ACTIVE_APPEND_ONLY_RESEARCH_MEMORY",
+  "purpose": "Preserve what was observed, hypothesized, predicted, executed, falsified, retained and prohibited from reuse so later threads do not repeat closed research or overlook useful partial findings.",
+  "governance": {
+    "append_only": true,
+    "historical_entries_must_not_be_silently_rewritten": true,
+    "corrections_require_errata_or_superseding_entry": true,
+    "conversation_summaries_are_not_evidence": true,
+    "every_new_hypothesis_must_reference_prior_ledger_entries": true,
+    "every_completed_test_must_update_this_ledger_atomically": true
+  },
+  "entry_required_fields": [
+    "hypothesis_id",
+    "family_ids",
+    "candidate_ids",
+    "status",
+    "origin_analysis",
+    "causal_hypothesis",
+    "target_failure_mode",
+    "pre_result_predictions",
+    "tests",
+    "decision",
+    "falsified_or_unsupported_claims",
+    "retained_findings",
+    "prohibited_reuse",
+    "successor_questions",
+    "evidence_refs"
+  ],
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-001",
+      "family_ids": ["SC70_C240"],
+      "candidate_ids": ["B02F05_SC70_C240_v1", "SC70_C240_exact"],
+      "status": "CLOSED_FAIL_H2",
+      "origin_analysis": "A broad shock-conditioned admission rule advanced from 2024 H1 because entries inside the frozen SC70/C240 context appeared to contain avoidable losses.",
+      "causal_hypothesis": "Blocking B02/F05 entries in the exact SC70/C240 shock context would remove degraded opportunities more reliably than profitable continuation trades.",
+      "target_failure_mode": ["pre-entry shock-conditioned low-quality entries", "losses after large directional moves"],
+      "pre_result_predictions": ["H2 candidate net beats baseline", "Q3 remains positive", "loss avoided exceeds profit sacrificed"],
+      "tests": [
+        {"period": "2024_H1", "type": "direct_Rakuten_MT4_regression", "result": {"baseline_net_jpy": 22797, "candidate_net_jpy": 32708, "blocked": 22}},
+        {"period": "2024_H2", "type": "binding_Rakuten_MT4", "run_id": 29817412849, "artifact_id": 8490026152, "result": {"baseline_net_jpy": 38358, "candidate_net_jpy": 27392, "net_delta_jpy": -10966, "blocked": 71, "loss_avoided_jpy": 18614, "profit_sacrificed_jpy": 29580, "candidate_q3_net_jpy": -2478}, "failed_gates": ["candidate_beats_same_run_baseline", "q3_positive", "loss_avoided_exceeds_profit_sacrificed"]},
+        {"period": "2025_H1", "type": "deterministic_exact_impact_reconstruction", "result": {"baseline_net_jpy": -20808, "candidate_net_jpy": -12976, "net_delta_jpy": 7832, "pf": 0.8738332296204107, "blocked": 47}}
+      ],
+      "decision": "Exact specification closed after H2. The 2025 reconstruction is prior evidence only.",
+      "falsified_or_unsupported_claims": ["Broad shock blocking generalizes as a net-positive portfolio filter", "Loss removal dominates sacrificed continuation profit", "B02 and F05 should share this scope"],
+      "retained_findings": ["Shock-conditioned filtering removes real losses and can reduce drawdown", "Failure was excessive winner sacrifice and scope breadth rather than implementation drift"],
+      "prohibited_reuse": ["Do not retune from H2 or 2025", "Do not call the 2025 reconstruction a direct candidate MT4 run", "Do not propose another broad shock block without a new causal distinction"],
+      "successor_questions": ["Can a narrower F05-only observable separate degraded post-shock entries from continuation winners?"],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-core", "path": "docs/research/usdjpy_b02f05_sc70_c240_h2_result_receipt_v1.json", "run_id": 29817412849, "artifact_id": 8490026152, "artifact_digest": "sha256:3daae1318ad0fded60232581549ed1af300d7b2102e59160abee109841018e71"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_2025h1_result_inventory_v1.json"}
+      ]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-002",
+      "family_ids": ["S1_DEGRADED_SHOCK_ENTRY_BLOCK"],
+      "candidate_ids": ["F05_SW70_R10_E90_A240_v1"],
+      "status": "CLOSED_FAIL_H2",
+      "origin_analysis": "The SC70/C240 failure motivated a narrower F05-only entry block after a degraded aligned shock window.",
+      "causal_hypothesis": "F05 entries after the frozen shock/retracement-efficiency-age condition are late or exhausted entries whose removal should preserve continuation profit.",
+      "target_failure_mode": ["F05 degraded post-shock entry", "late directional entry"],
+      "pre_result_predictions": ["H2 total and F05 net beat baseline", "loss avoided exceeds profit sacrificed", "B02 remains unchanged", "benefit is not date-concentrated"],
+      "tests": [
+        {"period": "2024_H1", "type": "direct_Rakuten_MT4_regression", "result": {"baseline_net_jpy": 22797, "candidate_net_jpy": 29432, "net_delta_jpy": 6635, "blocked_entries": 11, "candidate_pf": 1.552786281764739}},
+        {"period": "2024_H2", "type": "binding_Rakuten_MT4", "run_id": 29832346854, "artifact_id": 8496097327, "result": {"baseline_net_jpy": 38358, "candidate_net_jpy": 35599, "net_delta_jpy": -2759, "blocked_entries": 15, "loss_avoided_jpy": 4870, "profit_sacrificed_jpy": 7629}, "failed_gates": ["candidate_beats_same_run_baseline", "f05_net_above_baseline", "loss_avoided_exceeds_profit_sacrificed", "top_two_positive_removed_effect_dates_share_at_most_050"]},
+        {"period": "2025_H1", "type": "direct_Rakuten_MT4_diagnostic", "run_id": 29880733653, "artifact_id": 8514811165, "result": {"baseline_net_jpy": -20808, "candidate_net_jpy": -17543, "net_delta_jpy": 3265, "removed_F05_entries": 8, "pf": 0.8521038299737812}}
+      ],
+      "decision": "Closed after H2; 2025 diagnostic does not reopen it.",
+      "falsified_or_unsupported_claims": ["The frozen degraded-shock condition consistently separates losers from continuation winners", "The H1 effect was cross-regime stable"],
+      "retained_findings": ["F05-only scope preserved B02", "The mechanism improved H1 and compressed 2025 loss but reversed in H2", "Winner sacrifice and concentration were decisive"],
+      "prohibited_reuse": ["Do not retune SW70/R10/E90/A240", "Do not call 2025 loss compression validation", "Any successor needs a new continuation-versus-exhaustion observable"],
+      "successor_questions": ["What feature distinguishes post-shock continuation from exhaustion before entry?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-core", "path": "docs/research/usdjpy_f05_sw70_r10_e90_a240_h2_result_receipt_v1.json", "run_id": 29832346854, "artifact_id": 8496097327, "artifact_digest": "sha256:d9a8824585cde78ab5a7f0fd0a0177d556e1831aeac5136f361f53b9200b3354"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_2025h1_result_inventory_v1.json"}]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-003",
+      "family_ids": ["S2_DEGRADED_SHOCK_PROTECTION_EXIT"],
+      "candidate_ids": ["B02F05_DSHOCK60_R20_E90_EXIT_v1"],
+      "status": "CLOSED_FAIL_H2",
+      "origin_analysis": "S2 moved from entry suppression to protection of already-open B02/F05 positions during degraded shock.",
+      "causal_hypothesis": "An existing-position degraded-shock exit can reduce post-entry deterioration while retaining the original entry set.",
+      "target_failure_mode": ["post-entry degraded-shock loss", "giveback or persistent loss in open positions"],
+      "pre_result_predictions": ["H2 total and both strategy deltas are nonnegative", "Q3 delta is positive", "ex-best-two remains positive", "month effects are broad"],
+      "tests": [
+        {"period": "2024_H2", "type": "binding_Rakuten_MT4", "run_id": 29839862828, "artifact_id": 8499182318, "result": {"baseline_net_jpy": 38358, "candidate_net_jpy": 38962, "net_delta_jpy": 604, "tick_dd_reduction_jpy": 7429, "B02_delta_jpy": -1473, "F05_delta_jpy": 2077, "q3_delta_jpy": -629, "positive_effect_months": 2, "negative_effect_months": 3, "ex_best_two_dates_delta_jpy": -6952}, "failed_gates": ["q3_delta_positive", "positive_effect_months_at_least_3", "negative_effect_months_at_most_1", "ex_best_two_dates_positive", "largest_positive_date_share_at_most_50pct", "B02_delta_nonnegative"]},
+        {"period": "2025_H1", "type": "direct_Rakuten_MT4_diagnostic", "run_id": 29880733653, "artifact_id": 8514811165, "result": {"baseline_net_jpy": -20808, "candidate_net_jpy": -21195, "net_delta_jpy": -387, "changed_positions": 12}}
+      ],
+      "decision": "Closed after H2; 2025 independently confirmed non-generalization.",
+      "falsified_or_unsupported_claims": ["One degraded-shock exit is appropriate for both strategies", "Drawdown reduction implies robust expectancy improvement", "The positive H2 headline delta was distributed"],
+      "retained_findings": ["The exit materially reduced H2 drawdown", "F05 improved while B02 was harmed, proving strategy-specific asymmetry", "Non-target invariance must be a binding gate"],
+      "prohibited_reuse": ["Do not combine B02 and F05 under this exit", "Do not select on DD reduction while non-target harm exists", "Do not retune from H2 or 2025"],
+      "successor_questions": ["Can a target-strategy-only exit isolate F05 failure without harming B02?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-core", "path": "docs/research/usdjpy_b02f05_dshock60_r20_e90_exit_h2_result_v1.json", "run_id": 29839862828, "artifact_id": 8499182318, "artifact_digest": "sha256:a3c05e82622f91788a72c04a0d044681641ce19fbbe9b3a0c250ce86b4d5e85f"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_2025h1_result_inventory_v1.json"}]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-004",
+      "family_ids": ["S3_ATR_EXTENSION_ENTRY_BLOCK"],
+      "candidate_ids": ["F05_EXTATR25_LOC80_F30_v1"],
+      "status": "CLOSED_FAIL_H2",
+      "origin_analysis": "S3 targeted F05 entries after an ATR-normalized extended move with weak close/location characteristics.",
+      "causal_hypothesis": "F05 entries after a 2.5-ATR extension and weak close/location are mature-move entries whose removal avoids losses without date concentration.",
+      "target_failure_mode": ["F05 extended-move exhaustion", "weak close after mature breakout"],
+      "pre_result_predictions": ["H2 net PF Q3 and Q4 improve", "B02 remains unchanged", "ex-best-two date delta stays positive"],
+      "tests": [
+        {"period": "2024_H1", "type": "direct_Rakuten_MT4_parity", "result": {"baseline_net_jpy": 22797, "candidate_net_jpy": 30527, "net_delta_jpy": 7730, "blocked_entries": 20, "candidate_pf": 1.6048064349962357}},
+        {"period": "2024_H2", "type": "binding_Rakuten_MT4", "run_id": 29873856877, "artifact_id": 8512432416, "result": {"baseline_net_jpy": 38358, "candidate_net_jpy": 41035, "net_delta_jpy": 2677, "blocked_entries": 30, "positive_effect_months": 5, "negative_effect_months": 1, "loss_avoided_jpy": 9017, "profit_sacrificed_jpy": 6340, "ex_best_two_positive_effect_dates_delta_jpy": -1310}, "failed_gates": ["ex_best_two_positive_effect_dates_delta_positive"]},
+        {"period": "2025_H1", "type": "direct_Rakuten_MT4_diagnostic", "run_id": 29880733653, "artifact_id": 8514811165, "result": {"baseline_net_jpy": -20808, "candidate_net_jpy": -12959, "net_delta_jpy": 7849, "removed_F05_entries": 29, "pf": 0.882164128210957, "monthly_effect_jpy": {"2025-01": 2342, "2025-02": -474, "2025-03": 0, "2025-04": 7122, "2025-05": -658, "2025-06": -483}}}
+      ],
+      "decision": "Closed by H2 concentration gate despite favorable headline metrics; 2025 does not reopen it.",
+      "falsified_or_unsupported_claims": ["The exact thresholds are independent of strongest dates", "Favorable aggregate H2 metrics establish robustness", "The 2025 effect was broad rather than April-dominated"],
+      "retained_findings": ["Extended-move admission is a recurring loss-control direction across H1 H2 and 2025 headlines", "The exact rule remains fragile and sacrifices winners", "This is prior mechanism evidence, not a candidate to rerun"],
+      "prohibited_reuse": ["Do not reopen exact thresholds", "Do not omit the failed ex-best-two gate", "Do not tune from April 2025"],
+      "successor_questions": ["What event-state distinguishes continuation from failure after an extended move?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-core", "path": "docs/research/usdjpy_f05_extatr25_loc80_f30_h2_result_v1.json", "run_id": 29873856877, "artifact_id": 8512432416, "artifact_digest": "sha256:9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_2025h1_result_inventory_v1.json"}]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-005",
+      "family_ids": ["A_NONSHOCK_FALSE_BREAK_ACCEPTANCE"],
+      "candidate_ids": [],
+      "status": "CLOSED_NO_ELIGIBLE_SPEC",
+      "origin_analysis": "After shock candidates failed, Family A tested non-shock false breaks through weak outside closes, counter-wicks, next-bar retention failure and recent failed breaks.",
+      "causal_hypothesis": "Simple breakout-acceptance observables in non-shock conditions can identify false F05 breaks before entry.",
+      "target_failure_mode": ["non-shock false breakout", "weak acceptance outside breakout level"],
+      "pre_result_predictions": ["At least one finite cell passes net PF breadth and concentration gates", "B02 and common trades remain unchanged"],
+      "tests": [{"period": "2024_H1", "type": "frozen_52_cell_research_grid", "run_id": 29885440528, "artifact_id": 8516341842, "result": {"candidate_count": 52, "research_eligible_count": 0, "mechanisms": ["A1_WEAK_OUTSIDE_CLOSE_COUNTERWICK", "A2_NEXT_BAR_RETENTION_FAILURE", "A3_RECENT_SAME_SIDE_FAILED_BREAK"]}}],
+      "decision": "Family closed at H1; no H2 or 2025 access.",
+      "falsified_or_unsupported_claims": ["The tested one-bar geometry and retention features robustly separate false breaks", "A simple non-shock threshold is sufficient"],
+      "retained_findings": ["False-break acceptance remains plausible, but these observables and grids failed", "Any successor needs new information rather than nearby thresholds"],
+      "prohibited_reuse": ["Do not rerun the same 52 cells or threshold neighborhoods", "Name the information absent from A1-A3"],
+      "successor_questions": ["What event-level information is missing from one-bar acceptance measures?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_ab_2024h1_search_prereg_v1.json"}, {"repository": "mitsuru93/usdjpyea-core", "path": "docs/research/usdjpy_family_ab_2024h1_search_result_v1.json", "run_id": 29885440528, "artifact_id": 8516341842}]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-006",
+      "family_ids": ["B_CONDITIONAL_PORTFOLIO_OVERLAP"],
+      "candidate_ids": [],
+      "status": "CLOSED_NO_ELIGIBLE_SPEC",
+      "origin_analysis": "Family B tested stale same-direction add-ons, high stack ordinal and opposite or mixed overlap.",
+      "causal_hypothesis": "Current portfolio overlap state can identify redundant or conflicted F05 entries that should be blocked.",
+      "target_failure_mode": ["redundant F05 add-on", "conflicted entry during opposite or mixed exposure"],
+      "pre_result_predictions": ["At least one dynamic overlap cell passes H1 robustness", "Blocked entries disappear from later state calculations", "B02 remains unchanged"],
+      "tests": [{"period": "2024_H1", "type": "dynamic_22_cell_counterfactual_grid", "run_id": 29885440528, "artifact_id": 8516341842, "result": {"candidate_count": 22, "research_eligible_count": 0, "mechanisms": ["B1_STALE_SAME_DIRECTION_WEAK_ADDON", "B2_HIGH_ORDINAL_WEAK_ADDON", "B3_OPPOSITE_OR_MIXED_WEAK_ENTRY"]}}],
+      "decision": "Family closed at H1; no H2 or 2025 access.",
+      "falsified_or_unsupported_claims": ["Simple overlap or ordinal thresholds are sufficient admission rules", "Exposure state alone robustly separates F05 outcomes"],
+      "retained_findings": ["Portfolio state remained informative in later diagnostics", "Mechanical overlap blocking is not equivalent to a causal event or recovery model"],
+      "prohibited_reuse": ["Do not rescan B1-B3", "Do not claim later state-adaptive work merely reopens Family B"],
+      "successor_questions": ["How can exposure state combine with recovery or event confirmation rather than act as a static block?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_ab_2024h1_search_prereg_v1.json"}, {"repository": "mitsuru93/usdjpyea-core", "path": "docs/research/usdjpy_family_ab_2024h1_search_result_v1.json", "run_id": 29885440528, "artifact_id": 8516341842}]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-007",
+      "family_ids": ["C_STRUCTURAL_EXIT"],
+      "candidate_ids": ["F05_MFE20_BOR1_EXIT_v1"],
+      "status": "CLOSED_FAIL_H2",
+      "origin_analysis": "Family C tried to preserve F05 winners while cutting giveback after MFE >=20 pips and a close back inside the breakout level.",
+      "causal_hypothesis": "After meaningful MFE, return inside the breakout level signals structural failure and an earlier close should save P1 giveback losses.",
+      "target_failure_mode": ["F05 P1 giveback-to-loss", "post-MFE breakout failure"],
+      "pre_result_predictions": ["H1 improvement survives best-date removal", "inside threshold is empirically identified", "H2 has at most one negative-effect month", "H2 ex-best-two stays positive"],
+      "tests": [
+        {"period": "2024_H1", "type": "frozen_48_cell_grid_and_exact_MT4_parity", "result": {"eligible_cells": 3, "selected_changed_positions": 24, "net_delta_jpy": 3322, "ex_best_two_delta_jpy": 398, "leave_one_month_out_min_jpy": 1114, "equivalent_thresholds": ["1_pip_inside", "2_pips_inside"]}},
+        {"period": "2024_H2", "type": "binding_Rakuten_MT4", "run_id": 29895387329, "artifact_id": 8519879009, "result": {"baseline_complete_net_jpy": 38109, "candidate_complete_net_jpy": 41427, "net_delta_jpy": 3318, "changed_F05_positions": 76, "benefit_jpy": 15906, "harm_jpy": 12588, "positive_effect_months": 3, "negative_effect_months": 3, "ex_best_two_positive_entry_dates_delta_jpy": -1944}, "failed_gates": ["negative_effect_months_at_most_1", "ex_best_two_positive_entry_dates_delta_positive"]}
+      ],
+      "decision": "Exact candidate and Family C closed after H2; no 2025 access.",
+      "falsified_or_unsupported_claims": ["The 1-pip threshold was identified", "The H1 Boolean pass was robust", "Benefit was stable across H2 months and dates"],
+      "retained_findings": ["Post-MFE exits can improve net and DD", "MFE20/BOR1 mainly addressed P1 and left P2/P3 untreated", "Equivalence classes and gate margins are mandatory"],
+      "prohibited_reuse": ["Do not repair retune combine or run on 2025", "Do not freeze an outcome-equivalent threshold", "Do not call a narrow margin robust"],
+      "successor_questions": ["Which untreated F05 P2/P3 paths can be diagnosed without prior MFE?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "docs/research/usdjpy_f05_mfe20_bor1_exit_validation_postmortem_v1.md"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_f05_mfe20_bor1_exit_h2_result_v1.json", "run_id": 29895387329, "artifact_id": 8519879009, "artifact_digest": "sha256:1341850d4530d9bb8ea6522aefaa796dd5ea70abc698913633cb523f55d51981"}]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-008",
+      "family_ids": ["D_EARLY_FAILURE_PERSISTENCE"],
+      "candidate_ids": ["D2_PERSISTENT_30M_60M_ADVERSE__A_30m_adverse_pips_15__B_60m_adverse_pips_5", "D2_PERSISTENT_30M_60M_ADVERSE__A_30m_adverse_pips_20__B_60m_adverse_pips_5"],
+      "status": "CLOSED_FAIL_H2",
+      "origin_analysis": "Residual diagnosis showed prior candidates concentrated on F05 P1 while untreated P2/P3 losses remained large; persistent 30-to-60-minute adversity appeared to isolate them.",
+      "causal_hypothesis": "Deep adverse state persisting from 30 to 60 minutes identifies permanent F05 early failure without cutting many late recoveries.",
+      "target_failure_mode": ["F05 P2 minor-favorable-then-loss", "F05 P3 never-profitable"],
+      "pre_result_predictions": ["H1 and H2 deltas are positive", "P3 protection exceeds late-recovery harm", "H2 ex-best-two and leave-one-month-out are positive", "threshold is identifiable"],
+      "tests": [
+        {"period": "2024_H1", "type": "frozen_12_cell_grid", "result": {"eligible_cells": 2, "leading_changed_positions": 17, "leading_net_delta_jpy": 2416, "candidate_pf": 1.4353223522911702, "ex_best_two_delta_jpy": 780, "leave_one_month_out_min_jpy": 869, "classification": "FRAGILE_H1_PASS"}},
+        {"period": "2024_H2_and_full_year", "type": "unchanged_grid_cross_regime_development", "result": {"all_H2_net_deltas_negative": true, "leading_H2_net_delta_jpy": -751, "leading_H2_ex_best_two_delta_jpy": -2883, "leading_H2_leave_one_month_out_min_jpy": -3756, "saved_P3_jpy": 7123, "late_recovery_winner_harm_jpy": -10131, "full_year_eligible_count": 0}}
+      ],
+      "decision": "Family closed in 2024 development; no MT4 candidate or 2025 access.",
+      "falsified_or_unsupported_claims": ["30/60-minute depth alone separates permanent failure from temporary adversity", "The sparse H1 threshold was stable", "P3 protection dominates recovery-winner harm across halves"],
+      "retained_findings": ["Persistent adverse marks identify many P3 losses", "The missing discriminator is late recovery", "Eight H2 recovery winners caused more harm than saved P3 loss"],
+      "prohibited_reuse": ["Do not rescan the same 12 cells", "Do not create another static early stop without a late-recovery feature", "Do not promote sparse H1 passes without cross-regime review"],
+      "successor_questions": ["Does same-direction support distinguish permanent P3 failure from temporary adversity?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "docs/research/usdjpy_2024h1_residual_mechanism_diagnostic_v1.md"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_early_failure_persistence_2024h1_result_v1.json"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_early_failure_persistence_2024_full_year_result_v1.json"}]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-009",
+      "family_ids": ["E_STATE_ADAPTIVE_RECOVERY_EXIT"],
+      "candidate_ids": ["E2_ADAPTIVE_60_90__A15_B5_C15_R0"],
+      "status": "CLOSED_FAIL_2025H1",
+      "origin_analysis": "D-family late-recovery harm led to a state-adaptive rule: unsupported or conflicted positions close at 60 minutes, same-direction-supported positions receive a 90-minute recovery window.",
+      "causal_hypothesis": "Dynamic portfolio support distinguishes permanent F05 early failure from recoverable adversity.",
+      "target_failure_mode": ["F05 persistent P3 failure", "winner sacrifice from premature early exit"],
+      "pre_result_predictions": ["2024 H1 H2 and full year are positive and distributed", "MT4 parity is exact", "2025 H1 becomes net positive with PF >=1", "Q1 is nonnegative", "B02 is unchanged"],
+      "tests": [
+        {"period": "2024_full_year", "type": "63_label_dynamic_state_grid", "result": {"eligible_labels": 6, "eligible_equivalence_classes": 4, "changed_positions": 37, "H1_net_delta_jpy": 2288, "H2_net_delta_jpy": 5770, "full_year_net_delta_jpy": 8058, "candidate_pf": 1.429420042591, "positive_effect_months": 10, "negative_effect_months": 1, "ex_best_two_delta_jpy": 5862, "leave_one_month_out_min_jpy": 5815}},
+        {"period": "2024_exact_MT4_parity", "type": "binding_Rakuten_MT4_parity", "run_id": 29924434439, "artifact_id": 8531451951, "result": {"gates_passed": "32/32", "exact_changed_positions": 37}},
+        {"period": "2025_H1", "type": "binding_Rakuten_MT4", "run_id": 29934029169, "artifact_id": 8535486772, "result": {"baseline_net_jpy": -20808, "candidate_net_jpy": -15866, "net_delta_jpy": 4942, "candidate_pf": 0.8630257614476138, "tick_dd_reduction_jpy": 3491, "Q1_candidate_net_jpy": -26013, "Q2_candidate_net_jpy": 10147, "changed_positions": 40, "B02_delta_jpy": 0, "unsupported_standalone_60m_effect_jpy": 4024, "same_direction_stack_90m_effect_jpy": -336}, "failed_gates": ["candidate_net_positive", "candidate_pf_at_least_1", "january_to_march_net_nonnegative"]}
+      ],
+      "decision": "Exact specification closed at first binding 2025 H1 gate; 2025 H2 remains locked.",
+      "falsified_or_unsupported_claims": ["State-adaptive exit alone restores 2025 viability", "Same-direction 90-minute exits are consistently beneficial", "Strong 2024 development guarantees adverse-regime PASS"],
+      "retained_findings": ["Mechanism generalized directionally as +4942 JPY loss compression and lower DD", "Unsupported standalone 60-minute exit was strongest at +4024 JPY", "B02 history identity and execution were not the cause", "Remaining problem is larger than exit timing"],
+      "prohibited_reuse": ["Do not retune from 2025", "Do not reopen because it beat baseline", "Do not access candidate-specific 2025 H2"],
+      "successor_questions": ["Why does F05 admission remain negative outside continuation events?", "Can observation and capital deployment be separated?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_state_adaptive_recovery_exit_2024_research_result_v2.json"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_state_adaptive_recovery_exit_2025h1_binding_gate_result_v1.json", "run_id": 29934029169, "artifact_id": 8535486772, "artifact_digest": "sha256:79238df0ffaff1df6fdb8034b63e4dd191270b5364c1ab3e12c3f04f47acc4bc"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_2025h1_result_inventory_v1.json"}]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-010",
+      "family_ids": ["F_EVENT_CONFIRMATION_ADMISSION"],
+      "candidate_ids": [],
+      "status": "CLOSED_FAIL_H1",
+      "origin_analysis": "After Family E, F05 standalone opposite and mixed states were negative in both 2024 halves while same-direction stacks were strongly positive, suggesting the first signal may be an unconfirmed probe.",
+      "causal_hypothesis": "The first F05 signal creates a non-trading probe; later same-direction follow-through within a finite event age and budget should confirm entry.",
+      "target_failure_mode": ["unconfirmed first F05 probe", "multiple entries treating one directional event as independent opportunities"],
+      "pre_result_predictions": ["At least one of 54 cells passes H1 robustness", "effect months meet breadth gates", "ex-best-two and leave-one-month-out stay positive", "B02 stays unchanged"],
+      "tests": [{"period": "2024_H1", "type": "frozen_54_spec_grid", "result": {"candidate_count": 54, "research_eligible_count": 0, "best_candidate_id": "F_C5_A480_N3_B1", "best_net_delta_jpy": 4415, "best_candidate_pf": 1.859833, "removed_F05_trades": 158, "positive_effect_months": 3, "negative_effect_months": 3, "ex_best_two_delta_jpy": -1422, "leave_one_month_out_min_delta_jpy": -1376}, "failed_gates": ["positive_effect_months_min", "negative_effect_months_max", "ex_best_two_entry_dates_delta_positive", "leave_one_month_out_min_delta_positive"]}],
+      "decision": "Family closed at H1; no H2 or 2025 access. 2023 falsification path activated.",
+      "falsified_or_unsupported_claims": ["The tested event-age confirmation and budget architecture is robust", "High headline PF represents distributed edge", "Removing 158 F05 trades is justified"],
+      "retained_findings": ["Exposure-state asymmetry remains important", "The tested probe/confirmation grid was too aggressive and concentrated", "A third development year is required"],
+      "prohibited_reuse": ["Do not rerun or tune the 54 cells", "Do not equate high PF after large trade removal with robustness", "Do not access H2 or 2025 for Family F"],
+      "successor_questions": ["Which architecture findings recur in 2023?", "Are standalone and stack effects stable after exact time-field reconciliation?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "docs/research/usdjpy_post_family_e_2024_architecture_diagnostic_v1.md"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_family_f_event_confirmation_2024h1_result_v1.json"}]
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-011",
+      "family_ids": [],
+      "candidate_ids": [],
+      "status": "OPEN_RESEARCH_QUESTION",
+      "origin_analysis": "Families A-F show that many plausible filters compress losses but fail robustness or sacrifice recovery winners. Family F therefore activated the preregistered 2023 bar-data falsification path.",
+      "causal_hypothesis": "No candidate hypothesis is active. Build exact-parity 2023 architecture data, reconcile it with the declared 2024 lineage, and determine which retained findings recur before proposing a new family.",
+      "target_failure_mode": ["2024-only overfitting", "time-lineage mismatch", "duplicate hypothesis generation", "research-memory loss"],
+      "pre_result_predictions": ["2023 parity and Atlas must be accepted before interpretation", "2023 and 2024 use a declared compatible field contract", "cross-year findings precede candidate generation", "2025 does not choose thresholds"],
+      "tests": [
+        {"period": "2023", "type": "binding_Rakuten_MT4_baseline_parity", "run_id": 29998477805, "artifact_id": 8560057457, "result": {"status": "PASS", "repeat_run_id": 29998718769, "audit_sha256_reproduced": true}},
+        {"period": "2023", "type": "closed_trade_Architecture_Atlas", "run_id": 30001786384, "artifact_id": 8561286612, "result": {"status": "PASS"}},
+        {"period": "2024_H1", "type": "canonical_M15_timestamp_and_trade_key_audit", "result": {"status": "AUTHORIZED_NOT_COMPLETE"}}
+      ],
+      "decision": "Remain descriptive. Candidate signal generation, outcome evaluation and parameter search are locked.",
+      "falsified_or_unsupported_claims": [],
+      "retained_findings": ["2023 exact-parity baseline and Architecture Atlas are accepted", "Next analysis compares prior mechanisms rather than starting a generic search", "Historical and corrected lineages remain separate until explicitly reconciled"],
+      "prohibited_reuse": ["Do not alter historical 2024 evidence for convenience", "Do not use 2025 to select mechanism or threshold", "Do not propose a family before ledger duplicate audit"],
+      "successor_questions": ["Which retained findings from HYP-001 through HYP-010 reproduce in 2023?", "Which failures are invariant versus regime-specific?", "What new observable fills a documented gap rather than renaming a closed mechanism?"],
+      "evidence_refs": [{"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_research_candidate_registry_v24.json"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_2023_canonical_baseline_mt4_result_v1.json"}, {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_2023_architecture_atlas_result_v1.json"}]
+    }
+  ]
+}
