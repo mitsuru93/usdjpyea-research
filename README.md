@@ -1,6 +1,21 @@
 # USDJPY EA Research (Pre-MT4)
 
+> **AI / Codex / new-thread start point:** read `AGENTS.md`, then follow
+> `configs/research/usdjpy_research_memory_manifest_v1.json` in order.
+> No USDJPY hypothesis, candidate proposal, result interpretation, or period-access
+> decision is valid without the required start-up read receipt and hypothesis-ledger comparison.
+
 This repository is dedicated to **pre-MT4 research and simulation** for a USDJPY Expert Advisor (EA).
+
+## Canonical USDJPY research memory
+
+The append-only causal history is maintained in:
+
+- `configs/research/usdjpy_hypothesis_ledger_v1.json`
+- `docs/research/usdjpy_research_memory_system_v1.md`
+- `configs/research/usdjpy_research_candidate_registry_v24.json`
+
+The ledger records not only final decisions, but the analysis that generated each hypothesis, its pre-result predictions, exact tests, failed gates, falsified claims, retained findings, prohibited reuse, and successor questions.
 
 ## Direction
 
