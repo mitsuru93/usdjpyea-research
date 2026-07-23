@@ -1,0 +1,108 @@
+{
+  "schema_version": "usdjpy_family_g_structural_breakout_invalidation_prereg_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOME_EVALUATION",
+  "family_id": "G_STRUCTURAL_BREAKOUT_INVALIDATION",
+  "lineage_id": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "activation_condition": "Only after the 2023 legacy2024-compatible rebuild is accepted and the registry explicitly authorizes this family.",
+  "origin_diagnosis": "Prior work left large F05 P2/P3 losses untreated. Family C required prior MFE >= 20 pips and mainly targeted P1 giveback. Families D/E used absolute adverse P/L and recovery/exposure timing. Family G instead uses the original breakout reference level as a structural state variable: an entry is invalidated only when executable marked price returns inside that exact reference level at a frozen checkpoint.",
+  "prior_hypothesis_ids_reviewed": [
+    "USDJPY-HYP-004",
+    "USDJPY-HYP-005",
+    "USDJPY-HYP-006",
+    "USDJPY-HYP-007",
+    "USDJPY-HYP-008",
+    "USDJPY-HYP-009",
+    "USDJPY-HYP-010"
+  ],
+  "novelty": {
+    "not_family_A": "post-entry executable level state, not pre-entry candle acceptance geometry",
+    "not_family_B": "does not block from overlap state alone",
+    "not_family_C": "does not require prior MFE and targets early P2/P3 invalidation rather than post-MFE giveback",
+    "not_family_D": "threshold is distance inside the original breakout level, not absolute entry P/L adversity",
+    "not_family_E": "exposure state is an optional timing modifier; causal trigger is structural level invalidation",
+    "not_family_F": "does not convert the first signal into a probe or require later event confirmation"
+  },
+  "target_strategy": "F05",
+  "B02_action": "unchanged",
+  "entry_trade_set": "unchanged until a candidate exit is triggered",
+  "processing_order": [
+    "baseline fixed-time exits",
+    "Family G structural invalidation exits",
+    "new B02/F05 entries"
+  ],
+  "finite_grid": {
+    "mechanisms": [
+      {
+        "id": "G1_ANY_STATE",
+        "scope": [
+          "standalone",
+          "opposite_overlap",
+          "mixed_overlap",
+          "simultaneous_same_direction",
+          "same_direction_stack"
+        ],
+        "checkpoint_minutes": [30, 60],
+        "inside_buffer_pips": [0, 5, 10]
+      },
+      {
+        "id": "G2_STATE_ADAPTIVE",
+        "unsupported_scope": [
+          "standalone",
+          "opposite_overlap",
+          "mixed_overlap"
+        ],
+        "supported_scope": [
+          "same_direction_stack",
+          "simultaneous_same_direction"
+        ],
+        "unsupported_checkpoint_minutes": [30, 60],
+        "supported_checkpoint_minutes": [60, 90],
+        "inside_buffer_pips": [0, 5, 10]
+      }
+    ],
+    "candidate_count": 18,
+    "inside_rule": "checkpoint executable marked distance from original breakout level <= -inside_buffer_pips",
+    "exit_price": "exact checkpoint M15 bar-open executable Bid for long and Ask for short"
+  },
+  "development_periods": {
+    "2023": "legacy2024-compatible development/falsification year",
+    "2024_H1": "historical development",
+    "2024_H2": "development and cross-regime analysis under period policy v4"
+  },
+  "ranking_and_gates": {
+    "ranking": [
+      "minimum period delta",
+      "pooled net delta",
+      "ex-best-two entry-date delta",
+      "leave-one-month-out minimum delta",
+      "benefit minus harm"
+    ],
+    "required_each_period": [
+      "net_delta_positive",
+      "benefit_exceeds_harm",
+      "at_least_10_affected_positions"
+    ],
+    "required_pooled": [
+      "positive_effect_months_at_least_20_of_24",
+      "negative_effect_months_at_most_3",
+      "ex_best_two_entry_dates_delta_positive",
+      "leave_one_month_out_min_delta_positive",
+      "winner_harm_below_loss_avoided",
+      "B02_unchanged"
+    ],
+    "maximum_finalists": 1
+  },
+  "prohibited": [
+    "No threshold expansion after results",
+    "No 2025 outcome use for selection",
+    "No repair of Family C/D/E",
+    "No candidate-specific 2025 H1 access before exact Research-to-MT4 parity and explicit registry unlock"
+  ],
+  "falsification": [
+    "No grid cell is positive in 2023, 2024 H1 and 2024 H2",
+    "Apparent benefit is dominated by two dates or one month",
+    "Winner sacrifice exceeds loss avoided",
+    "Affected population is too sparse",
+    "The best cell is not parameter-identifiable"
+  ]
+}
