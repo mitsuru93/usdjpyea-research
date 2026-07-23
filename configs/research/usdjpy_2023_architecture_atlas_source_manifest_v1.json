@@ -1,0 +1,45 @@
+{
+  "schema_version": "usdjpy_2023_architecture_atlas_source_manifest_v1",
+  "status": "FROZEN",
+  "research_preregistration": {
+    "path": "configs/research/usdjpy_2023_architecture_atlas_prereg_v1.json"
+  },
+  "binding_mt4": {
+    "run_id": 29998477805,
+    "artifact_id": 8560057457,
+    "artifact_sha256": "bf2cd6e94ba4a15f764e784f4a82b8d07edd3070ab198bbf9bc27112e931f63b",
+    "audit_relative_path": "tester/fx2_usdjpy_2023_baseline_canonical_fixed_001_each_v1.csv",
+    "audit_sha256": "a7349269db2072e24e694847e0c5517a90d10edd387aedb8baffa788caf008ff"
+  },
+  "preparation": {
+    "run_id": 29997167048,
+    "artifact_id": 8559483151,
+    "artifact_sha256": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+    "expected_trade_ledger_relative_path": "baseline/usdjpy_2023_canonical_baseline_expected_trade_ledger_v1.csv",
+    "expected_trade_ledger_sha256": "33d08d580d584f533bc5f9dda510184fb86c668608f76f8e9b7c014924c5f1b8",
+    "normalized_m15_relative_path": "normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz",
+    "normalized_m15_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "gap_inventory_relative_path": "normalized/usdjpy_2023_m1_gap_inventory_rakuten_mt4_v1.csv",
+    "gap_inventory_sha256": "7f437e02f79a2297ebb8dd450101fb482870c8d429c0d2e3485f878b3bb48ebc"
+  },
+  "closed_trade_scope": {
+    "count": 963,
+    "B02": 232,
+    "F05": 731,
+    "net_jpy": -9904.0,
+    "period_end_open_trade_excluded": "F05|2023-12-29T16:30:00Z|-1"
+  },
+  "known_exclusions": {
+    "deinit_regressed_timestamp_rows": [
+      "portfolio_snapshot after normal final simulated timestamp",
+      "period_end_mark",
+      "period_end_open_position",
+      "risk_summary",
+      "runtime_deinit"
+    ],
+    "use_as_entry_features": false,
+    "candidate_analysis": false,
+    "2024_H2": false,
+    "2025": false
+  }
+}
