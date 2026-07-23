@@ -1,0 +1,64 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v21",
+  "status": "CANONICAL_MT4_SERVER_TIME_CONFIRMED_2023_BASELINE_RECONSTRUCTION_ACTIVE",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v20.json",
+  "period_roles": {
+    "2023": "ACCEPTED_RAKUTEN_MT4_DATA; UNCHANGED_CANONICAL_CLOCK_BASELINE_RECONSTRUCTION",
+    "2024_H1": "CANONICAL_CLOCK_BASELINE ACCEPTED; NEW_FAMILY_SCREENING ONLY AFTER 2023 ARCHITECTURE DIAGNOSIS",
+    "2024_H2": "LOCKED UNTIL A NEW EXACT SPECIFICATION PASSES CANONICAL 2024_H1",
+    "2025_H1": "KNOWN BINDING STRESS PERIOD; NO NEW CANDIDATE ACCESS BEFORE UNCHANGED H2 PASS",
+    "2025_H2": "LOCKED"
+  },
+  "active_family": null,
+  "current_candidate": null,
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION"
+  ],
+  "canonical_time_contract": "configs/research/usdjpy_mt4_server_time_contract_v1.json",
+  "canonical_2024_H1_baseline": {
+    "result": "configs/research/usdjpy_2024_timezone_conversion_mt4_result_v1.json",
+    "report": "docs/research/usdjpy_2024_timezone_conversion_mt4_result_v1.md",
+    "core_run_id": 29993711777,
+    "artifact_id": 8558119922,
+    "artifact_sha256": "03aec8194ebdfadac5c0be73050ed9b94837de6030df89624ace9bf6b5e47fe6",
+    "opened": 427,
+    "closed": 426,
+    "net_jpy": 22730.0,
+    "profit_factor": 1.373965548444415
+  },
+  "accepted_2023_data": {
+    "normalization_contract": "configs/research/usdjpy_2023_rakuten_mt4_hst_normalization_contract_v1.json",
+    "normalization_receipt": "configs/research/usdjpy_2023_rakuten_mt4_hst_normalization_receipt_v1.json",
+    "normalized_package_sha256": "4d75f3f67f6c81fe97a2b540846723162c17482430b4cc201b577ab4e00b68e8",
+    "M1_records": 371128,
+    "M15_records": 24825
+  },
+  "historical_policy": {
+    "closed_specs_reopened": false,
+    "legacy_clock_diagnostics_allowed_for_new_selection": false,
+    "canonical_clock_rebuild_required": true
+  },
+  "run_authorization": {
+    "canonical_Core_baseline_source_update": true,
+    "2023_HST_pair_construction": true,
+    "2023_baseline_research_reconstruction": true,
+    "2023_baseline_Rakuten_MT4_execution": true,
+    "2023_architecture_atlas": false,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "new_family_preregistration": false,
+    "2024_H2": false,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "tick_download": false,
+    "ask_download": false,
+    "live_orders": false
+  },
+  "next_action": "apply the accepted Europe/EET-EEST conversion to the canonical Core B02/F05 baseline, freeze exact source and EX4 identities, build an immutable 2023 M1/M15 HST pair from accepted bars, then execute unchanged 2023 research and Rakuten MT4 baseline parity",
+  "live_order_authorized": false
+}
