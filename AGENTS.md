@@ -9,55 +9,41 @@ This repository is for research and pre-MT4 simulation work for USDJPY EA develo
 - Prefer robustness over peak profit.
 - Avoid lookahead bias in all research and simulations.
 - Use conservative assumptions whenever same-bar execution order is ambiguous.
-- Compare outcomes by month, session, path class, direction, and exposure state.
+- Compare outcomes by month, half-year fold, session, path class, direction and exposure state.
 - Do not add MT4 production code (`.mq4` / `.mqh`) here.
 - Do not include broker-specific live-trading logic or production secrets.
 
 ## Mandatory start-up sequence
 
-Before any USDJPY analysis, hypothesis proposal, candidate design, parameter grid, result interpretation, MT4 workflow design, or period-access decision:
+Before any USDJPY analysis, hypothesis proposal, candidate design, parameter grid, result interpretation, MT4 workflow design or period-access decision:
 
 1. Read `configs/research/usdjpy_research_memory_manifest_v1.json`.
 2. Read every file in its `mandatory_startup_read_order`.
-3. Verify the latest Research `main` commit and the exact current candidate-registry pointer.
-4. State or record a start-up read receipt containing:
-   - Research commit;
-   - files read and their blob/SHA identity when available;
-   - current registry schema, status, and exact next action;
-   - relevant hypothesis-ledger IDs;
-   - declared data/time lineage;
-   - periods accessed and periods not accessed.
+3. Verify the latest Research `main` commit and exact current candidate-registry pointer.
+4. State or record a start-up read receipt containing Research commit, file identities, registry status/next action, relevant ledger IDs, declared lineage and periods accessed/not accessed.
 
-Do not use conversation summaries, memory, issue titles, artifact names, or file names alone as the source of truth.
+Do not use conversation summaries, issue titles, artifact names or file names alone as the source of truth. If mandatory files cannot be read or disagree, stop scientific interpretation and reconcile the canonical state first.
 
-If the mandatory files cannot be read or disagree, stop scientific interpretation and reconcile the source-of-truth state first.
+## Research-memory and novelty rule
 
-## Research-memory rule
+`configs/research/usdjpy_hypothesis_ledger_v1.json` and the active addendum are the append-only causal memory.
 
-`configs/research/usdjpy_hypothesis_ledger_v1.json` is the append-only causal research ledger.
+Before proposing a new hypothesis, compare target strategy, action, path, timing, state features, affected population, failed gate, period, lineage and algebraically equivalent payoff. A new family is blocked unless it records prior IDs, exact overlap, retained findings, falsified claims not repeated, new causal information, falsifiable predictions, why it is not threshold relabeling, and whether the outcome is algebraically derivable from opened development results.
 
-Before proposing a new hypothesis, compare it against all ledger entries that overlap in:
+Closed exact candidates must not be repaired, retuned, combined or reopened from 2025 evidence.
 
-- target strategy;
-- entry or exit action;
-- P1/P2/P3 path;
-- timing;
-- shock, extension, acceptance, retention, overlap, recovery, or event-state features;
-- affected-trade population;
-- failed robustness gate;
-- period and lineage.
+## Mandatory execution safeguards
 
-A new family is blocked unless the work records:
+Read `docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md` and apply it before long-running work.
 
-- prior hypothesis IDs reviewed;
-- exact overlap with prior work;
-- retained findings being used;
-- falsified claims not being repeated;
-- the genuinely new observable or causal distinction;
-- new falsifiable predictions;
-- why the proposal is not a threshold-only relabeling.
-
-Closed exact candidates must not be repaired, retuned, combined, or reopened from H2 or 2025 evidence unless a later explicit policy supersedes that closure.
+- Freeze authority direction before transforming data.
+- Commit evaluator source before accessing outcomes.
+- Run technical feasibility and one-row preflight before a full grid.
+- Apply an impact-sufficiency gate before opening a family.
+- Generate output hashes programmatically.
+- Do not call a deterministic payoff transformation blind when source outcomes are known.
+- Package one scientific stage atomically rather than using serial micro-PRs.
+- Leave a machine-readable `NOT_CANONICAL` WIP receipt if interrupted.
 
 ## Evidence and lineage
 
@@ -67,40 +53,27 @@ Use this precedence:
 2. verified GitHub Release receipt and Actions identity;
 3. preregistration and frozen policy;
 4. human-readable report;
-5. candidate registry and hypothesis-ledger summary;
+5. registry and ledger summary;
 6. conversation context.
 
-Identify Actions evidence by repository, Run ID, artifact ID, digest, creation time, and corresponding Release receipt when archived.
-
-Do not call HST bars tick data.
-
-Do not silently rewrite the historical 2024/2025 lineage. A corrected-clock or corrected-field series must be separately named and must not be combined with historical trade counts or P/L unless the entire lineage is recomputed and explicitly adopted.
+Identify Actions evidence by repository, Run ID, artifact ID, digest, creation time and Release receipt. Do not call HST bars tick data. Do not silently rewrite historical 2024/2025. The accepted 2023 legacy-2024 builder must be source-reproducible before new 2023 candidate interpretation.
 
 ## Atomic result update
 
-After every completed scientific test, the same Research change must update:
+After every completed scientific test, the same Research change must update result JSON, report, registry, ledger, period state and exact next action. Technical incomplete attempts are separate and never scientific results. Historical entries are corrected by erratum or superseding entry.
 
-- result JSON;
-- human-readable report;
-- candidate registry;
-- hypothesis ledger;
-- period-access state or policy pointer;
-- exact next action.
+After merge, Notion Current State and the active task must be updated and fetched back. The stage is not complete until Notion readback matches GitHub.
 
-Technical incomplete attempts are logged separately and are never counted as scientific results.
+## Period roles
 
-Historical ledger entries are not silently edited. Use an erratum or superseding entry and preserve the original evidence.
+Follow the current registry and period policy exactly.
 
-## Protected periods
-
-Follow the current registry and period policy exactly. At present:
-
-- 2023 descriptive Architecture Atlas work is authorized;
-- candidate generation and outcome evaluation are not authorized;
-- 2024 H2 is locked;
-- 2025 H1 may not be used for retuning or threshold selection;
-- 2025 H2 is locked;
-- live orders are not authorized.
+- 2023 H1/H2 and 2024 H1/H2 are development, mechanism-analysis and falsification folds.
+- Candidate analysis is allowed only when explicitly authorized by the current registry and a fixed protocol.
+- 2025 H1 is locked until one exact specification, Research-to-MT4 parity and workflow preflight are complete.
+- Known 2025 results may define the gate but may not choose a mechanism, feature, threshold, side or weight.
+- 2025 H2 is locked until an unchanged 2025 H1 pass.
+- Live orders are not authorized.
 
 ## Archive
 
