@@ -1,0 +1,90 @@
+{
+  "schema_version": "usdjpy_2024_timezone_conversion_audit_prereg_v1",
+  "status": "FROZEN_BEFORE_CORRECTED_MT4_EXECUTION",
+  "purpose": "determine whether the accepted B02/F05 baseline behavior changes when Rakuten MT4 server timestamps use the audited Europe/EET-EEST GMT+2/GMT+3 transition rule instead of the current US-DST-selected offset rule",
+  "classification": "foundational timestamp and session-boundary audit; not a candidate test",
+  "source_evidence": {
+    "accepted_2024_H1_run_id": 29787357305,
+    "accepted_2024_H1_artifact_id": 8479048161,
+    "accepted_2024_H1_artifact_sha256": "e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+    "accepted_2024_H1_head_sha": "8a6ad1ac1ac357e85ceaa1f9e62549105ae555d8",
+    "accepted_base_ea_path": "mql4/Experts/MT4_USDJPY_B02_F05_Portfolio_Tester_v1.mq4",
+    "accepted_base_ea_git_blob_sha1": "ceaca2c0e3a259451a879a90deb7929a1941dd7e",
+    "accepted_wrapper_path": "mql4/Experts/MT4_USDJPY_B02_F05_Portfolio_Tester_2025H1_v1.mq4",
+    "accepted_wrapper_git_blob_sha1": "fe7e96b0d4ae22e585b09074959cb3b734994b22",
+    "source_M1_hst_sha256": "eb8bee2a61bd54a23ef03fa36d96421fc5c354348b992aaad9fdc08df8513b90",
+    "source_M15_hst_sha256": "7a20a337e3b002eb55b2440d2be4f00ff770845aeb76d85f67550bc98a8a5ef7"
+  },
+  "frozen_change": {
+    "scope": "replace ServerToUtc offset-selection boundaries only",
+    "current_rule": "subtract UTC+2 unless the winter UTC candidate is inside US DST, then subtract UTC+3",
+    "corrected_rule": "test UTC+2 and UTC+3 candidates against Europe/EET-EEST DST boundaries; require exactly one valid candidate",
+    "europe_dst_start": "last Sunday in March at 01:00 UTC",
+    "europe_dst_end": "last Sunday in October at 01:00 UTC",
+    "ambiguous_or_nonexistent_timestamp_policy": "fail initialization or execution; never guess",
+    "unchanged_items": [
+      "B02 session hours 00:00-06:59 UTC reference and 07:00-12:59 UTC signal window",
+      "F05 96-bar breakout rule and entry-hour cutoff",
+      "US-DST-based low-liquidity hard-exclusion schedule",
+      "fixed 48-bar B02 exit",
+      "fixed 32-bar F05 exit",
+      "fixed 0.01 lots per strategy",
+      "spread 5 points",
+      "MT4 model 0",
+      "portfolio processing order",
+      "virtual JPY account contract",
+      "all audit fields"
+    ]
+  },
+  "frozen_research_reconciliation": {
+    "current_implementation_exact_signal_parity_required": true,
+    "current_implementation_exact_closed_trade_pip_parity_required": true,
+    "accepted_current_opened": 429,
+    "accepted_current_B02_opened": 98,
+    "accepted_current_F05_opened": 331,
+    "accepted_current_closed": 428,
+    "accepted_current_net_jpy": 22797.0,
+    "accepted_current_profit_factor": 1.3774150290548484,
+    "corrected_expected_opened": 427,
+    "corrected_expected_B02_opened": 96,
+    "corrected_expected_F05_opened": 331,
+    "corrected_expected_closed": 426,
+    "corrected_expected_net_jpy": 22730.0,
+    "corrected_expected_profit_factor": 1.373965548444415,
+    "expected_common_server_bar_signals": 422,
+    "expected_old_only_server_bar_signals": 7,
+    "expected_corrected_only_server_bar_signals": 5,
+    "expected_shifted_M15_rows": 1400,
+    "expected_first_shifted_corrected_utc": "2024-03-11T01:00:00Z",
+    "expected_last_shifted_corrected_utc": "2024-03-29T21:45:00Z"
+  },
+  "binding_mt4_gates": {
+    "compile_errors_allowed": 0,
+    "order_send_failures_allowed": 0,
+    "order_close_failures_allowed": 0,
+    "corrected_opened_must_equal": 427,
+    "corrected_B02_opened_must_equal": 96,
+    "corrected_F05_opened_must_equal": 331,
+    "corrected_closed_must_equal": 426,
+    "corrected_net_jpy_must_equal": 22730.0,
+    "corrected_profit_factor_absolute_tolerance": 1e-12,
+    "old_only_server_bar_signals_must_equal": 7,
+    "corrected_only_server_bar_signals_must_equal": 5,
+    "unexpected_non_timezone_logic_changes_allowed": 0,
+    "artifact_and_immutable_receipt_required": true
+  },
+  "decision_rule": {
+    "all_gates_pass": "TIMEZONE_BEHAVIORAL_IMPACT_CONFIRMED_MT4",
+    "technical_mismatch": "TECHNICAL_FAIL_REPAIR_SAME_AUDITS_ONLY",
+    "no_behavioral_change": "NO_BEHAVIORAL_IMPACT_REJECTED_BY_FROZEN_RESEARCH_EXPECTATION"
+  },
+  "period_boundaries": {
+    "2024_H1_access": true,
+    "2024_H2_access": false,
+    "2025_access": false,
+    "candidate_evaluation": false,
+    "parameter_selection": false,
+    "live_orders": false
+  },
+  "next_action_after_pass": "record the canonical timezone correction decision, audit all timestamp-derived 2024 fields, then freeze the 2023 baseline reconstruction package"
+}
