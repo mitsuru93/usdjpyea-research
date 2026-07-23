@@ -1,0 +1,39 @@
+{
+  "schema_version": "usdjpy_2023_fast_m1_single_job_transport_amendment_v1",
+  "status": "FROZEN_BEFORE_DATA_ACQUISITION",
+  "supersedes_transport_only": "configs/research/usdjpy_2023_fast_m1_core_execution_freeze_v1.json",
+  "research_base_commit": "0204b0349c22856c7a5d2a28b25e6adba1d281f5",
+  "core_pull_request": 154,
+  "core_base_commit": "cf7cf0b4375ba3124ecc6f322ea5d04f677ee271",
+  "core_frozen_head_commit": "4c32a16ba382fcaaa1696cc85dab1e1e9eb5e1ef",
+  "workflow": {
+    "path": ".github/workflows/mt4_usdjpy_family_e_2024_parity_v1.yml",
+    "git_blob_sha1": "a5402ef46d30ceaee2c5c0bbf722636503b735f6",
+    "known_workflow_id": 318119335,
+    "job_count": 1,
+    "job": "acquire-usdjpy-2023-m1",
+    "marker_path": "configs/run_markers/usdjpy_2023_fast_m1_acquisition_pr_v2.json",
+    "marker_branch": "agent/run-usdjpy-2023-fast-m1-acquisition-v2"
+  },
+  "unchanged": {
+    "acquisition_client_blob": "7e82057e3b949b9f33b25fd9c878c932d7df51e6",
+    "normalizer_blob": "03c634694c3192d15ce3d3cd3cef9b84befbd0f4",
+    "source_client": "dukascopy-node@1.49.0",
+    "instrument": "usdjpy",
+    "period": "2023",
+    "timeframe": "m1",
+    "price_type": "bid",
+    "timezone": "UTC",
+    "derive_M15": true,
+    "data_gates_changed": false,
+    "artifact_contract_changed": false
+  },
+  "reason": "The prior multi-job workflow produced no opened or synchronize Run. Removing the closed Family E job and routing complexity isolates the acquisition on the already registered workflow path.",
+  "data_access_before_this_freeze": false,
+  "tick_data_authorized": false,
+  "ask_series_authorized": false,
+  "candidate_outcome_evaluation_authorized": false,
+  "2024_H2_access_authorized": false,
+  "2025_access_authorized": false,
+  "live_order_authorized": false
+}
