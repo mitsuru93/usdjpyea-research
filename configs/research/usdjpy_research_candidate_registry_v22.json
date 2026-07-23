@@ -1,0 +1,41 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v22",
+  "status": "USDJPY_2023_CANONICAL_BASELINE_BINDING_MT4_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v21.json",
+  "active_family": null,
+  "current_candidate": null,
+  "canonical_time_contract": "configs/research/usdjpy_mt4_server_time_contract_v1.json",
+  "baseline_2023": {
+    "preregistration": "configs/research/usdjpy_2023_canonical_baseline_prereg_v1.json",
+    "expected_result": "configs/research/usdjpy_2023_canonical_baseline_expected_v1.json",
+    "report": "docs/research/usdjpy_2023_canonical_baseline_prereg_v1.md",
+    "preparation_run_id": 29997167048,
+    "preparation_artifact_id": 8559483151,
+    "preparation_artifact_sha256": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+    "binding_mt4_executed": false
+  },
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION"
+  ],
+  "run_authorization": {
+    "2023_baseline_Rakuten_MT4_execution": true,
+    "2023_baseline_result_acceptance": true,
+    "2023_architecture_atlas": false,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "new_family_preregistration": false,
+    "2024_H2": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "tick_download": false,
+    "ask_download": false,
+    "live_orders": false
+  },
+  "next_action": "execute the exact preregistered 2023 canonical B02/F05 baseline on the Rakuten MT4 interactive runner and require full trade-key and realized-P/L parity",
+  "live_order_authorized": false
+}
