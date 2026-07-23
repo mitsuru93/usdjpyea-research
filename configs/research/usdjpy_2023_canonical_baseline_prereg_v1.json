@@ -1,0 +1,130 @@
+{
+  "schema_version": "usdjpy_2023_canonical_baseline_prereg_v1",
+  "status": "FROZEN_BEFORE_BINDING_MT4_EXECUTION",
+  "purpose": "reconstruct the unchanged B02/F05 baseline on accepted 2023 Rakuten Bid bars and require exact Research/Rakuten-MT4 parity before architecture-atlas work",
+  "research_boundary": {
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "parameter_search": false,
+    "parameter_selection": false,
+    "2024_H2_access": false,
+    "2025_access": false,
+    "live_orders": false
+  },
+  "source_data": {
+    "accepted_normalized_package_sha256": "4d75f3f67f6c81fe97a2b540846723162c17482430b4cc201b577ab4e00b68e8",
+    "normalized_M1_sha256": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e",
+    "normalized_M15_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "M1_records": 371128,
+    "M15_records": 24825,
+    "first_utc": "2023-01-02T05:00:00Z",
+    "last_utc": "2023-12-29T21:46:00Z",
+    "price_side": "Rakuten MT4 Bid bars"
+  },
+  "canonical_clock": {
+    "contract": "configs/research/usdjpy_mt4_server_time_contract_v1.json",
+    "standard_offset": "UTC+02:00",
+    "summer_offset": "UTC+03:00",
+    "summer_start": "last Sunday in March 01:00 UTC",
+    "summer_end": "last Sunday in October 01:00 UTC",
+    "hard_exclusion_us_dst_retained": true
+  },
+  "core_identity": {
+    "canonical_source_commit": "cbdfcb36602f2138431ebe6618489b289e24d96d",
+    "canonical_source_path": "mql4/Experts/MT4_USDJPY_B02_F05_Portfolio_CanonicalTime_v1.mq4",
+    "canonical_source_git_blob_sha1": "2f837118b772550eee8995fae2f8c55d408f9540",
+    "canonical_source_sha256": "207652c3dda2aa6802f909b5cc86fa5aab68652d38ed10b3f74b7907ce6968ec",
+    "virtual_jpy_wrapper_path": "mql4/Experts/MT4_USDJPY_B02_F05_Portfolio_Tester_2025H1_v1.mq4",
+    "canonical_logic_changed_after_2024_binding_audit": false
+  },
+  "preparation_evidence": {
+    "core_run_id": 29997167048,
+    "core_job_id": 89173483747,
+    "core_head_sha": "75ae68113b10f23e3bfb74e653601166b9e640ae",
+    "runner_name": "onamae-mt4-01",
+    "receipt_issue": 184,
+    "artifact_id": 8559483151,
+    "artifact_name": "usdjpy-2023-canonical-baseline-prep-v1-29997167048-1",
+    "artifact_digest": "sha256:22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+    "downloaded_zip_sha256": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+    "google_drive_file_id": "1rFrQN3Awa-AoCdFVBdQ8gSp0MwxDk-H-",
+    "google_drive_file_name": "usdjpy-2023-canonical-baseline-prep-pass-run-29997167048.zip"
+  },
+  "generated_hst": {
+    "version": 401,
+    "record_order": "time,open,high,low,close,tick_volume,spread,real_volume",
+    "timestamp_encoding": "canonical MT4 server local clock encoded as epoch",
+    "M1": {
+      "records": 371128,
+      "bytes": 22267828,
+      "sha256": "f6711747dad368f7f108f8088b8e6aa09f9c86ce9347468dd32e1c6816456e06"
+    },
+    "M15": {
+      "records": 24825,
+      "bytes": 1489648,
+      "sha256": "c82c88307289b698cf2c71ae13050d9ad006b412d35f6a36a4e358c046e65571"
+    },
+    "template_M1_sha256": "eb8bee2a61bd54a23ef03fa36d96421fc5c354348b992aaad9fdc08df8513b90",
+    "template_M15_sha256": "7a20a337e3b002eb55b2440d2be4f00ff770845aeb76d85f67550bc98a8a5ef7"
+  },
+  "expected_research_result": {
+    "ledger_sha256": "33d08d580d584f533bc5f9dda510184fb86c668608f76f8e9b7c014924c5f1b8",
+    "result_json_sha256": "5c4334671d15a3ba8274754e3c851025e46d9e26f5076a4ace245a8cab573ba3",
+    "opened_trades": 964,
+    "B02_opened": 232,
+    "F05_opened": 732,
+    "closed_trades": 963,
+    "end_open_trades": 1,
+    "net_jpy": -9904.0,
+    "gross_profit_jpy": 197579.0,
+    "gross_loss_jpy": 207483.0,
+    "profit_factor": 0.9522659687781649,
+    "wins": 469,
+    "losses": 493,
+    "flat": 1,
+    "period_end_open_trade_key": "F05|2023-12-29T16:30:00Z|-1",
+    "period_end_open_entry_utc": "2023-12-29T16:45:00Z"
+  },
+  "binding_mt4_contract": {
+    "runner_labels": ["self-hosted", "Windows", "X64", "mt4-ui", "rakuten", "interactive"],
+    "symbol": "USDJPY",
+    "period": "M15",
+    "model": 0,
+    "spread_points": 5,
+    "from_date": "2023.01.01",
+    "to_date": "2024.01.01",
+    "fixed_lots_B02": 0.01,
+    "fixed_lots_F05": 0.01,
+    "virtual_initial_balance_jpy": 100000.0,
+    "virtual_leverage": 25,
+    "virtual_stopout_level_percent": 100,
+    "required_log_marker": "FX2_2025H1_PORTFOLIO_DEINIT"
+  },
+  "pass_gates": {
+    "exact_hst_M1_sha": true,
+    "exact_hst_M15_sha": true,
+    "compile_success": true,
+    "opened_exact": 964,
+    "B02_opened_exact": 232,
+    "F05_opened_exact": 732,
+    "closed_exact": 963,
+    "end_open_exact": 1,
+    "trade_key_set_exact": true,
+    "closed_trade_gross_pips_exact_tolerance": 1e-9,
+    "net_jpy_exact_tolerance": 1e-9,
+    "profit_factor_exact_tolerance": 1e-12,
+    "period_end_open_trade_key_exact": true,
+    "order_send_failures": 0,
+    "order_close_failures": 0
+  },
+  "period_end_mark_policy": {
+    "binding_value_source": "Rakuten MT4 period_end_mark audit row",
+    "selection_or_tuning_use": false,
+    "required_action": "reconcile against the frozen open position and final available Bid/Ask; report but do not alter the pass gates above"
+  },
+  "decision_rule": {
+    "all_gates_pass": "ACCEPT_2023_CANONICAL_BASELINE_PARITY_AND_AUTHORIZE_ARCHITECTURE_ATLAS",
+    "any_gate_fail": "STOP_AT_BASELINE_PARITY_FAILURE_AND_DIAGNOSE_TECHNICAL_OR_MODEL_SEMANTICS",
+    "result_driven_logic_change_allowed": false
+  }
+}
