@@ -1,0 +1,50 @@
+name: Validate USDJPY Research Memory v1
+
+on:
+  pull_request:
+    paths:
+      - AGENTS.md
+      - README.md
+      - configs/research/usdjpy_research_memory_manifest_v1.json
+      - configs/research/usdjpy_hypothesis_ledger_v1.json
+      - configs/research/usdjpy_validation_operating_contract_v4.json
+      - configs/research/usdjpy_research_candidate_registry_v*.json
+      - docs/research/usdjpy_research_memory_system_v1.md
+      - tools/validate_usdjpy_research_memory_v1.py
+      - .github/workflows/validate_usdjpy_research_memory_v1.yml
+  push:
+    branches: [main]
+    paths:
+      - AGENTS.md
+      - README.md
+      - configs/research/usdjpy_research_memory_manifest_v1.json
+      - configs/research/usdjpy_hypothesis_ledger_v1.json
+      - configs/research/usdjpy_validation_operating_contract_v4.json
+      - configs/research/usdjpy_research_candidate_registry_v*.json
+      - docs/research/usdjpy_research_memory_system_v1.md
+      - tools/validate_usdjpy_research_memory_v1.py
+      - .github/workflows/validate_usdjpy_research_memory_v1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate canonical memory graph
+        run: |
+          python tools/validate_usdjpy_research_memory_v1.py \
+            --root . \
+            --output validation/usdjpy_research_memory_validation_receipt_v1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-research-memory-validation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: validation/usdjpy_research_memory_validation_receipt_v1.json
+          if-no-files-found: error
