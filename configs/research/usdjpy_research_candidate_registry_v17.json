@@ -1,0 +1,44 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v17",
+  "status": "USDJPY_2023_FAST_M1_DATA_ACQUISITION_PREREGISTERED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v16.json",
+  "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
+  "period_roles": {
+    "2023": "DATA_ACQUISITION_AND_ARCHITECTURE_ATLAS_PREPARATION",
+    "2024_H1": "FAMILY_F_FINITE_SEARCH_CONSUMED_AND_FAILED",
+    "2024_H2": "FAMILY_F_NOT_ACCESSED_AFTER_H1_FAIL",
+    "2025_H1": "FAMILY_E_BINDING_RESULT_CONSUMED; NO_NEW_CANDIDATE_ACCESS",
+    "2025_H2": "LOCKED"
+  },
+  "active_family": null,
+  "current_candidate": null,
+  "active_data_contract": "configs/research/usdjpy_2023_fast_m1_acquisition_prereg_v1.json",
+  "latest_research_result": {
+    "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+    "decision": "FAIL_NO_H1_FINALIST",
+    "result_path": "configs/research/usdjpy_family_f_event_confirmation_2024h1_result_v1.json",
+    "metrics_path": "configs/research/usdjpy_family_f_event_confirmation_2024h1_candidate_gate_matrix_v1.csv",
+    "report_path": "docs/research/usdjpy_family_f_event_confirmation_2024h1_result_v1.md"
+  },
+  "2023_data_stage": {
+    "source_client": "dukascopy-node@1.49.0",
+    "instrument": "usdjpy",
+    "timeframe": "m1",
+    "price_type": "bid",
+    "timezone": "UTC",
+    "derive_M15_from_M1": true,
+    "tick_download": false,
+    "candidate_outcomes_authorized": false
+  },
+  "access_authorization": {
+    "2023_M1_data_acquisition_and_audit": true,
+    "2023_architecture_atlas_after_data_PASS": true,
+    "2023_candidate_outcome_evaluation": false,
+    "2024_H2_Family_F": false,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "live_orders": false
+  },
+  "next_action": "implement the exact acquisition and normalization package in Core, run it once, and bind Run/artifact/package/data hashes before architecture analysis",
+  "live_order_authorized": false
+}
