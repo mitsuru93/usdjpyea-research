@@ -1,0 +1,218 @@
+{
+  "schema_version": "usdjpy_2025h1_result_inventory_v1",
+  "status": "COMPLETE_VERIFIED_INVENTORY",
+  "scope": {
+    "symbol": "USDJPY",
+    "period_start": "2025-01-01T00:00:00Z",
+    "period_end_exclusive": "2025-07-01T00:00:00Z",
+    "purpose": "enumerate every scientifically interpretable USDJPY 2025 H1 result currently retained by Core and Research, while separating direct Rakuten MT4 executions from deterministic reconstructions and technical incomplete attempts"
+  },
+  "accepted_market_data_identity": {
+    "source": "pre-existing Rakuten MT4 cached HST",
+    "M1_sha256": "db00b63e9e7ff2dd3f785563ad7f392a7e79ccef8a2c3e696f662b397b2b5af0",
+    "M15_sha256": "b22e9fb9a6d0f397b4186ba17f6e71cae9eb38aa59f214dfd1eb5173e4e7f165",
+    "M1_period_records": 183828,
+    "M15_period_records": 12269,
+    "tester_model": 0,
+    "spread_points": 5,
+    "B02_lots": 0.01,
+    "F05_lots": 0.01
+  },
+  "result_population": {
+    "distinct_portfolio_cases": 6,
+    "direct_strategy_tester_cases": 5,
+    "deterministic_reconstruction_cases": 1,
+    "cases": [
+      {
+        "case_id": "BASELINE_FIXED_001_EACH",
+        "execution_type": "DIRECT_RAKUTEN_MT4",
+        "run_id": 29783855056,
+        "artifact_id": 8477893216,
+        "artifact_digest": "sha256:0867bb4d8bfb0be9f96e61dd1e9c73aadd56b2b217b514532596e644dc95a72a",
+        "opened": 463,
+        "closed": 463,
+        "net_jpy": -20808.0,
+        "profit_factor": 0.8294076655052265,
+        "maximum_tick_equity_drawdown_jpy": 42737.0,
+        "minimum_equity_jpy": 57328.0,
+        "B02_closed": 105,
+        "B02_net_jpy": -6964.0,
+        "F05_closed": 358,
+        "F05_net_jpy": -13844.0,
+        "decision": "BASELINE_ACCEPTED"
+      },
+      {
+        "case_id": "B02F05_SC70_C240_v1",
+        "execution_type": "DETERMINISTIC_EXACT_IMPACT_RECONSTRUCTION_FROM_ACCEPTED_BASELINE",
+        "source_run_id": 29783855056,
+        "source_artifact_id": 8477893216,
+        "source_artifact_digest_verified": "sha256:0867bb4d8bfb0be9f96e61dd1e9c73aadd56b2b217b514532596e644dc95a72a",
+        "direct_candidate_strategy_tester_run": false,
+        "trades": 416,
+        "net_jpy": -12976.0,
+        "net_delta_jpy": 7832.0,
+        "profit_factor": 0.8738332296204107,
+        "maximum_M15_snapshot_equity_drawdown_jpy": 30363.0,
+        "minimum_M15_snapshot_equity_jpy": 69637.0,
+        "B02_trades": 98,
+        "B02_net_jpy": -10021.0,
+        "F05_trades": 318,
+        "F05_net_jpy": -2955.0,
+        "blocked": 47,
+        "decision": "CLOSED_FAIL_DIAGNOSTIC_ONLY"
+      },
+      {
+        "case_id": "F05_SW70_R10_E90_A240_v1",
+        "label": "S1",
+        "execution_type": "DIRECT_RAKUTEN_MT4_DIAGNOSTIC",
+        "run_id": 29880733653,
+        "artifact_id": 8514811165,
+        "artifact_digest": "sha256:0ceced6933b493bf6c65fe53311c53b33cdf310578d51036c51617f2157af416",
+        "opened": 455,
+        "closed": 455,
+        "net_jpy": -17543.0,
+        "net_delta_jpy": 3265.0,
+        "profit_factor": 0.8521038299737812,
+        "maximum_tick_equity_drawdown_jpy": 40306.0,
+        "minimum_equity_jpy": 59759.0,
+        "B02_net_jpy": -6964.0,
+        "F05_net_jpy": -10579.0,
+        "removed_F05_entries": 8,
+        "decision": "DIAGNOSTIC_ONLY_NOT_REOPENED"
+      },
+      {
+        "case_id": "B02F05_DSHOCK60_R20_E90_EXIT_v1",
+        "label": "S2",
+        "execution_type": "DIRECT_RAKUTEN_MT4_DIAGNOSTIC",
+        "run_id": 29880733653,
+        "artifact_id": 8514811165,
+        "artifact_digest": "sha256:0ceced6933b493bf6c65fe53311c53b33cdf310578d51036c51617f2157af416",
+        "opened": 463,
+        "closed": 463,
+        "net_jpy": -21195.0,
+        "net_delta_jpy": -387.0,
+        "profit_factor": 0.8251742483606219,
+        "maximum_tick_equity_drawdown_jpy": 42328.0,
+        "minimum_equity_jpy": 57737.0,
+        "B02_net_jpy": -7400.0,
+        "F05_net_jpy": -13795.0,
+        "changed_common_trades": 12,
+        "decision": "DIAGNOSTIC_ONLY_WORSE_THAN_BASELINE"
+      },
+      {
+        "case_id": "F05_EXTATR25_LOC80_F30_v1",
+        "label": "S3",
+        "execution_type": "DIRECT_RAKUTEN_MT4_DIAGNOSTIC",
+        "run_id": 29880733653,
+        "artifact_id": 8514811165,
+        "artifact_digest": "sha256:0ceced6933b493bf6c65fe53311c53b33cdf310578d51036c51617f2157af416",
+        "opened": 434,
+        "closed": 434,
+        "net_jpy": -12959.0,
+        "net_delta_jpy": 7849.0,
+        "profit_factor": 0.882164128210957,
+        "maximum_tick_equity_drawdown_jpy": 34492.0,
+        "minimum_equity_jpy": 65718.0,
+        "B02_net_jpy": -6964.0,
+        "F05_net_jpy": -5995.0,
+        "removed_F05_entries": 29,
+        "decision": "DIAGNOSTIC_ONLY_NOT_REOPENED"
+      },
+      {
+        "case_id": "E2_ADAPTIVE_60_90__A15_B5_C15_R0",
+        "family_id": "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+        "execution_type": "DIRECT_RAKUTEN_MT4_BINDING_GATE",
+        "run_id": 29934029169,
+        "job_id": 88970802800,
+        "artifact_id": 8535486772,
+        "artifact_digest": "sha256:79238df0ffaff1df6fdb8034b63e4dd191270b5364c1ab3e12c3f04f47acc4bc",
+        "receipt_issue": 151,
+        "opened": 463,
+        "closed": 463,
+        "net_jpy": -15866.0,
+        "net_delta_jpy": 4942.0,
+        "profit_factor": 0.8630257614476138,
+        "maximum_tick_equity_drawdown_jpy": 39246.0,
+        "minimum_equity_jpy": 60819.0,
+        "B02_net_jpy": -6964.0,
+        "F05_net_jpy": -8902.0,
+        "changed_F05_positions": 40,
+        "failed_binding_gates": [
+          "candidate_net_positive",
+          "candidate_pf_at_least_1",
+          "january_to_march_net_nonnegative"
+        ],
+        "decision": "BINDING_FAIL_EXACT_SPECIFICATION_CLOSED"
+      }
+    ]
+  },
+  "baseline_balance_ladder": {
+    "separate_portfolio_case": false,
+    "result": "identical to BASELINE_FIXED_001_EACH because the balance never reached JPY 150000 and lot size remained 0.01 for both strategies"
+  },
+  "not_counted_as_scientific_2025h1_results": [
+    {
+      "run_id": 29932286502,
+      "reason": "technical INCOMPLETE at build/compile before either Strategy Tester run"
+    },
+    {
+      "run_id": 29933179966,
+      "reason": "technical INCOMPLETE at EX4 reproducibility gate before either Strategy Tester run"
+    },
+    {
+      "candidate_id": "F05_MFE20_BOR1_EXIT_v1",
+      "reason": "closed after binding 2024 H2 FAIL; no 2025 H1 execution was authorized or performed"
+    },
+    {
+      "family_id": "D_EARLY_FAILURE_PERSISTENCE",
+      "reason": "closed during 2024 full-year development before 2025 access"
+    },
+    {
+      "family_id": "F_EVENT_CONFIRMATION_ADMISSION",
+      "reason": "closed after 2024 H1 robustness failure before 2025 access"
+    }
+  ],
+  "identity_errata": [
+    {
+      "file": "mitsuru93/usdjpyea-core/docs/research/usdjpy_sc70_c240_2025h1_exact_impact_v1_summary.json",
+      "field": "source.artifact_digest",
+      "recorded_value": "sha256:0867bbfd33375fe006de98f41ccb8d0824b00c3649cecd174811d39fbb95a72a",
+      "verified_value": "sha256:0867bb4d8bfb0be9f96e61dd1e9c73aadd56b2b217b514532596e644dc95a72a",
+      "classification": "historical metadata transcription defect; source artifact ID, Run ID, M1/M15 hashes and result metrics remain separately identifiable; do not silently replace the historical file"
+    }
+  ],
+  "durable_release_archive": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "release_tag": "usdjpy-2025h1-evidence-archive-v1",
+    "release_id": 358656977,
+    "published_at": "2026-07-23T12:06:25Z",
+    "receipt_path": "docs/research/artifact_archives/usdjpy_2025h1_evidence_v1/receipt.json",
+    "verified": true,
+    "assets": [
+      {
+        "label": "baseline",
+        "asset_id": 487144599,
+        "asset_name": "mt4-usdjpy-2025h1-cached-portfolio-test-v1-29783855056-1.zip",
+        "sha256": "0867bb4d8bfb0be9f96e61dd1e9c73aadd56b2b217b514532596e644dc95a72a"
+      },
+      {
+        "label": "s1_s3_diagnostic",
+        "asset_id": 487144600,
+        "asset_name": "mt4-usdjpy-s1-s3-2025h1-diagnostic-v4-29880733653-1.zip",
+        "sha256": "0ceced6933b493bf6c65fe53311c53b33cdf310578d51036c51617f2157af416"
+      },
+      {
+        "label": "family_e_binding",
+        "asset_id": 487144601,
+        "asset_name": "mt4-usdjpy-family-e-2025h1-binding-gate-v1-29934029169-1.zip",
+        "sha256": "79238df0ffaff1df6fdb8034b63e4dd191270b5364c1ab3e12c3f04f47acc4bc"
+      }
+    ]
+  },
+  "interpretation_boundary": {
+    "2025_H1_may_be_used_to_retune_closed_candidates": false,
+    "2025_H1_may_be_used_as_final_fixed_gate_for_future_preregistered_candidates": true,
+    "2025_H2_accessed": false,
+    "live_orders_authorized": false
+  }
+}
