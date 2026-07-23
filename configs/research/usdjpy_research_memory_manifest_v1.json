@@ -7,20 +7,20 @@
   "mandatory_startup_read_order": [
     {"ordinal": 1, "path": "AGENTS.md", "reason": "repository-wide AI operating rules"},
     {"ordinal": 2, "path": "configs/research/usdjpy_research_memory_manifest_v1.json", "reason": "canonical pointers and startup gate"},
-    {"ordinal": 3, "path": "configs/research/usdjpy_research_candidate_registry_v30.json", "reason": "Family H closure, current permissions and exact next action"},
+    {"ordinal": 3, "path": "configs/research/usdjpy_research_candidate_registry_v31.json", "reason": "F05 exit-line closure and B02 diagnosis authorization"},
     {"ordinal": 4, "path": "configs/research/usdjpy_validation_operating_contract_v4.json", "reason": "hypothesis lifecycle and execution controls"},
     {"ordinal": 5, "path": "configs/research/usdjpy_validation_operating_contract_v3.json", "reason": "base S0-S10 controls"},
     {"ordinal": 6, "path": "configs/research/usdjpy_hypothesis_ledger_v1.json", "reason": "base append-only causal memory"},
-    {"ordinal": 7, "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json", "reason": "Families G/H closure and RQ-016"},
+    {"ordinal": 7, "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json", "reason": "Families G/H closure, trajectory result and RQ-017"},
     {"ordinal": 8, "path": "configs/research/usdjpy_period_role_policy_v4.json", "reason": "period roles and protected boundaries"},
     {"ordinal": 9, "path": "configs/research/usdjpy_2025h1_result_inventory_v1.json", "reason": "known adverse-regime inventory and no-retuning boundary"},
     {"ordinal": 10, "path": "configs/research/usdjpy_2023_legacy2024_lineage_prereg_v1.json", "reason": "freeze 2024 and transform only 2023"},
     {"ordinal": 11, "path": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json", "reason": "accepted current 2023 Atlas"},
     {"ordinal": 12, "path": "configs/research/usdjpy_family_g_structural_breakout_invalidation_result_v1.json", "reason": "closed predecessor"},
-    {"ordinal": 13, "path": "configs/research/usdjpy_recovery_capacity_diagnosis_result_v1.json", "reason": "Family H origin diagnosis"},
-    {"ordinal": 14, "path": "configs/research/usdjpy_family_h_persistent_structural_invalidation_prereg_v1.json", "reason": "frozen Family H specification"},
-    {"ordinal": 15, "path": "configs/research/usdjpy_family_h_persistent_structural_invalidation_result_v1.json", "reason": "binding Family H closure"},
-    {"ordinal": 16, "path": "configs/research/usdjpy_family_g_missing_checkpoint_execution_amendment_v1.json", "reason": "inherited execution policy"},
+    {"ordinal": 13, "path": "configs/research/usdjpy_family_h_persistent_structural_invalidation_result_v1.json", "reason": "closed predecessor"},
+    {"ordinal": 14, "path": "configs/research/usdjpy_post_invalidation_trajectory_diagnosis_result_v1.json", "reason": "binding decision to stop F05 exit repair"},
+    {"ordinal": 15, "path": "configs/research/usdjpy_recovery_capacity_diagnosis_result_v1.json", "reason": "Family H origin diagnosis"},
+    {"ordinal": 16, "path": "configs/research/usdjpy_family_g_missing_checkpoint_execution_amendment_v1.json", "reason": "historical execution policy"},
     {"ordinal": 17, "path": "configs/research/usdjpy_2023_canonical_baseline_mt4_result_v1.json", "reason": "separate canonical-clock audit lineage"},
     {"ordinal": 18, "path": "configs/research/usdjpy_2023_architecture_atlas_result_v1.json", "reason": "separate canonical-clock audit lineage"}
   ],
@@ -31,11 +31,11 @@
     "missing_receipt_action": "BLOCK_SCIENTIFIC_INTERPRETATION_AND_RELOAD_MEMORY"
   },
   "canonical_pointers": {
-    "current_candidate_registry": "configs/research/usdjpy_research_candidate_registry_v30.json",
+    "current_candidate_registry": "configs/research/usdjpy_research_candidate_registry_v31.json",
     "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
     "base_operating_contract": "configs/research/usdjpy_validation_operating_contract_v3.json",
     "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
-    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
     "human_handbook": "docs/research/usdjpy_research_memory_system_v1.md",
     "period_policy": "configs/research/usdjpy_period_role_policy_v4.json",
     "known_2025h1_inventory": "configs/research/usdjpy_2025h1_result_inventory_v1.json",
@@ -43,9 +43,9 @@
     "current_2023_legacy2024_atlas_result": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json",
     "current_2023_legacy2024_atlas_report": "docs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.md",
     "family_g_result": "configs/research/usdjpy_family_g_structural_breakout_invalidation_result_v1.json",
-    "recovery_capacity_diagnosis": "configs/research/usdjpy_recovery_capacity_diagnosis_result_v1.json",
-    "family_h_preregistration": "configs/research/usdjpy_family_h_persistent_structural_invalidation_prereg_v1.json",
     "family_h_result": "configs/research/usdjpy_family_h_persistent_structural_invalidation_result_v1.json",
+    "trajectory_diagnosis": "configs/research/usdjpy_post_invalidation_trajectory_diagnosis_result_v1.json",
+    "recovery_capacity_diagnosis": "configs/research/usdjpy_recovery_capacity_diagnosis_result_v1.json",
     "missing_checkpoint_execution_policy": "configs/research/usdjpy_family_g_missing_checkpoint_execution_amendment_v1.json",
     "separate_2023_canonical_baseline_result": "configs/research/usdjpy_2023_canonical_baseline_mt4_result_v1.json",
     "separate_2023_canonical_baseline_report": "docs/research/usdjpy_2023_canonical_baseline_mt4_result_v1.md",
@@ -73,11 +73,11 @@
     "technical_incomplete_runs": "record separately; never count as scientific results"
   },
   "current_state_snapshot": {
-    "registry_status": "USDJPY_FAMILY_H_CLOSED_TRAJECTORY_DIAGNOSIS_AUTHORIZED",
+    "registry_status": "USDJPY_F05_EXIT_LINE_CLOSED_B02_CROSSYEAR_DIAGNOSIS_AUTHORIZED",
     "active_family": null,
     "current_candidate": null,
-    "current_open_research_question": "USDJPY-RQ-016",
-    "next_action": "compare late-recovery winners and permanent failures within Family H trigger populations using only trajectory features observable by the second checkpoint across 2023, 2024 H1 and 2024 H2; do not expand Families G or H",
+    "current_open_research_question": "USDJPY-RQ-017",
+    "next_action": "build and reconcile a common no-lookahead B02 open-path feature contract for 2023, historical 2024 H1 and historical 2024 H2, then identify loss-making admission states that recur in every development period before any family preregistration",
     "candidate_signal_generation_authorized": false,
     "candidate_outcome_evaluation_authorized": false,
     "2024_H2_authorized": false,
@@ -85,10 +85,10 @@
     "2025_H2_authorized": false
   },
   "installation_audit": {
-    "status": "PASS_AT_REGISTRY_V29_REQUIRES_REVALIDATION_AFTER_V30_MERGE",
-    "run_id": 30023442208,
-    "validated_hypothesis_count": 14,
-    "validated_closed_family_count": 7
+    "status": "PASS_AT_REGISTRY_V30_REQUIRES_REVALIDATION_AFTER_V31_MERGE",
+    "run_id": 30023905607,
+    "validated_hypothesis_count": 15,
+    "validated_closed_family_count": 8
   },
   "maintenance": {
     "manifest_update_required_when_any_canonical_pointer_changes": true,
