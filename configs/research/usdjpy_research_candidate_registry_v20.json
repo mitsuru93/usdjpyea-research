@@ -1,0 +1,59 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v20",
+  "status": "USDJPY_FOUNDATIONAL_TIMEZONE_CONVERSION_MT4_AUDIT_ACTIVE",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v19.json",
+  "period_roles": {
+    "2023": "ACCEPTED_RAKUTEN_MT4_UTC_NORMALIZED_DATA; BASELINE_FREEZE_PAUSED_PENDING_FOUNDATIONAL_CLOCK_DECISION",
+    "2024_H1": "FOUNDATIONAL_TIMEZONE_CONVERSION_PARITY_AUDIT_ONLY; NO_CANDIDATE EVALUATION",
+    "2024_H2": "LOCKED",
+    "2025_H1": "NO_NEW_CANDIDATE_ACCESS",
+    "2025_H2": "LOCKED"
+  },
+  "active_family": null,
+  "current_candidate": null,
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION"
+  ],
+  "accepted_2023_data": {
+    "contract": "configs/research/usdjpy_2023_rakuten_mt4_hst_normalization_contract_v1.json",
+    "receipt": "configs/research/usdjpy_2023_rakuten_mt4_hst_normalization_receipt_v1.json",
+    "normalized_package_sha256": "4d75f3f67f6c81fe97a2b540846723162c17482430b4cc201b577ab4e00b68e8",
+    "M1_records": 371128,
+    "M15_records": 24825
+  },
+  "foundational_timezone_audit": {
+    "preregistration": "configs/research/usdjpy_2024_timezone_conversion_audit_prereg_v1.json",
+    "research_result": "configs/research/usdjpy_2024_timezone_conversion_research_audit_v1.json",
+    "report": "docs/research/usdjpy_2024_timezone_conversion_research_audit_v1.md",
+    "reproducer": "tools/audit_usdjpy_2024_timezone_conversion_v1.py",
+    "research_decision": "BEHAVIORAL_IMPACT_CONFIRMED",
+    "current_signal_parity": true,
+    "current_closed_trade_pips_parity": true,
+    "corrected_expected_opened": 427,
+    "corrected_expected_closed": 426,
+    "corrected_expected_net_jpy": 22730.0,
+    "corrected_expected_profit_factor": 1.373965548444415,
+    "binding_mt4_decision": null
+  },
+  "run_authorization": {
+    "2024_H1_timezone_corrected_MT4_audit": true,
+    "2023_baseline_reconstruction": false,
+    "2023_architecture_atlas": false,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "new_family_preregistration": false,
+    "2024_H2": false,
+    "candidate_specific_2025_H1": false,
+    "candidate_specific_2025_H2": false,
+    "tick_download": false,
+    "ask_download": false,
+    "live_orders": false
+  },
+  "next_action": "execute one exact Rakuten MT4 2024 H1 timezone-corrected baseline audit against the preregistered metrics; on exact PASS record the canonical clock correction and then freeze the 2023 baseline reconstruction package",
+  "live_order_authorized": false
+}
