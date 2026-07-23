@@ -1,0 +1,43 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v33",
+  "status": "USDJPY_FAMILY_I_CLOSED_INCREMENTAL_BAND_DIAGNOSIS_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v32.json",
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "startup_read_receipt_required": true,
+    "duplicate_research_audit_required_before_new_family": true,
+    "atomic_ledger_update_required_after_test": true
+  },
+  "active_family": null,
+  "current_candidate": null,
+  "current_open_research_question": "USDJPY-RQ-019",
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION",
+    "G_STRUCTURAL_BREAKOUT_INVALIDATION",
+    "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE",
+    "I_B02_SHORT_WEAK_4H_ALIGNMENT_ADMISSION"
+  ],
+  "B02_diagnosis": "configs/research/usdjpy_b02_open_path_diagnosis_result_v1.json",
+  "family_i_result": "configs/research/usdjpy_family_i_b02_short_weak4h_alignment_result_v1.json",
+  "run_authorization": {
+    "2024_H1_historical_data_mutation": false,
+    "B02_incremental_20_to_40_band_diagnosis": true,
+    "new_family_preregistration": false,
+    "candidate_outcome_evaluation": false,
+    "parameter_search": false,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  },
+  "next_action": "compare the incremental B02 short 20-to-40-pip four-hour-alignment band across 2023, historical 2024 H1 and historical 2024 H2 using only pre-entry no-lookahead features; do not add Family I thresholds",
+  "live_order_authorized": false
+}
