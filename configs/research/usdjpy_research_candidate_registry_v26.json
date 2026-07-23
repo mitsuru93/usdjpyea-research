@@ -1,0 +1,71 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v26",
+  "status": "USDJPY_2023_LEGACY2024_ATLAS_ACCEPTED_FAMILY_G_EVALUATION_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v25.json",
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "human_handbook": "docs/research/usdjpy_research_memory_system_v1.md",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "startup_read_receipt_required": true,
+    "duplicate_research_audit_required_before_new_family": true,
+    "atomic_ledger_update_required_after_test": true
+  },
+  "active_family": "G_STRUCTURAL_BREAKOUT_INVALIDATION",
+  "current_candidate": null,
+  "current_open_research_question": "USDJPY-RQ-011",
+  "user_directed_lineage_correction": "configs/research/usdjpy_2023_legacy2024_lineage_prereg_v1.json",
+  "frozen_future_family_preregistration": "configs/research/usdjpy_family_g_structural_breakout_invalidation_prereg_v1.json",
+  "accepted_2023_canonical_atlas_preserved_as_separate_lineage": {
+    "result": "configs/research/usdjpy_2023_architecture_atlas_result_v1.json",
+    "core_run_id": 30001786384,
+    "artifact_id": 8561286612,
+    "artifact_sha256": "9e6aa5cebccc44a51e8e0aa86fd87653d2e471446c4a92cd62d8699f4c6bf591",
+    "status": "PRESERVED_NOT_USED_FOR_HISTORICAL_2024_CROSS_YEAR_COMPARISON"
+  },
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION"
+  ],
+  "closed_exact_candidate_ledger_refs": [
+    "USDJPY-HYP-001",
+    "USDJPY-HYP-002",
+    "USDJPY-HYP-003",
+    "USDJPY-HYP-004",
+    "USDJPY-HYP-007",
+    "USDJPY-HYP-008",
+    "USDJPY-HYP-009",
+    "USDJPY-HYP-010"
+  ],
+  "run_authorization": {
+    "2024_H1_historical_data_mutation": false,
+    "2024_H1_historical_trade_key_rebuild": false,
+    "2023_legacy2024_timestamp_transform": true,
+    "2023_legacy2024_baseline_rebuild": true,
+    "2023_legacy2024_entry_field_atlas_rebuild": true,
+    "2023_2024_cross_year_comparison": true,
+    "family_G_candidate_outcome_evaluation": true,
+    "parameter_search": "ONLY_FROZEN_18_CELL_FAMILY_G_GRID",
+    "parameter_selection": true,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  },
+  "next_action": "evaluate only the frozen 18-cell Family G structural breakout invalidation grid separately on 2023 legacy2024-compatible, historical 2024 H1 and historical 2024 H2 evidence, then close the family or freeze at most one finalist",
+  "live_order_authorized": false,
+  "accepted_2023_legacy2024_atlas": {
+    "result": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json",
+    "report": "docs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.md",
+    "builder": "execution script SHA-256 7cb022bbe0ed59fff588f495b4dd212e66d66e5bc640ff68963db64aea25c8b8",
+    "status": "PASS",
+    "opened": 961,
+    "closed": 960,
+    "net_jpy": -9279.0,
+    "profit_factor": 0.9549943251816427
+  },
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json"
+}
