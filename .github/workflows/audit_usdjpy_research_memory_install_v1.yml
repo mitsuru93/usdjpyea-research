@@ -1,0 +1,39 @@
+name: Audit USDJPY Research Memory Installation v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/audit_usdjpy_research_memory_install_v1.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate and write receipt
+        run: |
+          python tools/validate_usdjpy_research_memory_v1.py --root . --output receipt.json
+      - name: Publish audit receipt issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo '# USDJPY Research Memory installation audit'
+            echo
+            echo 'Run ID: `${{ github.run_id }}`'
+            echo 'Head SHA: `${{ github.sha }}`'
+            echo
+            echo '```json'
+            cat receipt.json
+            echo '```'
+          } > issue.md
+          gh issue create --title "[audit] USDJPY research memory PASS ${{ github.run_id }}" --body-file issue.md
