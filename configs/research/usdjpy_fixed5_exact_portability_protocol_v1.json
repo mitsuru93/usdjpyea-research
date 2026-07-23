@@ -1,0 +1,63 @@
+{
+  "schema_version": "usdjpy_fixed5_exact_portability_protocol_v1",
+  "status": "FROZEN_BEFORE_SCIENTIFIC_RERUN",
+  "research_question": "USDJPY-RQ-020A_and_USDJPY-RQ-020D",
+  "objective": "Restore the accepted 2023 legacy-2024 transformer exactly and test whether the unchanged frozen 2024 five-strategy cohort or a predeclared static portfolio transports to 2023 under default and severe costs.",
+  "authority_direction": {
+    "source_authority_period": "historical 2024 lineage",
+    "transformed_period": "2023 only",
+    "immutable_periods": ["2024 H1", "2024 H2", "2025 H1", "2025 H2"],
+    "historical_2024_source_mutation": false
+  },
+  "transform_contract": {
+    "source_column": "first_timestamp_mt4_server",
+    "conversion": "MT4_USDJPY_B02_F05_Portfolio_Tester_v1 ServerToUtc: subtract UTC+2 winter or UTC+3 when IsUsDstUtc(server_minus_2h) is true",
+    "expected_shifted_M15_rows": 1543,
+    "duplicates": 0,
+    "nonascending": 0
+  },
+  "identity_gates": [
+    "2023 canonical B02/F05 ledger exact keys and numeric fields",
+    "2023 legacy2024-compatible opened 961, closed 960, B02 230, F05 731, net JPY -9,279, B02 JPY -12,459, F05 JPY +3,180",
+    "2024 H1 fixed-five signals and T0 trades exact",
+    "2024 H2 fixed-five signals and T0 trades exact"
+  ],
+  "fixed_strategies": [
+    "R1B02_legacy_asia_00_07_breakout",
+    "R1E02_legacy_trend_8h_resumption",
+    "R1E03_trend_12h_resumption",
+    "R1F05_donchian_96",
+    "R1H04_ramom_32_64_z125"
+  ],
+  "fixed_portfolios": [
+    "equal-weight five strategies",
+    "five leave-one-strategy-out equal-weight portfolios"
+  ],
+  "costs": {
+    "default": "max(0.5 pip, observed entry spread); 2023 bid-only input uses frozen 0.5 pip",
+    "severe": "default cost * 3 + 1 pip"
+  },
+  "period_reporting": ["2023 H1", "2023 H2", "2024 H1", "2024 H2", "2023 full year"],
+  "portability_gate": [
+    "2023 full-year default net positive",
+    "2023 full-year severe net positive",
+    "both 2023 half-years default nonnegative",
+    "both 2023 half-years severe nonnegative"
+  ],
+  "stop_rule": "If no unchanged strategy or predeclared portfolio passes, close RQ-020A and RQ-020D and authorize only descriptive 5-day/20-day market-state diagnosis under RQ-020B.",
+  "prohibited": [
+    "no parameter, side or horizon changes",
+    "no portfolio weight optimization",
+    "no candidate selection from the prior 1,428-shift provisional run",
+    "no Family I/F05 local repair",
+    "no 2025 access"
+  ],
+  "evaluator": "tools/evaluate_usdjpy_fixed5_portability_v1.py",
+  "boundaries": {
+    "candidate_family_active": false,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  }
+}
