@@ -1,0 +1,38 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v30",
+  "status": "USDJPY_FAMILY_H_CLOSED_TRAJECTORY_DIAGNOSIS_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v29.json",
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "startup_read_receipt_required": true,
+    "duplicate_research_audit_required_before_new_family": true,
+    "atomic_ledger_update_required_after_test": true
+  },
+  "active_family": null,
+  "current_candidate": null,
+  "current_open_research_question": "USDJPY-RQ-016",
+  "accepted_2023_legacy2024_atlas": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json",
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE", "B_CONDITIONAL_PORTFOLIO_OVERLAP", "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE", "E_STATE_ADAPTIVE_RECOVERY_EXIT", "F_EVENT_CONFIRMATION_ADMISSION",
+    "G_STRUCTURAL_BREAKOUT_INVALIDATION", "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE"
+  ],
+  "family_g_result": "configs/research/usdjpy_family_g_structural_breakout_invalidation_result_v1.json",
+  "family_h_result": "configs/research/usdjpy_family_h_persistent_structural_invalidation_result_v1.json",
+  "run_authorization": {
+    "2024_H1_historical_data_mutation": false,
+    "2023_2024_cross_year_trajectory_diagnosis": true,
+    "new_family_preregistration": false,
+    "candidate_outcome_evaluation": false,
+    "parameter_search": false,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  },
+  "next_action": "compare late-recovery winners and permanent failures within Family H trigger populations using only trajectory features observable by the second checkpoint across 2023, 2024 H1 and 2024 H2; do not expand Families G or H",
+  "live_order_authorized": false
+}
