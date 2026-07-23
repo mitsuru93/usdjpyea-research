@@ -1,0 +1,56 @@
+{
+  "schema_version": "usdjpy_b02_incremental_band_diagnosis_result_v1",
+  "status": "DESCRIPTIVE_DIAGNOSIS_COMPLETE_NO_FAMILY_I_REPAIR",
+  "open_question": "USDJPY-RQ-019",
+  "band_definition": "B02 short and 20 < side-aligned four-hour M15-open move <= 40 pips",
+  "period_summary": {
+    "2023": {"trade_count": 27, "baseline_net_jpy": -2218.0},
+    "2024H1": {"trade_count": 5, "baseline_net_jpy": 1970.0},
+    "2024H2": {"trade_count": 12, "baseline_net_jpy": 2676.0}
+  },
+  "fixed_open_path_partitions_tested": [
+    "standalone versus overlap",
+    "recent and prior one-hour direction",
+    "one-hour acceleration",
+    "one-hour and four-hour path efficiency",
+    "aligned-step fraction",
+    "entry breakout distance",
+    "Asia, Europe and New York entry hours",
+    "fixed interactions of recent counter-move, deceleration and low efficiency"
+  ],
+  "fixed_atlas_partitions_tested": [
+    "ATR percentile quartiles",
+    "reference range width to ATR",
+    "signal close outside distance and outside-to-ATR",
+    "signal body, close location and counter-wick geometry",
+    "pre-entry one-hour and four-hour directional path",
+    "preexisting same/opposite exposure and active portfolio P/L",
+    "US DST state"
+  ],
+  "result": {
+    "negative_all_period_open_path_partitions_with_minimum_two_trades": 0,
+    "negative_all_period_atlas_partitions_with_minimum_two_trades": 0,
+    "interpretation": "The 20-to-40-pip band reversal cannot be repaired by a stable fixed pre-entry partition in the tested common feature contract. Additional Family I thresholds or conditions are not authorized."
+  },
+  "retained_action_distinction": {
+    "source_population": "B02 shorts with four-hour side-aligned move <= 20 pips",
+    "baseline_property": "negative baseline P/L in 2023, 2024 H1 and 2024 H2",
+    "Family_I_action": "block the short trade",
+    "new_action_question": "treat the weak short breakout as a false downside break and execute an opposite long mean-reversion trade at the same signal and fixed exit horizon",
+    "candidate_outcome_computed": false
+  },
+  "decision": "DO_NOT_REPAIR_FAMILY_I; PREREGISTER_DISTINCT_FAMILY_J_FALSE_BREAK_REVERSAL_ACTION",
+  "boundaries": {"candidate_evaluated": false, "threshold_selected": false, "2025_accessed": false, "2024_source_mutated": false},
+  "diagnostic_identities": {
+    "open_path_script_sha256": "eaca60feafaa13d2c2bd868c1660e7903ab225f1c577264119ccb817044024a2",
+    "atlas_script_sha256": "0827f4693b632fb71d9b2069851cfa4bf7c145304fbd9a6e35d3d2df696f4404"
+  },
+  "output_sha256": {
+    "usdjpy_b02_incremental_band_rows_v1.csv": "96257c00fd613496490f493dab238c5c3b572d89a6ca7db84af203cafa552384",
+    "usdjpy_b02_incremental_band_fixed_partitions_v1.csv": "92006023741204a95f0bc7bd7ea67007124a0d3e431036d13267ddbb5f373a6a",
+    "usdjpy_b02_incremental_band_partition_consistency_v1.csv": "62961e3fd6c7e95e22807ae8d7caac6284eb7a0e418122105318ecdda38d30c2",
+    "usdjpy_b02_incremental_band_atlas_rows_v1.csv": "2762dbea1a3d757de7ccbe2cdfc2327bdaf9eba6835c4f0c34b2865b40a5c05f",
+    "usdjpy_b02_incremental_band_atlas_partitions_v1.csv": "554b8de835d5d9dd8271da1040bf1936615a94923979a1ac70cc5d02191f52a2",
+    "usdjpy_b02_incremental_band_atlas_consistency_v1.csv": "492081153b18d389f14d8c64827479d78285492d51ebb2ab0165bbe3f2442fd7"
+  }
+}
