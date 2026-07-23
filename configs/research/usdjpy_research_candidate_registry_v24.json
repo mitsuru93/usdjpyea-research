@@ -2,8 +2,18 @@
   "schema_version": "usdjpy_research_candidate_registry_v24",
   "status": "USDJPY_2023_ATLAS_ACCEPTED_2024_H1_CANONICAL_FIELD_AUDIT_AUTHORIZED",
   "supersedes": "configs/research/usdjpy_research_candidate_registry_v23.json",
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "human_handbook": "docs/research/usdjpy_research_memory_system_v1.md",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "startup_read_receipt_required": true,
+    "duplicate_research_audit_required_before_new_family": true,
+    "atomic_ledger_update_required_after_test": true
+  },
   "active_family": null,
   "current_candidate": null,
+  "current_open_research_question": "USDJPY-RQ-011",
   "accepted_2023_atlas": {
     "result": "configs/research/usdjpy_2023_architecture_atlas_result_v1.json",
     "report": "docs/research/usdjpy_2023_architecture_atlas_result_v1.md",
@@ -12,6 +22,24 @@
     "artifact_sha256": "9e6aa5cebccc44a51e8e0aa86fd87653d2e471446c4a92cd62d8699f4c6bf591",
     "status": "PASS"
   },
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION"
+  ],
+  "closed_exact_candidate_ledger_refs": [
+    "USDJPY-HYP-001",
+    "USDJPY-HYP-002",
+    "USDJPY-HYP-003",
+    "USDJPY-HYP-004",
+    "USDJPY-HYP-007",
+    "USDJPY-HYP-008",
+    "USDJPY-HYP-009",
+    "USDJPY-HYP-010"
+  ],
   "run_authorization": {
     "2024_H1_canonical_M15_timestamp_reconstruction": true,
     "2024_H1_corrected_trade_key_audit": true,
