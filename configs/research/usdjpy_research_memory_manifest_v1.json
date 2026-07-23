@@ -110,6 +110,14 @@
     "2025_H1_authorized": false,
     "2025_H2_authorized": false
   },
+  "installation_audit": {
+    "status": "PASS",
+    "run_id": 30008455045,
+    "receipt_issue": 205,
+    "validated_hypothesis_count": 11,
+    "validated_closed_family_count": 6,
+    "temporary_audit_workflow_removed": true
+  },
   "maintenance": {
     "manifest_update_required_when_any_canonical_pointer_changes": true,
     "latest_registry_must_reference_this_manifest": true,
