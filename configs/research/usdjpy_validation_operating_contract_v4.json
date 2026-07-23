@@ -1,0 +1,157 @@
+{
+  "schema_version": "usdjpy_validation_operating_contract_v4",
+  "status": "ACTIVE_MEMORY_GATED_RESEARCH_CONTRACT",
+  "supersedes_for_all_new_usdjpy_work": "configs/research/usdjpy_validation_operating_contract_v3.json",
+  "base_contract_retained_without_relaxation": "configs/research/usdjpy_validation_operating_contract_v3.json",
+  "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "principle": "No result, failure, retained finding or period exposure may exist only in conversation context. Scientific work is blocked until canonical memory has been loaded and acknowledged.",
+  "mandatory_stage_sequence_prefix": [
+    "M0_LOAD_CANONICAL_RESEARCH_MEMORY",
+    "M1_RECONCILE_CURRENT_REGISTRY_AND_EVIDENCE",
+    "M2_DUPLICATE_RESEARCH_AND_NOVELTY_AUDIT"
+  ],
+  "then_execute_base_contract_stages": "S0 through S10 from v3",
+  "M0_load_canonical_research_memory": {
+    "read_order_source": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "startup_read_receipt_required": true,
+    "receipt_fields": [
+      "research_main_commit",
+      "mandatory_files_read",
+      "current_registry_status",
+      "current_exact_next_action",
+      "relevant_hypothesis_ledger_ids",
+      "lineage_name",
+      "period_access_boundaries"
+    ],
+    "blocker": "Any missing mandatory file, ambiguous pointer or stale registry blocks scientific interpretation."
+  },
+  "M1_reconcile_current_registry_and_evidence": {
+    "required_checks": [
+      "latest candidate registry is the manifest pointer",
+      "registry state matches completed binding evidence",
+      "current period permissions match period policy",
+      "technical incomplete attempts are separated from scientific results",
+      "Actions artifacts are identified by run_id artifact_id digest created_at and corresponding Release receipt when archived",
+      "historical errata are explicitly recorded rather than silently corrected"
+    ]
+  },
+  "M2_duplicate_research_and_novelty_audit": {
+    "required_before": [
+      "mechanism proposal",
+      "family preregistration",
+      "parameter grid",
+      "candidate implementation"
+    ],
+    "search_dimensions": [
+      "target strategy",
+      "entry versus exit action",
+      "target P1/P2/P3 path",
+      "pre-entry or post-entry timing",
+      "shock extension acceptance retention overlap recovery and event-state features",
+      "affected-trade overlap",
+      "failed robustness gate",
+      "period and lineage"
+    ],
+    "required_novelty_record": [
+      "prior_hypothesis_ids_reviewed",
+      "overlap_with_each_prior_hypothesis",
+      "retained_findings_used",
+      "falsified_claims_not_repeated",
+      "new_observable_or_causal_distinction",
+      "new_falsifiable_predictions",
+      "why_threshold_only_relabeling_is_not_occurring"
+    ],
+    "automatic_rejection": [
+      "same closed exact rule with changed threshold",
+      "same mechanism without new information",
+      "proposal omits a contrary H2 or 2025 result",
+      "proposal cites only headline net or PF and omits failed gates",
+      "proposal uses protected-period outcomes for selection"
+    ]
+  },
+  "hypothesis_lifecycle": {
+    "states": [
+      "OPEN_RESEARCH_QUESTION",
+      "HYPOTHESIS_DRAFT",
+      "PREREGISTERED",
+      "H1_SCREEN",
+      "H1_FINALIST",
+      "MT4_PARITY",
+      "H2_BINDING",
+      "2025H1_BINDING",
+      "CLOSED_FAIL",
+      "RETAINED_FINDING_ONLY"
+    ],
+    "before_execution_required": [
+      "origin analysis",
+      "causal hypothesis",
+      "target failure mode",
+      "pre-result predictions",
+      "falsification conditions",
+      "relevant prior hypothesis IDs",
+      "period and lineage declaration"
+    ],
+    "after_execution_required": [
+      "exact evidence identity",
+      "result by period",
+      "failed and passed gates",
+      "falsified or unsupported claims",
+      "retained findings",
+      "prohibited reuse",
+      "successor questions",
+      "ledger status update"
+    ],
+    "negative_results_must_be_preserved": true,
+    "historical_entry_edit_rule": "append errata or superseding entry; never silently rewrite"
+  },
+  "candidate_preregistration_additional_required_fields": [
+    "hypothesis_ledger_refs",
+    "novelty_statement",
+    "prior_failed_gates_addressed",
+    "retained_findings_used",
+    "falsified_claims_not_repeated",
+    "predicted_period_behavior",
+    "explicit_stop_rule",
+    "lineage_id"
+  ],
+  "result_reporting_additional_required_fields": [
+    "which prediction was confirmed or contradicted",
+    "why the result failed even when headline metrics improved",
+    "whether failure is mechanism scope parameter-identifiability concentration execution lineage or period-regime related",
+    "what information remains usable",
+    "what research is now redundant"
+  ],
+  "atomic_update": {
+    "same_research_change_required": [
+      "result JSON",
+      "human report",
+      "candidate registry",
+      "hypothesis ledger",
+      "period access ledger or policy pointer",
+      "exact next action"
+    ],
+    "no_result_only_in_issue_comment_or_chat": true,
+    "registry_must_not_lag_completed_evidence": true
+  },
+  "binding_archive_contract": {
+    "destination": "GitHub Release",
+    "sequence": [
+      "download exact Actions artifact",
+      "verify Actions digest",
+      "publish immutable Release asset",
+      "read back Release asset",
+      "verify byte identity",
+      "commit receipt"
+    ],
+    "Google_Drive_is_not_the_canonical_archive": true
+  },
+  "current_period_boundary": {
+    "2023": "descriptive baseline and Architecture Atlas work authorized as declared in current registry",
+    "2024_H1": "historical development evidence; do not mutate existing lineage",
+    "2024_H2": "locked unless current registry explicitly authorizes",
+    "2025_H1": "known adverse gate evidence; no retuning or threshold selection",
+    "2025_H2": "locked"
+  },
+  "live_order_authorized": false
+}
