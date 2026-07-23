@@ -1,0 +1,30 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v18",
+  "status": "USDJPY_2023_FAST_M1_CORE_PACKAGE_FROZEN_READY_TO_RUN",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v17.json",
+  "period_roles": {
+    "2023": "BAR_DATA_ACQUISITION_AND_ARCHITECTURE_ATLAS_PREPARATION",
+    "2024_H1": "FAMILY_F_CONSUMED_AND_FAILED",
+    "2024_H2": "LOCKED_FOR_CLOSED_FAMILY_F",
+    "2025_H1": "NO_NEW_CANDIDATE_ACCESS",
+    "2025_H2": "LOCKED"
+  },
+  "active_family": null,
+  "current_candidate": null,
+  "active_data_contract": "configs/research/usdjpy_2023_fast_m1_acquisition_prereg_v1.json",
+  "active_core_execution_freeze": "configs/research/usdjpy_2023_fast_m1_core_execution_freeze_v1.json",
+  "core_frozen_head_commit": "fb500800344dfaf838bf60e2557d6f63971cff4b",
+  "run_authorization": {
+    "2023_M1_bid_bar_acquisition": true,
+    "2023_M15_deterministic_derivation": true,
+    "2023_architecture_atlas": false,
+    "2023_candidate_outcome_evaluation": false,
+    "tick_download": false,
+    "ask_download": false,
+    "2024_H2": false,
+    "2025": false,
+    "live_orders": false
+  },
+  "next_action": "merge Core PR 152 unchanged and execute the frozen marker-only acquisition Run",
+  "live_order_authorized": false
+}
