@@ -1,0 +1,179 @@
+{
+  "boundaries": {
+    "2024_H2_accessed": false,
+    "2025_accessed": false,
+    "candidate_evaluated": false,
+    "live_orders": false
+  },
+  "conversion": {
+    "ambiguous_rows": 0,
+    "corrected_implementation": "GMT+2/GMT+3 selected by Europe/EET-EEST boundaries",
+    "current_implementation": "GMT+2/GMT+3 selected by US DST boundaries",
+    "first_shifted_corrected_utc": "2024-03-11T01:00:00Z",
+    "last_shifted_corrected_utc": "2024-03-29T21:45:00Z",
+    "m15_rows_shifted_by_one_hour": 1400,
+    "nonexistent_rows": 0
+  },
+  "corrected_expected_metrics": {
+    "B02_opened": 96,
+    "F05_opened": 331,
+    "closed_trades": 426,
+    "flat": 2,
+    "gross_loss_jpy": 60781.0,
+    "gross_profit_jpy": 83511.0,
+    "losses": 190,
+    "net_jpy": 22730.0,
+    "opened_trades": 427,
+    "profit_factor": 1.373965548444415,
+    "wins": 234
+  },
+  "corrected_only_signals": [
+    {
+      "corrected_signal_utc": "2024-03-13 07:30:00",
+      "gross_pips": -4.3,
+      "old_signal_utc": "2024-03-13 06:30:00",
+      "realized_pl_jpy": -43.0,
+      "side": 1,
+      "signal_mt4_server": "2024-03-13 09:30:00",
+      "strategy": "B02"
+    },
+    {
+      "corrected_signal_utc": "2024-03-15 07:45:00",
+      "gross_pips": -82.8,
+      "old_signal_utc": "2024-03-15 06:45:00",
+      "realized_pl_jpy": -828.0,
+      "side": -1,
+      "signal_mt4_server": "2024-03-15 09:45:00",
+      "strategy": "B02"
+    },
+    {
+      "corrected_signal_utc": "2024-03-19 07:30:00",
+      "gross_pips": 45.0,
+      "old_signal_utc": "2024-03-19 06:30:00",
+      "realized_pl_jpy": 450.0,
+      "side": 1,
+      "signal_mt4_server": "2024-03-19 09:30:00",
+      "strategy": "B02"
+    },
+    {
+      "corrected_signal_utc": "2024-03-21 07:30:00",
+      "gross_pips": 62.4,
+      "old_signal_utc": "2024-03-21 06:30:00",
+      "realized_pl_jpy": 624.0,
+      "side": 1,
+      "signal_mt4_server": "2024-03-21 09:30:00",
+      "strategy": "B02"
+    },
+    {
+      "corrected_signal_utc": "2024-03-22 07:45:00",
+      "gross_pips": -14.9,
+      "old_signal_utc": "2024-03-22 06:45:00",
+      "realized_pl_jpy": -149.0,
+      "side": -1,
+      "signal_mt4_server": "2024-03-22 09:45:00",
+      "strategy": "B02"
+    }
+  ],
+  "current_metrics": {
+    "B02_opened": 98,
+    "F05_opened": 331,
+    "closed_trades": 428,
+    "flat": 2,
+    "gross_loss_jpy": 60403.0,
+    "gross_profit_jpy": 83200.0,
+    "losses": 191,
+    "net_jpy": 22797.0,
+    "opened_trades": 429,
+    "profit_factor": 1.3774150290548484,
+    "wins": 235
+  },
+  "delta": {
+    "B02_opened": -2,
+    "F05_opened": 0,
+    "closed_trades": -2,
+    "common_server_bar_signals": 422,
+    "corrected_only_server_bar_signals": 5,
+    "net_jpy": -67.0,
+    "old_only_server_bar_signals": 7,
+    "opened_trades": -2,
+    "profit_factor": -0.0034494806104332643
+  },
+  "next_action": "require exact Rakuten MT4 reproduction of corrected expected metrics before choosing the canonical baseline clock implementation",
+  "old_only_signals": [
+    {
+      "corrected_signal_utc": "2024-03-12 13:45:00",
+      "gross_pips": -28.6,
+      "old_signal_utc": "2024-03-12 12:45:00",
+      "realized_pl_jpy": -286.0,
+      "side": 1,
+      "signal_mt4_server": "2024-03-12 15:45:00",
+      "strategy": "B02"
+    },
+    {
+      "corrected_signal_utc": "2024-03-13 09:45:00",
+      "gross_pips": -13.0,
+      "old_signal_utc": "2024-03-13 08:45:00",
+      "realized_pl_jpy": -130.0,
+      "side": 1,
+      "signal_mt4_server": "2024-03-13 11:45:00",
+      "strategy": "B02"
+    },
+    {
+      "corrected_signal_utc": "2024-03-19 10:15:00",
+      "gross_pips": 25.9,
+      "old_signal_utc": "2024-03-19 09:15:00",
+      "realized_pl_jpy": 259.0,
+      "side": 1,
+      "signal_mt4_server": "2024-03-19 12:15:00",
+      "strategy": "B02"
+    },
+    {
+      "corrected_signal_utc": "2024-03-21 08:45:00",
+      "gross_pips": 45.8,
+      "old_signal_utc": "2024-03-21 07:45:00",
+      "realized_pl_jpy": 458.0,
+      "side": 1,
+      "signal_mt4_server": "2024-03-21 10:45:00",
+      "strategy": "B02"
+    },
+    {
+      "corrected_signal_utc": "2024-03-22 13:15:00",
+      "gross_pips": -11.7,
+      "old_signal_utc": "2024-03-22 12:15:00",
+      "realized_pl_jpy": -117.0,
+      "side": -1,
+      "signal_mt4_server": "2024-03-22 15:15:00",
+      "strategy": "B02"
+    },
+    {
+      "corrected_signal_utc": "2024-03-26 13:30:00",
+      "gross_pips": 4.6,
+      "old_signal_utc": "2024-03-26 12:30:00",
+      "realized_pl_jpy": 46.0,
+      "side": 1,
+      "signal_mt4_server": "2024-03-26 15:30:00",
+      "strategy": "B02"
+    },
+    {
+      "corrected_signal_utc": "2024-03-28 13:45:00",
+      "gross_pips": -10.9,
+      "old_signal_utc": "2024-03-28 12:45:00",
+      "realized_pl_jpy": -109.0,
+      "side": -1,
+      "signal_mt4_server": "2024-03-28 15:45:00",
+      "strategy": "B02"
+    }
+  ],
+  "reconciliation": {
+    "current_closed_trade_pips_exact_match": true,
+    "current_signal_set_exact_match": true,
+    "maximum_current_pip_difference": 0.0
+  },
+  "schema_version": "usdjpy_2024_timezone_conversion_research_audit_v1",
+  "source": {
+    "artifact_id": 8479048161,
+    "artifact_sha256": "e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+    "run_id": 29787357305
+  },
+  "status": "BEHAVIORAL_IMPACT_CONFIRMED"
+}
