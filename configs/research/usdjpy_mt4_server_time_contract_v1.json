@@ -1,0 +1,80 @@
+{
+  "schema_version": "usdjpy_mt4_server_time_contract_v1",
+  "status": "ACCEPTED_BINDING_FOUNDATIONAL_CONTRACT",
+  "purpose": "define the canonical conversion between Rakuten MT4 server timestamps and UTC for all new USDJPY baseline, architecture-atlas, candidate and validation evidence",
+  "source_facts": {
+    "rakuten_standard_server_offset": "UTC+02:00",
+    "rakuten_summer_server_offset": "UTC+03:00",
+    "server_clock_transition_evidence": "accepted 2023 native Rakuten MT4 HST maintenance-boundary audit",
+    "binding_mt4_confirmation_run_id": 29993711777,
+    "binding_mt4_receipt_issue": 180,
+    "binding_mt4_artifact_id": 8558119922,
+    "binding_mt4_artifact_zip_sha256": "03aec8194ebdfadac5c0be73050ed9b94837de6030df89624ace9bf6b5e47fe6"
+  },
+  "canonical_conversion": {
+    "standard_offset_hours": 2,
+    "summer_offset_hours": 3,
+    "summer_start": "last Sunday in March at 01:00 UTC",
+    "summer_end": "last Sunday in October at 01:00 UTC",
+    "timezone_family": "Europe/EET-EEST server-clock convention",
+    "algorithm": "construct both UTC+2 and UTC+3 candidates; require exactly one candidate to satisfy the frozen Europe/EET-EEST interval",
+    "ambiguous_local_server_timestamp_policy": "fail",
+    "nonexistent_local_server_timestamp_policy": "fail",
+    "silent_guessing_or_fallback": false
+  },
+  "separate_trading_schedule_rule": {
+    "status": "RETAINED_SEPARATELY",
+    "rule": "the pre-Asian low-liquidity hard exclusion follows Rakuten trading-hour notices and US DST schedule",
+    "reason": "trading-hour schedule and server-clock offset are different mechanisms and must not share one DST selector"
+  },
+  "accepted_2024_H1_canonical_baseline": {
+    "run_id": 29993711777,
+    "artifact_id": 8558119922,
+    "artifact_digest": "sha256:03aec8194ebdfadac5c0be73050ed9b94837de6030df89624ace9bf6b5e47fe6",
+    "opened_trades": 427,
+    "B02_opened": 96,
+    "F05_opened": 331,
+    "closed_trades": 426,
+    "net_jpy": 22730.0,
+    "profit_factor": 1.373965548444415,
+    "gross_profit_jpy": 83511.0,
+    "gross_loss_jpy": 60781.0,
+    "wins": 234,
+    "losses": 190,
+    "flat": 2,
+    "order_send_failures": 0,
+    "order_close_failures": 0,
+    "server_bar_signal_relation_to_legacy": {
+      "common": 422,
+      "legacy_only": 7,
+      "canonical_only": 5
+    }
+  },
+  "legacy_2024_H1_baseline": {
+    "run_id": 29787357305,
+    "artifact_id": 8479048161,
+    "status": "SUPERSEDED_FOR_NEW_TIMESTAMP_SESSION_AND_TRADE_KEY_EVIDENCE",
+    "opened_trades": 429,
+    "closed_trades": 428,
+    "net_jpy": 22797.0,
+    "profit_factor": 1.3774150290548484,
+    "native_mt4_result_preserved_as_historical_evidence": true
+  },
+  "historical_candidate_policy": {
+    "closed_candidate_specs_reopened": false,
+    "closed_family_decisions_reversed": false,
+    "reason": "a closed preregistered specification remains closed; the foundational correction applies prospectively to all new research",
+    "historical_timestamp_derived_datasets_allowed_for_new_selection_without_rebuild": false,
+    "required_before_cross_year_use": "rebuild session labels, trade keys, entry-state fields and dependent diagnostics under this canonical contract"
+  },
+  "period_authorization": {
+    "2023_baseline_reconstruction": true,
+    "2023_architecture_atlas_after_baseline_parity": true,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "2024_H2_access": false,
+    "2025_access": false,
+    "live_orders": false
+  },
+  "live_order_authorized": false
+}
