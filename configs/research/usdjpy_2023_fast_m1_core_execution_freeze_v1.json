@@ -1,0 +1,69 @@
+{
+  "schema_version": "usdjpy_2023_fast_m1_core_execution_freeze_v1",
+  "status": "FROZEN_BEFORE_DATA_ACQUISITION",
+  "research_acquisition_contract_commit": "0503e7ec3aa951216a2c176b9c17cf25067edc53",
+  "core_repository": "mitsuru93/usdjpyea-core",
+  "core_pull_request": 152,
+  "core_base_commit": "317b83a89e4f80fbb67aefe83c9180461aab5227",
+  "core_frozen_head_commit": "fb500800344dfaf838bf60e2557d6f63971cff4b",
+  "files": {
+    "acquisition_client": {
+      "path": "tools/acquire_usdjpy_2023_m1_v1.js",
+      "git_blob_sha1": "7e82057e3b949b9f33b25fd9c878c932d7df51e6"
+    },
+    "normalizer_aggregator": {
+      "path": "tools/normalize_usdjpy_2023_m1_to_m15_v1.py",
+      "git_blob_sha1": "03c634694c3192d15ce3d3cd3cef9b84befbd0f4"
+    },
+    "registered_workflow": {
+      "path": ".github/workflows/mt4_usdjpy_family_e_2024_parity_v1.yml",
+      "git_blob_sha1": "049ef81bd5ba5a0ccc14a3bbf307c7f6e3cf9b5c",
+      "known_workflow_id": 318119335
+    }
+  },
+  "run_transport": {
+    "marker_branch": "agent/run-usdjpy-2023-fast-m1-acquisition-v1",
+    "marker_path": "configs/run_markers/usdjpy_2023_fast_m1_acquisition_pr_v1.json",
+    "event": "pull_request",
+    "job": "acquire-usdjpy-2023-m1",
+    "artifact_name_template": "usdjpy-2023-fast-m1-bars-v1-{run_id}-{attempt}",
+    "receipt_title_template": "[receipt] USDJPY 2023 fast M1 acquisition {status} {run_id}"
+  },
+  "package_identity": {
+    "name": "dukascopy-node",
+    "version": "1.49.0",
+    "npm_dist_integrity_recorded_at_runtime": true,
+    "node_version": "22",
+    "python_version": "3.11"
+  },
+  "data_scope": {
+    "instrument": "usdjpy",
+    "start_utc_inclusive": "2023-01-01T00:00:00Z",
+    "end_utc_exclusive": "2024-01-01T00:00:00Z",
+    "timeframe": "m1",
+    "price_type": "bid",
+    "timezone": "UTC",
+    "derive_M15": true,
+    "tick_download": false,
+    "ask_download": false
+  },
+  "validation_scope": {
+    "M1_record_count_min": 300000,
+    "M1_record_count_max": 400000,
+    "strict_ascending": true,
+    "duplicates_allowed": 0,
+    "invalid_OHLC_allowed": 0,
+    "deterministic_gzip_mtime": 0,
+    "gap_inventory_required": true,
+    "incomplete_M15_retained_and_flagged": true
+  },
+  "prohibited": {
+    "signal_generation": true,
+    "candidate_outcome_evaluation": true,
+    "2024_H2_access": true,
+    "2025_access": true,
+    "live_orders": true
+  },
+  "next_action": "merge the exact Core package, open the exact marker PR, execute once, and bind the Run/artifact/data identities before any 2023 architecture analysis",
+  "live_order_authorized": false
+}
