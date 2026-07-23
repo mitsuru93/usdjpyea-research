@@ -1,0 +1,45 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v29",
+  "status": "USDJPY_FAMILY_H_PREREGISTERED_EVALUATION_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v28.json",
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "startup_read_receipt_required": true,
+    "duplicate_research_audit_required_before_new_family": true,
+    "atomic_ledger_update_required_after_test": true
+  },
+  "active_family": "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE",
+  "current_candidate": null,
+  "current_open_research_question": "USDJPY-HYP-014",
+  "accepted_2023_legacy2024_atlas": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json",
+  "recovery_capacity_diagnosis": "configs/research/usdjpy_recovery_capacity_diagnosis_result_v1.json",
+  "family_h_preregistration": "configs/research/usdjpy_family_h_persistent_structural_invalidation_prereg_v1.json",
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION",
+    "G_STRUCTURAL_BREAKOUT_INVALIDATION"
+  ],
+  "family_g_result": "configs/research/usdjpy_family_g_structural_breakout_invalidation_result_v1.json",
+  "run_authorization": {
+    "2024_H1_historical_data_mutation": false,
+    "2024_H1_historical_trade_key_rebuild": false,
+    "2023_2024_cross_year_mechanism_diagnosis": true,
+    "family_H_candidate_outcome_evaluation": true,
+    "parameter_search": "ONLY_FROZEN_6_CELL_FAMILY_H_GRID",
+    "parameter_selection": true,
+    "new_family_preregistration": false,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  },
+  "next_action": "evaluate only the frozen six-cell Family H persistent structural invalidation grid separately on 2023 legacy2024-compatible, historical 2024 H1 and historical 2024 H2 evidence; then close the family or freeze at most one exact finalist",
+  "live_order_authorized": false
+}
