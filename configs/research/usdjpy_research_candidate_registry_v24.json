@@ -1,0 +1,32 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v24",
+  "status": "USDJPY_2023_ATLAS_ACCEPTED_2024_H1_CANONICAL_FIELD_AUDIT_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v23.json",
+  "active_family": null,
+  "current_candidate": null,
+  "accepted_2023_atlas": {
+    "result": "configs/research/usdjpy_2023_architecture_atlas_result_v1.json",
+    "report": "docs/research/usdjpy_2023_architecture_atlas_result_v1.md",
+    "core_run_id": 30001786384,
+    "artifact_id": 8561286612,
+    "artifact_sha256": "9e6aa5cebccc44a51e8e0aa86fd87653d2e471446c4a92cd62d8699f4c6bf591",
+    "status": "PASS"
+  },
+  "run_authorization": {
+    "2024_H1_canonical_M15_timestamp_reconstruction": true,
+    "2024_H1_corrected_trade_key_audit": true,
+    "2024_H1_canonical_entry_field_rebuild": false,
+    "2023_2024_cross_year_comparison": false,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "parameter_search": false,
+    "parameter_selection": false,
+    "new_family_preregistration": false,
+    "2024_H2": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  },
+  "next_action": "reconstruct 2024 H1 canonical M15 UTC timestamps from the accepted legacy M15 export and verify all corrected MT4 signal and entry keys before rebuilding 2024 entry-state fields",
+  "live_order_authorized": false
+}
