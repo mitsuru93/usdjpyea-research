@@ -1,0 +1,76 @@
+name: Recover F05 public release inputs v1
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recover-public-inputs:
+    if: github.event_name == 'workflow_dispatch' || github.head_ref == 'agent/f05-failed-reclaim-input-recovery-v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enforce no-outcome boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          m = json.loads(Path('configs/research/f05_failed_reclaim_input_recovery_marker_v1.json').read_text())
+          assert m['boundaries']['outcomes_computed'] is False
+          assert m['boundaries']['2025_accessed'] is False
+          assert m['boundaries']['mt4_accessed'] is False
+          PY
+
+      - name: Read release inventories and download annual bars
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public_inputs/derived public_inputs/raw_tick_inventory
+          api='https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/tags'
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json' \
+            "$api/usdjpy-2024-derived-bars-v1" > public_inputs/derived/release.json
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json' \
+            "$api/usdjpy-2024-raw-bidask-ticks-v1" > public_inputs/raw_tick_inventory/release.json
+          jq -r '.assets[] | [.id,.name,.size,.browser_download_url] | @tsv' public_inputs/derived/release.json \
+            > public_inputs/derived/assets.tsv
+          jq -r '.assets[] | [.id,.name,.size,.browser_download_url] | @tsv' public_inputs/raw_tick_inventory/release.json \
+            > public_inputs/raw_tick_inventory/assets.tsv
+          for name in \
+            USDJPY-2024-m1-derived-bars-v1.csv.gz \
+            USDJPY-2024-m5-derived-bars-v1.csv.gz \
+            USDJPY-2024-derived-bars-v1.manifest.json \
+            SHA256SUMS; do
+            url=$(jq -r --arg n "$name" '.assets[] | select(.name==$n) | .browser_download_url' public_inputs/derived/release.json)
+            test -n "$url" -a "$url" != null
+            curl -fL --retry 3 --retry-delay 2 "$url" -o "public_inputs/derived/$name"
+          done
+          printf '%s  %s\n' \
+            f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0 public_inputs/derived/USDJPY-2024-m1-derived-bars-v1.csv.gz \
+            af04cf642171a1916abc11a77d0120e88a1f61382385e54c9a49d9107d5d7f36 public_inputs/derived/USDJPY-2024-m5-derived-bars-v1.csv.gz \
+            e2c54c8423eea10ad995bf2d0fa316c4ea7cdb197619333c357e5b323278446e public_inputs/derived/USDJPY-2024-derived-bars-v1.manifest.json \
+            > public_inputs/derived/expected_SHA256SUMS
+          sha256sum -c public_inputs/derived/expected_SHA256SUMS | tee public_inputs/derived/verification.txt
+          cat > public_inputs/boundaries.txt <<'EOF'
+          outcomes_computed=false
+          candidate_outcomes_computed=false
+          portfolio_replay_computed=false
+          2025_accessed=false
+          mt4_accessed=false
+          EOF
+
+      - name: Upload public input evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f05-failed-reclaim-public-inputs-v1
+          path: public_inputs
+          if-no-files-found: error
+          retention-days: 14
