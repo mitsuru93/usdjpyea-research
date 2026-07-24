@@ -1,0 +1,14 @@
+{
+  "schema_version": "usdjpy_b02_f05_all_loss_structural_sl_run_marker_v2",
+  "status": "ARMED_FOR_ONE_MAIN_PUSH_EVALUATION_FROM_CORE_RELEASE",
+  "protocol_commit": "9f990a5674f787fa0e4c6bb4830c7494d682090b",
+  "research_base_commit": "5674a6d5f7044b3c8109aacb518f0a1547399d4c",
+  "core_release_commit": "0fc4fb42d3ed22bdad253d65a867dfe1808dc214",
+  "core_release_tag": "usdjpy-structural-sl-source-archives-v1",
+  "population": 1882,
+  "event_count": 7,
+  "fixed_pip_stop_evaluated": false,
+  "mt4_new_execution": false,
+  "2025_accessed": false,
+  "candidate_frozen": false
+}
