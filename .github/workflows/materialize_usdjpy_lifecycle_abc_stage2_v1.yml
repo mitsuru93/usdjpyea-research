@@ -23,6 +23,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          test -s .stage2_lifecycle_abc_package_v1.tar.gz
           tar -xzf .stage2_lifecycle_abc_package_v1.tar.gz
           rm -f .stage2_lifecycle_abc_package_v1.tar.gz
           rm -f .github/workflows/materialize_usdjpy_lifecycle_abc_stage2_v1.yml
@@ -31,3 +32,4 @@ jobs:
           git add -A
           git commit -m "research: preregister B02 F05 lifecycle ABC evaluation"
           git push origin HEAD:agent/usdjpy-lifecycle-abc-prereg-v1
+# trigger-v2
