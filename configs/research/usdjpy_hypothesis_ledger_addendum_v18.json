@@ -15,17 +15,31 @@
       "causal_hypothesis": "After executable profit is established, synchronized nonpositive side-aligned four-bar momentum, MACD histogram and EMA20 distance identifies irrecoverable directional-state collapse. P2 and P1 arms are separate.",
       "decision": "Close HYP-024 before MT4 and 2025. Every cell improved its target loss class in every fold, but no cell passed the all-fold aggregate, Winner-tail, strategy, direction, quarter, month and date-removal gates; neither arm formed an eligible connected region.",
       "evidence_refs": [
-        {"path": "configs/research/usdjpy_b02_f05_hyp024_input_materialization_v2.json","repository": "mitsuru93/usdjpyea-research"},
-        {"path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json","repository": "mitsuru93/usdjpyea-research"},
-        {"path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_fold_metrics_v1.csv","repository": "mitsuru93/usdjpyea-research"},
-        {"path": "docs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.md","repository": "mitsuru93/usdjpyea-research"}
+        {
+          "path": "configs/research/usdjpy_b02_f05_hyp024_input_materialization_v2.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_fold_metrics_v1.csv",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "docs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.md",
+          "repository": "mitsuru93/usdjpyea-research"
+        }
       ],
       "falsified_or_unsupported_claims": [
         "target-class loss reduction alone robustly improves total portfolio",
         "the synchronized collapse state preserves Winner right tail across folds",
         "either arm forms a portable family region"
       ],
-      "family_ids": ["O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE"],
+      "family_ids": [
+        "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE"
+      ],
       "hypothesis_id": "USDJPY-HYP-024",
       "origin_analysis": "The Entry audit closed with zero portable local separators. P2 and P1 landmark analyses showed stronger post-entry separation; a profit-armed synchronized technical collapse family was frozen before outcomes.",
       "pre_result_predictions": [
@@ -48,8 +62,14 @@
         "future Exit research requires distinct recoverability information, not HYP-024 threshold repair"
       ],
       "status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION",
-      "successor_questions": ["Can genuinely distinct information identify irrecoverable deterioration rather than generic post-profit weakness?"],
-      "target_failure_mode": ["P2 minor-favorable then loss","P1 +10-pip giveback to loss","Winner sacrifice from premature exits"],
+      "successor_questions": [
+        "Can genuinely distinct information identify irrecoverable deterioration rather than generic post-profit weakness?"
+      ],
+      "target_failure_mode": [
+        "P2 minor-favorable then loss",
+        "P1 +10-pip giveback to loss",
+        "Winner sacrifice from premature exits"
+      ],
       "tests": [
         {
           "period": "2023H1_2023H2_2024H1_2024H2",
@@ -58,7 +78,9 @@
             "P2_family_region_components": 0,
             "all_fold_default_net_pf_candidates": [],
             "all_fold_severe_net_pf_candidates": [],
-            "all_fold_winner_tail_candidates": ["O_P2_Q3_R2"],
+            "all_fold_winner_tail_candidates": [
+              "O_P2_Q3_R2"
+            ],
             "candidate_cells": 8,
             "core_cells": 0,
             "eligible_candidates": 0,
