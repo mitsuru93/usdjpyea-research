@@ -1,0 +1,92 @@
+{
+  "boundaries": {
+    "2024_source_mutated": false,
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "outcomes_computed_before_freeze": false
+  },
+  "candidate_ids": [
+    "O_P2_Q2_R1",
+    "O_P2_Q2_R2",
+    "O_P2_Q3_R1",
+    "O_P2_Q3_R2",
+    "O_P1_Q2_R1",
+    "O_P1_Q2_R2",
+    "O_P1_Q3_R1",
+    "O_P1_Q3_R2"
+  ],
+  "causal_hypothesis": "After a trade first establishes executable profit, failure is marked by a synchronized transition of short directional momentum, MACD histogram and price-to-EMA20 distance from positive continuation state to nonpositive collapse state; the P2 and P1 mechanisms share state primitives but have different observation start events.",
+  "evaluator_identity": {
+    "path": "tools/evaluate_usdjpy_b02_f05_profit_armed_state_collapse_v1.py",
+    "sha256": "9195a97f900e5e4782000dac967389919e401a534d72150f9ff6b72463d37f30"
+  },
+  "execution": "state observed at M15 open using information available then; candidate exit at the next M15 open; baseline fixed exit retained if no trigger",
+  "family_id": "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
+  "family_region_gate": "within each arm at least two Manhattan-adjacent core cells and at least one full cell in that component; no cross-arm combination",
+  "finite_grid": {
+    "arms": ["P2", "P1"],
+    "candidate_count": 8,
+    "persistence_observations": [1, 2],
+    "quorum": [2, 3]
+  },
+  "fold_core_gates": [
+    "candidate default net > 0 and PF >= 1",
+    "candidate severe net > 0 and PF >= 1",
+    "target-class benefit > 0",
+    "at least five target-class exits",
+    "top-decile winner profit retention >= 0.90",
+    "B02 and F05 deltas nonnegative",
+    "long and short deltas nonnegative",
+    "both three-month sub-block deltas nonnegative"
+  ],
+  "fold_full_gates": [
+    "positive effect months >= 4",
+    "negative effect months <= 2",
+    "effect excluding best two exit dates > 0"
+  ],
+  "hypothesis_id": "USDJPY-HYP-024",
+  "input_identity": {
+    "states_path": "usdjpy_b02_f05_entry_exit_state_ledger_v1.csv.gz",
+    "states_sha256": "6b38aafde15da4310971a9610ec19a027c2d065bfce19c79c2492982be351149",
+    "trades_path": "usdjpy_b02_f05_source_trade_ledger_v1.csv",
+    "trades_sha256": "1f4732f429fc9b4fb4c34b8c2431ed1c4ac207e24d81dd0aac7cf893b4ce8113"
+  },
+  "observation_arms": {
+    "P1": {
+      "arm": "first executable +10-pip mark",
+      "disarm": null,
+      "first_state_observation": "next M15 open after arming",
+      "target_path": "P1_GIVEBACK_TO_LOSS"
+    },
+    "P2": {
+      "arm": "first executable marked P/L > 0 and < +10 pips",
+      "disarm": "first executable +10-pip mark before trigger",
+      "first_state_observation": "next M15 open after arming",
+      "target_path": "P2_MINOR_FAVORABLE_THEN_LOSS"
+    }
+  },
+  "prohibited": [
+    "no indicator level grid",
+    "no RSI threshold",
+    "no P/L value as exit trigger",
+    "no fixed-time-only exit",
+    "no side year session or strategy-specific primitive",
+    "no P2/P1 combined candidate",
+    "no HYP-023 repair",
+    "no 2025 access",
+    "no parameter or gate change after outcomes"
+  ],
+  "ranking_after_eligibility": [
+    "maximum minimum-fold default delta",
+    "maximum minimum-fold target-class benefit",
+    "maximum minimum top-decile winner retention"
+  ],
+  "research_question": "USDJPY-RQ-024",
+  "schema_version": "usdjpy_b02_f05_profit_armed_state_collapse_prereg_v1",
+  "state_components": {
+    "momentum": "completed/open-observable side-aligned four-M15-open momentum <= 0",
+    "oscillator": "completed/open-observable side-aligned MACD(12,26,9) histogram <= 0",
+    "structure": "completed/open-observable side-aligned price-to-EMA20 distance <= 0"
+  },
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOME_EVALUATION"
+}
