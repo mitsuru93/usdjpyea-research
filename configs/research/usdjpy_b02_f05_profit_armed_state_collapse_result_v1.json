@@ -1,0 +1,123 @@
+{
+  "boundaries": {
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "gate_changed": false,
+    "grid_expanded": false
+  },
+  "candidate_count": 8,
+  "cells": [
+    {
+      "arm": "P2",
+      "candidate_id": "O_P2_Q2_R1",
+      "core_all_folds": false,
+      "full_all_folds": false,
+      "minimum_fold_default_delta_pips": -624.1000000000408,
+      "minimum_fold_target_benefit_pips": 1281.999999999997,
+      "minimum_top_decile_winner_retention": 0.8434954954954933,
+      "persistence": 1,
+      "quorum": 2
+    },
+    {
+      "arm": "P2",
+      "candidate_id": "O_P2_Q2_R2",
+      "core_all_folds": false,
+      "full_all_folds": false,
+      "minimum_fold_default_delta_pips": -848.0000000000051,
+      "minimum_fold_target_benefit_pips": 819.0,
+      "minimum_top_decile_winner_retention": 0.8789189189189183,
+      "persistence": 2,
+      "quorum": 2
+    },
+    {
+      "arm": "P2",
+      "candidate_id": "O_P2_Q3_R1",
+      "core_all_folds": false,
+      "full_all_folds": false,
+      "minimum_fold_default_delta_pips": -815.0000000000645,
+      "minimum_fold_target_benefit_pips": 656.3000000000017,
+      "minimum_top_decile_winner_retention": 0.8736216216216207,
+      "persistence": 1,
+      "quorum": 3
+    },
+    {
+      "arm": "P2",
+      "candidate_id": "O_P2_Q3_R2",
+      "core_all_folds": false,
+      "full_all_folds": false,
+      "minimum_fold_default_delta_pips": -609.2000000000036,
+      "minimum_fold_target_benefit_pips": 403.20000000000107,
+      "minimum_top_decile_winner_retention": 0.9023063063063055,
+      "persistence": 2,
+      "quorum": 3
+    },
+    {
+      "arm": "P1",
+      "candidate_id": "O_P1_Q2_R1",
+      "core_all_folds": false,
+      "full_all_folds": false,
+      "minimum_fold_default_delta_pips": -2156.1000000000877,
+      "minimum_fold_target_benefit_pips": 1630.3000000000043,
+      "minimum_top_decile_winner_retention": 0.48361432506887164,
+      "persistence": 1,
+      "quorum": 2
+    },
+    {
+      "arm": "P1",
+      "candidate_id": "O_P1_Q2_R2",
+      "core_all_folds": false,
+      "full_all_folds": false,
+      "minimum_fold_default_delta_pips": -1414.300000000079,
+      "minimum_fold_target_benefit_pips": 1164.999999999991,
+      "minimum_top_decile_winner_retention": 0.528186238396932,
+      "persistence": 2,
+      "quorum": 2
+    },
+    {
+      "arm": "P1",
+      "candidate_id": "O_P1_Q3_R1",
+      "core_all_folds": false,
+      "full_all_folds": false,
+      "minimum_fold_default_delta_pips": -1591.50000000007,
+      "minimum_fold_target_benefit_pips": 1300.1999999999916,
+      "minimum_top_decile_winner_retention": 0.8164137321349645,
+      "persistence": 1,
+      "quorum": 3
+    },
+    {
+      "arm": "P1",
+      "candidate_id": "O_P1_Q3_R2",
+      "core_all_folds": false,
+      "full_all_folds": false,
+      "minimum_fold_default_delta_pips": -1458.3000000000586,
+      "minimum_fold_target_benefit_pips": 753.0999999999899,
+      "minimum_top_decile_winner_retention": 0.8713873873873869,
+      "persistence": 2,
+      "quorum": 3
+    }
+  ],
+  "core_cells": 0,
+  "eligible_candidates": [],
+  "family_regions": [
+    {
+      "arm": "P2",
+      "components": [],
+      "eligible_candidates": []
+    },
+    {
+      "arm": "P1",
+      "components": [],
+      "eligible_candidates": []
+    }
+  ],
+  "finalist": null,
+  "full_cells": 0,
+  "output_sha256": {
+    "usdjpy_b02_f05_profit_armed_state_collapse_cell_summary_v1.csv": "377351570bd5634b5071e524814884d449a0dd1b812c3e26dddc2e3a10e19acd",
+    "usdjpy_b02_f05_profit_armed_state_collapse_fold_metrics_v1.csv": "e9ab61b6a751fcc6c54d0d1e9ad5c55282fb5536104f1a8793c6e67f4477c044",
+    "usdjpy_b02_f05_profit_armed_state_collapse_preflight_v1.json": "403a87f3fd05e4d6f130bcdeb24917ad2395b644561ab9e1fe4febcfe089d25e",
+    "usdjpy_b02_f05_profit_armed_state_collapse_trades_v1.csv.gz": "988bf0a38694f16731681e1e323b7531828ecbdc07fbcad43f8b81092ab179ed"
+  },
+  "schema_version": "usdjpy_b02_f05_profit_armed_state_collapse_result_v1",
+  "status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION"
+}
