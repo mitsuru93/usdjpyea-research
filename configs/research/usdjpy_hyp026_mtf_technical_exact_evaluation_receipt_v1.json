@@ -1,0 +1,47 @@
+{
+  "schema_version": "usdjpy_hyp026_mtf_technical_exact_evaluation_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-026",
+  "status": "COMPLETE_WITH_PROCESS_DISCLOSURE",
+  "research_main_base": "37833fe29cb5cfa13bcfb1e6896e0dcb584aa926",
+  "core_observed_latest_search": "0fc4fb42d3ed22bdad253d65a867dfe1808dc214",
+  "outcome_free_preregistration_branch_commit": "7e50b58ef1ea9d178d389959b114d75e10100f01",
+  "robustness_addendum_branch_commit": "ec2c7a55e1a51a8a1e7dc3a8550b553cf2d1d22c",
+  "process_disclosure": "Preregistration was committed before outcomes on a research branch, but was not merged to main before local execution. The negative closure is canonicalized as an independent audit and cannot authorize a binding candidate.",
+  "execution": {
+    "unique_trades": 1882,
+    "feature_rows": 8129,
+    "timeframes": ["M1", "M5", "M15", "M30", "H1"],
+    "technical_features_per_timeframe": 42,
+    "folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "bootstrap_replicates": 2000,
+    "portfolio_replay_completed": false,
+    "MT4_accessed": false,
+    "2025H1_accessed": false,
+    "2025H2_accessed": false
+  },
+  "source_identity": {
+    "2023_m1": {"rows": 371128, "sha256": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e"},
+    "2024_m1": {"rows": 373383, "sha256": "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0"},
+    "common_m1_ledger": {"rows": 1882, "sha256": "c8b3cef29945367adc2f5ec88e16f45c0a909af9e51b3fe5b106b5643fab7ded"}
+  },
+  "output_sha256": {
+    "closure_json": "8fbbf6786447ebde52898d72d31c2ad61584f9a24dd163de02151a435d077585",
+    "closure_markdown": "705f79d07c8daf1023e66011180c11890dbeb63fd1e2bda1bf4260f019ddb2bf",
+    "primary_result": "65b46c1be999f617a24a072bbc240ecbc3ad91fc03608fd9744db30155e56ff2",
+    "primary_gates": "b7e60d1a5231821435c833859e1d1fd41d63230b1a1fbe84c96e7bdee8fee153",
+    "robustness_result": "b6b591c094e3cc4ba816e7118ddee4e85259f933d8f3ce023b6d7604592f9002",
+    "bootstrap": "099b42a92c02287f0c836739b77a2ed1057a2e5449e378aeef9687300b960b41",
+    "robustness_metrics": "dc3df59f8efac69b828e65b4fb7512214fc7cb830b9e072e47e7c897c15d5a20",
+    "fixed_ledger_counterfactual": "5ebfa29420681e3b8ce97082f0cbf5e4825e2835784b8b5ab122acda08eedca1",
+    "primary_evaluator": "9ebef1668f05e3033c626db57fb58df9366d737a1b6890d6452d6ae1f18ad0c7",
+    "robustness_evaluator": "e8a16fe785f19d6e79407fd32a8b5ae72be2dff2474f2ec624a64918a9651341"
+  },
+  "bundle": {
+    "filename": "usdjpy_hyp026_mtf_technical_audit_bundle_v1.zip",
+    "bytes": 14865276,
+    "sha256": "b244229322e794385e2a2301719dcf6fb3daf47636ef92adc8233e88ed5a555f",
+    "github_release_published": false,
+    "reason": "current connector does not expose binary Release upload; exact bundle handed off from active execution environment"
+  },
+  "binding_decision": "CLOSED_NO_ECONOMICALLY_VALID_INCREMENTAL_TECHNICAL_RULE"
+}
