@@ -1,0 +1,42 @@
+{
+  "schema_version":"usdjpy_2023_2024_hypothesis_program_v8",
+  "status":"HYP024_CLOSED_FAIL_NO_AUTHORIZED_SUCCESSOR",
+  "supersedes":"configs/research/usdjpy_2023_2024_hypothesis_program_v7.json",
+  "objective":"Use 2023H1, 2023H2, 2024H1 and 2024H2 as development/falsification folds to freeze at most one exact specification for an unchanged 2025 H1 Rakuten MT4 gate without selecting from 2025.",
+  "active_hypothesis":null,
+  "active_family":null,
+  "active_grid":null,
+  "current_candidate":null,
+  "completed":{
+    "B02_F05_factor_analysis":"PASS_EXACT_REPORT_SHA_CANONICALIZED",
+    "B02_F05_entry_exit_independent_reproduction":"PASS_DATA_FEATURE_STAT_IDENTITY_WITH_INDEPENDENT_MODEL_VARIATION",
+    "Entry_information_audit":"PASS_NO_LOOKAHEAD",
+    "Entry_local_technical_family":"CLOSED_ZERO_PORTABLE_FACTORS",
+    "common_full_OHLC_indicator_feasibility":"REJECT_MIXED_LINEAGE",
+    "HYP023_exact_six_cell_evaluation":"CLOSED_ZERO_CORE_ZERO_FULL_ZERO_ELIGIBLE_REGION",
+    "HYP024_input_rematerialization":"PASS_1882_TRADES_68955_STATE_ROWS_OUTCOMES_FALSE",
+    "HYP024_exact_eight_cell_evaluation":"CLOSED_ZERO_CORE_ZERO_FULL_ZERO_ELIGIBLE_REGION"
+  },
+  "result_identity":{
+    "result":"configs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json",
+    "decision":"configs/research/usdjpy_b02_f05_profit_armed_state_collapse_decision_v1.json",
+    "report":"docs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.md",
+    "output_manifest":"configs/research/usdjpy_b02_f05_profit_armed_state_collapse_output_manifest_v1.json",
+    "candidate_count":8,
+    "core_cells":0,
+    "full_cells":0,
+    "eligible_candidates":[],
+    "finalist":null
+  },
+  "boundaries":{"2025_H1":false,"2025_H2":false,"MT4_parity":false,"live_orders":false},
+  "prohibited":[
+    "no HYP-024 quorum or persistence repair",
+    "no indicator component threshold or arm changes",
+    "no P2/P1 candidate combination",
+    "no selection from aggregate target-class benefit or one favorable fold",
+    "no MT4 or 2025 access for HYP-024",
+    "no gate change after outcomes"
+  ],
+  "decision":"Close HYP-024 before MT4 and 2025. All eight cells reduce their target loss class in every fold, but none passes every fold core gate because total net, Winner-tail, strategy, direction, quarter and breadth effects are not portable.",
+  "exact_next_action":"No scientific execution is authorized. Preserve HYP-024 as CLOSED_FAIL and keep MT4 and 2025 H1/H2 locked. A separate analysis thread may formulate at most one genuinely distinct successor only after full duplicate audit and explicit registry authorization."
+}
