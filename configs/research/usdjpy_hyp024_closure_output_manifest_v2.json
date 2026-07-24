@@ -1,0 +1,35 @@
+{
+  "derived_untracked_output": {
+    "path": "usdjpy_b02_f05_profit_armed_state_collapse_trades_v1.csv.gz",
+    "reason": "deterministically reproducible from committed evaluator, protocol and frozen v2 input identities",
+    "repository_tracked": false,
+    "sha256": "b1bbb71464167096d7549124e433c3c881160a63b9ab3dcade22cf42184a59ac"
+  },
+  "schema_version": "usdjpy_hyp024_closure_output_manifest_v2",
+  "source_inputs": {
+    "evaluator_path": "tools/evaluate_usdjpy_b02_f05_profit_armed_state_collapse_v1.py",
+    "evaluator_sha256": "9195a97f900e5e4782000dac967389919e401a534d72150f9ff6b72463d37f30",
+    "input_builder_git_blob_sha1": "06518eff9441720cada1795fe10288f7ed42e06f",
+    "input_builder_path": "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py",
+    "input_materialization_path": "configs/research/usdjpy_b02_f05_hyp024_input_materialization_v2.json",
+    "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+    "preregistration_path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_prereg_v1.json",
+    "preregistration_sha256": "390fe646b904a07e3bd29394edabfc1a26ea311a9e0311aafd85118bbc5a69b7",
+    "source_trade_ledger_path": "usdjpy_b02_f05_source_trade_ledger_v2.csv",
+    "source_trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "state_ledger_path": "usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz",
+    "state_ledger_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda"
+  },
+  "status": "COMPLETE",
+  "tracked_outputs": {
+    "usdjpy_2023_2024_hypothesis_program_v8.json": "7aaa2a57582bbac40f94fad439f5078ed9fc06d5004a8c3d669d3259f3c90181",
+    "usdjpy_b02_f05_profit_armed_state_collapse_cell_summary_v1.csv": "d2685777dcaed983cf883b23ea5f1989fd3ee2fc900da48c6fdaf8c29b092ec0",
+    "usdjpy_b02_f05_profit_armed_state_collapse_fold_metrics_v1.csv": "0de58364762569e657bd7b916a1f842c3b58fb4f844110de82446beed62d8198",
+    "usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json": "1109508a8edc28ab6f61fc24f8570154a58bfbe522387c4c88842fc0e17f7be9",
+    "usdjpy_b02_f05_profit_armed_state_collapse_result_v1.md": "d7cf150311d9bc9c836752ad950cfecfc9934562fa2573d587b81463115dc038",
+    "usdjpy_hyp024_exact_evaluation_receipt_v2.json": "1bfcf0cd261837b3b68d810490c8d4495716d2edd3abfe90f601975f4ec6e40e",
+    "usdjpy_hyp024_period_access_receipt_v2.json": "a78a1ceec8904d61ca93cb77946ac252552f8b3fc57c03f48df2c1382ca9f9c0",
+    "usdjpy_hypothesis_ledger_addendum_v18.json": "847c6b0ef643c5dcf85476691740cc2712f1242b71fa8402583ca8820f833548",
+    "usdjpy_research_candidate_registry_v44.json": "8c250ce3ef2bc5355d9a61afa5232981ce9ef42e46b29b3e4d856f5dc7270abe"
+  }
+}

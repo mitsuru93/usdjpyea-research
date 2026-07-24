@@ -1,0 +1,121 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "candidate_ids": [
+        "O_P2_Q2_R1",
+        "O_P2_Q2_R2",
+        "O_P2_Q3_R1",
+        "O_P2_Q3_R2",
+        "O_P1_Q2_R1",
+        "O_P1_Q2_R2",
+        "O_P1_Q3_R1",
+        "O_P1_Q3_R2"
+      ],
+      "causal_hypothesis": "After executable profit is established, synchronized nonpositive side-aligned four-bar momentum, MACD histogram and EMA20 distance identifies irrecoverable directional-state collapse. P2 and P1 arms are separate.",
+      "decision": "Close HYP-024 before MT4 and 2025. Every cell improved its target loss class in every fold, but no cell passed the all-fold aggregate, Winner-tail, strategy, direction, quarter, month and date-removal gates; neither arm formed an eligible connected region.",
+      "evidence_refs": [
+        {
+          "path": "configs/research/usdjpy_b02_f05_hyp024_input_materialization_v2.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_fold_metrics_v1.csv",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "docs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.md",
+          "repository": "mitsuru93/usdjpyea-research"
+        }
+      ],
+      "falsified_or_unsupported_claims": [
+        "target-class loss reduction alone robustly improves total portfolio",
+        "the synchronized collapse state preserves Winner right tail across folds",
+        "either arm forms a portable family region"
+      ],
+      "family_ids": [
+        "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE"
+      ],
+      "hypothesis_id": "USDJPY-HYP-024-RESULT-001",
+      "origin_analysis": "The Entry audit closed with zero portable local separators. P2 and P1 landmark analyses showed stronger post-entry separation; a profit-armed synchronized technical collapse family was frozen before outcomes.",
+      "pre_result_predictions": [
+        "at least one arm contains two adjacent core cells",
+        "at least one cell passes full breadth and date-removal gates",
+        "target-class benefit positive in every fold",
+        "top-decile Winner retention at least 90%",
+        "B02 F05 long short deltas nonnegative in every fold"
+      ],
+      "prohibited_reuse": [
+        "no HYP-024 threshold quorum persistence component or arm repair",
+        "no P2/P1 combination",
+        "no side year session strategy exceptions",
+        "no MT4 or 2025 selection"
+      ],
+      "retained_findings": [
+        "all 32 rows had positive target-class benefit and at least five target exits",
+        "P1 sacrificed materially more Winner profit than P2",
+        "O_P2_Q3_R2 alone retained at least 90% of top-decile Winner profit in all folds but failed stability and breadth",
+        "future Exit research requires distinct recoverability information, not HYP-024 threshold repair"
+      ],
+      "status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION",
+      "successor_questions": [
+        "Can genuinely distinct information identify irrecoverable deterioration rather than generic post-profit weakness?"
+      ],
+      "target_failure_mode": [
+        "P2 minor-favorable then loss",
+        "P1 +10-pip giveback to loss",
+        "Winner sacrifice from premature exits"
+      ],
+      "tests": [
+        {
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "result": {
+            "P1_family_region_components": 0,
+            "P2_family_region_components": 0,
+            "all_fold_default_net_pf_candidates": [],
+            "all_fold_severe_net_pf_candidates": [],
+            "all_fold_winner_tail_candidates": [
+              "O_P2_Q3_R2"
+            ],
+            "candidate_cells": 8,
+            "core_cells": 0,
+            "eligible_candidates": 0,
+            "fold_rows": 32,
+            "full_cells": 0,
+            "target_benefit_positive_rows": 32,
+            "target_changed_ge_5_rows": 32
+          },
+          "result_path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json",
+          "type": "exact frozen eight-cell four-fold Research evaluation on v2 inputs"
+        }
+      ]
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v12.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v13.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v14.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v15.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v16.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v17.json"
+  ],
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v18",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v17.json"
+}
