@@ -1,0 +1,126 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "candidate_ids": [
+        "O_P2_Q2_R1",
+        "O_P2_Q2_R2",
+        "O_P2_Q3_R1",
+        "O_P2_Q3_R2",
+        "O_P1_Q2_R1",
+        "O_P1_Q2_R2",
+        "O_P1_Q3_R1",
+        "O_P1_Q3_R2"
+      ],
+      "causal_hypothesis": "After executable profit is established, simultaneous nonpositive side-aligned four-M15-open momentum, MACD histogram and price-to-EMA20 distance should identify P2/P1 failure early enough to improve target losses while preserving Winner tail and breadth across four folds.",
+      "decision": "Close HYP-024 and Family O. No candidate, MT4 parity or 2025 gate is authorized.",
+      "evidence_refs": [
+        {
+          "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json",
+          "repository": "mitsuru93/usdjpyea-research",
+          "sha256": "869eb7651757dd1e54763f753626128335c8391f1b20f5b5a7d6506e0167f569"
+        },
+        {
+          "path": "docs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.md",
+          "repository": "mitsuru93/usdjpyea-research",
+          "sha256": "c5aae52c5c0faabc2d38376ece833f30ac645d737adbd431c0203a49d3fc548f"
+        },
+        {
+          "path": "configs/research/usdjpy_hyp024_exact_evaluation_receipt_v1.json",
+          "repository": "mitsuru93/usdjpyea-research",
+          "sha256": "c960b396ffc08af3a634d392bfe38f196d9a6907413e769a38c5f2f6095efc2e"
+        },
+        {
+          "path": "configs/research/usdjpy_hyp024_period_access_receipt_v2.json",
+          "repository": "mitsuru93/usdjpyea-research",
+          "sha256": "66b1044508c9bc5c05d1546a858afe51a309519b81cdc65f0e067d1c683bffda"
+        }
+      ],
+      "falsified_or_unsupported_claims": [
+        "target-class improvement is specific enough to preserve portfolio Winner tail",
+        "one common finite state-collapse rule is portable across B02/F05, both directions and all sub-periods",
+        "P2 and P1 may be rescued by choosing an isolated cell or combining arms after outcomes"
+      ],
+      "family_ids": [
+        "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE"
+      ],
+      "hypothesis_id": "USDJPY-HYP-024-RESULT-001",
+      "origin_analysis": "The accepted B02/F05 population separated P3 Entry failure from P2 early failure and P1 giveback. P3 local Entry technical factors were already closed; HYP-024 froze a finite post-profit state-collapse Exit family before outcomes.",
+      "pre_result_predictions": [
+        "P2 and P1 target-class benefit positive in every fold",
+        "top-decile Winner retention at least 0.90 in every fold",
+        "B02/F05 and long/short deltas nonnegative in every fold",
+        "both quarter deltas nonnegative in every fold",
+        "at least one within-arm adjacent core component with a full cell"
+      ],
+      "prohibited_reuse": [
+        "do not repair HYP-024 by changing indicator thresholds, components, arms, quorum, persistence or gates",
+        "do not combine P2 and P1 candidates after outcomes",
+        "do not use isolated target-class benefit to justify MT4 or 2025",
+        "do not access 2025 or run MT4 without a future separately authorized Research finalist"
+      ],
+      "retained_findings": [
+        "the state-collapse primitives consistently identify deterioration in P2 and P1 target losses",
+        "the same primitives also fire during ordinary Winner pullbacks",
+        "P2 Q3/R2 preserves top-decile Winner profit in all folds but still fails total delta and breadth",
+        "P1 has severe Winner-tail sacrifice and zero quarter-breadth passes across 16 fold-cells"
+      ],
+      "status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION",
+      "successor_questions": [
+        "Can a genuinely distinct mechanism distinguish ordinary Winner pullback from terminal directional-state collapse without using HYP-024 threshold refinements?"
+      ],
+      "target_failure_mode": [
+        "P2 minor-favorable-then-loss",
+        "P1 +10-pip giveback-to-loss"
+      ],
+      "tests": [
+        {
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "result": {
+            "P1_direction_breadth_pass_fold_cells": "5/16",
+            "P1_quarter_breadth_pass_fold_cells": "0/16",
+            "P1_strategy_breadth_pass_fold_cells": "3/16",
+            "P1_target_benefit_pass_fold_cells": "16/16",
+            "P1_winner_tail_pass_fold_cells": "2/16",
+            "P2_direction_breadth_pass_fold_cells": "4/16",
+            "P2_quarter_breadth_pass_fold_cells": "4/16",
+            "P2_strategy_breadth_pass_fold_cells": "4/16",
+            "P2_target_benefit_pass_fold_cells": "16/16",
+            "P2_winner_tail_pass_fold_cells": "12/16",
+            "candidate_count": 8,
+            "core_cells": 0,
+            "eligible_candidates": [],
+            "finalist": null,
+            "full_cells": 0,
+            "status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION"
+          },
+          "result_path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json",
+          "type": "exact preregistered eight-cell evaluation"
+        }
+      ]
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v12.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v13.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v14.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v15.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v16.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v17.json"
+  ],
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v18",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v17.json"
+}
