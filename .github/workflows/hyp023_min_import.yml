@@ -6,6 +6,12 @@ on:
     paths:
       - '.hyp023_min_payload/**'
       - '.github/workflows/hyp023_min_import.yml'
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.hyp023_min_payload/**'
+      - '.github/workflows/hyp023_min_import.yml'
 
 permissions:
   contents: write
