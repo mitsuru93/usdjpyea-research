@@ -1,0 +1,10 @@
+{
+  "decision": "Do not open an additional OHLC indicator Entry family. Close local technical Entry research.",
+  "finding": "The accepted four-fold common authority provides exact M15 executable opens across all periods, but the accepted 2024H2 source used for this analysis does not provide a canonical full M15 OHLC series.",
+  "prohibited": [
+    "do not backfill 2024H2 high/low from a different lineage",
+    "do not compute ATR ADX Stochastic CCI wick body CLV or true-range expansion across mixed sources"
+  ],
+  "schema_version": "usdjpy_b02_f05_common_ohlc_indicator_feasibility_v1",
+  "status": "NO_COMMON_ACCEPTED_FULL_OHLC_LINEAGE"
+}
