@@ -1,0 +1,64 @@
+{
+  "2023_lineage": {
+    "duplicate_timestamp_count": 0,
+    "id": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+    "shifted_m15_rows": 1543,
+    "spread_contract_pips": 0.5
+  },
+  "2024_releases": {
+    "derived_bar_tag": "usdjpy-2024-derived-bars-v1",
+    "h1_rows": 6250,
+    "h4_rows": 1616,
+    "m15_rows": 24999,
+    "m1_rows": 373383,
+    "m30_rows": 12500,
+    "m5_rows": 74975,
+    "mt4_tick_tag": "usdjpy-2024-mt4-tick-import-v1",
+    "raw_tick_tag": "usdjpy-2024-raw-bidask-ticks-v1",
+    "tick_rows": 40969081
+  },
+  "2025_accessed_for_this_protocol": false,
+  "analysis_bundle": {
+    "expected_sha256": "4c691f63685710c08389c82639518bbf4de82b91d33e7108c81d8e057cbae354",
+    "located": false,
+    "name": "B02_F05_2024_release_tick_fourfold_analysis_bundle_v1.zip",
+    "scientific_substitution": false,
+    "sha256_verified": false
+  },
+  "analysis_report": {
+    "expected_sha256": "8dd10ab65bf8be3b885c5adf526f3dbecf73ecddd6d7063dd8949e92c860190b",
+    "name": "B02_F05_2024_release_tick_fourfold_analysis_v1.md",
+    "raw_sha256_verified": true
+  },
+  "core_main_at_freeze": "b31405cd4c5380a376655ba240ccb100e230e775",
+  "expected_population": {
+    "2023H1|B02": 121,
+    "2023H1|F05": 367,
+    "2023H2|B02": 109,
+    "2023H2|F05": 363,
+    "2024H1|B02": 97,
+    "2024H1|F05": 331,
+    "2024H2|B02": 102,
+    "2024H2|F05": 392,
+    "total": 1882
+  },
+  "expected_stage1_sha256": {
+    "audit": "67174c87ab421df6d52fe378e9358e93d44258ccf250c4f2aae29e12ce217cdc",
+    "common_to_tick_migration": "d2a535fb20c386692f803b9e5a9552d2bedceb98184d97b6a94c2883dc85a9c0",
+    "old_to_common_migration": "f5b9c7478d8b90329e920c9aca5251f3092ecf8e007c65f2ea772c1ae925b36a",
+    "path_ledger": "c4025d59eef9358fce9df70d50972159d52ff8aa02ebaa851e7fa0273082b82f"
+  },
+  "research_main_at_freeze": "9569c23f63616fa67a8565e45b53b063d4d73a52",
+  "schema_version": "usdjpy_b02_f05_lifecycle_abc_data_contract_v1",
+  "stage1_inputs": {
+    "audit": "configs/research/usdjpy_b02_f05_stage1_source_class_audit_v1.json",
+    "common_to_tick_migration": "configs/research/usdjpy_b02_f05_stage1_common_m1_to_exact_tick_migration_v1.csv",
+    "old_to_common_migration": "configs/research/usdjpy_b02_f05_stage1_old_m15_to_common_m1_migration_v1.csv",
+    "path_ledger": {
+      "archive": ".stage2_lifecycle_abc_package_v1.tar.gz",
+      "materialized_runtime_path": "configs/research/usdjpy_b02_f05_stage1_path_class_ledger_v1.csv.gz",
+      "member": "configs/research/usdjpy_b02_f05_stage1_path_class_ledger_v1.csv.gz"
+    }
+  },
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOMES"
+}
