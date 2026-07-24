@@ -1,0 +1,28 @@
+{
+  "authority": {
+    "artifact_id": 8430064217,
+    "run_id": 29646040010,
+    "summary_sha256": "fa46a5db3e73c4d25b8e8c97ef4727c39d737cc8823080b23d21b0419d9e44f6"
+  },
+  "checks": {
+    "default_net_exact": true,
+    "default_pf_exact": true,
+    "ex_best_two_dates_exact": true,
+    "positive_months_exact": true,
+    "rows_660": true,
+    "severe_net_exact": true,
+    "severe_pf_exact": true,
+    "trade_count_exact": true
+  },
+  "decision": "ACCEPT_STAGE2_EXECUTION_ENGINE_FOR_FOURFOLD_CENSUS",
+  "maximum_absolute_differences": {
+    "default_net_pips": 1.3642420526593924e-12,
+    "default_profit_factor": 0.0,
+    "ex_best_two_dates_default_pips": 1.3642420526593924e-12,
+    "severe_net_pips": 1.3642420526593924e-12,
+    "severe_profit_factor": 0.0
+  },
+  "schema_version": "usdjpy_full_frozen_architecture_census_2024h1_regression_v1",
+  "stage2_rows": 660,
+  "status": "PASS_EXACT"
+}
