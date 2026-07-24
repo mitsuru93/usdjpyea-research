@@ -1,0 +1,51 @@
+{
+  "schema_version": "f05_failed_reclaim_semantic_resolution_v1",
+  "status": "FROZEN_BEFORE_SCIENTIFIC_OUTCOME_EXECUTION",
+  "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+  "non_binding_sensitivity": "F05_FAILED_RECLAIM_WEAK_QUICK_V1",
+  "exact_source": {
+    "report_path": "docs/research/F05_structural_SL_event_sequence_v1.md",
+    "report_sha256": "489a2484be135209fd731951990e508b67d6ff11cd2aeff3a4fbac23dffdfad5",
+    "bundle_base64_path": "configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64",
+    "bundle_decoded_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d",
+    "manifest_path": "configs/research/f05_failed_reclaim_event_sequence_v1/manifest.json",
+    "manifest_sha256": "648282bed25cb5cf93fed7c16a0878f55565146849adfb6e3d92d3e47ff0e668"
+  },
+  "exploration_reproduction_adapter": {
+    "purpose": "byte-identified reproduction gate only",
+    "same_timestamp_m5_allowed": true,
+    "selection": "first M5 completion greater than or equal to the reclaim M1 close",
+    "expected_stopped_trades": 14,
+    "expected_total_delta_pips": 202.1,
+    "expected_long_delta_pips": 65.2,
+    "expected_short_delta_pips": 136.9,
+    "binding_for_portfolio": false,
+    "finalist_eligible": false
+  },
+  "binding_adapter": {
+    "purpose": "direct user instruction and binding portfolio validation",
+    "same_timestamp_m5_forbidden": true,
+    "selection": "first M5 completion strictly later than the reclaim M1 close",
+    "pre_raw_expected_stopped_trades": 15,
+    "pre_raw_expected_total_delta_pips": 200.6,
+    "direct_only_trade_key": "F05|2023-06-08T15:45:00Z|-1",
+    "raw_tick_rule": "2024 positive executable P/L at any tick before failure confirmation permanently disarms; candidate exit uses first executable tick at or after the next-M1 time",
+    "binding_for_portfolio": true
+  },
+  "resolution": {
+    "technical_mismatch_closed": true,
+    "reason": "The recovered exact exploration bundle identifies the historical 14-trade calculation. The direct instruction independently and explicitly forbids same-time M5 completion. The two layers are retained without modifying either definition.",
+    "outcome_driven_definition_change": false,
+    "exploration_result_used_as_binding_substitute": false,
+    "candidate_definition_changed": false,
+    "threshold_changed": false,
+    "gate_changed": false
+  },
+  "boundaries": {
+    "new_hypothesis_id_created": false,
+    "notion_task_dependency": false,
+    "mt4_accessed": false,
+    "2025H1_accessed": false,
+    "2025H2_accessed": false
+  }
+}
