@@ -1,0 +1,46 @@
+{
+  "artifact": {
+    "digest": "sha256:167064e9a599a83171cb6cc825609911cf7b804d0b9adec6a5750eab06b32369",
+    "expires_at": "2026-10-22T15:46:02Z",
+    "id": 8602116809
+  },
+  "boundaries": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "candidate_frozen": false,
+    "closed_hypotheses_reopened": false,
+    "fixed_pip_stop_evaluated": false,
+    "full_admission_portfolio_replay_computed": false,
+    "implementation_authorized": false,
+    "mt4_accessed": false,
+    "notion_task_dependency": false,
+    "raw_tick_event_order_for_new_candidates": false
+  },
+  "direct_user_scope": "broaden structural-stop validation using diverse patterns, situations and methods",
+  "frozen_package_parent_commit": "7da40aa50674b7784f1293dc1521ba2c69d0af9f",
+  "independent_reproduction": {
+    "difference_allowed": ["research_commit", "workflow_run_id", "workflow_run_attempt"],
+    "status": "PASS_SEMANTIC_EXACT"
+  },
+  "population": {"baseline_losers": 916, "trades": 1882},
+  "release_tag": "usdjpy-b02-f05-structural-sl-atlas-v2",
+  "research_execution_commit": "37833fe29cb5cfa13bcfb1e6896e0dcb584aa926",
+  "result_status": "ATLAS_COMPLETE_NO_ROBUST_FAMILY",
+  "schema_version": "usdjpy_b02_f05_structural_sl_atlas_execution_receipt_v2",
+  "search": {"deterministic_candidates": 303, "event_rows": 354304, "families": 12, "supervised_models": 4},
+  "source_sha256": {
+    "events_2024h1": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "events_2024h2": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "m15_2023": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "m1_2023": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e",
+    "m1_2024": "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0"
+  },
+  "status": "PASS_CANONICAL_RESULT_READY",
+  "technical_history": [
+    {"run_id": 30106402889, "stage": "PR preflight", "status": "SUCCESS_NO_OUTCOMES"},
+    {"run_id": 30106687299, "stage": "binding atlas", "status": "SUCCESS"}
+  ],
+  "workflow": ".github/workflows/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.yml",
+  "workflow_run_attempt": 1,
+  "workflow_run_id": 30106687299
+}

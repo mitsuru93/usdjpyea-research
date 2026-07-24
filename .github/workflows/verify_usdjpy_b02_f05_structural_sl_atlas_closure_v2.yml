@@ -1,0 +1,48 @@
+name: Verify USDJPY B02 F05 Structural SL Atlas Closure v2
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - '.github/workflows/verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.yml'
+      - 'configs/research/usdjpy_b02_f05_structural_sl_atlas_canonical_result_v2.json'
+      - 'configs/research/usdjpy_b02_f05_structural_sl_atlas_execution_receipt_v2.json'
+      - 'configs/research/usdjpy_b02_f05_structural_sl_atlas_canonical_manifest_v2.json'
+      - 'docs/research/USDJPY_B02_F05_structural_SL_atlas_v2.md'
+      - 'tools/verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.py'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_b02_f05_structural_sl_atlas_canonical_result_v2.json'
+      - 'configs/research/usdjpy_b02_f05_structural_sl_atlas_execution_receipt_v2.json'
+      - 'configs/research/usdjpy_b02_f05_structural_sl_atlas_canonical_manifest_v2.json'
+      - 'docs/research/USDJPY_B02_F05_structural_SL_atlas_v2.md'
+      - 'tools/verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.py'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify canonical atlas closure
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.py
+          python tools/verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.py | tee structural_sl_atlas_closure_verification_v2.json
+          jq -e '.status=="PASS_CANONICAL_CLOSURE" and .trade_count==1882 and .baseline_loser_count==916 and .deterministic_candidates==303 and .event_rows==354304 and .exact_discovery_eligible==0 and .nested_cv_promising_total==0 and .candidate_frozen==false and .implementation_authorized==false and .mt4_accessed==false and ."2025_accessed"==false' structural_sl_atlas_closure_verification_v2.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: usdjpy-b02-f05-structural-sl-atlas-closure-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          path: structural_sl_atlas_closure_verification_v2.json
+          if-no-files-found: warn
+          retention-days: 90
