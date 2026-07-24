@@ -1,0 +1,12 @@
+entity_id,entity_type,default_net_pips,severe_net_pips,default_min_half,severe_min_half,trades,eligible
+R1H04_ramom_32_64_z125,strategy,51.2,-590.8,-554.8,-858.8,321,False
+R1F05_donchian_96,strategy,524.9,-923.1,-1063.7,-1789.7,724,False
+R1B02_legacy_asia_00_07_breakout,strategy,-1226.0,-1686.0,-1418.8,-1660.8,230,False
+R1E02_legacy_trend_8h_resumption,strategy,-1047.5,-2401.5,-756.1,-1460.1,677,False
+R1E03_trend_12h_resumption,strategy,-256.8,-2992.8,-1280.8,-2638.8,1368,False
+PORT_LOO_EXCL_R1E03_trend_12h_resumption,portfolio,-1697.4,-5601.4,-3793.4,-5769.4,1952,False
+PORT_LOO_EXCL_R1E02_legacy_trend_8h_resumption,portfolio,-906.7,-6192.7,-4318.1,-6948.1,2643,False
+PORT_LOO_EXCL_R1B02_legacy_asia_00_07_breakout,portfolio,-728.2,-6908.2,-3655.4,-6747.4,3090,False
+PORT_LOO_EXCL_R1F05_donchian_96,portfolio,-2479.1,-7671.1,-4010.5,-6618.5,2596,False
+PORT_LOO_EXCL_R1H04_ramom_32_64_z125,portfolio,-2005.4,-8003.4,-4519.4,-7549.4,2999,False
+PORT_EQ5,portfolio,-1954.2,-8594.2,-5074.2,-8408.2,3320,False
