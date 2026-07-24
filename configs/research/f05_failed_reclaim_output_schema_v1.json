@@ -1,38 +1,53 @@
 {
   "schema_version": "f05_failed_reclaim_output_schema_v1",
-  "status": "FROZEN_BEFORE_BINDING_TECHNICAL_EXECUTION",
+  "status": "FROZEN_BEFORE_SCIENTIFIC_OUTCOME_EXECUTION",
   "required_preflight_outputs": [
-    "f05_failed_reclaim_preflight_v1.json"
+    "preflight_result_v1.json",
+    "F05_structural_SL_event_sequence_bundle_v1.zip",
+    "bundle_members/manifest.json"
   ],
   "required_binding_outputs": [
-    "f05_failed_reclaim_preflight_v1.json",
-    "f05_failed_reclaim_exploration_reproduction_ledger_v1.csv",
-    "f05_failed_reclaim_direct_spec_ledger_v1.csv",
-    "f05_failed_reclaim_identity_diff_v1.csv",
-    "f05_failed_reclaim_technical_validation_result_v1.json",
-    "f05_failed_reclaim_execution_identity_receipt_v1.json",
-    "f05_failed_reclaim_output_manifest_v1.json"
-  ],
-  "technical_stop_statuses": [
-    "TECHNICAL_MISMATCH_STOP"
+    "preflight_result_v1.json",
+    "exploration_reproduction_ledger_v1.csv",
+    "binding_direct_event_ledger_v1.csv",
+    "non_binding_weak_quick_event_ledger_v1.csv",
+    "raw_tick_event_order_audit_v1.csv",
+    "portfolio_trade_ledger_v1.csv",
+    "baseline_balance_curve_v1.csv",
+    "candidate_balance_curve_v1.csv",
+    "baseline_exposure_all_v1.csv",
+    "candidate_exposure_all_v1.csv",
+    "baseline_margin_admission_v1.csv",
+    "candidate_margin_admission_v1.csv",
+    "result_v1.json",
+    "output_manifest_v1.json"
   ],
   "scientific_result_statuses": [
-    "PASS",
-    "FAIL"
+    "PASS_RESEARCH_HISTORICAL_GATES",
+    "FAIL_RESEARCH_HISTORICAL_GATES"
   ],
-  "technical_stop_rules": {
-    "original_bundle_missing": "record blocker; do not represent reconstructed files as the original bundle",
-    "exploration_reproduction_mismatch": "stop before portfolio replay",
-    "direct_spec_identity_mismatch": "stop before portfolio replay",
-    "source_sha_mismatch": "hard error before any reproduction"
+  "binding_result_source": "accepted-signal full portfolio replay after exact exploration reproduction and exact 2024 raw-tick event-order audit",
+  "non_binding_sensitivity": {
+    "candidate_id": "F05_FAILED_RECLAIM_WEAK_QUICK_V1",
+    "reported": true,
+    "binding": false,
+    "selection_use": false,
+    "mt4_unlock_use": false,
+    "2025_unlock_use": false
   },
-  "locked_boundaries_on_technical_stop": {
-    "scientific_outcomes_interpreted": false,
-    "historical_gates_evaluated": false,
-    "portfolio_replay_computed": false,
-    "non_binding_sensitivity_computed": false,
-    "mt4_accessed": false,
-    "2025H1_accessed": false,
-    "2025H2_accessed": false
+  "hard_error_rules": {
+    "source_sha_mismatch": "stop before reproduction",
+    "exploration_reproduction_mismatch": "stop before binding portfolio replay",
+    "direct_pre_raw_identity_mismatch": "stop before raw-tick audit",
+    "missing_raw_tick_hour": "stop without substitution",
+    "raw_tick_chronology_mismatch": "Research tick-event-order gate fails",
+    "population_or_signal_admission_mismatch": "stop without candidate repair"
+  },
+  "locked_boundaries": {
+    "mt4_before_all_research_gates": false,
+    "2025H1_before_research_and_mt4_parity": false,
+    "2025H2_access": false,
+    "new_candidate_or_hypothesis": false,
+    "post_outcome_threshold_or_gate_change": false
   }
 }
