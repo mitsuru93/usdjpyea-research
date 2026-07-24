@@ -1,0 +1,43 @@
+{
+  "common": {
+    "B02_delta_min": 0.0,
+    "F05_delta_min": 0.0,
+    "each_three_month_subblock_delta_min": 0.0,
+    "ex_best_two_positive_dates_delta_strictly_positive": true,
+    "leave_one_month_out_delta_min": 0.0,
+    "long_delta_min": 0.0,
+    "negative_effect_months_max": 2,
+    "portfolio_default_net_delta_min": 0.0,
+    "portfolio_pf_delta_min": 0.0,
+    "portfolio_severe_net_delta_min": 0.0,
+    "positive_effect_months_min": 4,
+    "short_delta_min": 0.0,
+    "single_date_dependency_forbidden": true,
+    "winner_top10_profit_retention_min": 0.9,
+    "winner_top5_profit_retention_min": 0.85
+  },
+  "comparison_tolerance_pips": 1e-09,
+  "evaluation_unit": "candidate x fold; all four folds must pass; strategy/direction/sub-block checks are within each fold",
+  "not_applicable_rule": "A stage-specific target gate with zero baseline target-class observations in a fold is recorded N/A and passes vacuously; all common portfolio gates still apply.",
+  "schema_version": "usdjpy_b02_f05_lifecycle_abc_gate_contract_v1",
+  "selection": "candidate passes only if every fold row passes; no aggregate rescue and no best-cell repair",
+  "stage_a": {
+    "p3_candidate_negative_count_strictly_lower": true,
+    "p3_gross_loss_strictly_lower": true,
+    "p3_loss_share_strictly_lower": true,
+    "report_delayed_missed_winner": true,
+    "report_p1_removed_or_missed": true
+  },
+  "stage_b": {
+    "p2_gross_loss_strictly_lower": true,
+    "report_p1_premature_exit": true,
+    "winner_loss_must_not_exceed_p2_benefit": true
+  },
+  "stage_c": {
+    "normal_winner_mass_cut_proxy": "winner top-10 and top-5 retention gates",
+    "p1_giveback_gross_loss_strictly_lower": true,
+    "pre_peak_trigger_count_must_equal": 0,
+    "winner_tail_common_gates_binding": true
+  },
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOMES"
+}
