@@ -13,6 +13,13 @@ import pandas as pd
 EXPECTED_M1_2024_SHA = "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0"
 CORRUPT_STAGE1_ARCHIVE_SHA = "ae450cd712c8e1533081b0bd609f736c2216e3e4a9cfaece8d19ac7ffd5addd8"
 EXPECTED_STAGE1_LEDGER_SHA = "c4025d59eef9358fce9df70d50972159d52ff8aa02ebaa851e7fa0273082b82f"
+EXPECTED_COLUMNS = [
+    "time",
+    "bid_open", "bid_high", "bid_low", "bid_close",
+    "ask_open", "ask_high", "ask_low", "ask_close",
+    "mid_open", "mid_high", "mid_low", "mid_close",
+    "tick_count", "spread_open", "spread_mean", "spread_max",
+]
 
 def sha(path: Path) -> str:
     h=hashlib.sha256()
@@ -31,10 +38,9 @@ def main() -> int:
     actual=sha(a.m1_2024)
     if actual!=EXPECTED_M1_2024_SHA: raise SystemExit(f'2024 M1 SHA mismatch: {actual}')
     m1=pd.read_csv(a.m1_2024)
+    if list(m1.columns)!=EXPECTED_COLUMNS: raise SystemExit(f'2024 M1 columns={list(m1.columns)}')
     if len(m1)!=373383: raise SystemExit(f'2024 M1 rows={len(m1)}')
-    candidates=[c for c in ('timestamp_utc','timestamp','utc_time') if c in m1.columns]
-    if len(candidates)!=1: raise SystemExit(f'timestamp candidates={candidates}')
-    tcol=candidates[0]; mts=pd.to_datetime(m1[tcol],utc=True)
+    tcol='time'; mts=pd.to_datetime(m1[tcol],utc=True)
     if mts.duplicated().any() or not mts.is_monotonic_increasing: raise SystemExit('2024 M1 time integrity')
     target=a.output_dir/a.m1_2024.name; shutil.copy2(a.m1_2024,target)
     result={
