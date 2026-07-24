@@ -1,0 +1,36 @@
+{
+  "boundaries": {
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "gate_changed": false,
+    "grid_expanded": false
+  },
+  "candidate_count": 8,
+  "cells": [
+    {"arm":"P2","candidate_id":"O_P2_Q2_R1","core_all_folds":false,"full_all_folds":false,"minimum_fold_default_delta_pips":-614.0000000000032,"minimum_fold_target_benefit_pips":1281.999999999997,"minimum_top_decile_winner_retention":0.8434954954954933,"persistence":1,"quorum":2},
+    {"arm":"P2","candidate_id":"O_P2_Q2_R2","core_all_folds":false,"full_all_folds":false,"minimum_fold_default_delta_pips":-844.2000000000069,"minimum_fold_target_benefit_pips":819.0,"minimum_top_decile_winner_retention":0.8789189189189183,"persistence":2,"quorum":2},
+    {"arm":"P2","candidate_id":"O_P2_Q3_R1","core_all_folds":false,"full_all_folds":false,"minimum_fold_default_delta_pips":-792.9000000000244,"minimum_fold_target_benefit_pips":656.3000000000017,"minimum_top_decile_winner_retention":0.8736216216216207,"persistence":1,"quorum":3},
+    {"arm":"P2","candidate_id":"O_P2_Q3_R2","core_all_folds":false,"full_all_folds":false,"minimum_fold_default_delta_pips":-609.2000000000036,"minimum_fold_target_benefit_pips":403.20000000000107,"minimum_top_decile_winner_retention":0.9023063063063055,"persistence":2,"quorum":3},
+    {"arm":"P1","candidate_id":"O_P1_Q2_R1","core_all_folds":false,"full_all_folds":false,"minimum_fold_default_delta_pips":-2118.7000000000116,"minimum_fold_target_benefit_pips":1649.700000000016,"minimum_top_decile_winner_retention":0.48361432506887164,"persistence":1,"quorum":2},
+    {"arm":"P1","candidate_id":"O_P1_Q2_R2","core_all_folds":false,"full_all_folds":false,"minimum_fold_default_delta_pips":-1430.5000000000207,"minimum_fold_target_benefit_pips":1181.6000000000033,"minimum_top_decile_winner_retention":0.528186238396932,"persistence":2,"quorum":2},
+    {"arm":"P1","candidate_id":"O_P1_Q3_R1","core_all_folds":false,"full_all_folds":false,"minimum_fold_default_delta_pips":-1591.5000000000045,"minimum_fold_target_benefit_pips":1313.4000000000021,"minimum_top_decile_winner_retention":0.8164137321349645,"persistence":1,"quorum":3},
+    {"arm":"P1","candidate_id":"O_P1_Q3_R2","core_all_folds":false,"full_all_folds":false,"minimum_fold_default_delta_pips":-1462.900000000002,"minimum_fold_target_benefit_pips":763.4000000000007,"minimum_top_decile_winner_retention":0.8713873873873869,"persistence":2,"quorum":3}
+  ],
+  "core_cells": 0,
+  "eligible_candidates": [],
+  "family_regions": [
+    {"arm":"P2","components":[],"eligible_candidates":[]},
+    {"arm":"P1","components":[],"eligible_candidates":[]}
+  ],
+  "finalist": null,
+  "full_cells": 0,
+  "output_sha256": {
+    "stdout.json":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "usdjpy_b02_f05_profit_armed_state_collapse_cell_summary_v1.csv":"d2685777dcaed983cf883b23ea5f1989fd3ee2fc900da48c6fdaf8c29b092ec0",
+    "usdjpy_b02_f05_profit_armed_state_collapse_fold_metrics_v1.csv":"0de58364762569e657bd7b916a1f842c3b58fb4f844110de82446beed62d8198",
+    "usdjpy_b02_f05_profit_armed_state_collapse_preflight_v1.json":"e216c79c626a894de53aeb4939bf153f1c1d8437dfcf33a7b95d7db41877158a",
+    "usdjpy_b02_f05_profit_armed_state_collapse_trades_v1.csv.gz":"b1bbb71464167096d7549124e433c3c881160a63b9ab3dcade22cf42184a59ac"
+  },
+  "schema_version":"usdjpy_b02_f05_profit_armed_state_collapse_result_v1",
+  "status":"CLOSED_NO_ELIGIBLE_FAMILY_REGION"
+}
