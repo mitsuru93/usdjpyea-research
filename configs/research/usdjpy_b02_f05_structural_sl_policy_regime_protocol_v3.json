@@ -42,50 +42,122 @@
   },
   "methods": {
     "approximate_optimal_stopping": {
-      "decision_margins_pips": [0.0, 1.0, 2.0],
-      "features": ["current_norm", "mfe_norm", "mae_norm", "giveback_norm", "level_distance_norm", "underwater_fraction", "crossings", "slope_tstat", "delta_norm", "time_fraction", "pre_range_pips", "side", "session"],
+      "decision_margins_pips": [
+        0.0,
+        1.0,
+        2.0
+      ],
+      "features": [
+        "current_norm",
+        "mfe_norm",
+        "mae_norm",
+        "giveback_norm",
+        "level_distance_norm",
+        "underwater_fraction",
+        "crossings",
+        "slope_tstat",
+        "delta_norm",
+        "time_fraction",
+        "pre_range_pips",
+        "side",
+        "session"
+      ],
       "maximum_horizon_minutes": 240,
-      "models": ["RIDGE_ALPHA10", "HIST_GB_REGULARIZED"],
+      "models": [
+        "RIDGE_ALPHA10",
+        "HIST_GB_REGULARIZED"
+      ],
       "outer_validation": "leave-one-fold-out",
-      "persistence": [1, 2],
+      "persistence": [
+        1,
+        2
+      ],
       "state_interval_minutes": 5,
-      "strategies": ["B02", "F05"],
+      "strategies": [
+        "B02",
+        "F05"
+      ],
       "training_exit_cost_pips": 1.0
     },
     "ex_ante_regime_router": {
       "outer_validation": "leave-one-fold-out",
-      "routers": ["SESSION_X_VOL", "SIDE_X_VOL", "SESSION_X_SIDE_X_VOL"],
-      "scopes": ["ALL", "B02", "F05"],
+      "routers": [
+        "SESSION_X_VOL",
+        "SIDE_X_VOL",
+        "SESSION_X_SIDE_X_VOL"
+      ],
+      "scopes": [
+        "ALL",
+        "B02",
+        "F05"
+      ],
       "selection": "one training-only atlas candidate per sufficiently supported regime cell",
       "volatility_bins": "training-fold pre-range terciles applied unchanged to holdout"
     },
     "family_vote": {
       "family_selection": "one training-only candidate per structural family",
       "outer_validation": "leave-one-fold-out",
-      "quorum": [2, 3],
-      "scopes": ["ALL", "B02", "F05"],
-      "windows_minutes": [5, 15, 30]
+      "quorum": [
+        2,
+        3
+      ],
+      "scopes": [
+        "ALL",
+        "B02",
+        "F05"
+      ],
+      "windows_minutes": [
+        5,
+        15,
+        30
+      ]
     },
     "hidden_markov_state": {
-      "components": [2, 3, 4],
+      "components": [
+        2,
+        3,
+        4
+      ],
       "covariance": "diag",
       "estimator": "diagonal Gaussian mixture emissions plus training-sequence Markov transitions and Viterbi decoding",
       "maximum_horizon_minutes": 240,
       "outer_validation": "leave-one-fold-out",
-      "persistence": [1, 2],
+      "persistence": [
+        1,
+        2
+      ],
       "state_interval_minutes": 5,
       "state_mapping": "training-only severe-delta and winner-damage gate",
-      "strategies": ["B02", "F05"]
+      "strategies": [
+        "B02",
+        "F05"
+      ]
     },
     "monthly_walk_forward": {
       "minimum_training_months": 6,
-      "scopes": ["ALL", "B02", "F05"],
+      "scopes": [
+        "ALL",
+        "B02",
+        "F05"
+      ],
       "selection": "one atlas candidate selected using past months only; no future fold or month information",
-      "training_windows": ["EXPANDING", "ROLLING_6M", "ROLLING_12M"]
+      "training_windows": [
+        "EXPANDING",
+        "ROLLING_6M",
+        "ROLLING_12M"
+      ]
     },
     "oracle_bounds": {
       "atlas_candidate_oracle": true,
-      "fixed_checkpoint_benchmarks_minutes": [5, 15, 30, 60, 120, 180, 240],
+      "fixed_checkpoint_benchmarks_minutes": [
+        5,
+        15,
+        30,
+        60,
+        120,
+        180,
+        240
+      ],
       "grid": "every completed 5-minute checkpoint through 240 minutes",
       "lookahead_use": "diagnostic upper bound only; never deployable",
       "loss_only_oracle": true,
@@ -93,8 +165,16 @@
     }
   },
   "population": {
-    "folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
-    "strategies": ["B02", "F05"],
+    "folds": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ],
+    "strategies": [
+      "B02",
+      "F05"
+    ],
     "trade_count": 1882
   },
   "schema_version": "usdjpy_b02_f05_structural_sl_policy_regime_protocol_v3",
