@@ -1,0 +1,36 @@
+{
+  "comparisons": [
+    {
+      "distinction": "prior native H4/H1 Entry state transition; new protocol uses post-Entry M1/M5/M15 lifecycle structure",
+      "overlap": "none material",
+      "prior": "HYP-023 / Family N"
+    },
+    {
+      "distinction": "prior synchronized momentum/MACD/EMA collapse; new protocol excludes those indicators and freezes breakout establishment, continuation and peak-relative geometry",
+      "overlap": "P2/P1 loss targets only",
+      "prior": "HYP-024 / Family O"
+    },
+    {
+      "distinction": "new Stage A includes delayed confirmation and establishment quorum; Stage B is profit-armed early continuation; Stage C requires +10 arm, peak-relative 50% geometry and no-update state; exact 20-cell grid is direct user specification",
+      "overlap": "breakout level re-entry concept",
+      "prior": "Family G structural invalidation"
+    },
+    {
+      "distinction": "new protocol relabels exact/common paths, uses strategy-specific timing, three frozen positive establishment primitives, delayed-entry arms, portfolio replay and strict winner-tail gates",
+      "overlap": "early exit timing",
+      "prior": "generic first-M5 abort"
+    }
+  ],
+  "decision": "new family is eligible for outcome-free preregistration; this audit does not authorize outcomes until protocol/evaluator/preflight are merged to main",
+  "new_family": "P_LIFECYCLE_PRICE_STRUCTURE_TRANSITIONS",
+  "outcomes_computed": false,
+  "prohibited_reuse": [
+    "HYP-023",
+    "HYP-024",
+    "momentum/MACD/EMA collapse",
+    "post-outcome threshold repair",
+    "closed-family combinations"
+  ],
+  "schema_version": "usdjpy_b02_f05_lifecycle_abc_duplicate_audit_v1",
+  "status": "PASS_DISTINCT_DIRECT_USER_SPECIFICATION"
+}
