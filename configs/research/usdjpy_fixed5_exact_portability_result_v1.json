@@ -1,0 +1,93 @@
+{
+  "authorized_successor": "USDJPY-RQ-020B",
+  "boundaries": {
+    "2024_source_mutated": false,
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "live_orders": false,
+    "parameters_changed": false,
+    "weights_optimized": false
+  },
+  "closed_questions": ["USDJPY-RQ-020A", "USDJPY-RQ-020D"],
+  "decision": "CLOSE_RQ_020A_AND_RQ_020D; AUTHORIZE_RQ_020B_LONG_HORIZON_REGIME_DIAGNOSIS",
+  "eligible_count": 0,
+  "evaluator_identity": {
+    "branch": "agent/rq020-fixed5-exact-portability-v1",
+    "evaluator_commit": "16324da6755e36c35ac8c14098ef520788f61fb3",
+    "evaluator_git_blob_sha1": "849c9fa1eabf9caeddad4e26ad2746eaee78cd87",
+    "library_commit": "677cb0528ecd507d80ff78eba71f66b31859dfaa",
+    "library_git_blob_sha1": "bac4ebc928b726b9b64e8ef47dc4d637157f4770",
+    "protocol_commit": "c55c137677762f95a628e467b9fe592225ebd6c1"
+  },
+  "fixed_cohort": [
+    "R1B02_legacy_asia_00_07_breakout",
+    "R1E02_legacy_trend_8h_resumption",
+    "R1E03_trend_12h_resumption",
+    "R1F05_donchian_96",
+    "R1H04_ramom_32_64_z125"
+  ],
+  "gate_rows": [
+    {"default_min_half": -554.8, "default_net_pips": 51.2, "eligible": false, "entity_id": "R1H04_ramom_32_64_z125", "entity_type": "strategy", "severe_min_half": -858.8, "severe_net_pips": -590.8, "trades": 321},
+    {"default_min_half": -1063.7, "default_net_pips": 524.9, "eligible": false, "entity_id": "R1F05_donchian_96", "entity_type": "strategy", "severe_min_half": -1789.7, "severe_net_pips": -923.1, "trades": 724},
+    {"default_min_half": -1418.8, "default_net_pips": -1226.0, "eligible": false, "entity_id": "R1B02_legacy_asia_00_07_breakout", "entity_type": "strategy", "severe_min_half": -1660.8, "severe_net_pips": -1686.0, "trades": 230},
+    {"default_min_half": -756.1, "default_net_pips": -1047.5, "eligible": false, "entity_id": "R1E02_legacy_trend_8h_resumption", "entity_type": "strategy", "severe_min_half": -1460.1, "severe_net_pips": -2401.5, "trades": 677},
+    {"default_min_half": -1280.8, "default_net_pips": -256.8, "eligible": false, "entity_id": "R1E03_trend_12h_resumption", "entity_type": "strategy", "severe_min_half": -2638.8, "severe_net_pips": -2992.8, "trades": 1368},
+    {"default_min_half": -3793.4, "default_net_pips": -1697.4, "eligible": false, "entity_id": "PORT_LOO_EXCL_R1E03_trend_12h_resumption", "entity_type": "portfolio", "severe_min_half": -5769.4, "severe_net_pips": -5601.4, "trades": 1952},
+    {"default_min_half": -4318.1, "default_net_pips": -906.7, "eligible": false, "entity_id": "PORT_LOO_EXCL_R1E02_legacy_trend_8h_resumption", "entity_type": "portfolio", "severe_min_half": -6948.1, "severe_net_pips": -6192.7, "trades": 2643},
+    {"default_min_half": -3655.4, "default_net_pips": -728.2, "eligible": false, "entity_id": "PORT_LOO_EXCL_R1B02_legacy_asia_00_07_breakout", "entity_type": "portfolio", "severe_min_half": -6747.4, "severe_net_pips": -6908.2, "trades": 3090},
+    {"default_min_half": -4010.5, "default_net_pips": -2479.1, "eligible": false, "entity_id": "PORT_LOO_EXCL_R1F05_donchian_96", "entity_type": "portfolio", "severe_min_half": -6618.5, "severe_net_pips": -7671.1, "trades": 2596},
+    {"default_min_half": -4519.4, "default_net_pips": -2005.4, "eligible": false, "entity_id": "PORT_LOO_EXCL_R1H04_ramom_32_64_z125", "entity_type": "portfolio", "severe_min_half": -7549.4, "severe_net_pips": -8003.4, "trades": 2999},
+    {"default_min_half": -5074.2, "default_net_pips": -1954.2, "eligible": false, "entity_id": "PORT_EQ5", "entity_type": "portfolio", "severe_min_half": -8408.2, "severe_net_pips": -8594.2, "trades": 3320}
+  ],
+  "identity_gates": {
+    "2024_H1_H2_fixed_five_signal_and_trade_regression_all_pass": true,
+    "canonical_2023_B02_F05_ledger": {"exact_keys": true, "numeric": true, "passed": true, "rows": 964},
+    "historical_2024_compatible_2023_baseline": {"B02": 230, "B02_net_jpy": -12459.0, "F05": 731, "F05_net_jpy": 3180.0, "closed": 960, "net_jpy": -9279.0, "opened": 961}
+  },
+  "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "portability_gate": {
+    "all_requirements_passed_by_any_entity": false,
+    "eligible_entity_count": 0,
+    "requirements": [
+      "2023 full-year default net positive",
+      "2023 full-year severe net positive",
+      "both 2023 half-years default nonnegative",
+      "both 2023 half-years severe nonnegative"
+    ]
+  },
+  "predeclared_portfolios": [
+    "PORT_EQ5",
+    "PORT_LOO_EXCL_R1B02_legacy_asia_00_07_breakout",
+    "PORT_LOO_EXCL_R1E02_legacy_trend_8h_resumption",
+    "PORT_LOO_EXCL_R1E03_trend_12h_resumption",
+    "PORT_LOO_EXCL_R1F05_donchian_96",
+    "PORT_LOO_EXCL_R1H04_ramom_32_64_z125"
+  ],
+  "retained_findings": [
+    "F05 and H04 are positive over full-year 2023 under default cost but negative under severe cost and negative in 2023 H1.",
+    "Every individual fixed strategy fails at least the severe-cost and half-year stability gates.",
+    "Every equal-weight five or leave-one-out static portfolio is negative over full-year 2023 under both default and severe costs.",
+    "The frozen 2024 strategy universe does not statically transport to the accepted 2023 lineage.",
+    "Static diversification cannot solve the 2023 deficit without outcome-derived weighting."
+  ],
+  "schema_version": "usdjpy_fixed5_exact_portability_result_v1",
+  "scientific_run_output_sha256": {
+    "usdjpy_2023_legacy2024_historical_baseline_ledger_v1.csv": "c2ed307080f9d75625f3a691a9861afed381b12beb2ec9f4e7912198a67794c1",
+    "usdjpy_fixed5_2023_portability_gate_v1.csv": "24f86341a698ab7a3f330b7cdd4475991a521f3e7cd198c614fda63e2ae76427",
+    "usdjpy_fixed5_2023_trades_v1.csv": "4544142a7e75c9aacf9a425f8afa4dabc6a76363dea949d0a518b6b018864b3b",
+    "usdjpy_fixed5_2024_signal_regression_v1.csv": "235d2cdf93ece9bf9cff61ca1303b0e6847dc7fcb009cfe0648b993e0f9bb0d6",
+    "usdjpy_fixed5_2024_trade_regression_v1.csv": "9a4fe459e34a1e98f4023f9f5556f3a41da8245d6df31d474b34653afbf02b37",
+    "usdjpy_fixed5_exact_portability_result_v1.json": "8826b4b7a4df9bbf7f07624d7ca64c35a5f7aa82e0a182a347c06b75f9c2b51e",
+    "usdjpy_fixed5_fourfold_portfolio_metrics_v1.csv": "fe960a58c1b2a41aacf53692cce4d1238a8cf98f9fdd6bb543e6debb1c3db89e",
+    "usdjpy_fixed5_fourfold_strategy_metrics_v1.csv": "f78a2b72eacda7f633e865088c9bb868d55a7235d9104add5cf0cc5c5c2861a7"
+  },
+  "status": "CLOSED_NO_PORTABLE_STRATEGY_OR_PREDECLARED_PORTFOLIO",
+  "successor_scope": "descriptive pre-entry 5-day/20-day market-state diagnosis across 2023H1, 2023H2, 2024H1 and 2024H2; no router candidate yet",
+  "transform": {"duplicates": 0, "monotonic": true, "rows": 24825, "shifted_rows": 1543},
+  "transform_discovery": {
+    "accepted_source_column": "first_timestamp_mt4_server",
+    "conversion": "historical EA ServerToUtc: UTC+2 winter, UTC+3 US-DST",
+    "prior_provisional_shifted_rows": 1428,
+    "prior_provisional_status": "TECHNICAL_INCOMPLETE_NOT_SCIENTIFIC"
+  }
+}
