@@ -1,0 +1,58 @@
+name: Dispatch USDJPY Structural SL Policy Regime v3
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_structural_sl_policy_regime_v3_dispatch.json'
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Dispatch exact frozen policy audit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.yml \
+            --repo "$GITHUB_REPOSITORY" --ref main \
+            -f confirmation=RUN_STRUCTURAL_SL_POLICY_REGIME_V3
+          run_id=''
+          for _ in $(seq 1 90); do
+            run_id=$(gh run list --repo "$GITHUB_REPOSITORY" \
+              --workflow evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.yml \
+              --event workflow_dispatch --branch main --limit 30 \
+              --json databaseId,headSha,createdAt \
+              --jq '.[] | select(.headSha=="'"$GITHUB_SHA"'") | .databaseId' | head -n1)
+            [[ -n "$run_id" ]] && break
+            sleep 2
+          done
+          [[ -n "$run_id" ]]
+          cat > dispatch_receipt.md <<EOF
+          workflow: evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.yml
+          confirmation: RUN_STRUCTURAL_SL_POLICY_REGIME_V3
+          source_event: one-shot same-repository dispatcher
+          dispatched_event: workflow_dispatch
+          dispatcher_main_sha: $GITHUB_SHA
+          frozen_package_parent_sha: b28afd4b16e5f98b3de62713c60e9552c866a64f
+          run_id: $run_id
+          run_url: https://github.com/$GITHUB_REPOSITORY/actions/runs/$run_id
+          policy_cells: 72
+          outcomes_computed_before_dispatch: false
+          full_admission_portfolio_replay_before_dispatch: false
+          MT4_accessed_before_dispatch: false
+          2025_accessed_before_dispatch: false
+          candidate_frozen_before_dispatch: false
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "[structural-sl-policy-regime-v3-dispatch] $run_id" \
+            --body-file dispatch_receipt.md
+          echo "run_id=$run_id" >> "$GITHUB_STEP_SUMMARY"
