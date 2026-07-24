@@ -1,0 +1,50 @@
+ if stage=='A':
+  base_n=int(((t.common_m1_class=='P3')&(t.baseline_default_pips<0)).sum()); cand_n=int(((t.common_m1_class=='P3')&(t.candidate_default_pips<0)&t.candidate_entered).sum())
+  bl=target_loss(t,'P3','baseline_default_pips'); cl=target_loss(t,'P3','candidate_default_pips'); all_bl=float(-t.loc[t.baseline_default_pips<0,'baseline_default_pips'].sum()); all_cl=float(-t.loc[t.candidate_default_pips<0,'candidate_default_pips'].sum()); bshare=bl/all_bl if all_bl else 0.; cshare=cl/all_cl if all_cl else 0.
+  na=base_n==0
+  stage_checks={'p3_count':True if na else cand_n<base_n,'p3_loss':True if na else cl+tol<bl,'p3_share':True if na else cshare+tol<bshare}
+  stage_detail={'target_NA':na,'p3_baseline_negative_count':base_n,'p3_candidate_negative_count':cand_n,'p3_baseline_gross_loss_pips':bl,'p3_candidate_gross_loss_pips':cl,'p3_baseline_loss_share':bshare,'p3_candidate_loss_share':cshare,'p1_triggered_or_missed':int(((t.common_m1_class=='P1')&t.candidate_triggered).sum()),'winner_missed':int(((t.common_m1_class=='WINNER')&(~t.candidate_entered)).sum())}
+ elif stage=='B':
+  bl=target_loss(t,'P2','baseline_default_pips'); cl=target_loss(t,'P2','candidate_default_pips'); benefit=float(t.loc[t.common_m1_class=='P2','default_delta_pips'].sum()); winner_loss=float(-min(0.0,t.loc[t.common_m1_class=='WINNER','default_delta_pips'].sum()))
+  stage_checks={'p2_loss':cl+tol<bl,'winner_vs_benefit':winner_loss<=benefit+tol}
+  stage_detail={'p2_baseline_gross_loss_pips':bl,'p2_candidate_gross_loss_pips':cl,'p2_benefit_pips':benefit,'winner_loss_pips':winner_loss,'p1_premature_exits':int(((t.common_m1_class=='P1')&t.candidate_triggered).sum())}
+ else:
+  bl=target_loss(t,'P1','baseline_default_pips'); cl=target_loss(t,'P1','candidate_default_pips'); pre=int(t.pre_peak_trigger.fillna(False).sum())
+  stage_checks={'p1_loss':cl+tol<bl,'pre_peak':pre==0}
+  stage_detail={'p1_baseline_gross_loss_pips':bl,'p1_candidate_gross_loss_pips':cl,'p1_benefit_pips':float(t.loc[t.common_m1_class=='P1','default_delta_pips'].sum()),'pre_peak_trigger_count':pre,'winner_triggered':int(((t.common_m1_class=='WINNER')&t.candidate_triggered).sum())}
+ return {'candidate_id':cid,'stage':stage,'fold':fold,'baseline_default':bp,'candidate_default':cp,'baseline_severe':bs,'candidate_severe':cs,'default_delta_pips':delta,'severe_delta_pips':sdelta,'trigger_stress_delta_pips':float(g.trigger_stress_delta_pips.sum()),'strategy_delta_pips':strat,'direction_delta_pips':direction,'three_month_delta_pips':sub,'positive_months':int((month>tol).sum()),'negative_months':int((month<-tol).sum()),'ex_best_two_dates_delta_pips':delta-float(posdate.head(2).sum()),'leave_one_month_out_min_delta_pips':min(leave,default=delta),'top10_winner_profit_retention':top10,'top10_count':n10,'top5_winner_profit_retention':top5,'top5_count':n5,'common_gate_checks':common_checks,'stage_gate_checks':stage_checks,'common_pass':all(common_checks.values()),'stage_pass':all(stage_checks.values()),'fold_pass':all(common_checks.values()) and all(stage_checks.values()),**stage_detail}
+
+def htf_audit(effects,markets):
+ rows=[]
+ for r in effects[effects.candidate_triggered.astype(bool)&effects.candidate_entered.astype(bool)].itertuples():
+  m=markets[r.fold]; side=int(r.side); decision=pd.Timestamp(r.decision_time) if pd.notna(r.decision_time) else pd.Timestamp(r.candidate_exit_time)
+  for n in [30,60]:
+   bars=m.bars[n]; z=bars[bars.info_time<=decision].tail(2)
+   if len(z)<2:continue
+   prev=z.iloc[-2]; cur=z.iloc[-1]
+   prim=[side*(float(cur.bid_close)-float(cur.bid_open))>0,side*(float(cur.bid_close)-float(r.breakout_level))>0,(float(cur.bid_high)>float(prev.bid_high)) if side==1 else (float(cur.ask_low)<float(prev.ask_low))]
+   rows.append({'candidate_id':r.candidate_id,'stage':r.stage,'fold':r.fold,'strategy':r.strategy,'trade_uid':r.trade_uid,'timeframe':f'M{n}' if n<60 else 'H1','positive_structure_quorum':sum(prim),'positive_structure_2of3':sum(prim)>=2,'candidate_default_delta_pips':r.default_delta_pips})
+ return pd.DataFrame(rows)
+
+def tick_sensitivity_summary(effects,exact_c_effects):
+ rows=[]
+ for cid,g in effects[effects.fold.str.startswith('2024')].groupby('candidate_id'):
+  stage=g.stage.iloc[0]
+  if stage=='C': z=exact_c_effects[exact_c_effects.candidate_id==cid]; rows.append({'candidate_id':cid,'stage':stage,'sensitivity':'EXACT_TICK_ARM','common_default_delta_pips':float(g.default_delta_pips.sum()),'sensitivity_default_delta_pips':float(z.default_delta_pips.sum()),'trigger_count_common':int(g.candidate_triggered.sum()),'trigger_count_sensitivity':int(z.candidate_triggered.sum())})
+  else:
+   scope=cid.split('_')[2]; t=g[g.strategy==scope]; cls='P3' if stage=='A' else 'P2'; exact=t.exact_tick_class.fillna('')
+   rows.append({'candidate_id':cid,'stage':stage,'sensitivity':'EXACT_TICK_TARGET_CLASS','common_target_count':int((t.common_m1_class==cls).sum()),'exact_target_count':int((exact==cls).sum()),'common_target_delta_pips':float(t.loc[t.common_m1_class==cls,'default_delta_pips'].sum()),'exact_target_delta_pips':float(t.loc[exact==cls,'default_delta_pips'].sum())})
+ return pd.DataFrame(rows)
+
+def preflight(args,protocol,data,ledger):
+ required=['fold','strategy','ticket','signal_time','entry_time','close_time','side','breakout_level','baseline_gross_pips','entry_price_exec','common_m1_class','exact_tick_class','first_positive_m1','first_plus10_m1','first_plus10_tick']
+ pop={f'{k[0]}|{k[1]}':int(v) for k,v in ledger.groupby(['fold','strategy']).size().items()}
+ exp={k:v for k,v in data['expected_population'].items() if k!='total'}
+ checks={
+  'stage1_ledger_sha':file_sha(args.stage1_ledger)==data['expected_stage1_sha256']['path_ledger'],
+  'stage1_audit_sha':file_sha(args.stage1_audit)==data['expected_stage1_sha256']['audit'],
+  'old_common_migration_sha':file_sha(args.old_common_migration)==data['expected_stage1_sha256']['old_to_common_migration'],
+  'common_tick_migration_sha':file_sha(args.common_tick_migration)==data['expected_stage1_sha256']['common_to_tick_migration'],
+  'population_total':len(ledger)==data['expected_population']['total'],'population_by_fold_strategy':pop==exp,
+  'required_columns':all(c in ledger.columns for c in required),'candidate_count':protocol['candidate_count']==20 and len(protocol['candidate_ids'])==20 and len(set(protocol['candidate_ids']))==20,
+  '2025_rows_absent':not bool((ledger.entry_time>=pd.Timestamp('2025-01-01T00:00:00Z')).any()),

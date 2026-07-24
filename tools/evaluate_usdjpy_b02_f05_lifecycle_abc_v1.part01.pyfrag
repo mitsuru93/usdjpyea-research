@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+import argparse, hashlib, json, math, warnings
+from pathlib import Path
+import numpy as np
+import pandas as pd
+
+PIP=0.01
+FOLDS={
+ '2023H1':(pd.Timestamp('2023-01-01T00:00:00Z'),pd.Timestamp('2023-07-01T00:00:00Z')),
+ '2023H2':(pd.Timestamp('2023-07-01T00:00:00Z'),pd.Timestamp('2024-01-01T00:00:00Z')),
+ '2024H1':(pd.Timestamp('2024-01-01T00:00:00Z'),pd.Timestamp('2024-07-01T00:00:00Z')),
+ '2024H2':(pd.Timestamp('2024-07-01T00:00:00Z'),pd.Timestamp('2025-01-01T00:00:00Z')),
+}
+PIP_VALUE_JPY=10.0
+TOL=1e-9
+
+def file_sha(path:Path)->str:
+ h=hashlib.sha256()
+ with path.open('rb') as f:
+  for b in iter(lambda:f.read(1<<20),b''): h.update(b)
+ return h.hexdigest()
+
+def dump_json(path:Path,obj):
+ path.write_text(json.dumps(obj,ensure_ascii=False,indent=2,sort_keys=True,default=str)+'\n',encoding='utf-8')
+
+def historical_times_from_server(values):
+ server=pd.to_datetime(values)
+ winter=server-pd.Timedelta(hours=2)
+ mask=(winter>=pd.Timestamp('2023-03-12 07:00:00'))&(winter<pd.Timestamp('2023-11-05 06:00:00'))
+ return pd.DatetimeIndex(server-pd.to_timedelta(np.where(mask,3,2),unit='h')).tz_localize('UTC')
+
+def load_2023_m1(path:Path)->pd.DataFrame:
+ x=pd.read_csv(path)
+ x['time']=historical_times_from_server(x.timestamp_mt4_server)
+ x=x.rename(columns={'open':'bid_open','high':'bid_high','low':'bid_low','close':'bid_close'})
+ for c in ['bid_open','bid_high','bid_low','bid_close']: x[c]=pd.to_numeric(x[c])
+ for stem in ['open','high','low','close']: x[f'ask_{stem}']=x[f'bid_{stem}']+0.005
+ x['spread_open_pips']=0.5
+ return x[['time','bid_open','bid_high','bid_low','bid_close','ask_open','ask_high','ask_low','ask_close','spread_open_pips']].sort_values('time').reset_index(drop=True)
+
+def load_2024_m1(path:Path)->pd.DataFrame:
+ x=pd.read_csv(path); x['time']=pd.to_datetime(x.timestamp_utc,utc=True)
+ cols=['bid_open','bid_high','bid_low','bid_close','ask_open','ask_high','ask_low','ask_close']
+ for c in cols: x[c]=pd.to_numeric(x[c])
+ x['spread_open_pips']=(x.ask_open-x.bid_open)/PIP
+ return x[['time']+cols+['spread_open_pips']].sort_values('time').reset_index(drop=True)
+
+def make_bars(m1:pd.DataFrame,minutes:int)->pd.DataFrame:
+ w=m1.copy(); w['start']=w.time.dt.floor(f'{minutes}min')
+ g=w.groupby('start',sort=True)
+ out=g.agg(
+  m1_rows=('time','size'), first_m1=('time','first'), last_m1=('time','last'),
+  bid_open=('bid_open','first'),bid_high=('bid_high','max'),bid_low=('bid_low','min'),bid_close=('bid_close','last'),
+  ask_open=('ask_open','first'),ask_high=('ask_high','max'),ask_low=('ask_low','min'),ask_close=('ask_close','last')).reset_index()
+ out['info_time']=out.start+pd.Timedelta(minutes=minutes)
+ return out
+
+class Market:
+ def __init__(self,m1:pd.DataFrame,year:int):
+  self.m1=m1; self.year=year
+  self.times=m1.time.to_numpy(dtype='datetime64[ns]')
+  self.bars={n:make_bars(m1,n) for n in [5,15,30,60]}
+  self.bar_times={n:self.bars[n].info_time.to_numpy(dtype='datetime64[ns]') for n in self.bars}
+  self.spread_p95={fold:float(g.spread_open_pips.quantile(.95)) for fold,(a,b) in FOLDS.items() if a.year==year for g in [m1[(m1.time>=a)&(m1.time<b)]]}
+ def slice(self,a,b):
+  i=np.searchsorted(self.times,np.datetime64(a.to_datetime64()),'left'); j=np.searchsorted(self.times,np.datetime64(b.to_datetime64()),'left')
+  return self.m1.iloc[int(i):int(j)]
+ def row_at_or_after(self,t):
+  i=int(np.searchsorted(self.times,np.datetime64(pd.Timestamp(t).to_datetime64()),'left'))
+  return None if i>=len(self.m1) else self.m1.iloc[i]
+ def last_row_before(self,t):
+  i=int(np.searchsorted(self.times,np.datetime64(pd.Timestamp(t).to_datetime64()),'left'))-1
+  return None if i<0 else self.m1.iloc[i]
+ def completed_bars(self,n,a,b):
+  z=self.bars[n]; return z[(z.info_time>a)&(z.info_time<=b)]
+ def bar_ending(self,n,info_time):
+  z=self.bars[n]; q=z[z.info_time==pd.Timestamp(info_time)]
+  return None if q.empty else q.iloc[0]
+ def default_entry(self,side,t):
+  r=self.row_at_or_after(t)
+  if r is None:return None
+  return (float(r.ask_open) if side==1 else float(r.bid_open),pd.Timestamp(r.time),float(r.spread_open_pips),(float(r.ask_open)+float(r.bid_open))/2)
+ def default_exit(self,side,t,boundary=False):
+  if boundary:
+   r=self.m1.iloc[-1]; px=float(r.bid_close) if side==1 else float(r.ask_close); sp=(float(r.ask_close)-float(r.bid_close))/PIP; mid=(float(r.ask_close)+float(r.bid_close))/2
+   return px,pd.Timestamp(r.time)+pd.Timedelta(minutes=1),sp,mid
+  r=self.row_at_or_after(t)
+  if r is None:return None
+  return (float(r.bid_open) if side==1 else float(r.ask_open),pd.Timestamp(r.time),float(r.spread_open_pips),(float(r.ask_open)+float(r.bid_open))/2)
+ @staticmethod
+ def severe_entry(side,mid,spread): return mid+side*(1.5*spread+0.5)*PIP
+ @staticmethod
+ def severe_exit(side,mid,spread): return mid-side*(1.5*spread+0.5)*PIP
+ @staticmethod
+ def stressed_entry(side,mid,spread): return mid+side*0.5*spread*PIP
+ @staticmethod
+ def stressed_exit(side,mid,spread): return mid-side*0.5*spread*PIP
+
+def parse_ts(v):
+ if pd.isna(v) or str(v).strip()=='' or str(v)=='NaT': return None
+ return pd.Timestamp(v).tz_convert('UTC') if pd.Timestamp(v).tzinfo else pd.Timestamp(v).tz_localize('UTC')
+
+def load_stage1(path:Path)->pd.DataFrame:
+ x=pd.read_csv(path)
+ for c in ['signal_time','entry_time','close_time','first_positive_m1','first_plus10_m1','peak_time_m1','last_fav_update_m1','first_positive_tick','first_plus10_tick','peak_time_tick','last_fav_update_tick']:
+  x[c]=pd.to_datetime(x[c],utc=True,errors='coerce')
+ x['boundary_liquidation']=x.boundary_liquidation.astype(str).str.lower().eq('true') if x.boundary_liquidation.dtype==object else x.boundary_liquidation.astype(bool)
+ x['side']=x.side.astype(int)
+ return x.sort_values(['entry_time','strategy','ticket']).reset_index(drop=True)
+
+def qpass(values,quorum): return sum(bool(v) for v in values)>=int(quorum)
+
+def stage_a_primitives(tr,market:Market):
+ mins=5 if tr.strategy=='F05' else 10; end=tr.entry_time+pd.Timedelta(minutes=mins); q=market.slice(tr.entry_time,end)
+ if q.empty:return None,end
+ body=int(tr.side)*(float(q.iloc[-1].bid_close)-float(q.iloc[0].bid_open))>0
+ retained=int(tr.side)*(float(q.iloc[-1].bid_close)-float(tr.breakout_level))>0
+ d=int(tr.side)*q.bid_close.astype(float).diff().dropna(); steps=int((d>0).sum())>int((d<0).sum())
+ return [body,retained,steps],end
+
+def stage_b_primitives(tr,market:Market):

@@ -1,0 +1,23 @@
+{
+  "MT4_accessed": false,
+  "base_is_current": true,
+  "core_main_commit": "b31405cd4c5380a376655ba240ccb100e230e775",
+  "declared_lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "exact_next_action": "freeze and merge the user-specified 20-cell Stage A/B/C protocol and evaluator before one Research outcome run",
+  "files_read": [
+    {"git_blob_sha":"2d4ad69524f375149399a4842bdf404529a1d47d","path":"AGENTS.md"},
+    {"git_blob_sha":"4894d47b5a50f6c87f7f0b85d0788711e1b9a73b","path":"configs/research/usdjpy_research_memory_manifest_v1.json"},
+    {"git_blob_sha":"1025ac021a171edbe6d80061f32cdf623c6124d3","path":"configs/research/usdjpy_research_candidate_registry_v44.json"},
+    {"git_blob_sha":"70da18f85439e1f5ff5b7a8813cf2a8dff597e3a","path":"docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md"},
+    {"git_blob_sha":"33ea2b5baa9aea6f3ce97ff2a91d824058abd360","path":"configs/research/usdjpy_hypothesis_ledger_v1.json"},
+    {"git_blob_sha":"c0729805c4775bee737aedf0e4bd43643f96db12","path":"configs/research/usdjpy_hypothesis_ledger_addendum_v18.json"},
+    {"git_blob_sha":"fd78813a64b2c3fb1bc9c1a3524f14708ffdff4c","path":"docs/research_reboot/artifact_archives/usdjpy_2024_derived_bars_v1/receipt.json"}
+  ],
+  "periods_accessed": ["2023H1","2023H2","2024H1","2024H2"],
+  "periods_not_accessed": ["2025H1","2025H2"],
+  "prior_registry": {"schema":"usdjpy_research_candidate_registry_v44","status":"USDJPY_HYP024_CLOSED_NO_ELIGIBLE_FAMILY_REGION","treated_as_stop_condition":false},
+  "research_main_commit": "9569c23f63616fa67a8565e45b53b063d4d73a52",
+  "schema_version": "usdjpy_b02_f05_lifecycle_abc_startup_receipt_v1",
+  "startup_record": "HYP-023およびHYP-024は閉鎖済みの過去研究であり、今回の検証対象・停止条件・代替候補ではない。参照、再実行、修復、派生候補生成を行わない。",
+  "status": "PASS_USER_DIRECTED_SUCCESSOR_SCOPE"
+}

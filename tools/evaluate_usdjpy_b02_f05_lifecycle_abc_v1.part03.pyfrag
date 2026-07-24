@@ -1,0 +1,71 @@
+    if e is None:return None
+    entry_t=pd.Timestamp(e.time); intended=entry_t+cap; boundary=bool(tr.fold=='2024H2' and intended>=pd.Timestamp('2025-01-01T00:00:00Z'))
+    a=action_prices(side,market,entry_t,intended,boundary=boundary,stress_entry=True,fold=tr.fold)
+    if a is None:return None
+    result.update({'candidate_entered':True,'candidate_triggered':True,'candidate_entry_time':a['entry_time'],'candidate_exit_time':a['exit_time'],'candidate_default_pips':a['default'],'candidate_severe_pips':a['severe'],'candidate_trigger_stress_pips':a['stress'],'candidate_entry_spread_pips':a['entry_spread'],'candidate_exit_spread_pips':a['exit_spread'],'stress_spread_p95':a['stress_spread_p95']})
+ elif stage=='B':
+  prim,decision,armed=stage_b_primitives(tr,market); result['decision_time']=decision; result['armed_at_checkpoint']=armed
+  if prim is None:
+   result.update({'default_delta_pips':0.0,'severe_delta_pips':0.0,'trigger_stress_delta_pips':0.0}); return result
+  primitive_vector=''.join('1' if x else '0' for x in prim); primitive_count=sum(prim)
+  if not qpass(prim,cand['quorum']):trigger=decision
+ else:
+  arm=tr.first_plus10_m1
+  if arm_mode=='EXACT_TICK_2024' and str(tr.fold).startswith('2024'): arm=tr.first_plus10_tick
+  states=stage_c_state_sequence(tr,market,5 if cand['observation_timeframe']=='M5' else 15,arm)
+  trigger=c_trigger(states,int(cand['quorum']),int(cand['persistence']))
+  if trigger is not None:
+   st=next(z for z in states if z['info_time']==trigger); primitive_vector=''.join('1' if x else '0' for x in st['primitives']); primitive_count=sum(st['primitives']); result['decision_time']=trigger; result['peak_profit_at_trigger']=st['peak_profit']; result['close_profit_at_trigger']=st['close_profit']; result['pre_peak_trigger']=not st['peak_prerequisite']
+ if primitive_vector is not None: result['primitive_vector']=primitive_vector; result['primitive_count']=primitive_count
+ if trigger is not None:
+  a=action_prices(side,market,tr.entry_time,trigger,stress_exit=True,fold=tr.fold)
+  if a is not None and a['exit_time']<base['exit_time']:
+   result.update({'candidate_triggered':True,'candidate_entry_time':a['entry_time'],'candidate_exit_time':a['exit_time'],'candidate_default_pips':a['default'],'candidate_severe_pips':a['severe'],'candidate_trigger_stress_pips':a['stress'],'candidate_entry_spread_pips':a['entry_spread'],'candidate_exit_spread_pips':a['exit_spread'],'stress_spread_p95':a['stress_spread_p95']})
+ result['default_delta_pips']=result['candidate_default_pips']-result['baseline_default_pips']; result['severe_delta_pips']=result['candidate_severe_pips']-result['baseline_severe_pips']; result['trigger_stress_delta_pips']=result['candidate_trigger_stress_pips']-result['baseline_default_pips']
+ return result
+
+def pf(v):
+ v=pd.Series(v,dtype=float); gain=v[v>0].sum(); loss=-v[v<0].sum()
+ return float('inf') if loss==0 and gain>0 else (0.0 if loss==0 else float(gain/loss))
+
+def realized_portfolio(g,value_col='candidate_default_pips'):
+ q=g[g.candidate_entered.astype(bool)].copy(); q['cash_jpy']=q[value_col].astype(float)*PIP_VALUE_JPY; q=q.sort_values(['candidate_exit_time','candidate_entry_time','trade_uid'])
+ eq=100000.0+q.cash_jpy.cumsum(); peak=eq.cummax(); dd=eq-peak
+ events=[]
+ for r in q.itertuples():
+  events.append((pd.Timestamp(r.candidate_entry_time),1,int(r.side))); events.append((pd.Timestamp(r.candidate_exit_time),-1,int(r.side)))
+ events.sort(key=lambda x:(x[0],x[1]))
+ cur=maxc=0; longc=shortc=0; maxlong=maxshort=0
+ for _,d,s in events:
+  cur+=d; maxc=max(maxc,cur)
+  if s==1: longc+=d; maxlong=max(maxlong,longc)
+  else: shortc+=d; maxshort=max(maxshort,shortc)
+ return {'trade_count':int(len(q)),'net_pips':float(q[value_col].sum()),'pf':pf(q[value_col]),'net_jpy':float(q.cash_jpy.sum()),'realized_max_drawdown_jpy':float(-dd.min()) if len(dd) else 0.0,'ending_balance_jpy':float(eq.iloc[-1]) if len(eq) else 100000.0,'max_concurrent_positions':int(maxc),'max_concurrent_long':int(maxlong),'max_concurrent_short':int(maxshort)}
+
+def baseline_portfolio(g,value_col='baseline_default_pips'):
+ q=g.drop_duplicates('trade_uid').copy(); q['candidate_entered']=True; q['candidate_entry_time']=q.baseline_entry_time; q['candidate_exit_time']=q.baseline_close_time; q['candidate_default_pips']=q[value_col]
+ return realized_portfolio(q,'candidate_default_pips')
+
+def retention(g,frac):
+ w=g[g.common_m1_class.eq('WINNER')].sort_values('baseline_default_pips',ascending=False); n=max(1,math.ceil(len(w)*frac)) if len(w) else 0; z=w.head(n)
+ den=float(z.baseline_default_pips.sum()); return (float(z.candidate_default_pips.sum()/den) if den else None,n)
+
+def target_loss(g,cls,col): return float(-g.loc[(g.common_m1_class==cls)&(g[col]<0),col].sum())
+
+def fold_metric(cid,stage,fold,g,gate):
+ tol=float(gate['comparison_tolerance_pips']); bp=baseline_portfolio(g,'baseline_default_pips'); cp=realized_portfolio(g,'candidate_default_pips'); bs=baseline_portfolio(g,'baseline_severe_pips'); cs=realized_portfolio(g,'candidate_severe_pips')
+ delta=float(g.default_delta_pips.sum()); sdelta=float(g.severe_delta_pips.sum())
+ strat={s:float(g.loc[g.strategy==s,'default_delta_pips'].sum()) for s in ['B02','F05']}; direction={str(k):float(z.default_delta_pips.sum()) for k,z in g.groupby('side')}
+ month=g.groupby(g.baseline_entry_time.dt.strftime('%Y-%m')).default_delta_pips.sum(); date=g.groupby(g.baseline_entry_time.dt.strftime('%Y-%m-%d')).default_delta_pips.sum(); posdate=date[date>0].sort_values(ascending=False)
+ a,b=FOLDS[fold]; mid=a+pd.DateOffset(months=3); sub={'first_3m':float(g.loc[g.baseline_entry_time<mid,'default_delta_pips'].sum()),'second_3m':float(g.loc[g.baseline_entry_time>=mid,'default_delta_pips'].sum())}
+ top10,n10=retention(g,.10); top5,n5=retention(g,.05); leave=[delta-float(v) for v in month]
+ common_checks={
+  'default_net':delta>=-tol,'severe_net':sdelta>=-tol,'pf':cp['pf']+tol>=bp['pf'],
+  'B02':strat['B02']>=-tol,'F05':strat['F05']>=-tol,'long':direction.get('1',0.0)>=-tol,'short':direction.get('-1',0.0)>=-tol,
+  'subblocks':all(v>=-tol for v in sub.values()),'months':int((month>tol).sum())>=4 and int((month<-tol).sum())<=2,
+  'ex_best_two_dates':delta-float(posdate.head(2).sum())>tol,'top10':top10 is not None and top10+tol>=.90,'top5':top5 is not None and top5+tol>=.85,
+  'leave_one_month':min(leave,default=delta)>=-tol}
+ stage_checks={}; stage_detail={}; scope=None
+ if stage in ['A','B']:
+  scope=cid.split('_')[2]; t=g[g.strategy==scope]
+ else:t=g

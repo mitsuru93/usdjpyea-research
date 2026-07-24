@@ -1,0 +1,87 @@
+ mins=15 if tr.strategy=='F05' else 30; n=5 if tr.strategy=='F05' else 15; checkpoint=tr.entry_time+pd.Timedelta(minutes=mins)
+ fp=tr.first_positive_m1; p10=tr.first_plus10_m1
+ armed=pd.notna(fp) and fp<=checkpoint and (pd.isna(p10) or p10>checkpoint)
+ if not armed:return None,checkpoint,False
+ block_start=checkpoint-pd.Timedelta(minutes=n); block=market.slice(block_start,checkpoint); prior=market.slice(tr.entry_time,block_start)
+ if block.empty:return None,checkpoint,True
+ retained=int(tr.side)*(float(block.iloc[-1].bid_close)-float(tr.breakout_level))>0
+ if int(tr.side)==1:
+  latest=float(block.bid_high.max()); prev=float(prior.bid_high.max()) if not prior.empty else float('-inf'); update=latest>prev+1e-12
+ else:
+  latest=float(block.ask_low.min()); prev=float(prior.ask_low.min()) if not prior.empty else float('inf'); update=latest<prev-1e-12
+ before=market.last_row_before(block_start); initial=float(before.bid_close) if before is not None else float(block.iloc[0].bid_close)
+ change=int(tr.side)*(float(block.iloc[-1].bid_close)-initial)>0
+ return [retained,update,change],checkpoint,True
+
+def stage_c_state_sequence(tr,market:Market,n:int,arm_time):
+ if arm_time is None or pd.isna(arm_time):return []
+ arm=pd.Timestamp(arm_time); bars=market.completed_bars(n,arm,tr.close_time)
+ if bars.empty:return []
+ q=market.slice(arm.floor('min'),tr.close_time); side=int(tr.side); ep=float(tr.entry_price_exec)
+ if q.empty:return []
+ # M1 favorable executable extremes and cumulative post-arm peak.
+ fav=((q.bid_high-ep)/PIP).to_numpy(float) if side==1 else ((ep-q.ask_low)/PIP).to_numpy(float)
+ qt=q.time.to_numpy(dtype='datetime64[ns]'); cum=np.maximum.accumulate(fav)
+ states=[]; bar_updates=[]; previous_peak=10.0
+ for b in bars.itertuples(index=False):
+  ix=np.searchsorted(qt,np.datetime64(pd.Timestamp(b.info_time).to_datetime64()),'left')
+  if ix<=0:continue
+  peak=float(cum[ix-1]); additional=peak-10.0
+  close_exec=float(b.bid_close) if side==1 else float(b.ask_close); close_profit=side*(close_exec-ep)/PIP
+  retrace=peak-close_profit
+  p1=additional>1e-12 and retrace+1e-12>=0.5*additional
+  p2=side*(float(b.bid_close)-float(tr.breakout_level))<=0
+  bar_peak=float(np.max(fav[:ix])); updated=bar_peak>previous_peak+1e-12; bar_updates.append(updated); previous_peak=max(previous_peak,bar_peak)
+  p3=len(bar_updates)>=2 and (not bar_updates[-1]) and (not bar_updates[-2]) and side*(float(b.bid_close)-float(b.bid_open))<=0
+  states.append({'info_time':pd.Timestamp(b.info_time),'primitives':[p1,p2,p3],'peak_profit':peak,'close_profit':close_profit,'peak_prerequisite':additional>1e-12})
+ return states
+
+def c_trigger(states,quorum,persistence):
+ run=0
+ for s in states:
+  ok=s['peak_prerequisite'] and qpass(s['primitives'],quorum)
+  run=run+1 if ok else 0
+  if run>=persistence:return s['info_time']
+ return None
+
+def base_prices(tr,market:Market):
+ e=market.default_entry(int(tr.side),tr.entry_time); x=market.default_exit(int(tr.side),tr.close_time,bool(tr.boundary_liquidation))
+ if e is None or x is None:return None
+ ep,et,esp,emid=e; xp,xt,xsp,xmid=x; side=int(tr.side)
+ market_default=side*(xp-ep)/PIP
+ # accepted baseline default is authoritative; severe uses same mid move with frozen severe spread transform.
+ sep=market.severe_entry(side,emid,esp); sxp=market.severe_exit(side,xmid,xsp); severe=side*(sxp-sep)/PIP
+ return {'entry_px':ep,'entry_time':et,'entry_spread':esp,'entry_mid':emid,'exit_px':xp,'exit_time':xt,'exit_spread':xsp,'exit_mid':xmid,'market_default':market_default,'default':float(tr.baseline_gross_pips),'severe':severe}
+
+def action_prices(side,market,entry_t,exit_t,boundary=False,stress_entry=False,stress_exit=False,fold=None):
+ e=market.default_entry(side,entry_t); x=market.default_exit(side,exit_t,boundary)
+ if e is None or x is None:return None
+ ep,et,esp,emid=e; xp,xt,xsp,xmid=x
+ sep=market.severe_entry(side,emid,esp); sxp=market.severe_exit(side,xmid,xsp)
+ p95=market.spread_p95.get(fold,0.5)
+ tep=market.stressed_entry(side,emid,p95 if stress_entry else esp)
+ txp=market.stressed_exit(side,xmid,p95 if stress_exit else xsp)
+ return {'entry_px':ep,'entry_time':et,'entry_spread':esp,'exit_px':xp,'exit_time':xt,'exit_spread':xsp,
+  'default':side*(xp-ep)/PIP,'severe':side*(sxp-sep)/PIP,'stress':side*(txp-tep)/PIP,'stress_spread_p95':p95}
+
+def simulate_one(tr,market:Market,cand,arm_mode='COMMON_M1'):
+ base=base_prices(tr,market)
+ if base is None:return None
+ cid=cand['candidate_id']; stage=cand['stage']; applies=(stage=='C' or cand.get('strategy_scope')==tr.strategy)
+ result={'candidate_id':cid,'stage':stage,'fold':tr.fold,'strategy':tr.strategy,'ticket':int(tr.ticket),'trade_uid':tr.trade_uid,'signal_time':tr.signal_time,'baseline_entry_time':tr.entry_time,'baseline_close_time':tr.close_time,'side':int(tr.side),'breakout_level':float(tr.breakout_level),'common_m1_class':tr.common_m1_class,'exact_tick_class':tr.exact_tick_class if pd.notna(tr.exact_tick_class) else '',
+  'baseline_default_pips':base['default'],'baseline_severe_pips':base['severe'],'baseline_entry_spread_pips':base['entry_spread'],'baseline_exit_spread_pips':base['exit_spread'],'baseline_market_recalc_diff_pips':base['market_default']-base['default'],
+  'candidate_entered':True,'candidate_triggered':False,'candidate_entry_time':base['entry_time'],'candidate_exit_time':base['exit_time'],'candidate_default_pips':base['default'],'candidate_severe_pips':base['severe'],'candidate_trigger_stress_pips':base['default'],'decision_time':pd.NaT,'primitive_count':None,'primitive_vector':'','arm_mode':arm_mode,'pre_peak_trigger':False}
+ if not applies:
+  result.update({'default_delta_pips':0.0,'severe_delta_pips':0.0,'trigger_stress_delta_pips':0.0}); return result
+ side=int(tr.side); trigger=None; primitive_vector=None; primitive_count=None
+ if stage=='A':
+  prim,decision=stage_a_primitives(tr,market); result['decision_time']=decision
+  if prim is None:return None
+  primitive_vector=''.join('1' if x else '0' for x in prim); primitive_count=sum(prim); passed=qpass(prim,cand['quorum'])
+  if cand['action']=='IMMEDIATE_ENTRY_ABORT':
+   if not passed: trigger=decision
+  else:
+   if not passed:
+    result.update({'candidate_entered':False,'candidate_triggered':True,'candidate_entry_time':pd.NaT,'candidate_exit_time':pd.NaT,'candidate_default_pips':0.0,'candidate_severe_pips':0.0,'candidate_trigger_stress_pips':0.0})
+   else:
+    cap=pd.Timedelta(minutes=480 if tr.strategy=='F05' else 720); e=market.row_at_or_after(decision)

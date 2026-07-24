@@ -1,0 +1,22 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "classification": "TECHNICAL_INCOMPLETE_NO_OUTCOMES",
+      "failure": "full-year exact Tick pandas month accumulation exceeded execution limit after June",
+      "repair": "replaced with streaming zlib C++ month scanner; path definitions unchanged",
+      "result": "PASS 40,969,081 ticks",
+      "retry_count_for_root_cause": 1
+    },
+    {
+      "attempt": 2,
+      "classification": "TECHNICAL_INCOMPLETE_NO_OUTCOMES",
+      "failure": "initial parity aggregation incorrectly required every minute and compared executable Entry instead of accepted Entry Bid",
+      "repair": "applied no-empty-bucket Release contract and accepted Entry Bid identity",
+      "result": "M1/M5/M15 counts and parity PASS",
+      "retry_count_for_root_cause": 1
+    }
+  ],
+  "schema_version": "usdjpy_b02_f05_lifecycle_abc_technical_attempts_v1",
+  "scientific_outcomes_computed": false
+}
