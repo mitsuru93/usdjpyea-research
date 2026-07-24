@@ -25,18 +25,50 @@ jobs:
       - name: Decode and verify exact evaluator source
         shell: bash
         run: |
-          set -euo pipefail
-          base64 -d configs/research/f05_failed_reclaim_portfolio_evaluator_v1.py.gz.b64 \
-            | gzip -d > tools/evaluate_f05_failed_reclaim_portfolio_v1.py
-          printf '%s  %s\n' \
-            c37aac2a23d18754041f8025af5395519a6c0ff5e89e4db32d6a62b734777ac0 \
-            tools/evaluate_f05_failed_reclaim_portfolio_v1.py | sha256sum -c -
-          python -m py_compile \
-            tools/evaluate_f05_failed_reclaim_portfolio_v1.py \
-            tools/usdjpy_structural_sl_v1/common.py \
-            tools/usdjpy_structural_sl_v1/events.py
+          set +e
+          mkdir -p materialize_diagnostics tools
+          src_b64=configs/research/f05_failed_reclaim_portfolio_evaluator_v1.py.gz.b64
+          wc -c "$src_b64" | tee materialize_diagnostics/base64_size.txt
+          sha256sum "$src_b64" | tee materialize_diagnostics/base64_sha256.txt
+          base64 -d "$src_b64" > materialize_diagnostics/evaluator.py.gz
+          decode_rc=$?
+          printf '%s\n' "$decode_rc" > materialize_diagnostics/base64_decode_rc.txt
+          wc -c materialize_diagnostics/evaluator.py.gz | tee materialize_diagnostics/gzip_size.txt
+          sha256sum materialize_diagnostics/evaluator.py.gz | tee materialize_diagnostics/gzip_sha256.txt
+          gzip -t materialize_diagnostics/evaluator.py.gz
+          gzip_test_rc=$?
+          printf '%s\n' "$gzip_test_rc" > materialize_diagnostics/gzip_test_rc.txt
+          if [[ "$decode_rc" -eq 0 && "$gzip_test_rc" -eq 0 ]]; then
+            gzip -dc materialize_diagnostics/evaluator.py.gz > tools/evaluate_f05_failed_reclaim_portfolio_v1.py
+            sha256sum tools/evaluate_f05_failed_reclaim_portfolio_v1.py | tee materialize_diagnostics/source_sha256.txt
+            wc -c tools/evaluate_f05_failed_reclaim_portfolio_v1.py | tee materialize_diagnostics/source_size.txt
+            printf '%s  %s\n' \
+              c37aac2a23d18754041f8025af5395519a6c0ff5e89e4db32d6a62b734777ac0 \
+              tools/evaluate_f05_failed_reclaim_portfolio_v1.py | sha256sum -c -
+            source_rc=$?
+            printf '%s\n' "$source_rc" > materialize_diagnostics/source_check_rc.txt
+            if [[ "$source_rc" -eq 0 ]]; then
+              python -m py_compile \
+                tools/evaluate_f05_failed_reclaim_portfolio_v1.py \
+                tools/usdjpy_structural_sl_v1/common.py \
+                tools/usdjpy_structural_sl_v1/events.py
+            fi
+          else
+            source_rc=1
+          fi
+          exit "$source_rc"
+
+      - name: Upload materialization diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f05-portfolio-evaluator-materialize-${{ github.run_id }}-${{ github.run_attempt }}
+          path: materialize_diagnostics
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Commit evaluator to branch
+        if: success()
         shell: bash
         run: |
           set -euo pipefail
