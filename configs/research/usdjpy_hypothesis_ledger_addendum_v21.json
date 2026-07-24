@@ -1,0 +1,67 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v21",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-026-RESULT-001",
+      "family_ids": ["Q_MTF_TECHNICAL_INCREMENTAL_STATE"],
+      "origin_analysis": "The user's broader Entry/Exit technical-factor request required M1/M5/M15/M30/H1 completed-bar oscillator and technical-state evaluation beyond HYP-025's price-only cells.",
+      "causal_hypothesis": "After price-path state is known, multi-timeframe oscillator, trend, volatility and bar-state features may add portable information for F05/B02 P3 establishment, P2 continuation failure or P1 giveback termination.",
+      "pre_result_predictions": [
+        "at least one timeframe adds positive AUC in all four folds over price path",
+        "the incremental signal survives an enriched same-timeframe price-geometry baseline",
+        "a surviving cell saves more loser loss than Winner profit at a fixed non-optimized decision threshold"
+      ],
+      "tests": [
+        {
+          "type": "four-fold multi-timeframe incremental technical audit",
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "evidence": "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.json",
+          "result": {
+            "unique_trades": 1882,
+            "timeframes": 5,
+            "technical_features_per_timeframe": 42,
+            "primary_pass_cells": 4,
+            "robust_cells_examined": 2,
+            "economically_positive_cells": 0,
+            "binding_candidate": null
+          }
+        }
+      ],
+      "decision": "Close HYP-026 before portfolio replay, MT4 and 2025. Technical state is descriptive in limited cells but does not produce an economically valid portable rule after price geometry and Winner opportunity cost.",
+      "falsified_or_unsupported_claims": [
+        "P1 oscillator deterioration is independent Exit alpha after price path is known",
+        "F05 P2 gains portable information from M1/M5/M15/M30/H1 technical indicators",
+        "B02 P2 M15 discrimination produces positive Exit economics",
+        "F05 first-M5 P3 discrimination preserves enough Winner profit to be actionable"
+      ],
+      "retained_findings": [
+        "F05 first-M5 technical state has a small robust incremental discrimination signal over enriched M5 geometry",
+        "that F05 signal loses 3978.1 Winner pips while saving 3706.7 loser pips and reduces pooled result by 271.4 pips",
+        "B02 P2 first-positive plus 15-minute M15 technical gain is statistically uncertain after bootstrap and loses 1952.4 pooled pips",
+        "P1 technical deterioration is a descriptive re-expression of price-state decay rather than independent portable information",
+        "B02 P3 cannot support a four-fold technical rule because 2024H2 has zero common-M1 P3 observations"
+      ],
+      "prohibited_reuse": [
+        "no indicator threshold or period grid",
+        "no side, session, year or fold exception",
+        "no HYP-023/HYP-024 substitution",
+        "no HYP-025 cell repair or chaining",
+        "no MT4 or 2025 selection from HYP-026 outcomes"
+      ],
+      "successor_questions": [
+        "Can genuinely distinct recoverability or event-sequence information improve economics without using indicator thresholds or relabeling HYP-026 descriptive signals?"
+      ],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "docs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.md"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_hyp026_mtf_technical_exact_evaluation_receipt_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_b02_f05_mtf_technical_fixed_ledger_counterfactual_v1.csv"}
+      ],
+      "status": "CLOSED_NO_ECONOMICALLY_VALID_INCREMENTAL_TECHNICAL_RULE"
+    }
+  ],
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v20.json"
+}
