@@ -1,0 +1,15 @@
+{
+  "schema_version": "usdjpy_structural_sl_atlas_v2_dispatch_marker",
+  "status": "ARMED_ONCE",
+  "workflow": ".github/workflows/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.yml",
+  "confirmation": "RUN_STRUCTURAL_SL_ATLAS_V2",
+  "frozen_package_parent_sha": "7da40aa50674b7784f1293dc1521ba2c69d0af9f",
+  "deterministic_candidates": 303,
+  "deterministic_families": 12,
+  "supervised_models": 4,
+  "outcomes_computed": false,
+  "full_admission_portfolio_replay_computed": false,
+  "mt4_accessed": false,
+  "2025_accessed": false,
+  "candidate_frozen": false
+}
