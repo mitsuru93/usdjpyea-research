@@ -1,0 +1,66 @@
+{
+  "schema_version": "usdjpy_b02_f05_lifecycle_gate_contract_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOMES",
+  "protocol": "configs/research/usdjpy_b02_f05_lifecycle_preregistration_v1.json",
+  "folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "strategy_scope": ["B02", "F05"],
+  "common_support": {
+    "minimum_affected_trades_for_subgroup_gate": 10,
+    "unsupported_subgroup_rule": "report but do not count as pass or fail",
+    "minimum_both_direction_share": 0.10
+  },
+  "right_tail": {
+    "winner_removal_rate_max_each_fold_strategy": 0.10,
+    "p1_premature_removal_rate_max_each_fold_strategy_for_L1_L2": 0.10,
+    "top_5_percent_baseline_winner_count_removed_max": 0,
+    "top_10_percent_baseline_winner_gross_profit_retention_min": 0.95,
+    "all_winner_gross_profit_retention_min": 0.90
+  },
+  "cost": {
+    "default_candidate_delta_pips_min_each_fold_strategy": 0.0,
+    "severe_candidate_delta_pips_min_each_fold_strategy": 0.0,
+    "event_only_default_delta_pips_min_each_fold_strategy": 0.0,
+    "event_only_severe_delta_pips_min_each_fold_strategy": 0.0,
+    "strict_positivity": true
+  },
+  "breadth": {
+    "candidate_delta_ex_best_one_positive_effect_date_min": 0.0,
+    "candidate_delta_ex_best_two_positive_effect_dates_min": 0.0,
+    "leave_one_month_out_min_delta_min": 0.0,
+    "positive_effect_months_min_per_half_year": 3,
+    "negative_effect_months_max_per_half_year": 1,
+    "direction_delta_nonnegative_when_supported": true,
+    "session_delta_nonnegative_when_supported": true,
+    "exposure_state_delta_nonnegative_when_supported": true,
+    "standalone_stack_delta_nonnegative_when_supported": true
+  },
+  "L1": {
+    "p3_count_strictly_lower_each_fold_strategy": true,
+    "p3_gross_loss_strictly_lower_each_fold_strategy": true,
+    "p3_gross_loss_share_strictly_lower_each_fold_strategy": true,
+    "winner_and_p1_right_tail_contract_required": true
+  },
+  "L2": {
+    "p2_gross_loss_strictly_lower_each_fold_strategy": true,
+    "p2_net_effect_after_winner_and_p1_harm_strictly_positive_each_fold_strategy": true,
+    "p1_premature_exit_contract_required": true
+  },
+  "L3": {
+    "p1_giveback_gross_loss_strictly_lower_each_fold_strategy": true,
+    "candidate_net_effect_strictly_positive_each_fold_strategy": true,
+    "triggered_next_bar_severe_effect_strictly_positive_each_fold_strategy": true,
+    "fixed_trailing_or_reacceptance_equivalence": false
+  },
+  "selection": {
+    "maximum_finalist_per_family": 1,
+    "ranking_order": [
+      "all_binding_gates_pass",
+      "minimum_fold_strategy_severe_delta_pips",
+      "minimum_fold_strategy_default_delta_pips",
+      "minimum_right_tail_retention",
+      "pooled_severe_delta_pips"
+    ],
+    "ties": "no finalist if exact ranking identity remains tied",
+    "post_result_repair": false
+  }
+}
