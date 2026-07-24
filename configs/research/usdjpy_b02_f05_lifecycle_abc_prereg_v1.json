@@ -1,0 +1,190 @@
+{
+  "candidate_count": 20,
+  "candidate_ids": [
+    "ABC_A_F05_ABORT_Q2",
+    "ABC_A_F05_ABORT_Q3",
+    "ABC_A_F05_DELAY_Q2",
+    "ABC_A_F05_DELAY_Q3",
+    "ABC_A_B02_ABORT_Q2",
+    "ABC_A_B02_ABORT_Q3",
+    "ABC_A_B02_DELAY_Q2",
+    "ABC_A_B02_DELAY_Q3",
+    "ABC_B_F05_Q2",
+    "ABC_B_F05_Q3",
+    "ABC_B_B02_Q2",
+    "ABC_B_B02_Q3",
+    "ABC_C_M5_Q2_R1",
+    "ABC_C_M5_Q2_R2",
+    "ABC_C_M5_Q3_R1",
+    "ABC_C_M5_Q3_R2",
+    "ABC_C_M15_Q2_R1",
+    "ABC_C_M15_Q2_R2",
+    "ABC_C_M15_Q3_R1",
+    "ABC_C_M15_Q3_R2"
+  ],
+  "common_geometry": {
+    "action_time": "next available M1 open at or after decision information time",
+    "bar_contract": "UTC, left-closed/right-open, no empty buckets, completed bars only",
+    "price_structure": "Bid OHLC for breakout-level and directional structure; executable Bid/Ask for P/L, MFE, MAE and arming",
+    "symmetry": "all directional comparisons multiplied by trade side; no side-specific exceptions"
+  },
+  "costs": {
+    "2023_default": "fixed executable Ask/Bid with 0.5-pip spread contract",
+    "2024_default": "actual first-tick Bid/Ask at candidate entry and exit M1 opens",
+    "canonical_severe": "entry and exit half-spreads each widened to 1.5 times observed half-to-half spread plus 0.5 pip adverse per side; equivalent total 1.5*(entry spread + exit spread)+1 pip",
+    "trigger_spread_stress": "replace candidate-action entry/exit spread with fold-specific 95th percentile M1-open spread while preserving mid; report separately and do not use for parameter selection"
+  },
+  "family_id": "P_LIFECYCLE_PRICE_STRUCTURE_TRANSITIONS",
+  "hypothesis_id": "USDJPY-HYP-025",
+  "m30_h1_incremental_audit": {
+    "forbidden": [
+      "static Entry filter",
+      "indicator threshold grid",
+      "candidate repair",
+      "binding trigger substitution"
+    ],
+    "question": "conditional on M1/M5/M15 price-structure state, do completed M30/H1 price-structure states add economic effect?",
+    "status": "NON_BINDING_ONLY_AFTER_PRIMARY_CANDIDATE_RESULT_IS_FIXED"
+  },
+  "outcome_rules": {
+    "local_repairs": false,
+    "one_scientific_run_per_frozen_candidate": true,
+    "primitive_additions_after_outcomes": false,
+    "threshold_changes_after_outcomes": false,
+    "timeframe_changes_after_outcomes": false
+  },
+  "path_authority": {
+    "binding": "common M1 side-specific executable path class",
+    "p1": "baseline final loss and reached +10 pips",
+    "p2": "baseline final loss, executable positive at least once, never +10 pips",
+    "p3": "baseline final loss and never executable positive",
+    "sensitivity": "2024 exact Tick side-specific executable path class",
+    "winner_definition": "baseline final executable P/L > 0"
+  },
+  "portfolio_replay": {
+    "exposure_rule": "canonical baseline accepts all audited signals; no additional candidate-specific exposure suppression or cap is introduced",
+    "pip_value_jpy": 10.0,
+    "position_size": "0.01 lot per accepted signal",
+    "recomputed": [
+      "actual candidate entry/exit",
+      "missed delayed entries",
+      "all concurrent positions",
+      "same/opposite-direction stacking",
+      "strategy and combined cash flow",
+      "trade count",
+      "balance curve",
+      "realized drawdown"
+    ],
+    "signal_stream": "all 1,882 accepted B02/F05 signals rebuilt and identity-audited in Stage 1"
+  },
+  "required_outputs": [
+    "trade effects ledger",
+    "exact-Tick Stage C arm sensitivity ledger",
+    "fold binding metrics",
+    "candidate summary",
+    "portfolio replay with realized drawdown and concurrency",
+    "month/quarter/direction/strategy breakdown",
+    "boundary-liquidation sensitivity",
+    "2024 exact-Tick sensitivity summary",
+    "M30/H1 incremental audit",
+    "candidate parameter-equivalence audit",
+    "family-region/adjacency result",
+    "machine-generated human report",
+    "result JSON",
+    "preflight JSON",
+    "SHA256SUMS"
+  ],
+  "schema_version": "usdjpy_b02_f05_lifecycle_abc_prereg_v1",
+  "scope": {
+    "excluded": [
+      "HYP-023",
+      "HYP-024",
+      "Family N",
+      "Family O",
+      "generic M15 momentum/MACD/EMA collapse",
+      "2025 H1",
+      "2025 H2"
+    ],
+    "folds": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ],
+    "strategies": [
+      "B02",
+      "F05"
+    ],
+    "tasks": [
+      "P3 breakout establishment",
+      "P2 early continuation/expansion",
+      "P1 peak-relative deterioration"
+    ]
+  },
+  "stage_a": {
+    "candidates": [
+      {"action":"IMMEDIATE_ENTRY_ABORT","candidate_id":"ABC_A_F05_ABORT_Q2","observation_minutes":5,"quorum":2,"stage":"A","strategy_scope":"F05"},
+      {"action":"IMMEDIATE_ENTRY_ABORT","candidate_id":"ABC_A_F05_ABORT_Q3","observation_minutes":5,"quorum":3,"stage":"A","strategy_scope":"F05"},
+      {"action":"DELAYED_CONFIRMATION","candidate_id":"ABC_A_F05_DELAY_Q2","observation_minutes":5,"quorum":2,"stage":"A","strategy_scope":"F05"},
+      {"action":"DELAYED_CONFIRMATION","candidate_id":"ABC_A_F05_DELAY_Q3","observation_minutes":5,"quorum":3,"stage":"A","strategy_scope":"F05"},
+      {"action":"IMMEDIATE_ENTRY_ABORT","candidate_id":"ABC_A_B02_ABORT_Q2","observation_minutes":10,"quorum":2,"stage":"A","strategy_scope":"B02"},
+      {"action":"IMMEDIATE_ENTRY_ABORT","candidate_id":"ABC_A_B02_ABORT_Q3","observation_minutes":10,"quorum":3,"stage":"A","strategy_scope":"B02"},
+      {"action":"DELAYED_CONFIRMATION","candidate_id":"ABC_A_B02_DELAY_Q2","observation_minutes":10,"quorum":2,"stage":"A","strategy_scope":"B02"},
+      {"action":"DELAYED_CONFIRMATION","candidate_id":"ABC_A_B02_DELAY_Q3","observation_minutes":10,"quorum":3,"stage":"A","strategy_scope":"B02"}
+    ],
+    "delayed_confirmation": "do not enter at baseline Entry; enter next available M1 open only if quorum passes; preserve original strategy time cap measured from actual delayed Entry",
+    "immediate_abort": "enter at baseline Entry; if quorum fails, exit next available M1 open",
+    "observation": {"B02":"second completed M5 after baseline Entry (10 minutes)","F05":"first completed M5 after baseline Entry (5 minutes)"},
+    "positive_primitives": [
+      "side * (observation window final Bid close - observation window first Bid open) > 0",
+      "side * (completed M5 Bid close - canonical breakout level) > 0",
+      "count(side * Bid close-to-close change > 0) > count(side * Bid close-to-close change < 0) inside observation window"
+    ],
+    "time_caps_minutes": {"B02":720,"F05":480}
+  },
+  "stage_b": {
+    "action":"if quorum fails, exit next available M1 open",
+    "arm":"active only when common-M1 first positive time is at or before checkpoint and first +10 time is absent or after checkpoint; released at +10",
+    "candidates":[
+      {"action":"EARLY_CONTINUATION_EXIT","candidate_id":"ABC_B_F05_Q2","checkpoint_minutes":15,"lookback_block":"M5","quorum":2,"stage":"B","strategy_scope":"F05"},
+      {"action":"EARLY_CONTINUATION_EXIT","candidate_id":"ABC_B_F05_Q3","checkpoint_minutes":15,"lookback_block":"M5","quorum":3,"stage":"B","strategy_scope":"F05"},
+      {"action":"EARLY_CONTINUATION_EXIT","candidate_id":"ABC_B_B02_Q2","checkpoint_minutes":30,"lookback_block":"M15","quorum":2,"stage":"B","strategy_scope":"B02"},
+      {"action":"EARLY_CONTINUATION_EXIT","candidate_id":"ABC_B_B02_Q3","checkpoint_minutes":30,"lookback_block":"M15","quorum":3,"stage":"B","strategy_scope":"B02"}
+    ],
+    "checkpoint":{"B02":"Entry +30 minutes","F05":"Entry +15 minutes"},
+    "independence":"evaluated against baseline, not chained after Stage A",
+    "lookback_block":{"B02":"latest completed M15","F05":"latest completed M5"},
+    "positive_primitives":[
+      "side * (checkpoint completed Bid close - canonical breakout level) > 0",
+      "latest block favorable executable extreme exceeds the prior post-Entry favorable peak before that block",
+      "side * (latest block final Bid close - Bid close immediately before block) > 0"
+    ]
+  },
+  "stage_c": {
+    "action":"exit next available M1 open after trigger persistence is satisfied",
+    "arm_2024_sensitivity":"exact-Tick first +10-pip time",
+    "arm_primary":"common-M1 first +10-pip time",
+    "candidates":[
+      {"action":"PEAK_RELATIVE_TERMINATION","candidate_id":"ABC_C_M5_Q2_R1","observation_timeframe":"M5","persistence":1,"quorum":2,"stage":"C","strategy_scope":"B02_AND_F05_SEPARATELY_REPORTED"},
+      {"action":"PEAK_RELATIVE_TERMINATION","candidate_id":"ABC_C_M5_Q2_R2","observation_timeframe":"M5","persistence":2,"quorum":2,"stage":"C","strategy_scope":"B02_AND_F05_SEPARATELY_REPORTED"},
+      {"action":"PEAK_RELATIVE_TERMINATION","candidate_id":"ABC_C_M5_Q3_R1","observation_timeframe":"M5","persistence":1,"quorum":3,"stage":"C","strategy_scope":"B02_AND_F05_SEPARATELY_REPORTED"},
+      {"action":"PEAK_RELATIVE_TERMINATION","candidate_id":"ABC_C_M5_Q3_R2","observation_timeframe":"M5","persistence":2,"quorum":3,"stage":"C","strategy_scope":"B02_AND_F05_SEPARATELY_REPORTED"},
+      {"action":"PEAK_RELATIVE_TERMINATION","candidate_id":"ABC_C_M15_Q2_R1","observation_timeframe":"M15","persistence":1,"quorum":2,"stage":"C","strategy_scope":"B02_AND_F05_SEPARATELY_REPORTED"},
+      {"action":"PEAK_RELATIVE_TERMINATION","candidate_id":"ABC_C_M15_Q2_R2","observation_timeframe":"M15","persistence":2,"quorum":2,"stage":"C","strategy_scope":"B02_AND_F05_SEPARATELY_REPORTED"},
+      {"action":"PEAK_RELATIVE_TERMINATION","candidate_id":"ABC_C_M15_Q3_R1","observation_timeframe":"M15","persistence":1,"quorum":3,"stage":"C","strategy_scope":"B02_AND_F05_SEPARATELY_REPORTED"},
+      {"action":"PEAK_RELATIVE_TERMINATION","candidate_id":"ABC_C_M15_Q3_R2","observation_timeframe":"M15","persistence":2,"quorum":3,"stage":"C","strategy_scope":"B02_AND_F05_SEPARATELY_REPORTED"}
+    ],
+    "deterioration_primitives":[
+      "retracement from current post-arm favorable peak >= 50% of additional peak profit above +10 pips",
+      "side * (completed Bid close - canonical breakout level) <= 0",
+      "neither of latest two completed observation bars updates the post-arm favorable extreme and latest directional Bid body <= 0"
+    ],
+    "independence":"evaluated against baseline, not chained after Stage A or B",
+    "observation_timeframes":["M5","M15"],
+    "peak_prerequisite":"a favorable peak strictly above +10 pips must exist after arm before a trigger can qualify",
+    "persistence_bars":[1,2],
+    "quorums":[2,3]
+  },
+  "startup_record":"HYP-023およびHYP-024は閉鎖済みの過去研究であり、今回の検証対象・停止条件・代替候補ではない。参照、再実行、修復、派生候補生成を行わない。",
+  "status":"FROZEN_BEFORE_CANDIDATE_OUTCOMES"
+}
