@@ -1,0 +1,23 @@
+{
+  "schema_version": "usdjpy_hyp026_summary_metrics_v1",
+  "P3_F05_M5": {
+    "failures": 22,
+    "robust_auc_gain": 0.029519824476474027,
+    "bootstrap_ci95": [0.0011033046858339383, 0.06987588136186045],
+    "winner_trigger_rate": 0.10866574965612105,
+    "P3_trigger_rate": 0.8636363636363636,
+    "net_delta_pips": -271.39999999998696
+  },
+  "P2_B02_M15": {
+    "failures": 52,
+    "controls": 163,
+    "robust_auc_gain": 0.042849254354762306,
+    "bootstrap_ci95": [-0.059063266868308206, 0.1416047753408141],
+    "winner_trigger_rate": 0.4171779141104294,
+    "P2_trigger_rate": 0.5,
+    "net_delta_pips": -1952.4000000000133
+  },
+  "P1_incremental_passes": 0,
+  "P2_F05_incremental_passes": 0,
+  "binding_candidates": 0
+}

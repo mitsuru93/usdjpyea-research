@@ -1,0 +1,72 @@
+{
+  "schema_version": "usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1",
+  "hypothesis_id": "USDJPY-HYP-026",
+  "family_id": "Q_MTF_TECHNICAL_INCREMENTAL_STATE",
+  "status": "CLOSED_NO_ECONOMICALLY_VALID_INCREMENTAL_TECHNICAL_RULE",
+  "binding_decision": "CLOSE_BEFORE_PORTFOLIO_REPLAY_MT4_AND_2025",
+  "scope": {
+    "strategies": ["B02", "F05"],
+    "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "timeframes": ["M1", "M5", "M15", "M30", "H1"],
+    "unique_trades": 1882,
+    "feature_rows": 8129,
+    "technical_features_per_timeframe": 42,
+    "2025_accessed": false,
+    "MT4_accessed": false
+  },
+  "method": {
+    "completed_bars_only": true,
+    "models": "fixed leave-one-fold-out L2 logistic; no hyperparameter or threshold optimization",
+    "comparisons": ["price-only", "technical-only", "price+technical by timeframe", "price+all timeframes"],
+    "primary_incremental_gate": {"mean_auc_gain_min": 0.03, "minimum_fold_gain_min": 0.01, "all_four_folds_positive": true, "univariate_support_required": true},
+    "robustness": "enriched price geometry baseline, feature-family ablations, 2000-replicate stratified bootstrap, fixed-ledger next-M1-open counterfactual at classification threshold 0.5",
+    "portfolio_replay_completed": false,
+    "portfolio_replay_reason": "No diagnostic cell retained positive fixed-ledger economics; binding portfolio replay would not be scientifically justified."
+  },
+  "results": {
+    "P3_B02": {"decision": "UNTESTABLE_AS_FOUR_FOLD_TECHNICAL_RULE", "reason": "2024H2 has zero common-M1 P3 observations; only three valid folds."},
+    "P3_F05_M5": {
+      "failure_count": 22,
+      "primary_mean_auc_gain_over_basic_price": 0.12252066780108578,
+      "robust_mean_auc_gain_over_enriched_price_geometry": 0.029519824476474027,
+      "robust_fold_gains": {"2023H1": 0.011707988980716344, "2023H2": 0.07988826815642458, "2024H1": 0.017948717948717996, "2024H2": 0.008534322820037188},
+      "bootstrap_95ci": [0.0011033046858339383, 0.06987588136186045],
+      "bootstrap_probability_gain_le_zero": 0.017,
+      "fixed_ledger_default_delta_pips": -271.39999999998696,
+      "fixed_ledger_stress_delta_pips": -317.70000000007445,
+      "winner_pips_lost": -3978.1,
+      "P3_loss_saved_pips": 660.9,
+      "P1_loss_saved_pips": 1161.9,
+      "P2_loss_saved_pips": 1883.9,
+      "fold_total_deltas": {"2023H1": 301.3, "2023H2": -269.7, "2024H1": -231.9, "2024H2": -71.1},
+      "decision": "ROBUST_DESCRIPTIVE_INFORMATION_BUT_REJECT_ECONOMICALLY"
+    },
+    "P2_B02_M15_15": {
+      "failure_count": 52,
+      "control_count": 163,
+      "primary_mean_auc_gain_over_basic_price": 0.07923182708984423,
+      "robust_mean_auc_gain_over_enriched_price_geometry": 0.042849254354762306,
+      "robust_fold_gains": {"2023H1": 0.03157894736842104, "2023H2": 0.04472271914132375, "2024H1": 0.09123434704830058, "2024H2": 0.0038610038610038533},
+      "bootstrap_95ci": [-0.059063266868308206, 0.1416047753408141],
+      "bootstrap_probability_gain_le_zero": 0.2005,
+      "fixed_ledger_default_delta_pips": -1952.4000000000133,
+      "fixed_ledger_stress_delta_pips": -1978.2000000000626,
+      "winner_pips_lost": -3313.5,
+      "P2_loss_saved_pips": 1361.1,
+      "fold_total_deltas": {"2023H1": -234.0, "2023H2": -466.4, "2024H1": -420.6, "2024H2": -831.4},
+      "decision": "REJECT_UNCERTAIN_AND_ECONOMICALLY_NEGATIVE"
+    },
+    "P2_F05": {"decision": "NO_PORTABLE_INCREMENTAL_TECHNICAL_INFORMATION", "reason": "Price-path baseline already strong; all price+technical timeframe models had negative mean AUC gain."},
+    "P1_B02_F05": {"decision": "DESCRIPTIVE_DECAY_NOT_INCREMENTAL", "reason": "Oscillator/technical deterioration is visible after +10 pips, but no timeframe produced portable positive incremental gain over price path across four folds."}
+  },
+  "candidate_authorization": {
+    "binding_candidate": null,
+    "signal_generation_authorized": false,
+    "portfolio_replay_authorized": false,
+    "MT4_authorized": false,
+    "2025H1_authorized": false,
+    "2025H2_authorized": false,
+    "threshold_repair_authorized": false
+  },
+  "conclusion": "Multi-timeframe technical indicators are informative as state descriptions in limited cells, but they do not produce an economically valid portable termination or entry rule after price-path information and Winner opportunity cost are included."
+}

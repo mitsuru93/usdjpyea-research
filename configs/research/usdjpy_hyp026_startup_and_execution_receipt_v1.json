@@ -1,0 +1,23 @@
+{
+  "schema_version": "usdjpy_hyp026_startup_and_execution_receipt_v1",
+  "research_main_commit": "37833fe29cb5cfa13bcfb1e6896e0dcb584aa926",
+  "core_observed_commit": "0fc4fb42d3ed22bdad253d65a867dfe1808dc214",
+  "files_read_with_paths_and_blob_or_sha": [
+    {"path": "configs/research/usdjpy_research_memory_manifest_v1.json", "blob": "5c05d22c6bb5e8efa0e1fb94b6f313dc64adfebf"},
+    {"path": "configs/research/usdjpy_research_candidate_registry_v46.json", "blob": "9fec5d066ea6690e9bae1375c5d33319c02acf6f"},
+    {"path": "configs/research/usdjpy_b02_f05_entry_exit_technical_reproduction_result_v1.json", "blob": "84055900c56746c17999e28138a020a681552d95"},
+    {"path": "configs/research/usdjpy_b02_f05_entry_information_audit_v1.json", "blob": "7cac67e97294c0f4701abbde9ebec5e7b02fc4e8"},
+    {"path": "configs/research/usdjpy_b02_f05_common_ohlc_indicator_feasibility_v1.json", "blob": "4097dc45933790829bb8522ef4f6b31d372cfddd"},
+    {"path": "configs/research/usdjpy_b02_f05_entry_technical_family_closure_v1.json", "blob": "125ab6423cd4d5bf92f0c68b3078534d6a0dbaac"},
+    {"path": "configs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.json", "identity": "HYP-025 price-only closure"},
+    {"path": "configs/research/usdjpy_hypothesis_ledger_v1.json", "blob": "33ea2b5baa9aea6f3ce97ff2a91d824058abd360"}
+  ],
+  "current_registry_schema_and_status": "usdjpy_research_candidate_registry_v46 / USDJPY_HYP025_CLOSED_NO_ALL_FOLD_PASS",
+  "current_exact_next_action_at_start": "A genuinely distinct user-directed successor requires outcome-free preregistration; MT4 and 2025 locked.",
+  "relevant_hypothesis_ledger_ids": ["USDJPY-HYP-025-RESULT-001", "closed local technical Entry family"],
+  "declared_lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY with frozen 2024 Release-derived M1 Bid/Ask/Mid OHLC",
+  "periods_accessed": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "periods_not_accessed": ["2025H1", "2025H2"],
+  "MT4_accessed": false,
+  "status": "COMPLETE"
+}

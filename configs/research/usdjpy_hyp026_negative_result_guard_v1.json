@@ -1,0 +1,6 @@
+{
+  "schema_version": "usdjpy_hyp026_negative_result_guard_v1",
+  "status": "ACTIVE",
+  "blocked": ["RSI threshold grid", "MACD threshold grid", "ADX threshold grid", "ATR multiplier grid", "indicator period search", "side or session exception", "HYP-025 combination", "2025 selection"],
+  "reason": "Multi-timeframe technical descriptors did not survive Winner opportunity cost as an economically valid rule."
+}

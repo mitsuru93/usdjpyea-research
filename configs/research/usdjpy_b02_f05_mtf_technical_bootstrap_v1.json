@@ -1,0 +1,22 @@
+[
+  {
+    "cell": "P3|F05|5|M5",
+    "model": "price_geom_plus_technical",
+    "base": "price_geom",
+    "observed_mean_gain": 0.029519824476474027,
+    "observed_fold_gains": {"2023H1": 0.011707988980716344, "2023H2": 0.07988826815642458, "2024H1": 0.017948717948717996, "2024H2": 0.008534322820037188},
+    "bootstrap_replicates": 2000,
+    "ci95": [0.0011033046858339383, 0.06987588136186045],
+    "prob_gain_le_zero": 0.017
+  },
+  {
+    "cell": "P2|B02|15|M15",
+    "model": "price_geom_plus_technical",
+    "base": "price_geom",
+    "observed_mean_gain": 0.042849254354762306,
+    "observed_fold_gains": {"2023H1": 0.03157894736842104, "2023H2": 0.04472271914132375, "2024H1": 0.09123434704830058, "2024H2": 0.0038610038610038533},
+    "bootstrap_replicates": 2000,
+    "ci95": [-0.059063266868308206, 0.1416047753408141],
+    "prob_gain_le_zero": 0.2005
+  }
+]

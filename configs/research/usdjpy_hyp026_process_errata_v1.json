@@ -1,0 +1,13 @@
+{
+  "schema_version": "usdjpy_hyp026_process_errata_v1",
+  "hypothesis_id": "USDJPY-HYP-026",
+  "issue": "The outcome-free preregistration was committed before outcomes on branch commit 7e50b58ef1ea9d178d389959b114d75e10100f01, but it was not merged to main and read back before local execution.",
+  "scientific_effect": "The audit may close a negative family and preserve descriptive findings, but it may not authorize a binding candidate, MT4 execution or protected-period access.",
+  "mitigation": [
+    "all thresholds, features, timeframes, observations and model parameters remain disclosed",
+    "post-primary robustness was downgrade-only and separately fixed before diagnostics",
+    "no candidate survived fixed-ledger economics",
+    "2025 and MT4 were not accessed"
+  ],
+  "status": "DISCLOSED_NO_BINDING_CANDIDATE"
+}

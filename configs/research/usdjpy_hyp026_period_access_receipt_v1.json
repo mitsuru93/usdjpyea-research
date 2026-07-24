@@ -1,0 +1,14 @@
+{
+  "schema_version": "usdjpy_hyp026_period_access_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-026",
+  "development_folds_accessed": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "2025H1_accessed": false,
+  "2025H1_authorized": false,
+  "2025H2_accessed": false,
+  "2025H2_authorized": false,
+  "MT4_accessed": false,
+  "MT4_authorized": false,
+  "portfolio_replay_completed": false,
+  "reason": "No cell survived fixed-ledger economics; HYP-026 closed before portfolio replay, MT4 and protected periods.",
+  "status": "FIREWALL_INTACT"
+}

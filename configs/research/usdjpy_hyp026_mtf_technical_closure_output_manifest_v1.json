@@ -1,0 +1,30 @@
+{
+  "schema_version": "usdjpy_hyp026_mtf_technical_closure_output_manifest_v1",
+  "status": "COMPLETE",
+  "repository_files": {
+    "preregistration": "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_prereg_v1.json",
+    "robustness_contract": "configs/research/usdjpy_b02_f05_mtf_technical_robustness_addendum_v1.json",
+    "canonical_result": "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.json",
+    "canonical_report": "docs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.md",
+    "robustness_result": "configs/research/usdjpy_b02_f05_mtf_technical_robustness_result_v1.json",
+    "bootstrap": "configs/research/usdjpy_b02_f05_mtf_technical_bootstrap_v1.json",
+    "fixed_ledger_counterfactual": "configs/research/usdjpy_b02_f05_mtf_technical_fixed_ledger_counterfactual_v1.csv",
+    "evaluation_receipt": "configs/research/usdjpy_hyp026_mtf_technical_exact_evaluation_receipt_v1.json"
+  },
+  "exact_bundle_only_members": {
+    "primary_result": {"name": "usdjpy_b02_f05_mtf_technical_incremental_audit_result_v1.json", "sha256": "65b46c1be999f617a24a072bbc240ecbc3ad91fc03608fd9744db30155e56ff2"},
+    "primary_gates": {"name": "usdjpy_b02_f05_mtf_technical_incremental_gates_v1.csv", "sha256": "b7e60d1a5231821435c833859e1d1fd41d63230b1a1fbe84c96e7bdee8fee153"},
+    "robustness_metrics": {"name": "usdjpy_b02_f05_mtf_technical_robustness_metrics_v1.csv", "sha256": "dc3df59f8efac69b828e65b4fb7512214fc7cb830b9e072e47e7c897c15d5a20"},
+    "feature_dataset": {"name": "usdjpy_b02_f05_mtf_technical_feature_dataset_v1.csv.gz", "sha256": "recorded in bundle manifest"},
+    "primary_evaluator": {"name": "evaluate_usdjpy_b02_f05_mtf_technical_incremental_audit_v1.py", "sha256": "9ebef1668f05e3033c626db57fb58df9366d737a1b6890d6452d6ae1f18ad0c7"},
+    "robustness_evaluator": {"name": "evaluate_usdjpy_b02_f05_mtf_technical_robustness_v1.py", "sha256": "e8a16fe785f19d6e79407fd32a8b5ae72be2dff2474f2ec624a64918a9651341"}
+  },
+  "bundle": {
+    "filename": "usdjpy_hyp026_mtf_technical_audit_bundle_v1.zip",
+    "bytes": 14865276,
+    "sha256": "b244229322e794385e2a2301719dcf6fb3daf47636ef92adc8233e88ed5a555f",
+    "repository_mirror": false
+  },
+  "MT4_accessed": false,
+  "2025_accessed": false
+}

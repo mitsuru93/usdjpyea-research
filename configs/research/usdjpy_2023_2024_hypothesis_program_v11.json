@@ -1,0 +1,21 @@
+{
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v11",
+  "status": "HYP026_CLOSED_NO_ECONOMICALLY_VALID_INCREMENTAL_TECHNICAL_RULE",
+  "completed_hypothesis": "USDJPY-HYP-026",
+  "family_id": "Q_MTF_TECHNICAL_INCREMENTAL_STATE",
+  "active_family": null,
+  "active_hypothesis": null,
+  "folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "timeframes": ["M1", "M5", "M15", "M30", "H1"],
+  "technical_features_per_timeframe": 42,
+  "primary_pass_cells": ["P3|F05|5|M5", "P3|F05|5|ALL", "P3|F05|5|H1", "P2|B02|15|M15"],
+  "robustness_cells": ["P3|F05|5|M5", "P2|B02|15|M15"],
+  "economically_valid_candidates": [],
+  "binding_candidate": null,
+  "result": "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.json",
+  "result_status": "CLOSED_NO_ECONOMICALLY_VALID_INCREMENTAL_TECHNICAL_RULE",
+  "MT4_access": false,
+  "2025_access": false,
+  "next_action": "No HYP-026 threshold optimization, timeframe repair, portfolio replay, MT4 or 2025 evaluation. Retain the technical variables only as descriptive diagnostics unless a genuinely distinct user-directed mechanism is preregistered without using these outcomes to choose thresholds.",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v10.json"
+}

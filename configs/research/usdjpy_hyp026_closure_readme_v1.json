@@ -1,0 +1,16 @@
+{
+  "schema_version": "usdjpy_hyp026_closure_readme_v1",
+  "hypothesis_id": "USDJPY-HYP-026",
+  "status": "CLOSED_NO_ECONOMICALLY_VALID_INCREMENTAL_TECHNICAL_RULE",
+  "read_first": [
+    "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.json",
+    "docs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.md",
+    "configs/research/usdjpy_hyp026_mtf_technical_exact_evaluation_receipt_v1.json",
+    "configs/research/usdjpy_b02_f05_mtf_technical_fixed_ledger_counterfactual_v1.csv",
+    "configs/research/usdjpy_hyp026_process_errata_v1.json"
+  ],
+  "summary": "Five-timeframe technical information was tested beyond HYP-025. Limited discrimination remained in F05 P3 and B02 P2, but Winner opportunity cost made both economically negative. P1 technical deterioration was not incremental over price path.",
+  "binding_candidate": null,
+  "MT4_accessed": false,
+  "2025_accessed": false
+}
