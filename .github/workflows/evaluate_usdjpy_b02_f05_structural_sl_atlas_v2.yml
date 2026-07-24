@@ -1,0 +1,210 @@
+name: Evaluate USDJPY B02 F05 Structural SL Atlas v2
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - '.github/workflows/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.yml'
+      - 'configs/research/usdjpy_b02_f05_structural_sl_atlas_protocol_v2.json'
+      - 'tools/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.py'
+      - 'tools/usdjpy_structural_sl_v1/**'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type RUN_STRUCTURAL_SL_ATLAS_V2 to run the frozen broad discovery atlas'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Enforce frozen boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ '${{ github.event_name }}' == 'workflow_dispatch' ]]; then
+            [[ '${{ inputs.confirmation }}' == 'RUN_STRUCTURAL_SL_ATLAS_V2' ]]
+          fi
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('configs/research/usdjpy_b02_f05_structural_sl_atlas_protocol_v2.json')
+          e=Path('tools/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.py')
+          d=json.loads(p.read_text())
+          assert d['status']=='FROZEN_BEFORE_OUTCOME_EXECUTION'
+          assert d['candidate_count']==303
+          assert len(d['deterministic_families'])==12
+          assert d['authorization']['direct_user_instruction'] is True
+          assert d['authorization']['notion_task_dependency'] is False
+          assert d['boundaries']['fixed_pip_stop_evaluated'] is False
+          assert d['boundaries']['mt4_accessed'] is False
+          assert d['boundaries']['2025_accessed'] is False
+          print('protocol_sha256',hashlib.sha256(p.read_bytes()).hexdigest())
+          print('evaluator_sha256',hashlib.sha256(e.read_bytes()).hexdigest())
+          PY
+
+      - name: Install frozen dependencies
+        run: |
+          python -m pip install --disable-pip-version-check \
+            'numpy==2.1.3' 'pandas==2.2.3' 'scipy==1.15.3' 'scikit-learn==1.6.1'
+
+      - name: Compile and run outcome-free preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            tools/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.py \
+            tools/usdjpy_structural_sl_v1/common.py
+          python tools/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.py \
+            --protocol configs/research/usdjpy_b02_f05_structural_sl_atlas_protocol_v2.json \
+            --preflight-only > atlas_preflight_v2.json
+          jq -e '.status=="PASS_NO_OUTCOMES" and .candidate_count==303 and .families==12 and .outcomes_computed==false and .portfolio_replay_computed==false and .mt4_accessed==false and ."2025_accessed"==false and .notion_task_dependency==false' atlas_preflight_v2.json
+
+      - name: Download and verify exact historical authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/historical inputs/2023 inputs/2024h1 inputs/2024h2 inputs/derived
+          gh release download f05-failed-reclaim-historical-authorities-v1 \
+            --repo "$GITHUB_REPOSITORY" --dir inputs/historical \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' \
+            --pattern 'EXPECTED_SHA256SUMS'
+          (cd inputs/historical && sha256sum -c EXPECTED_SHA256SUMS)
+          unzip -q inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip -d inputs/2023
+          unzip -q inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip -d inputs/2024h1
+          unzip -q inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip -d inputs/2024h2
+          gh release download usdjpy-2024-derived-bars-v1 \
+            --repo "$GITHUB_REPOSITORY" --dir inputs/derived \
+            --pattern 'USDJPY-2024-m1-derived-bars-v1.csv.gz'
+          printf '%s  %s\n' \
+            '4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78' inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            '167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e' inputs/2023/normalized/usdjpy_2023_m1_bid_utc_rakuten_mt4_v1.csv.gz \
+            '9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a' inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            'a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd' inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            'f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0' inputs/derived/USDJPY-2024-m1-derived-bars-v1.csv.gz \
+            > inputs/SELECTED_SHA256SUMS
+          sha256sum -c inputs/SELECTED_SHA256SUMS
+
+      - name: Run frozen comprehensive atlas
+        id: atlas
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -o pipefail
+          python tools/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.py \
+            --protocol configs/research/usdjpy_b02_f05_structural_sl_atlas_protocol_v2.json \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m1-2023 inputs/2023/normalized/usdjpy_2023_m1_bid_utc_rakuten_mt4_v1.csv.gz \
+            --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            --m1-2024 inputs/derived/USDJPY-2024-m1-derived-bars-v1.csv.gz \
+            --out-dir atlas_output \
+            --research-commit "$GITHUB_SHA" \
+            --workflow-run-id "$GITHUB_RUN_ID" \
+            --workflow-run-attempt "$GITHUB_RUN_ATTEMPT" 2>&1 | tee atlas_evaluation.log
+          jq -e '(.status=="ATLAS_COMPLETE_SHORTLIST_READY_FOR_FULL_REPLAY" or .status=="ATLAS_COMPLETE_NO_ROBUST_FAMILY") and .population.trade_count==1882 and .population.baseline_loser_count==916 and .search.deterministic_candidate_count==303 and .boundaries.existing_accepted_trade_overlay_computed==true and .boundaries.full_admission_portfolio_replay_computed==false and .boundaries.mt4_accessed==false and .boundaries."2025H1_accessed"==false and .boundaries."2025H2_accessed"==false and .decision.candidate_frozen==false' atlas_output/result_v2.json
+
+      - name: Package evidence
+        if: steps.atlas.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp configs/research/usdjpy_b02_f05_structural_sl_atlas_protocol_v2.json atlas_output/
+          cp tools/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.py atlas_output/
+          cp atlas_evaluation.log atlas_output/
+          find atlas_output -type f -print0 | sort -z | xargs -0 sha256sum > atlas_output/PACKAGE_SHA256SUMS
+          zip -q -X -r "usdjpy-b02-f05-structural-sl-atlas-v2-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" atlas_output
+
+      - name: Upload evidence
+        id: upload
+        if: steps.atlas.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-b02-f05-structural-sl-atlas-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            atlas_output
+            usdjpy-b02-f05-structural-sl-atlas-v2-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0
+
+      - name: Publish immutable Research Release
+        if: steps.atlas.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          asset="usdjpy-b02-f05-structural-sl-atlas-v2-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip"
+          gh release create usdjpy-b02-f05-structural-sl-atlas-v2 "$asset" \
+            --target "$GITHUB_SHA" \
+            --title 'USDJPY B02/F05 structural SL atlas v2' \
+            --notes 'Frozen broad structural-stop discovery atlas. No candidate freeze, MT4 or 2025 access.' \
+            --repo "$GITHUB_REPOSITORY"
+
+      - name: Publish receipt
+        if: always() && github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        shell: bash
+        run: |
+          status='NOT_AVAILABLE'; exact='NOT_AVAILABLE'; cv='NOT_AVAILABLE'; models='NOT_AVAILABLE'; clusters='NOT_AVAILABLE'; events='NOT_AVAILABLE'; error_tail=''
+          if [[ -f atlas_output/result_v2.json ]]; then
+            status=$(jq -r '.status' atlas_output/result_v2.json)
+            exact=$(jq -r '.deterministic.exact_discovery_eligible_count' atlas_output/result_v2.json)
+            cv=$(jq -r '.deterministic.nested_cv_promising|length' atlas_output/result_v2.json)
+            models=$(jq -r '.supervised.nested_cv_promising|length' atlas_output/result_v2.json)
+            clusters=$(jq -r '.unsupervised.nested_cv_promising|length' atlas_output/result_v2.json)
+            events=$(jq -r '.search.event_rows' atlas_output/result_v2.json)
+          fi
+          if [[ -f atlas_evaluation.log ]]; then error_tail=$(tail -n 20 atlas_evaluation.log); fi
+          cat > receipt.md <<EOF
+          workflow: evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.yml
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          head_sha: ${GITHUB_SHA}
+          job_status: ${JOB_STATUS}
+          result_status: ${status}
+          deterministic_candidates: 303
+          event_rows: ${events}
+          exact_discovery_eligible: ${exact}
+          nested_cv_promising_families: ${cv}
+          nested_cv_promising_models: ${models}
+          nested_cv_promising_clusters: ${clusters}
+          artifact_id: ${ARTIFACT_ID}
+          artifact_digest: ${ARTIFACT_DIGEST}
+          release_tag: usdjpy-b02-f05-structural-sl-atlas-v2
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          full_admission_portfolio_replay: false
+          mt4_accessed: false
+          2025_accessed: false
+          candidate_frozen: false
+
+          error_tail:
+          \`\`\`
+          ${error_tail}
+          \`\`\`
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "[structural-sl-atlas-v2] ${GITHUB_RUN_ID} ${JOB_STATUS}" \
+            --body-file receipt.md

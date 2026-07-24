@@ -1,0 +1,135 @@
+{
+  "schema_version": "usdjpy_b02_f05_structural_sl_atlas_protocol_v2",
+  "status": "FROZEN_BEFORE_OUTCOME_EXECUTION",
+  "direct_scope": "Comprehensive structural-stop discovery across B02/F05 using diverse online-only price-path mechanisms and multiple statistical methods. This is not a repair, extension or reopening of HYP-023, HYP-024 or HYP-025.",
+  "population": {
+    "trade_count": 1882,
+    "folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "counts": {
+      "2023H1": {"B02": 121, "F05": 367},
+      "2023H2": {"B02": 109, "F05": 363},
+      "2024H1": {"B02": 97, "F05": 331},
+      "2024H2": {"B02": 102, "F05": 392}
+    }
+  },
+  "source_sha256": {
+    "m15_2023": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "m1_2023": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e",
+    "events_2024h1": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "events_2024h2": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "m1_2024": "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0"
+  },
+  "normalization": {
+    "price_scale": "max(pre-entry 60-minute bid range, 8 times pre-entry 60-minute median M1 true range)",
+    "cusum_sigma": "pre-entry 60-minute M1 close-difference sigma scaled by sqrt(timeframe), floored at half median true range",
+    "fixed_pip_thresholds": false
+  },
+  "candidate_count": 303,
+  "deterministic_families": [
+    {
+      "family": "LEVEL_REENTRY_PERSISTENCE",
+      "mechanism": "Persistent executable close back inside breakout or entry level.",
+      "grid": {"tf": [1, 5, 15], "level": ["breakout", "entry"], "persistence": [1, 2, 3], "arm": ["unprofitable", "any"]}
+    },
+    {
+      "family": "FAILED_RECLAIM_SEQUENCE",
+      "mechanism": "Re-entry, later reclaim, then a strictly later structural failure.",
+      "grid": {"tf": [1, 5, 15], "persistence": [1, 2], "max_mfe_atr": [0.0, 0.5]}
+    },
+    {
+      "family": "CROSS_COUNT_CHOP",
+      "mechanism": "Repeated breakout-level crossings with limited normalized displacement.",
+      "grid": {"tf": [1, 5], "window_minutes": [30, 60, 120], "crossings": [2, 3, 4], "max_displacement_atr": [0.0, 0.25]}
+    },
+    {
+      "family": "MFE_GIVEBACK",
+      "mechanism": "Volatility-normalized favorable excursion followed by fractional giveback.",
+      "grid": {"tf": [1, 5], "arm_atr": [0.25, 0.5, 1.0], "giveback_frac": [0.5, 0.75, 1.0], "persistence": [1, 2]}
+    },
+    {
+      "family": "STAGNATION_GIVEBACK",
+      "mechanism": "No new favorable extreme for a fixed time followed by normalized giveback.",
+      "grid": {"tf": [1, 5], "arm_atr": [0.25, 0.5], "stagnation_minutes": [15, 30], "giveback_frac": [0.5, 1.0]}
+    },
+    {
+      "family": "ROLLING_CHANNEL_BREAK",
+      "mechanism": "Break of the prior rolling side-aligned close channel.",
+      "grid": {"tf": [1, 5, 15], "lookback": [3, 5], "persistence": [1, 2], "arm": ["any", "positive"]}
+    },
+    {
+      "family": "ADVERSE_RUN",
+      "mechanism": "Consecutive adverse closes with normalized cumulative displacement.",
+      "grid": {"tf": [1, 5, 15], "bars": [2, 3, 4], "cumulative_atr": [0.25, 0.5, 1.0]}
+    },
+    {
+      "family": "CUSUM_REVERSAL",
+      "mechanism": "Negative side-aligned CUSUM change-point using pre-entry volatility.",
+      "grid": {"tf": [1, 5], "h": [1.5, 2.0, 2.5], "drift": [0.0, 0.25], "arm": ["any", "positive"]}
+    },
+    {
+      "family": "SLOPE_BREAK",
+      "mechanism": "Rolling side-aligned regression slope t-statistic deterioration.",
+      "grid": {"tf": [1, 5, 15], "lookback": [3, 5], "tstat": [-0.5, -1.0], "arm": ["any", "positive"]}
+    },
+    {
+      "family": "TIME_UNDERWATER",
+      "mechanism": "Persistent normalized underwater state, optionally requiring breakout re-entry.",
+      "grid": {"duration_minutes": [5, 15, 30, 60, 120], "depth_atr": [0.0, 0.25], "reentry_required": [false, true]}
+    },
+    {
+      "family": "VOL_SHOCK_REVERSAL",
+      "mechanism": "Adverse large-range bar closing in the adverse tail.",
+      "grid": {"tf": [1, 5, 15], "range_atr": [0.25, 0.5], "close_frac": [0.25, 0.5], "arm": ["any", "positive"]}
+    },
+    {
+      "family": "PRE_RANGE_INVALIDATION",
+      "mechanism": "Loss of pre-entry range midpoint, opposite quartile or opposite edge.",
+      "grid": {"pre_lookback": [15, 30, 60, 120], "level": ["midpoint", "opposite_quartile", "opposite_edge"], "persistence": [1, 2]}
+    }
+  ],
+  "methods": {
+    "deterministic": "303 exact online-only structural candidates",
+    "selection_bias_control": "leave-one-fold-out family selection; exact-candidate all-fold and connected-neighbour gates",
+    "multiple_testing": "date-level one-sided Wilcoxon tests with Benjamini-Hochberg q-values by scope",
+    "robustness": ["+1 pip and +2 pip exit costs", "1, 2 and 5 minute execution delays", "best-date removal", "fold, direction, strategy and month breadth"],
+    "supervised": {"checkpoints_minutes": [5, 15, 30, 60, 120], "models": ["L2 logistic", "depth-2 tree", "depth-3 tree", "regularized histogram gradient boosting"], "threshold_selection": "training folds only"},
+    "unsupervised": {"checkpoints_minutes": [30, 60], "method": "leave-one-fold-out KMeans trajectory clustering", "k": [3, 4, 5]},
+    "descriptive": "winner/loser trajectory timing and rank-biserial diagnostics"
+  },
+  "discovery_gate": {
+    "minimum_triggers": "scope-dependent: ALL 15, F05 12, B02 8",
+    "minimum_loser_triggers": "at least half the trigger floor and at least 5",
+    "all_fold_default_nonnegative": true,
+    "all_fold_severe_1pip_nonnegative": true,
+    "both_direction_nonnegative": true,
+    "total_default_positive": true,
+    "total_severe_1pip_positive": true,
+    "delay_2min_positive": true,
+    "best_date_removed_positive": true,
+    "winner_damage_limit": "not worse than 60% of loser benefit",
+    "active_months_min": 4,
+    "positive_active_month_ratio_min": 0.6,
+    "date_qvalue_max": 0.1,
+    "connected_preliminary_neighbours_min": 2
+  },
+  "decision_boundary": {
+    "this_evaluation_can_freeze_candidate": false,
+    "shortlist_requires_full_admission_portfolio_replay": true,
+    "2024_shortlist_requires_raw_tick_event_order_audit": true,
+    "research_confirmation_required_before_mt4": true,
+    "mt4_parity_required_before_implementation": true
+  },
+  "authorization": {
+    "direct_user_instruction": true,
+    "notion_task_dependency": false,
+    "new_hypothesis_id": false
+  },
+  "boundaries": {
+    "fixed_pip_stop_evaluated": false,
+    "mt4_accessed": false,
+    "2025_accessed": false,
+    "closed_hypotheses_reopened": false,
+    "implementation_authorized": false,
+    "candidate_frozen": false
+  }
+}
