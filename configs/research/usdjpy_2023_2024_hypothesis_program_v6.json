@@ -1,0 +1,21 @@
+{
+  "active_family": "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
+  "active_grid": "two separate arms x two quorum values x two persistence values = eight cells",
+  "active_hypothesis": "USDJPY-HYP-024",
+  "boundaries": {"2025_H1": false, "2025_H2": false, "MT4_parity": false, "live_orders": false},
+  "completed": {
+    "B02_F05_entry_exit_independent_reproduction": "PASS_DATA_FEATURE_STAT_IDENTITY_WITH_INDEPENDENT_MODEL_VARIATION",
+    "B02_F05_factor_analysis": "PASS_EXACT_REPORT_SHA_CANONICALIZED",
+    "Entry_information_audit": "PASS_NO_LOOKAHEAD",
+    "Entry_local_technical_family": "CLOSED_ZERO_PORTABLE_FACTORS",
+    "HYP023_exact_six_cell_evaluation": "CLOSED_ZERO_CORE_ZERO_FULL_ZERO_ELIGIBLE_REGION",
+    "common_full_OHLC_indicator_feasibility": "REJECT_MIXED_LINEAGE"
+  },
+  "current_candidate": null,
+  "exact_next_action": "After this preregistration merge, execute exactly the eight frozen HYP-024 profit-armed directional-state-collapse cells once on 2023H1, 2023H2, 2024H1 and 2024H2 with the committed evaluator and exact reproduced ledgers. Evaluate P2 and P1 arms separately; apply all fold, severe-cost, target-benefit, winner-tail, strategy, direction, quarter, month, date-removal and within-arm family-region gates without modification. If neither arm has an eligible connected family region, close HYP-024 before MT4 and 2025. If one arm has a region, freeze at most one representative before Research-to-MT4 parity. Do not expand components, thresholds, arms or gates after outcomes.",
+  "objective": "Use 2023H1, 2023H2, 2024H1 and 2024H2 as development/falsification folds to freeze at most one exact specification for an unchanged 2025 H1 Rakuten MT4 gate without selecting from 2025.",
+  "prohibited": ["no Entry technical threshold reopening", "no HYP-023 repair", "no parameter/component/arm expansion", "no P2/P1 candidate combination", "no gate change after outcomes", "no MT4 during Research evaluation", "no 2025 H1/H2 access"],
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v6",
+  "status": "HYP024_PREREGISTERED_AWAITING_EXACT_EIGHT_CELL_EVALUATION",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v5.json"
+}
