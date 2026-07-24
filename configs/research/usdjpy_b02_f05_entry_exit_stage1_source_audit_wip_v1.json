@@ -1,0 +1,60 @@
+{
+  "schema_version": "usdjpy_b02_f05_entry_exit_stage1_source_audit_wip_v1",
+  "status": "WIP_NOT_CANONICAL_SOURCE_IDENTITY_BLOCKED",
+  "scope": "Independent B02/F05 P3 Entry, P2 early Exit and P1 giveback research; separate from HYP-023",
+  "research_main_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f",
+  "branch": "agent/entry-exit-stage1-source-audit-v1",
+  "base_is_current": true,
+  "startup": {
+    "mandatory_files_read_in_manifest_order": 25,
+    "manifest_blob": "bac5b92c229b060f40d835a2cbf116b60dcbfdd6",
+    "registry": "usdjpy_research_candidate_registry_v40",
+    "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+    "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "mt4_accessed": false,
+    "2025_accessed": false
+  },
+  "artifact_audit": {
+    "report": {
+      "filename": "B02_F05_entry_exit_technical_factor_analysis_v1.md",
+      "expected_sha256": "31e7fc2352effa08042cc86e58a980cb1234cc4bad64751495b1deab266d74c4",
+      "file_library_id": "file_00000000c3cc81f597b34adbadfaa3b0",
+      "content_read": true,
+      "raw_bytes_acquired": false,
+      "sha256_verified": false
+    },
+    "bundle": {
+      "filename": "B02_F05_entry_exit_technical_factor_analysis_bundle_v1.zip",
+      "expected_sha256": "64666e41f752bf2a56020b7fd22380f817b5fe35a1f64d1f49aa647815a14779",
+      "located": false,
+      "raw_bytes_acquired": false,
+      "sha256_verified": false
+    },
+    "accepted_2024h2": {
+      "run_id": 29873856877,
+      "artifact_id": 8512432416,
+      "digest": "sha256:9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b"
+    }
+  },
+  "canonical_state_audit": {
+    "registry_and_notion": "HYP023_PREREGISTERED_AWAITING_EXACT_EVALUATION",
+    "postmortem_blob": "2155726ca0fd8074abc9a89e3095992a8ee3e7a4",
+    "postmortem_claim": "HYP_023_SCIENTIFIC_RESULT_COMPLETE_FAIL",
+    "binding_result_package_found_on_main": false,
+    "state": "CANONICAL_EVIDENCE_AND_REGISTRY_INCONSISTENT"
+  },
+  "failed_gates": [
+    "REPORT_RAW_BYTE_SHA256_VERIFIED",
+    "REPRODUCIBILITY_BUNDLE_PRESENT_AND_SHA256_VERIFIED",
+    "CANONICAL_REGISTRY_MATCHES_COMPLETED_EVIDENCE"
+  ],
+  "execution": {
+    "exact_reproduction_started": false,
+    "scientific_interpretation_started": false,
+    "protocol_preregistered": false,
+    "candidate_generated": false,
+    "mt4_started": false
+  },
+  "exact_next_action": "Acquire and verify exact report and ZIP bytes; reconcile HYP-023 result evidence versus registry; then run Stage E1 exact reproduction before any new hypothesis or protocol.",
+  "scientific_result": false
+}
