@@ -10,7 +10,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from usdjpy_fixed5_portability_lib_v1 import build_signals, load23, load24, norm_def, sha, canon_json
+from run_usdjpy_r1_entry_registry_v2 import SIGNAL_FUNCTIONS
+from usdjpy_fixed5_portability_lib_v1 import hard_excl, norm_def, sha, canon_json
 
 PIP = 0.01
 HORIZONS = [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48]
@@ -74,7 +75,34 @@ def build_all_signals(
     end: pd.Timestamp,
     fold: str,
 ) -> pd.DataFrame:
-    frames = [build_signals(bars, row["candidate"], start, end) for row in candidates]
+    prepared = bars.copy()
+    if "bar_range" not in prepared:
+        prepared["bar_range"] = prepared["mid_high"] - prepared["mid_low"]
+    frames: list[pd.DataFrame] = []
+    for row in candidates:
+        candidate = row["candidate"]
+        side = SIGNAL_FUNCTIONS[candidate["family"]](prepared, candidate)
+        work = pd.DataFrame({
+            "signal_dt": prepared["timestamp_utc"],
+            "entry_dt": prepared["timestamp_utc"].shift(-1),
+            "side": side,
+        })
+        work = work[work["side"].isin([1, -1]) & work["entry_dt"].notna()].copy()
+        work = work[(work["entry_dt"] >= start) & (work["entry_dt"] < end)].copy()
+        work = work[~hard_excl(work["entry_dt"])].copy()
+        work["candidate_id"] = candidate["id"]
+        work["family"] = candidate["family"]
+        work["definition_sha256"] = sha(canon_json(norm_def(candidate)))
+        work["signal_ts"] = work["signal_dt"].dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+        work["entry_ts"] = work["entry_dt"].dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+        work["signal_month"] = work["signal_dt"].dt.strftime("%Y-%m")
+        work["signal_hour_utc"] = work["signal_dt"].dt.hour.astype(int)
+        work["entry_month"] = work["entry_dt"].dt.strftime("%Y-%m")
+        work["entry_hour_utc"] = work["entry_dt"].dt.hour.astype(int)
+        frames.append(work[[
+            "candidate_id", "family", "definition_sha256", "signal_ts", "entry_ts", "side",
+            "signal_month", "signal_hour_utc", "entry_month", "entry_hour_utc",
+        ]])
     out = pd.concat(frames, ignore_index=True)
     out["fold"] = fold
     return out.sort_values(["candidate_id", "signal_ts", "side"]).reset_index(drop=True)
