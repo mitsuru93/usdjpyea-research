@@ -1,0 +1,59 @@
+{
+  "schema_version": "usdjpy_hyp023_notion_sync_receipt_v1",
+  "source_merge_commit": "7fbf904b19ddd74faf1aa93bc3b8e5c430d50aab",
+  "verified_at_utc": "2026-07-24T05:36:22Z",
+  "notion_pages": {
+    "current_state": {
+      "page_id": "3a6c44d0997381889f37ee7d75582215",
+      "research_commit": "7fbf904b19ddd74faf1aa93bc3b8e5c430d50aab",
+      "current_registry": "usdjpy_research_candidate_registry_v41",
+      "current_question": "None authorized — HYP-023 closed fail",
+      "freshness": "Current",
+      "readback": "PASS"
+    },
+    "hyp023_execution_task": {
+      "page_id": "3a7c44d0997381529583eaff1ff2ad60",
+      "status": "完了",
+      "scientific_status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION",
+      "readback": "PASS"
+    },
+    "preregistration_audit_task": {
+      "page_id": "3a7c44d0997381238757d14673e8832f",
+      "status": "完了",
+      "readback": "PASS"
+    },
+    "factor_analysis_archive": {
+      "page_id": "3a7c44d09973816ab323dda65c40625e",
+      "state": "Accepted baseline",
+      "report_sha256": "b0e61fe431485e6ae880e0b4bf7d9fdca1e3905607187d57f45f50fc3feece1e",
+      "readback": "PASS"
+    },
+    "factor_decomposition_receipt": {
+      "page_id": "3a7c44d0997381819602f59f3a6e991d",
+      "status": "完了",
+      "readback": "PASS"
+    }
+  },
+  "agreement": {
+    "active_hypothesis": null,
+    "active_family": null,
+    "current_candidate": null,
+    "registry_status": "USDJPY_HYP023_CLOSED_FAIL_NO_AUTHORIZED_SUCCESSOR",
+    "core_cells": 0,
+    "full_cells": 0,
+    "eligible_family_regions": 0,
+    "finalist": null,
+    "scientific_execution_authorized": false,
+    "MT4_authorized": false,
+    "2025_H1_authorized": false,
+    "2025_H2_authorized": false,
+    "result": "PASS"
+  },
+  "period_access": {
+    "new_market_outcome_access_during_notion_sync": false,
+    "MT4_accessed": false,
+    "2025_H1_accessed": false,
+    "2025_H2_accessed": false
+  },
+  "exact_next_action": "No scientific execution is authorized. Preserve HYP-023 as CLOSED_FAIL and keep MT4 and 2025 H1/H2 locked. A separate analysis thread may formulate at most one genuinely distinct successor research question only after a full canonical duplicate audit and explicit registry authorization; this execution thread must not access further market outcomes until then."
+}
