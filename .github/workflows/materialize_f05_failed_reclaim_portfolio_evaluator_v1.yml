@@ -28,6 +28,7 @@ jobs:
           set +e
           mkdir -p materialize_diagnostics tools
           src_b64=configs/research/f05_failed_reclaim_portfolio_evaluator_v1.py.gz.b64
+          cp "$src_b64" materialize_diagnostics/staged_evaluator.py.gz.b64
           wc -c "$src_b64" | tee materialize_diagnostics/base64_size.txt
           sha256sum "$src_b64" | tee materialize_diagnostics/base64_sha256.txt
           base64 -d "$src_b64" > materialize_diagnostics/evaluator.py.gz
