@@ -1,0 +1,17 @@
+{
+  "checks": {
+    "2025_accessed": false,
+    "direction_normalization": "RSI long=rsi short=100-rsi; signed features multiplied by side",
+    "entry_bar_unconfirmed_ohlc_used": false,
+    "feature_price_series": "M15 executable bid open",
+    "feature_timestamp": "entry open or earlier for Entry analysis",
+    "future_bars_in_entry_features": false,
+    "half_year_boundary_reset_for_labels": true,
+    "missing_value_handling": "median imputation within each training fold only for independent LOFO model",
+    "next_M15_execution_relationship": "signal completed then next M15 open entry; feature values measured at executable entry open",
+    "warmup": "continuous source-year M15 series, then fold assignment; no protected period"
+  },
+  "decision": "Entry negative result is interpretable.",
+  "schema_version": "usdjpy_b02_f05_entry_information_audit_v1",
+  "status": "PASS_NO_LOOKAHEAD_ENTRY_FEATURE_CONTRACT"
+}
