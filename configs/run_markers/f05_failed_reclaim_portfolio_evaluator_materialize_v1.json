@@ -1,9 +1,0 @@
-{
-  "schema_version": "f05_failed_reclaim_portfolio_evaluator_materialize_marker_v1",
-  "status": "ARMED_ONCE",
-  "evaluator_sha256": "c37aac2a23d18754041f8025af5395519a6c0ff5e89e4db32d6a62b734777ac0",
-  "outcomes_computed": false,
-  "portfolio_replay_computed": false,
-  "mt4_accessed": false,
-  "2025_accessed": false
-}
