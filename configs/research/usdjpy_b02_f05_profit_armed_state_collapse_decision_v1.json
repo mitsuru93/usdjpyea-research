@@ -1,0 +1,41 @@
+{
+  "boundaries": {"2025H1_accessed":false,"2025H2_accessed":false,"MT4_accessed":false,"evaluator_changed":false,"gate_changed":false,"grid_expanded":false},
+  "confirmed_predictions": [
+    "Every frozen cell produced positive target-class benefit in every fold.",
+    "Each target arm had at least five target-class exits in every fold."
+  ],
+  "decision": "Close both P2 and P1 arms before MT4 parity and before 2025 access. No exact cell may be selected from aggregate or target-class benefit because zero cells pass all four fold core gates and neither arm forms an eligible connected family region.",
+  "evidence": {
+    "evaluator_sha256":"9195a97f900e5e4782000dac967389919e401a534d72150f9ff6b72463d37f30",
+    "protocol_sha256":"390fe646b904a07e3bd29394edabfc1a26ea311a9e0311aafd85118bbc5a69b7",
+    "states_sha256":"2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "trades_sha256":"98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca"
+  },
+  "exact_next_action":"Preserve HYP-024 as CLOSED_FAIL. No MT4 implementation or 2025 gate is authorized. A future successor requires a separate analysis question with new observable information and a duplicate audit; this execution thread performs no repair.",
+  "falsified_or_unsupported_claims": [
+    "Directional-state collapse separates P2 failures from Winners without cross-fold portfolio harm.",
+    "Directional-state collapse after +10 pips reduces P1 giveback while retaining the Winner right tail.",
+    "Either arm forms a connected robust family region across all four folds.",
+    "A cell can be selected from favorable target-class benefit despite negative total delta, strategy/direction reversals, quarter failures or Winner-tail damage."
+  ],
+  "family_id":"O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
+  "hypothesis_id":"USDJPY-HYP-024",
+  "population":{"candidate_count":8,"state_rows":68955,"trades":1882},
+  "prohibited_reuse": [
+    "Do not change quorum, persistence, components, arms, observation timing, execution timing or gates.",
+    "Do not select O_P1_Q3_R2 from its positive 2023H2 result.",
+    "Do not combine P2 and P1 cells or add Entry rules.",
+    "Do not run MT4 or access 2025 H1/H2 for HYP-024.",
+    "Do not repair from the output ledger."
+  ],
+  "research_question":"USDJPY-RQ-024",
+  "result":{"P1_family_region":false,"P2_family_region":false,"core_cells":0,"eligible_candidates":[],"finalist":null,"full_cells":0},
+  "retained_findings": [
+    "The state transition identifies economically material P2 and P1 losses: target-class benefit is positive in all 32 candidate-fold rows.",
+    "P2 Q2/R1 improves the deeply negative 2023H1 baseline by +773.9 pips while retaining 90.07% of the top-decile Winner tail, but reverses in 2023H2, 2024H1 and 2024H2.",
+    "P1 Q3/R2 is the narrowest P1 rule and is positive only in 2023H2 (+410.4 pips); it remains negative in the other three folds.",
+    "Failure is dominated by Winner sacrifice, negative F05 or B02 contribution, direction reversal, quarter instability and date/month concentration—not by insufficient target-loss activation."
+  ],
+  "schema_version":"usdjpy_b02_f05_profit_armed_state_collapse_decision_v1",
+  "status":"CLOSED_FAIL_NO_ELIGIBLE_FAMILY_REGION"
+}
