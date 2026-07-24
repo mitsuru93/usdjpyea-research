@@ -13,19 +13,19 @@
     "unsupervised_nested_cv_v2.csv": "5bc0a34a445a1c4a4fd439e33b4a0d84cb2fe524f6ff8d748cacc36710765d26"
   },
   "canonical_files": {
-    "configs/research/usdj_b02_f05_structural_sl_atlas_canonical_result_v2.json": {
-      "sha256": "d5126cef8f41e6ce0fbafdcae38f6354dcb08a7a984077548de2f2c8385f0235"
+    "configs/research/usdjpy_b02_f05_structural_sl_atlas_canonical_result_v2.json": {
+      "git_blob_sha1": "c2308d90f5828fd53aa2a4cdfcb1aa309b0f337b"
     },
     "configs/research/usdjpy_b02_f05_structural_sl_atlas_execution_receipt_v2.json": {
-      "sha256": "eba6084c1e4a7474ac85cf906bdfbb61c322fcf4e1bd62a75e3c849c3a3d8bcb"
+      "git_blob_sha1": "4d72a2d8d21e9bbcd65a39d22a54f4a74dc70879"
     },
     "docs/research/USDJPY_B02_F05_structural_SL_atlas_v2.md": {
-      "sha256": "9fb99b8cd2716f40f66ba901a367f8c5fabd1a62af822e67613b8e303549f3e6"
+      "git_blob_sha1": "699e027e9e8fd62df257e2d3788b36911a5c8457"
     }
   },
   "cleanup": {
-    "remove_dispatch_marker": "configs/run_markers/usdjpy_structural_sl_atlas_v2_dispatch.json",
-    "remove_dispatch_workflow": ".github/workflows/dispatch_usdjpy_structural_sl_atlas_v2.yml"
+    "removed_dispatch_marker": "configs/run_markers/usdjpy_structural_sl_atlas_v2_dispatch.json",
+    "removed_dispatch_workflow": ".github/workflows/dispatch_usdjpy_structural_sl_atlas_v2.yml"
   },
   "schema_version": "usdjpy_b02_f05_structural_sl_atlas_canonical_manifest_v2",
   "status": "PASS_READY_FOR_CANONICAL_VALIDATION"
