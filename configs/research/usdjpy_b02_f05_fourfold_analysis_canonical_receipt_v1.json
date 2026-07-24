@@ -1,0 +1,25 @@
+{
+  "independent_reconstruction": {
+    "stage1_audit": "configs/research/usdjpy_b02_f05_stage1_source_class_audit_v1.json",
+    "stage1_path_ledger": {
+      "archive": ".stage2_lifecycle_abc_package_v1.tar.gz",
+      "member": "configs/research/usdjpy_b02_f05_stage1_path_class_ledger_v1.csv.gz"
+    },
+    "stage1_path_ledger_sha256": "c4025d59eef9358fce9df70d50972159d52ff8aa02ebaa851e7fa0273082b82f"
+  },
+  "report": {
+    "expected_sha256": "8dd10ab65bf8be3b885c5adf526f3dbecf73ecddd6d7063dd8949e92c860190b",
+    "path": "docs/research/B02_F05_2024_release_tick_fourfold_analysis_v1.md",
+    "sha256": "8dd10ab65bf8be3b885c5adf526f3dbecf73ecddd6d7063dd8949e92c860190b",
+    "verified": true
+  },
+  "requested_bundle": {
+    "expected_sha256": "4c691f63685710c08389c82639518bbf4de82b91d33e7108c81d8e057cbae354",
+    "located": false,
+    "name": "B02_F05_2024_release_tick_fourfold_analysis_bundle_v1.zip",
+    "replacement_claimed": false,
+    "verified": false
+  },
+  "schema_version": "usdjpy_b02_f05_fourfold_analysis_canonical_receipt_v1",
+  "status": "REPORT_VERIFIED_BUNDLE_NOT_LOCATED"
+}
