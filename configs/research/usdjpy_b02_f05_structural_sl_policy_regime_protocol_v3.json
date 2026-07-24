@@ -1,0 +1,203 @@
+{
+  "authorization": {
+    "direct_user_instruction": true,
+    "new_hypothesis_id": false,
+    "notion_task_dependency": false
+  },
+  "binding_policy_gate": {
+    "all_four_fold_default_nonnegative": true,
+    "all_four_fold_severe_1pip_nonnegative": true,
+    "best_month_removed_positive": true,
+    "both_direction_total_nonnegative": true,
+    "delay_5min_total_positive": true,
+    "minimum_total_triggers": 12,
+    "month_block_bootstrap_95pct_lower_total_positive": true,
+    "positive_active_month_ratio_min": 0.6,
+    "total_default_positive": true,
+    "total_severe_1pip_positive": true,
+    "winner_damage_limit": "not worse than 60% of loser benefit"
+  },
+  "boundaries": {
+    "2025_accessed": false,
+    "candidate_frozen": false,
+    "closed_hypotheses_reopened": false,
+    "fixed_pip_stop_evaluated": false,
+    "implementation_authorized": false,
+    "mt4_accessed": false
+  },
+  "decision_boundary": {
+    "candidate_freeze_allowed": false,
+    "survivor_requires_2024_raw_tick_event_order": true,
+    "survivor_requires_full_admission_portfolio_replay": true,
+    "survivor_requires_mt4_parity": true,
+    "survivor_requires_research_confirmation": true
+  },
+  "direct_scope": "Second-stage structural-stop validation using time-ordered adaptation, ex-ante regimes, family voting, approximate optimal stopping, hidden-state transitions and oracle bounds. This is not a repair or reopening of HYP-023, HYP-024, HYP-025 or HYP-026.",
+  "evaluator": {
+    "common_path": "tools/usdjpy_policy_v3/common.py",
+    "common_sha256": "2c5812bcf0476131200bf428cd4e76cef8a60696fac491a606973cbb41f8edf7",
+    "main_path": "tools/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.py",
+    "main_sha256": "b6369d2902a570298eb602a8eacb8de333ed898165d1700a529ab43c8ff3734d",
+    "reuses_frozen_atlas_v2_source": true
+  },
+  "methods": {
+    "approximate_optimal_stopping": {
+      "decision_margins_pips": [
+        0.0,
+        1.0,
+        2.0
+      ],
+      "features": [
+        "current_norm",
+        "mfe_norm",
+        "mae_norm",
+        "giveback_norm",
+        "level_distance_norm",
+        "underwater_fraction",
+        "crossings",
+        "slope_tstat",
+        "delta_norm",
+        "time_fraction",
+        "pre_range_pips",
+        "side",
+        "session"
+      ],
+      "maximum_horizon_minutes": 240,
+      "models": [
+        "RIDGE_ALPHA10",
+        "HIST_GB_REGULARIZED"
+      ],
+      "outer_validation": "leave-one-fold-out",
+      "persistence": [
+        1,
+        2
+      ],
+      "state_interval_minutes": 5,
+      "strategies": [
+        "B02",
+        "F05"
+      ],
+      "training_exit_cost_pips": 1.0
+    },
+    "ex_ante_regime_router": {
+      "outer_validation": "leave-one-fold-out",
+      "routers": [
+        "SESSION_X_VOL",
+        "SIDE_X_VOL",
+        "SESSION_X_SIDE_X_VOL"
+      ],
+      "scopes": [
+        "ALL",
+        "B02",
+        "F05"
+      ],
+      "selection": "one training-only atlas candidate per sufficiently supported regime cell",
+      "volatility_bins": "training-fold pre-range terciles applied unchanged to holdout"
+    },
+    "family_vote": {
+      "family_selection": "one training-only candidate per structural family",
+      "outer_validation": "leave-one-fold-out",
+      "quorum": [
+        2,
+        3
+      ],
+      "scopes": [
+        "ALL",
+        "B02",
+        "F05"
+      ],
+      "windows_minutes": [
+        5,
+        15,
+        30
+      ]
+    },
+    "hidden_markov_state": {
+      "components": [
+        2,
+        3,
+        4
+      ],
+      "covariance": "diag",
+      "estimator": "diagonal Gaussian mixture emissions plus training-sequence Markov transitions and Viterbi decoding",
+      "maximum_horizon_minutes": 240,
+      "outer_validation": "leave-one-fold-out",
+      "persistence": [
+        1,
+        2
+      ],
+      "state_interval_minutes": 5,
+      "state_mapping": "training-only severe-delta and winner-damage gate",
+      "strategies": [
+        "B02",
+        "F05"
+      ]
+    },
+    "monthly_walk_forward": {
+      "minimum_training_months": 6,
+      "scopes": [
+        "ALL",
+        "B02",
+        "F05"
+      ],
+      "selection": "one atlas candidate selected using past months only; no future fold or month information",
+      "training_windows": [
+        "EXPANDING",
+        "ROLLING_6M",
+        "ROLLING_12M"
+      ]
+    },
+    "oracle_bounds": {
+      "atlas_candidate_oracle": true,
+      "fixed_checkpoint_benchmarks_minutes": [
+        5,
+        15,
+        30,
+        60,
+        120,
+        180,
+        240
+      ],
+      "grid": "every completed 5-minute checkpoint through 240 minutes",
+      "lookahead_use": "diagnostic upper bound only; never deployable",
+      "loss_only_oracle": true,
+      "universal_oracle": true
+    }
+  },
+  "population": {
+    "folds": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ],
+    "strategies": [
+      "B02",
+      "F05"
+    ],
+    "trade_count": 1882
+  },
+  "schema_version": "usdjpy_b02_f05_structural_sl_policy_regime_protocol_v3",
+  "source_authorities": {
+    "atlas_event_ledger_sha256": "6780a28200975da6848dfd8760a96ba67f52327197649a2836c8e32e03c2a0a1",
+    "atlas_metrics_sha256": "d8e5da0b67d3e501e45071b54c6a784e7a5cb82cdbfa4458142c71c4693edd3a",
+    "atlas_release": "usdjpy-b02-f05-structural-sl-atlas-v2",
+    "atlas_trajectory_sha256": "27b04ab651e3fe4d72a6a4d8b6f960de20d9b876f73a3d45a8cc931b77eeb609",
+    "events_2024h1_sha256": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "events_2024h2_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "m15_2023_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "m1_2023_sha256": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e",
+    "m1_2024_sha256": "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0"
+  },
+  "status": "FROZEN_BEFORE_OUTCOME_EXECUTION",
+  "training_candidate_gate": {
+    "best_training_month_removed_positive": true,
+    "default_total_positive": true,
+    "delay_2min_total_positive": true,
+    "minimum_loser_triggers": 5,
+    "minimum_triggers": 8,
+    "positive_training_month_ratio_min": 0.55,
+    "severe_1pip_total_positive": true,
+    "winner_damage_limit": "not worse than 70% of loser benefit"
+  }
+}
