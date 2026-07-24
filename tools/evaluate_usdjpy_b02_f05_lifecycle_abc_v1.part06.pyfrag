@@ -1,0 +1,46 @@
+ cc=[c for c in candidates if c['stage']=='C']
+ for tr in ledger[ledger.fold.str.startswith('2024')].itertuples(index=False):
+  for cand in cc:
+   z=simulate_one(tr,markets[tr.fold],cand,'EXACT_TICK_2024')
+   if z is not None: erows.append(z)
+ exact_c=pd.DataFrame(erows)
+ metrics=[]
+ for cand in candidates:
+  cid=cand['candidate_id']; stage=cand['stage']
+  for fold in FOLDS:
+   metrics.append(fold_metric(cid,stage,fold,effects[(effects.candidate_id==cid)&(effects.fold==fold)].copy(),gate))
+ mf=pd.DataFrame(metrics)
+ summary=[]
+ for cand in candidates:
+  cid=cand['candidate_id']; g=mf[mf.candidate_id==cid]
+  summary.append({'candidate_id':cid,'stage':cand['stage'],'fold_pass_count':int(g.fold_pass.sum()),'all_four_folds_pass':bool(g.fold_pass.all()),'pooled_default_delta_pips':float(effects.loc[effects.candidate_id==cid,'default_delta_pips'].sum()),'pooled_severe_delta_pips':float(effects.loc[effects.candidate_id==cid,'severe_delta_pips'].sum()),'minimum_fold_default_delta_pips':float(g.default_delta_pips.min()),'minimum_fold_severe_delta_pips':float(g.severe_delta_pips.min()),'minimum_top10_retention':float(g.top10_winner_profit_retention.min()),'minimum_top5_retention':float(g.top5_winner_profit_retention.min())})
+ sf=pd.DataFrame(summary); finalists=sf.loc[sf.all_four_folds_pass,'candidate_id'].tolist()
+ htf=htf_audit(effects,markets); tick=tick_sensitivity_summary(effects,exact_c); breakdown=detailed_breakdowns(effects); boundary=boundary_sensitivity(effects); equivalence=parameter_equivalence(candidates)
+ # Portfolio vs fixed-ledger comparison: net is derived from full signal stream; drawdown/concurrency from time-ordered replay.
+ portfolio=[]
+ for cid in protocol['candidate_ids']:
+  for fold in FOLDS:
+   g=effects[(effects.candidate_id==cid)&(effects.fold==fold)]
+   b=baseline_portfolio(g); c=realized_portfolio(g); portfolio.append({'candidate_id':cid,'fold':fold,'fixed_ledger_net_delta_pips':float(g.default_delta_pips.sum()),'portfolio_net_delta_pips':c['net_pips']-b['net_pips'],'baseline_drawdown_jpy':b['realized_max_drawdown_jpy'],'candidate_drawdown_jpy':c['realized_max_drawdown_jpy'],'baseline_trade_count':b['trade_count'],'candidate_trade_count':c['trade_count'],'baseline_max_concurrent':b['max_concurrent_positions'],'candidate_max_concurrent':c['max_concurrent_positions']})
+ pfdf=pd.DataFrame(portfolio)
+ outputs={
+  'usdjpy_b02_f05_lifecycle_abc_trade_effects_v1.csv':effects,
+  'usdjpy_b02_f05_lifecycle_abc_exact_tick_c_arm_effects_v1.csv':exact_c,
+  'usdjpy_b02_f05_lifecycle_abc_fold_metrics_v1.csv':mf,
+  'usdjpy_b02_f05_lifecycle_abc_candidate_summary_v1.csv':sf,
+  'usdjpy_b02_f05_lifecycle_abc_portfolio_replay_v1.csv':pfdf,
+  'usdjpy_b02_f05_lifecycle_abc_tick_sensitivity_v1.csv':tick,
+  'usdjpy_b02_f05_lifecycle_abc_m30_h1_incremental_audit_v1.csv':htf,
+  'usdjpy_b02_f05_lifecycle_abc_breakdown_metrics_v1.csv':breakdown,
+  'usdjpy_b02_f05_lifecycle_abc_boundary_sensitivity_v1.csv':boundary,
+  'usdjpy_b02_f05_lifecycle_abc_parameter_equivalence_v1.csv':equivalence}
+ for name,df in outputs.items(): df.to_csv(a.output_dir/name,index=False,lineterminator='\n')
+ result={'schema_version':'usdjpy_b02_f05_lifecycle_abc_result_v1','status':'PASS_FINALIST_EXISTS' if finalists else 'CLOSED_NO_ALL_FOLD_PASS','scientific_run_count':1,'protocol_sha256':file_sha(a.protocol),'gate_sha256':file_sha(a.gates),'data_contract_sha256':file_sha(a.data_contract),'evaluator_sha256':file_sha(Path(__file__)),'stage1_ledger_sha256':file_sha(a.stage1_ledger),'population':{'total':len(ledger),'common_m1_classes':ledger.common_m1_class.value_counts().to_dict(),'exact_tick_2024_classes':ledger[ledger.fold.str.startswith('2024')].exact_tick_class.value_counts().to_dict()},'candidates':summary,'finalists':finalists,'MT4_authorized':bool(finalists),'2025_H1_authorized':False,'2025_H2_accessed':False,'protocol_changed_after_outcomes':False,'technical_boundaries':{'analysis_bundle_verified':False,'fixed_signal_stream_replayed':True,'canonical_exposure_cap':'none introduced; all accepted signals replayed','m30_h1_audit_binding':False},'output_sha256':{name:file_sha(a.output_dir/name) for name in outputs}}
+ region=family_regions(candidates,sf); region_path=a.output_dir/'usdjpy_b02_f05_lifecycle_abc_family_region_v1.json'; dump_json(region_path,region); result['family_region_sha256']=file_sha(region_path)
+ result_path=a.output_dir/'usdjpy_b02_f05_lifecycle_abc_result_v1.json'; dump_json(result_path,result)
+ report_path=a.output_dir/'usdjpy_b02_f05_lifecycle_abc_result_v1.md'; report_path.write_text(human_report(result,mf,sf),encoding='utf-8')
+ with (a.output_dir/'SHA256SUMS').open('w') as f:
+  for name in sorted(list(outputs)+[pre_path.name,result_path.name,region_path.name,report_path.name]): f.write(f'{file_sha(a.output_dir/name)}  {name}\n')
+ print(json.dumps(result,indent=2,sort_keys=True))
+
+if __name__=='__main__': main()
