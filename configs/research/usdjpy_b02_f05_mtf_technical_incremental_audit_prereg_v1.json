@@ -38,7 +38,17 @@
   "direction_normalization": "signed features multiplied by trade side; bounded oscillators transformed so higher means stronger in trade direction",
   "tests": {
     "univariate": "fold-specific medians, rank-biserial effect, Benjamini-Hochberg q, all-four-fold sign consistency",
-    "models": "fixed L2 logistic regression with training-fold median imputation and standardization; leave-one-fold-out evaluation",
+    "models": {
+      "estimator": "sklearn LogisticRegression",
+      "penalty": "l2",
+      "C": 0.1,
+      "solver": "liblinear",
+      "class_weight": "balanced",
+      "max_iter": 2000,
+      "random_state": 260725,
+      "preprocessing": "training-fold median imputation then training-fold standardization",
+      "validation": "leave-one-fold-out; no hyperparameter tuning"
+    },
     "comparisons": ["price-only", "technical-only per timeframe", "price plus technical per timeframe", "price plus all timeframes"],
     "metrics": ["ROC_AUC", "balanced_accuracy", "Brier_score", "log_loss"],
     "incremental_gate": {
