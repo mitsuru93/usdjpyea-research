@@ -39,10 +39,12 @@ jobs:
           cat > dispatch_receipt.md <<EOF
           workflow: evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.yml
           confirmation: RUN_STRUCTURAL_SL_POLICY_REGIME_V3
-          source_event: one-shot same-repository dispatcher
+          source_event: one-shot same-repository dispatcher retry after technical repair
           dispatched_event: workflow_dispatch
           dispatcher_main_sha: $GITHUB_SHA
-          frozen_package_parent_sha: b28afd4b16e5f98b3de62713c60e9552c866a64f
+          frozen_package_parent_sha: 0a474d2d1a4b50baddc9756a1156780daf717da0
+          failed_run_id: 30132685469
+          repair_scope: zero-trigger policy summary entry_utc UTC coercion only
           run_id: $run_id
           run_url: https://github.com/$GITHUB_REPOSITORY/actions/runs/$run_id
           policy_cells: 72
