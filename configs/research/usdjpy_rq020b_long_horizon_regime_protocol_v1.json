@@ -1,0 +1,94 @@
+{
+  "schema_version": "usdjpy_rq020b_long_horizon_regime_protocol_v1",
+  "status": "FROZEN_BEFORE_STATE_OUTCOME_EVALUATION",
+  "research_question": "USDJPY-RQ-020B",
+  "objective": "Describe whether fixed, no-lookahead multi-day market states consistently favor continuation or reversal for the unchanged fixed-five strategy cohort across 2023H1, 2023H2, 2024H1 and 2024H2.",
+  "authority_and_lineage": {
+    "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+    "2023_transform_source": "first_timestamp_mt4_server converted with the historical EA ServerToUtc rule",
+    "expected_2023_shifted_M15_rows": 1543,
+    "historical_2024_source_mutation": false,
+    "fixed_trade_source": "the unchanged five-strategy cohort from usdjpy_fixed5_exact_portability_result_v1"
+  },
+  "information_time": "Every feature is calculated at the signal-bar close. Entry remains the next M15 bar. Exit, trade P/L and later bars are unavailable to feature construction.",
+  "fixed_windows": {
+    "five_day_market_bars": 480,
+    "twenty_day_market_bars": 1920,
+    "definition": "5 and 20 blocks of 96 completed M15 market bars, including the signal bar and using only prior close differences"
+  },
+  "feature_families": {
+    "market_direction_agreement": {
+      "states": ["UP_UP", "DOWN_DOWN", "UP_DOWN", "DOWN_UP", "ZERO_INVOLVED"],
+      "definition": "sign of raw 5-day return followed by sign of raw 20-day return"
+    },
+    "trade_alignment_agreement": {
+      "states": ["ALIGN_ALIGN", "ALIGN_OPPOSE", "OPPOSE_ALIGN", "OPPOSE_OPPOSE", "ZERO_INVOLVED"],
+      "definition": "sign of trade-side-aligned 5-day return followed by sign of trade-side-aligned 20-day return"
+    },
+    "path_efficiency_5d": {
+      "bins": ["LOW_LT_0_20", "MID_0_20_TO_0_40", "HIGH_GE_0_40"],
+      "definition": "absolute 5-day net close move divided by sum of absolute M15 close moves"
+    },
+    "path_efficiency_20d": {
+      "bins": ["LOW_LT_0_20", "MID_0_20_TO_0_40", "HIGH_GE_0_40"],
+      "definition": "absolute 20-day net close move divided by sum of absolute M15 close moves"
+    },
+    "realized_volatility_ratio_5d_to_20d": {
+      "bins": ["LOW_LT_0_80", "NEUTRAL_0_80_TO_1_20", "HIGH_GT_1_20"],
+      "definition": "RMS M15 close-return volatility over 480 bars divided by RMS volatility over 1920 bars"
+    },
+    "range_position_20d": {
+      "bins": ["LOWER_THIRD", "MIDDLE_THIRD", "UPPER_THIRD"],
+      "definition": "signal close position inside the trailing 1920-bar high-low range"
+    }
+  },
+  "fixed_action_accounting": {
+    "continuation_default_net": "existing gross pips minus existing default cost",
+    "reversal_default_net": "negative existing gross pips minus the same default cost",
+    "continuation_severe_net": "existing gross pips minus existing severe cost",
+    "reversal_severe_net": "negative existing gross pips minus the same severe cost",
+    "disclosure": "Reversal P/L is an algebraic development-outcome-derived counterfactual and is descriptive only. It is not a blind candidate test."
+  },
+  "reporting": [
+    "state by fold",
+    "state by strategy and fold",
+    "trade count and strategy coverage",
+    "continuation and reversal net under default and severe costs",
+    "continuation-minus-reversal action advantage",
+    "profit factor, win rate and date concentration",
+    "leave-one-strategy-out action-sign stability"
+  ],
+  "descriptive_robust_state_gate": {
+    "minimum_trades_each_fold": 30,
+    "minimum_strategies_each_fold": 3,
+    "preferred_action_default_net_positive_each_fold": true,
+    "preferred_action_severe_net_positive_each_fold": true,
+    "same_preferred_action_in_all_four_folds": true,
+    "leave_one_strategy_out_same_action_sign_each_fold": true,
+    "purpose": "A passing state may justify a later separate router preregistration. It does not activate a router in this stage."
+  },
+  "prohibited": [
+    "no outcome-derived thresholds or bins",
+    "no tree search, clustering or parameter optimization",
+    "no interactions between feature families in v1",
+    "no strategy subset selection or portfolio weighting",
+    "no Family I or F05 local repair",
+    "no router candidate activation in this stage",
+    "no MT4 or 2025 access"
+  ],
+  "decision_rule": {
+    "no_state_passes": "CLOSE_RQ_020B_NO_STABLE_LONG_HORIZON_STATE; do not open RQ-020C",
+    "one_or_more_states_pass": "RETAIN_DESCRIPTIVE_STATE_SET_FOR_SEPARATE_ROUTER_REVIEW; do not select or preregister a router automatically"
+  },
+  "evaluator": "tools/evaluate_usdjpy_rq020b_long_horizon_regime_v1.py",
+  "boundaries": {
+    "active_family": null,
+    "active_candidate": null,
+    "new_family_preregistration": false,
+    "regime_router_preregistration": false,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  }
+}
