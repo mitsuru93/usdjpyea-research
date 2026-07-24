@@ -1,0 +1,44 @@
+name: Materialize F05 failed reclaim portfolio evaluator v1
+
+on:
+  push:
+    branches:
+      - agent/f05-failed-reclaim-portfolio-validation-v1
+    paths:
+      - 'configs/run_markers/f05_failed_reclaim_portfolio_evaluator_materialize_v1.json'
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/f05-failed-reclaim-portfolio-validation-v1
+
+      - name: Decode and verify exact evaluator source
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d configs/research/f05_failed_reclaim_portfolio_evaluator_v1.py.gz.b64 \
+            | gzip -d > tools/evaluate_f05_failed_reclaim_portfolio_v1.py
+          printf '%s  %s\n' \
+            c37aac2a23d18754041f8025af5395519a6c0ff5e89e4db32d6a62b734777ac0 \
+            tools/evaluate_f05_failed_reclaim_portfolio_v1.py | sha256sum -c -
+          python -m py_compile \
+            tools/evaluate_f05_failed_reclaim_portfolio_v1.py \
+            tools/usdjpy_structural_sl_v1/common.py \
+            tools/usdjpy_structural_sl_v1/events.py
+
+      - name: Commit evaluator to branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/evaluate_f05_failed_reclaim_portfolio_v1.py
+          git diff --cached --quiet && { echo 'No evaluator change staged'; exit 1; }
+          git commit -m 'research: materialize frozen F05 portfolio evaluator'
+          git push origin HEAD:agent/f05-failed-reclaim-portfolio-validation-v1
