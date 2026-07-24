@@ -1,0 +1,184 @@
+{
+  "arm_summary": {
+    "P1": {
+      "changed_trades_across_candidate_folds": 4193,
+      "default_delta_sum_pips": -8976.1000000006,
+      "target_changed_trades_across_candidate_folds": 1602,
+      "target_class_benefit_sum_pips": 41719.9999999997,
+      "winner_effect_sum_pips": -50696.1000000003
+    },
+    "P2": {
+      "changed_trades_across_candidate_folds": 2303,
+      "default_delta_sum_pips": -3575.8000000004,
+      "target_changed_trades_across_candidate_folds": 1106,
+      "target_class_benefit_sum_pips": 18974.5999999999,
+      "winner_effect_sum_pips": -29821.2000000002
+    }
+  },
+  "boundaries": {
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "gate_changed": false,
+    "grid_expanded": false
+  },
+  "candidate_count": 8,
+  "execution": {
+    "actions_artifact_id": null,
+    "actions_run_id": null,
+    "command": "python tools/evaluate_usdjpy_b02_f05_profit_armed_state_collapse_v1.py --trades usdjpy_b02_f05_source_trade_ledger_v1.csv --states usdjpy_b02_f05_entry_exit_state_ledger_v1.csv.gz --protocol usdjpy_b02_f05_profit_armed_state_collapse_prereg_v1.json --output-dir <output>",
+    "elapsed_wall_seconds": 10.95,
+    "executed_at_utc": "2026-07-24T06:34:32Z",
+    "exit_status": 0,
+    "mode": "LOCAL_DETERMINISTIC_RESEARCH_EVALUATOR",
+    "technical_execution_failures": 0,
+    "warnings": [
+      "pandas UTC-to-quarter Period conversion warns that timezone metadata is dropped after UTC quarter labels are derived; no timestamps, prices, trade keys, triggers or P/L were changed"
+    ]
+  },
+  "family_id": "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
+  "gate_audit": {
+    "all_four_fold_candidate_passes": {
+      "B02_delta_nonnegative": [],
+      "F05_delta_nonnegative": [],
+      "both_quarter_deltas_nonnegative": [],
+      "candidate_default_net_positive_and_pf_ge_1": [],
+      "candidate_severe_net_positive_and_pf_ge_1": [],
+      "ex_best_two_dates_positive": [],
+      "long_delta_nonnegative": [],
+      "month_breadth": [],
+      "short_delta_nonnegative": [],
+      "target_class_benefit_positive": [
+        "O_P1_Q2_R1",
+        "O_P1_Q2_R2",
+        "O_P1_Q3_R1",
+        "O_P1_Q3_R2",
+        "O_P2_Q2_R1",
+        "O_P2_Q2_R2",
+        "O_P2_Q3_R1",
+        "O_P2_Q3_R2"
+      ],
+      "target_class_exits_ge_5": [
+        "O_P1_Q2_R1",
+        "O_P1_Q2_R2",
+        "O_P1_Q3_R1",
+        "O_P1_Q3_R2",
+        "O_P2_Q2_R1",
+        "O_P2_Q2_R2",
+        "O_P2_Q3_R1",
+        "O_P2_Q3_R2"
+      ],
+      "top_decile_winner_retention_ge_0_90": [
+        "O_P2_Q3_R2"
+      ]
+    },
+    "key_readout": "Every cell improved its target class with at least five target exits in every fold, but no cell passed all-fold aggregate default/severe, strategy, direction, quarter, month and date-removal gates. Only O_P2_Q3_R2 retained at least 90% of top-decile winner profit in all folds; it still failed stability and breadth.",
+    "row_pass_counts": {
+      "B02_delta_nonnegative": {
+        "passed_rows": 16,
+        "total_rows": 32
+      },
+      "F05_delta_nonnegative": {
+        "passed_rows": 7,
+        "total_rows": 32
+      },
+      "both_quarter_deltas_nonnegative": {
+        "passed_rows": 4,
+        "total_rows": 32
+      },
+      "candidate_default_net_positive_and_pf_ge_1": {
+        "passed_rows": 24,
+        "total_rows": 32
+      },
+      "candidate_severe_net_positive_and_pf_ge_1": {
+        "passed_rows": 21,
+        "total_rows": 32
+      },
+      "ex_best_two_dates_positive": {
+        "passed_rows": 6,
+        "total_rows": 32
+      },
+      "long_delta_nonnegative": {
+        "passed_rows": 11,
+        "total_rows": 32
+      },
+      "month_breadth": {
+        "passed_rows": 6,
+        "total_rows": 32
+      },
+      "short_delta_nonnegative": {
+        "passed_rows": 18,
+        "total_rows": 32
+      },
+      "target_class_benefit_positive": {
+        "passed_rows": 32,
+        "total_rows": 32
+      },
+      "target_class_exits_ge_5": {
+        "passed_rows": 32,
+        "total_rows": 32
+      },
+      "top_decile_winner_retention_ge_0_90": {
+        "passed_rows": 14,
+        "total_rows": 32
+      }
+    }
+  },
+  "hypothesis_id": "USDJPY-HYP-024",
+  "identity": {
+    "evaluator_path": "tools/evaluate_usdjpy_b02_f05_profit_armed_state_collapse_v1.py",
+    "evaluator_sha256": "9195a97f900e5e4782000dac967389919e401a534d72150f9ff6b72463d37f30",
+    "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+    "preregistration_path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_prereg_v1.json",
+    "preregistration_sha256": "390fe646b904a07e3bd29394edabfc1a26ea311a9e0311aafd85118bbc5a69b7",
+    "source_trade_ledger_sha256": "1f4732f429fc9b4fb4c34b8c2431ed1c4ac207e24d81dd0aac7cf893b4ce8113",
+    "state_ledger_sha256": "6b38aafde15da4310971a9610ec19a027c2d065bfce19c79c2492982be351149"
+  },
+  "outputs": {
+    "usdjpy_b02_f05_profit_armed_state_collapse_cell_summary_v1.csv": "377351570bd5634b5071e524814884d449a0dd1b812c3e26dddc2e3a10e19acd",
+    "usdjpy_b02_f05_profit_armed_state_collapse_fold_metrics_v1.csv": "e9ab61b6a751fcc6c54d0d1e9ad5c55282fb5536104f1a8793c6e67f4477c044",
+    "usdjpy_b02_f05_profit_armed_state_collapse_preflight_v1.json": "403a87f3fd05e4d6f130bcdeb24917ad2395b644561ab9e1fe4febcfe089d25e",
+    "usdjpy_b02_f05_profit_armed_state_collapse_trades_v1.csv.gz": "988bf0a38694f16731681e1e323b7531828ecbdc07fbcad43f8b81092ab179ed"
+  },
+  "periods": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "population": 1882,
+  "preregistration_commit": "63aaa803ca872cfdfd15c280d449c13d608c42a1",
+  "protected_boundaries": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "MT4_accessed": false,
+    "live_orders": false
+  },
+  "research_main_observed_at_closure": "b60682641032d38c4757b427b9865dc58b441b62",
+  "result": {
+    "core_cells": 0,
+    "decision": "CLOSE_HYP024_BEFORE_MT4_AND_2025",
+    "eligible_candidates": [],
+    "family_regions": [
+      {
+        "arm": "P2",
+        "components": [],
+        "eligible_candidates": []
+      },
+      {
+        "arm": "P1",
+        "components": [],
+        "eligible_candidates": []
+      }
+    ],
+    "finalist": null,
+    "full_cells": 0
+  },
+  "schema_version": "usdjpy_hyp024_exact_evaluation_receipt_v1",
+  "status": "COMPLETE_SCIENTIFIC_FAIL_NO_ELIGIBLE_FAMILY_REGION",
+  "trade_level_output": {
+    "path": "usdjpy_b02_f05_profit_armed_state_collapse_trades_v1.csv.gz",
+    "reason": "trade-level derived output is deterministically reproducible from committed evaluator, preregistration, source-ledger identities and state-ledger identity; binding aggregate result, cell and fold outputs are repository tracked",
+    "repository_tracked": false,
+    "sha256": "988bf0a38694f16731681e1e323b7531828ecbdc07fbcad43f8b81092ab179ed"
+  }
+}
