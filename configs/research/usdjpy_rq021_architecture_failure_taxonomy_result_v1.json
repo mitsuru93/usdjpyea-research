@@ -1,0 +1,84 @@
+{
+  "boundaries": {
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "candidate_generated": false,
+    "cell_retuned": false,
+    "family_preregistered": false,
+    "horizon_added": false,
+    "live_orders": false,
+    "new_market_outcomes_accessed": false
+  },
+  "decision": "CLOSE_RQ_021_OPEN_RQ_022_NATIVE_HIGHER_TIMEFRAME_ARCHITECTURE_QUESTION_ONLY",
+  "direction_taxonomy": {
+    "both_directions_severe_positive_all_four_cells": 0,
+    "dominant_side_switch_at_least_once_cells": 562,
+    "dominant_side_switch_two_or_more_cells": 349,
+    "long_severe_positive_all_four_cells": 3,
+    "same_dominant_side_all_four_folds_cells": 98,
+    "short_severe_positive_all_four_cells": 1
+  },
+  "evaluator_identity": {
+    "branch": "agent/rq021-architecture-failure-taxonomy-v1",
+    "commit": "818d9225d289c02a261a2bb3a5bb19f40ef627ed",
+    "git_blob_sha1": "2c169bb687842e06f282308271e981e24c33778c",
+    "path": "tools/analyze_usdjpy_rq021_architecture_failure_taxonomy_v1.py",
+    "sha256": "360d0e7822caedd34319037c3290f79b35207d19cd97e0434484dfa9a586f8a2"
+  },
+  "exact_next_action": "Before any outcomes, audit native H1/H4 bar construction and prior literature/ledger overlap, then freeze one finite protocol for completed higher-timeframe state-transition entry and event-defined termination. Do not generate a candidate, optimize parameters, use MT4 or access 2025.",
+  "fold_pass_distribution": {
+    "breadth": {"0": 389, "1": 208, "2": 60, "3": 3},
+    "default": {"0": 130, "1": 213, "2": 193, "3": 110, "4": 14},
+    "severe": {"0": 449, "1": 135, "2": 56, "3": 19, "4": 1}
+  },
+  "information_gap": {
+    "candidate_generated": false,
+    "duplicate_audit": {
+      "Families_A_I": "shock/admission, overlap, event confirmation and checkpoint/state-adaptive repairs applied to existing B02/F05 or M15 signals",
+      "RQ_020B": "static 5-day/20-day state partitions and action routing, not native higher-timeframe signal construction",
+      "RQ_020E": "all frozen M15 Entry x fixed-time horizon cells",
+      "distinct_information": "primary signal and termination both use completed native higher-timeframe structure rather than an overlay on an M15 entry"
+    },
+    "family_preregistered": false,
+    "identified_dimension": "native higher-timeframe state-transition architecture with state-conditional event termination",
+    "successor_question": "Can a native H1/H4 state-transition architecture, with entry and termination events defined on completed higher-timeframe structure rather than an M15 pattern plus fixed horizon, produce a broad family region across all four development folds?",
+    "successor_question_id": "USDJPY-RQ-022",
+    "why_absent_from_R1_R2": "R1 entries are M15-local patterns or session references and R2 exits are unconditional fixed M15 horizons. A longer M15 lookback or 24/48-bar hold is not a completed H1/H4 state transition or event-defined termination."
+  },
+  "population": {
+    "cell_fold_rows": 2640,
+    "cells": 660,
+    "direction_rows": 5280,
+    "families": 12,
+    "horizons": 11
+  },
+  "research_question": "USDJPY-RQ-021",
+  "retained_findings": [
+    "Cost fragility is architecture-wide: 14 cells pass all folds at default cost but only one at severe cost.",
+    "The weakest fold is distributed across all four periods; 2024H2 is most frequent but does not explain closure alone.",
+    "Dominant direction changes in 562 of 660 cells, so static M15 direction rules are strongly regime dependent.",
+    "No fixed horizon forms a robust family neighbourhood; longer holds improve isolated continuation cells but worsen median minimum-fold severe performance.",
+    "Session-handoff is the least-failed family but has only one isolated core cell and no full or neighbourhood pass."
+  ],
+  "schema_version": "usdjpy_rq021_architecture_failure_taxonomy_result_v1",
+  "scientific_output_sha256": {
+    "usdjpy_rq021_family_failure_taxonomy_v1.csv": "da2180e06fb765f470770a602f5160a5e936fe19c1fa5acffb1c1a08457d97bb",
+    "usdjpy_rq021_horizon_failure_taxonomy_v1.csv": "6cd54e9611c73130a90f0ef34e6fefa893cf5d44f1f83eb9b5a1ccebf999ffd3"
+  },
+  "source_authority": {
+    "canonical_result": "configs/research/usdjpy_full_frozen_architecture_census_result_v1.json",
+    "canonical_result_population": "660 cells x 4 folds",
+    "canonical_result_status": "CLOSED_NO_FAMILY_REGION",
+    "derived_inputs": "cell-fold and direction projections generated during the already-opened RQ-020E execution; no new market outcome access"
+  },
+  "source_scope": "already opened RQ-020E outputs only",
+  "source_sha256": {
+    "cell_fold_metrics": "593bc9602be8c581e81474cad5872ceb7b681c51bef9a8f1e8ae8b1b2510dc94",
+    "direction_metrics": "e9d611252fc2ee45e048bc7c75ae5e35d3aef17b68e32cd66c37ca392739fa82"
+  },
+  "status": "DESCRIPTIVE_TAXONOMY_COMPLETE_ONE_DISTINCT_QUESTION_IDENTIFIED",
+  "uncommitted_workfiles": [
+    "cell-level and direction-level projections were used transiently to calculate aggregate taxonomy; no new market outcomes were opened"
+  ],
+  "weakest_severe_fold_counts": {"2023H1": 140, "2023H2": 110, "2024H1": 162, "2024H2": 248}
+}
