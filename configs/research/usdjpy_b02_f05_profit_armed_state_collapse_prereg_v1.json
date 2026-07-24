@@ -24,10 +24,19 @@
   "family_id": "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
   "family_region_gate": "within each arm at least two Manhattan-adjacent core cells and at least one full cell in that component; no cross-arm combination",
   "finite_grid": {
-    "arms": ["P2", "P1"],
+    "arms": [
+      "P2",
+      "P1"
+    ],
     "candidate_count": 8,
-    "persistence_observations": [1, 2],
-    "quorum": [2, 3]
+    "persistence_observations": [
+      1,
+      2
+    ],
+    "quorum": [
+      2,
+      3
+    ]
   },
   "fold_core_gates": [
     "candidate default net > 0 and PF >= 1",
