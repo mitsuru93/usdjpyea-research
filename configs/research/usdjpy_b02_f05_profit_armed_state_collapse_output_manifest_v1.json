@@ -1,0 +1,31 @@
+{
+  "execution": {"2025_accessed":false,"MT4_accessed":false,"outcomes_computed":true,"runs":1},
+  "input_identity": {
+    "evaluator_sha256":"9195a97f900e5e4782000dac967389919e401a534d72150f9ff6b72463d37f30",
+    "protocol_sha256":"390fe646b904a07e3bd29394edabfc1a26ea311a9e0311aafd85118bbc5a69b7",
+    "states_sha256":"2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "trades_sha256":"98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca"
+  },
+  "outputs": {
+    "usdjpy_b02_f05_profit_armed_state_collapse_candidate_summary_v1.csv":{"bytes":1180,"sha256":"68c8914cb71c3db9da85d2d010cdbd461795631ebdc44c6089f09b359c6c39ca"},
+    "usdjpy_b02_f05_profit_armed_state_collapse_cell_summary_v1.csv":{"bytes":849,"sha256":"d2685777dcaed983cf883b23ea5f1989fd3ee2fc900da48c6fdaf8c29b092ec0"},
+    "usdjpy_b02_f05_profit_armed_state_collapse_decision_v1.json":{"bytes":3364,"sha256":"f78c4626363501c7e26005778be9b94d67d4144abd1d0ee2a1b6297019a880bc"},
+    "usdjpy_b02_f05_profit_armed_state_collapse_fold_metrics_v1.csv":{"bytes":10803,"sha256":"0de58364762569e657bd7b916a1f842c3b58fb4f844110de82446beed62d8198"},
+    "usdjpy_b02_f05_profit_armed_state_collapse_gate_failures_v1.csv":{"bytes":7084,"sha256":"fa72f2244a5187505bb8a89fb09bf6686119610ca82f5d75e12ad7d8da4ed9d2"},
+    "usdjpy_b02_f05_profit_armed_state_collapse_preflight_v1.json":{"bytes":579,"sha256":"e216c79c626a894de53aeb4939bf153f1c1d8437dfcf33a7b95d7db41877158a"},
+    "usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json":{"bytes":4114,"sha256":"869eb7651757dd1e54763f753626128335c8391f1b20f5b5a7d6506e0167f569"},
+    "usdjpy_b02_f05_profit_armed_state_collapse_result_v1.md":{"bytes":3776,"sha256":"d1d5cc2c123f97e9d4df6d7b1213c3442f20d1d87e2d189938ea3f5eaacd922a"},
+    "usdjpy_b02_f05_profit_armed_state_collapse_trades_v1.csv.gz":{"bytes":348827,"sha256":"b1bbb71464167096d7549124e433c3c881160a63b9ab3dcade22cf42184a59ac"}
+  },
+  "large_output_policy": {
+    "trade_ledger_committed_to_git": false,
+    "reason": "large binary is deterministically reproducible from exact source artifacts, input builder, frozen evaluator and recorded hashes",
+    "reproduction_inputs": [
+      "Core Run 29997167048 artifact 8559483151",
+      "Core Run 29787357305 artifact 8479048161",
+      "Core Run 29873856877 artifact 8512432416"
+    ]
+  },
+  "schema_version":"usdjpy_b02_f05_profit_armed_state_collapse_output_manifest_v1",
+  "status":"COMPLETE"
+}
