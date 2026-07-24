@@ -1,0 +1,19 @@
+{
+  "2025_H1_accessed": false,
+  "2025_H1_authorized": false,
+  "2025_H2_accessed": false,
+  "MT4_accessed": false,
+  "MT4_authorized": false,
+  "development_periods_accessed": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "finalist_exists": false,
+  "hypothesis_id": "USDJPY-HYP-025",
+  "live_orders": false,
+  "next_action": "HYP-025 is closed. No HYP-025 repair, Stage A/B/C chaining, MT4 or 2025 evaluation is authorized.",
+  "schema_version": "usdjpy_hyp025_period_access_receipt_v2",
+  "status": "POST_RESULT_FIREWALL_CONFIRMED"
+}
