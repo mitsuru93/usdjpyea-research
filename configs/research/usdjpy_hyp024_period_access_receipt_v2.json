@@ -1,0 +1,45 @@
+{
+  "MT4_accessed": false,
+  "accessed": [
+    {
+      "access_type": "exact frozen eight-cell development/falsification evaluation after preregistration merge",
+      "period": "2023H1",
+      "role": "DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD"
+    },
+    {
+      "access_type": "exact frozen eight-cell development/falsification evaluation after preregistration merge",
+      "period": "2023H2",
+      "role": "DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD"
+    },
+    {
+      "access_type": "exact frozen eight-cell development/falsification evaluation after preregistration merge",
+      "period": "2024H1",
+      "role": "DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD"
+    },
+    {
+      "access_type": "exact frozen eight-cell development/falsification evaluation after preregistration merge",
+      "period": "2024H2",
+      "role": "DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD"
+    }
+  ],
+  "candidate_outcomes_accessed_after_prereg": true,
+  "candidate_outcomes_accessed_before_prereg": false,
+  "historical_2024_source_mutated": false,
+  "hypothesis_id": "USDJPY-HYP-024",
+  "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "live_orders": false,
+  "not_accessed": [
+    {
+      "period": "2025H1",
+      "reason": "locked before exact finalist and parity"
+    },
+    {
+      "period": "2025H2",
+      "reason": "locked until unchanged 2025H1 pass"
+    }
+  ],
+  "result": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json",
+  "schema_version": "usdjpy_hyp024_period_access_receipt_v2",
+  "status": "POSTOUTCOME_COMPLETE_NO_PROTECTED_PERIOD_ACCESS",
+  "supersedes": "configs/research/usdjpy_hyp024_period_access_receipt_v1.json"
+}
