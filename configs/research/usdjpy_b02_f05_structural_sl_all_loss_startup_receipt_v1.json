@@ -1,0 +1,33 @@
+{
+  "schema_version": "usdjpy_b02_f05_structural_sl_all_loss_startup_receipt_v1",
+  "status": "SOURCE_PREFLIGHT_IN_PROGRESS_NO_OUTCOMES",
+  "direct_user_scope": "All final-loss B02/F05 trades; structural stop points from price-state and event ordering, not fixed-pip stops",
+  "scope_origin": "direct user instruction; Notion tasks and closed HYP-023/HYP-024/Family N/Family O were not used to select work",
+  "research_main_commit": "5c8ed243734c47e35f29e4219d958fe2e6b70fd4",
+  "core_main_commit": "b31405cd4c5380a376655ba240ccb100e230e775",
+  "base_is_current": true,
+  "current_registry_observed_only_for_authorization_boundary": {
+    "schema": "usdjpy_research_candidate_registry_v45",
+    "status": "USDJPY_HYP025_PREREGISTERED_OUTCOME_EVALUATION_AUTHORIZED",
+    "directed_analysis_class": "descriptive 2023/2024 price-event sequence analysis; no candidate frozen and no threshold grid"
+  },
+  "declared_lineage": {
+    "2023": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY; accepted M1 Bid plus 0.5 pip historical execution contract",
+    "2024": "UTC native derived Bid/Ask/Mid bars; no 2023 timestamp transform",
+    "stage1_ledger_sha256": "c4025d59eef9358fce9df70d50972159d52ff8aa02ebaa851e7fa0273082b82f",
+    "m1_2023_sha256": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e",
+    "m1_2024_sha256": "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0"
+  },
+  "source_artifacts": [
+    {"repository":"mitsuru93/usdjpyea-core","run_id":29997167048,"attempt":1,"artifact_id":8559483151,"artifact_digest":"sha256:22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01"},
+    {"repository":"mitsuru93/usdjpyea-core","run_id":30001786384,"attempt":1,"artifact_id":8561286612,"artifact_digest":"sha256:9e6aa5cebccc44a51e8e0aa86fd87653d2e471446c4a92cd62d8699f4c6bf591"},
+    {"repository":"mitsuru93/usdjpyea-core","run_id":29787357305,"attempt":1,"artifact_id":8479048161,"artifact_digest":"sha256:e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5"},
+    {"repository":"mitsuru93/usdjpyea-core","run_id":29873856877,"attempt":1,"artifact_id":8512432416,"artifact_digest":"sha256:9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b"}
+  ],
+  "periods_accessed": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "periods_not_accessed": ["2025H1", "2025H2"],
+  "mt4_accessed_for_new_analysis": false,
+  "candidate_frozen": false,
+  "outcomes_computed_at_receipt": false,
+  "exact_next_action": "Run the source-only Research Actions preflight, download its artifact, then build the all-loss event timeline evaluator from the verified Stage 1 schema."
+}
