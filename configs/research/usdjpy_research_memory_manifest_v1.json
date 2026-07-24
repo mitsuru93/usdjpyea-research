@@ -46,7 +46,7 @@
     {"ordinal": 1, "path": "AGENTS.md", "reason": "repository-wide AI operating rules"},
     {"ordinal": 2, "path": "configs/research/usdjpy_research_memory_manifest_v1.json", "reason": "canonical pointers and startup gate"},
     {"ordinal": 3, "path": "configs/research/usdjpy_research_candidate_registry_v40.json", "reason": "active HYP-023 exact evaluation authorization"},
-    {"ordinal": 4, "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md", "reason": "mandatory execution safeguards"},
+    {"ordinal": 4, "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md", "reason": "mandatory execution safeguards; revision 2026-07-24-r2"},
     {"ordinal": 5, "path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_prereg_v1.json", "reason": "frozen six-cell lifecycle and gates"},
     {"ordinal": 6, "path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_preflight_v1.json", "reason": "outcome-free modular evaluator preflight"},
     {"ordinal": 7, "path": "configs/research/usdjpy_native_htf_construction_feasibility_result_v1.json", "reason": "binding logical-server H1/H4 data contract"},
@@ -105,7 +105,7 @@
   "atomic_update_rule": {
     "same_research_change_required_after_every_completed_test": ["result JSON", "human report", "candidate registry", "hypothesis ledger", "period access state", "next action"],
     "technical_incomplete_runs": "record separately; never count as scientific results",
-    "notion_sync": "after merge update Current State and active task, fetch both back, and require GitHub agreement"
+    "notion_sync": "after merge update Current State and active task properties and body, fetch both back, and require GitHub agreement"
   },
   "installation_audit": {
     "previous_registry": "v39",
@@ -114,6 +114,8 @@
   "maintenance": {
     "manifest_update_required_when_any_canonical_pointer_changes": true,
     "latest_registry_must_reference_this_manifest": true,
+    "recurrence_prevention_revision": "2026-07-24-r2",
+    "execution_postmortem_revision": 2,
     "CI_validator": "tools/validate_usdjpy_research_memory_v1.py",
     "CI_workflow": ".github/workflows/validate_usdjpy_research_memory_v1.yml"
   }
