@@ -1,0 +1,4 @@
+stage,candidate_count,fold_rows,stage_gate_pass_rows,common_gate_pass_rows,full_fold_pass_rows,positive_default_delta_rows,positive_severe_delta_rows,best_pooled_candidate,best_pooled_default_delta_pips,best_pooled_severe_delta_pips,best_pooled_fold_pass_count
+A,8,32,18,0,0,8,8,ABC_A_B02_ABORT_Q2,-1247.09999999999,-1204.3000000000034,0
+B,4,16,3,1,1,4,4,ABC_B_B02_Q2,-875.0999999999925,-849.1999999999679,0
+C,8,32,32,0,0,11,11,ABC_C_M15_Q3_R2,-415.3999999999999,-167.80000000002394,0
