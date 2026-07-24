@@ -1,0 +1,88 @@
+{
+  "schema_version": "usdjpy_long_horizon_regime_diagnosis_protocol_v1",
+  "status": "FROZEN_BEFORE_OUTCOME_AGGREGATION",
+  "research_question": "USDJPY-RQ-020B",
+  "objective": "Determine whether a small predeclared set of no-lookahead multi-day market states consistently favors continuation or reversal for the unchanged fixed-five signal population across all four development half-years.",
+  "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "population": {
+    "strategies": [
+      "R1B02_legacy_asia_00_07_breakout",
+      "R1E02_legacy_trend_8h_resumption",
+      "R1E03_trend_12h_resumption",
+      "R1F05_donchian_96",
+      "R1H04_ramom_32_64_z125"
+    ],
+    "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "signal_and_exit_specs": "unchanged exact fixed-five T0 contracts",
+    "warmup": "exclude signals without 1,920 prior/current completed M15 market bars; no imputation"
+  },
+  "information_time": "signal M15 close, before next-bar entry",
+  "features": {
+    "return_5d": "mid_close[t] / mid_close[t-480] - 1",
+    "return_20d": "mid_close[t] / mid_close[t-1920] - 1",
+    "path_efficiency_5d": "abs(mid_close[t]-mid_close[t-480]) / sum(abs(M15 close changes), last 480)",
+    "path_efficiency_20d": "abs(mid_close[t]-mid_close[t-1920]) / sum(abs(M15 close changes), last 1920)",
+    "volatility_ratio_5d_20d": "sqrt(mean(M15 return^2, last 480)) / sqrt(mean(M15 return^2, last 1920))",
+    "range_position_20d": "(mid_close[t]-rolling_low_1920)/(rolling_high_1920-rolling_low_1920)"
+  },
+  "predeclared_state_dimensions": {
+    "direction_agreement": ["BOTH_UP", "BOTH_DOWN", "DISAGREE_OR_ZERO"],
+    "persistent_signal_relation": ["PERSISTENT_ALIGNED", "PERSISTENT_COUNTER", "NONPERSISTENT"],
+    "path_efficiency_5d": ["LT_0_25", "GE_0_25"],
+    "path_efficiency_20d": ["LT_0_25", "GE_0_25"],
+    "volatility_ratio_5d_20d": ["LE_1", "GT_1"],
+    "range_position_20d": ["LOWER_THIRD", "MIDDLE_THIRD", "UPPER_THIRD"]
+  },
+  "no_interaction_search": true,
+  "outcomes": {
+    "continuation_default": "original default_net_pips",
+    "continuation_severe": "original severe_net_pips",
+    "reversal_default": "-gross_pips-default_cost_pips",
+    "reversal_severe": "-gross_pips-severe_cost_pips",
+    "action_advantage": "continuation net minus reversal net = 2*gross_pips"
+  },
+  "reporting": [
+    "pooled fixed-five state x half-year metrics",
+    "strategy x state x half-year metrics",
+    "side x state x half-year metrics",
+    "support, default/severe net and PF for both actions",
+    "action advantage, positive/negative months, ex-best-two dates and positive-date concentration",
+    "four-fold sign consistency and strategy breadth"
+  ],
+  "support_thresholds": {
+    "pooled_trades_per_fold": 30,
+    "strategy_trades_per_fold": 5,
+    "minimum_supported_strategies_per_fold_for_breadth": 3
+  },
+  "successor_justification_gate": {
+    "same_preferred_action_all_four_folds": true,
+    "preferred_default_net_positive_all_four_folds": true,
+    "preferred_severe_net_positive_all_four_folds": true,
+    "preferred_action_advantage_positive_all_four_folds": true,
+    "positive_effect_months_per_fold_min": 4,
+    "negative_effect_months_per_fold_max": 2,
+    "ex_best_two_dates_positive_all_four_folds": true,
+    "strategy_breadth_same_preferred_action_min": 3,
+    "maximum_successor_states": 1
+  },
+  "selection_rule": "This stage is descriptive. A passing state only authorizes a separate finite prospective family preregistration; it does not become a candidate automatically.",
+  "stop_rule": "If no individual predeclared state bin passes every gate, close RQ-020B and do not construct an interaction, optimized threshold or router from these results.",
+  "prohibited": [
+    "no threshold optimization or tree/model search",
+    "no interactions between state dimensions in this stage",
+    "no outcome-derived bin changes",
+    "no strategy parameter, side, exit or weight changes",
+    "no Family I, Family J or F05 local repair",
+    "no MT4 or 2025 access"
+  ],
+  "boundaries": {
+    "active_family": null,
+    "candidate_generated": false,
+    "router_preregistered": false,
+    "2024_source_mutated": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "MT4": false,
+    "live_orders": false
+  }
+}
