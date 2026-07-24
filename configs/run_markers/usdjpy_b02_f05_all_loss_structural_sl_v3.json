@@ -1,0 +1,31 @@
+{
+  "schema_version": "usdjpy_b02_f05_all_loss_structural_sl_run_marker_v3",
+  "status": "ARMED_EPHEMERAL_SIGNED_TRANSFER",
+  "created_for_connector_downloads": true,
+  "sources": [
+    {
+      "artifact_id": 8559483151,
+      "target": "2023.zip",
+      "expected_sha256": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+      "url": "https://sdmntprkoreacentral.oaiusercontent.com/files/00000000-88c4-8206-9f17-1791fa4f8eb1/raw?se=2026-07-24T14:33:46Z&sp=r&sv=2026-02-06&sr=b&scid=b055c923-6c77-51c1-90f1-5e860eb17963&skoid=3e273c3d-5ea1-4088-9e18-79685531b184&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-07-24T00:26:46Z&ske=2026-07-26T00:26:46Z&sks=b&skv=2026-02-06&sig=Cw5cFCVZLadY3qO7eux8SJ6TTWXIPqORH2oFOg73I4I%3D"
+    },
+    {
+      "artifact_id": 8479048161,
+      "target": "2024h1.zip",
+      "expected_sha256": "e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+      "url": "https://sdmntprkoreacentral.oaiusercontent.com/files/00000000-0b40-8206-a8e5-bca0fc7735ce/raw?se=2026-07-24T14:34:03Z&sp=r&sv=2026-02-06&sr=b&scid=897d4cd5-3016-5855-8612-84a6f854d4b2&skoid=3e273c3d-5ea1-4088-9e18-79685531b184&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-07-24T00:06:19Z&ske=2026-07-26T00:06:19Z&sks=b&skv=2026-02-06&sig=VrjTKjUhp3G/y8SC8JKECpDwkDxWkPid1/gShGeOJtY%3D"
+    },
+    {
+      "artifact_id": 8512432416,
+      "target": "2024h2.zip",
+      "expected_sha256": "9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b",
+      "url": "https://sdmntprkoreacentral.oaiusercontent.com/files/00000000-e964-8206-b823-8061deaf081a/raw?se=2026-07-24T14:34:14Z&sp=r&sv=2026-02-06&sr=b&scid=5cc03e88-7b72-5e6c-b785-3938df39dbfb&skoid=3e273c3d-5ea1-4088-9e18-79685531b184&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-07-23T21:29:47Z&ske=2026-07-25T21:29:47Z&sks=b&skv=2026-02-06&sig=q3y1vWEiDxjyCwweOyiJiXb4KW%2Bwq7tTTU4YGBoZazk%3D"
+    }
+  ],
+  "population": 1882,
+  "event_count": 7,
+  "fixed_pip_stop_evaluated": false,
+  "mt4_new_execution": false,
+  "2025_accessed": false,
+  "candidate_frozen": false
+}
