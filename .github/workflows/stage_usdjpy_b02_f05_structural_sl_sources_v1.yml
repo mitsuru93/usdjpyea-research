@@ -33,11 +33,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p inputs
-          tar -xzf .stage2_lifecycle_abc_package_v1.tar.gz -C inputs \
-            configs/research/usdjpy_b02_f05_stage1_path_class_ledger_v1.csv.gz
+          tar -tzf .stage2_lifecycle_abc_package_v1.tar.gz
+          tar -xzf .stage2_lifecycle_abc_package_v1.tar.gz -C inputs
+          mapfile -t matches < <(find inputs -type f -name 'usdjpy_b02_f05_stage1_path_class_ledger_v1.csv.gz' -print)
+          if [ "${#matches[@]}" -ne 1 ]; then
+            echo "expected exactly one Stage 1 ledger, found ${#matches[@]}" >&2
+            printf '%s\n' "${matches[@]}" >&2
+            exit 1
+          fi
           printf '%s  %s\n' \
             'c4025d59eef9358fce9df70d50972159d52ff8aa02ebaa851e7fa0273082b82f' \
-            'inputs/configs/research/usdjpy_b02_f05_stage1_path_class_ledger_v1.csv.gz' | sha256sum -c -
+            "${matches[0]}" | sha256sum -c -
+          echo "STAGE1_LEDGER=${matches[0]}" >> "$GITHUB_ENV"
       - name: Download verified 2024 M1 Release asset
         env:
           GH_TOKEN: ${{ github.token }}
@@ -56,7 +63,7 @@ jobs:
         run: |
           set -euo pipefail
           python tools/stage_usdjpy_b02_f05_structural_sl_sources_v1.py \
-            --stage1-ledger inputs/configs/research/usdjpy_b02_f05_stage1_path_class_ledger_v1.csv.gz \
+            --stage1-ledger "$STAGE1_LEDGER" \
             --m1-2024 inputs/USDJPY-2024-m1-derived-bars-v1.csv.gz \
             --output-dir out \
             --research-commit "$GITHUB_SHA"
