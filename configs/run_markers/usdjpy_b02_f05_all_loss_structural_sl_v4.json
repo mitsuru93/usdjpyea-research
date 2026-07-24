@@ -1,0 +1,18 @@
+{
+  "schema_version": "usdjpy_b02_f05_all_loss_structural_sl_run_marker_v4",
+  "status": "ARMED_FROM_RESEARCH_MIRROR_RELEASE",
+  "source_release_tag": "f05-failed-reclaim-historical-authorities-v1",
+  "source_mirror_run_id": 30101338646,
+  "prior_failure_run_id": 30101392226,
+  "prior_failure": "NAME_ERROR_EVENT_IDS_IMPORT_ONLY",
+  "technical_repair": "import EVENT_IDS from common in events.py",
+  "protocol_changed": false,
+  "event_definitions_changed": false,
+  "thresholds_changed": false,
+  "population": 1882,
+  "event_count": 7,
+  "fixed_pip_stop_evaluated": false,
+  "mt4_new_execution": false,
+  "2025_accessed": false,
+  "candidate_frozen": false
+}
