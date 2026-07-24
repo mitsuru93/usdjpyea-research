@@ -36,9 +36,17 @@ jobs:
           python-version: '3.12'
       - name: Verify canonical closure package
         run: |
-          set -euo pipefail
+          set -uo pipefail
           python -m py_compile tools/verify_usdjpy_b02_f05_all_loss_structural_sl_closure_v1.py
-          python tools/verify_usdjpy_b02_f05_all_loss_structural_sl_closure_v1.py | tee closure_verification_v1.json
+          compile_status=$?
+          if [[ $compile_status -ne 0 ]]; then exit $compile_status; fi
+          python tools/verify_usdjpy_b02_f05_all_loss_structural_sl_closure_v1.py \
+            > closure_verification_v1.json \
+            2> closure_verification_error.log
+          verify_status=$?
+          cat closure_verification_v1.json || true
+          cat closure_verification_error.log >&2 || true
+          if [[ $verify_status -ne 0 ]]; then exit $verify_status; fi
           python - <<'PY'
           import json
           from pathlib import Path
@@ -52,8 +60,11 @@ jobs:
           assert result['2025_accessed'] is False
           PY
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: usdjpy-b02-f05-structural-sl-closure-verification-v1-${{ github.run_id }}-${{ github.run_attempt }}
-          path: closure_verification_v1.json
-          if-no-files-found: error
+          path: |
+            closure_verification_v1.json
+            closure_verification_error.log
+          if-no-files-found: warn
           retention-days: 90
