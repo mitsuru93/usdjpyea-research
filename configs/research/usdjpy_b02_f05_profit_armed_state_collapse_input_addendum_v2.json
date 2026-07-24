@@ -1,0 +1,65 @@
+{
+  "schema_version": "usdjpy_b02_f05_profit_armed_state_collapse_input_addendum_v2",
+  "status": "FROZEN_BEFORE_OUTCOMES_TECHNICAL_REMATERIALIZATION",
+  "hypothesis_id": "USDJPY-HYP-024",
+  "family_id": "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
+  "scientific_protocol_authority": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_prereg_v1.json",
+  "evaluator_authority": {
+    "path": "tools/evaluate_usdjpy_b02_f05_profit_armed_state_collapse_v1.py",
+    "sha256": "9195a97f900e5e4782000dac967389919e401a534d72150f9ff6b72463d37f30"
+  },
+  "reason": "The original preflighted v1 serialized ledgers were generated in a prior execution environment but were not committed or uploaded to a durable Release/Actions artifact. File Library retrieval failed and PR #227 Actions contain no input bundle. Recreate only the frozen input serialization from exact authority artifacts before any candidate outcomes.",
+  "original_v1_identity": {
+    "trade_rows": 1882,
+    "trades_sha256": "1f4732f429fc9b4fb4c34b8c2431ed1c4ac207e24d81dd0aac7cf893b4ce8113",
+    "state_rows": 68955,
+    "states_sha256": "6b38aafde15da4310971a9610ec19a027c2d065bfce19c79c2492982be351149",
+    "raw_bytes_available": false
+  },
+  "v2_materialization": {
+    "builder_path": "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py",
+    "builder_git_blob_sha1": "06518eff9441720cada1795fe10288f7ed42e06f",
+    "receipt_path": "configs/research/usdjpy_b02_f05_hyp024_input_materialization_v2.json",
+    "trade_rows": 1882,
+    "trades_path": "usdjpy_b02_f05_source_trade_ledger_v2.csv",
+    "trades_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "state_rows": 68955,
+    "trade_id_count": 1882,
+    "states_path": "usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz",
+    "states_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "state_uncompressed_sha256": "b8705ab84b63bf6ec8a0c6994ea828c9529f940ed8ecdddbfa8d2944bbf22f14"
+  },
+  "semantic_identity_gates": {
+    "accepted_population_1882": true,
+    "state_rows_68955": true,
+    "trade_ids_1882": true,
+    "2023_shifted_m15_rows_1543": true,
+    "2023_duplicates_zero": true,
+    "all_eight_fold_strategy_path_class_counts_exact": true,
+    "indicator_components_unchanged": true,
+    "arming_and_disarming_rules_unchanged": true,
+    "quorum_and_persistence_grid_unchanged": true,
+    "execution_rule_unchanged": true,
+    "gates_and_ranking_unchanged": true
+  },
+  "source_freeze": {
+    "2023_m15_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "2024h1_m15_sha256": "766be5ebba158e5b40f5da5d66929b4da8a25d42a8716b1e591d7c09dd87c2a3",
+    "2024h1_events_sha256": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "2024h2_events_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "new_2024_derived_bars_substituted": false,
+    "historical_2024_mutated": false
+  },
+  "boundaries": {
+    "outcomes_computed": false,
+    "candidate_parameters_changed": false,
+    "components_changed": false,
+    "arms_changed": false,
+    "gates_changed": false,
+    "MT4_accessed": false,
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "live_orders": false
+  },
+  "execution_unlock": "After this addendum and v2 preflight merge, execute the unchanged eight-cell evaluator exactly once using the frozen v2 ledger hashes."
+}
