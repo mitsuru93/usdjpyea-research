@@ -37,7 +37,7 @@
     "common_path": "tools/usdjpy_policy_v3/common.py",
     "common_sha256": "2c5812bcf0476131200bf428cd4e76cef8a60696fac491a606973cbb41f8edf7",
     "main_path": "tools/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.py",
-    "main_sha256": "61709e416ebb356db101a436f52d438ff788e5d5299290479c7d36689025de2a",
+    "main_sha256": "b6369d2902a570298eb602a8eacb8de333ed898165d1700a529ab43c8ff3734d",
     "reuses_frozen_atlas_v2_source": true
   },
   "methods": {
