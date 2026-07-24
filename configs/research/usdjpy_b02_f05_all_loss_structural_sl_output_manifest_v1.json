@@ -9,20 +9,17 @@
   },
   "canonical_files": {
     "configs/research/usdjpy_b02_f05_all_loss_structural_sl_event_summary_v1.csv": {
-      "git_blob_sha1": "08c5e81dfec0820bd0abba65ef48d3bc9c7712d9",
-      "sha256": "2520e2c0fc0527267a5649b321ce2b47f77e580615e4847e7233a392ebc587b1"
+      "git_blob_sha1": "08c5e81dfec0820bd0abba65ef48d3bc9c7712d9"
     },
     "configs/research/usdjpy_b02_f05_all_loss_structural_sl_execution_receipt_v1.json": {
-      "git_blob_sha1": "13b335c63530335123e39a888b6f80990747d127",
-      "sha256": "cba84e64bcbeb48b5e6e211bd522c36fe8451b854611eec841461e444acb9481"
+      "git_blob_sha1": "13b335c63530335123e39a888b6f80990747d127"
     },
     "configs/research/usdjpy_b02_f05_all_loss_structural_sl_result_v1.json": {
       "git_blob_sha1": "8f208ea82f69da8b4a713fec5059142d1e5e36af",
       "semantic_source": "artifact result_v1.json with SHA-256 c6b9b1436cb8cdae4d46fe8859d961955cc6d41254f756e050f0b8077b1fd4e9"
     },
     "docs/research/USDJPY_B02_F05_all_loss_structural_SL_v1.md": {
-      "git_blob_sha1": "00a3a74a2f39560be07f051c62127968f42ece92",
-      "sha256": "b31f3276ce86802be377de6dc8c317f1e1dbc49a3689f641228dae80718b07f1"
+      "git_blob_sha1": "00a3a74a2f39560be07f051c62127968f42ece92"
     }
   },
   "cleanup": {
