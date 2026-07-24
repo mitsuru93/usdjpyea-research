@@ -1,0 +1,15 @@
+{
+  "2025_accessed": false,
+  "after_decoded_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d",
+  "all_member_sha256_pass": true,
+  "before_decoded_sha256": "4ce1940b9f76e0ed8a84a935590293f3837fabe9e889bb2b2eb024a1ec8d354f",
+  "embedded_manifest_matches_repository_manifest": true,
+  "mt4_accessed": false,
+  "outcomes_computed": false,
+  "path": "configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64",
+  "portfolio_replay_computed": false,
+  "replacement_count": 1,
+  "report_sha256": "489a2484be135209fd731951990e508b67d6ff11cd2aeff3a4fbac23dffdfad5",
+  "schema_version": "f05_failed_reclaim_bundle_archive_repair_receipt_v1",
+  "status": "PASS_EXACT_ARCHIVE_REPAIRED"
+}

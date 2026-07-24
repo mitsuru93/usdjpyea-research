@@ -1,0 +1,54 @@
+name: Verify F05 failed reclaim analysis source v1
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/verify_f05_failed_reclaim_analysis_source_v1.yml'
+      - 'tools/verify_f05_failed_reclaim_analysis_source_v1.py'
+      - 'configs/research/f05_failed_reclaim_event_sequence_v1/**'
+      - 'configs/research/f05_failed_reclaim_analysis_source_receipt_v1.json'
+      - 'docs/research/F05_structural_SL_event_sequence_v1.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+
+      - name: Restore and verify exact source
+        shell: bash
+        run: |
+          set +e
+          mkdir -p source_verification
+          python tools/verify_f05_failed_reclaim_analysis_source_v1.py \
+            --report docs/research/F05_structural_SL_event_sequence_v1.md \
+            --bundle-b64 configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64 \
+            --repository-manifest configs/research/f05_failed_reclaim_event_sequence_v1/manifest.json \
+            --output-dir source_verification \
+            --source-commit "$GITHUB_SHA" \
+            > source_verification/stdout.log 2> source_verification/stderr.log
+          rc=$?
+          printf '%s\n' "$rc" > source_verification/exit_code.txt
+          if [[ -f source_verification/F05_structural_SL_event_sequence_bundle_v1.zip ]]; then
+            sha256sum source_verification/F05_structural_SL_event_sequence_bundle_v1.zip \
+              > source_verification/restored_bundle_sha256.txt
+          fi
+          find source_verification -type f -print0 | sort -z | xargs -0 -r sha256sum \
+            > source_verification/SHA256SUMS
+          cat source_verification/stderr.log >&2 || true
+          exit "$rc"
+
+      - name: Upload exact restored source and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f05-failed-reclaim-exact-analysis-source-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: source_verification
+          if-no-files-found: error
+          retention-days: 90

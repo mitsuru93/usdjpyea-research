@@ -1,0 +1,27 @@
+{
+  "schema_version": "f05_failed_reclaim_source_restore_preflight_v1",
+  "status": "PASS_EXACT_SOURCE_RESTORED_AND_VERIFIED",
+  "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+  "source": {
+    "report_path": "docs/research/F05_structural_SL_event_sequence_v1.md",
+    "report_sha256": "489a2484be135209fd731951990e508b67d6ff11cd2aeff3a4fbac23dffdfad5",
+    "bundle_base64_path": "configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64",
+    "bundle_before_repair_decoded_sha256": "4ce1940b9f76e0ed8a84a935590293f3837fabe9e889bb2b2eb024a1ec8d354f",
+    "bundle_decoded_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d",
+    "manifest_path": "configs/research/f05_failed_reclaim_event_sequence_v1/manifest.json",
+    "archive_repair_commit": "19122d316b5969077ce9aaf4e84192a28268f179",
+    "archive_repair_receipt": "configs/research/f05_failed_reclaim_bundle_archive_repair_receipt_v1.json",
+    "verification_run_id": 30099344842,
+    "verification_artifact_id": 8598924349,
+    "verification_artifact_digest": "sha256:4e03c825329468e1d2e7172231f95fbd10f65859403427d1321a42c387a86f83",
+    "read_receipt": "configs/research/f05_failed_reclaim_exact_source_read_receipt_v1.json"
+  },
+  "candidate_count": 2,
+  "binding_candidate_count": 1,
+  "outcomes_computed": false,
+  "portfolio_replay_computed": false,
+  "mt4_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "notion_task_dependency": false
+}
