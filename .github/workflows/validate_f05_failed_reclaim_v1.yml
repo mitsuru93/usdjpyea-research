@@ -6,28 +6,31 @@ on:
     paths:
       - '.github/workflows/validate_f05_failed_reclaim_v1.yml'
       - 'configs/research/f05_failed_reclaim_*'
-      - 'tools/evaluate_f05_failed_reclaim_v1.py'
-      - 'tools/verify_f05_failed_reclaim_fixture_v1.py'
+      - 'configs/research/f05_failed_reclaim_event_sequence_v1/**'
+      - 'tools/evaluate_f05_failed_reclaim_portfolio_v1.py'
       - 'tools/replay_f05_failed_reclaim_portfolio_v1.py'
+      - 'tools/usdjpy_structural_sl_v1/**'
       - 'docs/research/F05_structural_SL_event_sequence_v1.md'
   workflow_dispatch:
     inputs:
       confirmation:
-        description: 'Type F05_FAILED_RECLAIM_BASIC_V1 to run the binding technical validation'
+        description: 'Type F05_FAILED_RECLAIM_BASIC_V1 to run the first binding scientific validation'
         required: true
         type: string
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - name: Checkout exact revision
         uses: actions/checkout@v4
 
-      - name: Enforce event and candidate boundary
+      - name: Enforce frozen candidate and execution boundary
         shell: bash
         run: |
           set -euo pipefail
@@ -36,16 +39,26 @@ jobs:
             [[ '${{ inputs.confirmation }}' == 'F05_FAILED_RECLAIM_BASIC_V1' ]]
           fi
           python - <<'PY'
-          import json
+          import hashlib,json
           from pathlib import Path
           p=json.loads(Path('configs/research/f05_failed_reclaim_validation_protocol_v1.json').read_text())
-          assert p['candidates']['count']==2
-          assert p['candidates']['binding_count']==1
+          s=json.loads(Path('configs/research/f05_failed_reclaim_semantic_resolution_v1.json').read_text())
+          r=json.loads(Path('configs/research/f05_failed_reclaim_portfolio_prereg_v1.json').read_text())
+          assert p['status']=='FROZEN_BEFORE_OUTCOME_EXECUTION'
+          assert p['candidates']['count']==2 and p['candidates']['binding_count']==1
           assert p['candidates']['binding']['candidate_id']=='F05_FAILED_RECLAIM_BASIC_V1'
+          assert p['candidates']['binding']['reclaim_failure']['same_timestamp_m5_forbidden'] is True
           assert p['candidates']['non_binding_sensitivity']['candidate_id']=='F05_FAILED_RECLAIM_WEAK_QUICK_V1'
           assert p['candidates']['non_binding_sensitivity']['binding'] is False
-          assert p['candidates']['binding']['reclaim_failure']['same_timestamp_m5_forbidden'] is True
-          assert p['authorizing_instruction']['notion_task_dependency'] is False
+          assert s['status']=='FROZEN_BEFORE_SCIENTIFIC_OUTCOME_EXECUTION'
+          assert s['exploration_reproduction_adapter']['binding_for_portfolio'] is False
+          assert s['binding_adapter']['binding_for_portfolio'] is True
+          assert r['status']=='FROZEN_BEFORE_SCIENTIFIC_OUTCOME_EXECUTION'
+          assert r['authorization']['new_hypothesis_id'] is False
+          assert r['authorization']['notion_task_dependency'] is False
+          evaluator=Path('tools/evaluate_f05_failed_reclaim_portfolio_v1.py')
+          actual=hashlib.sha256(evaluator.read_bytes()).hexdigest()
+          assert actual=='c37aac2a23d18754041f8025af5395519a6c0ff5e89e4db32d6a62b734777ac0',actual
           PY
 
       - name: Set up Python
@@ -54,50 +67,148 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
 
-      - name: Install verifier dependency
-        run: python -m pip install --disable-pip-version-check 'pandas==2.2.3'
+      - name: Install frozen evaluator dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
 
-      - name: Run outcome-free PR preflight
+      - name: Compile frozen evaluator and adapters
+        run: |
+          python -m py_compile \
+            tools/evaluate_f05_failed_reclaim_portfolio_v1.py \
+            tools/replay_f05_failed_reclaim_portfolio_v1.py \
+            tools/usdjpy_structural_sl_v1/common.py \
+            tools/usdjpy_structural_sl_v1/events.py
+
+      - name: Run outcome-free exact-source preflight
         if: github.event_name == 'pull_request'
+        shell: bash
         run: |
-          python tools/verify_f05_failed_reclaim_fixture_v1.py \
-            --exploration configs/research/f05_failed_reclaim_exploration_reproduction_fixture_v1.csv \
-            --direct configs/research/f05_failed_reclaim_direct_spec_fixture_v1.csv \
+          set -euo pipefail
+          python tools/evaluate_f05_failed_reclaim_portfolio_v1.py \
             --protocol configs/research/f05_failed_reclaim_validation_protocol_v1.json \
-            --output-dir validation_output
+            --semantic-resolution configs/research/f05_failed_reclaim_semantic_resolution_v1.json \
+            --report docs/research/F05_structural_SL_event_sequence_v1.md \
+            --bundle-b64 configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64 \
+            --repository-manifest configs/research/f05_failed_reclaim_event_sequence_v1/manifest.json \
+            --exploration-fixture configs/research/f05_failed_reclaim_exploration_reproduction_fixture_v1.csv \
+            --direct-fixture configs/research/f05_failed_reclaim_direct_spec_fixture_v1.csv \
+            --out-dir validation_output \
+            --preflight-only \
+            --research-commit "$GITHUB_SHA" \
+            --workflow-run-id "$GITHUB_RUN_ID" \
+            --workflow-run-attempt "$GITHUB_RUN_ATTEMPT"
+          jq -e '.status=="PASS_NO_OUTCOMES" and .binding_candidate=="F05_FAILED_RECLAIM_BASIC_V1" and .outcomes_computed==false and .portfolio_replay_computed==false and .mt4_accessed==false and ."2025H1_accessed"==false and ."2025H2_accessed"==false' \
+            validation_output/preflight_result_v1.json
 
-      - name: Run binding technical validation
+      - name: Download and verify historical authorities
         if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
-          python tools/verify_f05_failed_reclaim_fixture_v1.py \
-            --exploration configs/research/f05_failed_reclaim_exploration_reproduction_fixture_v1.csv \
-            --direct configs/research/f05_failed_reclaim_direct_spec_fixture_v1.csv \
-            --protocol configs/research/f05_failed_reclaim_validation_protocol_v1.json \
-            --output-dir validation_output \
-            --binding
-          jq -e '.status=="TECHNICAL_MISMATCH_STOP"' \
-            validation_output/f05_failed_reclaim_binding_technical_fixture_result_v1.json
-          jq -e '.boundaries.portfolio_replay_computed==false and .boundaries.mt4_accessed==false and .boundaries."2025H1_accessed"==false and .boundaries."2025H2_accessed"==false' \
-            validation_output/f05_failed_reclaim_binding_technical_fixture_result_v1.json
+          set -euo pipefail
+          mkdir -p inputs/historical inputs/2023 inputs/2024h1 inputs/2024h2
+          gh release download f05-failed-reclaim-historical-authorities-v1 \
+            --repo "$GITHUB_REPOSITORY" --dir inputs/historical \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' \
+            --pattern 'EXPECTED_SHA256SUMS'
+          (cd inputs/historical && sha256sum -c EXPECTED_SHA256SUMS)
+          unzip -q inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip -d inputs/2023
+          unzip -q inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip -d inputs/2024h1
+          unzip -q inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip -d inputs/2024h2
+          printf '%s  %s\n' \
+            4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e inputs/2023/normalized/usdjpy_2023_m1_bid_utc_rakuten_mt4_v1.csv.gz \
+            9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            > inputs/historical_member_SHA256SUMS
+          sha256sum -c inputs/historical_member_SHA256SUMS
 
-      - name: Package evidence
+      - name: Download and verify 2024 derived bars
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/derived
+          gh release download usdjpy-2024-derived-bars-v1 \
+            --repo "$GITHUB_REPOSITORY" --dir inputs/derived \
+            --pattern 'USDJPY-2024-m1-derived-bars-v1.csv.gz' \
+            --pattern 'USDJPY-2024-m5-derived-bars-v1.csv.gz'
+          printf '%s  %s\n' \
+            f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0 inputs/derived/USDJPY-2024-m1-derived-bars-v1.csv.gz \
+            af04cf642171a1916abc11a77d0120e88a1f61382385e54c9a49d9107d5d7f36 inputs/derived/USDJPY-2024-m5-derived-bars-v1.csv.gz \
+            > inputs/derived_SHA256SUMS
+          sha256sum -c inputs/derived_SHA256SUMS
+
+      - name: Download and verify required 2024 raw tick months
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/raw_ticks
+          gh release download usdjpy-2024-raw-bidask-ticks-v1 \
+            --repo "$GITHUB_REPOSITORY" --dir inputs/raw_ticks \
+            --pattern 'usdjpy-2024-01-raw-ticks-v1.tar.gz' \
+            --pattern 'usdjpy-2024-02-raw-ticks-v1.tar.gz' \
+            --pattern 'usdjpy-2024-03-raw-ticks-v1.tar.gz' \
+            --pattern 'usdjpy-2024-04-raw-ticks-v1.tar.gz' \
+            --pattern 'usdjpy-2024-12-raw-ticks-v1.tar.gz' \
+            --pattern 'SHA256SUMS'
+          grep -E 'usdjpy-2024-(01|02|03|04|12)-raw-ticks-v1.tar.gz' inputs/raw_ticks/SHA256SUMS \
+            > inputs/raw_ticks/SELECTED_SHA256SUMS
+          (cd inputs/raw_ticks && sha256sum -c SELECTED_SHA256SUMS)
+
+      - name: Run binding scientific portfolio validation
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/evaluate_f05_failed_reclaim_portfolio_v1.py \
+            --protocol configs/research/f05_failed_reclaim_validation_protocol_v1.json \
+            --semantic-resolution configs/research/f05_failed_reclaim_semantic_resolution_v1.json \
+            --report docs/research/F05_structural_SL_event_sequence_v1.md \
+            --bundle-b64 configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64 \
+            --repository-manifest configs/research/f05_failed_reclaim_event_sequence_v1/manifest.json \
+            --exploration-fixture configs/research/f05_failed_reclaim_exploration_reproduction_fixture_v1.csv \
+            --direct-fixture configs/research/f05_failed_reclaim_direct_spec_fixture_v1.csv \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m1-2023 inputs/2023/normalized/usdjpy_2023_m1_bid_utc_rakuten_mt4_v1.csv.gz \
+            --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            --m1-2024 inputs/derived/USDJPY-2024-m1-derived-bars-v1.csv.gz \
+            --m5-2024 inputs/derived/USDJPY-2024-m5-derived-bars-v1.csv.gz \
+            --raw-tick-dir inputs/raw_ticks \
+            --out-dir validation_output \
+            --research-commit "$GITHUB_SHA" \
+            --workflow-run-id "$GITHUB_RUN_ID" \
+            --workflow-run-attempt "$GITHUB_RUN_ATTEMPT"
+          jq -e '(.status=="PASS_RESEARCH_HISTORICAL_GATES" or .status=="FAIL_RESEARCH_HISTORICAL_GATES") and .binding_candidate=="F05_FAILED_RECLAIM_BASIC_V1" and .boundaries.portfolio_replay_computed==true and .boundaries.mt4_accessed==false and .boundaries."2025H1_accessed"==false and .boundaries."2025H2_accessed"==false and .non_binding_sensitivity.binding==false' \
+            validation_output/result_v1.json
+
+      - name: Package validation evidence
         if: always()
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p validation_output
-          find validation_output -maxdepth 1 -type f -print0 | sort -z | xargs -0 -r sha256sum > validation_output/SHA256SUMS
-          cp configs/research/f05_failed_reclaim_source_archive_receipt_v1.json validation_output/
-          cp configs/research/f05_failed_reclaim_validation_protocol_v1.json validation_output/
-          cp configs/research/f05_failed_reclaim_output_schema_v1.json validation_output/
-          cp configs/research/f05_failed_reclaim_exploration_reproduction_fixture_v1.csv validation_output/
-          cp configs/research/f05_failed_reclaim_direct_spec_fixture_v1.csv validation_output/
-          cp tools/evaluate_f05_failed_reclaim_v1.py validation_output/
-          cp tools/verify_f05_failed_reclaim_fixture_v1.py validation_output/
-          sha256sum validation_output/* > validation_output/PACKAGE_SHA256SUMS
-          (cd validation_output && zip -q -X -r ../f05-failed-reclaim-validation-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip .)
+          mkdir -p validation_output/package_inputs
+          cp configs/research/f05_failed_reclaim_validation_protocol_v1.json validation_output/package_inputs/
+          cp configs/research/f05_failed_reclaim_semantic_resolution_v1.json validation_output/package_inputs/
+          cp configs/research/f05_failed_reclaim_portfolio_prereg_v1.json validation_output/package_inputs/
+          cp configs/research/f05_failed_reclaim_output_schema_v1.json validation_output/package_inputs/
+          cp configs/research/f05_failed_reclaim_exact_source_read_receipt_v1.json validation_output/package_inputs/
+          cp configs/research/f05_failed_reclaim_historical_authority_mirror_receipt_v1.json validation_output/package_inputs/
+          cp tools/evaluate_f05_failed_reclaim_portfolio_v1.py validation_output/package_inputs/
+          cp tools/replay_f05_failed_reclaim_portfolio_v1.py validation_output/package_inputs/
+          find validation_output -type f -print0 | sort -z | xargs -0 -r sha256sum > validation_output/PACKAGE_SHA256SUMS
+          (cd validation_output && zip -q -X -0 -r ../f05-failed-reclaim-validation-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip .)
 
       - name: Upload validation evidence
+        id: upload
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -106,32 +217,63 @@ jobs:
             validation_output
             f05-failed-reclaim-validation-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 90
+          compression-level: 0
 
-      - name: Publish binding technical Release
+      - name: Publish binding scientific Release and receipt issue
         if: github.event_name == 'workflow_dispatch' && success()
         env:
           GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
         shell: bash
         run: |
           set -euo pipefail
           tag='f05-failed-reclaim-validation-v1'
-          asset="f05-failed-reclaim-validation-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip"
+          asset="f05-failed-reclaim-validation-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip"
+          status=$(jq -r '.status' validation_output/result_v1.json)
+          research_pass=$(jq -r '.decision.research_historical_pass' validation_output/result_v1.json)
+          mt4_authorized=$(jq -r '.decision.mt4_authorized' validation_output/result_v1.json)
+          cp validation_output/result_v1.json "f05-failed-reclaim-result-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
           cat > release_notes.md <<EOF
           Binding candidate: F05_FAILED_RECLAIM_BASIC_V1
-          Non-binding sensitivity: F05_FAILED_RECLAIM_WEAK_QUICK_V1 (not executed)
-          Run ID: ${{ github.run_id }}
-          Run attempt: ${{ github.run_attempt }}
-          Commit: ${{ github.sha }}
-          Status: TECHNICAL_MISMATCH_STOP
-          Portfolio replay: not computed
-          MT4: not accessed
-          2025 H1/H2: not accessed
+          Non-binding sensitivity: F05_FAILED_RECLAIM_WEAK_QUICK_V1 (reported only; not selectable)
+          Run ID / attempt: ${GITHUB_RUN_ID} / ${GITHUB_RUN_ATTEMPT}
+          Commit: ${GITHUB_SHA}
+          Status: ${status}
+          Research historical pass: ${research_pass}
+          MT4 authorized: ${mt4_authorized}
+          2025 H1 authorized: false
+          2025 H2 accessed/authorized: false
           EOF
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$tag" "$asset" --clobber --repo "$GITHUB_REPOSITORY"
+            gh release upload "$tag" "$asset" "f05-failed-reclaim-result-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json" --clobber --repo "$GITHUB_REPOSITORY"
+            gh release edit "$tag" --target "$GITHUB_SHA" --title "F05 failed reclaim validation v1 — ${status}" --notes-file release_notes.md --repo "$GITHUB_REPOSITORY"
           else
-            gh release create "$tag" "$asset" --target "$GITHUB_SHA" \
-              --title 'F05 failed reclaim validation v1 — technical mismatch stop' \
-              --notes-file release_notes.md --repo "$GITHUB_REPOSITORY"
+            gh release create "$tag" "$asset" "f05-failed-reclaim-result-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json" --target "$GITHUB_SHA" \
+              --title "F05 failed reclaim validation v1 — ${status}" --notes-file release_notes.md --repo "$GITHUB_REPOSITORY"
           fi
+          gates=$(jq -c '.historical_gates' validation_output/result_v1.json)
+          binding_events=$(jq -r '.binding_event_summary.stopped_trades' validation_output/result_v1.json)
+          cat > issue.md <<EOF
+          binding_candidate: F05_FAILED_RECLAIM_BASIC_V1
+          non_binding_sensitivity: F05_FAILED_RECLAIM_WEAK_QUICK_V1
+          non_binding_selection_use: false
+          workflow_event: workflow_dispatch
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          commit: ${GITHUB_SHA}
+          status: ${status}
+          binding_events: ${binding_events}
+          historical_gates: ${gates}
+          research_historical_pass: ${research_pass}
+          mt4_authorized: ${mt4_authorized}
+          2025H1_authorized: false
+          2025H2_accessed: false
+          artifact_id: ${ARTIFACT_ID}
+          artifact_digest: ${ARTIFACT_DIGEST}
+          artifact_url: ${ARTIFACT_URL}
+          release_tag: ${tag}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[f05-failed-reclaim-result] ${GITHUB_RUN_ID} ${status}" --body-file issue.md
