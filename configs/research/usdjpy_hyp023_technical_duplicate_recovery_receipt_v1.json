@@ -1,0 +1,88 @@
+{
+  "MT4_accessed": false,
+  "actions_artifact_id": null,
+  "actions_digest": null,
+  "actions_run_id": null,
+  "canonical_research_main_observed": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f",
+  "classification": "TECHNICAL_RECOVERY_NOT_NEW_SCIENTIFIC_SELECTION",
+  "execution": {
+    "accepted_recovery_elapsed_seconds": 35.77,
+    "accepted_recovery_max_rss_kb": 143952,
+    "first_attempt": "TECHNICAL_INCOMPLETE_TOOL_TIMEOUT_AFTER_PREFLIGHT_NO_ACCEPTED_RESULT",
+    "parameter_or_gate_change": false,
+    "period_added": false
+  },
+  "input_authority": {
+    "2023": {
+      "artifact_id": 8559483151,
+      "artifact_zip_sha256": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+      "m15_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+      "repository": "mitsuru93/usdjpyea-core",
+      "run_id": 29997167048
+    },
+    "2024": {
+      "artifact_id": 8428199309,
+      "artifact_zip_sha256": "d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015",
+      "m15_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c",
+      "repository": "mitsuru93/usdjpyea-research",
+      "run_id": 29639548804
+    }
+  },
+  "live_orders": false,
+  "original_completed_result_evidence": "configs/research/usdjpy_20260724_analysis_execution_postmortem_v1.json records HYP-023 as SCIENTIFIC_RESULT_COMPLETE_FAIL but the result package was not merged.",
+  "package_output_sha256_before_receipt": {
+    "usdjpy_native_h4_h1_boundary_sensitivity_v1.csv": "9264681918e73d9e275471e420c8caaff2920210c0939550ae8f4be8e5d3a023",
+    "usdjpy_native_h4_h1_cell_summary_v1.csv": "e24687edab4bd7fa08abe813b7930ffb47a81cc1a051e1de5f80f542a83b4914",
+    "usdjpy_native_h4_h1_direction_metrics_v1.csv": "208521b6557fc2aee5cd1091d4b21b0e5ff2103c1336c5281d489fb28064fd3f",
+    "usdjpy_native_h4_h1_duration_metrics_v1.csv": "412063a809b133905dfa5228697e78d343554dfc8db856f3b4b777b9edf9fdc4",
+    "usdjpy_native_h4_h1_ema_state_transition_result_v1.json": "5d35e273ab709adc273854b01ba1f377561e806e7bc3d2e3c54a74913f7cc4b1",
+    "usdjpy_native_h4_h1_exit_reason_metrics_v1.csv": "a0670cde2819e152a468f7bfea7044ece6d84cb60f5ffc656f0a041b2b4028cb",
+    "usdjpy_native_h4_h1_exit_reason_pooled_v1.csv": "c8fdb029002f3d0d4e5db6bcd967695fa5edd92fd3574745f82700ae856999e1",
+    "usdjpy_native_h4_h1_fold_metrics_v1.csv": "720a6740caa165535fb8bb98df6f8e40d81def7ee8b975c9da8a903e2a75bb9d",
+    "usdjpy_native_h4_h1_gate_failures_v1.csv": "cfa7004c040c722646579fbf6c5e91e18bdebf6310b3cd0420ff19c0d05ef094",
+    "usdjpy_native_h4_h1_month_metrics_v1.csv": "489e1c16f3e5d2fd463795752aa57d0e80f6c44aea8e7f61be2da144f578d007",
+    "usdjpy_native_h4_h1_parameter_equivalence_classes_v1.json": "aa44bb34f90ef2aeea3e5d469a85843a082cde12430a579461077a22ddf8fd2f",
+    "usdjpy_native_h4_h1_parameter_equivalence_v1.csv": "f9dc2bbd48c2b01cc1bbca27f8ef8ec312f98ee58c0a20a6621093eaef3d9faf",
+    "usdjpy_native_h4_h1_quarter_metrics_v1.csv": "23dafd5897d20b1f67a239ae0af4e2ad9d7fd6d17a28439d2bd68023e3a92733",
+    "usdjpy_native_h4_h1_realized_drawdown_v1.csv": "e9112612812f87c0d50f8671b9d8cb604984ea93f1c71cdd61774cb0b3fc70e1",
+    "usdjpy_native_h4_h1_required_output_audit_v1.json": "4e391d1e56d04dd813485b70dc5cc1f3968b28c2ca3cdf7edd7ab34e7956c596",
+    "usdjpy_native_h4_h1_signal_counts_v1.csv": "b70d5b03f2892eb15f3d550503efbaff02179bc8cb11d1c0567ee78892a99e34",
+    "usdjpy_native_h4_h1_signals_v1.csv.gz": "3b6ea6c25846f7596d1b69f73f44f7226868034da33b895659227e8fd2cc90b4",
+    "usdjpy_native_h4_h1_trades_v1.csv.gz": "6e6a2e64372774228bd64228cab2df28e44b76632de1bde8d6201f6e1ab1eb24"
+  },
+  "periods_accessed": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "periods_not_accessed": [
+    "2025H1",
+    "2025H2"
+  ],
+  "raw_output_sha256": {
+    "usdjpy_native_h4_h1_cell_summary_v1.csv": "e24687edab4bd7fa08abe813b7930ffb47a81cc1a051e1de5f80f542a83b4914",
+    "usdjpy_native_h4_h1_ema_state_transition_preflight_v1.json": "cab111941a76a82799a3c104f60568c3de2c759dbbf7590bf12c56092e31e511",
+    "usdjpy_native_h4_h1_ema_state_transition_result_v1.json": "5d35e273ab709adc273854b01ba1f377561e806e7bc3d2e3c54a74913f7cc4b1",
+    "usdjpy_native_h4_h1_fold_metrics_v1.csv": "720a6740caa165535fb8bb98df6f8e40d81def7ee8b975c9da8a903e2a75bb9d",
+    "usdjpy_native_h4_h1_signals_v1.csv": "7ce279894880de67b28a4289a49a29d27f2fc949a429e371a9cccf35265c753d",
+    "usdjpy_native_h4_h1_trades_v1.csv": "afadf3f64236e7f35d8e9d4c7bc33d42137b05b66e388bd9f85b34ee22dc0603"
+  },
+  "reason_no_actions_identity": "The original completed evaluation and this recovery were local deterministic executions; canonicalization requires a GitHub commit/PR rather than inventing an Actions identity.",
+  "result": {
+    "candidate_count": 6,
+    "core_cells": 0,
+    "eligible_component_candidates": [],
+    "finalist": null,
+    "full_cells": 0,
+    "status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION"
+  },
+  "schema_version": "usdjpy_hyp023_technical_duplicate_recovery_receipt_v1",
+  "source_identity": {
+    "data_module_sha256": "6787d316c774831d9ea27d2b36f078128ff27e079c6a9c83c234fc6f38b8e013",
+    "evaluator_sha256": "ce5b21d02875eaee583f427bb560d17f34b3afa79c4a646a9d5fe5f0ff97ce1e",
+    "protocol_sha256": "969d1892d0ee6bbe99c90df997ffbbfbfa6a3ad1915d67c906b43b07a3479c37",
+    "simulation_module_sha256": "16026504f607e3841f086ade1840537ea07c44630485d9e586c64a9b2533e0e2"
+  },
+  "status": "TECHNICAL_DUPLICATE_RECOVERY_REPRODUCED_PRIOR_SCIENTIFIC_FAIL"
+}

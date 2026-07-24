@@ -1,0 +1,39 @@
+{
+  "MT4_accessed": false,
+  "accessed": [
+    {
+      "period": "2023H1",
+      "role": "DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD"
+    },
+    {
+      "period": "2023H2",
+      "role": "DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD"
+    },
+    {
+      "period": "2024H1",
+      "role": "DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD"
+    },
+    {
+      "period": "2024H2",
+      "role": "DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD"
+    }
+  ],
+  "canonical_2023_lineage_mixed": false,
+  "failure_action": "HYP-023 closed before MT4 and 2025; no repair or retune.",
+  "historical_2024_source_mutated": false,
+  "hypothesis_id": "USDJPY-HYP-023",
+  "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "live_orders_accessed": false,
+  "not_accessed": [
+    {
+      "period": "2025H1",
+      "reason": "binding Rakuten MT4 gate locked; no finalist"
+    },
+    {
+      "period": "2025H2",
+      "reason": "locked until unchanged 2025H1 pass"
+    }
+  ],
+  "schema_version": "usdjpy_hyp023_period_access_receipt_v1",
+  "status": "COMPLETE_NO_PROTECTED_PERIOD_ACCESS"
+}

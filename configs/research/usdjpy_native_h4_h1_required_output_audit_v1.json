@@ -1,0 +1,23 @@
+{
+  "canonical_protocol": "configs/research/usdjpy_native_h4_h1_ema_state_transition_prereg_v1.json",
+  "not_applicable_to_frozen_hyp023": {
+    "B02_F05_P1_P2_P3_comparison": "The canonical HYP-023 family has no B02/F05 parent signals or baseline trade mapping; it is a primary native-H4 signal architecture, so baseline B02/F05 P1/P2/P3 deltas are not defined.",
+    "B02_F05_exposure_incremental_effect": "The canonical HYP-023 family permits only one position and does not inherit B02/F05 stack/standalone exposure states.",
+    "B02_F05_setup_semantics": "The canonical HYP-023 preregistration explicitly prohibits an M15 parent signal; B02 and F05 setup observations are not part of the frozen evaluator."
+  },
+  "outputs": {
+    "adjacency_components": "PASS",
+    "boundary_liquidation_sensitivity": "PASS",
+    "default_and_severe_pf_net": "PASS",
+    "ex_best_two_dates": "PASS",
+    "exit_reason_and_duration": "PASS",
+    "fold_month_quarter_direction_metrics": "PASS",
+    "parameter_equivalence": "PASS",
+    "positive_date_concentration": "PASS",
+    "realized_balance_drawdown": "PASS",
+    "signal_and_trade_ledger": "PASS"
+  },
+  "schema_version": "usdjpy_native_h4_h1_required_output_audit_v1",
+  "scientific_consequence": "Do not claim the older B02/F05 path-class mechanism predictions were confirmed. The canonical family is rejected solely by its frozen family-region and fold gates.",
+  "status": "COMPLETE_WITH_EXPLICIT_NON_APPLICABLE_MECHANISM_FIELDS"
+}

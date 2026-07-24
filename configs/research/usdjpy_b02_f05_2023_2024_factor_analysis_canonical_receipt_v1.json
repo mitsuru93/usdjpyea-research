@@ -1,0 +1,25 @@
+{
+  "2025_accessed": false,
+  "bundle_identity_recorded_only": {
+    "bytes_retrieved": false,
+    "expected_sha256": "8f782e82a95d4be9f5f9095c1447ef8ed11d071794cffc7d32b1a7fee88871fc",
+    "name": "B02_F05_2023_2024_factor_analysis_bundle_v1.zip",
+    "reason": "The exact report itself was retrieved and byte-verified, satisfying the canonical-content requirement; the bundle ZIP was not needed to interpret or reproduce the report."
+  },
+  "byte_count": 26722,
+  "canonical_path": "docs/research/B02_F05_2023_2024_factor_analysis_v1.md",
+  "conversation_summary_used_as_file_source": false,
+  "expected_sha256": "b0e61fe431485e6ae880e0b4bf7d9fdca1e3905607187d57f45f50fc3feece1e",
+  "historical_2024_mutated": false,
+  "line_count": 403,
+  "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "notion_only_used_as_scientific_authority": false,
+  "schema_version": "usdjpy_b02_f05_2023_2024_factor_analysis_canonical_receipt_v1",
+  "source": {
+    "file_id": "file_00000000758081fdb23244555f2e705c",
+    "title": "B02_F05_2023_2024_factor_analysis_v1.md",
+    "type": "ChatGPT File Library uploaded artifact"
+  },
+  "status": "PASS_EXACT_REPORT_IDENTITY_CANONICALIZED",
+  "verified_sha256": "b0e61fe431485e6ae880e0b4bf7d9fdca1e3905607187d57f45f50fc3feece1e"
+}
