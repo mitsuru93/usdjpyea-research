@@ -1,0 +1,40 @@
+{
+  "HYP024_result": {
+    "P1_interpretation": "target losses improved in every fold-cell, but Winner-tail sacrifice and quarter breadth failed decisively",
+    "P2_interpretation": "target losses improved in every fold-cell, but portfolio delta, strategy/direction breadth and Winner retention failed",
+    "candidate_count": 8,
+    "core_cells": 0,
+    "eligible_family_regions": 0,
+    "finalist": null,
+    "full_cells": 0
+  },
+  "active_family": null,
+  "active_hypothesis": null,
+  "boundaries": {
+    "2025_H1": false,
+    "2025_H2": false,
+    "MT4_parity": false,
+    "live_orders": false
+  },
+  "completed": {
+    "B02_F05_entry_exit_independent_reproduction": "PASS",
+    "Entry_information_audit": "PASS_NO_LOOKAHEAD",
+    "Entry_local_technical_family": "CLOSED_ZERO_PORTABLE_FACTORS",
+    "HYP024_exact_eight_cell_evaluation": "CLOSED_ZERO_CORE_ZERO_FULL_ZERO_ELIGIBLE_REGION",
+    "HYP024_input_rematerialization": "PASS_OUTCOMES_FALSE_BEFORE_FREEZE"
+  },
+  "current_candidate": null,
+  "current_open_research_question": null,
+  "exact_next_action": "No scientific execution is authorized. Preserve HYP-024 and Family O as CLOSED_NO_ELIGIBLE_FAMILY_REGION; do not run MT4 or access 2025 H1/H2 because no Research finalist exists. A separate analysis thread may formulate at most one genuinely distinct successor research question only after a full canonical duplicate audit and explicit registry authorization.",
+  "objective": "Use 2023H1, 2023H2, 2024H1 and 2024H2 as development/falsification folds to freeze at most one exact specification for an unchanged 2025 H1 Rakuten MT4 gate without selecting from 2025.",
+  "prohibited": [
+    "no HYP-024 threshold component arm persistence quorum or gate repair",
+    "no P2/P1 combination",
+    "no MT4 or 2025 access without a Research finalist",
+    "no reuse of isolated target-class benefit as candidate evidence",
+    "no new successor without canonical duplicate audit and explicit registry authorization"
+  ],
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v8",
+  "status": "HYP024_CLOSED_NO_ELIGIBLE_FAMILY_REGION",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v7.json"
+}

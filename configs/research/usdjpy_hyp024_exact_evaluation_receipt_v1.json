@@ -1,0 +1,46 @@
+{
+  "authorization_commit": "e56c3dac189bf283b528253cee3ed718f4358fa8",
+  "boundaries": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "MT4_accessed": false,
+    "gate_changed": false,
+    "grid_expanded": false,
+    "historical_2024_mutated": false,
+    "live_orders": false
+  },
+  "command": "python evaluate_usdjpy_b02_f05_profit_armed_state_collapse_v1.py --trades usdjpy_b02_f05_source_trade_ledger_v2.csv --states usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz --protocol usdjpy_b02_f05_profit_armed_state_collapse_prereg_v1.json --output-dir hyp024_result_v2",
+  "executed_at_utc": "2026-07-24T07:30:16Z",
+  "identities": {
+    "evaluator_sha256": "9195a97f900e5e4782000dac967389919e401a534d72150f9ff6b72463d37f30",
+    "protocol_sha256": "390fe646b904a07e3bd29394edabfc1a26ea311a9e0311aafd85118bbc5a69b7",
+    "states_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "trades_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca"
+  },
+  "outputs": {
+    "cell_summary_sha256": "d2685777dcaed983cf883b23ea5f1989fd3ee2fc900da48c6fdaf8c29b092ec0",
+    "fold_metrics_sha256": "0de58364762569e657bd7b916a1f842c3b58fb4f844110de82446beed62d8198",
+    "human_report_sha256": "c5aae52c5c0faabc2d38376ece833f30ac645d737adbd431c0203a49d3fc548f",
+    "preflight_output_sha256": "e216c79c626a894de53aeb4939bf153f1c1d8437dfcf33a7b95d7db41877158a",
+    "result_json_sha256": "869eb7651757dd1e54763f753626128335c8391f1b20f5b5a7d6506e0167f569",
+    "trade_level_output_sha256": "b1bbb71464167096d7549124e433c3c881160a63b9ab3dcade22cf42184a59ac"
+  },
+  "result": {
+    "candidate_count": 8,
+    "core_cells": 0,
+    "eligible_candidates": [],
+    "finalist": null,
+    "full_cells": 0,
+    "status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION"
+  },
+  "runtime_notes": {
+    "scientific_result_valid": true,
+    "stdout_redirection_side_effect": "The evaluator observed an empty stdout.json opened by shell redirection in its output directory. stdout.json is excluded from canonical scientific evidence; result JSON and all committed outputs are unaffected.",
+    "technical_retries": 0,
+    "warnings": [
+      "pandas Period conversion drops timezone metadata after timestamps were normalized to UTC; quarter labels remain deterministic"
+    ]
+  },
+  "schema_version": "usdjpy_hyp024_exact_evaluation_receipt_v1",
+  "status": "SCIENTIFIC_RESULT_COMPLETE_CLOSED_NO_ELIGIBLE_FAMILY_REGION"
+}

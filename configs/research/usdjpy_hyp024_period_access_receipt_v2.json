@@ -1,0 +1,23 @@
+{
+  "MT4_accessed": false,
+  "accessed_for_exact_outcome_evaluation": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "authorization_commit": "e56c3dac189bf283b528253cee3ed718f4358fa8",
+  "finalist": null,
+  "historical_2024_mutated": false,
+  "hypothesis_id": "USDJPY-HYP-024",
+  "later_2024_derived_bars_substituted": false,
+  "live_orders": false,
+  "next_period_action": "none; no MT4 or 2025 access is authorized",
+  "not_accessed": [
+    "2025H1",
+    "2025H2"
+  ],
+  "result_status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION",
+  "schema_version": "usdjpy_hyp024_period_access_receipt_v2",
+  "status": "PASS_DEVELOPMENT_FOLDS_ONLY_RESULT_CLOSED"
+}
