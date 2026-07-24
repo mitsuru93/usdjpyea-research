@@ -1,0 +1,249 @@
+name: Build USDJPY 2024 Derived Bars v1
+
+on:
+  workflow_dispatch:
+    inputs:
+      output_release_tag:
+        description: Immutable release tag for derived UTC bars
+        required: true
+        default: usdjpy-2024-derived-bars-v1
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/build_usdjpy_2024_derived_bars_v1.yml
+      - tools/build_usdjpy_2024_derived_bars_v1.py
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usdjpy-2024-derived-bars-v1
+  cancel-in-progress: false
+
+env:
+  SOURCE_RELEASE_TAG: usdjpy-2024-mt4-tick-import-v1
+  OUTPUT_RELEASE_TAG: ${{ github.event.inputs.output_release_tag || 'usdjpy-2024-derived-bars-v1' }}
+
+jobs:
+  build-month:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {month: '01', tick_rows: 3725512, source_sha256: bd008d96b8620bfea362b58e89c3d6a2869a758347ea5efd329c50414efd1df1}
+          - {month: '02', tick_rows: 3134539, source_sha256: ef732b8d806f52d86e0c73f57222f9c5076ac986a636ba11ba9856d31a077069}
+          - {month: '03', tick_rows: 2734951, source_sha256: 81c7ab72927780c2590b9f363c07d8d5fb94af899ec627b013aee7a477c0fb53}
+          - {month: '04', tick_rows: 2373704, source_sha256: 1a8f674d3daf5bbbef268054a980386f15bfec2c6151bc400eb4b87cd2638c83}
+          - {month: '05', tick_rows: 2214265, source_sha256: d29a0fe11304ad76de63758683fc01ac7e43195ad2fb03c73d9ef5d085ac3009}
+          - {month: '06', tick_rows: 2209019, source_sha256: 4f3e067bb26fbb59571de0e032b010be75f3c6e5281d1711d5f21b4be1cc5710}
+          - {month: '07', tick_rows: 3423501, source_sha256: 7b1a1938c60fe6523a30400a5e83e865824c8c195586cee74fe68f74f62536f3}
+          - {month: '08', tick_rows: 5087969, source_sha256: 618bd2ba4156c92f58d42df0d6aab264a6a1ee8d243e917859091e6343e1175e}
+          - {month: '09', tick_rows: 4551867, source_sha256: 8e48c5db68c617f5a9f6aa270742cdf82f47d9410d6857209c84ccc02702e6d6}
+          - {month: '10', tick_rows: 3560647, source_sha256: 4dd4efa380c6dc96d4452ec6056dac7759e5fd9854cbc71bdbf845d396ea86b3}
+          - {month: '11', tick_rows: 4433776, source_sha256: 9cfe8ce7669e94ee1b73b385fd0fa48b53a789ff06d08750b2c044410498e8b2}
+          - {month: '12', tick_rows: 3519331, source_sha256: f4cc0d233ea953e92167ad4243b9ddfcab7278b3d175203b7e006c3d08db72d3}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pinned builder dependency
+        run: python -m pip install --disable-pip-version-check pandas==2.2.3
+
+      - name: Validate builder
+        run: python -m py_compile tools/build_usdjpy_2024_derived_bars_v1.py
+
+      - name: Download and verify monthly Tick asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MONTH: ${{ matrix.month }}
+          EXPECTED_SHA256: ${{ matrix.source_sha256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          asset="USDJPY-2024-${MONTH}-mt4-tick-import-v1.csv.gz"
+          gh release download "$SOURCE_RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern "$asset" \
+            --dir source
+          printf '%s  %s\n' "$EXPECTED_SHA256" "source/$asset" | sha256sum -c -
+
+      - name: Build deterministic monthly M1 and M5
+        env:
+          MONTH: ${{ matrix.month }}
+          EXPECTED_TICK_ROWS: ${{ matrix.tick_rows }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/build_usdjpy_2024_derived_bars_v1.py build-month \
+            --input-file "source/USDJPY-2024-${MONTH}-mt4-tick-import-v1.csv.gz" \
+            --output-dir month-out \
+            --year 2024 \
+            --month "$((10#$MONTH))" \
+            --expected-tick-rows "$EXPECTED_TICK_ROWS" \
+            --source-release-tag "$SOURCE_RELEASE_TAG"
+          gzip -t month-out/*.csv.gz
+
+      - name: Upload monthly derived bars
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-2024-derived-bars-month-${{ matrix.month }}
+          path: month-out
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+  publish:
+    needs: build-month
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pinned builder dependency
+        run: python -m pip install --disable-pip-version-check pandas==2.2.3
+
+      - name: Download twelve monthly outputs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: usdjpy-2024-derived-bars-month-*
+          path: month-out
+          merge-multiple: true
+
+      - name: Combine annual bars and validate package
+        shell: bash
+        run: |
+          set -euo pipefail
+          receipt_count=$(find month-out -maxdepth 1 -type f -name 'USDJPY-2024-??-derived-bars-v1.receipt.json' | wc -l)
+          if [ "$receipt_count" -ne 12 ]; then
+            echo "expected 12 monthly receipts, got $receipt_count" >&2
+            exit 1
+          fi
+          python tools/build_usdjpy_2024_derived_bars_v1.py combine \
+            --input-dir month-out \
+            --output-dir out \
+            --year 2024 \
+            --expected-tick-rows 40969081 \
+            --expected-m1-rows 373383 \
+            --source-release-tag "$SOURCE_RELEASE_TAG" \
+            --output-release-tag "$OUTPUT_RELEASE_TAG"
+          gzip -t out/*.csv.gz
+          (cd out && sha256sum -c SHA256SUMS)
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path('out/USDJPY-2024-derived-bars-v1.manifest.json').read_text())
+          expected = {'m1': 373383, 'm5': 74975, 'm15': 24999, 'm30': 12500, 'h1': 6250, 'h4': 1616}
+          actual = {key: value['rows'] for key, value in manifest['annual'].items()}
+          if actual != expected:
+              raise SystemExit(f'annual row counts mismatch: {actual} != {expected}')
+          if manifest['source_tick_rows'] != 40969081 or len(manifest['months']) != 12:
+              raise SystemExit('source count or month count mismatch')
+          print(json.dumps({'accepted': True, 'annual_rows': actual}, sort_keys=True))
+          PY
+
+      - name: Upload complete derived-bar package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-2024-derived-bars-${{ github.run_id }}-${{ github.run_attempt }}
+          path: out
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Publish or verify immutable derived-bar release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$OUTPUT_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "release exists; verifying immutable assets"
+          else
+            gh release create "$OUTPUT_RELEASE_TAG" out/* \
+              --repo "$GITHUB_REPOSITORY" \
+              --title 'USDJPY 2024 Derived UTC Bars v1' \
+              --notes-file out/README.md
+          fi
+
+          rm -rf release-readback
+          mkdir -p release-readback
+          gh release download "$OUTPUT_RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --dir release-readback
+          diff -u out/SHA256SUMS release-readback/SHA256SUMS
+          (cd release-readback && sha256sum -c SHA256SUMS)
+          expected_count=$(find out -maxdepth 1 -type f | wc -l)
+          actual_count=$(find release-readback -maxdepth 1 -type f | wc -l)
+          if [ "$actual_count" -ne "$expected_count" ]; then
+            echo "release asset count mismatch: $actual_count != $expected_count" >&2
+            exit 1
+          fi
+
+      - name: Commit durable Release receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          receipt_dir='docs/research_reboot/artifact_archives/usdjpy_2024_derived_bars_v1'
+          mkdir -p "$receipt_dir"
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          output = Path('out')
+          manifest_path = output / 'USDJPY-2024-derived-bars-v1.manifest.json'
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          receipt = {
+              'schema_version': 'usdjpy_2024_derived_bars_release_receipt_v1',
+              'repository': os.environ['GITHUB_REPOSITORY'],
+              'workflow': os.environ['GITHUB_WORKFLOW'],
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'run_attempt': int(os.environ['GITHUB_RUN_ATTEMPT']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'source_release_tag': os.environ['SOURCE_RELEASE_TAG'],
+              'output_release_tag': os.environ['OUTPUT_RELEASE_TAG'],
+              'output_release_url': f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/releases/tag/{os.environ['OUTPUT_RELEASE_TAG']}",
+              'manifest_sha256': hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+              'source_tick_rows': manifest['source_tick_rows'],
+              'annual_rows': {key: value['rows'] for key, value in manifest['annual'].items()},
+              'month_count': len(manifest['months']),
+              'bar_timezone': manifest['bar_timezone'],
+              'bar_boundary': manifest['bar_boundary'],
+              'accepted': manifest['accepted'],
+              'release_readback_verified': True,
+              'assets': [
+                  {'name': path.name, 'size_bytes': path.stat().st_size, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+                  for path in sorted(output.iterdir()) if path.is_file()
+              ],
+          }
+          target = Path('docs/research_reboot/artifact_archives/usdjpy_2024_derived_bars_v1/receipt.json')
+          target.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$receipt_dir/receipt.json"
+          if git diff --cached --quiet; then
+            echo 'receipt already current'
+          else
+            git commit -m 'data: record USDJPY 2024 derived bars release'
+            git push origin HEAD:main
+          fi
