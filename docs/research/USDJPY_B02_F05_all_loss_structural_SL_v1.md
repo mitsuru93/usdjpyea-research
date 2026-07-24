@@ -106,6 +106,8 @@ The pooled result is **+124.9 pips**, but only 15 trades trigger, the median tri
 
 ### 6. Generic profit-armed range failure is overbroad
 
+`REJECTED_AS_OVERBROAD`
+
 `PROFIT_ARMED_M5_RANGE_FAILURE_V1` triggers 1,481 trades:
 
 - loser benefit: **+26,707.9 pips**
