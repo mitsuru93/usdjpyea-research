@@ -1,0 +1,35 @@
+{
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v4",
+  "status": "HYP023_PREREGISTERED_AWAITING_EXACT_SIX_CELL_EVALUATION",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v3.json",
+  "objective": "Use 2023H1, 2023H2, 2024H1 and 2024H2 as development/falsification folds to freeze one exact specification for an unchanged 2025 H1 Rakuten MT4 gate without selecting from 2025.",
+  "completed": {
+    "exact_2023_historical_2024_transform": "PASS_1543_SHIFT_ZERO_DUPLICATES_EXACT_IDENTITIES",
+    "fixed_five_portability": "CLOSED_NO_PORTABLE_STRATEGY_OR_STATIC_PORTFOLIO",
+    "long_horizon_regime_diagnosis": "CLOSED_NO_ROUTER_FAMILY",
+    "full_frozen_architecture_census": "CLOSED_660_CELLS_ZERO_FAMILY_REGIONS",
+    "architecture_failure_taxonomy": "CLOSED_ONE_DISTINCT_NATIVE_HTF_INFORMATION_GAP",
+    "native_HTF_data_construction": "PASS_LOGICAL_SERVER_BUCKET_CONTRACT",
+    "native_HTF_literature_and_duplicate_audit": "PASS_DISTINCT_MECHANISM_CLASS_NO_EXACT_PARAMETER_CLAIM",
+    "native_HTF_modular_evaluator_preflight": "PASS_OUTCOMES_NOT_COMPUTED"
+  },
+  "active_hypothesis": "USDJPY-HYP-023",
+  "active_family": "N_NATIVE_H4_H1_EMA_STATE_TRANSITION",
+  "active_grid": "three frozen H4 EMA pairs x two frozen H1 EMA pairs = six cells",
+  "exact_next_action": "After preregistration merge, execute the committed modular evaluator once for the exact six cells across all four development folds. Apply the frozen severe-cost, quarterly, monthly, ex-best-two-date, direction, boundary-liquidation, adjacency and family-region gates. Close the family if no connected eligible region exists; otherwise freeze at most one representative before MT4 parity.",
+  "prohibited": [
+    "no parameter expansion or threshold addition",
+    "no gate changes after outcomes",
+    "no M15 parent signal or fixed-time fallback",
+    "no closed-family combination",
+    "no MT4 during Research evaluation",
+    "no 2025 H1/H2 access"
+  ],
+  "boundaries": {
+    "current_candidate": null,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  }
+}
