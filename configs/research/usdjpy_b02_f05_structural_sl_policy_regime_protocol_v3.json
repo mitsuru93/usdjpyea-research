@@ -35,7 +35,7 @@
   "direct_scope": "Second-stage structural-stop validation using time-ordered adaptation, ex-ante regimes, family voting, approximate optimal stopping, hidden-state transitions and oracle bounds. This is not a repair or reopening of HYP-023, HYP-024, HYP-025 or HYP-026.",
   "evaluator": {
     "common_path": "tools/usdjpy_policy_v3/common.py",
-    "common_sha256": "2c5812bcf0476131200bf428cd4e76cef8a60696fac491a606973cbb41f8edf7",
+    "common_sha256": "2d97c2cd11c197f3ea340c67bdbcc2b8ccbd617c31e4d4d5f58ef4efa2ed51a2",
     "main_path": "tools/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.py",
     "main_sha256": "b6369d2902a570298eb602a8eacb8de333ed898165d1700a529ab43c8ff3734d",
     "reuses_frozen_atlas_v2_source": true
@@ -190,6 +190,13 @@
     "m1_2024_sha256": "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0"
   },
   "status": "FROZEN_BEFORE_OUTCOME_EXECUTION",
+  "technical_repair": {
+    "candidate_or_gate_logic_changed": false,
+    "failed_run_id": 30132685469,
+    "failure_before_result_artifact": true,
+    "repair_scope": "Coerce policy_summary entry_utc to UTC datetime for zero-trigger policy cells.",
+    "source_data_changed": false
+  },
   "training_candidate_gate": {
     "best_training_month_removed_positive": true,
     "default_total_positive": true,
