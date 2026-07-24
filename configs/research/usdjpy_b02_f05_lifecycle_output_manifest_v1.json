@@ -1,0 +1,53 @@
+{
+  "schema_version": "usdjpy_b02_f05_lifecycle_output_manifest_v1",
+  "status": "PREREGISTERED_OUTPUT_CONTRACT",
+  "required_inputs": {
+    "2023_m1_m15": {
+      "run_id": 29997167048,
+      "artifact_id": 8559483151,
+      "normalized_m1_sha256": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e",
+      "normalized_m15_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78"
+    },
+    "2023_baseline_atlas": {
+      "run_id": 30001786384,
+      "artifact_id": 8561286612
+    },
+    "2024h1_baseline": {
+      "run_id": 29787357305,
+      "artifact_id": 8479048161,
+      "artifact_digest": "sha256:e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5"
+    },
+    "2024h2_baseline": {
+      "run_id": 29718827890,
+      "artifact_id": 8451557378,
+      "artifact_digest": "sha256:a10bc414d7c584d28a405507a747d890711360aed7685ca48070e879c4b7a713"
+    },
+    "2024_release_ticks": {
+      "run_id": 29735621573,
+      "artifact_id": 8458310265,
+      "artifact_digest": "sha256:002493b24e508de6db3807315793d44d756f76d9fee058d9b546f0a8c07d40b2",
+      "rows": 40969081
+    }
+  },
+  "required_outputs": [
+    "usdjpy_b02_f05_lifecycle_trade_effects_v1.csv",
+    "usdjpy_b02_f05_lifecycle_fold_metrics_v1.csv",
+    "usdjpy_b02_f05_lifecycle_path_metrics_v1.csv",
+    "usdjpy_b02_f05_lifecycle_right_tail_v1.csv",
+    "usdjpy_b02_f05_lifecycle_breadth_v1.csv",
+    "usdjpy_b02_f05_lifecycle_trigger_ledger_v1.csv",
+    "usdjpy_b02_f05_lifecycle_result_v1.json",
+    "usdjpy_b02_f05_lifecycle_result_v1.md",
+    "SHA256SUMS"
+  ],
+  "identity_fields": [
+    "research_main_commit",
+    "protocol_sha256",
+    "evaluator_sha256",
+    "input_artifact_run_id",
+    "input_artifact_id",
+    "input_artifact_digest",
+    "input_file_sha256",
+    "output_file_sha256"
+  ]
+}
