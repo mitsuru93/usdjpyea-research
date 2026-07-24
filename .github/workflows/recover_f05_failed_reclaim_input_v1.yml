@@ -1,0 +1,144 @@
+name: Recover F05 failed reclaim input v1
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recover-input:
+    if: github.event_name == 'workflow_dispatch' || github.head_ref == 'agent/f05-failed-reclaim-input-recovery-v1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+
+      - name: Enforce recovery-only boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          marker = json.loads(Path('configs/research/f05_failed_reclaim_input_recovery_marker_v1.json').read_text())
+          assert marker['status'] == 'INPUT_RECOVERY_ONLY_NO_OUTCOMES'
+          assert marker['binding_candidate'] == 'F05_FAILED_RECLAIM_BASIC_V1'
+          assert marker['non_binding_sensitivity'] == 'F05_FAILED_RECLAIM_WEAK_QUICK_V1'
+          assert marker['candidate_count'] == 2
+          assert marker['binding_candidate_count'] == 1
+          for key in ('outcomes_computed', 'candidate_outcomes_computed', 'portfolio_replay_computed', '2025_accessed', 'mt4_accessed', 'notion_task_dependency', 'new_hypothesis_id_created', 'candidate_substitution_allowed'):
+              assert marker['boundaries'][key] is False, key
+          PY
+
+      - name: Extract and audit durable source package
+        shell: bash
+        run: |
+          set -euo pipefail
+          package='.stage2_lifecycle_abc_package_v1.tar.gz'
+          test -f "$package"
+          mkdir -p recovery/extracted recovery/decoded
+          cp "$package" recovery/source_package.tar.gz
+          sha256sum "$package" | tee recovery/source_package_SHA256.txt
+          tar -tzf "$package" | tee recovery/source_package_file_list.txt
+          tar -xzf "$package" -C recovery/extracted
+          find recovery/extracted -type f -print0 | sort -z | xargs -0 sha256sum > recovery/extracted_SHA256SUMS
+          find recovery/extracted -type f -printf '%P\t%s\n' | sort > recovery/extracted_file_sizes.tsv
+          grep -RIlE 'event_sequence_features|basic_failed_reclaim|refined_failed_reclaim|failed[ _-]?reclaim|F05_FAILED_RECLAIM' recovery/extracted > recovery/matching_text_files.txt || true
+          cat > recovery/boundaries.txt <<'EOF'
+          outcomes_computed=false
+          candidate_outcomes_computed=false
+          portfolio_replay_computed=false
+          2025_accessed=false
+          mt4_accessed=false
+          notion_task_dependency=false
+          EOF
+          python - <<'PY'
+          import gzip
+          import hashlib
+          import json
+          import tarfile
+          import zipfile
+          from pathlib import Path
+
+          root = Path('recovery/extracted')
+          decoded = Path('recovery/decoded')
+          target_terms = (
+              'event_sequence_features',
+              'basic_failed_reclaim',
+              'refined_failed_reclaim',
+              'natural_family_grid',
+              'natural_family_lofo',
+              'refined_breadth_metrics',
+              '2024_tick_first5_sensitivity',
+              'F05_FAILED_RECLAIM',
+              'failed_reclaim',
+          )
+          records = []
+          matches = []
+
+          def digest(data: bytes) -> str:
+              return hashlib.sha256(data).hexdigest()
+
+          for path in sorted(p for p in root.rglob('*') if p.is_file()):
+              rel = path.relative_to(root).as_posix()
+              data = path.read_bytes()
+              rec = {'path': rel, 'size': len(data), 'sha256': digest(data)}
+              records.append(rec)
+              low_name = rel.lower()
+              low_data = data[:10_000_000].lower()
+              if any(term.lower().encode() in low_data or term.lower() in low_name for term in target_terms):
+                  matches.append({'container': 'filesystem', **rec})
+              if path.suffix == '.gz':
+                  try:
+                      payload = gzip.decompress(data)
+                  except Exception:
+                      payload = None
+                  if payload is not None:
+                      out = decoded / (rel.replace('/', '__') + '.decoded')
+                      out.parent.mkdir(parents=True, exist_ok=True)
+                      out.write_bytes(payload)
+                      drec = {'path': rel + '::gzip_payload', 'size': len(payload), 'sha256': digest(payload)}
+                      records.append(drec)
+                      low_payload = payload[:20_000_000].lower()
+                      if any(term.lower().encode() in low_payload for term in target_terms):
+                          matches.append({'container': 'gzip', **drec})
+              if zipfile.is_zipfile(path):
+                  with zipfile.ZipFile(path) as zf:
+                      for name in sorted(zf.namelist()):
+                          if name.endswith('/'):
+                              continue
+                          payload = zf.read(name)
+                          zrec = {'path': rel + '::zip::' + name, 'size': len(payload), 'sha256': digest(payload)}
+                          records.append(zrec)
+                          if any(term.lower() in name.lower() or term.lower().encode() in payload[:20_000_000].lower() for term in target_terms):
+                              matches.append({'container': 'zip', **zrec})
+              try:
+                  if tarfile.is_tarfile(path):
+                      with tarfile.open(path, 'r:*') as tf:
+                          for member in sorted((m for m in tf.getmembers() if m.isfile()), key=lambda m: m.name):
+                              fh = tf.extractfile(member)
+                              if fh is None:
+                                  continue
+                              payload = fh.read()
+                              trec = {'path': rel + '::tar::' + member.name, 'size': len(payload), 'sha256': digest(payload)}
+                              records.append(trec)
+                              if any(term.lower() in member.name.lower() or term.lower().encode() in payload[:20_000_000].lower() for term in target_terms):
+                                  matches.append({'container': 'tar', **trec})
+              except Exception:
+                  pass
+
+          Path('recovery/recursive_inventory.json').write_text(json.dumps(records, indent=2, sort_keys=True) + '\n')
+          Path('recovery/target_matches.json').write_text(json.dumps(matches, indent=2, sort_keys=True) + '\n')
+          print(json.dumps({'record_count': len(records), 'target_match_count': len(matches)}, sort_keys=True))
+          PY
+
+      - name: Upload input-recovery evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f05-failed-reclaim-input-recovery-v1
+          path: recovery
+          if-no-files-found: error
+          retention-days: 14
