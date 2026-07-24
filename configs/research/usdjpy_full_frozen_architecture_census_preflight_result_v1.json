@@ -1,0 +1,59 @@
+{
+  "authority": {
+    "artifact_id": 8430064217,
+    "artifact_sha256": "84a495b7c7cddf1c719bb4c8ce78bfef2c990b355649d362c18481836d953426",
+    "release": "usdjpy-r2-horizon-surface-v1",
+    "run_id": 29646040010
+  },
+  "boundaries": {
+    "2023_outcomes_accessed": false,
+    "2024H2_census_outcomes_accessed": false,
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "live_orders": false,
+    "single_combination_selected": false
+  },
+  "candidates": 60,
+  "decision": "UNLOCK_STAGE2_FOURFOLD_CENSUS_AFTER_ATOMIC_MERGE",
+  "evaluator_identity": {
+    "branch": "agent/rq020e-architecture-census-preflight-v1",
+    "commit": "b88c34fa9e732ad5455b53a9405caff902b6da18",
+    "git_blob_sha1": "608c1ffeb3c42096864a7c5d71fe2e7ddf2777f7"
+  },
+  "expected_shapes": {
+    "direction_rows": 1320,
+    "hash_rows": 660,
+    "monthly_rows": 3960,
+    "summary_rows": 660,
+    "surface_rows": 60,
+    "trade_rows": 383078
+  },
+  "file_comparisons": [
+    {"expected_sha256": "ca7bf7f0b59b8e915fe2e9e36d90d8779f2ccd29133b374620b2c607a34c06af", "file": "candidate_horizon_direction.csv", "passed": true, "row_numeric_exact": true, "rows": 1320, "sha256": "ca7bf7f0b59b8e915fe2e9e36d90d8779f2ccd29133b374620b2c607a34c06af", "sha_exact": true},
+    {"expected_sha256": "04130a947b297c7dad7e2016db6dcce10369eb374fe57cd862e1c34287f66a0f", "file": "candidate_horizon_hashes.csv", "passed": true, "row_numeric_exact": true, "rows": 660, "sha256": "04130a947b297c7dad7e2016db6dcce10369eb374fe57cd862e1c34287f66a0f", "sha_exact": true},
+    {"expected_sha256": "43dcb463a1a6f7a668f56ab5339eddbec8c0a04cd506f3161204a7f2edf3ec3c", "file": "candidate_horizon_monthly.csv", "passed": true, "row_numeric_exact": true, "rows": 3960, "sha256": "43dcb463a1a6f7a668f56ab5339eddbec8c0a04cd506f3161204a7f2edf3ec3c", "sha_exact": true},
+    {"expected_sha256": "fa46a5db3e73c4d25b8e8c97ef4727c39d737cc8823080b23d21b0419d9e44f6", "file": "candidate_horizon_summary.csv", "passed": true, "row_numeric_exact": true, "rows": 660, "sha256": "fa46a5db3e73c4d25b8e8c97ef4727c39d737cc8823080b23d21b0419d9e44f6", "sha_exact": true},
+    {"expected_sha256": "a47b68bd8417f94e66712e7324a7077e96e169350b6a779e7db8d3ac873890d0", "file": "candidate_horizon_surface.csv", "passed": true, "row_numeric_exact": true, "rows": 60, "sha256": "a47b68bd8417f94e66712e7324a7077e96e169350b6a779e7db8d3ac873890d0", "sha_exact": true},
+    {"expected_sha256": "70c2313147607096976a76328b72a628e42fa0001816f14824bcd9e9a3ead6c6", "file": "candidate_horizon_trades.csv.gz", "passed": true, "row_numeric_exact": true, "rows": 383078, "sha256": "70c2313147607096976a76328b72a628e42fa0001816f14824bcd9e9a3ead6c6", "sha_exact": true}
+  ],
+  "horizons": [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48],
+  "input_sha256": {
+    "canonical": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c",
+    "registry": "3bb43eeb1234ec6d175e37df3b1bbdb385364857351938bd088247ab14567549",
+    "signals": "99c2e2d19bd76b2438c1cec6c777228f82cdca16eeb1b471257bd389d6b7dc9e"
+  },
+  "protocol_identity": {
+    "commit": "5850c663e9d7b97148db623a5d671d18e0d51b1a"
+  },
+  "result_file_sha256": "b42780ade32ec26c5f84085300bb07d487534a6366fe5220a4dd0beeca689a21",
+  "schema_version": "usdjpy_full_frozen_architecture_census_preflight_result_v1",
+  "shapes": {
+    "direction_rows": 1320,
+    "hash_rows": 660,
+    "monthly_rows": 3960,
+    "summary_rows": 660,
+    "surface_rows": 60,
+    "trade_rows": 383078
+  },
+  "status": "PASS"
+}
