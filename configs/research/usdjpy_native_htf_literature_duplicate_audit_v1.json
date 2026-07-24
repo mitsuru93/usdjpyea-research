@@ -1,0 +1,91 @@
+{
+  "boundaries": {
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "candidate_selected": false,
+    "market_outcomes_accessed": false,
+    "strategy_PL_calculated": false,
+    "strategy_signals_generated": false
+  },
+  "decision": "FREEZE_ONE_SIX_CELL_NATIVE_H4_H1_EMA_STATE_TRANSITION_PROTOCOL_BEFORE_OUTCOMES",
+  "full_ledger_duplicate_audit": {
+    "Families_B_E": "Exposure-state or recovery routing of existing signals. The new protocol has no B02/F05 parent signal.",
+    "Families_C_D_G_H": "Fixed/checkpoint/invalidation exits after existing M15 entries. The new termination is the first completed H1/H4 state reversal and has no fixed checkpoint grid.",
+    "HYP_001_to_006_and_Families_A_F_I": "Admission, shock, extension, acceptance and confirmation filters applied to existing M15/B02/F05 signals. The new protocol constructs the primary signal on completed H4 bars.",
+    "R1_EMA_trend_cross": "EMA crossover was generated on M15 and paired with fixed-time exits. Reusing EMA mathematics on native H4/H1 is allowed only because information time, parent signal and termination are all different; no M15 cell is reopened.",
+    "RQ_019": "Local B02 20-40 pip band partition. No overlap.",
+    "RQ_020A_D": "Fixed M15 strategies, static portfolios and static 5d/20d state overlays. The new state is native H4/H1 primary construction, not an overlay.",
+    "RQ_020E": "Exhausted 60 M15 entry definitions x 11 fixed horizons. The new protocol has no R1 entry and no R2 fixed horizon.",
+    "algebraic_outcome_derivability": false,
+    "closed_candidate_relabeling": false,
+    "old_higher_timeframe_trend_continuation": "Used an M15 pullback/resumption trigger with an 8h/12h M15 lookback and fixed six-M15-bar hold; it did not aggregate native H1/H4 bars or event-terminate on higher-timeframe state reversal.",
+    "scientifically_distinct_information": "Both the primary transition and its termination are determined from completed exact-slot native higher-timeframe bars. M15 is execution-only."
+  },
+  "literature_decision": {
+    "exact_H4_H1_periods_supported": false,
+    "exact_exit_rule_supported": false,
+    "mechanism_class_supported": true,
+    "parameter_interpretation": "The finite periods are natural powers-of-two/session-day engineering scales frozen before outcomes, not literature-optimal values.",
+    "required_controls": [
+      "historical server-time alignment",
+      "realistic and severe costs",
+      "four half-year development folds",
+      "monthly/date concentration",
+      "parameter-neighbourhood rather than isolated-cell selection"
+    ]
+  },
+  "primary_literature": [
+    {
+      "doi": "10.1111/0022-1082.85732",
+      "id": "ANDERSEN_BOLLERSLEV_1998",
+      "not_supported": "No H1/H4 EMA parameter or trading rule is identified.",
+      "primary_access": "NBER Working Paper 5783 / publisher",
+      "publication": "Journal of Finance 53(1), 219-265",
+      "supported_claim": "FX high-frequency volatility has pronounced intraday patterns, announcement effects and persistence; clock/session alignment and multi-scale state construction must be explicit.",
+      "title": "Deutsche Mark-Dollar Volatility: Intraday Activity Patterns, Macroeconomic Announcements, and Longer Run Dependencies"
+    },
+    {
+      "id": "NEELY_WELLER_1999",
+      "not_supported": "The paper does not validate the proposed native H4/H1 state machine.",
+      "primary_access": "Federal Reserve working paper / SSRN author copy",
+      "publication": "Federal Reserve Bank of St. Louis Working Paper 99-016A",
+      "supported_claim": "Realistic transaction costs and trading hours can eliminate apparent intraday technical excess returns; severe-cost and trading-window gates are mandatory.",
+      "title": "Intraday Technical Trading in the Foreign Exchange Market"
+    },
+    {
+      "doi": "10.20955/wp.2006.046",
+      "id": "NEELY_ULLRICH_WELLER_2009",
+      "not_supported": "No exact intraday EMA periods are supported.",
+      "publication": "Federal Reserve Bank of St. Louis Working Paper 2006-046 / Journal of Financial and Quantitative Analysis",
+      "supported_claim": "Technical-rule profitability changes through time and previously profitable moving-average/filter rules can decay; four-fold consistency and parameter-neighbourhood gates are required.",
+      "title": "The Adaptive Markets Hypothesis: Evidence from the Foreign Exchange Market"
+    },
+    {
+      "doi": "10.1016/j.jfineco.2011.11.003",
+      "id": "MOSKOWITZ_OOI_PEDERSEN_2012",
+      "not_supported": "The horizon is much longer than H1/H4 and cannot justify the proposed intraday periods.",
+      "publication": "Journal of Financial Economics 104, 228-250",
+      "supported_claim": "Own past returns exhibit persistence across currency and other futures at one-to-twelve-month horizons; this supports testing a trend-persistence mechanism class.",
+      "title": "Time Series Momentum"
+    },
+    {
+      "id": "MENKHOFF_SARNO_SCHMELING_SCHRIMPF_2012",
+      "not_supported": "It is cross-sectional across currencies and is not direct evidence for a single-pair USDJPY intraday rule.",
+      "primary_access": "BIS Working Paper 366",
+      "publication": "Journal of Financial Economics 106, 660-684 / BIS Working Paper 366",
+      "supported_claim": "Currency momentum is transaction-cost-sensitive and subject to limits to arbitrage.",
+      "title": "Currency Momentum Strategies"
+    },
+    {
+      "doi": "10.1257/000282803321455151",
+      "id": "ANDERSEN_BOLLERSLEV_DIEBOLD_VEGA_2003",
+      "not_supported": "No announcement filter or calendar threshold is introduced in this protocol.",
+      "publication": "American Economic Review 93(1), 38-62",
+      "supported_claim": "High-frequency USD exchange rates, including USDJPY, exhibit announcement-timed jumps and asymmetric reactions; a smooth-state model must be tested under concentration and fold gates.",
+      "title": "Micro Effects of Macro Announcements: Real-Time Price Discovery in Foreign Exchange"
+    }
+  ],
+  "research_question": "USDJPY-RQ-022",
+  "schema_version": "usdjpy_native_htf_literature_duplicate_audit_v1",
+  "status": "PASS_DISTINCT_MECHANISM_CLASS_NO_EXACT_PARAMETER_CLAIM"
+}
