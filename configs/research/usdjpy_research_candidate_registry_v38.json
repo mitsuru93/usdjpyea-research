@@ -1,0 +1,51 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v38",
+  "status": "USDJPY_RQ020E_CLOSED_NO_FAMILY_REGION_RQ021_DIAGNOSIS_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v37.json",
+  "active_family": null,
+  "current_candidate": null,
+  "current_open_research_question": "USDJPY-RQ-021",
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION",
+    "G_STRUCTURAL_BREAKOUT_INVALIDATION",
+    "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE",
+    "I_B02_SHORT_WEAK_4H_ALIGNMENT_ADMISSION"
+  ],
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v12.json",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "period_policy": "configs/research/usdjpy_period_role_policy_v5.json",
+    "startup_read_receipt_required": true,
+    "duplicate_research_audit_required_before_new_family": true,
+    "atomic_ledger_update_required_after_test": true
+  },
+  "hypothesis_program": "configs/research/usdjpy_2023_2024_hypothesis_program_v2.json",
+  "full_architecture_census_protocol": "configs/research/usdjpy_full_frozen_architecture_census_protocol_v1.json",
+  "full_architecture_census_preflight": "configs/research/usdjpy_full_frozen_architecture_census_preflight_result_v1.json",
+  "full_architecture_census_result": "configs/research/usdjpy_full_frozen_architecture_census_result_v1.json",
+  "full_architecture_census_report": "docs/research/usdjpy_full_frozen_architecture_census_result_v1.md",
+  "next_action": "Using only the already opened RQ-020E outputs, attribute cross-fold failures by family, horizon, direction and weakest fold; identify information dimensions absent from R1/R2; compare them against the full hypothesis ledger and define at most one genuinely distinct architecture question. Do not retune a cell, add horizons, preregister a family, use MT4 or access 2025.",
+  "run_authorization": {
+    "2023_2024_development_analysis": true,
+    "existing_output_failure_taxonomy": true,
+    "new_market_outcome_access": false,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "new_family_preregistration": false,
+    "parameter_search": false,
+    "single_combination_selection": false,
+    "portfolio_weight_optimization": false,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  },
+  "live_order_authorized": false
+}

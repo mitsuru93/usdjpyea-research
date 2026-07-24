@@ -1,0 +1,77 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v12",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json"
+  ],
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-RQ-020E-RESULT-001",
+      "family_ids": [],
+      "candidate_ids": [],
+      "status": "CLOSED_NO_FAMILY_REGION",
+      "origin_analysis": "The exact R2 preflight authorized a complete cross-year census of every frozen R1 v2 Entry definition and R2 fixed horizon.",
+      "causal_hypothesis": "At least one broad Entry family and contiguous fixed-horizon region from the complete frozen 60 by 11 architecture would remain robust across 2023H1, 2023H2, 2024H1 and 2024H2.",
+      "target_failure_mode": ["2024H1-only selection bias", "incomplete five-strategy portability coverage", "isolated-cell selection"],
+      "pre_result_predictions": ["all 660 cells have adequate support", "at least one cell survives default and severe cost in all four folds", "a retained Entry must form a contiguous horizon neighbourhood and family region"],
+      "tests": [
+        {
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "type": "frozen 60 Entry x 11 horizon four-fold census",
+          "result_path": "configs/research/usdjpy_full_frozen_architecture_census_result_v1.json",
+          "result": {
+            "support_cells": 660,
+            "core_cells": 1,
+            "full_cells": 0,
+            "entry_neighbourhoods": 0,
+            "family_regions": 0,
+            "decision": "CLOSE_RQ_020E_NO_FAMILY_REGION"
+          }
+        }
+      ],
+      "decision": "Close RQ-020E. Do not select, repair or retune the isolated R1K03 24-bar cell. No frozen R1/R2 family region qualifies for MT4 or 2025.",
+      "falsified_or_unsupported_claims": ["the pre-existing R1/R2 architecture contains a robust cross-year family region", "an isolated severe-cost-positive cell is sufficient evidence", "the earlier fixed-five failure was caused only by incomplete strategy coverage"],
+      "retained_findings": ["all 660 cells had at least 20 trades in every fold", "14 cells were default-positive across all four folds", "only R1K03 at 24 bars survived severe cost in all four folds", "failure was distributed across all four folds and all twelve families"],
+      "prohibited_reuse": ["no local repair of R1K03 or neighbouring horizons", "no new horizon added around 24 bars", "no ranking or selection from the 660-cell surface", "no MT4 or 2025 execution from RQ-020E"],
+      "successor_questions": ["which failure dimensions are common by family, horizon and direction?", "which information types are absent from the complete R1/R2 architecture?"],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_full_frozen_architecture_census_result_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "docs/research/usdjpy_full_frozen_architecture_census_result_v1.md"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_full_frozen_architecture_census_2024h1_regression_v1.json"}
+      ]
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-021",
+      "family_ids": [],
+      "candidate_ids": [],
+      "status": "OPEN_RESEARCH_QUESTION",
+      "origin_analysis": "RQ-020E exhaustively closed the complete frozen R1 v2 Entry x R2 fixed-horizon architecture without a passing family region.",
+      "causal_hypothesis": "A genuinely distinct successor, if one exists, must add an information or action dimension absent from the twelve frozen Entry families and fixed time exits rather than retune the closed surface.",
+      "target_failure_mode": ["cross-fold regime dependence", "severe-cost fragility", "monthly and date concentration", "direction-specific sign reversal"],
+      "pre_result_predictions": ["failure taxonomy can be produced from already opened RQ-020E outputs", "at most one information gap can be justified after full ledger comparison", "no new outcome access is required for the taxonomy"],
+      "tests": [],
+      "decision": "Remain descriptive. Attribute failure by family, horizon, direction and weakest fold, then define at most one scientifically distinct architecture question.",
+      "falsified_or_unsupported_claims": [],
+      "retained_findings": ["fixed Entry plus fixed time exit is insufficient across four development folds", "support scarcity did not cause failure", "isolated positive cells must not be promoted without neighbourhood robustness"],
+      "prohibited_reuse": ["no cell retuning", "no added horizon around a near-pass", "no generic parameter search", "no candidate or family preregistration before duplicate audit", "no MT4 or 2025 access"],
+      "successor_questions": ["is the missing dimension event state, path-dependent action, conditional non-participation or portfolio interaction?", "which proposed dimension is not already falsified by Families A-I and RQ-019/020?"],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_full_frozen_architecture_census_result_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "docs/research/usdjpy_full_frozen_architecture_census_result_v1.md"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "schema_version": "usdjpy_full_frozen_architecture_census_result_v1",
+  "status": "CLOSED_NO_FAMILY_REGION",
+  "decision": "CLOSE_RQ_020E_NO_FAMILY_REGION",
+  "research_question": "USDJPY-RQ-020E",
+  "next_research_question": "USDJPY-RQ-021",
+  "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "protocol": "configs/research/usdjpy_full_frozen_architecture_census_protocol_v1.json",
+  "2024H1_exact_regression": "configs/research/usdjpy_full_frozen_architecture_census_2024h1_regression_v1.json",
+  "technical_incomplete_attempt_log": "configs/research/usdjpy_rq020e_stage2_technical_attempts_v1.json",
+  "input_sha256": {
+    "m15_2023": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "m15_2024": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c",
+    "r1_registry": "3bb43eeb1234ec6d175e37df3b1bbdb385364857351938bd088247ab14567549",
+    "r1_signals": "99c2e2d19bd76b2438c1cec6c777228f82cdca16eeb1b471257bd389d6b7dc9e",
+    "r2_summary": "fa46a5db3e73c4d25b8e8c97ef4727c39d737cc8823080b23d21b0419d9e44f6"
+  },
+  "population": {
+    "candidates": 60,
+    "horizons": [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48],
+    "cells": 660,
+    "cell_fold_rows": 2640,
+    "signal_rows_by_fold": {"2023H1": 36100, "2023H2": 35343, "2024H1": 34955, "2024H2": 36775},
+    "trade_rows_by_fold": {"2023H1": 395914, "2023H2": 387560, "2024H1": 383078, "2024H2": 403034}
+  },
+  "gate_counts": {
+    "support_cells": 660,
+    "core_cells": 1,
+    "full_cells": 0,
+    "entry_neighbourhoods": 0,
+    "family_regions": 0
+  },
+  "entry_neighbourhoods_passed": 0,
+  "family_regions_passed": 0,
+  "retained_family_regions": [],
+  "fold_pass_distributions": {
+    "default_folds": {"0": 130, "1": 213, "2": 193, "3": 110, "4": 14},
+    "severe_folds": {"0": 449, "1": 135, "2": 56, "3": 19, "4": 1},
+    "breadth_folds": {"0": 389, "1": 208, "2": 60, "3": 3}
+  },
+  "weakest_severe_fold_counts": {"2023H1": 140, "2023H2": 110, "2024H1": 162, "2024H2": 248},
+  "only_core_cell": [
+    {
+      "candidate_id": "R1K03_london_to_ny_cont",
+      "family": "session_handoff",
+      "horizon_bars": 24,
+      "failed_full_gate_folds": ["2023H1", "2023H2", "2024H2"],
+      "folds": [
+        {"fold": "2023H1", "trades": 22, "default_net_pips": 150.3, "default_pf": 1.290210465341, "severe_net_pips": 106.3, "severe_pf": 1.198357902594, "positive_months": 4, "negative_months": 1, "ex_best_two_dates_default_pips": -87.2, "long_default_net_pips": 74.3, "short_default_net_pips": 76.0, "long_severe_net_pips": 58.3, "short_severe_net_pips": 48.0},
+        {"fold": "2023H2", "trades": 29, "default_net_pips": 98.7, "default_pf": 1.239563106796, "severe_net_pips": 40.7, "severe_pf": 1.093327218528, "positive_months": 3, "negative_months": 3, "ex_best_two_dates_default_pips": -151.3, "long_default_net_pips": 131.7, "short_default_net_pips": -33.0, "long_severe_net_pips": 93.7, "short_severe_net_pips": -53.0},
+        {"fold": "2024H1", "trades": 25, "default_net_pips": 233.799352973073, "default_pf": 1.915774320809, "severe_net_pips": 179.098058919217, "severe_pf": 1.635759821872, "positive_months": 4, "negative_months": 1, "ex_best_two_dates_default_pips": 106.711355122144, "long_default_net_pips": 211.255235219319, "short_default_net_pips": 22.544117753754, "long_severe_net_pips": 180.865705657943, "short_severe_net_pips": -1.767646738727},
+        {"fold": "2024H2", "trades": 35, "default_net_pips": 130.672381991379, "default_pf": 1.181096822612, "severe_net_pips": 49.317145974143, "severe_pf": 1.064544257569, "positive_months": 4, "negative_months": 2, "ex_best_two_dates_default_pips": -71.66328245949, "long_default_net_pips": -198.996286980002, "short_default_net_pips": 329.668668971381, "long_severe_net_pips": -243.988860939988, "short_severe_net_pips": 293.306006914131}
+      ]
+    }
+  ],
+  "scientific_output_sha256": {
+    "full_cell_fold_metrics_csv": "d9d36d784429d054faa04ba4632d556b44a826cd46ea43198a8280afc41cc013",
+    "full_cell_gate_csv": "abdae40111469ecf90854edded54fad14bed71807802201744785e50217c410f",
+    "entry_neighbourhood_csv": "9db5eea5a360d1cd4bca4d43eed515b57816e9d259261616ac3193c340befc1c",
+    "family_region_csv": "a4ae2c6ef4b237adb6664f946758f1be332d86e0bc8604f3280cfa8eaa09cbe8"
+  },
+  "source_identity": {
+    "canonical_r1_signal_source": {"path": "tools/run_usdjpy_r1_entry_registry_v2.py", "git_blob_sha1": "e406618a9441b2cbc22f0976d118d35754d6dd9b"},
+    "data_module": {"path": "tools/usdjpy_full_architecture_census_data_v1.py", "commit": "d277ae71231534bcc9dc379a33a850bec50d7478", "git_blob_sha1": "986093120cd09cdfee9cb0ab53d09b59f9835cef", "sha256": "0f813c5d1863441b97a71353208d6c61706dc5037523b46f7f8b2cf64ce95bd9"},
+    "gate_module": {"path": "tools/usdjpy_full_architecture_census_gates_v1.py", "commit": "b37d0861407a04efafc67d77f6b26b8c0c0e0fbe", "git_blob_sha1": "d14d7a37ef8a12e4de8d1551fac99afdd6061b5e", "sha256": "35bca8ed2c65685df3c1e4d9469de8d274af233e5d3c03f7402be56129860e6a"},
+    "evaluator": {"path": "tools/evaluate_usdjpy_full_frozen_architecture_census_v1.py", "commit": "e9911a41bd1d2cf88523de4c910496bc3b239cf0", "git_blob_sha1": "09bf1753f7820e0da7bebcbec1c9e9acb1ea8345", "sha256": "ecf8d071a8035f280fbeee43bbc3d19d07e7db5ac33b22e66e9f658254334ec6"}
+  },
+  "interpretation": [
+    "Every one of the 660 frozen Entry x horizon cells had at least 20 trades in every fold, so closure is not caused by missing support.",
+    "Fourteen cells were default-positive in all four folds, but only one remained positive with PF at least 1 under severe cost in all four folds.",
+    "The sole core-pass cell was R1K03_london_to_ny_cont at 24 M15 bars; it failed the full breadth/concentration gate in 2023H1, 2023H2 and 2024H2.",
+    "No Entry definition produced three contiguous core-pass horizons with one full-pass horizon, and no family region passed.",
+    "The complete frozen R1/R2 architecture does not provide a robust cross-year successor; no exact cell may be salvaged or selected."
+  ],
+  "exact_next_action": "Perform a descriptive architecture-failure taxonomy on the already opened 660-cell result: attribute cross-fold failures by family, horizon, direction and weakest fold; identify information dimensions absent from R1/R2; compare against the full hypothesis ledger and define at most one genuinely distinct architecture question. Do not retune a cell, add horizons, preregister a family, use MT4 or access 2025.",
+  "boundaries": {
+    "single_cell_selected": false,
+    "candidate_generated": false,
+    "entry_or_horizon_changed": false,
+    "parameter_or_weight_optimized": false,
+    "MT4_accessed": false,
+    "2025_accessed": false,
+    "live_orders": false
+  }
+}
