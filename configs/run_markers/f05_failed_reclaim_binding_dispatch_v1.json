@@ -1,0 +1,13 @@
+{
+  "schema_version": "f05_failed_reclaim_binding_dispatch_marker_v1",
+  "status": "ARMED_FOR_ONE_WORKFLOW_DISPATCH",
+  "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+  "non_binding_sensitivity": "F05_FAILED_RECLAIM_WEAK_QUICK_V1",
+  "validation_workflow": ".github/workflows/validate_f05_failed_reclaim_v1.yml",
+  "required_ref": "main",
+  "expected_protocol_commit": "2cd04c1a22874b02452f9ffa8a4aae7c4f0b0123",
+  "dispatcher_is_transport_only": true,
+  "portfolio_replay_computed": false,
+  "mt4_accessed": false,
+  "2025_accessed": false
+}
