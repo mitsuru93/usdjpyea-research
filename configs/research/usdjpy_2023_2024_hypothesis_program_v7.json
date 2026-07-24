@@ -1,0 +1,43 @@
+{
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v7",
+  "status": "HYP024_INPUT_REMATERIALIZED_AWAITING_EXACT_EIGHT_CELL_EVALUATION",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v6.json",
+  "objective": "Use 2023H1, 2023H2, 2024H1 and 2024H2 as development/falsification folds to freeze at most one exact specification for an unchanged 2025 H1 Rakuten MT4 gate without selecting from 2025.",
+  "active_hypothesis": "USDJPY-HYP-024",
+  "active_family": "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
+  "active_grid": "two separate arms x two quorum values x two persistence values = eight cells",
+  "current_candidate": null,
+  "completed": {
+    "B02_F05_factor_analysis": "PASS_EXACT_REPORT_SHA_CANONICALIZED",
+    "B02_F05_entry_exit_independent_reproduction": "PASS_DATA_FEATURE_STAT_IDENTITY_WITH_INDEPENDENT_MODEL_VARIATION",
+    "Entry_information_audit": "PASS_NO_LOOKAHEAD",
+    "Entry_local_technical_family": "CLOSED_ZERO_PORTABLE_FACTORS",
+    "common_full_OHLC_indicator_feasibility": "REJECT_MIXED_LINEAGE",
+    "HYP023_exact_six_cell_evaluation": "CLOSED_ZERO_CORE_ZERO_FULL_ZERO_ELIGIBLE_REGION",
+    "HYP024_input_rematerialization": "PASS_1882_TRADES_68955_STATE_ROWS_OUTCOMES_FALSE"
+  },
+  "input_identity": {
+    "addendum": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_input_addendum_v2.json",
+    "materialization": "configs/research/usdjpy_b02_f05_hyp024_input_materialization_v2.json",
+    "preflight": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_preflight_v2.json",
+    "trades_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "states_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda"
+  },
+  "boundaries": {
+    "2025_H1": false,
+    "2025_H2": false,
+    "MT4_parity": false,
+    "live_orders": false
+  },
+  "prohibited": [
+    "no Entry technical threshold reopening",
+    "no HYP-023 repair",
+    "no parameter component arm or grid expansion",
+    "no P2/P1 candidate combination",
+    "no gate change after outcomes",
+    "no substitution of the new 2024 derived-bars release into the frozen 2024H2 input",
+    "no MT4 during Research family-region evaluation",
+    "no 2025 H1/H2 access"
+  ],
+  "exact_next_action": "After the v2 input-rematerialization package merges and is read back, run the unchanged evaluator exactly once on the eight frozen cells using the frozen v2 ledger hashes. Evaluate P2 and P1 separately and apply every fold, severe-cost, target-benefit, winner-tail, strategy, direction, quarter, month, date-removal and within-arm family-region gate without modification. If neither arm has an eligible connected family region, close HYP-024 before MT4 and 2025. If one arm has a region, freeze at most one representative before Research-to-MT4 parity."
+}

@@ -1,0 +1,39 @@
+{
+  "2025_accessed": false,
+  "historical_2024_mutated": false,
+  "indicator_contract": {
+    "ema20": "pandas ewm(span=20,adjust=False)",
+    "executable_pips": "round(side*(bid_open-entry_bid)/0.01-0.5,1)",
+    "macd": "pandas ewm spans 12/26 and signal 9, adjust=False",
+    "momentum": "side*(open-open.shift(4))/0.01",
+    "observation": "entry through baseline close inclusive",
+    "price_series": "M15 executable bid open"
+  },
+  "outcomes_computed": false,
+  "path_class_counts": {
+    "B02_2023H1": {"P1_GIVEBACK_TO_LOSS": 30, "P2_MINOR_FAVORABLE_THEN_LOSS": 16, "P3_NEVER_PROFITABLE": 14, "WINNER": 61},
+    "B02_2023H2": {"P1_GIVEBACK_TO_LOSS": 26, "P2_MINOR_FAVORABLE_THEN_LOSS": 19, "P3_NEVER_PROFITABLE": 7, "WINNER": 57},
+    "B02_2024H1": {"P1_GIVEBACK_TO_LOSS": 16, "P2_MINOR_FAVORABLE_THEN_LOSS": 18, "P3_NEVER_PROFITABLE": 6, "WINNER": 57},
+    "B02_2024H2": {"P1_GIVEBACK_TO_LOSS": 22, "P2_MINOR_FAVORABLE_THEN_LOSS": 9, "P3_NEVER_PROFITABLE": 7, "WINNER": 64},
+    "F05_2023H1": {"P1_GIVEBACK_TO_LOSS": 88, "P2_MINOR_FAVORABLE_THEN_LOSS": 58, "P3_NEVER_PROFITABLE": 51, "WINNER": 170},
+    "F05_2023H2": {"P1_GIVEBACK_TO_LOSS": 79, "P2_MINOR_FAVORABLE_THEN_LOSS": 71, "P3_NEVER_PROFITABLE": 34, "WINNER": 179},
+    "F05_2024H1": {"P1_GIVEBACK_TO_LOSS": 48, "P2_MINOR_FAVORABLE_THEN_LOSS": 64, "P3_NEVER_PROFITABLE": 41, "WINNER": 178},
+    "F05_2024H2": {"P1_GIVEBACK_TO_LOSS": 108, "P2_MINOR_FAVORABLE_THEN_LOSS": 34, "P3_NEVER_PROFITABLE": 50, "WINNER": 200}
+  },
+  "schema_version": "usdjpy_b02_f05_hyp024_input_materialization_v2",
+  "source_sha256": {
+    "events_2024h1": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "events_2024h2": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "m15_2023": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "m15_2024h1": "766be5ebba158e5b40f5da5d66929b4da8a25d42a8716b1e591d7c09dd87c2a3"
+  },
+  "state_rows": 68955,
+  "state_uncompressed_sha256": "b8705ab84b63bf6ec8a0c6994ea828c9529f940ed8ecdddbfa8d2944bbf22f14",
+  "states_path": "usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz",
+  "states_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+  "status": "PASS_NO_OUTCOMES",
+  "trade_id_count": 1882,
+  "trade_rows": 1882,
+  "trades_path": "usdjpy_b02_f05_source_trade_ledger_v2.csv",
+  "trades_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca"
+}

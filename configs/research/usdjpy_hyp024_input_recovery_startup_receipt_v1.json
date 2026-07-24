@@ -1,0 +1,54 @@
+{
+  "schema_version": "usdjpy_hyp024_input_recovery_startup_receipt_v1",
+  "status": "PASS_CANONICAL_MEMORY_LOADED_INPUT_REMATERIALIZATION_ONLY",
+  "research_main_commit": "b60682641032d38c4757b427b9865dc58b441b62",
+  "base_is_current_at_branch_creation": true,
+  "read_at_utc": "2026-07-24T07:17:30Z",
+  "read_at_jst": "2026-07-24T16:17:30+09:00",
+  "mandatory_files_read_count": 44,
+  "current_registry": {
+    "schema_version": "usdjpy_research_candidate_registry_v42",
+    "status": "USDJPY_HYP024_PROFIT_ARMED_STATE_COLLAPSE_PREREGISTERED_EXACT_EVALUATION_AUTHORIZED",
+    "active_hypothesis": "USDJPY-HYP-024",
+    "active_family": "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
+    "current_candidate": null
+  },
+  "current_exact_next_action": "Execute exactly the eight frozen HYP-024 cells once on 2023H1, 2023H2, 2024H1 and 2024H2 after restoring a durable exact input identity; do not alter the scientific protocol or access MT4/2025 before an eligible family region and exact finalist exist.",
+  "relevant_ledger_ids": [
+    "USDJPY-RQ-024-RESULT-001",
+    "USDJPY-HYP-024",
+    "USDJPY-HYP-023-RESULT-001",
+    "USDJPY-HYP-007",
+    "USDJPY-HYP-008",
+    "USDJPY-HYP-009",
+    "USDJPY-HYP-012",
+    "USDJPY-HYP-014",
+    "USDJPY-HYP-018"
+  ],
+  "declared_lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "period_access": {
+    "source_and_already_opened_development_inputs": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "candidate_outcomes_accessed": [],
+    "not_accessed": ["2025H1", "2025H2"],
+    "historical_2024_mutated": false
+  },
+  "source_authorities": [
+    {"repository": "mitsuru93/usdjpyea-core", "run_id": 29997167048, "artifact_id": 8559483151, "zip_sha256": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01"},
+    {"repository": "mitsuru93/usdjpyea-core", "run_id": 29998477805, "artifact_id": 8560057457, "zip_sha256": "bf2cd6e94ba4a15f764e784f4a82b8d07edd3070ab198bbf9bc27112e931f63b"},
+    {"repository": "mitsuru93/usdjpyea-research", "run_id": 30001786384, "artifact_id": 8561286612, "zip_sha256": "9e6aa5cebccc44a51e8e0aa86fd87653d2e471446c4a92cd62d8699f4c6bf591"},
+    {"repository": "mitsuru93/usdjpyea-core", "run_id": 29787357305, "artifact_id": 8479048161, "zip_sha256": "e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5"},
+    {"repository": "mitsuru93/usdjpyea-core", "run_id": 29873856877, "artifact_id": 8512432416, "zip_sha256": "9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b"}
+  ],
+  "technical_recovery": {
+    "old_v1_serialized_inputs_available": false,
+    "file_library_retrieval": "FAILED_RETRIEVAL_SERVICE",
+    "pr227_actions_input_artifact": "ABSENT",
+    "v2_builder_readback_complete": true,
+    "outcomes_computed": false
+  },
+  "MT4": {
+    "user_permission": true,
+    "accessed_in_this_stage": false,
+    "reason": "Research family-region evaluation precedes candidate MT4 parity."
+  }
+}
