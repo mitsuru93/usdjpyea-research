@@ -1,0 +1,14 @@
+{
+  "schema_version": "usdjpy_b02_f05_all_loss_structural_sl_run_marker_v1",
+  "status": "ARMED_FOR_ONE_MAIN_PUSH_EVALUATION",
+  "protocol_merge_commit": "9f990a5674f787fa0e4c6bb4830c7494d682090b",
+  "workflow": ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v1.yml",
+  "population": 1882,
+  "event_count": 7,
+  "runner": "GitHub-hosted Research runner",
+  "fixed_pip_stop_evaluated": false,
+  "mt4_accessed_before_dispatch": false,
+  "2025_accessed_before_dispatch": false,
+  "notion_task_dependency": false,
+  "candidate_frozen_before_dispatch": false
+}
