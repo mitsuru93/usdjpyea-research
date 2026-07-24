@@ -1,0 +1,41 @@
+{
+  "schema_version": "usdjpy_b02_f05_mtf_technical_robustness_result_v1",
+  "status": "DIAGNOSTIC_COMPLETE",
+  "cells": [
+    {
+      "cell": "P3|F05|5|M5",
+      "bootstrap_gain": {
+        "model": "price_geom_plus_technical",
+        "base": "price_geom",
+        "observed_mean_gain": 0.029519824476474027,
+        "observed_fold_gains": {"2023H1": 0.011707988980716344, "2023H2": 0.07988826815642458, "2024H1": 0.017948717948717996, "2024H2": 0.008534322820037188},
+        "bootstrap_replicates": 2000,
+        "ci95": [0.0011033046858339383, 0.06987588136186045],
+        "prob_gain_le_zero": 0.017
+      },
+      "pooled_delta_pips": -271.39999999998696,
+      "pooled_delta_pips_stress": -317.70000000007445,
+      "status": "ROBUST_INFORMATION_BUT_NO_ECONOMIC_PASS"
+    },
+    {
+      "cell": "P2|B02|15|M15",
+      "bootstrap_gain": {
+        "model": "price_geom_plus_technical",
+        "base": "price_geom",
+        "observed_mean_gain": 0.042849254354762306,
+        "observed_fold_gains": {"2023H1": 0.03157894736842104, "2023H2": 0.04472271914132375, "2024H1": 0.09123434704830058, "2024H2": 0.0038610038610038533},
+        "bootstrap_replicates": 2000,
+        "ci95": [-0.059063266868308206, 0.1416047753408141],
+        "prob_gain_le_zero": 0.2005
+      },
+      "pooled_delta_pips": -1952.4000000000133,
+      "pooled_delta_pips_stress": -1978.2000000000626,
+      "status": "INCREMENTAL_GAIN_UNCERTAIN"
+    }
+  ],
+  "binding_candidate_authorized": false,
+  "portfolio_replay_completed": false,
+  "reason": "post-outcome conservative diagnostic and fixed accepted-ledger economics only",
+  "2025_accessed": false,
+  "MT4_accessed": false
+}
