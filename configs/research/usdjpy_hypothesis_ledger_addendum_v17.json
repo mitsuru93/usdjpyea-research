@@ -1,0 +1,210 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "candidate_ids": [],
+      "causal_hypothesis": "A portable local technical Entry state should separate trades that never become profitable from trades that establish any favorable excursion.",
+      "decision": "Close local technical Entry separator research. Do not create an RSI/MACD/EMA/Bollinger/volatility/OHLC threshold family.",
+      "evidence_refs": [
+        {
+          "path": "configs/research/usdjpy_b02_f05_entry_exit_technical_reproduction_result_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_b02_f05_entry_information_audit_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_b02_f05_common_ohlc_indicator_feasibility_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        }
+      ],
+      "falsified_or_unsupported_claims": [
+        "A stable RSI threshold identifies P3 across folds",
+        "local momentum or volatility combination provides portable P3 admission",
+        "same accepted full-OHLC indicator family can be constructed across all folds"
+      ],
+      "family_ids": [
+        "M_LOCAL_TECHNICAL_ENTRY_SEPARATOR"
+      ],
+      "hypothesis_id": "USDJPY-RQ-024-RESULT-001",
+      "origin_analysis": "Independent reconstruction from exact 2023, 2024H1 and 2024H2 repository artifacts evaluated technical Entry information for baseline B02/F05 P3 trades.",
+      "pre_result_predictions": [
+        "P3 counts and technical statistics reproduce the source analysis",
+        "at least one factor has same-sign |delta| >= 0.10 in all four folds if a portable separator exists",
+        "held-out multivariate performance is stable if combination information exists"
+      ],
+      "prohibited_reuse": [
+        "no nearby technical threshold grid",
+        "no side year or session exception",
+        "no mixed-lineage OHLC indicator construction",
+        "no 2025 selection"
+      ],
+      "retained_findings": [
+        "F05 P3 shows weak overextension tendency but not portable separation",
+        "post-entry trajectory contains materially stronger information",
+        "Entry features are no-lookahead and the negative result is interpretable"
+      ],
+      "status": "CLOSED_NO_PORTABLE_SEPARATOR",
+      "successor_questions": [
+        "Does a profit-armed event-defined post-entry state collapse reduce P2/P1 losses without cutting the winner right tail?"
+      ],
+      "target_failure_mode": [
+        "P3 never-profitable Entry",
+        "local overextension or momentum exhaustion before Entry"
+      ],
+      "tests": [
+        {
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "result": {
+            "B02_P3": 34,
+            "B02_portable_material_factors": 0,
+            "F05_P3": 176,
+            "F05_portable_material_factors": 0,
+            "population": 1882,
+            "status": "PASS_DATA_FEATURE_STAT_IDENTITY_WITH_INDEPENDENT_MODEL_VARIATION"
+          },
+          "result_path": "configs/research/usdjpy_b02_f05_entry_exit_technical_reproduction_result_v1.json",
+          "type": "exact release-authority technical reproduction and Entry information audit"
+        }
+      ]
+    },
+    {
+      "candidate_ids": [
+        "O_P2_Q2_R1",
+        "O_P2_Q2_R2",
+        "O_P2_Q3_R1",
+        "O_P2_Q3_R2",
+        "O_P1_Q2_R1",
+        "O_P1_Q2_R2",
+        "O_P1_Q3_R1",
+        "O_P1_Q3_R2"
+      ],
+      "causal_hypothesis": "After executable profit is first established, a synchronized transition of side-aligned four-bar momentum, MACD histogram and price-to-EMA20 distance to nonpositive states identifies directional-state collapse. P2 and P1 use separate arming events and are never combined after outcomes.",
+      "decision": "Close HYP-024 before MT4 and 2025. All eight cells improved the target loss class in every fold, but no cell passed the all-fold aggregate, winner-tail, strategy, direction, quarter, month and date-removal gates; neither arm formed a connected eligible region.",
+      "evidence_refs": [
+        {
+          "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_duplicate_audit_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_prereg_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_preflight_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "tools/evaluate_usdjpy_b02_f05_profit_armed_state_collapse_v1.py",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_fold_metrics_v1.csv",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "docs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.md",
+          "repository": "mitsuru93/usdjpyea-research"
+        }
+      ],
+      "falsified_or_unsupported_claims": [
+        "target-class loss reduction alone is sufficient to improve the total portfolio robustly",
+        "profit-armed synchronized nonpositive momentum/MACD/EMA state preserves the winner right tail across folds",
+        "either the P2 or P1 arm forms a robust within-arm family region"
+      ],
+      "family_ids": [
+        "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE"
+      ],
+      "hypothesis_id": "USDJPY-HYP-024",
+      "origin_analysis": "The Entry audit closed with zero portable local separators. P2 and P1 landmark analyses independently reproduced materially stronger post-entry separation, while Families C/D/E/G/H showed that fixed P/L checkpoints, breakout reacceptance and exposure routing sacrifice winners or fail breadth.",
+      "pre_result_predictions": [
+        "within at least one arm two adjacent cells pass every fold core gate",
+        "at least one cell in that arm passes full breadth and date-removal gates",
+        "target-class benefit is positive in every fold",
+        "top-decile winner profit retention remains at least 90%",
+        "B02 F05 long and short deltas are nonnegative in every fold"
+      ],
+      "prohibited_reuse": [
+        "no HYP-023 repair",
+        "no fixed 30/60/90-minute checkpoint",
+        "no adverse-pips threshold",
+        "no breakout-level return threshold",
+        "no exposure-state router",
+        "no side year session or strategy exception",
+        "no P2/P1 combined candidate",
+        "no grid expansion or gate change after outcomes",
+        "no MT4 or 2025 before exact finalist and parity"
+      ],
+      "retained_findings": [
+        "all 32 candidate-fold rows had positive target-class benefit and at least five target-class exits",
+        "P1 variants sacrificed substantially more winner profit than P2 variants",
+        "O_P2_Q3_R2 was the only cell with top-decile winner retention at least 0.90 in all folds, but it still failed total-net stability and breadth",
+        "a mechanism must distinguish recoverable winners from target-class failures rather than only detect generic post-profit deterioration"
+      ],
+      "status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION",
+      "successor_questions": [
+        "Can a genuinely distinct state variable identify irrecoverable deterioration without using a threshold repair of HYP-024 or any closed family?"
+      ],
+      "target_failure_mode": [
+        "P2 minor-favorable then loss",
+        "P1 +10-pip giveback to loss",
+        "winner sacrifice from premature exits"
+      ],
+      "tests": [
+        {
+          "boundaries": {
+            "2025_accessed": false,
+            "MT4_accessed": false,
+            "gates_changed": false,
+            "grid_expanded": false
+          },
+          "metrics": {
+            "P1_family_region_components": 0,
+            "P2_family_region_components": 0,
+            "all_fold_default_net_pf_candidates": [],
+            "all_fold_severe_net_pf_candidates": [],
+            "all_fold_winner_tail_candidates": [
+              "O_P2_Q3_R2"
+            ],
+            "candidate_cells": 8,
+            "core_cells": 0,
+            "eligible_candidates": 0,
+            "fold_rows": 32,
+            "full_cells": 0,
+            "target_benefit_positive_rows": 32,
+            "target_changed_ge_5_rows": 32
+          },
+          "result_path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_result_v1.json",
+          "type": "exact frozen eight-cell four-fold Research evaluation"
+        }
+      ]
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v12.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v13.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v14.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v15.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v16.json"
+  ],
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v17",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v16.json"
+}
