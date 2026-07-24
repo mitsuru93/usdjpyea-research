@@ -1,0 +1,63 @@
+{
+  "schema_version": "usdjpy_b02_f05_mtf_technical_incremental_audit_prereg_v1",
+  "hypothesis_id": "USDJPY-HYP-026",
+  "family_id": "Q_MTF_TECHNICAL_INCREMENTAL_STATE",
+  "status": "PREREGISTERED_OUTCOME_FREE",
+  "created_date": "2026-07-25",
+  "purpose": "Test whether completed-bar oscillator and technical state on M1/M5/M15/M30/H1 adds portable information after price-path state is known for B02/F05 P3 establishment, P2 early continuation and P1 giveback termination.",
+  "distinct_from_closed_work": {
+    "HYP-023": "not referenced, rerun, repaired or used to generate candidates",
+    "HYP-024": "not referenced, rerun, repaired or used to generate candidates",
+    "HYP-025": "price-only result retained only as a comparison baseline; no cell repair, chaining or retuning"
+  },
+  "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "protected_periods": {"2025H1_accessed": false, "2025H2_accessed": false},
+  "strategies": ["B02", "F05"],
+  "labels": {
+    "P3": "common-M1 baseline loser with no executable favorable excursion",
+    "P2": "common-M1 baseline loser with a favorable excursion but no +10 pip event",
+    "P1": "common-M1 baseline loser reaching +10 pips",
+    "winner_comparators": "P3: all ever-profitable trades; P2: final winners aligned at first positive mark; P1: final winners reaching +10 pips"
+  },
+  "observation_contract": {
+    "completed_bars_only": true,
+    "timeframes": ["M1", "M5", "M15", "M30", "H1"],
+    "P3": {"F05": [5], "B02": [10], "unit": "minutes after entry"},
+    "P2": {"both": [15, 30], "unit": "minutes after first positive executable mark"},
+    "P1": {"both": [15, 30, 60], "unit": "minutes after first +10 pip executable mark"},
+    "execution_timing": "feature bar must be completed at or before observation timestamp; no future or partial bar"
+  },
+  "technical_feature_families": {
+    "oscillator": ["RSI7", "RSI14", "RSI28", "RSI14_change3", "MACD_12_26_9_line", "MACD_histogram", "MACD_histogram_change3", "Stochastic_14_3_3", "CCI20"],
+    "trend": ["price_EMA20_distance", "price_EMA50_distance", "price_EMA100_distance", "price_EMA200_distance", "EMA20_slope4", "EMA20_slope8", "EMA50_slope4", "EMA50_slope8", "EMA20_EMA50_alignment", "EMA50_EMA200_alignment", "ADX14", "DI_directional_alignment"],
+    "bollinger": ["BB_z20", "BB_width20", "BB_z50", "BB_width50"],
+    "momentum_volatility": ["momentum4", "momentum8", "momentum16", "momentum32", "realized_vol8", "realized_vol16", "realized_vol32", "mean_absolute_movement", "path_efficiency", "ATR14", "ATR14_price", "true_range_expansion"],
+    "bar_geometry": ["directional_body_range", "directional_upper_wick_ratio", "directional_lower_wick_ratio", "directional_close_location"]
+  },
+  "price_structure_baseline": ["directional_return", "MFE", "MAE", "range", "path_length", "path_efficiency", "favorable_step_share", "breakout_retention", "time_since_favorable_extreme_update", "peak_retracement"],
+  "direction_normalization": "signed features multiplied by trade side; bounded oscillators transformed so higher means stronger in trade direction",
+  "tests": {
+    "univariate": "fold-specific medians, rank-biserial effect, Benjamini-Hochberg q, all-four-fold sign consistency",
+    "models": "fixed L2 logistic regression with training-fold median imputation and standardization; leave-one-fold-out evaluation",
+    "comparisons": ["price-only", "technical-only per timeframe", "price plus technical per timeframe", "price plus all timeframes"],
+    "metrics": ["ROC_AUC", "balanced_accuracy", "Brier_score", "log_loss"],
+    "incremental_gate": {
+      "mean_AUC_gain_over_price_only_min": 0.03,
+      "minimum_fold_AUC_gain_min": 0.01,
+      "all_four_folds_positive_gain": true,
+      "univariate_support": "at least one feature with same effect direction in all folds and absolute rank-biserial effect >= 0.10 in every fold"
+    }
+  },
+  "prohibited": [
+    "indicator threshold grids",
+    "period optimization",
+    "side-specific rules",
+    "session-specific rules",
+    "indicator period expansion after outcomes",
+    "2025 feature or threshold selection",
+    "HYP-024 or HYP-025 candidate repair",
+    "MT4 execution before a separately preregistered portable candidate exists"
+  ],
+  "decision_states": ["NO_INCREMENTAL_TECHNICAL_INFORMATION", "DESCRIPTIVE_ONLY_NOT_PORTABLE", "PORTABLE_INCREMENTAL_FAMILY_FOUND"],
+  "outcomes_opened_at_preregistration": false
+}
