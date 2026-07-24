@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from .common import FOLDS, PIP, executable_price, inside, max_exec, min_exec, next_exit, outside, pnl, r1
+from .common import EVENT_IDS, FOLDS, PIP, executable_price, inside, max_exec, min_exec, next_exit, outside, pnl, r1
 
 def event_row(tr: object, event_id: str, trigger: pd.Timestamp, exit_time: pd.Timestamp,
               exit_price: float, mfe: float, mae: float, extra: dict[str, object] | None = None) -> dict[str, object]:
