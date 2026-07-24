@@ -1,0 +1,48 @@
+{
+  "active_family": null,
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION",
+    "G_STRUCTURAL_BREAKOUT_INVALIDATION",
+    "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE",
+    "I_B02_SHORT_WEAK_4H_ALIGNMENT_ADMISSION"
+  ],
+  "current_candidate": null,
+  "current_open_research_question": "USDJPY-RQ-020E",
+  "full_architecture_census_preflight": "configs/research/usdjpy_full_frozen_architecture_census_preflight_result_v1.json",
+  "full_architecture_census_protocol": "configs/research/usdjpy_full_frozen_architecture_census_protocol_v1.json",
+  "live_order_authorized": false,
+  "next_action": "commit the Stage-2 four-fold census evaluator source on a new branch before outcomes, then evaluate the unchanged 60 Entry x 11 horizon universe on 2023H1, 2023H2, 2024H1 and 2024H2 using the frozen cell, contiguous-horizon and family-region gates; report all 660 cells but do not select a single maximum or access MT4/2025",
+  "research_memory": {
+    "atomic_ledger_update_required_after_test": true,
+    "duplicate_research_audit_required_before_new_family": true,
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json",
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "period_policy": "configs/research/usdjpy_period_role_policy_v5.json",
+    "startup_read_receipt_required": true
+  },
+  "run_authorization": {
+    "2023_2024_development_analysis": true,
+    "2025_H1": false,
+    "2025_H2": false,
+    "MT4_parity": false,
+    "full_frozen_architecture_census_evaluator_materialization": true,
+    "full_frozen_architecture_census_outcome_evaluation": true,
+    "full_frozen_architecture_census_preflight": false,
+    "live_orders": false,
+    "new_family_preregistration": false,
+    "parameter_search": false,
+    "portfolio_weight_optimization": false,
+    "regime_router_preregistration": false,
+    "single_combination_selection": false
+  },
+  "schema_version": "usdjpy_research_candidate_registry_v37",
+  "status": "USDJPY_RQ020E_PREFLIGHT_PASS_FOURFOLD_ARCHITECTURE_CENSUS_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v36.json"
+}

@@ -1,0 +1,125 @@
+{
+  "schema_version": "usdjpy_full_frozen_architecture_census_protocol_v1",
+  "status": "FROZEN_BEFORE_CENSUS_OUTCOMES",
+  "research_question": "USDJPY-RQ-020E",
+  "objective": "Evaluate the complete frozen R1 v2 Entry x R2 horizon architecture across all four 2023/2024 development folds without repeating the 2024H1-only representative-selection path or selecting a single maximum in the census stage.",
+  "duplicate_research_boundary": {
+    "already_completed": [
+      "all 60 Entry x 11 horizon combinations on 2024H1 in R2",
+      "all-surface 2024H1 temporal stability in R3",
+      "R4 selection of eight representatives",
+      "R6 freeze and candidate-specific 2024H2 validation of five complete strategies"
+    ],
+    "new_information": "the unchanged complete 660-combination surface on exact 2023H1, 2023H2 and 2024H2, with four-fold family and neighbouring-horizon robustness",
+    "not_authorized": "repeat 2024H1 ranking, reopen R4/R6 winners, or choose the largest cell"
+  },
+  "fixed_universe": {
+    "entry_registry": "configs/research/usdjpy_r1_entry_universe_v2.json",
+    "entry_definitions": 60,
+    "families": 12,
+    "horizons_m15_bars": [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48],
+    "combinations": 660,
+    "entry_or_horizon_change_allowed": false
+  },
+  "lineage_and_periods": {
+    "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+    "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "historical_2024_source_mutation": false,
+    "2025_access": false
+  },
+  "execution_contract": {
+    "entry": "accepted R1 signal; next M15 bar mid open",
+    "exit_index": "entry index + horizon bars - 1",
+    "exit_price": "M15 mid close at exit index",
+    "month_boundary": "entry and exit must remain in same UTC month",
+    "default_cost": "max(0.5 pip, entry spread_mean_pips)",
+    "severe_cost": "3 * default cost + 1 pip",
+    "path_extrema": "entry bar through exit bar inclusive",
+    "hard_exclusion": "accepted project-wide New York 16:00-19:00 exclusion",
+    "same_signal_definition_and_definition_sha256": true
+  },
+  "stage_1_preflight": {
+    "authorized_now": true,
+    "authority": {
+      "release": "usdjpy-r2-horizon-surface-v1",
+      "run_id": 29646040010,
+      "artifact_id": 8430064217,
+      "artifact_sha256": "84a495b7c7cddf1c719bb4c8ce78bfef2c990b355649d362c18481836d953426"
+    },
+    "required_exact_outputs": {
+      "candidate_horizon_trades.csv.gz": "70c2313147607096976a76328b72a628e42fa0001816f14824bcd9e9a3ead6c6",
+      "candidate_horizon_summary.csv": "fa46a5db3e73c4d25b8e8c97ef4727c39d737cc8823080b23d21b0419d9e44f6",
+      "candidate_horizon_monthly.csv": "43dcb463a1a6f7a668f56ab5339eddbec8c0a04cd506f3161204a7f2edf3ec3c",
+      "candidate_horizon_direction.csv": "ca7bf7f0b59b8e915fe2e9e36d90d8779f2ccd29133b374620b2c607a34c06af",
+      "candidate_horizon_surface.csv": "a47b68bd8417f94e66712e7324a7077e96e169350b6a779e7db8d3ac873890d0",
+      "candidate_horizon_hashes.csv": "04130a947b297c7dad7e2016db6dcce10369eb374fe57cd862e1c34287f66a0f"
+    },
+    "shape_gates": {
+      "trade_rows": 383078,
+      "summary_rows": 660,
+      "monthly_rows": 3960,
+      "direction_rows": 1320,
+      "surface_rows": 60,
+      "hash_rows": 660
+    },
+    "failure_action": "STOP; do not calculate 2023 or 2024H2 census outcomes"
+  },
+  "stage_2_census": {
+    "unlock_condition": "stage-1 preflight result, protocol, evaluator, registry and memory update merged after Research CI and memory validation",
+    "single_combination_selection": false,
+    "required_cell_metrics": [
+      "trades, default and severe net/PF by fold",
+      "positive and negative months by fold",
+      "total excluding best two UTC entry dates by fold",
+      "direction attribution",
+      "neighbouring-horizon core-gate runs"
+    ],
+    "cell_support_gate": "at least 20 trades in every fold",
+    "cell_core_gate": [
+      "default net positive and PF at least 1 in every fold",
+      "severe net positive and PF at least 1 in every fold"
+    ],
+    "cell_full_gate": [
+      "cell core gate passes",
+      "positive months at least 4 and negative months at most 2 in every fold",
+      "total excluding best two UTC entry dates positive in every fold"
+    ],
+    "entry_neighbourhood_gate": [
+      "one unchanged Entry definition has at least three contiguous horizons in the frozen ordered horizon list passing the cell core gate",
+      "at least one horizon in that contiguous run passes the cell full gate"
+    ],
+    "family_region_gate": [
+      "at least two distinct Entry definitions in the same family pass the entry neighbourhood gate",
+      "supported Entry definitions cover at least two distinct parameter definitions rather than duplicate signal ledgers",
+      "family median minimum-fold severe net across its core-pass cells is positive"
+    ],
+    "maximum_successor_family_regions": 1,
+    "family_region_ranking_if_multiple": [
+      "number of Entry definitions passing the neighbourhood gate",
+      "number of full-gate cells",
+      "median of each core-pass cell's minimum-fold severe net",
+      "median full-year severe net across four folds"
+    ],
+    "selection_boundary": "A passing family region only authorizes a separate finite preregistration. It does not authorize a candidate, exact horizon, MT4 parity or 2025 access."
+  },
+  "prohibited": [
+    "no Entry definition changes",
+    "no horizon additions, interpolation or refinement",
+    "no filtering to R4/R6 winners before census",
+    "no single-cell maximum selection",
+    "no outcome-derived weights, subsets, thresholds or interactions",
+    "no relabeling of closed exact candidates as passed",
+    "no Family I, Family J or F05 local repair",
+    "no MT4 or 2025 access"
+  ],
+  "boundaries": {
+    "active_family": null,
+    "candidate_generated": false,
+    "census_outcome_evaluation_authorized_before_stage1_merge": false,
+    "new_family_preregistration": false,
+    "MT4": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  }
+}

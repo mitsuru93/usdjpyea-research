@@ -1,0 +1,71 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "candidate_ids": [],
+      "causal_hypothesis": "The complete frozen R1 v2 Entry x R2 horizon evaluator can exactly reproduce the accepted 2024H1 R2 surface before any cross-year census outcomes are opened.",
+      "decision": "Preflight PASS. After atomic merge, authorize the unchanged four-fold 660-combination census under RQ-020E; do not select a single combination in the census stage.",
+      "evidence_refs": [
+        {"path": "configs/research/usdjpy_full_frozen_architecture_census_protocol_v1.json", "repository": "mitsuru93/usdjpyea-research"},
+        {"path": "configs/research/usdjpy_full_frozen_architecture_census_preflight_result_v1.json", "repository": "mitsuru93/usdjpyea-research"},
+        {"path": "docs/research/usdjpy_full_frozen_architecture_census_preflight_result_v1.md", "repository": "mitsuru93/usdjpyea-research"}
+      ],
+      "falsified_or_unsupported_claims": [],
+      "family_ids": [],
+      "hypothesis_id": "USDJPY-RQ-020E-PREFLIGHT-001",
+      "origin_analysis": "R2/R3 covered all 660 combinations only on 2024H1, while R6/V1 exposed only five strategies to 2024H2. Exact preflight was required before opening the missing folds.",
+      "pre_result_predictions": [
+        "all accepted input digests match",
+        "383,078 R2 trade rows reproduce exactly",
+        "summary, monthly, direction, surface and trade-hash files match accepted SHA-256 values",
+        "no 2023 or 2024H2 census outcome is opened during preflight"
+      ],
+      "prohibited_reuse": [
+        "no modification of R1 Entry definitions or R2 horizons",
+        "no use of preflight as a candidate ranking",
+        "no single-combination selection",
+        "no MT4 or 2025 access"
+      ],
+      "retained_findings": [
+        "the complete 660-combination R2 execution contract is exactly source-reproducible",
+        "the accepted R2 artifact is a valid authority for the four-fold architecture census"
+      ],
+      "status": "PREFLIGHT_PASS_STAGE2_AUTHORIZED_AFTER_MERGE",
+      "successor_questions": ["which family-level and contiguous-horizon regions, if any, pass the frozen four-fold census gates?"],
+      "target_failure_mode": ["2024H1-only selection bias", "missing cross-year architecture breadth", "evaluator reproducibility risk"],
+      "tests": [
+        {
+          "period": "2024H1_exact_regression_only",
+          "result": {
+            "all_file_sha256_exact": true,
+            "all_rows_and_numeric_fields_exact": true,
+            "direction_rows": 1320,
+            "hash_rows": 660,
+            "monthly_rows": 3960,
+            "summary_rows": 660,
+            "surface_rows": 60,
+            "trade_rows": 383078
+          },
+          "result_path": "configs/research/usdjpy_full_frozen_architecture_census_preflight_result_v1.json",
+          "type": "exact R2 artifact reproduction preflight"
+        }
+      ]
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json"
+  ],
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v11",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json"
+}
