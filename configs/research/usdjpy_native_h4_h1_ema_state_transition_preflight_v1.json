@@ -1,0 +1,25 @@
+{
+  "candidate_count": 6,
+  "data_module_sha256": "6787d316c774831d9ea27d2b36f078128ff27e079c6a9c83c234fc6f38b8e013",
+  "evaluator_sha256": "ce5b21d02875eaee583f427bb560d17f34b3afa79c4a646a9d5fe5f0ff97ce1e",
+  "execution_time_duplicates": 0,
+  "fold_m15_rows": {
+    "2023H1": 12444,
+    "2023H2": 12381,
+    "2024H1": 12112,
+    "2024H2": 12327
+  },
+  "h1_exact_rows": 12313,
+  "h4_exact_rows": 3055,
+  "m15_rows": 49264,
+  "outcomes_computed": false,
+  "protocol_sha256": "969d1892d0ee6bbe99c90df997ffbbfbfa6a3ad1915d67c906b43b07a3479c37",
+  "schema_version": "usdjpy_native_h4_h1_ema_state_transition_preflight_v1",
+  "simulation_module_sha256": "16026504f607e3841f086ade1840537ea07c44630485d9e586c64a9b2533e0e2",
+  "source_identity": {
+    "evaluator_git_blob_sha1": "5b6c3538df44fdbb631dce6a22795c5c659ad35e",
+    "data_module_git_blob_sha1": "a8fc49c168cff2763fee40bd3870e34b4f996e27",
+    "simulation_module_git_blob_sha1": "23ddc7b86b6974610f51e0477129cb61589abfb1"
+  },
+  "status": "PASS"
+}

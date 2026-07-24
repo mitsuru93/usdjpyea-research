@@ -1,0 +1,164 @@
+{
+  "boundaries": {
+    "2024_source_mutated": false,
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "live_orders": false,
+    "outcomes_computed_before_freeze": false,
+    "signals_computed_before_freeze": false
+  },
+  "causal_hypothesis": "A trend episode defined by a completed H4 EMA-state transition has positive conditional persistence only when the completed H1 EMA state confirms it; the episode ends when either completed H1 or H4 state turns opposite.",
+  "cost_contract": {
+    "2023_default_cost_pips": 0.5,
+    "2024_default_cost_pips": "max(0.5, observed entry spread pips)",
+    "gross_pips": "side * (exit_mid_open - entry_mid_open) / 0.01",
+    "net": "gross minus one round-trip cost, consistent with RQ-020E",
+    "severe_cost_pips": "3 * default_cost_pips + 1.0"
+  },
+  "data_contract": {
+    "2023_membership": "floor first_timestamp_mt4_server to the logical 15-minute server bucket",
+    "2024_membership": "historical UTC converted to MT4 server UTC+2 winter / UTC+3 US DST",
+    "H1": "four exact logical M15 slots per server-hour bucket",
+    "H4": "sixteen exact logical M15 slots per four-server-hour bucket",
+    "M15_execution_row": "first logical M15 bucket at or after event information time; preserve accepted first-tick timestamp as execution audit identity",
+    "completed_information_time": "server bucket close converted through historical ServerToUtc",
+    "historical_2024_mutated": false,
+    "lookahead": false,
+    "partial_buckets": "inventory only; do not update EMA or state",
+    "source": "configs/research/usdjpy_native_htf_construction_feasibility_result_v1.json"
+  },
+  "entry_lifecycle": {
+    "confirmation": "first H1 state equal to d within the window",
+    "confirmation_window": "at the H4 information time observe the co-terminal completed H1 state; if not d, observe at most the next four completed exact H1 bars",
+    "entry": "next accepted logical M15 open after confirmation information time",
+    "hard_exclusion": "if that entry M15 is in the frozen low-liquidity exclusion, cancel the episode; do not delay",
+    "pending_replacement": "a new opposite H4 transition cancels the pending episode and starts the new direction",
+    "position_limit": "one position; fixed 0.01 lot research sizing",
+    "primary_event": "completed H4 fast/slow state transition direction d"
+  },
+  "exit_lifecycle": {
+    "execution": "next accepted logical M15 open after exit information time",
+    "fold_boundary_accounting": "liquidate an open position at the last accepted M15 open strictly before fold end and flag BOUNDARY_LIQUIDATION; reset position and pending state at the next fold start while retaining indicator warm-up history",
+    "no_fixed_time_cap": true,
+    "normal_exit": "first completed exact H1 state opposite the position OR completed exact H4 state opposite the position, whichever information time is earlier",
+    "opposite_H4_reentry": "the opposite H4 transition that closes a position may simultaneously start a pending episode; a new position still requires the frozen H1 confirmation rule"
+  },
+  "falsification": [
+    "no connected component of at least two core cells",
+    "no full cell in a core component",
+    "any selected result depends on boundary liquidation",
+    "support failure in any fold",
+    "default-only effect destroyed by severe costs",
+    "direction or date concentration gate failure"
+  ],
+  "family_id": "N_NATIVE_H4_H1_EMA_STATE_TRANSITION",
+  "finite_grid": {
+    "H1_fast_slow": [
+      [
+        4,
+        16
+      ],
+      [
+        8,
+        32
+      ]
+    ],
+    "H4_fast_slow": [
+      [
+        3,
+        12
+      ],
+      [
+        6,
+        24
+      ],
+      [
+        12,
+        48
+      ]
+    ],
+    "candidate_count": 6,
+    "candidate_ids": [
+      "N_H4F3S12_H1F4S16",
+      "N_H4F3S12_H1F8S32",
+      "N_H4F6S24_H1F4S16",
+      "N_H4F6S24_H1F8S32",
+      "N_H4F12S48_H1F4S16",
+      "N_H4F12S48_H1F8S32"
+    ],
+    "expansion_after_results": false,
+    "parameter_rationale": "Natural powers-of-two/session-day scales: H4 spans approximate 12h/2d, 1d/4d and 2d/8d; H1 confirmation spans approximate 4h/16h and 8h/32h. They are not selected from outcomes or claimed literature-optimal."
+  },
+  "gates": {
+    "core_each_fold": [
+      "at least 10 entered positions",
+      "default net > 0 and PF >= 1",
+      "severe net > 0 and PF >= 1",
+      "event-exited-only default net > 0 and PF >= 1",
+      "event-exited-only severe net > 0 and PF >= 1",
+      "each three-month sub-block severe net >= 0"
+    ],
+    "family_region": [
+      "at least two Manhattan-adjacent grid cells pass every core gate",
+      "at least one cell in that connected component passes every full and pooled gate",
+      "collapse exact trade-key/outcome equivalence before counting",
+      "maximum one representative after the family region passes"
+    ],
+    "full_each_fold": [
+      "positive severe-effect months >= 4",
+      "negative severe-effect months <= 2",
+      "default net excluding best two entry dates > 0",
+      "severe net excluding best two entry dates > 0"
+    ],
+    "pooled": [
+      "largest positive severe entry-date share <= 0.35",
+      "top-two positive severe entry-date share <= 0.55",
+      "long positions >= 20% and short positions >= 20% of pooled positions",
+      "boundary-liquidation trades are not required for positive default or severe net"
+    ],
+    "ranking_after_eligibility": [
+      "maximum minimum-fold severe net",
+      "maximum minimum three-month severe net",
+      "maximum pooled severe net",
+      "maximum pooled severe ex-best-two-date net"
+    ]
+  },
+  "hypothesis_id": "USDJPY-HYP-023",
+  "indicator_contract": {
+    "EMA": "pandas ewm span, adjust=false, min_periods=slow span; MQL4 parity must reproduce the same recursive alpha=2/(span+1) initialization before 2025",
+    "price": "completed exact-slot H1/H4 close",
+    "state": "+1 when fast EMA > slow EMA; -1 when fast EMA < slow EMA; 0 before both initialized or exact equality",
+    "transition": "state changes directly from -1 to +1 or +1 to -1 between consecutive available exact bars; a skipped partial bucket does not itself generate a transition"
+  },
+  "novel_information": "Primary entry and termination are both native higher-timeframe events. M15 supplies execution price only.",
+  "origin_question": "USDJPY-RQ-022",
+  "periods": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "prohibited": [
+    "no periods outside the six cells",
+    "no H1/H4 threshold, slope or distance filter",
+    "no fixed-time fallback exit",
+    "no M15 signal parent",
+    "no R1K03 or closed-family combination",
+    "no parameter or gate change after outcomes",
+    "no MT4 or 2025 until exact finalist freeze and Research-to-MT4 parity"
+  ],
+  "required_outputs": [
+    "signal and trade ledger",
+    "exit reason and duration",
+    "fold/month/quarter/direction metrics",
+    "boundary-liquidation sensitivity",
+    "default and severe PF/net",
+    "ex-best-two dates",
+    "positive-date concentration",
+    "realized balance drawdown",
+    "parameter equivalence",
+    "adjacency components"
+  ],
+  "schema_version": "usdjpy_native_h4_h1_ema_state_transition_prereg_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_SIGNAL_OR_OUTCOME_EVALUATION"
+}
