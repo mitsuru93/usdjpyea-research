@@ -1,109 +1,33 @@
 {
   "2024_fixed_five_regression_all_pass": true,
   "algebraic_reversal_disclosure": "Reversal P/L is an algebraic development-outcome-derived counterfactual and is descriptive only. It is not a blind candidate test.",
-  "boundaries": {
-    "2025_accessed": false,
-    "MT4_accessed": false,
-    "feature_interactions_tested": false,
-    "historical_2024_source_mutated": false,
-    "live_orders": false,
-    "parameters_or_bins_optimized": false,
-    "router_preregistered": false,
-    "strategy_subset_selected": false
-  },
-  "canonical_2023_baseline_reconciliation": {
-    "exact_keys": true,
-    "numeric": true,
-    "passed": true,
-    "rows": 964
+  "boundaries": {"2025_accessed": false, "MT4_accessed": false, "feature_interactions_tested": false, "historical_2024_source_mutated": false, "live_orders": false, "parameters_or_bins_optimized": false, "router_preregistered": false, "strategy_subset_selected": false},
+  "canonical_2023_baseline_reconciliation": {"exact_keys": true, "numeric": true, "passed": true, "rows": 964},
+  "committed_evidence": {
+    "data/research/usdjpy_rq020b_2024_signal_regression_v1.csv": "235d2cdf93ece9bf9cff61ca1303b0e6847dc7fcb009cfe0648b993e0f9bb0d6",
+    "data/research/usdjpy_rq020b_2024_trade_regression_v1.csv": "9a4fe459e34a1e98f4023f9f5556f3a41da8245d6df31d474b34653afbf02b37",
+    "data/research/usdjpy_rq020b_feature_coverage_v1.csv": "ee6f747ea76176daff27866103ff4611bf75aaf68d66523d113f89807d5063f0",
+    "data/research/usdjpy_rq020b_key_state_fold_metrics_v1.csv": "e2404ded7e7701e91ab5f7f855c42e2d09ac3048ed062cb8c2c7d5965ddb881b",
+    "data/research/usdjpy_rq020b_state_gate_v1.csv": "4593ea8ddf8ef1c4562027cbf30c4b66b381493cfd984ebdcb8e2d156dab4a3f",
+    "data/research/usdjpy_rq020b_upper_third_leave_one_strategy_out_v1.csv": "9638bd39ecb4fec34c1be1f0776f14040fd8739be0702e4cc0315727c6b4fc5a",
+    "data/research/usdjpy_rq020b_upper_third_strategy_fold_v1.csv": "9f6e7c90b8f287f54026c1ac0cff6f4d7fd06736bfb612eff12d9b0536409289"
   },
   "decision": "RETAIN_DESCRIPTIVE_STATE_SET_FOR_SEPARATE_ROUTER_REVIEW; DO_NOT_AUTO_PREREGISTER_ROUTER",
-  "evaluator_identity": {
-    "commit": "79614accd589a8524899469238788c9492c9d8a8",
-    "committed_before_outcome_access": true,
-    "execution_copy_note": "The local execution copy used the same evaluator logic and differed only in formatting and an unused typing import; all scientific definitions, gates and formulas match the precommitted evaluator.",
-    "execution_copy_sha256": "254b475c398db2b47310d454c8ba63eaf0a81aa7bba67e66ab8a69e23b97d0c3",
-    "git_blob_sha1": "b4501ceda0ce94b56c5fe5a8c58404c30a155d4f",
-    "path": "tools/evaluate_usdjpy_rq020b_long_horizon_regime_v1.py"
-  },
-  "feature_coverage": [
-    {"complete": 1400, "fold": "2023H1", "missing": 267, "total": 1667},
-    {"complete": 1653, "fold": "2023H2", "missing": 0, "total": 1653},
-    {"complete": 1674, "fold": "2024H1", "missing": 0, "total": 1674},
-    {"complete": 1859, "fold": "2024H2", "missing": 0, "total": 1859}
-  ],
-  "feature_families": [
-    "market_direction_agreement",
-    "trade_alignment_agreement",
-    "path_efficiency_5d",
-    "path_efficiency_20d",
-    "realized_volatility_ratio_5d_to_20d",
-    "range_position_20d"
-  ],
-  "fixed_cohort": [
-    "R1B02_legacy_asia_00_07_breakout",
-    "R1E02_legacy_trend_8h_resumption",
-    "R1E03_trend_12h_resumption",
-    "R1F05_donchian_96",
-    "R1H04_ramom_32_64_z125"
-  ],
+  "evaluator_identity": {"commit": "79614accd589a8524899469238788c9492c9d8a8", "committed_before_outcome_access": true, "execution_copy_note": "The local execution copy used the same evaluator logic and differed only in formatting and an unused typing import; all scientific definitions, gates and formulas match the precommitted evaluator.", "execution_copy_sha256": "254b475c398db2b47310d454c8ba63eaf0a81aa7bba67e66ab8a69e23b97d0c3", "git_blob_sha1": "b4501ceda0ce94b56c5fe5a8c58404c30a155d4f", "path": "tools/evaluate_usdjpy_rq020b_long_horizon_regime_v1.py"},
+  "feature_coverage": [{"complete": 1400, "fold": "2023H1", "missing": 267, "total": 1667}, {"complete": 1653, "fold": "2023H2", "missing": 0, "total": 1653}, {"complete": 1674, "fold": "2024H1", "missing": 0, "total": 1674}, {"complete": 1859, "fold": "2024H2", "missing": 0, "total": 1859}],
+  "feature_families": ["market_direction_agreement", "trade_alignment_agreement", "path_efficiency_5d", "path_efficiency_20d", "realized_volatility_ratio_5d_to_20d", "range_position_20d"],
+  "fixed_cohort": ["R1B02_legacy_asia_00_07_breakout", "R1E02_legacy_trend_8h_resumption", "R1E03_trend_12h_resumption", "R1F05_donchian_96", "R1H04_ramom_32_64_z125"],
   "folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
-  "historical_2024_compatible_2023_baseline": {
-    "B02": 230,
-    "B02_net_jpy": -12459.0,
-    "F05": 731,
-    "F05_net_jpy": 3180.0,
-    "closed": 960,
-    "net_jpy": -9279.0,
-    "opened": 961
-  },
+  "historical_2024_compatible_2023_baseline": {"B02": 230, "B02_net_jpy": -12459.0, "F05": 731, "F05_net_jpy": 3180.0, "closed": 960, "net_jpy": -9279.0, "opened": 961},
   "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
-  "output_sha256": {
-    "usdjpy_rq020b_2024_signal_regression_v1.csv": "235d2cdf93ece9bf9cff61ca1303b0e6847dc7fcb009cfe0648b993e0f9bb0d6",
-    "usdjpy_rq020b_2024_trade_regression_v1.csv": "9a4fe459e34a1e98f4023f9f5556f3a41da8245d6df31d474b34653afbf02b37",
-    "usdjpy_rq020b_feature_coverage_v1.csv": "ee6f747ea76176daff27866103ff4611bf75aaf68d66523d113f89807d5063f0",
-    "usdjpy_rq020b_state_fold_metrics_v1.csv": "cdf4a583b5c2c450220bd00c32331221a8edf395d1e0e086ff67fd187d78e0cf",
-    "usdjpy_rq020b_state_gate_v1.csv": "4593ea8ddf8ef1c4562027cbf30c4b66b381493cfd984ebdcb8e2d156dab4a3f",
-    "usdjpy_rq020b_state_leave_one_strategy_out_v1.csv": "ed12c775eec58fa918e8895faee72182c603d79db64ea3b273ecfccd9c517784",
-    "usdjpy_rq020b_state_strategy_fold_metrics_v1.csv": "b711395c7574f137c65876fe056ffead9ceeb65e7818460eda843754845ebcef"
-  },
   "passed_state_count": 1,
-  "passed_states": [
-    {
-      "all_four_folds_present": true,
-      "feature_family": "range_position_20d",
-      "leave_one_strategy_out_same_action_each_fold": true,
-      "minimum_fold_strategies": 5,
-      "minimum_fold_trades": 779,
-      "minimum_strategies_each_fold_pass": true,
-      "minimum_trades_each_fold_pass": true,
-      "passed": true,
-      "preferred_action": "continuation",
-      "preferred_action_default_positive_each_fold": true,
-      "preferred_action_severe_positive_each_fold": true,
-      "same_preferred_action_all_four_folds": true,
-      "state": "UPPER_THIRD"
-    }
-  ],
-  "protocol": {
-    "commit": "015a21c761e9dee5633be3892db3ebfefd185391",
-    "git_blob_sha1": "b98d0787d645cf977d49dd1d723bed3dc96e5f5d",
-    "path": "configs/research/usdjpy_rq020b_long_horizon_regime_protocol_v1.json",
-    "schema_version": "usdjpy_rq020b_long_horizon_regime_protocol_v1",
-    "sha256": "9f9bf3ea3da9d93efe2f0d14ce27fc7d37c19b930679812d47f017c7e08c0bea"
-  },
+  "passed_states": [{"all_four_folds_present": true, "feature_family": "range_position_20d", "leave_one_strategy_out_same_action_each_fold": true, "minimum_fold_strategies": 5, "minimum_fold_trades": 779, "minimum_strategies_each_fold_pass": true, "minimum_trades_each_fold_pass": true, "passed": true, "preferred_action": "continuation", "preferred_action_default_positive_each_fold": true, "preferred_action_severe_positive_each_fold": true, "same_preferred_action_all_four_folds": true, "state": "UPPER_THIRD"}],
+  "protocol": {"commit": "015a21c761e9dee5633be3892db3ebfefd185391", "git_blob_sha1": "b98d0787d645cf977d49dd1d723bed3dc96e5f5d", "path": "configs/research/usdjpy_rq020b_long_horizon_regime_protocol_v1.json", "schema_version": "usdjpy_rq020b_long_horizon_regime_protocol_v1", "sha256": "9f9bf3ea3da9d93efe2f0d14ce27fc7d37c19b930679812d47f017c7e08c0bea"},
+  "regenerable_intermediate_outputs": {"usdjpy_rq020b_state_fold_metrics_v1.csv": "cdf4a583b5c2c450220bd00c32331221a8edf395d1e0e086ff67fd187d78e0cf", "usdjpy_rq020b_state_leave_one_strategy_out_v1.csv": "ed12c775eec58fa918e8895faee72182c603d79db64ea3b273ecfccd9c517784", "usdjpy_rq020b_state_strategy_fold_metrics_v1.csv": "b711395c7574f137c65876fe056ffead9ceeb65e7818460eda843754845ebcef"},
   "research_question": "USDJPY-RQ-020B",
   "result_payload_sha256_before_manifest": "7e61a7dc3e8bd6a1836b797f91295000f96ae572f0306efe1dd7b513bef6affb",
   "schema_version": "usdjpy_rq020b_long_horizon_regime_result_v1",
-  "source_artifacts": {
-    "2023_canonical_baseline": {"artifact_id": 8560057457, "repository": "mitsuru93/usdjpyea-core", "run_id": 29998477805},
-    "2023_normalized": {"artifact_id": 8559483151, "repository": "mitsuru93/usdjpyea-core", "run_id": 29997167048},
-    "R0_2024_canonical": {"artifact_id": 8428199309, "repository": "mitsuru93/usdjpyea-research", "run_id": 29639548804},
-    "R1_entry_registry_v2": {"artifact_id": 8428977454, "repository": "mitsuru93/usdjpyea-research", "run_id": 29642282221},
-    "R5_controlled_exit": {"artifact_id": 8436023286, "repository": "mitsuru93/usdjpyea-research", "run_id": 29666989206},
-    "R6_fixed_five": {"artifact_id": 8437864148, "repository": "mitsuru93/usdjpyea-research", "run_id": 29672853145},
-    "V1_2024H2": {"artifact_id": 8438161821, "repository": "mitsuru93/usdjpyea-research", "run_id": 29673802426}
-  },
+  "source_artifacts": {"2023_canonical_baseline": {"artifact_id": 8560057457, "repository": "mitsuru93/usdjpyea-core", "run_id": 29998477805}, "2023_normalized": {"artifact_id": 8559483151, "repository": "mitsuru93/usdjpyea-core", "run_id": 29997167048}, "R0_2024_canonical": {"artifact_id": 8428199309, "repository": "mitsuru93/usdjpyea-research", "run_id": 29639548804}, "R1_entry_registry_v2": {"artifact_id": 8428977454, "repository": "mitsuru93/usdjpyea-research", "run_id": 29642282221}, "R5_controlled_exit": {"artifact_id": 8436023286, "repository": "mitsuru93/usdjpyea-research", "run_id": 29666989206}, "R6_fixed_five": {"artifact_id": 8437864148, "repository": "mitsuru93/usdjpyea-research", "run_id": 29672853145}, "V1_2024H2": {"artifact_id": 8438161821, "repository": "mitsuru93/usdjpyea-research", "run_id": 29673802426}},
   "state_gate_count": 19,
   "status": "RETAIN_DESCRIPTIVE_STATE_SET_FOR_SEPARATE_ROUTER_REVIEW",
   "transform": {"duplicates": 0, "monotonic": true, "rows": 24825, "shifted_rows": 1543}
