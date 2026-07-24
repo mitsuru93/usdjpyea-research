@@ -1,0 +1,55 @@
+{
+  "schema_version": "F05_structural_SL_event_sequence_bundle_v1",
+  "files": [
+    {
+      "name": "2024_tick_first5_sensitivity.csv",
+      "size_bytes": 2992,
+      "sha256": "d839986409168c5ad9d9a760c3292129a4761d8bd1d3815b3243ac6729d5f2b1"
+    },
+    {
+      "name": "F05_structural_SL_event_sequence_v1.md",
+      "size_bytes": 6132,
+      "sha256": "489a2484be135209fd731951990e508b67d6ff11cd2aeff3a4fbac23dffdfad5"
+    },
+    {
+      "name": "basic_failed_reclaim_fold_metrics.csv",
+      "size_bytes": 351,
+      "sha256": "899b279e4ce0827a56c861027ffe3a60e5a007137347093369ebd8b25d22bbf1"
+    },
+    {
+      "name": "event_sequence_features.csv",
+      "size_bytes": 8006,
+      "sha256": "19bb7661d57ad92ce374566b2d3d7479a55f6a6750c0b1a34fff4c8dd42a806d"
+    },
+    {
+      "name": "natural_family_grid.csv",
+      "size_bytes": 6905,
+      "sha256": "0761f4d3d114f335324a476edac3889edc10563d43c4bd8ebfe501a4bf6c2512"
+    },
+    {
+      "name": "natural_family_lofo.csv",
+      "size_bytes": 461,
+      "sha256": "4158e4a264ffbe2989a97cfffa81c5f2c568ccd8808c27df7a41e43fc7890e79"
+    },
+    {
+      "name": "refined_breadth_metrics.csv",
+      "size_bytes": 385,
+      "sha256": "9684480b677ab3f431f384792598d19a6a127dd8bb7bea8740f6799550e5f866"
+    },
+    {
+      "name": "refined_failed_reclaim_fold_direction_metrics.csv",
+      "size_bytes": 208,
+      "sha256": "a590aa5c49814dd006dff248b9260b884ab62d8cfff4b9d50cada8269ed5bcc5"
+    },
+    {
+      "name": "refined_failed_reclaim_fold_metrics.csv",
+      "size_bytes": 350,
+      "sha256": "467c63b624a8cf7789084916beb22bd7ba0ded411be494f391cd9322f7a56af9"
+    },
+    {
+      "name": "refined_failed_reclaim_stopped_trades.csv",
+      "size_bytes": 1448,
+      "sha256": "a932a76422f48dcbce4f741c1d650ff147571236695a63c8d850af02949cfbd5"
+    }
+  ]
+}

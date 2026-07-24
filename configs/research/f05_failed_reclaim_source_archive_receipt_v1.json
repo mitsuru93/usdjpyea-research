@@ -1,6 +1,6 @@
 {
   "schema_version": "f05_failed_reclaim_source_archive_receipt_v1",
-  "status": "EXACT_AUTHORITY_ARCHIVES_IDENTIFIED_OR_DOWNLOADED",
+  "status": "EXACT_AUTHORITY_ARCHIVES_AND_EXPLORATION_BUNDLE_AVAILABLE",
   "archives": {
     "2023_preparation": {
       "repository": "mitsuru93/usdjpyea-core",
@@ -31,13 +31,17 @@
   },
   "original_exploration_report": {
     "filename": "F05_structural_SL_event_sequence_v1.md",
+    "repository_path": "docs/research/F05_structural_SL_event_sequence_v1.md",
     "sha256": "489a2484be135209fd731951990e508b67d6ff11cd2aeff3a4fbac23dffdfad5",
     "verified": true
   },
   "original_exploration_bundle": {
     "filename": "F05_structural_SL_event_sequence_bundle_v1.zip",
     "expected_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d",
-    "retrieved": false,
+    "base64_repository_path": "configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64",
+    "manifest_repository_path": "configs/research/f05_failed_reclaim_event_sequence_v1/manifest.json",
+    "decode_command": "base64 -d F05_structural_SL_event_sequence_bundle_v1.zip.b64 > F05_structural_SL_event_sequence_bundle_v1.zip",
+    "retrieved": true,
     "substitute_claimed": false
   },
   "boundaries": {

@@ -1,0 +1,19 @@
+{
+  "schema_version": "f05_failed_reclaim_analysis_source_receipt_v1",
+  "status": "EXACT_EXPLORATION_SOURCE_COMMITTED",
+  "report": {
+    "path": "docs/research/F05_structural_SL_event_sequence_v1.md",
+    "sha256": "489a2484be135209fd731951990e508b67d6ff11cd2aeff3a4fbac23dffdfad5"
+  },
+  "bundle": {
+    "decoded_filename": "F05_structural_SL_event_sequence_bundle_v1.zip",
+    "decoded_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d",
+    "base64_path": "configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64",
+    "decode_command": "base64 -d F05_structural_SL_event_sequence_bundle_v1.zip.b64 > F05_structural_SL_event_sequence_bundle_v1.zip"
+  },
+  "member_root": "configs/research/f05_failed_reclaim_event_sequence_v1",
+  "notion_task_dependency": false,
+  "source_of_execution_scope": "direct_user_instruction",
+  "2025_accessed": false,
+  "mt4_accessed": false
+}
