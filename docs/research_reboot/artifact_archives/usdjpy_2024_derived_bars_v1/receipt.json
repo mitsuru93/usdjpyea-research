@@ -1,0 +1,193 @@
+{
+  "accepted": true,
+  "annual_rows": {
+    "h1": 6250,
+    "h4": 1616,
+    "m1": 373383,
+    "m15": 24999,
+    "m30": 12500,
+    "m5": 74975
+  },
+  "assets": [
+    {
+      "name": "README.md",
+      "sha256": "a20fd98934106fea94f0f1eb5d32f820d008d3fe9eaefeba6e5b19a5480055e0",
+      "size_bytes": 801
+    },
+    {
+      "name": "SHA256SUMS",
+      "sha256": "7463796c82c6b12eb8c47e435bd70e1cb9c5cb4d540929072d22e802592fc49c",
+      "size_bytes": 3378
+    },
+    {
+      "name": "USDJPY-2024-01-m1-derived-bars-v1.csv.gz",
+      "sha256": "4195e40ba65ed60ed7719fc694a66650a8a4a6340aeb1cad3bf2bad1d98cda11",
+      "size_bytes": 1517249
+    },
+    {
+      "name": "USDJPY-2024-01-m5-derived-bars-v1.csv.gz",
+      "sha256": "8230ba80eac24fd43f7f959dc82796a06e0d24c928f4024dd4250226a09ce85f",
+      "size_bytes": 338288
+    },
+    {
+      "name": "USDJPY-2024-02-m1-derived-bars-v1.csv.gz",
+      "sha256": "ea45b9bbbc519ed9f4cbfffff4910fa51a99986eaeeaeac6f4b6c322a9ff8a7d",
+      "size_bytes": 1383776
+    },
+    {
+      "name": "USDJPY-2024-02-m5-derived-bars-v1.csv.gz",
+      "sha256": "37fe65287784107e32f3da859e363a8d1533c8f72055fa2a93b38c4f39c86dbb",
+      "size_bytes": 309128
+    },
+    {
+      "name": "USDJPY-2024-03-m1-derived-bars-v1.csv.gz",
+      "sha256": "b177bcc86f935a9a2c567216a8871e6fc5add30415fc97848f26b9d3a9d6c55d",
+      "size_bytes": 1386261
+    },
+    {
+      "name": "USDJPY-2024-03-m5-derived-bars-v1.csv.gz",
+      "sha256": "018249355e0b0c93f83578916d1ff209e8b6d4cf8a4f077330b7a92cdc32fb5b",
+      "size_bytes": 311201
+    },
+    {
+      "name": "USDJPY-2024-04-m1-derived-bars-v1.csv.gz",
+      "sha256": "27eacd284d00d23f4c86cdc9ab38751cb744d26fb22617c1879e5485219c1bf3",
+      "size_bytes": 1410692
+    },
+    {
+      "name": "USDJPY-2024-04-m5-derived-bars-v1.csv.gz",
+      "sha256": "350e51465154ac39808ffe6255773b674be70446466091019f652b8324435ff4",
+      "size_bytes": 317497
+    },
+    {
+      "name": "USDJPY-2024-05-m1-derived-bars-v1.csv.gz",
+      "sha256": "199a55dac4d56782101a5f343734999b3c9956ba831c7d427f35d001b147e673",
+      "size_bytes": 1494375
+    },
+    {
+      "name": "USDJPY-2024-05-m5-derived-bars-v1.csv.gz",
+      "sha256": "f9f821f065769cb9bf60356da9136c93f6ebe3154f751ba9f006f71364358386",
+      "size_bytes": 339319
+    },
+    {
+      "name": "USDJPY-2024-06-m1-derived-bars-v1.csv.gz",
+      "sha256": "cd52f4170d0a77859bce51e379e0958cb05d2daf37b9a7f7830c6c4fc44c230e",
+      "size_bytes": 1327729
+    },
+    {
+      "name": "USDJPY-2024-06-m5-derived-bars-v1.csv.gz",
+      "sha256": "cb60fcbd072790792c010b97ad8c5e3d47c9648d84ed49e8546148ed2ba56b19",
+      "size_bytes": 301130
+    },
+    {
+      "name": "USDJPY-2024-07-m1-derived-bars-v1.csv.gz",
+      "sha256": "cfd8c36d03589b7c1d93a92c7fabe7af9aec92db2306a2f13bafe4e90ff8cd10",
+      "size_bytes": 1576153
+    },
+    {
+      "name": "USDJPY-2024-07-m5-derived-bars-v1.csv.gz",
+      "sha256": "4d22c58a17c66db34e07f21b373614bbe41b9b2d8f1562e4cd46a3a0210ee2ff",
+      "size_bytes": 353800
+    },
+    {
+      "name": "USDJPY-2024-08-m1-derived-bars-v1.csv.gz",
+      "sha256": "8706e84e07b69daa026c1ffd97b5ce569cc8631045d84d5291bc312bcfb6efa3",
+      "size_bytes": 1598998
+    },
+    {
+      "name": "USDJPY-2024-08-m5-derived-bars-v1.csv.gz",
+      "sha256": "0740ceb9b34d75343f855dede30fd2c0831c116f33a3b9a6c01888ab0406b013",
+      "size_bytes": 352270
+    },
+    {
+      "name": "USDJPY-2024-09-m1-derived-bars-v1.csv.gz",
+      "sha256": "af3417ea169cc7ea9febef3397ee60a0f31ef804f21ce1629359a11665ada955",
+      "size_bytes": 1512538
+    },
+    {
+      "name": "USDJPY-2024-09-m5-derived-bars-v1.csv.gz",
+      "sha256": "bb1f4bdfcde9e7a5aad0998398cd81911a6dd0cdf6d25d39a83ea0c16a324b38",
+      "size_bytes": 336367
+    },
+    {
+      "name": "USDJPY-2024-10-m1-derived-bars-v1.csv.gz",
+      "sha256": "4900fc671bd5d37158053ce8ce5bdc21941bcdd2a33f7e85cac1bd706bc121ce",
+      "size_bytes": 1586726
+    },
+    {
+      "name": "USDJPY-2024-10-m5-derived-bars-v1.csv.gz",
+      "sha256": "1cfba3088a03d48d0c722ae3f048723a9cc6cda3ca9e0b3fb6073bb039ae5bb9",
+      "size_bytes": 355658
+    },
+    {
+      "name": "USDJPY-2024-11-m1-derived-bars-v1.csv.gz",
+      "sha256": "9731dbb4584eabb0d229db0377fbae4a7453a2cb5a77cda35e56e2fc87fc16c8",
+      "size_bytes": 1470348
+    },
+    {
+      "name": "USDJPY-2024-11-m5-derived-bars-v1.csv.gz",
+      "sha256": "2d9322524edcbb982dcebd769b11ef119126eae5e9e0e2856962eecb80126024",
+      "size_bytes": 326565
+    },
+    {
+      "name": "USDJPY-2024-12-m1-derived-bars-v1.csv.gz",
+      "sha256": "df5e80c445bb440ce6d98b1d621ad1880acb3bfae342e24cfcdb78bc841a0b12",
+      "size_bytes": 1462257
+    },
+    {
+      "name": "USDJPY-2024-12-m5-derived-bars-v1.csv.gz",
+      "sha256": "b85b74682d5ba133c61180d1cfd29f68d79ddf19c7708c795bc3b852ed3f2a4f",
+      "size_bytes": 329600
+    },
+    {
+      "name": "USDJPY-2024-derived-bars-v1.manifest.json",
+      "sha256": "e2c54c8423eea10ad995bf2d0fa316c4ea7cdb197619333c357e5b323278446e",
+      "size_bytes": 13986
+    },
+    {
+      "name": "USDJPY-2024-h1-derived-bars-v1.csv.gz",
+      "sha256": "6fcdfaf00f45b361d7688db0f23f3d8429205025e8c30e181744a8feab007a81",
+      "size_bytes": 373829
+    },
+    {
+      "name": "USDJPY-2024-h4-derived-bars-v1.csv.gz",
+      "sha256": "c98aed3ac3d495dd4f377a3d67922131e777963a6f195b35730e804c744bf49e",
+      "size_bytes": 102069
+    },
+    {
+      "name": "USDJPY-2024-m1-derived-bars-v1.csv.gz",
+      "sha256": "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0",
+      "size_bytes": 17725737
+    },
+    {
+      "name": "USDJPY-2024-m15-derived-bars-v1.csv.gz",
+      "sha256": "d22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020",
+      "size_bytes": 1402981
+    },
+    {
+      "name": "USDJPY-2024-m30-derived-bars-v1.csv.gz",
+      "sha256": "d0b8d2388f4edd4f9726aaf570c635bea170ab595fa67ecdc184ea1e619f8e7c",
+      "size_bytes": 725365
+    },
+    {
+      "name": "USDJPY-2024-m5-derived-bars-v1.csv.gz",
+      "sha256": "af04cf642171a1916abc11a77d0120e88a1f61382385e54c9a49d9107d5d7f36",
+      "size_bytes": 3968804
+    }
+  ],
+  "bar_boundary": "left_closed_right_open",
+  "bar_timezone": "UTC",
+  "head_sha": "b12e6a0d4db5363f2e5d4a087ad9c26ff9851472",
+  "manifest_sha256": "e2c54c8423eea10ad995bf2d0fa316c4ea7cdb197619333c357e5b323278446e",
+  "month_count": 12,
+  "output_release_tag": "usdjpy-2024-derived-bars-v1",
+  "output_release_url": "https://github.com/mitsuru93/usdjpyea-research/releases/tag/usdjpy-2024-derived-bars-v1",
+  "release_readback_verified": true,
+  "repository": "mitsuru93/usdjpyea-research",
+  "run_attempt": 1,
+  "run_id": 30073308219,
+  "schema_version": "usdjpy_2024_derived_bars_release_receipt_v1",
+  "source_release_tag": "usdjpy-2024-mt4-tick-import-v1",
+  "source_tick_rows": 40969081,
+  "workflow": "Build USDJPY 2024 Derived Bars v1"
+}
