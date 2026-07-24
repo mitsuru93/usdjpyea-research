@@ -1,0 +1,42 @@
+{
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v6",
+  "status": "RQ024_SOURCE_RECOVERY_ONLY",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v5.json",
+  "objective": "Use 2023H1, 2023H2, 2024H1 and 2024H2 to reproduce the original B02/F05 P3 Entry, P2 early Exit and P1 giveback research only after exact source recovery and neutral MT4 data parity.",
+  "active_family": null,
+  "active_hypothesis": null,
+  "current_candidate": null,
+  "current_open_research_question": "USDJPY-RQ-024",
+  "completed": {
+    "B02_F05_factor_analysis": "PASS_EXACT_REPORT_SHA_CANONICALIZED",
+    "HYP023_exact_six_cell_evaluation": "CLOSED_ZERO_CORE_ZERO_FULL_ZERO_ELIGIBLE_REGION",
+    "architecture_failure_taxonomy": "CLOSED_ONE_DISTINCT_NATIVE_HTF_INFORMATION_GAP",
+    "exact_2023_historical_2024_transform": "PASS_1543_SHIFT_ZERO_DUPLICATES_EXACT_IDENTITIES",
+    "fixed_five_portability": "CLOSED_NO_PORTABLE_STRATEGY_OR_STATIC_PORTFOLIO",
+    "full_frozen_architecture_census": "CLOSED_660_CELLS_ZERO_FAMILY_REGIONS",
+    "long_horizon_regime_diagnosis": "CLOSED_NO_ROUTER_FAMILY",
+    "native_HTF_data_construction": "PASS_LOGICAL_SERVER_BUCKET_CONTRACT",
+    "native_HTF_literature_and_duplicate_audit": "PASS_DISTINCT_MECHANISM_CLASS_NO_EXACT_PARAMETER_CLAIM",
+    "native_HTF_modular_evaluator_preflight": "PASS_OUTCOMES_NOT_COMPUTED"
+  },
+  "decision": "Open RQ-024 only for exact source recovery and neutral MT4 source-data parity. The original Entry/Exit scientific reproduction remains locked.",
+  "boundaries": {
+    "source_identity_recovery": true,
+    "MT4_source_data_parity": true,
+    "MT4_candidate_parity": false,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  },
+  "prohibited": [
+    "no HYP-023 repair or parameter expansion",
+    "no strategy outcomes before exact report and bundle recovery",
+    "no feature or threshold search",
+    "no candidate implementation or Strategy Tester result",
+    "no 2025 access",
+    "no substitution of a derived report for the exact frozen source package"
+  ],
+  "exact_next_action": "Recover and byte-verify the exact B02/F05 Entry/Exit report and reproducibility bundle; materialize the accepted 2024 M1/M5/M15/H1 OHLC source with immutable hashes and run a neutral MT4 source-data parity probe. Do not access strategy outcomes, generate a candidate, search features or thresholds, or use 2025. After every source-identity and parity gate passes, a newer registry must explicitly authorize Stage E1 exact reproduction."
+}
