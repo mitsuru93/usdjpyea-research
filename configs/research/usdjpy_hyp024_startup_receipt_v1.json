@@ -1,0 +1,18 @@
+{
+  "MT4_accessed": false,
+  "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "mandatory_files_read_count": 32,
+  "periods_accessed": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "periods_not_accessed": ["2025H1", "2025H2"],
+  "registry_at_start": "usdjpy_research_candidate_registry_v41",
+  "registry_status_at_start": "USDJPY_HYP023_CLOSED_FAIL_NO_AUTHORIZED_SUCCESSOR",
+  "relevant_ledger_ids": ["USDJPY-HYP-007", "USDJPY-HYP-008", "USDJPY-HYP-009", "USDJPY-HYP-012", "USDJPY-HYP-014", "USDJPY-RQ-016-RESULT-001", "USDJPY-HYP-018", "USDJPY-HYP-023-RESULT-001"],
+  "research_main_commit": "c600443528fd7b139854e99657b83b4f1293cf87",
+  "schema_version": "usdjpy_hyp024_startup_receipt_v1",
+  "source_release_artifacts": [
+    {"artifact_id": 8559483151, "repository": "mitsuru93/usdjpyea-core", "run_id": 29997167048, "sha256": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01"},
+    {"artifact_id": 8479048161, "repository": "mitsuru93/usdjpyea-core", "run_id": 29787357305, "sha256": "e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5"},
+    {"artifact_id": 8512432416, "repository": "mitsuru93/usdjpyea-core", "run_id": 29873856877, "sha256": "9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b"}
+  ],
+  "status": "PASS"
+}
