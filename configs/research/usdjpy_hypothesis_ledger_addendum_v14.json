@@ -1,0 +1,86 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v14",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v13.json",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v12.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v13.json"
+  ],
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-RQ-022-RESULT-001",
+      "family_ids": [],
+      "candidate_ids": [],
+      "status": "CLOSED_FEASIBLE_ONE_FINITE_PROTOCOL_FROZEN",
+      "origin_analysis": "RQ-021 identified native H1/H4 primary signal construction and state-conditional event termination as the only untested information dimension after the 660-cell M15/fixed-horizon census closed.",
+      "causal_hypothesis": "Accepted 2023/2024 M15 lineages can deterministically support native H1/H4 completed-bar state transitions without modifying historical 2024, and one scientifically distinct finite protocol can be frozen before any signal or P/L calculation.",
+      "target_failure_mode": ["M15-local signal regime dependence", "fixed-time exit mismatch", "cross-fold direction reversal", "transaction-cost fragility"],
+      "pre_result_predictions": ["accepted 1,543-shift identity remains preserved", "logical server-time H1/H4 construction has no duplicate information times", "ledger audit finds no prior native-H4 primary signal plus native-H1/H4 event termination", "finite grid can be frozen before outcomes"],
+      "tests": [
+        {
+          "period": "2023_and_2024_pre_outcome_data_construction",
+          "type": "logical_server_time_H1_H4_exact_slot_feasibility",
+          "result_path": "configs/research/usdjpy_native_htf_construction_feasibility_result_v1.json",
+          "result": {"status": "PASS", "accepted_first_tick_shifted_rows": 1543, "different_first_tick_vs_logical_rows": 123, "2023_H1_exact": 6204, "2023_H4_exact": 1547, "2024_H1_exact": 6109, "2024_H4_exact": 1508, "2024_roundtrip_mismatch": 0}
+        },
+        {
+          "period": "pre_outcome",
+          "type": "primary_literature_and_full_ledger_duplicate_audit",
+          "result_path": "configs/research/usdjpy_native_htf_literature_duplicate_audit_v1.json",
+          "result": {"mechanism_class_supported": true, "exact_parameters_supported": false, "scientifically_distinct": true, "algebraically_derivable": false}
+        },
+        {
+          "period": "pre_outcome",
+          "type": "modular_evaluator_preflight",
+          "result_path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_preflight_v1.json",
+          "result": {"status": "PASS", "candidate_count": 6, "m15_rows": 49264, "H1_exact_rows": 12313, "H4_exact_rows": 3055, "outcomes_computed": false}
+        }
+      ],
+      "decision": "Close RQ-022 feasibility. Freeze HYP-023 as one six-cell native H4/H1 family before signal and outcome evaluation.",
+      "falsified_or_unsupported_claims": ["accepted first-tick display timestamps can be used directly as native H1/H4 membership keys", "primary literature identifies an optimal H1/H4 EMA pair", "the Notion-only Session Transition Lifecycle State Machine is GitHub-authorized"],
+      "retained_findings": ["logical MT4 server buckets provide deterministic native H1/H4 membership", "partial buckets must not update state", "literature supports persistence/cost/time-variation controls but not exact parameters", "primary signal and event termination are distinct from R1/R2 and Families A-I"],
+      "prohibited_reuse": ["no use of accepted first-tick timestamp as H1/H4 membership", "no literature-optimal parameter claim", "no expansion beyond six frozen cells", "no signal/P&L before preregistration merge", "no MT4 or 2025"],
+      "successor_questions": ["Does the exact six-cell native H4/H1 family produce a connected robust family region across all four development folds?"],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_native_htf_construction_feasibility_result_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_native_htf_literature_duplicate_audit_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_preflight_v1.json"}
+      ]
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-023",
+      "family_ids": ["N_NATIVE_H4_H1_EMA_STATE_TRANSITION"],
+      "candidate_ids": ["N_H4F3S12_H1F4S16", "N_H4F3S12_H1F8S32", "N_H4F6S24_H1F4S16", "N_H4F6S24_H1F8S32", "N_H4F12S48_H1F4S16", "N_H4F12S48_H1F8S32"],
+      "status": "PREREGISTERED_AWAITING_EXACT_DEVELOPMENT_EVALUATION",
+      "origin_analysis": "RQ-022 feasibility and duplicate audit passed before any native-H4/H1 signal or P/L calculation.",
+      "causal_hypothesis": "A completed H4 EMA state transition has positive persistence when a completed H1 EMA state confirms within four future H1 bars, and the episode should terminate at the first opposite completed H1 or H4 state rather than an unconditional fixed horizon.",
+      "target_failure_mode": ["M15-local entry regime dependence", "fixed-time exit mismatch", "direction sign reversal", "cost-sensitive isolated cells"],
+      "pre_result_predictions": ["at least two Manhattan-adjacent cells pass every four-fold core gate", "at least one cell in that component passes full and pooled breadth/concentration gates", "positive performance does not depend on boundary liquidation", "both long and short positions have material support"],
+      "tests": [],
+      "decision": "After preregistration merge, evaluate exactly the frozen six cells once on 2023H1, 2023H2, 2024H1 and 2024H2. Select no isolated cell and expand no parameter.",
+      "falsified_or_unsupported_claims": [],
+      "retained_findings": ["native H1/H4 construction is deterministic", "mechanism class has primary-literature support but exact parameters do not", "event lifecycle is distinct from fixed checkpoint exits", "severe-cost and family-neighbourhood gates are binding"],
+      "prohibited_reuse": ["no threshold/slope/distance filter", "no fixed-time fallback", "no M15 parent signal", "no interaction with R1K03 or closed families", "no gate/parameter change after outcomes", "no MT4 or 2025 before exact finalist freeze and parity"],
+      "successor_questions": ["Does HYP-023 pass its connected family-region gate?"],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_prereg_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "tools/evaluate_usdjpy_native_h4_h1_ema_state_transition_v1.py"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "tools/usdjpy_native_htf_state_data_v1.py"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "tools/usdjpy_native_htf_state_sim_v1.py"}
+      ]
+    }
+  ]
+}
