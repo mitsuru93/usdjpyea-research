@@ -1,0 +1,6 @@
+{
+  "schema_version": "usdjpy_hyp026_analysis_boundary_v1",
+  "status": "CLOSED",
+  "statement": "This audit answers whether local completed-bar M1/M5/M15/M30/H1 technical state adds actionable information after price path for the defined P1/P2/P3 observations. It does not answer unrelated structural-SL or recoverability hypotheses running elsewhere.",
+  "parallel_research_untouched": true
+}
