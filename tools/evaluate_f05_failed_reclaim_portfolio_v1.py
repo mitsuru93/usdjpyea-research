@@ -136,7 +136,7 @@ def verify_protocol(protocol_path: Path, semantic_path: Path) -> tuple[dict, dic
     assert s["status"] == "FROZEN_BEFORE_SCIENTIFIC_OUTCOME_EXECUTION"
     assert s["exploration_reproduction_adapter"]["same_timestamp_m5_allowed"] is True
     assert s["binding_adapter"]["same_timestamp_m5_forbidden"] is True
-    assert s["candidate_definition_changed"] is False
+    assert s["resolution"]["candidate_definition_changed"] is False
     return p, s
 
 
