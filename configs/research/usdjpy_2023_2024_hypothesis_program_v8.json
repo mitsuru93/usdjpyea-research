@@ -1,0 +1,42 @@
+{
+  "active_family": null,
+  "active_grid": null,
+  "active_hypothesis": null,
+  "boundaries": {
+    "2025_H1": false,
+    "2025_H2": false,
+    "MT4_parity": false,
+    "live_orders": false
+  },
+  "completed": {
+    "B02_F05_entry_exit_independent_reproduction": "PASS_DATA_FEATURE_STAT_IDENTITY_WITH_INDEPENDENT_MODEL_VARIATION",
+    "B02_F05_factor_analysis": "PASS_EXACT_REPORT_SHA_CANONICALIZED",
+    "Entry_information_audit": "PASS_NO_LOOKAHEAD",
+    "Entry_local_technical_family": "CLOSED_ZERO_PORTABLE_FACTORS",
+    "HYP023_exact_six_cell_evaluation": "CLOSED_ZERO_CORE_ZERO_FULL_ZERO_ELIGIBLE_REGION",
+    "HYP024_exact_eight_cell_evaluation": "CLOSED_ZERO_CORE_ZERO_FULL_ZERO_ELIGIBLE_REGION",
+    "HYP024_input_rematerialization": "PASS_1882_TRADES_68955_STATE_ROWS_OUTCOMES_FALSE",
+    "common_full_OHLC_indicator_feasibility": "REJECT_MIXED_LINEAGE"
+  },
+  "current_candidate": null,
+  "exact_next_action": "HYP-024 is closed. Do not repair, expand or combine its arms. MT4 and 2025 remain locked because no exact finalist exists. Open a successor only after full duplicate audit and outcome-free preregistration of a genuinely distinct recoverability mechanism on 2023/2024.",
+  "input_identity": {
+    "addendum": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_input_addendum_v2.json",
+    "materialization": "configs/research/usdjpy_b02_f05_hyp024_input_materialization_v2.json",
+    "preflight": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_preflight_v2.json",
+    "states_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "trades_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca"
+  },
+  "objective": "Use 2023H1, 2023H2, 2024H1 and 2024H2 as development/falsification folds to freeze at most one exact specification for an unchanged 2025 H1 Rakuten MT4 gate without selecting from 2025.",
+  "prohibited": [
+    "no Entry technical threshold reopening",
+    "no HYP-023 repair",
+    "no HYP-024 component arm quorum persistence grid or gate repair",
+    "no P2/P1 candidate combination",
+    "no substitution of later 2024 derived bars into frozen 2024H2 input",
+    "no MT4 or 2025 without a new exact finalist"
+  ],
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v8",
+  "status": "HYP024_CLOSED_NO_ELIGIBLE_FAMILY_REGION",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v7.json"
+}
