@@ -1,0 +1,99 @@
+{
+  "schema_version": "f05_failed_reclaim_portfolio_prereg_v1",
+  "status": "FROZEN_BEFORE_SCIENTIFIC_OUTCOME_EXECUTION",
+  "authorization": {
+    "source": "direct user instruction only",
+    "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+    "non_binding_sensitivity": "F05_FAILED_RECLAIM_WEAK_QUICK_V1",
+    "candidate_count": 2,
+    "binding_candidate_count": 1,
+    "new_hypothesis_id": false,
+    "notion_task_dependency": false
+  },
+  "research_source": {
+    "report_path": "docs/research/F05_structural_SL_event_sequence_v1.md",
+    "report_sha256": "489a2484be135209fd731951990e508b67d6ff11cd2aeff3a4fbac23dffdfad5",
+    "bundle_base64_path": "configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64",
+    "bundle_decoded_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d",
+    "manifest_path": "configs/research/f05_failed_reclaim_event_sequence_v1/manifest.json",
+    "manifest_sha256": "648282bed25cb5cf93fed7c16a0878f55565146849adfb6e3d92d3e47ff0e668"
+  },
+  "historical_authority_release": {
+    "repository": "mitsuru93/usdjpyea-research",
+    "tag": "f05-failed-reclaim-historical-authorities-v1",
+    "receipt": "configs/research/f05_failed_reclaim_historical_authority_mirror_receipt_v1.json",
+    "assets": {
+      "usdjpy-2023-canonical-baseline-prep-v1.zip": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+      "mt4-usdjpy-2024h1-event-audit-v1.zip": "e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+      "mt4-usdjpy-f05-extatr-h2-validation-v1.zip": "9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b"
+    }
+  },
+  "derived_bar_release": {
+    "tag": "usdjpy-2024-derived-bars-v1",
+    "m1_sha256": "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0",
+    "m5_sha256": "af04cf642171a1916abc11a77d0120e88a1f61382385e54c9a49d9107d5d7f36"
+  },
+  "raw_tick_release": {
+    "tag": "usdjpy-2024-raw-bidask-ticks-v1",
+    "months_required_by_pre_raw_identity": ["2024-01", "2024-02", "2024-03", "2024-04", "2024-12"],
+    "verification": "release SHA256SUMS plus raw event-order audit"
+  },
+  "population": {
+    "contract": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+    "trade_count": 1882,
+    "fold_counts": {
+      "2023H1": {"B02": 121, "F05": 367},
+      "2023H2": {"B02": 109, "F05": 363},
+      "2024H1": {"B02": 97, "F05": 331},
+      "2024H2": {"B02": 102, "F05": 392}
+    },
+    "signal_admission": "2024 runtime logs must show signals equal opened, zero entry_blocked, zero order_send_failed, and zero runtime errors; 2023 signals are deterministically regenerated from the accepted M15 contract"
+  },
+  "result_layers": {
+    "exploration_reproduction": "exact 14-trade source identity gate; never used as binding portfolio rule",
+    "direct_pre_raw_identity": "strict-later direct instruction identity before exact 2024 tick disarm",
+    "raw_tick_binding_events": "binding changed-trade set after exact tick profit disarm and tick exit",
+    "accepted_signal_portfolio_replay": "binding result; baseline and candidate realized balance, realized drawdown, PF, concurrent positions, stack state, margin admission, reopened exposure capacity"
+  },
+  "historical_gates": {
+    "fold_total": "default portfolio delta > 0 in all four folds",
+    "severe": "combined severe delta > 0 and at least three of four folds severe delta > 0",
+    "direction": "combined Long and Short delta > 0; each direction nonnegative in at least three of four folds",
+    "winner_damage": "Loser benefit > absolute Winner damage; combined top-decile retention >= 0.90; each-fold top-decile retention >= 0.85",
+    "breadth": "delta excluding best date > 0; excluding best two dates > 0; no month contributes more than 50 percent of total improvement",
+    "trigger_breadth": "at least one binding exit per fold; at least 10 total; at least 5 final Losers",
+    "reproduction": "exact exploration 14/+202.1/Long65.2/Short136.9 and exact trade identity",
+    "tick_event_order": "all pre-raw 2024 identities resolve as raw-confirmed candidates or explicit positive-P/L disarms; every retained candidate has valid entry, arming, reclaim, failure and exit chronology",
+    "portfolio_admission_identity": "all accepted signals remain admitted; no baseline or candidate margin block; candidate creates no extra signal because source runtime admitted every detected signal",
+    "full_signal_admission": "2024 signals equal opened and no blocked/failed entry in both folds"
+  },
+  "cost_contract": {
+    "default_2023": "accepted fixed 0.5 pip execution contract",
+    "default_2024": "raw variable-spread Bid/Ask for candidate disarm and candidate exit",
+    "severe_incremental_adverse_pips_changed_trade_total": 2.0
+  },
+  "workflow": {
+    "path": ".github/workflows/validate_f05_failed_reclaim_v1.yml",
+    "runner": "ubuntu-latest",
+    "first_scientific_run_event": "workflow_dispatch",
+    "confirmation": "F05_FAILED_RECLAIM_BASIC_V1",
+    "technical_rerun": "same commit, inputs and workflow only"
+  },
+  "decision": {
+    "research_pass": "all historical gates true",
+    "research_fail": "one or more historical gates false",
+    "mt4_unlock": "Research pass only",
+    "2025H1_unlock": "Research pass plus MT4/TDS parity only",
+    "2025H2_access": false
+  },
+  "prohibited": [
+    "candidate change after outcomes",
+    "threshold or gate change",
+    "direction/session/year exception",
+    "new candidate or HYP number",
+    "selection by non-binding sensitivity",
+    "MT4 before Research pass",
+    "2025H1 before MT4 parity",
+    "2025H2 access"
+  ]
+}
