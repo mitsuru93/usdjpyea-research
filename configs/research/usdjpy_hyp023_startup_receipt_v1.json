@@ -1,0 +1,158 @@
+{
+  "MT4_authorized": false,
+  "active_hypothesis_at_start": "USDJPY-HYP-023",
+  "current_exact_next_action_at_start": "Recover and atomically canonicalize the already-completed HYP-023 negative result without changing protocol, parameters, gates or periods.",
+  "current_open_research_question": null,
+  "current_registry": {
+    "path": "configs/research/usdjpy_research_candidate_registry_v40.json",
+    "schema": "usdjpy_research_candidate_registry_v40",
+    "status": "USDJPY_HYP023_NATIVE_HTF_PREREGISTERED_EXACT_EVALUATION_AUTHORIZED"
+  },
+  "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "live_orders_authorized": false,
+  "mandatory_files_read": [
+    {
+      "ordinal": 1,
+      "path": "AGENTS.md",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 2,
+      "path": "configs/research/usdjpy_research_memory_manifest_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 3,
+      "path": "configs/research/usdjpy_research_candidate_registry_v40.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 4,
+      "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 5,
+      "path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_prereg_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 6,
+      "path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_preflight_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 7,
+      "path": "configs/research/usdjpy_native_htf_construction_feasibility_result_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 8,
+      "path": "configs/research/usdjpy_native_htf_literature_duplicate_audit_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 9,
+      "path": "docs/research/usdjpy_rq022_native_htf_feasibility_and_prereg_result_v1.md",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 10,
+      "path": "tools/evaluate_usdjpy_native_h4_h1_ema_state_transition_v1.py",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 11,
+      "path": "tools/usdjpy_native_htf_state_data_v1.py",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 12,
+      "path": "tools/usdjpy_native_htf_state_sim_v1.py",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 13,
+      "path": "configs/research/usdjpy_2023_2024_hypothesis_program_v4.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 14,
+      "path": "configs/research/usdjpy_period_role_policy_v5.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 15,
+      "path": "configs/research/usdjpy_validation_operating_contract_v4.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 16,
+      "path": "configs/research/usdjpy_validation_operating_contract_v3.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 17,
+      "path": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 18,
+      "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v14.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 19,
+      "path": "configs/research/usdjpy_rq021_architecture_failure_taxonomy_result_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 20,
+      "path": "configs/research/usdjpy_full_frozen_architecture_census_result_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 21,
+      "path": "configs/research/usdjpy_2025h1_result_inventory_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 22,
+      "path": "configs/research/usdjpy_2023_legacy2024_lineage_prereg_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 23,
+      "path": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 24,
+      "path": "configs/research/usdjpy_family_i_b02_short_weak4h_alignment_result_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    },
+    {
+      "ordinal": 25,
+      "path": "configs/research/usdjpy_post_invalidation_trajectory_diagnosis_result_v1.json",
+      "ref_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f"
+    }
+  ],
+  "periods_accessible": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "periods_prohibited": [
+    "2025H1",
+    "2025H2"
+  ],
+  "reconciliation_finding": "The merged postmortem already classified HYP-023 as SCIENTIFIC_RESULT_COMPLETE_FAIL while registry v40 still awaited execution. The current action is canonical reconciliation and technical duplicate recovery, not a new scientific run.",
+  "relevant_ledger_ids": [
+    "USDJPY-RQ-022-RESULT-001",
+    "USDJPY-HYP-023"
+  ],
+  "research_main_commit": "d7324cca2644a37b9185c379c1ab3cc49aaccc2f",
+  "schema_version": "usdjpy_hyp023_startup_receipt_v1",
+  "status": "PASS_CANONICAL_HEAD_AND_MEMORY_LOADED"
+}

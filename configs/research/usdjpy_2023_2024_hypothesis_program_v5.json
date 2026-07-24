@@ -1,0 +1,37 @@
+{
+  "active_family": null,
+  "active_hypothesis": null,
+  "boundaries": {
+    "2025_H1": false,
+    "2025_H2": false,
+    "MT4_parity": false,
+    "live_orders": false
+  },
+  "completed": {
+    "B02_F05_factor_analysis": "PASS_EXACT_REPORT_SHA_CANONICALIZED",
+    "HYP023_exact_six_cell_evaluation": "CLOSED_ZERO_CORE_ZERO_FULL_ZERO_ELIGIBLE_REGION",
+    "architecture_failure_taxonomy": "CLOSED_ONE_DISTINCT_NATIVE_HTF_INFORMATION_GAP",
+    "exact_2023_historical_2024_transform": "PASS_1543_SHIFT_ZERO_DUPLICATES_EXACT_IDENTITIES",
+    "fixed_five_portability": "CLOSED_NO_PORTABLE_STRATEGY_OR_STATIC_PORTFOLIO",
+    "full_frozen_architecture_census": "CLOSED_660_CELLS_ZERO_FAMILY_REGIONS",
+    "long_horizon_regime_diagnosis": "CLOSED_NO_ROUTER_FAMILY",
+    "native_HTF_data_construction": "PASS_LOGICAL_SERVER_BUCKET_CONTRACT",
+    "native_HTF_literature_and_duplicate_audit": "PASS_DISTINCT_MECHANISM_CLASS_NO_EXACT_PARAMETER_CLAIM",
+    "native_HTF_modular_evaluator_preflight": "PASS_OUTCOMES_NOT_COMPUTED"
+  },
+  "current_candidate": null,
+  "current_open_research_question": null,
+  "decision": "HYP-023 failed its frozen four-fold family-region gate. No parameter, threshold, confirmation, exit, direction, year or session repair is permitted.",
+  "exact_next_action": "No scientific execution is authorized. Preserve HYP-023 as CLOSED_FAIL and keep MT4 and 2025 H1/H2 locked. A separate analysis thread may formulate at most one genuinely distinct successor research question only after a full canonical duplicate audit and explicit registry authorization; this execution thread must not access further market outcomes until then.",
+  "objective": "Use 2023H1, 2023H2, 2024H1 and 2024H2 as development/falsification folds to freeze at most one exact specification for an unchanged 2025 H1 Rakuten MT4 gate without selecting from 2025.",
+  "prohibited": [
+    "no HYP-023 parameter expansion or local repair",
+    "no pooled-positive isolated-cell selection",
+    "no gate changes after outcomes",
+    "no MT4 or 2025 access without a future exact finalist",
+    "no new market outcome access until a separate analysis thread creates and the registry authorizes a distinct question"
+  ],
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v5",
+  "status": "HYP023_CLOSED_FAIL_NO_AUTHORIZED_SUCCESSOR",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v4.json"
+}

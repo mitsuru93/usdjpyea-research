@@ -1,0 +1,132 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "candidate_ids": [
+        "N_H4F3S12_H1F4S16",
+        "N_H4F3S12_H1F8S32",
+        "N_H4F6S24_H1F4S16",
+        "N_H4F6S24_H1F8S32",
+        "N_H4F12S48_H1F4S16",
+        "N_H4F12S48_H1F8S32"
+      ],
+      "causal_hypothesis": "A completed H4 EMA transition confirmed by completed H1 state would provide direction-symmetric persistence, with termination at the first opposite completed H1 or H4 state, and would form a connected robust family region across four development folds.",
+      "decision": "Close HYP-023 and Family N before MT4 parity or 2025 access. No cell may be selected from positive pooled net because no cell passes all fold core gates and no eligible connected family region exists.",
+      "evidence_refs": [
+        {
+          "path": "docs/research/B02_F05_2023_2024_factor_analysis_v1.md",
+          "repository": "mitsuru93/usdjpyea-research",
+          "sha256": "b0e61fe431485e6ae880e0b4bf7d9fdca1e3905607187d57f45f50fc3feece1e"
+        },
+        {
+          "path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_prereg_v1.json",
+          "repository": "mitsuru93/usdjpyea-research",
+          "sha256": "969d1892d0ee6bbe99c90df997ffbbfbfa6a3ad1915d67c906b43b07a3479c37"
+        },
+        {
+          "path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_result_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "docs/research/usdjpy_native_h4_h1_ema_state_transition_result_v1.md",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "configs/research/usdjpy_hyp023_technical_duplicate_recovery_receipt_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        }
+      ],
+      "falsified_or_unsupported_claims": [
+        "The frozen native H4/H1 EMA family forms a connected robust region across all four folds",
+        "Pooled positive net in isolated cells is sufficient evidence",
+        "The H4 opposite-transition termination component is robust in aggregate",
+        "The canonical HYP-023 evaluator tests B02/F05 P1/P2/P3 or exposure-mechanism predictions; it does not because it has no B02/F05 parent signal"
+      ],
+      "family_ids": [
+        "N_NATIVE_H4_H1_EMA_STATE_TRANSITION"
+      ],
+      "hypothesis_id": "USDJPY-HYP-023-RESULT-001",
+      "origin_analysis": "Exact File Library report B02_F05_2023_2024_factor_analysis_v1.md identified no stable M15-local winner/loser separator and proposed completed native H1/H4 state realization as a distinct causal architecture. RQ-022 then froze HYP-023 before outcomes.",
+      "pre_result_predictions": [
+        "at least two Manhattan-adjacent cells pass every core gate",
+        "at least one cell in that component passes every full and pooled gate",
+        "positive performance does not depend on boundary liquidation",
+        "both long and short have material support"
+      ],
+      "prohibited_reuse": [
+        "Do not expand H1/H4 EMA pairs or confirmation window",
+        "Do not change exit precedence or remove H4 termination from this result",
+        "Do not add fixed-time fallback, threshold, side, year or session exceptions",
+        "Do not select a pooled-positive isolated cell",
+        "Do not combine Family N with R1K03 or Families A-I",
+        "Do not use MT4 or 2025 to repair or select this family",
+        "Do not claim B02/F05 P1/P2/P3 mechanism confirmation from this primary-signal evaluator"
+      ],
+      "retained_findings": [
+        "Native H1/H4 construction and no-lookahead execution are deterministic",
+        "H1 opposite-state exits are positive in pooled diagnostics while H4 opposite-transition exits are negative; this does not authorize repair",
+        "Long and short support is material and direction-symmetric at the rule level",
+        "Four cells are pooled severe-positive but fail half-year or three-month robustness"
+      ],
+      "status": "CLOSED_FAIL_NO_ELIGIBLE_FAMILY_REGION",
+      "successor_questions": [
+        "A successor may be formulated only in a separate analysis thread and must introduce genuinely new observable information with full duplicate audit; no successor is currently authorized."
+      ],
+      "target_failure_mode": [
+        "M15-local regime dependence",
+        "fixed-time exit mismatch",
+        "cross-fold direction reversal",
+        "cost-sensitive isolated cells"
+      ],
+      "tests": [
+        {
+          "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "result": {
+            "candidate_count": 6,
+            "core_cells": 0,
+            "core_components": [],
+            "eligible_component_candidates": [],
+            "finalist": null,
+            "full_cells": 0,
+            "signal_rows": 1930,
+            "status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION",
+            "trade_rows": 841
+          },
+          "result_path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_result_v1.json",
+          "type": "exact_frozen_six_cell_research_evaluation"
+        },
+        {
+          "period": "technical_reconciliation",
+          "result": {
+            "protected_period_access": false,
+            "protocol_or_gate_changed": false,
+            "reproduced_prior_scientific_fail": true
+          },
+          "result_path": "configs/research/usdjpy_hyp023_technical_duplicate_recovery_receipt_v1.json",
+          "type": "deterministic_duplicate_recovery_of_unmerged_completed_result"
+        }
+      ]
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v12.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v13.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v14.json"
+  ],
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v15",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v14.json"
+}
