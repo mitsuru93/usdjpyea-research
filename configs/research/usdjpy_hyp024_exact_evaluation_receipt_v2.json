@@ -73,18 +73,54 @@
     },
     "key_readout": "All 32 rows improved the target class and exited at least five target trades, but no cell passed all-fold aggregate, strategy, direction, quarter, month and date-removal gates. Only O_P2_Q3_R2 retained at least 90% of top-decile Winner profit in all folds; it still failed stability and breadth.",
     "row_pass_counts": {
-      "B02_delta_nonnegative": {"passed_rows": 17,"total_rows": 32},
-      "F05_delta_nonnegative": {"passed_rows": 7,"total_rows": 32},
-      "both_quarter_deltas_nonnegative": {"passed_rows": 4,"total_rows": 32},
-      "candidate_default_net_positive_and_pf_ge_1": {"passed_rows": 24,"total_rows": 32},
-      "candidate_severe_net_positive_and_pf_ge_1": {"passed_rows": 20,"total_rows": 32},
-      "ex_best_two_dates_positive": {"passed_rows": 6,"total_rows": 32},
-      "long_delta_nonnegative": {"passed_rows": 11,"total_rows": 32},
-      "month_breadth": {"passed_rows": 6,"total_rows": 32},
-      "short_delta_nonnegative": {"passed_rows": 18,"total_rows": 32},
-      "target_class_benefit_positive": {"passed_rows": 32,"total_rows": 32},
-      "target_class_exits_ge_5": {"passed_rows": 32,"total_rows": 32},
-      "top_decile_winner_retention_ge_0_90": {"passed_rows": 14,"total_rows": 32}
+      "B02_delta_nonnegative": {
+        "passed_rows": 17,
+        "total_rows": 32
+      },
+      "F05_delta_nonnegative": {
+        "passed_rows": 7,
+        "total_rows": 32
+      },
+      "both_quarter_deltas_nonnegative": {
+        "passed_rows": 4,
+        "total_rows": 32
+      },
+      "candidate_default_net_positive_and_pf_ge_1": {
+        "passed_rows": 24,
+        "total_rows": 32
+      },
+      "candidate_severe_net_positive_and_pf_ge_1": {
+        "passed_rows": 20,
+        "total_rows": 32
+      },
+      "ex_best_two_dates_positive": {
+        "passed_rows": 6,
+        "total_rows": 32
+      },
+      "long_delta_nonnegative": {
+        "passed_rows": 11,
+        "total_rows": 32
+      },
+      "month_breadth": {
+        "passed_rows": 6,
+        "total_rows": 32
+      },
+      "short_delta_nonnegative": {
+        "passed_rows": 18,
+        "total_rows": 32
+      },
+      "target_class_benefit_positive": {
+        "passed_rows": 32,
+        "total_rows": 32
+      },
+      "target_class_exits_ge_5": {
+        "passed_rows": 32,
+        "total_rows": 32
+      },
+      "top_decile_winner_retention_ge_0_90": {
+        "passed_rows": 14,
+        "total_rows": 32
+      }
     }
   },
   "hypothesis_id": "USDJPY-HYP-024",
@@ -109,18 +145,36 @@
     "usdjpy_b02_f05_profit_armed_state_collapse_preflight_v1.json": "e216c79c626a894de53aeb4939bf153f1c1d8437dfcf33a7b95d7db41877158a",
     "usdjpy_b02_f05_profit_armed_state_collapse_trades_v1.csv.gz": "b1bbb71464167096d7549124e433c3c881160a63b9ab3dcade22cf42184a59ac"
   },
-  "periods": ["2023H1","2023H2","2024H1","2024H2"],
+  "periods": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
   "population": 1882,
   "preregistration_commit": "63aaa803ca872cfdfd15c280d449c13d608c42a1",
-  "protected_boundaries": {"2025H1_accessed": false,"2025H2_accessed": false,"MT4_accessed": false,"live_orders": false},
+  "protected_boundaries": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "MT4_accessed": false,
+    "live_orders": false
+  },
   "research_main_observed_at_execution": "e56c3dac189bf283b528253cee3ed718f4358fa8",
   "result": {
     "core_cells": 0,
     "decision": "CLOSE_HYP024_BEFORE_MT4_AND_2025",
     "eligible_candidates": [],
     "family_regions": [
-      {"arm": "P2","components": [],"eligible_candidates": []},
-      {"arm": "P1","components": [],"eligible_candidates": []}
+      {
+        "arm": "P2",
+        "components": [],
+        "eligible_candidates": []
+      },
+      {
+        "arm": "P1",
+        "components": [],
+        "eligible_candidates": []
+      }
     ],
     "finalist": null,
     "full_cells": 0
