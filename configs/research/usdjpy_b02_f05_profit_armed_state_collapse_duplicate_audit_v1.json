@@ -1,0 +1,43 @@
+{
+  "2025_used": false,
+  "algebraic_derivability": false,
+  "falsified_claims_not_repeated": [
+    "static adverse depth identifies permanent failure",
+    "fixed checkpoint routing generalizes",
+    "breakout-return threshold is sufficient",
+    "pooled-positive isolated cell may be selected"
+  ],
+  "family_id": "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
+  "hypothesis_id": "USDJPY-HYP-024",
+  "impact_sufficiency": {
+    "2023H1_baseline_net_jpy": -26052,
+    "P1_loss_oracle_max_jpy": "greater than baseline deficit",
+    "P2_loss_oracle_max_jpy": 31989,
+    "decision": "PASS_MECHANISM_REACH_CAN_PLAUSIBLY_CLOSE_DEFICIT; oracle is feasibility only, not expected result"
+  },
+  "novel_information": "transition from established executable profit to simultaneous nonpositive states in three distinct derived price domains, with next-open execution and no numeric indicator threshold grid",
+  "prior_comparisons": {
+    "Family_A": "pre-entry M15 wick/outside admission; no profit-armed post-entry state ledger",
+    "Family_C": "F05-only MFE20 then breakout-level return; fixed breakout structural reference and closed H2 concentration fail",
+    "Family_D": "fixed 30/60-minute adverse-P/L checkpoints; depth/persistence and late-recovery harm, not profit-armed zero-state transition",
+    "Family_E": "F05-only 30/60/90-minute P/L plus exposure support routing; fixed checkpoints and exposure states, not common technical collapse",
+    "Family_F": "second F05 signal admission confirmation; pre-entry/event count, not exit",
+    "Family_G_H": "breakout-level invalidation/reacceptance at frozen checkpoints; not EMA/MACD/momentum zero-state synchronization",
+    "Family_I": "B02 short pre-entry four-hour magnitude admission; not post-profit exit",
+    "HYP_023": "primary native-H4 signal with H1/H4 EMA-state exits and no B02/F05 parent mapping; closed zero core cells; this family preserves B02/F05 entries and acts only after profit arming",
+    "RQ_016": "outcome-opened rebound partitions inside Family H; explicitly rejected as insufficient threshold repair",
+    "RQ_020E": "M15 entry x unconditional fixed-horizon census; no event-defined termination",
+    "RQ_021": "identified fixed-horizon and direction instability; did not test profit-armed M15 state collapse"
+  },
+  "research_question": "USDJPY-RQ-024",
+  "retained_findings_used": [
+    "P3 has no portable local technical Entry separator",
+    "P2 separates earlier than P1",
+    "Family D harmed late-recovery winners",
+    "Family C improved headline net but failed breadth/date removal",
+    "HYP-023 cannot be repaired"
+  ],
+  "schema_version": "usdjpy_b02_f05_profit_armed_state_collapse_duplicate_audit_v1",
+  "status": "PASS_DISTINCT_EVENT_STATE_TRANSITION_NO_CLOSED_RULE_REOPENED",
+  "threshold_only_relabeling": false
+}

@@ -1,0 +1,19 @@
+{
+  "decision": "No RSI MACD EMA Bollinger momentum volatility or local OHLC indicator threshold/grid candidate is authorized for P3 Entry.",
+  "evidence": [
+    "usdjpy_b02_f05_entry_exit_technical_reproduction_result_v1",
+    "usdjpy_b02_f05_entry_information_audit_v1",
+    "usdjpy_b02_f05_common_ohlc_indicator_feasibility_v1"
+  ],
+  "prohibited_reuse": [
+    "no RSI/ADX/ATR threshold grid",
+    "no period or side exception",
+    "no 2025 feature selection"
+  ],
+  "retained_findings": [
+    "F05 P3 shows weak overextension tendency, not portable material separation",
+    "post-entry state is materially more informative than pre-entry local technical state"
+  ],
+  "schema_version": "usdjpy_b02_f05_entry_technical_family_closure_v1",
+  "status": "CLOSED_NO_PORTABLE_LOCAL_TECHNICAL_ENTRY_SEPARATOR"
+}

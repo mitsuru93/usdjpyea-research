@@ -1,0 +1,13 @@
+{
+  "candidate_count": 8,
+  "evaluator_sha256": "9195a97f900e5e4782000dac967389919e401a534d72150f9ff6b72463d37f30",
+  "outcomes_computed": false,
+  "protocol_sha256": "390fe646b904a07e3bd29394edabfc1a26ea311a9e0311aafd85118bbc5a69b7",
+  "schema_version": "usdjpy_b02_f05_profit_armed_state_collapse_preflight_v1",
+  "state_rows": 68955,
+  "states_sha256": "6b38aafde15da4310971a9610ec19a027c2d065bfce19c79c2492982be351149",
+  "status": "PASS",
+  "trade_id_count": 1882,
+  "trade_rows": 1882,
+  "trades_sha256": "1f4732f429fc9b4fb4c34b8c2431ed1c4ac207e24d81dd0aac7cf893b4ce8113"
+}
