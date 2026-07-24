@@ -1,0 +1,52 @@
+{
+  "abandoned_wip": {
+    "branch": "agent/preregister-family-j-b02-false-break-reversal-v1",
+    "family": "J_B02_WEAK_SHORT_FALSE_BREAK_REVERSAL",
+    "reason": "algebraically outcome-derived and frozen H2 breadth gate fails; not canonical"
+  },
+  "active_family": null,
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION",
+    "G_STRUCTURAL_BREAKOUT_INVALIDATION",
+    "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE",
+    "I_B02_SHORT_WEAK_4H_ALIGNMENT_ADMISSION"
+  ],
+  "current_candidate": null,
+  "current_open_research_question": "USDJPY-RQ-020B",
+  "fixed5_protocol": "configs/research/usdjpy_fixed5_exact_portability_protocol_v1.json",
+  "fixed5_result": "configs/research/usdjpy_fixed5_exact_portability_result_v1.json",
+  "live_order_authorized": false,
+  "next_action": "commit a descriptive 5-day/20-day no-lookahead market-state protocol and evaluator, then report direction agreement, path efficiency, volatility ratio and 20-day range-position effects separately for 2023H1, 2023H2, 2024H1 and 2024H2; do not create a router candidate unless a predeclared state is consistent across all four folds",
+  "research_memory": {
+    "atomic_ledger_update_required_after_test": true,
+    "duplicate_research_audit_required_before_new_family": true,
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "period_policy": "configs/research/usdjpy_period_role_policy_v5.json",
+    "startup_read_receipt_required": true
+  },
+  "run_authorization": {
+    "2023_2024_development_analysis": true,
+    "2025_H1": false,
+    "2025_H2": false,
+    "MT4_parity": false,
+    "exact_2023_transformer_materialization": true,
+    "fixed_five_strategy_portability_evaluation": false,
+    "live_orders": false,
+    "long_horizon_regime_diagnosis": true,
+    "new_family_preregistration": false,
+    "parameter_search": false,
+    "portfolio_weight_optimization": false,
+    "regime_router_preregistration": false
+  },
+  "schema_version": "usdjpy_research_candidate_registry_v35",
+  "status": "USDJPY_FIXED5_PORTABILITY_CLOSED_LONG_HORIZON_REGIME_DIAGNOSIS_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v34.json"
+}
