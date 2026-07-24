@@ -1,0 +1,11 @@
+period,candidate_id,accepted,actual,passed
+2024H1,R1B02_legacy_asia_00_07_breakout,99,99,True
+2024H1,R1E02_legacy_trend_8h_resumption,372,372,True
+2024H1,R1E03_trend_12h_resumption,729,729,True
+2024H1,R1F05_donchian_96,346,346,True
+2024H1,R1H04_ramom_32_64_z125,147,147,True
+2024H2,R1B02_legacy_asia_00_07_breakout,102,102,True
+2024H2,R1E02_legacy_trend_8h_resumption,397,397,True
+2024H2,R1E03_trend_12h_resumption,793,793,True
+2024H2,R1F05_donchian_96,389,389,True
+2024H2,R1H04_ramom_32_64_z125,198,198,True
