@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Outcome-free source staging for B02/F05 all-loss structural-SL analysis."""
+"""Outcome-free source staging for B02/F05 all-loss structural-SL analysis.
+
+This recovery stage intentionally does not consume the truncated Stage 1 archive.
+It verifies and transfers the immutable 2024 M1 Release asset, while recording the
+known Stage 1 archive defect for independent trade-ledger rematerialization.
+"""
 from __future__ import annotations
 import argparse, hashlib, json, shutil
 from pathlib import Path
 import pandas as pd
 
-EXPECTED_STAGE1_SHA = "c4025d59eef9358fce9df70d50972159d52ff8aa02ebaa851e7fa0273082b82f"
 EXPECTED_M1_2024_SHA = "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0"
-EXPECTED_COUNTS = {
-    "2023H1|B02":121,"2023H1|F05":367,"2023H2|B02":109,"2023H2|F05":363,
-    "2024H1|B02":97,"2024H1|F05":331,"2024H2|B02":102,"2024H2|F05":392,
-}
+CORRUPT_STAGE1_ARCHIVE_SHA = "ae450cd712c8e1533081b0bd609f736c2216e3e4a9cfaece8d19ac7ffd5addd8"
+EXPECTED_STAGE1_LEDGER_SHA = "c4025d59eef9358fce9df70d50972159d52ff8aa02ebaa851e7fa0273082b82f"
 
 def sha(path: Path) -> str:
     h=hashlib.sha256()
@@ -20,43 +22,50 @@ def sha(path: Path) -> str:
 
 def main() -> int:
     p=argparse.ArgumentParser()
-    p.add_argument('--stage1-ledger',type=Path,required=True)
     p.add_argument('--m1-2024',type=Path,required=True)
     p.add_argument('--output-dir',type=Path,required=True)
     p.add_argument('--research-commit',required=True)
+    p.add_argument('--workflow-run-id',required=True)
+    p.add_argument('--workflow-run-attempt',required=True)
     a=p.parse_args(); a.output_dir.mkdir(parents=True,exist_ok=True)
-    if sha(a.stage1_ledger)!=EXPECTED_STAGE1_SHA: raise SystemExit('stage1 SHA mismatch')
-    if sha(a.m1_2024)!=EXPECTED_M1_2024_SHA: raise SystemExit('2024 M1 SHA mismatch')
-    ledger=pd.read_csv(a.stage1_ledger)
-    if len(ledger)!=1882: raise SystemExit(f'stage1 rows={len(ledger)}')
-    required={'strategy','entry_utc','side','close_utc','gross_pips','breakout_level'}
-    missing=sorted(required-set(ledger.columns))
-    if missing: raise SystemExit(f'missing columns={missing}')
-    ts=pd.to_datetime(ledger['entry_utc'],utc=True)
-    fold=ts.dt.year.astype(str)+'H'+(ts.dt.month.gt(6).astype(int)+1).astype(str)
-    counts={f'{x}|{y}':int(n) for (x,y),n in ledger.assign(fold=fold).groupby(['fold','strategy']).size().items()}
-    if counts!=EXPECTED_COUNTS: raise SystemExit(f'population mismatch={counts}')
+    actual=sha(a.m1_2024)
+    if actual!=EXPECTED_M1_2024_SHA: raise SystemExit(f'2024 M1 SHA mismatch: {actual}')
     m1=pd.read_csv(a.m1_2024)
     if len(m1)!=373383: raise SystemExit(f'2024 M1 rows={len(m1)}')
-    tcol=next(c for c in ('timestamp_utc','timestamp','utc_time') if c in m1.columns)
-    mts=pd.to_datetime(m1[tcol],utc=True)
+    candidates=[c for c in ('timestamp_utc','timestamp','utc_time') if c in m1.columns]
+    if len(candidates)!=1: raise SystemExit(f'timestamp candidates={candidates}')
+    tcol=candidates[0]; mts=pd.to_datetime(m1[tcol],utc=True)
     if mts.duplicated().any() or not mts.is_monotonic_increasing: raise SystemExit('2024 M1 time integrity')
-    shutil.copy2(a.stage1_ledger,a.output_dir/a.stage1_ledger.name)
-    shutil.copy2(a.m1_2024,a.output_dir/a.m1_2024.name)
+    target=a.output_dir/a.m1_2024.name; shutil.copy2(a.m1_2024,target)
     result={
-      'schema_version':'usdjpy_b02_f05_structural_sl_source_stage_v1',
-      'status':'PASS_SOURCE_ONLY_NO_OUTCOMES','outcomes_computed':False,
+      'schema_version':'usdjpy_b02_f05_structural_sl_source_recovery_v1',
+      'status':'PASS_SOURCE_ONLY_NO_OUTCOMES',
+      'outcomes_computed':False,
       'research_commit':a.research_commit,
-      'stage1':{'sha256':EXPECTED_STAGE1_SHA,'rows':len(ledger),'columns':ledger.columns.tolist(),'fold_strategy_counts':counts},
-      'm1_2024':{'sha256':EXPECTED_M1_2024_SHA,'rows':len(m1),'columns':m1.columns.tolist(),'timestamp_column':tcol,'first':mts.iloc[0].isoformat(),'last':mts.iloc[-1].isoformat()},
-      'periods_accessed':['2023H1','2023H2','2024H1','2024H2'],
-      'periods_not_accessed':['2025H1','2025H2'],'mt4_accessed':False,
+      'workflow_run_id':int(a.workflow_run_id),
+      'workflow_run_attempt':int(a.workflow_run_attempt),
+      'm1_2024':{
+        'release_tag':'usdjpy-2024-derived-bars-v1','sha256':actual,'rows':len(m1),
+        'columns':m1.columns.tolist(),'timestamp_column':tcol,
+        'first':mts.iloc[0].isoformat(),'last':mts.iloc[-1].isoformat(),
+      },
+      'stage1_archive_defect':{
+        'archive_path':'.stage2_lifecycle_abc_package_v1.tar.gz',
+        'runner_observed_sha256':CORRUPT_STAGE1_ARCHIVE_SHA,
+        'expected_ledger_sha256':EXPECTED_STAGE1_LEDGER_SHA,
+        'classification':'TECHNICAL_INCOMPLETE_NO_OUTCOMES',
+        'used_for_this_stage':False,
+        'recovery':'rematerialize all 1,882 trade identities independently from accepted 2023 Atlas/baseline and 2024 H1/H2 event-audit authorities',
+      },
+      'periods_accessed':['2024H1','2024H2'],
+      'periods_not_accessed':['2025H1','2025H2'],
+      'mt4_accessed':False,
     }
-    (a.output_dir/'source_stage_result.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
+    (a.output_dir/'source_recovery_result.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
     files=[]
     for f in sorted(a.output_dir.iterdir()):
       if f.is_file() and f.name!='output_manifest.json': files.append({'name':f.name,'bytes':f.stat().st_size,'sha256':sha(f)})
-    (a.output_dir/'output_manifest.json').write_text(json.dumps({'schema_version':'usdjpy_b02_f05_structural_sl_source_stage_manifest_v1','files':files},indent=2,sort_keys=True)+'\n')
-    print(json.dumps({'status':'PASS_SOURCE_ONLY_NO_OUTCOMES','files':len(files),'stage1_rows':len(ledger)}))
+    (a.output_dir/'output_manifest.json').write_text(json.dumps({'schema_version':'usdjpy_b02_f05_structural_sl_source_recovery_manifest_v1','files':files},indent=2,sort_keys=True)+'\n')
+    print(json.dumps({'status':'PASS_SOURCE_ONLY_NO_OUTCOMES','files':len(files),'m1_rows':len(m1)}))
     return 0
 if __name__=='__main__': raise SystemExit(main())
