@@ -1,0 +1,107 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "candidate_ids": [],
+      "causal_hypothesis": "A single pre-entry 5-day or 20-day market-state bin consistently determines continuation versus reversal across all four development folds.",
+      "decision": "Close RQ-020B. Do not create a router, interaction or threshold refinement from the tested states.",
+      "evidence_refs": [
+        {"path": "configs/research/usdjpy_long_horizon_regime_diagnosis_result_v1.json", "repository": "mitsuru93/usdjpyea-research"},
+        {"path": "docs/research/usdjpy_long_horizon_regime_diagnosis_result_v1.md", "repository": "mitsuru93/usdjpyea-research"}
+      ],
+      "falsified_or_unsupported_claims": ["one coarse pre-entry multi-day state is sufficient for a robust continuation/reversal router"],
+      "family_ids": [],
+      "hypothesis_id": "USDJPY-RQ-020B-RESULT-001",
+      "origin_analysis": "Exact fixed-strategy portability and static portfolios failed; 2023H1 was broadly adverse while later development folds were stronger.",
+      "pre_result_predictions": [
+        "at least one predeclared state has one preferred action in all four folds",
+        "the preferred action is default/severe positive and robust in all folds",
+        "the state has breadth across at least three fixed strategies"
+      ],
+      "prohibited_reuse": [
+        "no interaction search from RQ-020B",
+        "no range-position threshold refinement",
+        "no router from UPPER_THIRD",
+        "no relaxation of monthly breadth or ex-best-two gates",
+        "no 2025 feature selection"
+      ],
+      "retained_findings": [
+        "upper-third 20-day range position favors continuation under default and severe cost in all four folds",
+        "most other state bins reverse preferred action between 2023H1 and later folds",
+        "long-horizon market position is more informative than prior local B02 partitions but remains insufficient"
+      ],
+      "status": "CLOSED_NO_FOURFOLD_CONSISTENT_STATE",
+      "successor_questions": ["does the complete frozen R1 Entry x R2 horizon universe contain a family-level cross-fold robust region that was missed by the 2024H1-only R4 selection path?"],
+      "target_failure_mode": ["broad 2023H1 strategy loss", "cross-fold preferred-action reversal", "static strategy selection failure"],
+      "tests": [
+        {
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "result": {
+            "feature_complete_trades": 6586,
+            "passing_state_count": 0,
+            "strongest_state": "range_position_20d=UPPER_THIRD",
+            "strongest_state_failed_gates": ["2023H2 ex-best-two -23.2 pips", "2024H2 positive months 3 below 4"],
+            "tested_state_bins": 14
+          },
+          "result_path": "configs/research/usdjpy_long_horizon_regime_diagnosis_result_v1.json",
+          "type": "predeclared single-dimension 5d/20d market-state diagnosis"
+        }
+      ]
+    },
+    {
+      "candidate_ids": [],
+      "causal_hypothesis": "A family-level region of the already frozen Entry/horizon universe may be positive and stable across 2023H1, 2023H2, 2024H1 and 2024H2 even when the 2024H1-only representative selection and five-strategy portability path fails.",
+      "decision": "Preregister a descriptive family-level four-fold architecture census before opening outcomes. Do not select a single candidate in the census stage.",
+      "evidence_refs": [
+        {"path": "docs/research_reboot/usdjpy_r2_horizon_surface_result_v1.md", "repository": "mitsuru93/usdjpyea-research"},
+        {"path": "docs/research_reboot/usdjpy_r3_temporal_stability_result_v1.md", "repository": "mitsuru93/usdjpyea-research"},
+        {"path": "docs/research_reboot/usdjpy_r6_complete_strategy_freeze_result_v1.md", "repository": "mitsuru93/usdjpyea-research"},
+        {"path": "docs/research_reboot/usdjpy_v1_candidate_specific_h2_validation_result_v1.md", "repository": "mitsuru93/usdjpyea-research"}
+      ],
+      "falsified_or_unsupported_claims": [],
+      "family_ids": [],
+      "hypothesis_id": "USDJPY-RQ-020E",
+      "origin_analysis": "R2 and R3 evaluated all 60 frozen R1 v2 Entry definitions x 11 horizons only on 2024H1. R4-R6 reduced the universe to eight representatives and five complete strategies; candidate-specific 2024H2 was opened only for those five, and no complete 660-combination census exists on exact 2023.",
+      "pre_result_predictions": [
+        "all 60 Entry definitions and 11 horizons can be regenerated without changes",
+        "the accepted R2 2024H1 surface can be reproduced exactly",
+        "family-level cross-fold metrics can be reported without selecting a single maximum",
+        "at most one family-level region will justify a later finite successor"
+      ],
+      "prohibited_reuse": [
+        "no Entry or horizon changes",
+        "no horizon expansion beyond the frozen eleven",
+        "no filtering to R4/R6 winners before the census",
+        "no single-combination maximum selection",
+        "no optimized family weights",
+        "no reopening closed exact candidates as passed",
+        "no 2025 access"
+      ],
+      "retained_findings": [
+        "R2/R3 H1-only surface is complete and source-locked",
+        "R6/V1 exposed only five strategies to H2",
+        "fixed-five and simple regime router paths are closed",
+        "2023 and 2024 are all development periods"
+      ],
+      "status": "OPEN_RESEARCH_QUESTION",
+      "successor_questions": ["which frozen family/horizon neighbourhood, if any, has adequate support and consistent economics across all four folds?"],
+      "target_failure_mode": ["2024H1-only selection bias", "missing cross-year architecture breadth", "broad 2023H1 mechanism loss"],
+      "tests": []
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json"
+  ],
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v10",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json"
+}

@@ -1,0 +1,85 @@
+{
+  "boundaries": {
+    "2024_source_mutated": false,
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "interactions_tested": false,
+    "live_orders": false,
+    "router_created": false,
+    "thresholds_optimized": false
+  },
+  "decision": "CLOSE_RQ_020B_NO_ROUTER_FROM_TESTED_STATES",
+  "evaluator_identity": {
+    "commit": "371bea0dbbff35cadd81db7399fc723464a39785",
+    "git_blob_sha1": "17e5c18245f4cb7baf1a0308e4447038648ae3b8"
+  },
+  "interpretation": [
+    "No predeclared single state passes the complete four-fold successor gate, so no router or finite successor is authorized.",
+    "Upper-third 20-day range position is the strongest retained descriptive state and supports continuation across all four folds, but its two failed robustness gates may not be relaxed.",
+    "Most other state bins reverse preferred action between 2023H1 and later folds, confirming that simple direction, efficiency or volatility bins are insufficient.",
+    "The next non-duplicate question is a full frozen R1-v2 Entry x R2 horizon architecture census across all four development folds, because R2/R3 covered all 660 combinations only on 2024H1 and candidate-specific H2 covered only five R6 strategies."
+  ],
+  "lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "near_findings": {
+    "direction_both_up": {
+      "default_positive_all_four": true,
+      "failed_gates": ["2023H2 severe net negative", "monthly breadth", "ex-best-two concentration"],
+      "preferred_action": "continuation",
+      "same_action_all_four_folds": true,
+      "severe_positive_all_four": false
+    },
+    "persistent_signal_aligned": {
+      "default_positive_all_four": true,
+      "failed_gates": ["2023H1 severe net negative", "monthly breadth", "ex-best-two concentration"],
+      "preferred_action": "continuation",
+      "same_action_all_four_folds": true,
+      "severe_positive_all_four": false
+    },
+    "range_position_20d_upper_third": {
+      "action_advantage_positive_all_four": true,
+      "default_positive_all_four": true,
+      "failed_gates": ["2023H2 ex-best-two default = -23.2 pips", "2024H2 positive months = 3, below required 4"],
+      "metrics": [
+        {"period": "2023H1", "trades": 917, "default_net_pips": 3862.1, "default_pf": 1.269027, "severe_net_pips": 2028.1, "severe_pf": 1.133095, "positive_months": 4, "negative_months": 1, "ex_best_two_dates_default": 1726.2, "action_advantage_pips": 8641.2},
+        {"period": "2023H2", "trades": 898, "default_net_pips": 2430.3, "default_pf": 1.222577, "severe_net_pips": 634.3, "severe_pf": 1.053834, "positive_months": 4, "negative_months": 1, "ex_best_two_dates_default": -23.2, "action_advantage_pips": 5758.6},
+        {"period": "2024H1", "trades": 1147, "default_net_pips": 3611.616379, "default_pf": 1.229468, "severe_net_pips": 1121.249138, "severe_pf": 1.065886, "positive_months": 4, "negative_months": 2, "ex_best_two_dates_default": 434.492365, "action_advantage_pips": 8566.6},
+        {"period": "2024H2", "trades": 779, "default_net_pips": 7345.706414, "default_pf": 1.650692, "severe_net_pips": 5548.919242, "severe_pf": 1.458942, "positive_months": 3, "negative_months": 2, "ex_best_two_dates_default": 4178.266127, "action_advantage_pips": 15709.2}
+      ],
+      "preferred_action": "continuation",
+      "same_action_all_four_folds": true,
+      "severe_positive_all_four": true,
+      "strategy_breadth_min": 5
+    }
+  },
+  "passing_state_count": 0,
+  "planned_state_bins": 15,
+  "population": {
+    "feature_complete_trades": 6586,
+    "period_counts": {"2023H1": 1400, "2023H2": 1653, "2024H1": 1674, "2024H2": 1859}
+  },
+  "prohibited_reuse": [
+    "no interaction search from RQ-020B outputs",
+    "no range-position threshold refinement",
+    "no router from UPPER_THIRD",
+    "no relaxation of breadth or ex-best-two gates",
+    "no 2025 feature selection"
+  ],
+  "protocol_identity": {
+    "commit": "9b3f9b39863c350a3b729e09222e043505a5f73c",
+    "git_blob_sha1": "d8e8c2f1059a8557645e338643bc810cd5ff781e"
+  },
+  "research_question": "USDJPY-RQ-020B",
+  "schema_version": "usdjpy_long_horizon_regime_diagnosis_result_v1",
+  "scientific_output_sha256": {
+    "usdjpy_long_horizon_regime_consistency_v1.csv": "88067ce399ad9361e4acb290c10e5ee246fa961937f6a6fd59e7cd850f422b4d",
+    "usdjpy_long_horizon_regime_pooled_metrics_v1.csv": "91a174ee562cb3f947a33714add1b6287d8fece35dd4c8ee73f85065120875dc",
+    "usdjpy_long_horizon_regime_side_metrics_v1.csv": "5db028d20027fcc570c2ac16b51cf74d44c94a7fe979c39010e211c2c6de32b0",
+    "usdjpy_long_horizon_regime_strategy_metrics_v1.csv": "8f6574560f12d441c43326b34504201a7054431df0109f7e775a1a7b2a742355",
+    "usdjpy_long_horizon_regime_trade_features_v1.csv": "17da2a34fc107b3c0571accf30ea9a27a0c3ebe519b742463c7bb6c11a024d71"
+  },
+  "status": "CLOSED_NO_FOURFOLD_CONSISTENT_STATE",
+  "successor_question": "USDJPY-RQ-020E",
+  "successor_scope": "descriptive family-level cross-year census of all frozen 60 R1 v2 Entry definitions x 11 R2 horizons; no single-combination selection in the census stage",
+  "tested_state_bins": 14,
+  "unobserved_state_bins": ["path_efficiency_20d_bin=GE_0_25"]
+}
