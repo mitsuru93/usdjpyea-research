@@ -1,0 +1,88 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v17",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v16.json",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v12.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v13.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v14.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v15.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v16.json"
+  ],
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-024-INPUT-RECOVERY-001",
+      "family_ids": ["O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE"],
+      "candidate_ids": [],
+      "status": "TECHNICAL_INPUT_REMATERIALIZATION_PASS_NO_OUTCOMES",
+      "origin_analysis": "The v1 HYP-024 input ledgers were preflighted but were not durably committed or uploaded. Exact source artifacts remain available, while File Library retrieval failed and PR #227 Actions contain no input bundle.",
+      "causal_hypothesis": "None. This is a technical serialization recovery only; the scientific HYP-024 protocol and all eight candidate definitions remain unchanged.",
+      "target_failure_mode": [
+        "loss of exact serialized input bytes",
+        "accidental use of changed 2024H2 data",
+        "unrecorded indicator or path-class drift"
+      ],
+      "pre_result_predictions": [
+        "1,882 baseline trades reproduce",
+        "68,955 state observations reproduce",
+        "all eight fold-strategy path-class count tables reproduce exactly",
+        "2023 transform retains 1,543 shifted M15 rows and zero duplicates",
+        "no candidate outcome is computed"
+      ],
+      "tests": [
+        {
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "type": "outcome-free deterministic input rematerialization",
+          "result": {
+            "status": "PASS_NO_OUTCOMES",
+            "trade_rows": 1882,
+            "trade_id_count": 1882,
+            "state_rows": 68955,
+            "trades_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+            "states_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+            "candidate_outcomes_computed": false
+          },
+          "result_path": "configs/research/usdjpy_b02_f05_hyp024_input_materialization_v2.json"
+        }
+      ],
+      "decision": "Freeze the v2 input serialization before outcomes and retain the unchanged one-time eight-cell HYP-024 evaluation authorization.",
+      "falsified_or_unsupported_claims": [
+        "the old v1 serialized ledgers remain durably retrievable",
+        "the new 2024 derived-bars release may replace the frozen 2024H2 authority after preregistration"
+      ],
+      "retained_findings": [
+        "source-authority hashes remain exact",
+        "population, state-row count and every path-class count reproduce",
+        "scientific protocol, evaluator, components, arms, grid, gates and ranking are unchanged"
+      ],
+      "prohibited_reuse": [
+        "do not treat changed serialization hashes as a scientific protocol change",
+        "do not alter parameters, components, arms or gates",
+        "do not substitute new 2024H2 bars",
+        "do not access MT4 or 2025 before an eligible Research family region and exact finalist"
+      ],
+      "successor_questions": [
+        "Does either frozen P2 or P1 arm form an eligible connected family region under the unchanged evaluator?"
+      ],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-research", "path": "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py", "git_blob_sha1": "06518eff9441720cada1795fe10288f7ed42e06f"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_b02_f05_hyp024_input_materialization_v2.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_input_addendum_v2.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_b02_f05_profit_armed_state_collapse_preflight_v2.json"}
+      ]
+    }
+  ]
+}
