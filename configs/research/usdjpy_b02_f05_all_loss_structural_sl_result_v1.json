@@ -1,0 +1,378 @@
+{
+  "boundaries": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "candidate_frozen": false,
+    "fixed_pip_stop_evaluated": false,
+    "implementation_authorized": false,
+    "mt4_accessed": false,
+    "notion_used_as_task_source": false,
+    "portfolio_replay_computed": true
+  },
+  "decision": {
+    "2025_authorized": false,
+    "b02": {
+      "candidate_frozen": false,
+      "status": "NO_ROBUST_STRUCTURAL_STOP_FOUND"
+    },
+    "f05_failed_reclaim": {
+      "candidate_frozen": false,
+      "direction_total_nonnegative": true,
+      "fold_direction_cell_nonnegative": false,
+      "fold_nonnegative": true,
+      "reason": "F05 total and fold breadth may be positive, but any negative fold-direction cell or concentration prevents confirmatory promotion.",
+      "status": "PROMISING_EXPLORATORY_MECHANISM_NOT_CONFIRMATORY"
+    },
+    "implementation_authorized": false,
+    "mt4_authorized": false,
+    "overall_status": "DESCRIPTIVE_COMPLETE_NO_CANDIDATE_FROZEN",
+    "profit_armed_generic_termination": {
+      "candidate_frozen": false,
+      "status": "REJECTED_AS_OVERBROAD"
+    },
+    "shared_b02_f05_rule": {
+      "reason": "A mechanism must not be promoted as shared when strategy-level effects diverge.",
+      "status": "REJECT_SHARED_STOP_ARCHITECTURE"
+    }
+  },
+  "event_summary": {
+    "B02_FIRST_M15_REENTRY_NO_PROFIT_V1": {
+      "by_strategy": {
+        "B02": {
+          "best_date_delta_pips": 133.2,
+          "delta_after_best_date_removed_pips": -414.2,
+          "direction_delta_pips": {"long": -180.8, "short": -100.2},
+          "fold_delta_pips": {"2023H1": 75.8, "2023H2": -104.0, "2024H1": -130.3, "2024H2": -122.5},
+          "loser_benefit_pips": 295.2,
+          "loser_coverage": 0.036842,
+          "losers_triggered": 7,
+          "median_trigger_minutes": 15.0,
+          "negative_fold_strategy_direction_cells": 6,
+          "observed_fold_strategy_direction_cells": 8,
+          "total_delta_pips": -281.0,
+          "triggers": 22,
+          "winner_damage_pips": -576.2,
+          "winners_triggered": 15
+        }
+      },
+      "overall": {
+        "best_date_delta_pips": 133.2,
+        "delta_after_best_date_removed_pips": -414.2,
+        "direction_delta_pips": {"long": -180.8, "short": -100.2},
+        "fold_delta_pips": {"2023H1": 75.8, "2023H2": -104.0, "2024H1": -130.3, "2024H2": -122.5},
+        "loser_benefit_pips": 295.2,
+        "loser_coverage": 0.007642,
+        "losers_triggered": 7,
+        "median_trigger_minutes": 15.0,
+        "negative_fold_strategy_direction_cells": 6,
+        "observed_fold_strategy_direction_cells": 8,
+        "total_delta_pips": -281.0,
+        "triggers": 22,
+        "winner_damage_pips": -576.2,
+        "winners_triggered": 15
+      }
+    },
+    "B02_M15_FAILED_RECLAIM_NO_PROFIT_V1": {
+      "by_strategy": {
+        "B02": {
+          "best_date_delta_pips": 17.7,
+          "delta_after_best_date_removed_pips": -123.7,
+          "direction_delta_pips": {"long": -64.6, "short": -41.4},
+          "fold_delta_pips": {"2023H1": 17.7, "2023H2": 7.4, "2024H1": -89.7, "2024H2": -41.4},
+          "loser_benefit_pips": 25.1,
+          "loser_coverage": 0.010526,
+          "losers_triggered": 2,
+          "median_trigger_minutes": 30.0,
+          "negative_fold_strategy_direction_cells": 2,
+          "observed_fold_strategy_direction_cells": 4,
+          "total_delta_pips": -106.0,
+          "triggers": 4,
+          "winner_damage_pips": -131.1,
+          "winners_triggered": 2
+        }
+      },
+      "overall": {
+        "best_date_delta_pips": 17.7,
+        "delta_after_best_date_removed_pips": -123.7,
+        "direction_delta_pips": {"long": -64.6, "short": -41.4},
+        "fold_delta_pips": {"2023H1": 17.7, "2023H2": 7.4, "2024H1": -89.7, "2024H2": -41.4},
+        "loser_benefit_pips": 25.1,
+        "loser_coverage": 0.002183,
+        "losers_triggered": 2,
+        "median_trigger_minutes": 30.0,
+        "negative_fold_strategy_direction_cells": 2,
+        "observed_fold_strategy_direction_cells": 4,
+        "total_delta_pips": -106.0,
+        "triggers": 4,
+        "winner_damage_pips": -131.1,
+        "winners_triggered": 2
+      }
+    },
+    "B02_M15_NO_RECLAIM_120_NO_PROFIT_V1": {
+      "by_strategy": {
+        "B02": {
+          "best_date_delta_pips": 104.9,
+          "delta_after_best_date_removed_pips": -20.6,
+          "direction_delta_pips": {"long": 104.9, "short": -20.6},
+          "fold_delta_pips": {"2023H1": -23.1, "2023H2": 104.9, "2024H1": 2.5, "2024H2": 0.0},
+          "loser_benefit_pips": 84.3,
+          "loser_coverage": 0.015789,
+          "losers_triggered": 3,
+          "median_trigger_minutes": 135.0,
+          "negative_fold_strategy_direction_cells": 1,
+          "observed_fold_strategy_direction_cells": 3,
+          "total_delta_pips": 84.3,
+          "triggers": 3,
+          "winner_damage_pips": 0.0,
+          "winners_triggered": 0
+        }
+      },
+      "overall": {
+        "best_date_delta_pips": 104.9,
+        "delta_after_best_date_removed_pips": -20.6,
+        "direction_delta_pips": {"long": 104.9, "short": -20.6},
+        "fold_delta_pips": {"2023H1": -23.1, "2023H2": 104.9, "2024H1": 2.5, "2024H2": 0.0},
+        "loser_benefit_pips": 84.3,
+        "loser_coverage": 0.003275,
+        "losers_triggered": 3,
+        "median_trigger_minutes": 135.0,
+        "negative_fold_strategy_direction_cells": 1,
+        "observed_fold_strategy_direction_cells": 3,
+        "total_delta_pips": 84.3,
+        "triggers": 3,
+        "winner_damage_pips": 0.0,
+        "winners_triggered": 0
+      }
+    },
+    "PROFIT_ARMED_M5_RANGE_FAILURE_V1": {
+      "by_strategy": {
+        "B02": {
+          "best_date_delta_pips": 346.1,
+          "delta_after_best_date_removed_pips": -808.1,
+          "direction_delta_pips": {"long": -1359.8, "short": 897.8},
+          "fold_delta_pips": {"2023H1": 948.7, "2023H2": 306.7, "2024H1": -654.2, "2024H2": -1063.2},
+          "loser_benefit_pips": 7915.8,
+          "loser_coverage": 0.947368,
+          "losers_triggered": 180,
+          "median_trigger_minutes": 25.0,
+          "negative_fold_strategy_direction_cells": 4,
+          "observed_fold_strategy_direction_cells": 8,
+          "total_delta_pips": -462.0,
+          "triggers": 344,
+          "winner_damage_pips": -8377.8,
+          "winners_triggered": 164
+        },
+        "F05": {
+          "best_date_delta_pips": 474.8,
+          "delta_after_best_date_removed_pips": -2065.0,
+          "direction_delta_pips": {"long": 167.9, "short": -1758.1},
+          "fold_delta_pips": {"2023H1": 1620.3, "2023H2": -993.8, "2024H1": -985.2, "2024H2": -1231.5},
+          "loser_benefit_pips": 18792.1,
+          "loser_coverage": 0.947658,
+          "losers_triggered": 688,
+          "median_trigger_minutes": 25.0,
+          "negative_fold_strategy_direction_cells": 3,
+          "observed_fold_strategy_direction_cells": 8,
+          "total_delta_pips": -1590.2,
+          "triggers": 1137,
+          "winner_damage_pips": -20382.3,
+          "winners_triggered": 449
+        }
+      },
+      "overall": {
+        "best_date_delta_pips": 705.6,
+        "delta_after_best_date_removed_pips": -2757.8,
+        "direction_delta_pips": {"long": -1191.9, "short": -860.3},
+        "fold_delta_pips": {"2023H1": 2569.0, "2023H2": -687.1, "2024H1": -1639.4, "2024H2": -2294.7},
+        "loser_benefit_pips": 26707.9,
+        "loser_coverage": 0.947598,
+        "losers_triggered": 868,
+        "median_trigger_minutes": 25.0,
+        "negative_fold_strategy_direction_cells": 7,
+        "observed_fold_strategy_direction_cells": 16,
+        "total_delta_pips": -2052.2,
+        "triggers": 1481,
+        "winner_damage_pips": -28760.1,
+        "winners_triggered": 613
+      }
+    },
+    "SHARED_EARLY_M5_REENTRY_NO_PROFIT_V1": {
+      "by_strategy": {
+        "B02": {
+          "best_date_delta_pips": 70.1,
+          "delta_after_best_date_removed_pips": -219.3,
+          "direction_delta_pips": {"long": -90.1, "short": -59.1},
+          "fold_delta_pips": {"2023H1": -87.0, "2023H2": -78.7, "2024H1": 67.5, "2024H2": -51.0},
+          "loser_benefit_pips": 196.7,
+          "loser_coverage": 0.042105,
+          "losers_triggered": 8,
+          "median_trigger_minutes": 5.0,
+          "negative_fold_strategy_direction_cells": 3,
+          "observed_fold_strategy_direction_cells": 5,
+          "total_delta_pips": -149.2,
+          "triggers": 16,
+          "winner_damage_pips": -345.9,
+          "winners_triggered": 8
+        },
+        "F05": {
+          "best_date_delta_pips": 137.5,
+          "delta_after_best_date_removed_pips": 262.0,
+          "direction_delta_pips": {"long": -206.7, "short": 606.2},
+          "fold_delta_pips": {"2023H1": 72.5, "2023H2": 177.5, "2024H1": 83.9, "2024H2": 65.6},
+          "loser_benefit_pips": 1026.6,
+          "loser_coverage": 0.057851,
+          "losers_triggered": 42,
+          "median_trigger_minutes": 5.0,
+          "negative_fold_strategy_direction_cells": 4,
+          "observed_fold_strategy_direction_cells": 8,
+          "total_delta_pips": 399.5,
+          "triggers": 58,
+          "winner_damage_pips": -627.1,
+          "winners_triggered": 16
+        }
+      },
+      "overall": {
+        "best_date_delta_pips": 137.5,
+        "delta_after_best_date_removed_pips": 112.8,
+        "direction_delta_pips": {"long": -296.8, "short": 547.1},
+        "fold_delta_pips": {"2023H1": -14.5, "2023H2": 98.8, "2024H1": 151.4, "2024H2": 14.6},
+        "loser_benefit_pips": 1223.3,
+        "loser_coverage": 0.054585,
+        "losers_triggered": 50,
+        "median_trigger_minutes": 5.0,
+        "negative_fold_strategy_direction_cells": 7,
+        "observed_fold_strategy_direction_cells": 13,
+        "total_delta_pips": 250.3,
+        "triggers": 74,
+        "winner_damage_pips": -973.0,
+        "winners_triggered": 24
+      }
+    },
+    "SHARED_EARLY_REENTRY_NO_RECLAIM_120_V1": {
+      "by_strategy": {
+        "B02": {
+          "best_date_delta_pips": 2.5,
+          "delta_after_best_date_removed_pips": 0.0,
+          "direction_delta_pips": {"long": 0.0, "short": 2.5},
+          "fold_delta_pips": {"2023H1": 0.0, "2023H2": 0.0, "2024H1": 2.5, "2024H2": 0.0},
+          "loser_benefit_pips": 2.5,
+          "loser_coverage": 0.005263,
+          "losers_triggered": 1,
+          "median_trigger_minutes": 125.0,
+          "negative_fold_strategy_direction_cells": 0,
+          "observed_fold_strategy_direction_cells": 1,
+          "total_delta_pips": 2.5,
+          "triggers": 1,
+          "winner_damage_pips": 0.0,
+          "winners_triggered": 0
+        },
+        "F05": {
+          "best_date_delta_pips": 79.7,
+          "delta_after_best_date_removed_pips": 42.7,
+          "direction_delta_pips": {"long": -16.3, "short": 138.7},
+          "fold_delta_pips": {"2023H1": 7.9, "2023H2": 20.5, "2024H1": 12.9, "2024H2": 81.1},
+          "loser_benefit_pips": 152.7,
+          "loser_coverage": 0.016529,
+          "losers_triggered": 12,
+          "median_trigger_minutes": 125.0,
+          "negative_fold_strategy_direction_cells": 2,
+          "observed_fold_strategy_direction_cells": 7,
+          "total_delta_pips": 122.4,
+          "triggers": 14,
+          "winner_damage_pips": -30.3,
+          "winners_triggered": 2
+        }
+      },
+      "overall": {
+        "best_date_delta_pips": 79.7,
+        "delta_after_best_date_removed_pips": 45.2,
+        "direction_delta_pips": {"long": -16.3, "short": 141.2},
+        "fold_delta_pips": {"2023H1": 7.9, "2023H2": 20.5, "2024H1": 15.4, "2024H2": 81.1},
+        "loser_benefit_pips": 155.2,
+        "loser_coverage": 0.014192,
+        "losers_triggered": 13,
+        "median_trigger_minutes": 125.0,
+        "negative_fold_strategy_direction_cells": 2,
+        "observed_fold_strategy_direction_cells": 8,
+        "total_delta_pips": 124.9,
+        "triggers": 15,
+        "winner_damage_pips": -30.3,
+        "winners_triggered": 2
+      }
+    },
+    "SHARED_FAILED_RECLAIM_STRICT_NO_PROFIT_V1": {
+      "by_strategy": {
+        "B02": {
+          "best_date_delta_pips": 8.5,
+          "delta_after_best_date_removed_pips": -25.4,
+          "direction_delta_pips": {"long": 8.5, "short": -25.4},
+          "fold_delta_pips": {"2023H1": 0.0, "2023H2": 8.5, "2024H1": -25.4, "2024H2": 0.0},
+          "loser_benefit_pips": 8.5,
+          "loser_coverage": 0.005263,
+          "losers_triggered": 1,
+          "median_trigger_minutes": 27.5,
+          "negative_fold_strategy_direction_cells": 1,
+          "observed_fold_strategy_direction_cells": 2,
+          "total_delta_pips": -16.9,
+          "triggers": 2,
+          "winner_damage_pips": -25.4,
+          "winners_triggered": 1
+        },
+        "F05": {
+          "best_date_delta_pips": 66.2,
+          "delta_after_best_date_removed_pips": 134.4,
+          "direction_delta_pips": {"long": 65.2, "short": 135.4},
+          "fold_delta_pips": {"2023H1": 69.3, "2023H2": 14.1, "2024H1": 110.7, "2024H2": 6.5},
+          "loser_benefit_pips": 285.5,
+          "loser_coverage": 0.015152,
+          "losers_triggered": 11,
+          "median_trigger_minutes": 15.0,
+          "negative_fold_strategy_direction_cells": 1,
+          "observed_fold_strategy_direction_cells": 7,
+          "total_delta_pips": 200.6,
+          "triggers": 15,
+          "winner_damage_pips": -84.9,
+          "winners_triggered": 4
+        }
+      },
+      "overall": {
+        "best_date_delta_pips": 66.2,
+        "delta_after_best_date_removed_pips": 117.5,
+        "direction_delta_pips": {"long": 73.7, "short": 110.0},
+        "fold_delta_pips": {"2023H1": 69.3, "2023H2": 22.6, "2024H1": 85.3, "2024H2": 6.5},
+        "loser_benefit_pips": 294.0,
+        "loser_coverage": 0.0131,
+        "losers_triggered": 12,
+        "median_trigger_minutes": 20.0,
+        "negative_fold_strategy_direction_cells": 2,
+        "observed_fold_strategy_direction_cells": 9,
+        "total_delta_pips": 183.7,
+        "triggers": 17,
+        "winner_damage_pips": -110.3,
+        "winners_triggered": 5
+      }
+    }
+  },
+  "population": {
+    "baseline_loser_count": 916,
+    "counts": {
+      "2023H1": {"B02": 121, "F05": 367},
+      "2023H2": {"B02": 109, "F05": 363},
+      "2024H1": {"B02": 97, "F05": 331},
+      "2024H2": {"B02": 102, "F05": 392}
+    },
+    "trade_count": 1882
+  },
+  "research_commit": "b1bb2d4fd12d6dc7722f30a6da8ad18c7a387309",
+  "schema_version": "usdjpy_b02_f05_all_loss_structural_sl_result_v1",
+  "source_sha256": {
+    "events_2024h1": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "events_2024h2": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "m15_2023": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "m1_2023": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e",
+    "m1_2024": "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0"
+  },
+  "status": "DESCRIPTIVE_COMPLETE_NO_CANDIDATE_FROZEN",
+  "workflow_run_attempt": 1,
+  "workflow_run_id": 30101951761
+}

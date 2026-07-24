@@ -1,0 +1,38 @@
+{
+  "artifact_evidence": {
+    "artifact_digest": "sha256:203e0bcba871d40e7f3f3863a963fdc24f3f3a782f9cf16206cbdb7ad08bbcd7",
+    "artifact_id": 8599982482,
+    "event_counterfactual_ledger_sha256": "fb22c5b04a11563e3dafe2c3264d41f7a634bb2a684a1a7ac55819050e2cddd1",
+    "result_json_sha256": "c6b9b1436cb8cdae4d46fe8859d961955cc6d41254f756e050f0b8077b1fd4e9",
+    "source_trade_ledger_sha256": "43580657b8c9a7c14f949be7977437ebe4dab9b3effedff61518601d3cc7af72",
+    "workflow_run_id": 30101951761
+  },
+  "canonical_files": {
+    "configs/research/usdjpy_b02_f05_all_loss_structural_sl_event_summary_v1.csv": {
+      "git_blob_sha1": "08c5e81dfec0820bd0abba65ef48d3bc9c7712d9"
+    },
+    "configs/research/usdjpy_b02_f05_all_loss_structural_sl_execution_receipt_v1.json": {
+      "git_blob_sha1": "13b335c63530335123e39a888b6f80990747d127"
+    },
+    "configs/research/usdjpy_b02_f05_all_loss_structural_sl_result_v1.json": {
+      "git_blob_sha1": "8f208ea82f69da8b4a713fec5059142d1e5e36af",
+      "semantic_source": "artifact result_v1.json with SHA-256 c6b9b1436cb8cdae4d46fe8859d961955cc6d41254f756e050f0b8077b1fd4e9"
+    },
+    "docs/research/USDJPY_B02_F05_all_loss_structural_SL_v1.md": {
+      "git_blob_sha1": "c90c2e4eb4a5a4cca86cab2235d005dea59cc459"
+    }
+  },
+  "cleanup": {
+    "removed_obsolete_signed_transfer_workflow": ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v3.yml",
+    "removed_run_markers": [
+      "configs/run_markers/usdjpy_b02_f05_all_loss_structural_sl_v1.json",
+      "configs/run_markers/usdjpy_b02_f05_all_loss_structural_sl_v2.json",
+      "configs/run_markers/usdjpy_b02_f05_all_loss_structural_sl_v3.json",
+      "configs/run_markers/usdjpy_b02_f05_all_loss_structural_sl_v4.json"
+    ]
+  },
+  "decision": "DESCRIPTIVE_COMPLETE_NO_CANDIDATE_FROZEN",
+  "schema_version": "usdjpy_b02_f05_all_loss_structural_sl_output_manifest_v1",
+  "source_release": "f05-failed-reclaim-historical-authorities-v1",
+  "status": "PASS_READY_FOR_CANONICAL_VALIDATION"
+}

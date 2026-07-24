@@ -1,0 +1,93 @@
+{
+  "artifact": {
+    "digest": "sha256:203e0bcba871d40e7f3f3863a963fdc24f3f3a782f9cf16206cbdb7ad08bbcd7",
+    "expires_at": "2026-10-22T14:39:36Z",
+    "id": 8599982482,
+    "name": "usdjpy-b02-f05-all-loss-structural-sl-v4-30101951761-1"
+  },
+  "boundaries": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "candidate_frozen": false,
+    "closed_hypotheses_reopened": false,
+    "fixed_pip_stop_evaluated": false,
+    "implementation_authorized": false,
+    "new_MT4_execution": false,
+    "notion_used_as_task_source": false
+  },
+  "decision": {
+    "B02": "NO_ROBUST_STRUCTURAL_STOP_FOUND",
+    "F05_failed_reclaim": "PROMISING_EXPLORATORY_MECHANISM_NOT_CONFIRMATORY",
+    "generic_profit_armed_termination": "REJECTED_AS_OVERBROAD",
+    "overall": "DESCRIPTIVE_COMPLETE_NO_CANDIDATE_FROZEN",
+    "shared_rule": "REJECT_SHARED_STOP_ARCHITECTURE"
+  },
+  "direct_user_scope": "all final-loss B02/F05 structural stop analysis; fixed-pip stops excluded",
+  "independent_artifact_readback": {
+    "event_counterfactual_ledger_v1.csv": {
+      "bytes": 465288,
+      "sha256": "fb22c5b04a11563e3dafe2c3264d41f7a634bb2a684a1a7ac55819050e2cddd1"
+    },
+    "evaluator": {
+      "bytes": 7610,
+      "sha256": "37c815517eebfc7862bf3dd3ec2bc96f2fa465f82e4aba649794b793b0ba5887"
+    },
+    "output_manifest_v1.json": {
+      "bytes": 683,
+      "sha256": "6bbe97f8ba1fc983cae3ab26395328be128cac3124e8f26893cdb9c54c03069e"
+    },
+    "protocol": {
+      "bytes": 2825,
+      "sha256": "e1c04b8e2b1152f6b7e163224aba0aaa0663e21a4696419ae6a530269f205eda"
+    },
+    "result_v1.json": {
+      "bytes": 16772,
+      "sha256": "c6b9b1436cb8cdae4d46fe8859d961955cc6d41254f756e050f0b8077b1fd4e9"
+    },
+    "source_trade_ledger_v1.csv": {
+      "bytes": 225507,
+      "sha256": "43580657b8c9a7c14f949be7977437ebe4dab9b3effedff61518601d3cc7af72"
+    }
+  },
+  "population": {
+    "B02_losers": 190,
+    "B02_trades": 429,
+    "F05_losers": 726,
+    "F05_trades": 1453,
+    "baseline_losers": 916,
+    "event_rows": 1616,
+    "trades": 1882
+  },
+  "releases": {
+    "result": "usdjpy-b02-f05-all-loss-structural-sl-v4",
+    "source_authority": "f05-failed-reclaim-historical-authorities-v1"
+  },
+  "research_evaluation_commit": "b1bb2d4fd12d6dc7722f30a6da8ad18c7a387309",
+  "schema_version": "usdjpy_b02_f05_all_loss_structural_sl_execution_receipt_v1",
+  "status": "PASS_CANONICAL_RESULT_READY",
+  "technical_history": [
+    {
+      "cause": "cross-repository Actions artifact token boundary",
+      "run_id": 30099598592,
+      "status": "TECHNICAL_FAILURE_BEFORE_OUTCOMES"
+    },
+    {
+      "cause": "private Core Release inaccessible to Research repository token",
+      "run_id": 30100245636,
+      "status": "TECHNICAL_FAILURE_BEFORE_OUTCOMES"
+    },
+    {
+      "cause": "missing EVENT_IDS import after all source SHA checks passed",
+      "run_id": 30101392226,
+      "status": "TECHNICAL_FAILURE_BEFORE_RESULT"
+    },
+    {
+      "cause": null,
+      "run_id": 30101951761,
+      "status": "SUCCESS"
+    }
+  ],
+  "workflow": ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v4.yml",
+  "workflow_run_attempt": 1,
+  "workflow_run_id": 30101951761
+}
