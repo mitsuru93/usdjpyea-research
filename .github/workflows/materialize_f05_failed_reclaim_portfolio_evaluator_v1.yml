@@ -1,10 +1,12 @@
 name: Materialize F05 failed reclaim portfolio evaluator v1
 
 on:
-  push:
-    branches:
-      - agent/f05-failed-reclaim-portfolio-validation-v1
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
     paths:
+      - '.github/workflows/materialize_f05_failed_reclaim_portfolio_evaluator_v1.yml'
+      - 'configs/research/f05_failed_reclaim_portfolio_evaluator_v1.py.gz.b64'
       - 'configs/run_markers/f05_failed_reclaim_portfolio_evaluator_materialize_v1.json'
 
 permissions:
@@ -12,11 +14,13 @@ permissions:
 
 jobs:
   materialize:
+    if: github.head_ref == 'agent/f05-failed-reclaim-portfolio-validation-v1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: agent/f05-failed-reclaim-portfolio-validation-v1
+          token: ${{ github.token }}
 
       - name: Decode and verify exact evaluator source
         shell: bash
