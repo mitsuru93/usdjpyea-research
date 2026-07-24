@@ -1,0 +1,13 @@
+{
+  "schema_version": "usdjpy_hyp026_notional_candidate_lock_v1",
+  "hypothesis_id": "USDJPY-HYP-026",
+  "candidate_count": 0,
+  "binding_candidate": null,
+  "portfolio_replay_authorized": false,
+  "MT4_authorized": false,
+  "2025H1_authorized": false,
+  "2025H2_authorized": false,
+  "threshold_or_period_repair_authorized": false,
+  "reason": "Both diagnostic cells had negative fixed-ledger economics and no portable P1/P2-F05 technical increment exists.",
+  "status": "LOCKED_CLOSED"
+}
