@@ -1,0 +1,131 @@
+{
+  "schema_version": "usdjpy_b02_f05_structural_sl_policy_regime_protocol_v3",
+  "status": "FROZEN_BEFORE_OUTCOME_EXECUTION",
+  "direct_scope": "Second-stage structural-stop validation using time-ordered adaptation, ex-ante regimes, family voting, approximate optimal stopping, hidden-state transitions and oracle bounds. This is not a repair or reopening of HYP-023, HYP-024, HYP-025 or HYP-026.",
+  "population": {
+    "trade_count": 1882,
+    "folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "strategies": ["B02", "F05"]
+  },
+  "source_authorities": {
+    "m15_2023_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "m1_2023_sha256": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e",
+    "events_2024h1_sha256": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "events_2024h2_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "m1_2024_sha256": "f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0",
+    "atlas_release": "usdjpy-b02-f05-structural-sl-atlas-v2",
+    "atlas_event_ledger_sha256": "6780a28200975da6848dfd8760a96ba67f52327197649a2836c8e32e03c2a0a1",
+    "atlas_metrics_sha256": "d8e5da0b67d3e501e45071b54c6a784e7a5cb82cdbfa4458142c71c4693edd3a",
+    "atlas_trajectory_sha256": "27b04ab651e3fe4d72a6a4d8b6f960de20d9b876f73a3d45a8cc931b77eeb609"
+  },
+  "evaluator": {
+    "encoding": "base64_chunks_v1",
+    "decoded_path": "tools/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.py",
+    "decoded_sha256": "84a72cf36fe605168dc106506b8c21d78a00e1c06b8e0ba288a3dd8947610d9f",
+    "chunk_paths": [
+      "configs/research/usdjpy_b02_f05_structural_sl_policy_regime_v3/evaluator.b64.part00",
+      "configs/research/usdjpy_b02_f05_structural_sl_policy_regime_v3/evaluator.b64.part01",
+      "configs/research/usdjpy_b02_f05_structural_sl_policy_regime_v3/evaluator.b64.part02"
+    ],
+    "chunk_sha256": [
+      "69270239e6d6596b31ffa8f173f37712ee91fddc63d5637c73ea6cbf011d622a",
+      "f7476823c9929a887cffccfc5a69247dea83196f6e1a45f6344d6a82efd1b41b",
+      "9ad8c4fac5f419b296ed7b1bd1ec2940ed7960f4eebe095492096a3f16da94d3"
+    ]
+  },
+  "methods": {
+    "monthly_walk_forward": {
+      "scopes": ["ALL", "B02", "F05"],
+      "training_windows": ["EXPANDING", "ROLLING_6M", "ROLLING_12M"],
+      "minimum_training_months": 6,
+      "selection": "one atlas candidate selected using past months only; no future fold or month information"
+    },
+    "ex_ante_regime_router": {
+      "scopes": ["ALL", "B02", "F05"],
+      "outer_validation": "leave-one-fold-out",
+      "routers": ["SESSION_X_VOL", "SIDE_X_VOL", "SESSION_X_SIDE_X_VOL"],
+      "volatility_bins": "training-fold pre-range terciles applied unchanged to holdout",
+      "selection": "one training-only atlas candidate per sufficiently supported regime cell"
+    },
+    "family_vote": {
+      "scopes": ["ALL", "B02", "F05"],
+      "outer_validation": "leave-one-fold-out",
+      "family_selection": "one training-only candidate per structural family",
+      "quorum": [2, 3],
+      "windows_minutes": [5, 15, 30]
+    },
+    "approximate_optimal_stopping": {
+      "strategies": ["B02", "F05"],
+      "outer_validation": "leave-one-fold-out",
+      "state_interval_minutes": 5,
+      "maximum_horizon_minutes": 240,
+      "models": ["RIDGE_ALPHA10", "HIST_GB_REGULARIZED"],
+      "training_exit_cost_pips": 1.0,
+      "decision_margins_pips": [0.0, 1.0, 2.0],
+      "persistence": [1, 2],
+      "features": ["current_norm", "mfe_norm", "mae_norm", "giveback_norm", "level_distance_norm", "underwater_fraction", "crossings", "slope_tstat", "delta_norm", "time_fraction", "pre_range_pips", "side", "session"]
+    },
+    "hidden_markov_state": {
+      "strategies": ["B02", "F05"],
+      "outer_validation": "leave-one-fold-out",
+      "state_interval_minutes": 5,
+      "maximum_horizon_minutes": 240,
+      "components": [2, 3, 4],
+      "persistence": [1, 2],
+      "estimator": "diagonal Gaussian mixture emissions plus training-sequence Markov transitions and Viterbi decoding",
+      "covariance": "diag",
+      "state_mapping": "training-only severe-delta and winner-damage gate"
+    },
+    "oracle_bounds": {
+      "grid": "every completed 5-minute checkpoint through 240 minutes",
+      "loss_only_oracle": true,
+      "universal_oracle": true,
+      "atlas_candidate_oracle": true,
+      "fixed_checkpoint_benchmarks_minutes": [5, 15, 30, 60, 120, 180, 240],
+      "lookahead_use": "diagnostic upper bound only; never deployable"
+    }
+  },
+  "training_candidate_gate": {
+    "minimum_triggers": 8,
+    "minimum_loser_triggers": 5,
+    "default_total_positive": true,
+    "severe_1pip_total_positive": true,
+    "delay_2min_total_positive": true,
+    "best_training_month_removed_positive": true,
+    "winner_damage_limit": "not worse than 70% of loser benefit",
+    "positive_training_month_ratio_min": 0.55
+  },
+  "binding_policy_gate": {
+    "minimum_total_triggers": 12,
+    "all_four_fold_default_nonnegative": true,
+    "all_four_fold_severe_1pip_nonnegative": true,
+    "both_direction_total_nonnegative": true,
+    "total_default_positive": true,
+    "total_severe_1pip_positive": true,
+    "delay_5min_total_positive": true,
+    "best_month_removed_positive": true,
+    "winner_damage_limit": "not worse than 60% of loser benefit",
+    "positive_active_month_ratio_min": 0.60,
+    "month_block_bootstrap_95pct_lower_total_positive": true
+  },
+  "decision_boundary": {
+    "candidate_freeze_allowed": false,
+    "survivor_requires_full_admission_portfolio_replay": true,
+    "survivor_requires_2024_raw_tick_event_order": true,
+    "survivor_requires_research_confirmation": true,
+    "survivor_requires_mt4_parity": true
+  },
+  "authorization": {
+    "direct_user_instruction": true,
+    "notion_task_dependency": false,
+    "new_hypothesis_id": false
+  },
+  "boundaries": {
+    "fixed_pip_stop_evaluated": false,
+    "mt4_accessed": false,
+    "2025_accessed": false,
+    "closed_hypotheses_reopened": false,
+    "candidate_frozen": false,
+    "implementation_authorized": false
+  }
+}
