@@ -38,13 +38,23 @@ jobs:
           set -euo pipefail
           printf '%s  %s\n' \
             'b6369d2902a570298eb602a8eacb8de333ed898165d1700a529ab43c8ff3734d' tools/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.py \
-            '2c5812bcf0476131200bf428cd4e76cef8a60696fac491a606973cbb41f8edf7' tools/usdjpy_policy_v3/common.py \
-            '58c30d98a1a496fc39176ccf066356e8773268d98381979ea475c43e42ee5084' configs/research/usdjpy_b02_f05_structural_sl_policy_regime_protocol_v3.json | sha256sum -c -
+            '2d97c2cd11c197f3ea340c67bdbcc2b8ccbd617c31e4d4d5f58ef4efa2ed51a2' tools/usdjpy_policy_v3/common.py \
+            'a0b98009646b4325e80a2db84e0fba2848bcb3c6140b13da6e668660e1d2686c' configs/research/usdjpy_b02_f05_structural_sl_policy_regime_protocol_v3.json | sha256sum -c -
           python -m py_compile tools/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.py tools/usdjpy_policy_v3/common.py tools/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.py
           python tools/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.py \
             --protocol configs/research/usdjpy_b02_f05_structural_sl_policy_regime_protocol_v3.json \
             --preflight-only > preflight_v3.json
           jq -e '.status=="PASS_NO_OUTCOMES" and .methods==6 and .policy_cells==72 and .outcomes_computed==false and .mt4_accessed==false and ."2025_accessed"==false and .candidate_frozen==false and .notion_task_dependency==false' preflight_v3.json
+          python - <<'PY'
+          import sys
+          import pandas as pd
+          sys.path.insert(0, 'tools')
+          from usdjpy_policy_v3.common import policy_summary
+          master=pd.DataFrame({'month':['2023-01','2023-02']})
+          result=policy_summary(pd.DataFrame(),master,'ZERO_TRIGGER_REPAIR_TEST','EMPTY')
+          assert result['triggers']==0 and result['binding_gate_pass'] is False
+          print('PASS_ZERO_TRIGGER_POLICY_SUMMARY')
+          PY
       - name: Verify immutable atlas and historical authorities
         env:
           GH_TOKEN: ${{ github.token }}
@@ -92,8 +102,8 @@ jobs:
           set -euo pipefail
           printf '%s  %s\n' \
             'b6369d2902a570298eb602a8eacb8de333ed898165d1700a529ab43c8ff3734d' tools/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.py \
-            '2c5812bcf0476131200bf428cd4e76cef8a60696fac491a606973cbb41f8edf7' tools/usdjpy_policy_v3/common.py \
-            '58c30d98a1a496fc39176ccf066356e8773268d98381979ea475c43e42ee5084' configs/research/usdjpy_b02_f05_structural_sl_policy_regime_protocol_v3.json | sha256sum -c -
+            '2d97c2cd11c197f3ea340c67bdbcc2b8ccbd617c31e4d4d5f58ef4efa2ed51a2' tools/usdjpy_policy_v3/common.py \
+            'a0b98009646b4325e80a2db84e0fba2848bcb3c6140b13da6e668660e1d2686c' configs/research/usdjpy_b02_f05_structural_sl_policy_regime_protocol_v3.json | sha256sum -c -
           python -m py_compile tools/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.py tools/usdjpy_policy_v3/common.py tools/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.py
           python tools/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.py --protocol configs/research/usdjpy_b02_f05_structural_sl_policy_regime_protocol_v3.json --preflight-only > preflight_v3.json
           jq -e '.status=="PASS_NO_OUTCOMES" and .policy_cells==72' preflight_v3.json
