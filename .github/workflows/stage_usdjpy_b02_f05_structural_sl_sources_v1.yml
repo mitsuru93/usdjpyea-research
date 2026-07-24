@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  source-stage:
+  source-recovery:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -28,66 +28,13 @@ jobs:
         run: python -m pip install --disable-pip-version-check pandas==2.2.3
       - name: Verify committed source
         run: python -m py_compile tools/stage_usdjpy_b02_f05_structural_sl_sources_v1.py
-      - name: Diagnose and extract frozen Stage 1 ledger
-        id: inspect
-        shell: bash
-        run: |
-          set -u
-          archive='.stage2_lifecycle_abc_package_v1.tar.gz'
-          mkdir -p inputs debug
-          stat "$archive" > debug/archive_stat.txt 2>&1 || true
-          sha256sum "$archive" > debug/archive_sha256.txt 2>&1 || true
-          file "$archive" > debug/archive_file.txt 2>&1 || true
-          xxd -l 32 "$archive" > debug/archive_head_hex.txt 2>&1 || true
-          set +e
-          gzip -t "$archive" > debug/gzip_stdout.txt 2> debug/gzip_stderr.txt
-          gzip_status=$?
-          tar -tzf "$archive" > debug/tar_members.txt 2> debug/tar_stderr.txt
-          tar_list_status=$?
-          tar_extract_status=99
-          if [ "$tar_list_status" -eq 0 ]; then
-            tar -xzf "$archive" -C inputs > debug/tar_extract_stdout.txt 2> debug/tar_extract_stderr.txt
-            tar_extract_status=$?
-          fi
-          find inputs -type f -print | sort > debug/extracted_files.txt
-          mapfile -t matches < <(find inputs -type f -name 'usdjpy_b02_f05_stage1_path_class_ledger_v1.csv.gz' -print)
-          ledger_sha=''
-          if [ "${#matches[@]}" -eq 1 ]; then
-            ledger_sha=$(sha256sum "${matches[0]}" | awk '{print $1}')
-          fi
-          python - "$gzip_status" "$tar_list_status" "$tar_extract_status" "${#matches[@]}" "$ledger_sha" <<'PY'
-          import json,sys
-          from pathlib import Path
-          keys=['gzip_status','tar_list_status','tar_extract_status','ledger_match_count','ledger_sha256']
-          Path('debug/diagnostic_status.json').write_text(json.dumps(dict(zip(keys,sys.argv[1:])),indent=2,sort_keys=True)+'\n')
-          PY
-          ready=false
-          if [ "$gzip_status" -eq 0 ] && [ "$tar_list_status" -eq 0 ] && [ "$tar_extract_status" -eq 0 ] && [ "${#matches[@]}" -eq 1 ] && [ "$ledger_sha" = 'c4025d59eef9358fce9df70d50972159d52ff8aa02ebaa851e7fa0273082b82f' ]; then
-            ready=true
-            echo "STAGE1_LEDGER=${matches[0]}" >> "$GITHUB_ENV"
-          fi
-          echo "ready=$ready" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload archive diagnostic
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: usdjpy-b02-f05-structural-sl-source-diagnostic-v1-${{ github.run_id }}-${{ github.run_attempt }}
-          path: debug
-          if-no-files-found: error
-          retention-days: 90
-      - name: Stop when Stage 1 source gate failed
-        if: steps.inspect.outputs.ready != 'true'
-        run: |
-          echo 'Stage 1 archive/source gate failed; inspect diagnostic artifact.' >&2
-          exit 1
       - name: Download verified 2024 M1 Release asset
-        if: steps.inspect.outputs.ready == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p inputs
           gh release download usdjpy-2024-derived-bars-v1 \
             --repo "$GITHUB_REPOSITORY" \
             --pattern 'USDJPY-2024-m1-derived-bars-v1.csv.gz' \
@@ -95,28 +42,26 @@ jobs:
           printf '%s  %s\n' \
             'f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0' \
             'inputs/USDJPY-2024-m1-derived-bars-v1.csv.gz' | sha256sum -c -
-      - name: Run outcome-free source staging
-        if: steps.inspect.outputs.ready == 'true'
+      - name: Run outcome-free source recovery
         shell: bash
         run: |
           set -euo pipefail
           python tools/stage_usdjpy_b02_f05_structural_sl_sources_v1.py \
-            --stage1-ledger "$STAGE1_LEDGER" \
             --m1-2024 inputs/USDJPY-2024-m1-derived-bars-v1.csv.gz \
             --output-dir out \
-            --research-commit "$GITHUB_SHA"
-      - name: Upload source-stage artifact
-        if: steps.inspect.outputs.ready == 'true'
+            --research-commit "$GITHUB_SHA" \
+            --workflow-run-id "$GITHUB_RUN_ID" \
+            --workflow-run-attempt "$GITHUB_RUN_ATTEMPT"
+      - name: Upload source-recovery artifact
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: usdjpy-b02-f05-structural-sl-source-stage-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          name: usdjpy-b02-f05-structural-sl-source-recovery-v1-${{ github.run_id }}-${{ github.run_attempt }}
           path: out
           if-no-files-found: error
           retention-days: 90
           compression-level: 0
       - name: Emit identity
-        if: steps.inspect.outputs.ready == 'true'
         run: |
           echo "artifact_id=${{ steps.upload.outputs.artifact-id }}"
           echo "artifact_digest=${{ steps.upload.outputs.artifact-digest }}"
