@@ -76,6 +76,7 @@ def simulate_candidate(trades: pd.DataFrame, states: pd.DataFrame, arm: str, quo
             exit_utc=ex.observation_utc
         else:
             default_pips=float(tr.realized_pl_jpy)/10.0
+            # Baseline actual P/L uses 0.5-pip spread; severe adds two pips.
             severe_pips=default_pips-2.0
             exit_utc=tr.close_utc
         base_default=float(tr.realized_pl_jpy)/10.0; base_severe=base_default-2.0
@@ -100,6 +101,7 @@ def fold_metrics(d: pd.DataFrame, candidate_id: str, arm: str) -> list[dict]:
         delta=g.default_delta_pips
         daily=delta.groupby(dates).sum(); monthly=delta.groupby(months).sum(); quarterly=delta.groupby(quarters).sum()
         target_benefit=float(target_g.default_delta_pips.sum()); winner_effect=float(winners.default_delta_pips.sum())
+        # Top decile by baseline winner profit, defined independently within fold.
         top=winners[winners.baseline_default_pips>=winners.baseline_default_pips.quantile(.9)] if len(winners) else winners
         top_base=float(top.baseline_default_pips.sum()); top_cand=float(top.candidate_default_pips.sum()); retention=1.0 if top_base<=0 else top_cand/top_base
         strategy_effect=g.groupby('strategy').default_delta_pips.sum().to_dict(); direction_effect=g.groupby('side').default_delta_pips.sum().to_dict()
