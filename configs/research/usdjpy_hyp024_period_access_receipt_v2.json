@@ -1,0 +1,28 @@
+{
+  "schema_version":"usdjpy_hyp024_period_access_receipt_v2",
+  "status":"HYP024_CLOSED_NO_PROTECTED_PERIOD_ACCESS",
+  "supersedes":"configs/research/usdjpy_hyp024_period_access_receipt_v1.json",
+  "hypothesis_id":"USDJPY-HYP-024",
+  "lineage":"USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+  "accessed":[
+    {"period":"2023H1","role":"DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD","access_type":"exact frozen candidate outcome evaluation"},
+    {"period":"2023H2","role":"DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD","access_type":"exact frozen candidate outcome evaluation"},
+    {"period":"2024H1","role":"DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD","access_type":"exact frozen candidate outcome evaluation"},
+    {"period":"2024H2","role":"DEVELOPMENT_MECHANISM_AND_FALSIFICATION_FOLD","access_type":"exact frozen candidate outcome evaluation"}
+  ],
+  "not_accessed":[
+    {"period":"MT4","reason":"zero Research core cells and no exact finalist"},
+    {"period":"2025H1","reason":"zero Research core cells and no exact finalist"},
+    {"period":"2025H2","reason":"locked; unchanged 2025H1 pass absent"}
+  ],
+  "candidate_outcomes_accessed_before_prereg":false,
+  "historical_2024_source_mutated":false,
+  "grid_expanded":false,
+  "gate_changed":false,
+  "evaluator_changed":false,
+  "MT4_accessed":false,
+  "2025H1_accessed":false,
+  "2025H2_accessed":false,
+  "live_orders":false,
+  "decision":"Close HYP-024 before MT4 and 2025 because neither arm contains an eligible connected Research family region."
+}
