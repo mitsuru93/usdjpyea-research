@@ -1,0 +1,20 @@
+{
+  "schema_version": "f05_failed_reclaim_source_restore_preflight_v1",
+  "status": "FROZEN_BEFORE_SOURCE_RESTORE_EXECUTION",
+  "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+  "source": {
+    "report_path": "docs/research/F05_structural_SL_event_sequence_v1.md",
+    "report_sha256": "489a2484be135209fd731951990e508b67d6ff11cd2aeff3a4fbac23dffdfad5",
+    "bundle_base64_path": "configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64",
+    "bundle_decoded_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d",
+    "manifest_path": "configs/research/f05_failed_reclaim_event_sequence_v1/manifest.json"
+  },
+  "candidate_count": 2,
+  "binding_candidate_count": 1,
+  "outcomes_computed": false,
+  "portfolio_replay_computed": false,
+  "mt4_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "notion_task_dependency": false
+}
