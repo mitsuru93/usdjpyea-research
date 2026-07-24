@@ -1,0 +1,20 @@
+{
+  "schema_version": "usdjpy_rq020e_stage2_technical_attempts_v1",
+  "status": "ACTIVE_TECHNICAL_LOG",
+  "research_question": "USDJPY-RQ-020E",
+  "attempts": [
+    {
+      "attempt": 1,
+      "classification": "TECHNICAL_INCOMPLETE_NO_SCIENTIFIC_RESULT",
+      "terminal_stage": "2023H1 signal materialization before trade aggregation or gate evaluation",
+      "failure": "ValueError: impulse_breakout",
+      "root_cause": "The first Stage-2 evaluator imported the fixed-five portability signal library, which implements only the five-strategy subset and not the complete twelve-family R1 v2 universe.",
+      "outcome_metrics_generated": false,
+      "cell_gates_evaluated": false,
+      "2025_accessed": false,
+      "MT4_accessed": false,
+      "repair": "Use the already committed canonical R1 v2 SIGNAL_FUNCTIONS implementation for all twelve families while retaining the frozen four-fold protocol, Entry definitions, horizons, costs and gates unchanged.",
+      "scientific_specification_changed": false
+    }
+  ]
+}
