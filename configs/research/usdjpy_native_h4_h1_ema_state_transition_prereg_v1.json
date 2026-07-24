@@ -43,7 +43,6 @@
     "normal_exit": "first completed exact H1 state opposite the position OR completed exact H4 state opposite the position, whichever information time is earlier",
     "opposite_H4_reentry": "the opposite H4 transition that closes a position may simultaneously start a pending episode; a new position still requires the frozen H1 confirmation rule"
   },
-  "family_id": "N_NATIVE_H4_H1_EMA_STATE_TRANSITION",
   "falsification": [
     "no connected component of at least two core cells",
     "no full cell in a core component",
@@ -52,9 +51,32 @@
     "default-only effect destroyed by severe costs",
     "direction or date concentration gate failure"
   ],
+  "family_id": "N_NATIVE_H4_H1_EMA_STATE_TRANSITION",
   "finite_grid": {
-    "H1_fast_slow": [[4, 16], [8, 32]],
-    "H4_fast_slow": [[3, 12], [6, 24], [12, 48]],
+    "H1_fast_slow": [
+      [
+        4,
+        16
+      ],
+      [
+        8,
+        32
+      ]
+    ],
+    "H4_fast_slow": [
+      [
+        3,
+        12
+      ],
+      [
+        6,
+        24
+      ],
+      [
+        12,
+        48
+      ]
+    ],
     "candidate_count": 6,
     "candidate_ids": [
       "N_H4F3S12_H1F4S16",
@@ -103,14 +125,19 @@
   },
   "hypothesis_id": "USDJPY-HYP-023",
   "indicator_contract": {
-    "EMA": "recursive EMA alpha=2/(span+1), adjust=false, initialized after the slow span; MQL4 parity must reproduce the same initialization before 2025",
+    "EMA": "pandas ewm span, adjust=false, min_periods=slow span; MQL4 parity must reproduce the same recursive alpha=2/(span+1) initialization before 2025",
     "price": "completed exact-slot H1/H4 close",
     "state": "+1 when fast EMA > slow EMA; -1 when fast EMA < slow EMA; 0 before both initialized or exact equality",
     "transition": "state changes directly from -1 to +1 or +1 to -1 between consecutive available exact bars; a skipped partial bucket does not itself generate a transition"
   },
   "novel_information": "Primary entry and termination are both native higher-timeframe events. M15 supplies execution price only.",
   "origin_question": "USDJPY-RQ-022",
-  "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "periods": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
   "prohibited": [
     "no periods outside the six cells",
     "no H1/H4 threshold, slope or distance filter",
