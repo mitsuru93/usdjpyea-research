@@ -1,0 +1,12 @@
+{
+  "schema_version": "f05_failed_reclaim_scientific_dispatch_marker_v1",
+  "status": "ARMED_ONCE",
+  "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+  "non_binding_sensitivity": "F05_FAILED_RECLAIM_WEAK_QUICK_V1",
+  "validation_workflow": ".github/workflows/validate_f05_failed_reclaim_v1.yml",
+  "required_ref": "main",
+  "frozen_package_parent_sha": "6df8e0ec28681e051f24bd3a2a01153c52ab8a90",
+  "portfolio_replay_computed": false,
+  "mt4_accessed": false,
+  "2025_accessed": false
+}
