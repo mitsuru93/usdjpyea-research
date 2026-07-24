@@ -1,6 +1,6 @@
 {
   "schema_version": "f05_failed_reclaim_input_recovery_marker_v1",
-  "status": "INPUT_RECOVERY_ONLY_NO_OUTCOMES",
+  "status": "EXACT_INPUT_RECOVERED_NO_OUTCOMES",
   "research_main_start_sha": "5c8ed243734c47e35f29e4219d958fe2e6b70fd4",
   "core_main_observed_sha": "b31405cd4c5380a376655ba240ccb100e230e775",
   "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
@@ -9,13 +9,17 @@
   "binding_candidate_count": 1,
   "verified_report": {
     "filename": "F05_structural_SL_event_sequence_v1.md",
+    "repository_path": "docs/research/F05_structural_SL_event_sequence_v1.md",
     "sha256": "489a2484be135209fd731951990e508b67d6ff11cd2aeff3a4fbac23dffdfad5",
     "verified": true
   },
   "required_bundle": {
     "filename": "F05_structural_SL_event_sequence_bundle_v1.zip",
     "expected_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d",
-    "verified": false
+    "base64_repository_path": "configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64",
+    "manifest_repository_path": "configs/research/f05_failed_reclaim_event_sequence_v1/manifest.json",
+    "decode_command": "base64 -d F05_structural_SL_event_sequence_bundle_v1.zip.b64 > F05_structural_SL_event_sequence_bundle_v1.zip",
+    "verified": true
   },
   "recovery_source": {
     "path": ".stage2_lifecycle_abc_package_v1.tar.gz",
