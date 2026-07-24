@@ -1,0 +1,89 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v16",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v15.json",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v12.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v13.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v14.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v15.json"
+  ],
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-RQ-024",
+      "family_ids": [],
+      "candidate_ids": [],
+      "status": "OPEN_RESEARCH_QUESTION",
+      "origin_analysis": "The user originally requested separate B02/F05 P3 Entry, P2 early Exit and P1 giveback validation. A prior execution instead evaluated HYP-023 as an independent native-H4 primary-signal strategy. The original Entry/Exit task remains recorded in the Stage 1 source-audit WIP and has not produced a canonical scientific result.",
+      "causal_hypothesis": "No candidate hypothesis is active. First recover the exact frozen report and reproducibility bundle, then prove that the accepted full-OHLC source and neutral MT4 history expose identical information times and values before any Stage E1 reproduction.",
+      "target_failure_mode": [
+        "loss of exact source identity",
+        "incomplete cross-fold OHLC feature coverage",
+        "lookahead or information-time drift",
+        "Research-to-MT4 source-data mismatch",
+        "conflation of P3 Entry with P2/P1 Exit"
+      ],
+      "pre_result_predictions": [
+        "the exact report bytes match SHA-256 31e7fc2352effa08042cc86e58a980cb1234cc4bad64751495b1deab266d74c4",
+        "the exact bundle bytes match SHA-256 64666e41f752bf2a56020b7fd22380f817b5fe35a1f64d1f49aa647815a14779",
+        "the bundle identifies the 1,882-trade population and exact scripts/inputs/outputs",
+        "accepted 2024 M1/M5/M15/H1 OHLC can be materialized without conflicting duplicates or historical mutation",
+        "a neutral MT4 probe matches the sampled source timestamps and OHLC"
+      ],
+      "tests": [
+        {
+          "period": "source_recovery_only",
+          "type": "preregistered_non_outcome_stage",
+          "result": {
+            "status": "AUTHORIZED_NOT_EXECUTED",
+            "strategy_outcomes_authorized": false
+          },
+          "protocol": "configs/research/usdjpy_b02_f05_entry_exit_source_recovery_protocol_v1.json"
+        }
+      ],
+      "decision": "Authorize exact source recovery, full-OHLC materialization and neutral MT4 source parity only. Stage E1 scientific reproduction requires a later registry after every source gate passes.",
+      "falsified_or_unsupported_claims": [
+        "HYP-023 tested the requested B02/F05 P1/P2/P3 problem; it did not",
+        "the original Entry/Exit scientific validation has already been completed; it has not"
+      ],
+      "retained_findings": [
+        "the original task is independent of HYP-023",
+        "the accepted population is B02/F05 across 2023H1, 2023H2, 2024H1 and 2024H2",
+        "P3 is an Entry problem while P2 and P1 are post-entry Exit problems",
+        "historical 2024 is immutable and 2023 uses the historical-2024-compatible lineage",
+        "the existing exact human report and bundle identities are frozen but their raw-byte recovery is incomplete"
+      ],
+      "prohibited_reuse": [
+        "do not use HYP-023 outcomes as evidence for or against the original Entry/Exit task",
+        "do not calculate strategy outcomes before exact source gates pass and a newer registry authorizes Stage E1",
+        "do not generate a candidate, grid, threshold or feature selection in this source-recovery stage",
+        "do not access 2025 or use known 2025 results for selection",
+        "do not call HST bars raw tick replay",
+        "do not silently regenerate the missing frozen report or bundle"
+      ],
+      "successor_questions": [
+        "After exact source recovery and neutral MT4 parity, can Stage E1 reproduce the frozen P3/P2/P1 technical analysis exactly?",
+        "Only after Stage E1, is an outcome-free finite directional-state protocol justified for separate P2 and P1 evaluation?"
+      ],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_b02_f05_entry_exit_stage1_source_audit_wip_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_b02_f05_entry_exit_source_recovery_protocol_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "docs/research/B02_F05_2023_2024_factor_analysis_v1.md", "sha256": "b0e61fe431485e6ae880e0b4bf7d9fdca1e3905607187d57f45f50fc3feece1e"},
+        {"repository": "mitsuru93/usdjpyea-core", "path": "configs/data/usdjpy_2024_mt4_history_v1.json", "git_blob_sha1": "7bb2d7eaf849c5d3df9c1a9402bcab64867b1e9d"}
+      ]
+    }
+  ]
+}
