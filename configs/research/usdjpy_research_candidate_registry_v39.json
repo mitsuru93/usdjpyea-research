@@ -1,0 +1,51 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v39",
+  "status": "USDJPY_RQ021_CLOSED_RQ022_NATIVE_HTF_FEASIBILITY_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v38.json",
+  "active_family": null,
+  "current_candidate": null,
+  "current_open_research_question": "USDJPY-RQ-022",
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION",
+    "G_STRUCTURAL_BREAKOUT_INVALIDATION",
+    "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE",
+    "I_B02_SHORT_WEAK_4H_ALIGNMENT_ADMISSION"
+  ],
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v13.json",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "period_policy": "configs/research/usdjpy_period_role_policy_v5.json",
+    "startup_read_receipt_required": true,
+    "duplicate_research_audit_required_before_new_family": true,
+    "atomic_ledger_update_required_after_test": true
+  },
+  "hypothesis_program": "configs/research/usdjpy_2023_2024_hypothesis_program_v3.json",
+  "rq021_result": "configs/research/usdjpy_rq021_architecture_failure_taxonomy_result_v1.json",
+  "rq021_report": "docs/research/usdjpy_rq021_architecture_failure_taxonomy_result_v1.md",
+  "next_action": "Using no market outcomes, verify deterministic native H1/H4 construction from the accepted 2023/2024 M15 lineage, complete primary-literature and full-ledger duplicate audit, and freeze or reject one finite protocol whose primary entry and termination are both defined on completed higher-timeframe structure. Do not calculate strategy P/L, generate a candidate, optimize parameters, use MT4 or access 2025.",
+  "run_authorization": {
+    "2023_2024_development_analysis": true,
+    "native_H1_H4_bar_construction_feasibility": true,
+    "primary_literature_review": true,
+    "full_ledger_duplicate_audit": true,
+    "pre_outcome_architecture_protocol_design": true,
+    "new_market_outcome_access": false,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "new_family_preregistration": false,
+    "parameter_search": false,
+    "portfolio_weight_optimization": false,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  },
+  "live_order_authorized": false
+}
