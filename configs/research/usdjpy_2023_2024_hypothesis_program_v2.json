@@ -1,0 +1,36 @@
+{
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v2",
+  "status": "RQ020E_CLOSED_RQ021_ARCHITECTURE_FAILURE_TAXONOMY",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v1.json",
+  "objective": "Use 2023 and 2024 development evidence to define one exact specification for an unchanged 2025 H1 Rakuten MT4 gate without selecting mechanisms or thresholds from 2025.",
+  "period_boundary": "2023H1, 2023H2, 2024H1 and 2024H2 are development and falsification folds. 2025 H1 and H2 remain locked.",
+  "completed": {
+    "exact_2023_historical_2024_transform": "PASS_1543_SHIFT_ZERO_DUPLICATES_EXACT_IDENTITIES",
+    "fixed_five_portability": "CLOSED_NO_PORTABLE_STRATEGY_OR_STATIC_PORTFOLIO",
+    "long_horizon_regime_diagnosis": "CLOSED_NO_ROUTER_FAMILY",
+    "full_frozen_architecture_census": {
+      "population": "60 Entry x 11 fixed horizons x 4 half-year folds",
+      "support_cells": 660,
+      "core_cells": 1,
+      "full_cells": 0,
+      "entry_neighbourhoods": 0,
+      "family_regions": 0,
+      "decision": "CLOSED_NO_FAMILY_REGION"
+    }
+  },
+  "current_question": "USDJPY-RQ-021",
+  "current_scope": "descriptive architecture-failure taxonomy using already opened RQ-020E outputs only",
+  "exact_next_action": "Attribute the closed 660-cell architecture surface by family, horizon, direction and weakest fold; identify information dimensions absent from R1/R2; compare them against the complete hypothesis ledger and define at most one genuinely distinct architecture question. Do not retune a cell, add horizons, preregister a family, use MT4 or access 2025.",
+  "boundaries": {
+    "active_family": null,
+    "current_candidate": null,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "parameter_search": false,
+    "new_family_preregistration": false,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  }
+}
