@@ -1,0 +1,11 @@
+period,candidate_id,accepted,actual,exact_keys,numeric,passed
+2024H1,R1B02_legacy_asia_00_07_breakout,97,97,True,True,True
+2024H1,R1E02_legacy_trend_8h_resumption,366,366,True,True,True
+2024H1,R1E03_trend_12h_resumption,722,722,True,True,True
+2024H1,R1F05_donchian_96,343,343,True,True,True
+2024H1,R1H04_ramom_32_64_z125,146,146,True,True,True
+2024H2,R1B02_legacy_asia_00_07_breakout,101,101,True,True,True
+2024H2,R1E02_legacy_trend_8h_resumption,390,390,True,True,True
+2024H2,R1E03_trend_12h_resumption,789,789,True,True,True
+2024H2,R1F05_donchian_96,386,386,True,True,True
+2024H2,R1H04_ramom_32_64_z125,193,193,True,True,True
