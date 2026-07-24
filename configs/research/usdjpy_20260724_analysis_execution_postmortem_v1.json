@@ -1,1 +1,180 @@
-{"schema_version":"usdjpy_20260724_analysis_execution_postmortem_v1","status":"COMPLETE_ACTIONS_REQUIRED","scope":"USDJPY 2023/2024 lineage correction, Families G/H/I, recovery diagnostics and Family J WIP","elapsed_observation":"more than 100 minutes of sequential research and repository work","mt4_runner_incident_in_this_scope":false,"summary":"The dominant delays were research-governance, evaluator reproducibility, CI granularity and state-synchronization failures rather than a Rakuten MT4 runner failure.","incidents":[{"id":"PM-001","severity":"critical","failure":"The initial next action would have transformed the historical 2024 authority instead of aligning 2023 to it.","repair":"Historical 2024 was frozen and only 2023 was transformed under registry v25 and later.","prevention":"Before any cross-year transformation, freeze source_authority_period, transformed_period and immutable_periods in a machine-readable authority-direction gate."},{"id":"PM-002","severity":"critical","failure":"The accepted 2023 legacy-2024 builder source was not committed; only an execution SHA-256 was retained.","repair":"Result hashes and exact 2024 reproduction were recorded, but independent source-level reproduction remains incomplete.","prevention":"No scientific evaluator may run until its source is committed on the preregistration branch and passes syntax/static preflight."},{"id":"PM-003","severity":"critical","failure":"A new local reconstruction of the 2023 legacy timestamp transform produced 1,428 shifted M15 bars, while the accepted result records 1,543.","repair":"The portability screen was classified as technical orientation only and blocked from scientific interpretation.","prevention":"The exact transformer source and a 1,543-shift reconciliation test are mandatory before any new 2023 signal or strategy screen."},{"id":"PM-004","severity":"high","failure":"Family G discovered missing exact checkpoint bars only after family preregistration.","repair":"A first-available-market-bar execution amendment was frozen before candidate metrics.","prevention":"Every family preregistration must include a technical feasibility inventory for checkpoints, missing bars, period endpoints and delayed execution."},{"id":"PM-005","severity":"medium","failure":"The first Family H evaluator invocation failed because period subsets retained non-contiguous pandas indices.","repair":"Only RangeIndex normalization was changed; the attempt was logged as technical incomplete.","prevention":"A universal evaluator preflight must assert RangeIndex, timestamp monotonicity, key uniqueness, one-row execution and output schema before the full grid."},{"id":"PM-006","severity":"high","failure":"The memory validator failed when a newly closed family existed only in the active ledger addendum.","repair":"The validator was extended to resolve the base ledger plus the active addendum.","prevention":"Run the canonical memory validator locally before opening a PR and test the full base-plus-addendum graph."},{"id":"PM-007","severity":"medium","failure":"Four output SHA values in the recovery diagnosis were transcribed incorrectly.","repair":"They were corrected before merge.","prevention":"Result manifests and file SHA-256 values must be generated directly from output files; manual hash entry is prohibited."},{"id":"PM-008","severity":"high","failure":"Nine sequential PRs and repeated CI polls were used for closely related stages, increasing queue and review latency.","repair":"Each scientific result was eventually merged only after both CI checks passed.","prevention":"Use one atomic branch per research stage, prepare result/report/ledger/registry/manifest together, run local checks once, then open one PR."},{"id":"PM-009","severity":"high","failure":"Notion Current State remained at registry v24/RQ-011 while GitHub advanced to v33/RQ-019.","repair":"Task pages were partially updated, but the main index remained stale.","prevention":"A GitHub merge is not stage-complete until Notion commit, registry, question and next action are updated and fetched back for readback verification."},{"id":"PM-010","severity":"critical","failure":"Family J was described as frozen before outcome evaluation even though reversal P/L is algebraically derivable from already opened Family I trade outcomes.","repair":"Family J remains an unmerged WIP and is blocked from canonical activation.","prevention":"Any deterministic payoff transformation must disclose algebraic outcome derivability; it cannot be labeled blind preregistration after source outcomes are known."},{"id":"PM-011","severity":"high","failure":"Research proceeded through several local F05/B02 repair families before applying an impact-sufficiency screen against the total development deficit.","repair":"F05 repair was stopped when its maximum observed development effect was too small to close the 2023 deficit.","prevention":"Before preregistration, estimate mechanism reach, affected count and maximum development impact. Reject families that cannot plausibly close the identified loss source."},{"id":"PM-012","severity":"medium","failure":"The Family J branch stopped after three files without ledger, registry, manifest, PR or CI.","repair":"It is explicitly classified as abandoned WIP, not canonical evidence.","prevention":"At interruption, leave a machine-readable WIP receipt with branch, head SHA, completed files, missing files and exact next action."},{"id":"PM-013","severity":"low","failure":"Old one-time marker PRs remain open and can be mistaken for current work.","repair":"They are excluded from current authority.","prevention":"Perform repository hygiene after each major stage and close superseded marker/one-shot PRs after evidence retention is confirmed."}],"required_process_changes":["authority-direction gate","committed evaluator source before outcomes","technical feasibility preflight","programmatic output hash manifest","impact-sufficiency gate","algebraic-derivability disclosure","one-stage-one-PR packaging","Notion readback synchronization","stop-safe WIP receipt","exact 2023 transformer reconciliation before further 2023 candidate work"],"evidence_refs":[{"repository":"mitsuru93/usdjpyea-research","path":"configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json"},{"repository":"mitsuru93/usdjpyea-research","path":"configs/research/usdjpy_family_i_b02_short_weak4h_alignment_result_v1.json"},{"repository":"mitsuru93/usdjpyea-research","path":"tools/validate_usdjpy_research_memory_v1.py"},{"repository":"mitsuru93/usdjpyea-core","path":"docs/operations/mt4_validation_execution_runbook_v1.md"}]}
+{
+  "evidence_refs": [
+    {
+      "path": "configs/research/usdjpy_rq020e_stage2_technical_attempts_v1.json",
+      "repository": "mitsuru93/usdjpyea-research"
+    },
+    {
+      "path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_preflight_v1.json",
+      "repository": "mitsuru93/usdjpyea-research"
+    },
+    {
+      "path": "configs/research/usdjpy_native_h4_h1_ema_state_transition_prereg_v1.json",
+      "repository": "mitsuru93/usdjpyea-research"
+    },
+    {
+      "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md",
+      "repository": "mitsuru93/usdjpyea-research"
+    }
+  ],
+  "incidents": [
+    {
+      "classification": "PROCESS_REWORK_CANONICAL_STATE",
+      "failure": "Work initially followed the older Family-J/WIP context while Research main had already advanced to later registries and RQ-020E/RQ-021 state.",
+      "id": "PM2-001",
+      "outcomes_accessed": false,
+      "prevention": "Canonical-head lock: fetch main SHA, manifest and registry from that SHA; compare branch base and open WIP before any analysis or write.",
+      "root_cause": "No mandatory latest-main/manifest/registry lock was completed before continuing prior context.",
+      "scientific_outputs_generated": false,
+      "severity": "high",
+      "time_waste": "The repository had to be reoriented, the current registry rediscovered and the obsolete path abandoned before useful work resumed."
+    },
+    {
+      "classification": "TECHNICAL_INCOMPLETE_NO_SCIENTIFIC_RESULT",
+      "evidence": "configs/research/usdjpy_rq020e_stage2_technical_attempts_v1.json",
+      "failure": "The first RQ-020E Stage-2 evaluator imported the fixed-five portability signal library, which did not implement the full twelve-family R1 universe, and stopped with ValueError: impulse_breakout.",
+      "id": "PM2-002",
+      "outcomes_accessed": false,
+      "prevention": "Capability-matrix preflight must assert every requested family/function before data loading; subset libraries cannot serve a full-universe run without an explicit complete mapping.",
+      "root_cause": "The evaluator import graph was not checked against the complete declared family/function capability set.",
+      "scientific_outputs_generated": false,
+      "severity": "high",
+      "time_waste": "Evaluator selection, execution and repair were repeated."
+    },
+    {
+      "classification": "TECHNICAL_INCOMPLETE_NO_OUTCOMES",
+      "failure": "A long single-file HYP-023 evaluator transfer had a truncation/encoding integrity risk and was abandoned before outcomes.",
+      "id": "PM2-003",
+      "outcomes_accessed": false,
+      "prevention": "Split large evaluator source before transfer; verify local SHA-256, Git blob SHA, byte count, line count, syntax and imports for every fetched-back module.",
+      "root_cause": "A large multi-responsibility source file was transferred through connector payloads before establishing a module-size and fetch-back integrity rule.",
+      "scientific_outputs_generated": false,
+      "severity": "high",
+      "time_waste": "The evaluator had to be split into data, simulation and evaluation modules, rewritten and fetched back for identity verification."
+    },
+    {
+      "classification": "TECHNICAL_INCOMPLETE_NO_DATA_LOAD",
+      "failure": "The first authorized HYP-023 exact outcome invocation used an incorrect local preregistration path and stopped before data loading, signal generation or P/L.",
+      "id": "PM2-004",
+      "outcomes_accessed": false,
+      "prevention": "Command/path manifest must verify working directory, protocol path, evaluator path, input paths and SHAs before importing data.",
+      "root_cause": "The execution command was assembled ad hoc rather than generated from a committed run manifest with path and SHA assertions.",
+      "scientific_outputs_generated": false,
+      "severity": "medium",
+      "time_waste": "The command had to be corrected and rerun."
+    },
+    {
+      "classification": "PROCESS_REWORK_REQUIRED_OUTPUTS",
+      "failure": "The HYP-023 evaluator did not directly produce every preregistered output, notably realized drawdown and parameter-equivalence summaries, so a post-result summarizer was required.",
+      "id": "PM2-005",
+      "outcomes_accessed": true,
+      "prevention": "Outcome authorization is blocked unless every required output has a declared file/schema producer and the preflight verifies the full output manifest.",
+      "root_cause": "Preflight checked evaluator execution but did not machine-compare protocol required_outputs with the evaluator output manifest.",
+      "scientific_outputs_generated": true,
+      "scientific_spec_changed": false,
+      "severity": "medium",
+      "time_waste": "A second code path and output audit were needed after the binding run."
+    },
+    {
+      "classification": "STATE_SYNC_INCOMPLETE",
+      "failure": "Notion Current State properties were updated to registry v40/HYP-023 while the body still contained registry v39/RQ-022 text and older authorization boundaries.",
+      "id": "PM2-006",
+      "outcomes_accessed": false,
+      "prevention": "Notion synchronization must compare both properties and body: main commit, registry, question/hypothesis, active family, next action, canonical pointers and locks.",
+      "root_cause": "Synchronization checked database properties but not body pointers and authorization text as one contract.",
+      "scientific_outputs_generated": false,
+      "severity": "medium",
+      "time_waste": "Repeated Notion updates and readbacks were required and the page remained internally inconsistent during the stage."
+    }
+  ],
+  "new_mandatory_controls": [
+    "canonical-head lock before branch or analysis",
+    "full-family capability matrix before evaluator import",
+    "source-transfer fetch-back identity gate",
+    "committed command/path manifest",
+    "required-output completeness gate",
+    "batch repository write plan",
+    "failure classification and one-retry budget",
+    "stage timing and overhead receipt",
+    "Notion property-plus-body readback",
+    "evidence-backed progress checkpoints"
+  ],
+  "operational_summary": {
+    "2025_access_events": 0,
+    "MT4_runner_failures": 0,
+    "data_or_outcome_contamination_events": 0,
+    "hard_execution_failures": 2,
+    "pre_execution_integrity_aborts": 1,
+    "process_rework_events": 3,
+    "total_failure_or_rework_events": 6
+  },
+  "revision": 2,
+  "schema_version": "usdjpy_20260724_analysis_execution_postmortem_v1",
+  "scientific_result_classification": {
+    "HYP_023": "SCIENTIFIC_RESULT_COMPLETE_FAIL",
+    "counts_as_processing_failure": false,
+    "reason": "The frozen six-cell family executed and failed its preregistered scientific gates; this is valid evidence, not an operational malfunction."
+  },
+  "scope": "Recovery from stale work state through RQ-020E/RQ-021/RQ-022 and the first exact HYP-023 research evaluation",
+  "status": "COMPLETE_PREVENTION_UPDATE_REQUIRED",
+  "supersedes_revision": 1,
+  "time_accounting": {
+    "avoidable_overhead_assessment": "material, plausibly tens of minutes, but not measured precisely",
+    "exact_avoidable_minutes_available": false,
+    "interpretation": "The 57m30s interval contains legitimate analysis and packaging as well as avoidable overhead; it cannot be assigned wholly to failures.",
+    "largest_avoidable_sources": [
+      "starting from stale branch/context before resolving current main",
+      "sequential connector writes and source-transfer repair",
+      "rerunning after an ad hoc local path error",
+      "post-result completion of outputs that should have been enforced by preflight",
+      "partial Notion synchronization and repeated readback"
+    ],
+    "measured_interval_seconds_between_PR_markers": 3450,
+    "measured_markers": [
+      {
+        "event": "PR_220_created",
+        "meaning": "RQ-021 taxonomy package opened",
+        "utc": "2026-07-24T02:22:04Z"
+      },
+      {
+        "event": "PR_221_created",
+        "meaning": "RQ-022 feasibility/preregistration package opened",
+        "utc": "2026-07-24T03:19:34Z"
+      }
+    ],
+    "reason": "Per-stage start/finish, connector time, local compute time and retry time were not logged independently."
+  },
+  "unnecessary_or_excessive_work": [
+    {
+      "future_control": "Canonical-head lock and branch-base assertion.",
+      "rank": 1,
+      "why_unnecessary": "The latest main/manifest/registry could have been resolved before any branch work.",
+      "work": "Canonical-state recovery after following stale context"
+    },
+    {
+      "future_control": "Pre-write tool/file plan, modular source threshold, batch tree/commit.",
+      "rank": 2,
+      "why_unnecessary": "The complete package and module boundaries could have been assembled before the first repository write and committed as one tree.",
+      "work": "Sequential file-by-file connector writes and repair of the long evaluator transfer"
+    },
+    {
+      "future_control": "Committed command/path manifest and preflight-only execution.",
+      "rank": 3,
+      "why_unnecessary": "A generated run manifest would have failed path validation before the run command.",
+      "work": "Rerun caused by incorrect local protocol path"
+    },
+    {
+      "future_control": "Required-output completeness gate.",
+      "rank": 4,
+      "why_unnecessary": "Required outputs were already listed in the preregistration and should have been enforced before outcome unlock.",
+      "work": "Post-result output completion"
+    },
+    {
+      "future_control": "Dual-surface Notion synchronization receipt.",
+      "rank": 5,
+      "why_unnecessary": "Properties and body should have been updated and compared together once after canonical merge.",
+      "work": "Partial Notion updates"
+    }
+  ],
+  "updated_document": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md"
+}
