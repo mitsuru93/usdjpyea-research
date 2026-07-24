@@ -1,0 +1,45 @@
+{
+  "schema_version": "usdjpy_b02_f05_release_tick_fourfold_analysis_canonical_receipt_v1",
+  "status": "PASS_REPORT_SHA_VERIFIED_PERMANENT_REPRODUCTION_MATERIALS_REQUIRED",
+  "source_file_library": {
+    "file_id": "file_0000000093d881f5aee76a22555fc73f",
+    "filename": "B02_F05_2024_release_tick_fourfold_analysis_v1.md",
+    "raw_bytes_reconstructed_from_full_file_content": true,
+    "sha256_expected": "8dd10ab65bf8be3b885c5adf526f3dbecf73ecddd6d7063dd8949e92c860190b",
+    "sha256_observed": "8dd10ab65bf8be3b885c5adf526f3dbecf73ecddd6d7063dd8949e92c860190b",
+    "byte_count": 9651,
+    "verified": true
+  },
+  "canonical_report": "docs/research/B02_F05_2024_release_tick_fourfold_analysis_v1.md",
+  "original_bundle": {
+    "filename": "B02_F05_2024_release_tick_fourfold_analysis_bundle_v1.zip",
+    "sha256_expected": "4c691f63685710c08389c82639518bbf4de82b91d33e7108c81d8e057cbae354",
+    "located": false,
+    "claimed_as_verified": false,
+    "replacement_rule": "Do not claim byte identity. Preserve exact report and build permanent reproduction materials from canonical Releases, accepted baseline artifacts, frozen scripts and output manifests."
+  },
+  "source_release": {
+    "tag": "usdjpy-2024-mt4-tick-import-v1",
+    "receipt": "docs/research_reboot/artifact_archives/usdjpy_2024_mt4_tick_import_v1/receipt.json",
+    "actions_run_id": 29735621573,
+    "artifact_id": 8458310265,
+    "artifact_digest": "sha256:002493b24e508de6db3807315793d44d756f76d9fee058d9b546f0a8c07d40b2",
+    "raw_zip_sha256_reverified": true,
+    "inner_sha256sums_verified": true,
+    "tick_rows": 40969081
+  },
+  "reconciliation": {
+    "m1_rows": 373383,
+    "m1_expected_sha256": "7e43afb066f5594f8e0b9fde408a08513433b05d9c1d39c294874d271af879b2",
+    "entry_first_bid_matches": "922/922",
+    "accepted_2024h1_m15_matches": "11884/11884",
+    "accepted_2024h1_ohlc_max_difference": 0,
+    "accepted_2024h2_snapshot_open_matches": 12209
+  },
+  "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "authorization": {
+    "user_directive_date": "2026-07-24",
+    "directive": "Proceed with the B02/F05 lifecycle validation independently; do not stop because of HYP-023.",
+    "2025_h2_locked": true
+  }
+}
