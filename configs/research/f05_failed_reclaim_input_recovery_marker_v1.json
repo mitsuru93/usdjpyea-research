@@ -1,0 +1,35 @@
+{
+  "schema_version": "f05_failed_reclaim_input_recovery_marker_v1",
+  "status": "INPUT_RECOVERY_ONLY_NO_OUTCOMES",
+  "research_main_start_sha": "5c8ed243734c47e35f29e4219d958fe2e6b70fd4",
+  "core_main_observed_sha": "b31405cd4c5380a376655ba240ccb100e230e775",
+  "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+  "non_binding_sensitivity": "F05_FAILED_RECLAIM_WEAK_QUICK_V1",
+  "candidate_count": 2,
+  "binding_candidate_count": 1,
+  "verified_report": {
+    "filename": "F05_structural_SL_event_sequence_v1.md",
+    "sha256": "489a2484be135209fd731951990e508b67d6ff11cd2aeff3a4fbac23dffdfad5",
+    "verified": true
+  },
+  "required_bundle": {
+    "filename": "F05_structural_SL_event_sequence_bundle_v1.zip",
+    "expected_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d",
+    "verified": false
+  },
+  "recovery_source": {
+    "path": ".stage2_lifecycle_abc_package_v1.tar.gz",
+    "git_blob_sha1": "cde2a3b84b51fd2452b40edbf7c08bbbaa54a6b5",
+    "purpose": "Inspect durable source-reproduction material only; do not adopt any prior candidate, hypothesis, family, task, gate, or outcome."
+  },
+  "boundaries": {
+    "outcomes_computed": false,
+    "candidate_outcomes_computed": false,
+    "portfolio_replay_computed": false,
+    "2025_accessed": false,
+    "mt4_accessed": false,
+    "notion_task_dependency": false,
+    "new_hypothesis_id_created": false,
+    "candidate_substitution_allowed": false
+  }
+}

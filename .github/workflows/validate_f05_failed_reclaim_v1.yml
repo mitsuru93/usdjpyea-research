@@ -1,0 +1,137 @@
+name: Validate F05 failed reclaim v1
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/validate_f05_failed_reclaim_v1.yml'
+      - 'configs/research/f05_failed_reclaim_*'
+      - 'tools/evaluate_f05_failed_reclaim_v1.py'
+      - 'tools/verify_f05_failed_reclaim_fixture_v1.py'
+      - 'tools/replay_f05_failed_reclaim_portfolio_v1.py'
+      - 'docs/research/F05_structural_SL_event_sequence_v1.md'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type F05_FAILED_RECLAIM_BASIC_V1 to run the binding technical validation'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+
+      - name: Enforce event and candidate boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ '${{ github.event_name }}' == 'workflow_dispatch' ]]; then
+            [[ '${{ github.ref }}' == 'refs/heads/main' ]]
+            [[ '${{ inputs.confirmation }}' == 'F05_FAILED_RECLAIM_BASIC_V1' ]]
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('configs/research/f05_failed_reclaim_validation_protocol_v1.json').read_text())
+          assert p['candidates']['count']==2
+          assert p['candidates']['binding_count']==1
+          assert p['candidates']['binding']['candidate_id']=='F05_FAILED_RECLAIM_BASIC_V1'
+          assert p['candidates']['non_binding_sensitivity']['candidate_id']=='F05_FAILED_RECLAIM_WEAK_QUICK_V1'
+          assert p['candidates']['non_binding_sensitivity']['binding'] is False
+          assert p['candidates']['binding']['reclaim_failure']['same_timestamp_m5_forbidden'] is True
+          assert p['authorizing_instruction']['notion_task_dependency'] is False
+          PY
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install verifier dependency
+        run: python -m pip install --disable-pip-version-check 'pandas==2.2.3'
+
+      - name: Run outcome-free PR preflight
+        if: github.event_name == 'pull_request'
+        run: |
+          python tools/verify_f05_failed_reclaim_fixture_v1.py \
+            --exploration configs/research/f05_failed_reclaim_exploration_reproduction_fixture_v1.csv \
+            --direct configs/research/f05_failed_reclaim_direct_spec_fixture_v1.csv \
+            --protocol configs/research/f05_failed_reclaim_validation_protocol_v1.json \
+            --output-dir validation_output
+
+      - name: Run binding technical validation
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python tools/verify_f05_failed_reclaim_fixture_v1.py \
+            --exploration configs/research/f05_failed_reclaim_exploration_reproduction_fixture_v1.csv \
+            --direct configs/research/f05_failed_reclaim_direct_spec_fixture_v1.csv \
+            --protocol configs/research/f05_failed_reclaim_validation_protocol_v1.json \
+            --output-dir validation_output \
+            --binding
+          jq -e '.status=="TECHNICAL_MISMATCH_STOP"' \
+            validation_output/f05_failed_reclaim_binding_technical_fixture_result_v1.json
+          jq -e '.boundaries.portfolio_replay_computed==false and .boundaries.mt4_accessed==false and .boundaries."2025H1_accessed"==false and .boundaries."2025H2_accessed"==false' \
+            validation_output/f05_failed_reclaim_binding_technical_fixture_result_v1.json
+
+      - name: Package evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p validation_output
+          find validation_output -maxdepth 1 -type f -print0 | sort -z | xargs -0 -r sha256sum > validation_output/SHA256SUMS
+          cp configs/research/f05_failed_reclaim_source_archive_receipt_v1.json validation_output/
+          cp configs/research/f05_failed_reclaim_validation_protocol_v1.json validation_output/
+          cp configs/research/f05_failed_reclaim_output_schema_v1.json validation_output/
+          cp configs/research/f05_failed_reclaim_exploration_reproduction_fixture_v1.csv validation_output/
+          cp configs/research/f05_failed_reclaim_direct_spec_fixture_v1.csv validation_output/
+          cp tools/evaluate_f05_failed_reclaim_v1.py validation_output/
+          cp tools/verify_f05_failed_reclaim_fixture_v1.py validation_output/
+          sha256sum validation_output/* > validation_output/PACKAGE_SHA256SUMS
+          (cd validation_output && zip -q -X -r ../f05-failed-reclaim-validation-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip .)
+
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f05-failed-reclaim-validation-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            validation_output
+            f05-failed-reclaim-validation-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish binding technical Release
+        if: github.event_name == 'workflow_dispatch' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag='f05-failed-reclaim-validation-v1'
+          asset="f05-failed-reclaim-validation-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip"
+          cat > release_notes.md <<EOF
+          Binding candidate: F05_FAILED_RECLAIM_BASIC_V1
+          Non-binding sensitivity: F05_FAILED_RECLAIM_WEAK_QUICK_V1 (not executed)
+          Run ID: ${{ github.run_id }}
+          Run attempt: ${{ github.run_attempt }}
+          Commit: ${{ github.sha }}
+          Status: TECHNICAL_MISMATCH_STOP
+          Portfolio replay: not computed
+          MT4: not accessed
+          2025 H1/H2: not accessed
+          EOF
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$tag" "$asset" --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$tag" "$asset" --target "$GITHUB_SHA" \
+              --title 'F05 failed reclaim validation v1 — technical mismatch stop' \
+              --notes-file release_notes.md --repo "$GITHUB_REPOSITORY"
+          fi
