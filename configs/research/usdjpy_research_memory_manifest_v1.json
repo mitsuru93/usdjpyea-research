@@ -48,7 +48,8 @@
     "release_archive_receipt": "mitsuru93/usdjpyea-core:docs/research/artifact_archives/usdjpy_2025h1_evidence_v1/receipt.json",
     "rq021_report": "docs/research/usdjpy_rq021_architecture_failure_taxonomy_result_v1.md",
     "rq021_result": "configs/research/usdjpy_rq021_architecture_failure_taxonomy_result_v1.json",
-    "trajectory_diagnosis": "configs/research/usdjpy_post_invalidation_trajectory_diagnosis_result_v1.json"
+    "trajectory_diagnosis": "configs/research/usdjpy_post_invalidation_trajectory_diagnosis_result_v1.json",
+    "hyp023_notion_sync_receipt": "configs/research/usdjpy_hyp023_notion_sync_receipt_v1.json"
   },
   "current_state_snapshot": {
     "2025_H1_authorized": false,
@@ -75,7 +76,9 @@
   },
   "installation_audit": {
     "previous_registry": "v40",
-    "status": "HYP023_RESULT_RECONCILED_REQUIRES_POST_MERGE_NOTION_READBACK"
+    "source_merge_commit": "7fbf904b19ddd74faf1aa93bc3b8e5c430d50aab",
+    "notion_readback_receipt": "configs/research/usdjpy_hyp023_notion_sync_receipt_v1.json",
+    "status": "HYP023_RESULT_RECONCILED_NOTION_READBACK_CONFIRMED"
   },
   "lineage_rules": {
     "2023_must_be_transformed_to_historical_2024_contract_for_current_cross_year_work": true,
