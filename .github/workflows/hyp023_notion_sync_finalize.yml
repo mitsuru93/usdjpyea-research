@@ -25,7 +25,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(sha256sum configs/research/usdjpy_hyp023_notion_sync_receipt_v1.json | awk '{print $1}')" = "ac8bb10fce2b3abe76aeb8528fe29c67d07edff63b57e1d2fc96f2df2accaa64"
-          test "$(sha256sum configs/research/usdjpy_research_memory_manifest_v1.json | awk '{print $1}')" = "3936379bd5371cf770c3b62ec8aaff93e005c8c5a1f44b3447990e53f02be6a7"
+          test "$(sha256sum configs/research/usdjpy_research_memory_manifest_v1.json | awk '{print $1}')" = "63598e3a5ae7790fcc61918f5b5277db65f086f25e261fec7190c7558dee7f3a"
           python - <<'PY'
           import json
           from pathlib import Path
