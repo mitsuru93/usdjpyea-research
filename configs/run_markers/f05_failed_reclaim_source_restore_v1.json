@@ -1,0 +1,10 @@
+{
+  "schema_version": "f05_failed_reclaim_source_restore_marker_v1",
+  "status": "OUTCOME_FREE_SOURCE_RESTORE_ONLY",
+  "source_commit": "bd9be31f8512db20fb35bf46ac9035b5223edf51",
+  "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+  "outcomes_computed": false,
+  "portfolio_replay_computed": false,
+  "mt4_accessed": false,
+  "2025_accessed": false
+}
