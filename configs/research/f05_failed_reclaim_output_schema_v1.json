@@ -1,0 +1,38 @@
+{
+  "schema_version": "f05_failed_reclaim_output_schema_v1",
+  "status": "FROZEN_BEFORE_BINDING_TECHNICAL_EXECUTION",
+  "required_preflight_outputs": [
+    "f05_failed_reclaim_preflight_v1.json"
+  ],
+  "required_binding_outputs": [
+    "f05_failed_reclaim_preflight_v1.json",
+    "f05_failed_reclaim_exploration_reproduction_ledger_v1.csv",
+    "f05_failed_reclaim_direct_spec_ledger_v1.csv",
+    "f05_failed_reclaim_identity_diff_v1.csv",
+    "f05_failed_reclaim_technical_validation_result_v1.json",
+    "f05_failed_reclaim_execution_identity_receipt_v1.json",
+    "f05_failed_reclaim_output_manifest_v1.json"
+  ],
+  "technical_stop_statuses": [
+    "TECHNICAL_MISMATCH_STOP"
+  ],
+  "scientific_result_statuses": [
+    "PASS",
+    "FAIL"
+  ],
+  "technical_stop_rules": {
+    "original_bundle_missing": "record blocker; do not represent reconstructed files as the original bundle",
+    "exploration_reproduction_mismatch": "stop before portfolio replay",
+    "direct_spec_identity_mismatch": "stop before portfolio replay",
+    "source_sha_mismatch": "hard error before any reproduction"
+  },
+  "locked_boundaries_on_technical_stop": {
+    "scientific_outcomes_interpreted": false,
+    "historical_gates_evaluated": false,
+    "portfolio_replay_computed": false,
+    "non_binding_sensitivity_computed": false,
+    "mt4_accessed": false,
+    "2025H1_accessed": false,
+    "2025H2_accessed": false
+  }
+}
