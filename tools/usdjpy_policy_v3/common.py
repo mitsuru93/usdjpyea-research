@@ -90,6 +90,7 @@ def bootstrap_month_ci(rows:pd.DataFrame,months:list[str],reps:int=2000)->tuple[
 
 def policy_summary(rows:pd.DataFrame,master:pd.DataFrame,method:str,pid:str)->dict[str,Any]:
     if rows.empty:rows=pd.DataFrame(columns=['baseline_loser','delta_pips','severe1_delta_pips','severe2_delta_pips','delay5_delta_pips','fold','side','entry_utc'])
+    rows=rows.copy();rows['entry_utc']=pd.to_datetime(rows['entry_utc'],utc=True)
     lo=rows[rows.baseline_loser==True];wi=rows[rows.baseline_loser==False]
     f=rows.groupby('fold').delta_pips.sum().reindex(FOLDS,fill_value=0.);fs=rows.groupby('fold').severe1_delta_pips.sum().reindex(FOLDS,fill_value=0.);sd=rows.groupby('side').delta_pips.sum().reindex([1,-1],fill_value=0.)
     months=sorted(master.month.unique());mo=rows.assign(month=rows.entry_utc.dt.strftime('%Y-%m')).groupby('month').delta_pips.sum().reindex(months,fill_value=0.)
