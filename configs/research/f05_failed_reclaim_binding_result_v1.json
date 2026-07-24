@@ -1,0 +1,104 @@
+{
+  "blockers": [
+    "DIRECT_SPEC_VS_EXPLORATION_IDENTITY_MISMATCH",
+    "ORIGINAL_BUNDLE_RAW_BYTES_UNAVAILABLE"
+  ],
+  "boundaries": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "historical_gates_evaluated": false,
+    "mt4_accessed": false,
+    "new_hypothesis_created": false,
+    "non_binding_sensitivity_computed": false,
+    "notion_used_as_task_source": false,
+    "portfolio_replay_computed": false,
+    "scientific_outcomes_interpreted": false
+  },
+  "decision": "STOP_BEFORE_PORTFOLIO_REPLAY_AND_SCIENTIFIC_GATE_INTERPRETATION",
+  "direct_instruction_semantics": {
+    "same_timestamp_m5_forbidden": true,
+    "summary": {
+      "folds": {
+        "2023H1": {
+          "delta_pips": 69.3,
+          "long_delta_pips": 4.6,
+          "short_delta_pips": 64.7,
+          "stopped": 5
+        },
+        "2023H2": {
+          "delta_pips": 14.1,
+          "long_delta_pips": -4.2,
+          "short_delta_pips": 18.3,
+          "stopped": 4
+        },
+        "2024H1": {
+          "delta_pips": 110.7,
+          "long_delta_pips": 58.3,
+          "short_delta_pips": 52.4,
+          "stopped": 5
+        },
+        "2024H2": {
+          "delta_pips": 6.5,
+          "long_delta_pips": 6.5,
+          "short_delta_pips": 0.0,
+          "stopped": 1
+        }
+      },
+      "long_delta_pips": 65.2,
+      "short_delta_pips": 135.4,
+      "stopped_trades": 15,
+      "total_delta_pips": 200.6
+    }
+  },
+  "exploration_reproduction": {
+    "status": "PASS",
+    "summary": {
+      "folds": {
+        "2023H1": {
+          "delta_pips": 70.8,
+          "long_delta_pips": 4.6,
+          "short_delta_pips": 66.2,
+          "stopped": 4
+        },
+        "2023H2": {
+          "delta_pips": 14.1,
+          "long_delta_pips": -4.2,
+          "short_delta_pips": 18.3,
+          "stopped": 4
+        },
+        "2024H1": {
+          "delta_pips": 110.7,
+          "long_delta_pips": 58.3,
+          "short_delta_pips": 52.4,
+          "stopped": 5
+        },
+        "2024H2": {
+          "delta_pips": 6.5,
+          "long_delta_pips": 6.5,
+          "short_delta_pips": 0.0,
+          "stopped": 1
+        }
+      },
+      "long_delta_pips": 65.2,
+      "short_delta_pips": 136.9,
+      "stopped_trades": 14,
+      "total_delta_pips": 202.1
+    }
+  },
+  "identity_comparison": {
+    "direct_only_trade_keys": [
+      "F05|2023-06-08T15:45:00Z|-1"
+    ],
+    "exploration_only_trade_keys": [],
+    "match": false
+  },
+  "root_cause": {
+    "direct_delta_pips": -1.5,
+    "direct_failure_m5_completion_utc": "2023-06-08T16:40:00Z",
+    "explanation": "Exploration accepted an M5 completion equal to reclaim M1 close; direct instruction forbids it and selects the next completed M5.",
+    "reclaim_m1_close_utc": "2023-06-08T16:35:00Z",
+    "trade_key": "F05|2023-06-08T15:45:00Z|-1"
+  },
+  "schema_version": "f05_failed_reclaim_binding_technical_fixture_result_v1",
+  "status": "TECHNICAL_MISMATCH_STOP"
+}

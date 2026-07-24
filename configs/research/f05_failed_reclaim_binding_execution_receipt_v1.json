@@ -1,0 +1,14 @@
+{
+  "2025_accessed": false,
+  "event_name": "workflow_dispatch",
+  "fixture_sha256": {
+    "direct": "41f6bcda5515a40e283fde65e55cf8a1010ef26d31930e6fe8717238bf5ff6a9",
+    "exploration": "75312aba2ffd92c45ec52023b49ba906b6e216730c61f932927c8c239c5da837",
+    "protocol": "c7c6d28dc9a7dd010cfeb0f189338bef8c92b50d2fdf57756a740e391bc933da"
+  },
+  "mt4_accessed": false,
+  "portfolio_replay_computed": false,
+  "schema_version": "f05_failed_reclaim_binding_execution_receipt_v1",
+  "status": "TECHNICAL_MISMATCH_STOP",
+  "verifier_sha256": "92855e2abf3a04f3f7be369ea4a3920640b2276c9addb705aba3d6d943681b0c"
+}
