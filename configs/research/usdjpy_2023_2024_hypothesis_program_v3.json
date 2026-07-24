@@ -1,0 +1,37 @@
+{
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v3",
+  "status": "RQ021_CLOSED_RQ022_NATIVE_HIGHER_TIMEFRAME_FEASIBILITY",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v2.json",
+  "objective": "Use 2023 and 2024 development evidence to define one exact specification for an unchanged 2025 H1 Rakuten MT4 gate without selecting mechanisms or thresholds from 2025.",
+  "period_boundary": "2023H1, 2023H2, 2024H1 and 2024H2 are development and falsification folds. 2025 H1 and H2 remain locked.",
+  "completed": {
+    "exact_2023_historical_2024_transform": "PASS_1543_SHIFT_ZERO_DUPLICATES_EXACT_IDENTITIES",
+    "fixed_five_portability": "CLOSED_NO_PORTABLE_STRATEGY_OR_STATIC_PORTFOLIO",
+    "long_horizon_regime_diagnosis": "CLOSED_NO_ROUTER_FAMILY",
+    "full_frozen_architecture_census": "CLOSED_660_CELLS_ZERO_FAMILY_REGIONS",
+    "architecture_failure_taxonomy": {
+      "default_positive_all_four_cells": 14,
+      "severe_positive_all_four_cells": 1,
+      "dominant_direction_switch_cells": 562,
+      "dominant_direction_switch_two_or_more_cells": 349,
+      "same_dominant_direction_all_four_cells": 98,
+      "decision": "CLOSE_RQ_021"
+    }
+  },
+  "current_question": "USDJPY-RQ-022",
+  "current_scope": "pre-outcome native H1/H4 data feasibility, primary literature review, complete ledger duplicate audit and finite protocol design",
+  "identified_information_gap": "The frozen architecture used M15-local or session-based primary signals and unconditional fixed M15 exits. It did not define both primary signal and termination on completed native H1/H4 state transitions.",
+  "exact_next_action": "Using no market outcomes, verify deterministic native H1/H4 construction from the accepted 2023/2024 M15 lineage, complete primary-literature and full-ledger duplicate audit, and freeze or reject one finite protocol. No strategy P/L, candidate generation, parameter search, MT4 or 2025 access.",
+  "boundaries": {
+    "active_family": null,
+    "current_candidate": null,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "parameter_search": false,
+    "new_family_preregistration": false,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "live_orders": false
+  }
+}
