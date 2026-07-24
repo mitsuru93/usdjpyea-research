@@ -22,45 +22,52 @@ jobs:
           ref: agent/f05-failed-reclaim-portfolio-validation-v1
           token: ${{ github.token }}
 
-      - name: Decode and verify exact evaluator source
+      - name: Repair transport bytes and verify exact evaluator source
         shell: bash
         run: |
-          set +e
+          set -euo pipefail
           mkdir -p materialize_diagnostics tools
           src_b64=configs/research/f05_failed_reclaim_portfolio_evaluator_v1.py.gz.b64
           cp "$src_b64" materialize_diagnostics/staged_evaluator.py.gz.b64
-          wc -c "$src_b64" | tee materialize_diagnostics/base64_size.txt
-          sha256sum "$src_b64" | tee materialize_diagnostics/base64_sha256.txt
-          base64 -d "$src_b64" > materialize_diagnostics/evaluator.py.gz
-          decode_rc=$?
-          printf '%s\n' "$decode_rc" > materialize_diagnostics/base64_decode_rc.txt
-          wc -c materialize_diagnostics/evaluator.py.gz | tee materialize_diagnostics/gzip_size.txt
-          sha256sum materialize_diagnostics/evaluator.py.gz | tee materialize_diagnostics/gzip_sha256.txt
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          path=Path('configs/research/f05_failed_reclaim_portfolio_evaluator_v1.py.gz.b64')
+          staged=path.read_text().strip()
+          staged_sha=hashlib.sha256(staged.encode()).hexdigest()
+          assert len(staged)==16271, len(staged)
+          assert staged_sha=='6088708996205bbcc635877d07b4771b6772fd36f84f87c39f093adc4eff54d8', staged_sha
+          repaired=staged[:7658]+'r'+staged[7658:]
+          assert repaired[13171]=='l', (13171,repaired[13171])
+          repaired=repaired[:13171]+'h'+repaired[13172:]
+          repaired_sha=hashlib.sha256(repaired.encode()).hexdigest()
+          assert len(repaired)==16272, len(repaired)
+          assert repaired_sha=='38d526cdb7bee3f3b8c79b25b98f73a48182fb86bff4677b16ae86a5645c9396', repaired_sha
+          Path('materialize_diagnostics/repaired_evaluator.py.gz.b64').write_text(repaired)
+          Path('materialize_diagnostics/transport_repair.txt').write_text(
+              'staged_sha256='+staged_sha+'\nrepaired_sha256='+repaired_sha+'\ninsert_index=7658\ninsert_char=r\nreplace_index=13171\nreplace_from=l\nreplace_to=h\n')
+          PY
+          base64 -d materialize_diagnostics/repaired_evaluator.py.gz.b64 > materialize_diagnostics/evaluator.py.gz
+          printf '%s  %s\n' \
+            e9a4e6082b684052518585379f39ec99e24b416742d2bdf1010af03c4274ad4a \
+            materialize_diagnostics/evaluator.py.gz | sha256sum -c -
           gzip -t materialize_diagnostics/evaluator.py.gz
-          gzip_test_rc=$?
-          printf '%s\n' "$gzip_test_rc" > materialize_diagnostics/gzip_test_rc.txt
-          if [[ "$decode_rc" -eq 0 && "$gzip_test_rc" -eq 0 ]]; then
-            gzip -dc materialize_diagnostics/evaluator.py.gz > tools/evaluate_f05_failed_reclaim_portfolio_v1.py
-            sha256sum tools/evaluate_f05_failed_reclaim_portfolio_v1.py | tee materialize_diagnostics/source_sha256.txt
-            wc -c tools/evaluate_f05_failed_reclaim_portfolio_v1.py | tee materialize_diagnostics/source_size.txt
-            printf '%s  %s\n' \
-              c37aac2a23d18754041f8025af5395519a6c0ff5e89e4db32d6a62b734777ac0 \
-              tools/evaluate_f05_failed_reclaim_portfolio_v1.py | sha256sum -c -
-            source_rc=$?
-            printf '%s\n' "$source_rc" > materialize_diagnostics/source_check_rc.txt
-            if [[ "$source_rc" -eq 0 ]]; then
-              python -m py_compile \
-                tools/evaluate_f05_failed_reclaim_portfolio_v1.py \
-                tools/usdjpy_structural_sl_v1/common.py \
-                tools/usdjpy_structural_sl_v1/events.py
-            fi
-          else
-            source_rc=1
-          fi
-          exit "$source_rc"
+          gzip -dc materialize_diagnostics/evaluator.py.gz > tools/evaluate_f05_failed_reclaim_portfolio_v1.py
+          printf '%s  %s\n' \
+            c37aac2a23d18754041f8025af5395519a6c0ff5e89e4db32d6a62b734777ac0 \
+            tools/evaluate_f05_failed_reclaim_portfolio_v1.py | sha256sum -c -
+          python -m py_compile \
+            tools/evaluate_f05_failed_reclaim_portfolio_v1.py \
+            tools/usdjpy_structural_sl_v1/common.py \
+            tools/usdjpy_structural_sl_v1/events.py
+          sha256sum \
+            materialize_diagnostics/staged_evaluator.py.gz.b64 \
+            materialize_diagnostics/repaired_evaluator.py.gz.b64 \
+            materialize_diagnostics/evaluator.py.gz \
+            tools/evaluate_f05_failed_reclaim_portfolio_v1.py \
+            > materialize_diagnostics/SHA256SUMS
 
       - name: Upload materialization diagnostics
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: f05-portfolio-evaluator-materialize-${{ github.run_id }}-${{ github.run_attempt }}
@@ -69,7 +76,6 @@ jobs:
           retention-days: 14
 
       - name: Commit evaluator to branch
-        if: success()
         shell: bash
         run: |
           set -euo pipefail
