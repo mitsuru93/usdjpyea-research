@@ -1,0 +1,54 @@
+name: Import HYP-023 canonical closure payload
+
+on:
+  push:
+    branches: [agent/hyp023-canonical-closure-v1]
+    paths:
+      - '.hyp023_min_payload/**'
+      - '.github/workflows/hyp023_min_import.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/hyp023-canonical-closure-v1
+          fetch-depth: 0
+      - name: Verify and extract canonical payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(sha256sum .hyp023_min_payload/chunk_000 | awk '{print $1}')" = "3008615a77ac0387c4e6f87c5f75cd954ef0346c0e307b476263b58b61081ce2"
+          test "$(sha256sum .hyp023_min_payload/chunk_001 | awk '{print $1}')" = "f489f26c37636fcb6ae4b554d45ae5e16d5c53fe65a501a24c37eb33ee450950"
+          test "$(sha256sum .hyp023_min_payload/chunk_002 | awk '{print $1}')" = "cdd7da23ff969df454c54235d4d967d681608947ccb5f0737f8aeb2d224640cc"
+          cat .hyp023_min_payload/chunk_* | base64 -d > /tmp/hyp023_payload.tar.gz
+          test "$(sha256sum /tmp/hyp023_payload.tar.gz | awk '{print $1}')" = "f316a07c8ca1e2caa6e7f18e9c5e60763fa8f7afc954a840ca0bfac67d11b10b"
+          tar -xzf /tmp/hyp023_payload.tar.gz -C .
+          test "$(sha256sum docs/research/B02_F05_2023_2024_factor_analysis_v1.md | awk '{print $1}')" = "b0e61fe431485e6ae880e0b4bf7d9fdca1e3905607187d57f45f50fc3feece1e"
+          python -m json.tool configs/research/usdjpy_research_candidate_registry_v41.json >/dev/null
+          python -m json.tool configs/research/usdjpy_hypothesis_ledger_addendum_v15.json >/dev/null
+          python -m json.tool configs/research/usdjpy_research_memory_manifest_v1.json >/dev/null
+          python tools/validate_usdjpy_research_memory_v1.py
+      - name: Replace canonical pointers and clean staging
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f configs/research/usdjpy_research_candidate_registry_v40.json
+          rm -f configs/research/usdjpy_hypothesis_ledger_addendum_v14.json
+          rm -f configs/research/usdjpy_2023_2024_hypothesis_program_v4.json
+          rm -rf .hyp023_payload .hyp023_min_payload
+          rm -f .github/workflows/hyp023_min_import.yml
+      - name: Commit canonical closure
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "research: canonicalize HYP-023 closed result"
+          git push origin HEAD:agent/hyp023-canonical-closure-v1
