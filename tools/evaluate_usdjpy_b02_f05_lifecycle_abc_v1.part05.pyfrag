@@ -1,0 +1,86 @@
+  'protocol_frozen':protocol['status']=='FROZEN_BEFORE_CANDIDATE_OUTCOMES',
+  'required_outputs_declared':len(protocol.get('required_outputs',[]))==15}
+ return {'schema_version':'usdjpy_b02_f05_lifecycle_abc_preflight_v1','status':'PASS' if all(checks.values()) else 'FAIL','outcomes_computed':False,'checks':checks,'candidate_ids':protocol['candidate_ids'],'input_sha256':{'stage1_ledger':file_sha(args.stage1_ledger),'stage1_audit':file_sha(args.stage1_audit),'old_common_migration':file_sha(args.old_common_migration),'common_tick_migration':file_sha(args.common_tick_migration),'m1_2023':file_sha(args.m1_2023),'m1_2024':file_sha(args.m1_2024)},'protocol_sha256':file_sha(args.protocol),'gate_sha256':file_sha(args.gates),'data_contract_sha256':file_sha(args.data_contract),'evaluator_sha256':file_sha(Path(__file__)),'population':pop,'2025_accessed':False,'MT4_accessed':False}
+
+
+def detailed_breakdowns(effects):
+ rows=[]
+ for (cid,fold),g in effects.groupby(['candidate_id','fold']):
+  dimensions={
+   'strategy':g.strategy.astype(str),
+   'direction':g.side.map({1:'LONG',-1:'SHORT'}),
+   'month':g.baseline_entry_time.dt.strftime('%Y-%m'),
+   'quarter':g.baseline_entry_time.dt.to_period('Q').astype(str)}
+  for dim,vals in dimensions.items():
+   for value,z in g.groupby(vals):
+    rows.append({'candidate_id':cid,'stage':z.stage.iloc[0],'fold':fold,'dimension':dim,'value':str(value),'trades':int(len(z)),'triggered':int(z.candidate_triggered.sum()),'baseline_default_pips':float(z.baseline_default_pips.sum()),'candidate_default_pips':float(z.candidate_default_pips.sum()),'default_delta_pips':float(z.default_delta_pips.sum()),'baseline_severe_pips':float(z.baseline_severe_pips.sum()),'candidate_severe_pips':float(z.candidate_severe_pips.sum()),'severe_delta_pips':float(z.severe_delta_pips.sum())})
+ return pd.DataFrame(rows)
+
+def boundary_sensitivity(effects):
+ rows=[]
+ for (cid,fold),g in effects.groupby(['candidate_id','fold']):
+  for label,z in [('ALL',g),('EXCLUDE_BOUNDARY',g[~g.trade_uid.isin(g.loc[g.baseline_close_time>=pd.Timestamp('2025-01-01T00:00:00Z'),'trade_uid'])])]:
+   rows.append({'candidate_id':cid,'stage':g.stage.iloc[0],'fold':fold,'scope':label,'trades':int(len(z)),'boundary_trades':int((z.baseline_close_time>=pd.Timestamp('2025-01-01T00:00:00Z')).sum()),'default_delta_pips':float(z.default_delta_pips.sum()),'severe_delta_pips':float(z.severe_delta_pips.sum())})
+ return pd.DataFrame(rows)
+
+def parameter_equivalence(candidates):
+ rows=[]
+ for c in candidates:
+  norm=json.dumps({k:v for k,v in c.items() if k!='candidate_id'},sort_keys=True,separators=(',',':'))
+  rows.append({'candidate_id':c['candidate_id'],'stage':c['stage'],'normalized_definition_sha256':hashlib.sha256(norm.encode()).hexdigest(),'equivalence_group_size':1,'equivalent_candidate_ids':''})
+ return pd.DataFrame(rows)
+
+def family_regions(candidates,summary):
+ passed=set(summary.loc[summary.all_four_folds_pass,'candidate_id'])
+ adj={c['candidate_id']:[] for c in candidates}
+ def dist(a,b):
+  if a['stage']!=b['stage']:return 99
+  keys=sorted((set(a)|set(b))-{'candidate_id'})
+  return sum(a.get(k)!=b.get(k) for k in keys)
+ for i,a in enumerate(candidates):
+  for b in candidates[i+1:]:
+   if dist(a,b)==1: adj[a['candidate_id']].append(b['candidate_id']);adj[b['candidate_id']].append(a['candidate_id'])
+ components=[]; seen=set()
+ for x in sorted(passed):
+  if x in seen:continue
+  stack=[x]; comp=[];seen.add(x)
+  while stack:
+   z=stack.pop();comp.append(z)
+   for y in adj[z]:
+    if y in passed and y not in seen:seen.add(y);stack.append(y)
+  components.append(sorted(comp))
+ return {'schema_version':'usdjpy_b02_f05_lifecycle_abc_family_region_v1','passing_candidates':sorted(passed),'adjacency':adj,'passing_connected_components':components,'eligible_multi_cell_regions':[c for c in components if len(c)>=2]}
+
+def human_report(result,mf,sf):
+ lines=['# USDJPY B02/F05 lifecycle ABC Research result v1','',f"- Status: `{result['status']}`",f"- Scientific run count: {result['scientific_run_count']}",f"- Baseline trades: {result['population']['total']}",f"- Finalists: {', '.join(result['finalists']) if result['finalists'] else 'none'}",'', '## Candidate summary','', '|Candidate|Stage|Fold passes|All-fold pass|Pooled default Δ pips|Pooled severe Δ pips|Min top10 retention|','|---|---:|---:|---:|---:|---:|---:|']
+ for r in sf.itertuples(): lines.append(f"|{r.candidate_id}|{r.stage}|{r.fold_pass_count}/4|{bool(r.all_four_folds_pass)}|{r.pooled_default_delta_pips:.1f}|{r.pooled_severe_delta_pips:.1f}|{r.minimum_top10_retention:.4f}|")
+ lines += ['', '## Fold failures','']
+ for r in mf.itertuples():
+  if not r.fold_pass:
+   cc=[k for k,v in r.common_gate_checks.items() if not v]; sc=[k for k,v in r.stage_gate_checks.items() if not v]
+   lines.append(f"- `{r.candidate_id}` {r.fold}: common={cc or 'none'}, stage={sc or 'none'}")
+ lines += ['', '## Boundaries','', '- HYP-023/HYP-024 were not re-executed or used as substitutes.', '- 2025 H1/H2 were not accessed.', '- MT4 is authorized only when an exact all-four-fold finalist exists.', '- M30/H1 is non-binding incremental audit only.', '']
+ return '\n'.join(lines)
+
+def main():
+ ap=argparse.ArgumentParser()
+ for n in ['protocol','gates','data-contract','stage1-ledger','stage1-audit','old-common-migration','common-tick-migration','m1-2023','m1-2024','output-dir']:
+  ap.add_argument('--'+n,type=Path,required=True)
+ ap.add_argument('--preflight-only',action='store_true')
+ a=ap.parse_args(); a.output_dir.mkdir(parents=True,exist_ok=True)
+ protocol=json.loads(a.protocol.read_text()); gate=json.loads(a.gates.read_text()); data=json.loads(a.data_contract.read_text()); ledger=load_stage1(a.stage1_ledger)
+ pre=preflight(a,protocol,data,ledger); pre_path=a.output_dir/'usdjpy_b02_f05_lifecycle_abc_preflight_v1.json'; dump_json(pre_path,pre)
+ if pre['status']!='PASS': raise SystemExit(json.dumps(pre,indent=2))
+ if a.preflight_only:
+  print(json.dumps(pre,indent=2)); return
+ m23=Market(load_2023_m1(a.m1_2023),2023); m24=Market(load_2024_m1(a.m1_2024),2024); markets={'2023H1':m23,'2023H2':m23,'2024H1':m24,'2024H2':m24}
+ candidates=[]
+ for key in ['stage_a','stage_b','stage_c']: candidates.extend(protocol[key]['candidates'])
+ rows=[]
+ for tr in ledger.itertuples(index=False):
+  for cand in candidates:
+   z=simulate_one(tr,markets[tr.fold],cand,'COMMON_M1')
+   if z is not None: rows.append(z)
+ effects=pd.DataFrame(rows)
+ # Exact-Tick arm sensitivity is generated only for Stage C and 2024.
+ erows=[]
