@@ -1,0 +1,78 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v42",
+  "status": "USDJPY_RQ024_ENTRY_EXIT_SOURCE_RECOVERY_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v41.json",
+  "active_family": null,
+  "active_hypothesis": null,
+  "current_candidate": null,
+  "current_open_research_question": "USDJPY-RQ-024",
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION",
+    "G_STRUCTURAL_BREAKOUT_INVALIDATION",
+    "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE",
+    "I_B02_SHORT_WEAK_4H_ALIGNMENT_ADMISSION",
+    "N_NATIVE_H4_H1_EMA_STATE_TRANSITION"
+  ],
+  "prior_closed_state": {
+    "hypothesis_id": "USDJPY-HYP-023",
+    "family_id": "N_NATIVE_H4_H1_EMA_STATE_TRANSITION",
+    "scientific_status": "CLOSED_NO_ELIGIBLE_FAMILY_REGION",
+    "candidate_count": 6,
+    "core_cells": 0,
+    "full_cells": 0,
+    "eligible_family_regions": 0,
+    "finalist": null,
+    "repair_or_reopen_authorized": false
+  },
+  "decision": {
+    "research_question": "USDJPY-RQ-024",
+    "stage": "SOURCE_IDENTITY_AND_NEUTRAL_MT4_DATA_PARITY_ONLY",
+    "scientific_outcomes_authorized": false,
+    "candidate_generation_authorized": false,
+    "purpose": "Recover the exact original Entry/Exit research source package and prove accepted full-OHLC/MT4 source parity before Stage E1."
+  },
+  "source_recovery_protocol": "configs/research/usdjpy_b02_f05_entry_exit_source_recovery_protocol_v1.json",
+  "historical_wip_receipt": "configs/research/usdjpy_b02_f05_entry_exit_stage1_source_audit_wip_v1.json",
+  "startup_receipt": "configs/research/usdjpy_rq024_startup_receipt_v1.json",
+  "run_authorization": {
+    "source_identity_recovery": true,
+    "non_outcome_market_data_materialization": true,
+    "MT4_source_data_parity": true,
+    "2023_2024_development_analysis": false,
+    "candidate_signal_generation": false,
+    "candidate_outcome_evaluation": false,
+    "MT4_parity": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "additional_feature_or_threshold_search": false,
+    "parameter_grid_expansion": false,
+    "new_family_preregistration": false,
+    "combination_with_closed_family": false,
+    "gate_change_after_outcomes": false,
+    "live_orders": false
+  },
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v16.json",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "period_policy": "configs/research/usdjpy_period_role_policy_v5.json",
+    "startup_read_receipt_required": true,
+    "duplicate_research_audit_required_before_new_family": true,
+    "atomic_ledger_update_required_after_test": true
+  },
+  "period_boundary": {
+    "metadata_and_source_parity_permitted": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "strategy_outcome_access_permitted": [],
+    "2025H1_locked": true,
+    "2025H2_locked": true,
+    "historical_2024_source_immutable": true
+  },
+  "next_action": "Recover and byte-verify the exact B02/F05 Entry/Exit report and reproducibility bundle; materialize the accepted 2024 M1/M5/M15/H1 OHLC source with immutable hashes and run a neutral MT4 source-data parity probe. Do not access strategy outcomes, generate a candidate, search features or thresholds, or use 2025. After every source-identity and parity gate passes, a newer registry must explicitly authorize Stage E1 exact reproduction.",
+  "live_order_authorized": false
+}
