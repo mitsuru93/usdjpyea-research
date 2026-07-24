@@ -1,0 +1,56 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "candidate_ids": [
+        "ABC_A_F05_ABORT_Q2","ABC_A_F05_ABORT_Q3","ABC_A_F05_DELAY_Q2","ABC_A_F05_DELAY_Q3",
+        "ABC_A_B02_ABORT_Q2","ABC_A_B02_ABORT_Q3","ABC_A_B02_DELAY_Q2","ABC_A_B02_DELAY_Q3",
+        "ABC_B_F05_Q2","ABC_B_F05_Q3","ABC_B_B02_Q2","ABC_B_B02_Q3",
+        "ABC_C_M5_Q2_R1","ABC_C_M5_Q2_R2","ABC_C_M5_Q3_R1","ABC_C_M5_Q3_R2",
+        "ABC_C_M15_Q2_R1","ABC_C_M15_Q2_R2","ABC_C_M15_Q3_R1","ABC_C_M15_Q3_R2"
+      ],
+      "causal_hypothesis": "Strategy-specific completed-bar establishment and continuation, plus profit-armed peak-relative price geometry, can distinguish failed B02/F05 lifecycle transitions without using generic oscillator collapse and without excessive Winner-tail sacrifice.",
+      "decision": "Authorize exactly one frozen Research evaluation of the 20 user-specified cells on 2023/2024. MT4 and 2025 remain locked.",
+      "evidence_refs": [
+        {"path":"configs/research/usdjpy_b02_f05_lifecycle_abc_prereg_v1.json","repository":"mitsuru93/usdjpyea-research"},
+        {"path":"configs/research/usdjpy_b02_f05_lifecycle_abc_preflight_v1.json","repository":"mitsuru93/usdjpyea-research"},
+        {"path":"configs/research/usdjpy_b02_f05_stage1_source_class_audit_v1.json","repository":"mitsuru93/usdjpyea-research"}
+      ],
+      "falsified_or_unsupported_claims": [],
+      "family_ids": ["P_LIFECYCLE_PRICE_STRUCTURE_TRANSITIONS"],
+      "hypothesis_id": "USDJPY-HYP-025",
+      "origin_analysis": "Direct user specification based on verified four-fold Release-tick analysis and a new common-M1/exact-Tick class audit. The three lifecycle tasks are evaluated separately.",
+      "pre_result_predictions": [
+        "at least one Stage A specification lowers P3 count/loss/share in every applicable fold while preserving Winner tails",
+        "at least one Stage B specification lowers P2 gross loss without Winner loss exceeding P2 benefit in all folds",
+        "at least one Stage C connected price-geometry region lowers P1 giveback while retaining top-10/top-5 Winner profit",
+        "portfolio replay common gates pass all four folds for any finalist"
+      ],
+      "prohibited_reuse": [
+        "no HYP-023 or HYP-024 execution or repair",
+        "no momentum/MACD/EMA generic collapse substitution",
+        "no post-outcome threshold/timeframe/primitive changes",
+        "no side/year/session/strategy local repair",
+        "no 2025 selection"
+      ],
+      "retained_findings": [
+        "old M15 path labels migrate materially under common M1 and exact Tick authority",
+        "F05 establishment timing is first completed M5; B02 is second completed M5",
+        "new family uses price-structure transition information, not HYP-024 indicator threshold repair"
+      ],
+      "status": "ACTIVE_PREREGISTERED_OUTCOMES_NOT_OPENED",
+      "successor_questions": ["Do any of the exact 20 lifecycle cells pass every four-fold portfolio and Winner-tail gate?"],
+      "target_failure_mode": ["P3 never-profitable breakout failure","P2 minor-favorable failure to continue","P1 +10-pip giveback to final loss"],
+      "tests": [{
+        "evidence":"configs/research/usdjpy_b02_f05_lifecycle_abc_preflight_v1.json",
+        "period":"2023H1_2023H2_2024H1_2024H2",
+        "result":{"baseline_trades":1882,"candidate_count":20,"outcomes_computed":false,"status":"PASS"},
+        "type":"outcome-free preflight"
+      }]
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v19",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v18.json"
+}
