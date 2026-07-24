@@ -1,0 +1,48 @@
+{
+  "schema_version": "f05_failed_reclaim_binding_run_receipt_v1",
+  "status": "TECHNICAL_MISMATCH_STOP",
+  "repository": "mitsuru93/usdjpyea-research",
+  "protocol_merge_commit": "2cd04c1a22874b02452f9ffa8a4aae7c4f0b0123",
+  "binding_run_head_sha": "dd70ed0495aecaff8de9629838122015036fd94e",
+  "workflow": ".github/workflows/validate_f05_failed_reclaim_v1.yml",
+  "event": "workflow_dispatch",
+  "run_id": 30095266485,
+  "run_attempt": 1,
+  "job_id": 89487718219,
+  "run_conclusion": "success",
+  "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+  "non_binding_sensitivity": {
+    "candidate_id": "F05_FAILED_RECLAIM_WEAK_QUICK_V1",
+    "executed": false,
+    "binding": false
+  },
+  "artifact": {
+    "artifact_id": 8597314851,
+    "name": "f05-failed-reclaim-validation-v1-30095266485-1",
+    "archive_sha256": "0989ca20749d3100c40d411fed7534351e6c4fbb28941161055b6ce0f4b69ebc",
+    "expires_at": "2026-08-23T13:01:56Z"
+  },
+  "release": {
+    "tag": "f05-failed-reclaim-validation-v1",
+    "asset_name": "f05-failed-reclaim-validation-v1-30095266485-1.zip",
+    "asset_bytes": 17691,
+    "asset_sha256": "4b8819b6b3545adab586671eac65544d8c0a4ce839e4b8258ff92bbd7702eafd",
+    "published": true
+  },
+  "result_files": {
+    "f05_failed_reclaim_binding_technical_fixture_result_v1.json": "4ad6b215d4aacbd94e33a0dfb009589e7dd9e4088add58d768c83ab4457307a3",
+    "f05_failed_reclaim_binding_execution_receipt_v1.json": "813805086b91ed92f605b3faf21b45420265880aacfc79c7ae90b624185bba44",
+    "f05_failed_reclaim_fixture_preflight_v1.json": "f399f356b9f1bafcce234e397c02a22fdbfe779276193aa8f0c953ed73c41db3"
+  },
+  "decision": "STOP_BEFORE_PORTFOLIO_REPLAY_AND_SCIENTIFIC_GATE_INTERPRETATION",
+  "boundaries": {
+    "scientific_outcomes_interpreted": false,
+    "historical_gates_evaluated": false,
+    "portfolio_replay_computed": false,
+    "non_binding_sensitivity_computed": false,
+    "mt4_accessed": false,
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "new_hypothesis_created": false
+  }
+}
