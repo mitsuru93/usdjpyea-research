@@ -1,0 +1,32 @@
+{
+  "artifact": {
+    "digest": "sha256:167064e9a599a83171cb6cc825609911cf7b804d0b9adec6a5750eab06b32369",
+    "id": 8602116809,
+    "release_tag": "usdjpy-b02-f05-structural-sl-atlas-v2"
+  },
+  "artifact_evidence_sha256": {
+    "deterministic_candidate_metrics_v2.csv": "d8e5da0b67d3e501e45071b54c6a784e7a5cb82cdbfa4458142c71c4693edd3a",
+    "deterministic_event_ledger_v2.csv.gz": "6780a28200975da6848dfd8760a96ba67f52327197649a2836c8e32e03c2a0a1",
+    "deterministic_nested_cv_v2.csv": "65e2839f625dc290bf5e014a0f55199bb275c25da29139401e4f3f50b440e928",
+    "supervised_nested_cv_v2.csv": "de2c767b13cfbdb904065dddf51aafa2d9941dad07c8c58f3ba4239a512c663b",
+    "trajectory_diagnostics_v2.csv": "27b04ab651e3fe4d72a6a4d8b6f960de20d9b876f73a3d45a8cc931b77eeb609",
+    "unsupervised_nested_cv_v2.csv": "5bc0a34a445a1c4a4fd439e33b4a0d84cb2fe524f6ff8d748cacc36710765d26"
+  },
+  "canonical_files": {
+    "configs/research/usdj_b02_f05_structural_sl_atlas_canonical_result_v2.json": {
+      "sha256": "d5126cef8f41e6ce0fbafdcae38f6354dcb08a7a984077548de2f2c8385f0235"
+    },
+    "configs/research/usdjpy_b02_f05_structural_sl_atlas_execution_receipt_v2.json": {
+      "sha256": "eba6084c1e4a7474ac85cf906bdfbb61c322fcf4e1bd62a75e3c849c3a3d8bcb"
+    },
+    "docs/research/USDJPY_B02_F05_structural_SL_atlas_v2.md": {
+      "sha256": "9fb99b8cd2716f40f66ba901a367f8c5fabd1a62af822e67613b8e303549f3e6"
+    }
+  },
+  "cleanup": {
+    "remove_dispatch_marker": "configs/run_markers/usdjpy_structural_sl_atlas_v2_dispatch.json",
+    "remove_dispatch_workflow": ".github/workflows/dispatch_usdjpy_structural_sl_atlas_v2.yml"
+  },
+  "schema_version": "usdjpy_b02_f05_structural_sl_atlas_canonical_manifest_v2",
+  "status": "PASS_READY_FOR_CANONICAL_VALIDATION"
+}
