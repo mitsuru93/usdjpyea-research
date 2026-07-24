@@ -1,0 +1,73 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "candidate_ids": [],
+      "causal_hypothesis": "At least one frozen 2024 complete strategy transports to 2023 under default and severe cost with nonnegative performance in both half-years.",
+      "decision": "Close fixed-strategy portability. No frozen strategy is a cross-year candidate.",
+      "evidence_refs": [{"path": "configs/research/usdjpy_fixed5_exact_portability_result_v1.json", "repository": "mitsuru93/usdjpyea-research"}],
+      "falsified_or_unsupported_claims": ["the 2024 fixed strategy universe contains an unchanged strategy robust to 2023 cost and half-year stress"],
+      "family_ids": [],
+      "hypothesis_id": "USDJPY-RQ-020A-RESULT-001",
+      "origin_analysis": "The exact 2023 transformer and unchanged five-strategy 2024 cohort were made source-reproducible.",
+      "pre_result_predictions": ["1,543 timestamp shifts reproduce exactly", "all 2024 H1/H2 signal/trade regressions pass", "at least one unchanged strategy passes all 2023 portability gates"],
+      "prohibited_reuse": ["do not select F05 or H04 from full-year default P/L alone", "no parameter repair of the closed fixed cohort", "no 2025 portability selection"],
+      "retained_findings": ["F05 and H04 pool to small default-cost gains but fail severe cost and 2023 H1", "the 2023H1 failure is broad across all five mechanisms"],
+      "status": "CLOSED_NO_PORTABLE_FIXED_STRATEGY",
+      "successor_questions": ["does a pre-entry multi-day market state explain the four-fold sign changes?"],
+      "target_failure_mode": ["missing independent cross-year edge", "2023 portfolio deficit"],
+      "tests": [{"period": "2023_and_2024", "result": {"F05_default_2023_pips": 524.9, "F05_severe_2023_pips": -923.1, "H04_default_2023_pips": 51.2, "H04_severe_2023_pips": -590.8, "eligible_strategy_count": 0, "identity_gates_pass": true}, "result_path": "configs/research/usdjpy_fixed5_exact_portability_result_v1.json", "type": "exact frozen five-strategy portability"}]
+    },
+    {
+      "candidate_ids": [],
+      "causal_hypothesis": "Static diversification of distinct fixed edges reduces regime dependence enough to pass 2023 default, severe and both-half-year gates.",
+      "decision": "Close static multi-edge portfolio hypothesis. Weight optimization is not authorized.",
+      "evidence_refs": [{"path": "configs/research/usdjpy_fixed5_exact_portability_result_v1.json", "repository": "mitsuru93/usdjpyea-research"}],
+      "falsified_or_unsupported_claims": ["unoptimized static diversification solves the 2023 regime deficit"],
+      "family_ids": [],
+      "hypothesis_id": "USDJPY-RQ-020D-RESULT-001",
+      "origin_analysis": "Fixed equal-weight five-strategy and leave-one-out portfolios were evaluated after exact transformer and 2024 regression gates passed.",
+      "pre_result_predictions": ["one predeclared equal-weight portfolio passes every 2023 gate"],
+      "prohibited_reuse": ["no outcome-derived weights", "no subset selection beyond the frozen leave-one-out set", "no 2025 portfolio optimization"],
+      "retained_findings": ["removing B02 reduces default loss but remains materially negative", "severe transaction costs overwhelm all static portfolios"],
+      "status": "CLOSED_NO_PORTABLE_STATIC_PORTFOLIO",
+      "successor_questions": ["can a market-state diagnosis justify a prospective router rather than static weights?"],
+      "target_failure_mode": ["single-strategy regime dependence", "2023 portfolio deficit"],
+      "tests": [{"period": "2023", "result": {"best_default_net_pips": -728.2, "best_default_portfolio": "exclude B02", "eligible_portfolio_count": 0, "equal_five_default_net_pips": -1954.2, "equal_five_severe_net_pips": -8594.2}, "result_path": "configs/research/usdjpy_fixed5_exact_portability_result_v1.json", "type": "equal-weight five and five leave-one-out portfolios"}]
+    },
+    {
+      "candidate_ids": [],
+      "causal_hypothesis": "Pre-entry multi-day market direction, persistence, volatility ratio and range position explain whether fixed momentum/breakout signals continue or mean-revert across all four development half-years.",
+      "decision": "Run descriptive fixed-bin diagnosis only. Do not preregister a router until a state has adequate support and consistent four-fold direction.",
+      "evidence_refs": [
+        {"path": "configs/research/usdjpy_fixed5_exact_portability_result_v1.json", "repository": "mitsuru93/usdjpyea-research"},
+        {"path": "docs/research/usdjpy_fixed5_exact_portability_result_v1.md", "repository": "mitsuru93/usdjpyea-research"}
+      ],
+      "falsified_or_unsupported_claims": [],
+      "family_ids": [],
+      "hypothesis_id": "USDJPY-RQ-020B",
+      "origin_analysis": "Exact fixed-strategy and static-portfolio portability both failed because 2023 H1 was broadly adverse while 2023 H2 and 2024 folds were materially stronger.",
+      "pre_result_predictions": ["5-day/20-day agreement states are reconstructable without lookahead", "at least one predeclared state has the same continuation-versus-reversal effect sign in all four folds", "market-state effects are broader than one strategy or one local B02 threshold"],
+      "prohibited_reuse": ["no optimized thresholds or tree search", "no outcome-derived state bins", "no router candidate before descriptive four-fold consistency", "no 2025 feature selection"],
+      "retained_findings": ["no static fixed strategy transports", "no static equal-weight portfolio transports", "local B02 band partitions failed", "trailing strategy health changed sign"],
+      "status": "OPEN_RESEARCH_QUESTION",
+      "successor_questions": ["which predeclared 5-day/20-day states consistently favor continuation or reversal?"],
+      "target_failure_mode": ["broad 2023H1 strategy loss", "cross-fold directional sign reversal", "static strategy selection failure"],
+      "tests": []
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json"
+  ],
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v9",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json"
+}
