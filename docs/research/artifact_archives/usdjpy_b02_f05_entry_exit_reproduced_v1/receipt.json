@@ -1,0 +1,21 @@
+{
+  "schema_version": "usdjpy_b02_f05_entry_exit_reproduced_bundle_receipt_v1",
+  "status": "EXACT_BUNDLE_GENERATED_RELEASE_MIRROR_PENDING",
+  "filename": "B02_F05_entry_exit_technical_factor_analysis_reproduced_v1.zip",
+  "bytes": 3290114,
+  "sha256": "e74e45599ba862f8f407e7b85a4d6f2c025fb6e5ef5b8dfe098f98fc89e6abaa",
+  "manifest_sha256": "46ff06a90e7570df664433aa2554b26f007cc1fdf2387b3a3aee01810f9d23a4",
+  "source": "independent reconstruction from exact repository Release/Actions authorities",
+  "scientific_interpretation_basis": "exact trade counts, feature values, pooled statistics and portable-factor reproduction; independent multivariate model is separately disclosed",
+  "original_report_expected_sha256": "31e7fc2352effa08042cc86e58a980cb1234cc4bad64751495b1deab266d74c4",
+  "original_bundle_expected_sha256": "64666e41f752bf2a56020b7fd22380f817b5fe35a1f64d1f49aa647815a14779",
+  "original_bundle_retrieved": false,
+  "canonical_files": [
+    "configs/research/usdjpy_b02_f05_entry_exit_technical_reproduction_result_v1.json",
+    "docs/research/usdjpy_b02_f05_entry_exit_technical_reproduction_result_v1.md",
+    "tools/evaluate_usdjpy_b02_f05_profit_armed_state_collapse_v1.py"
+  ],
+  "release_mirror": {"published": false, "reason": "current connector exposes artifact download but not binary Release-asset upload; exact generated bundle is retained in the active execution environment for handoff"},
+  "historical_2024_mutated": false,
+  "2025_accessed": false
+}
