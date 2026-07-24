@@ -1,0 +1,39 @@
+{
+  "schema_version": "f05_failed_reclaim_technical_fixture_receipt_v1",
+  "status": "TECHNICAL_REPRODUCTION_FIXTURE_ONLY",
+  "generation_basis": {
+    "source": "exact downloaded Actions artifacts and Research Release members",
+    "full_evaluator_path": "tools/evaluate_f05_failed_reclaim_v1.py",
+    "full_evaluator_local_precommit_sha256": "e7bf7422b14b538fa99bec33ab20c11192efb09dc0c0835d9feaeb7690c41f21",
+    "original_report_reproduction": "14 stopped trades, +202.1 pips total, +65.2 Long, +136.9 Short, all four fold totals exact",
+    "direct_instruction_reproduction": "15 stopped trades, +200.6 pips total, one direct-only 2023H1 Short"
+  },
+  "fixture_sha256": {
+    "configs/research/f05_failed_reclaim_exploration_reproduction_fixture_v1.csv": "75312aba2ffd92c45ec52023b49ba906b6e216730c61f932927c8c239c5da837",
+    "configs/research/f05_failed_reclaim_direct_spec_fixture_v1.csv": "41f6bcda5515a40e283fde65e55cf8a1010ef26d31930e6fe8717238bf5ff6a9"
+  },
+  "identity_difference": {
+    "direct_only_trade_key": "F05|2023-06-08T15:45:00Z|-1",
+    "reclaim_m1_close_utc": "2023-06-08T16:35:00Z",
+    "direct_failure_m5_completion_utc": "2023-06-08T16:40:00Z",
+    "direct_delta_pips": -1.5,
+    "cause": "The exploration admitted an M5 completion equal to the reclaim M1 close; the direct instruction requires completion strictly later than the reclaim close."
+  },
+  "limitations": {
+    "original_bundle_retrieved": false,
+    "raw_fixture_is_original_bundle": false,
+    "scientific_input_authority": false,
+    "portfolio_replay_authority": false,
+    "mt4_authority": false,
+    "2025_authority": false
+  },
+  "allowed_use": "GitHub-hosted technical identity and timing-boundary verification only",
+  "prohibited_use": [
+    "scientific PASS or FAIL",
+    "historical gate interpretation",
+    "portfolio replay",
+    "sensitivity promotion",
+    "MT4 unlock",
+    "2025 unlock"
+  ]
+}
