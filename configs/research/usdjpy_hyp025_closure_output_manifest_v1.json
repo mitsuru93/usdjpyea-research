@@ -1,0 +1,45 @@
+{
+  "binding_summary_paths": [
+    "configs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.json",
+    "docs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.md",
+    "configs/research/usdjpy_b02_f05_lifecycle_abc_candidate_summary_v1.csv",
+    "configs/research/usdjpy_b02_f05_lifecycle_abc_stage_summary_v1.csv"
+  ],
+  "bundle_storage": "sandbox/local handoff; binary Release mirroring unavailable through the connected GitHub action set",
+  "closure_bundle": {
+    "name": "usdjpy_hyp025_lifecycle_abc_closure_bundle_v1.zip",
+    "sha256": "8b71b65202448881398f0679126da326a474fcb00590eecf34a4c1e475303d4a",
+    "size_bytes": 1517079
+  },
+  "full_output_files": [
+    {"name":"usdjpy_b02_f05_lifecycle_abc_boundary_sensitivity_v1.csv","sha256":"16f4a6b1544960c32d09e7e3775f7542e33a707a494867aede0e7f1161b8a66f","size_bytes":12896},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_breakdown_metrics_v1.csv","sha256":"bfe2574b6bb627bcbc8d7e7431bac8c5aab6bd2831bfe388523fd6f50b011c84","size_bytes":148871},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_candidate_summary_v1.csv","sha256":"28b920ab3cb9ffb70a2745a84ffd99bea5f2ded1fa574369ee1f121b73dc9f5d","size_bytes":3075},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_exact_tick_c_arm_effects_v1.csv","sha256":"13b24e2a339983e82f0b250e99ed2a3c8570d11363471fba4b041adcfb9be899","size_bytes":3668848},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_family_region_v1.json","sha256":"4061a604fab41c54ae5f598dd41e06d91c64109dc34fbb5b52f92da8ea6ba7fb","size_bytes":1948},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_fold_metrics_v1.csv","sha256":"1cef2389682f657f4732201508ab7bc5e9eb8aaf7687ec8862336c7505afd01d","size_bytes":148923},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_m30_h1_incremental_audit_v1.csv","sha256":"803fa99e3c553db4ae5322ce62c8872ec7ca8a5260c6fb6ad515241ebb8632f4","size_bytes":2778273},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_parameter_equivalence_v1.csv","sha256":"ffe4b63dd2b0866db2b4400574f90f89583c5aa1571606ecf9321a6d30e96ebd","size_bytes":1824},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_portfolio_replay_v1.csv","sha256":"40911f7cabffbd61a7b7869e0e7e4f316a1f188ff2ead96f53ec4a049b85b603","size_bytes":8535},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_result_v1.json","sha256":"6f2a9d2ac514605d579dd2454b56b46665b53aa2d11ef27f6f1da7c223b3bbfc","size_bytes":12580},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_tick_sensitivity_v1.csv","sha256":"5907b8def4d16bc6c5b03802700d8e33df2af555d65e706416375d2043e212b6","size_bytes":1989},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_trade_effects_v1.csv","sha256":"28e4eff1f59ba6b1c14726553e79564089004749306f236ab57684902458db9f","size_bytes":16410459}
+  ],
+  "large_trade_level_outputs_in_bundle_only": [
+    "usdjpy_b02_f05_lifecycle_abc_trade_effects_v1.csv",
+    "usdjpy_b02_f05_lifecycle_abc_exact_tick_c_arm_effects_v1.csv",
+    "usdjpy_b02_f05_lifecycle_abc_m30_h1_incremental_audit_v1.csv",
+    "usdjpy_b02_f05_lifecycle_abc_breakdown_metrics_v1.csv"
+  ],
+  "repository_summary_files": [
+    {"name":"usdjpy_b02_f05_lifecycle_abc_candidate_summary_v1.csv","sha256":"7fa7bc37a0be7496f438dfdd869dd433e50d6eb5fa5dfa3849165495ea5e7189","size_bytes":3163},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_gate_failure_summary_v1.json","sha256":"3d0f87ada3aa0ca831702251732b3916771959d20c3508ae18bd47c54b7aa623","size_bytes":1449},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_result_v1.json","sha256":"7a031d134451214800c8e3061e2d1012f4ca3adef8b6e66908c12f25818503ea","size_bytes":15618},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_result_v1.md","sha256":"324717fcd1e2ea9d93f93134f02826e2e8f7aa01eada4a7b08790b054367d9fd","size_bytes":5052},
+    {"name":"usdjpy_b02_f05_lifecycle_abc_stage_summary_v1.csv","sha256":"2425178c1505aa9d7776fc9020a2f233d0fa71193ea430fae4c5af406bd25be3","size_bytes":485},
+    {"name":"usdjpy_hyp025_exact_evaluation_receipt_v1.json","sha256":"6ce290782fa53163ad468ff9dcf91b45dd67937081550f96b2984225caf3fa98","size_bytes":1734},
+    {"name":"usdjpy_hyp025_period_access_receipt_v2.json","sha256":"1292db28790f32aa7d57d99ba8ce200350ea8e34ed1f627ee1ef28878da174d0","size_bytes":555}
+  ],
+  "schema_version": "usdjpy_hyp025_closure_output_manifest_v1",
+  "status": "COMPLETE_SUMMARY_AND_LOCAL_FULL_BUNDLE"
+}

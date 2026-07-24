@@ -1,0 +1,55 @@
+{
+  "MT4_accessed": false,
+  "all_four_fold_pass_candidates": [],
+  "candidate_count": 20,
+  "canonical_data_contract_sha256": "c8b6f660383bf0b51a980d663abc71a6b1e8e29a62f1e562764fa3d21637f51e",
+  "canonical_evaluator_materialized_sha256": "e769943b736e1318bf63928fe80903fead355dd5590b8f6a3f28d27e5d889561",
+  "canonical_gate_sha256": "980d471ac17757b955a09a1591c6b3260385e923acfd5e00bc35e817750aba05",
+  "canonical_protocol_sha256": "800bdeff903fe0b47871449506b3b65a1fd9436c18056e3c2570672be2e9ca3b",
+  "closure_reconstruction_count": 1,
+  "decision": "CLOSE_BEFORE_MT4_AND_2025",
+  "family_id": "P_LIFECYCLE_PRICE_STRUCTURE_TRANSITIONS",
+  "fold_metric_rows": 80,
+  "full_fold_pass_rows": [
+    {
+      "candidate_id": "ABC_B_B02_Q3",
+      "default_delta_pips": 782.5,
+      "fold": "2023H1",
+      "severe_delta_pips": 782.5
+    }
+  ],
+  "hypothesis_id": "USDJPY-HYP-025",
+  "live_orders": false,
+  "periods_accessed": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "periods_not_accessed": [
+    "2025H1",
+    "2025H2"
+  ],
+  "population": {
+    "folds": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ],
+    "trades": 1882
+  },
+  "preregistration_commit": "5c8ed243734c47e35f29e4219d958fe2e6b70fd4",
+  "reconstruction_invariants": {
+    "candidate_changed": false,
+    "common_m1_counts_match": true,
+    "exact_tick_2024_counts_match": true,
+    "gate_changed": false,
+    "protocol_changed": false,
+    "tick_rows_scanned": 40969081
+  },
+  "reconstruction_reason": "successful result output directory was not persisted before canonical closure",
+  "schema_version": "usdjpy_hyp025_exact_evaluation_receipt_v1",
+  "scientific_run_count": 1,
+  "status": "SCIENTIFIC_RESULT_COMPLETE_FAIL"
+}

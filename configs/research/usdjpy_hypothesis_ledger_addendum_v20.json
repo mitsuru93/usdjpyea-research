@@ -1,0 +1,60 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "candidate_ids": [
+        "ABC_A_F05_ABORT_Q2","ABC_A_F05_ABORT_Q3","ABC_A_F05_DELAY_Q2","ABC_A_F05_DELAY_Q3","ABC_A_B02_ABORT_Q2","ABC_A_B02_ABORT_Q3","ABC_A_B02_DELAY_Q2","ABC_A_B02_DELAY_Q3","ABC_B_F05_Q2","ABC_B_F05_Q3","ABC_B_B02_Q2","ABC_B_B02_Q3","ABC_C_M5_Q2_R1","ABC_C_M5_Q2_R2","ABC_C_M5_Q3_R1","ABC_C_M5_Q3_R2","ABC_C_M15_Q2_R1","ABC_C_M15_Q2_R2","ABC_C_M15_Q3_R1","ABC_C_M15_Q3_R2"
+      ],
+      "causal_hypothesis": "Strategy-specific completed-bar establishment and continuation, plus profit-armed peak-relative price geometry, can distinguish failed B02/F05 lifecycle transitions without excessive Winner-tail sacrifice.",
+      "decision": "Close HYP-025 before MT4 and 2025. None of the 20 frozen cells passed all four folds and no connected passing region exists. Do not repair or chain stages after outcomes.",
+      "evidence_refs": [
+        {"path":"configs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.json","repository":"mitsuru93/usdjpyea-research"},
+        {"path":"docs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.md","repository":"mitsuru93/usdjpyea-research"},
+        {"path":"configs/research/usdjpy_hyp025_exact_evaluation_receipt_v1.json","repository":"mitsuru93/usdjpyea-research"},
+        {"path":"configs/research/usdjpy_b02_f05_lifecycle_abc_candidate_summary_v1.csv","repository":"mitsuru93/usdjpyea-research"}
+      ],
+      "falsified_or_unsupported_claims": [
+        "P3 establishment actions preserve Winner tails and portfolio stability across all folds",
+        "P2 continuation exits generalize beyond a single B02 fold",
+        "P1 peak-relative deterioration is a portable termination rule",
+        "any exact Stage A/B/C cell is ready for MT4"
+      ],
+      "family_ids": ["P_LIFECYCLE_PRICE_STRUCTURE_TRANSITIONS"],
+      "hypothesis_id": "USDJPY-HYP-025-RESULT-001",
+      "origin_analysis": "The user-directed B02/F05 lifecycle protocol separated P3 establishment, P2 continuation and P1 peak-relative deterioration and froze 20 cells before outcomes.",
+      "pre_result_predictions": [
+        "at least one Stage A specification lowers P3 count/loss/share in every applicable fold while preserving Winner tails",
+        "at least one Stage B specification lowers P2 loss without Winner loss exceeding P2 benefit in all folds",
+        "at least one Stage C connected region lowers P1 giveback while retaining Winner tails",
+        "at least one exact candidate passes every four-fold portfolio gate"
+      ],
+      "prohibited_reuse": [
+        "no threshold, quorum, persistence, timeframe or primitive repair",
+        "no Stage A/B/C chaining or combination from these outcomes",
+        "no side, year, session or strategy exception",
+        "no HYP-023/HYP-024 substitution",
+        "no MT4 or 2025 selection"
+      ],
+      "retained_findings": [
+        "Stage A target gates passed in 18 of 32 fold rows but every row failed the complete common portfolio gate",
+        "ABC_B_B02_Q3 passed every gate in 2023H1 only and did not generalize",
+        "all 32 Stage C fold rows reduced P1 loss without pre-peak triggers, confirming a real deterioration detector",
+        "every Stage C cell failed portability through sub-block, concentration, Winner-tail or leave-one-month stability",
+        "all 20 candidates had negative pooled default and severe deltas"
+      ],
+      "status": "CLOSED_NO_ALL_FOLD_PASS",
+      "successor_questions": ["Can genuinely distinct recoverability or structural information improve the all-loss population without reusing HYP-025 lifecycle thresholds?"],
+      "target_failure_mode": ["P3 never-profitable breakout failure","P2 minor-favorable failure to continue","P1 +10-pip giveback to final loss"],
+      "tests": [{
+        "evidence":"configs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.json",
+        "period":"2023H1_2023H2_2024H1_2024H2",
+        "result":{"all_candidate_pooled_default_delta_negative":true,"all_four_fold_pass_candidates":0,"candidate_cells":20,"eligible_family_regions":0,"finalist":null,"fold_rows":80,"single_full_fold_pass":"ABC_B_B02_Q3|2023H1","stage_A_full_fold_pass_rows":0,"stage_B_full_fold_pass_rows":1,"stage_C_full_fold_pass_rows":0},
+        "type":"exact frozen twenty-cell lifecycle evaluation with full signal-stream portfolio replay"
+      }]
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v20",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v19.json"
+}

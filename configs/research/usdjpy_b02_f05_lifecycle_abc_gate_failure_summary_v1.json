@@ -1,0 +1,66 @@
+{
+  "failure_counts": {
+    "A": {
+      "common_gate_failure_counts": {
+        "B02": 12,
+        "F05": 12,
+        "default_net": 24,
+        "ex_best_two_dates": 25,
+        "leave_one_month": 24,
+        "long": 22,
+        "months": 23,
+        "pf": 20,
+        "severe_net": 24,
+        "short": 15,
+        "subblocks": 26,
+        "top10": 28,
+        "top5": 17
+      },
+      "fold_rows": 32,
+      "stage_gate_failure_counts": {
+        "p3_count": 14
+      }
+    },
+    "B": {
+      "common_gate_failure_counts": {
+        "B02": 6,
+        "F05": 6,
+        "default_net": 12,
+        "ex_best_two_dates": 12,
+        "leave_one_month": 12,
+        "long": 9,
+        "months": 12,
+        "pf": 11,
+        "severe_net": 12,
+        "short": 8,
+        "subblocks": 14,
+        "top10": 9,
+        "top5": 5
+      },
+      "fold_rows": 16,
+      "stage_gate_failure_counts": {
+        "winner_vs_benefit": 13
+      }
+    },
+    "C": {
+      "common_gate_failure_counts": {
+        "B02": 17,
+        "F05": 23,
+        "default_net": 21,
+        "ex_best_two_dates": 31,
+        "leave_one_month": 31,
+        "long": 19,
+        "months": 25,
+        "pf": 20,
+        "severe_net": 21,
+        "short": 16,
+        "subblocks": 32,
+        "top10": 31,
+        "top5": 28
+      },
+      "fold_rows": 32,
+      "stage_gate_failure_counts": {}
+    }
+  },
+  "schema_version": "usdjpy_b02_f05_lifecycle_abc_gate_failure_summary_v1"
+}

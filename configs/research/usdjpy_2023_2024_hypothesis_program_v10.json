@@ -1,0 +1,38 @@
+{
+  "2025_access": false,
+  "MT4_access": false,
+  "active_family": null,
+  "active_hypothesis": null,
+  "all_four_fold_pass_candidates": [],
+  "candidate_count": 20,
+  "completed_hypothesis": "USDJPY-HYP-025",
+  "eligible_family_regions": [],
+  "family_id": "P_LIFECYCLE_PRICE_STRUCTURE_TRANSITIONS",
+  "folds": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "next_action": "No HYP-025 repair, Stage A/B/C chaining, MT4 or 2025 evaluation. Await a direct user instruction for any distinct successor.",
+  "result": "configs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.json",
+  "result_status": "CLOSED_NO_ALL_FOLD_PASS",
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v10",
+  "stages": {
+    "A": {
+      "candidates": 8,
+      "full_fold_pass_rows": 0
+    },
+    "B": {
+      "candidates": 4,
+      "full_fold_pass_rows": 1,
+      "passing_fold": "ABC_B_B02_Q3|2023H1"
+    },
+    "C": {
+      "candidates": 8,
+      "full_fold_pass_rows": 0
+    }
+  },
+  "status": "HYP025_CLOSED_NO_ALL_FOLD_PASS",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v9.json"
+}
