@@ -1,0 +1,17 @@
+{
+  "2025_H1_accessed": false,
+  "2025_H1_authorized": false,
+  "2025_H2_accessed": false,
+  "2025_H2_authorized": false,
+  "MT4_accessed": false,
+  "MT4_authorized": false,
+  "development_folds": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "outcomes_computed": false,
+  "schema_version": "usdjpy_b02_f05_lifecycle_abc_period_access_receipt_v1",
+  "status": "PRE_OUTCOME_FIREWALL_PASS"
+}
