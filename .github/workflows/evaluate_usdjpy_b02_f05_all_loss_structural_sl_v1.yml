@@ -23,6 +23,7 @@ on:
 permissions:
   actions: read
   contents: write
+  issues: write
 
 concurrency:
   group: usdjpy-b02-f05-all-loss-structural-sl-v1-${{ github.event_name }}-${{ github.ref }}
@@ -177,3 +178,43 @@ jobs:
         run: |
           echo "artifact_id=${{ steps.upload.outputs.artifact-id }}"
           echo "artifact_digest=${{ steps.upload.outputs.artifact-digest }}"
+      - name: Publish connector-visible run receipt
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          result_status='NOT_AVAILABLE'
+          decision_status='NOT_AVAILABLE'
+          trade_count='NOT_AVAILABLE'
+          loser_count='NOT_AVAILABLE'
+          if [[ -f evaluation_output/result_v1.json ]]; then
+            result_status=$(jq -r '.status' evaluation_output/result_v1.json)
+            decision_status=$(jq -r '.decision.f05_failed_reclaim.status' evaluation_output/result_v1.json)
+            trade_count=$(jq -r '.population.trade_count' evaluation_output/result_v1.json)
+            loser_count=$(jq -r '.population.baseline_loser_count' evaluation_output/result_v1.json)
+          fi
+          cat > run_receipt.md <<EOF
+          workflow: evaluate_usdjpy_b02_f05_all_loss_structural_sl_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          head_sha: ${GITHUB_SHA}
+          job_status: ${JOB_STATUS}
+          result_status: ${result_status}
+          f05_failed_reclaim_status: ${decision_status}
+          trade_count: ${trade_count}
+          baseline_loser_count: ${loser_count}
+          artifact_id: ${ARTIFACT_ID}
+          artifact_digest: ${ARTIFACT_DIGEST}
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          mt4_accessed: false
+          2025_accessed: false
+          candidate_frozen: false
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "[structural-sl-run] ${GITHUB_RUN_ID} ${JOB_STATUS}" \
+            --body-file run_receipt.md

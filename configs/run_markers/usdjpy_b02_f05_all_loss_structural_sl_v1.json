@@ -1,6 +1,7 @@
 {
   "schema_version": "usdjpy_b02_f05_all_loss_structural_sl_run_marker_v1",
-  "status": "ARMED_FOR_ONE_MAIN_PUSH_EVALUATION",
+  "status": "ARMED_FOR_ONE_MAIN_PUSH_EVALUATION_WITH_RECEIPT",
+  "dispatch_sequence": 2,
   "protocol_merge_commit": "9f990a5674f787fa0e4c6bb4830c7494d682090b",
   "workflow": ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v1.yml",
   "population": 1882,
