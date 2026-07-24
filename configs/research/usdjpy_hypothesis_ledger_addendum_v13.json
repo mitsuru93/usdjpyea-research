@@ -1,0 +1,80 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v13",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v12.json",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "preserved_addenda": [
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v2.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v3.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v4.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v6.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v7.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v8.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v9.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v10.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v11.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v12.json"
+  ],
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-RQ-021-RESULT-001",
+      "family_ids": [],
+      "candidate_ids": [],
+      "status": "CLOSED_DESCRIPTIVE_ONE_DISTINCT_ARCHITECTURE_GAP",
+      "origin_analysis": "RQ-020E closed all 660 frozen M15 Entry x fixed-horizon cells with zero full cells, zero entry neighbourhoods and zero family regions.",
+      "causal_hypothesis": "The already-opened RQ-020E outputs can identify whether failure is mainly family-specific, horizon-specific, direction-specific or fold-specific, and whether one information dimension remains absent from the closed architecture.",
+      "target_failure_mode": ["severe-cost fragility", "cross-fold direction reversal", "fixed-horizon instability", "monthly and date concentration"],
+      "pre_result_predictions": ["failure is not explained by support scarcity", "weakest folds are distributed", "dominant direction changes across folds", "at most one genuinely distinct architecture question survives ledger duplicate audit"],
+      "tests": [
+        {
+          "period": "already_opened_2023H1_2023H2_2024H1_2024H2_outputs",
+          "type": "family_horizon_direction_weakest_fold_taxonomy",
+          "result_path": "configs/research/usdjpy_rq021_architecture_failure_taxonomy_result_v1.json",
+          "result": {
+            "default_positive_all_four_cells": 14,
+            "severe_positive_all_four_cells": 1,
+            "dominant_side_switch_cells": 562,
+            "dominant_side_switch_two_or_more_cells": 349,
+            "same_dominant_side_all_four_cells": 98,
+            "both_directions_severe_positive_all_four_cells": 0,
+            "weakest_fold_counts": {"2023H1": 140, "2023H2": 110, "2024H1": 162, "2024H2": 248}
+          }
+        }
+      ],
+      "decision": "Close RQ-021. The closed R1/R2 surface may not be repaired. Open one question about native higher-timeframe state-transition signals with state-conditional event termination.",
+      "falsified_or_unsupported_claims": ["one defective fold explains the architecture failure", "a longer fixed M15 hold is the missing solution", "static M15 direction remains stable across regimes", "the isolated session-handoff cell justifies local repair"],
+      "retained_findings": ["cost fragility is architecture-wide", "2024H2 is most frequently weakest but all folds materially contribute", "562 of 660 cells change dominant direction", "session-handoff is least failed but remains isolated", "native higher-timeframe signal construction is absent from R1/R2"],
+      "prohibited_reuse": ["no R1K03 repair or selection", "no new fixed horizon", "no M15 threshold rescan", "no static 5-day or 20-day router interaction search", "no family preregistration directly from the taxonomy", "no MT4 or 2025 access"],
+      "successor_questions": ["Can primary entry and termination both be defined on completed native H1/H4 state transitions rather than M15 entry plus fixed time?"],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_rq021_architecture_failure_taxonomy_result_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "docs/research/usdjpy_rq021_architecture_failure_taxonomy_result_v1.md"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_full_frozen_architecture_census_result_v1.json"}
+      ]
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-022",
+      "family_ids": [],
+      "candidate_ids": [],
+      "status": "OPEN_RESEARCH_QUESTION",
+      "origin_analysis": "RQ-021 found architecture-wide cost fragility, direction switching in 562 of 660 cells and no robust fixed-horizon neighbourhood. The full R1/R2 universe used M15-local or session entries and unconditional fixed M15 exits.",
+      "causal_hypothesis": "A native H1/H4 state-transition architecture may be scientifically distinct because the primary signal and termination event are both defined on completed higher-timeframe structure rather than applied as filters or fixed-time exits to an M15 signal.",
+      "target_failure_mode": ["M15-local signal regime dependence", "fixed-time exit mismatch", "direction-specific sign reversal", "date concentration"],
+      "pre_result_predictions": ["H1/H4 bars can be derived deterministically from accepted M15 data without changing 2024", "prior ledger comparison confirms native timeframe construction was not previously tested", "a finite protocol can be frozen before any H1/H4 outcome is calculated"],
+      "tests": [],
+      "decision": "Remain descriptive and pre-outcome. Audit data construction, literature and ledger overlap, then define or reject one finite native higher-timeframe architecture protocol.",
+      "falsified_or_unsupported_claims": [],
+      "retained_findings": ["longer fixed holds do not form a robust neighbourhood", "static long-horizon state overlays did not pass", "session-scale continuation is the least-failed area but cannot be selected", "new information must change primary signal construction rather than add a filter"],
+      "prohibited_reuse": ["no reuse of R1 M15 cells as hidden candidates", "no outcome-derived H1/H4 thresholds", "no event-exit relabeling of Families C/D/G/H", "no family preregistration before source and duplicate audit", "no MT4 or 2025 access"],
+      "successor_questions": ["Which completed H1/H4 state transitions have primary-source support?", "Which termination event is causally paired and not a renamed checkpoint exit?", "Can the data contract be frozen without opening outcomes?"],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_rq021_architecture_failure_taxonomy_result_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_r1_entry_universe_v2.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_long_horizon_regime_diagnosis_result_v1.json"}
+      ]
+    }
+  ]
+}
