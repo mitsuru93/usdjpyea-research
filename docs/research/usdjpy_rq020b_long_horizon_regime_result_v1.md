@@ -58,8 +58,15 @@ Open `RQ-020C` as an architecture review only. Using the already fixed `UPPER_TH
 
 ## Evidence files
 
+- `configs/research/usdjpy_rq020b_long_horizon_regime_protocol_v1.json`
+- `tools/evaluate_usdjpy_rq020b_long_horizon_regime_v1.py`
 - `configs/research/usdjpy_rq020b_long_horizon_regime_result_v1.json`
-- `data/research/usdjpy_rq020b_state_fold_metrics_v1.csv`
-- `data/research/usdjpy_rq020b_state_strategy_fold_metrics_v1.csv`
-- `data/research/usdjpy_rq020b_state_leave_one_strategy_out_v1.csv`
+- `data/research/usdjpy_rq020b_2024_signal_regression_v1.csv`
+- `data/research/usdjpy_rq020b_2024_trade_regression_v1.csv`
+- `data/research/usdjpy_rq020b_feature_coverage_v1.csv`
 - `data/research/usdjpy_rq020b_state_gate_v1.csv`
+- `data/research/usdjpy_rq020b_key_state_fold_metrics_v1.csv`
+- `data/research/usdjpy_rq020b_upper_third_strategy_fold_v1.csv`
+- `data/research/usdjpy_rq020b_upper_third_leave_one_strategy_out_v1.csv`
+
+The evaluator deterministically regenerates the complete all-state fold, strategy-fold and leave-one-strategy-out intermediate tables. Their SHA-256 identities are retained in the result JSON.
