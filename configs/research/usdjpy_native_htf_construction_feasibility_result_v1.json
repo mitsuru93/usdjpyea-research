@@ -1,0 +1,58 @@
+{
+  "2023_identity": {
+    "accepted_first_tick_shifted_rows": 1543,
+    "incomplete_m15_rows": 360,
+    "logical_bucket_shifted_rows": 1428,
+    "logical_server_duplicates": 0,
+    "logical_server_monotonic": true,
+    "logical_utc_duplicates": 0,
+    "logical_vs_accepted_first_tick_different_rows": 123,
+    "maximum_first_tick_offset_minutes": 9.0,
+    "rows": 24825
+  },
+  "2024_identity": {
+    "logical_server_duplicates": 0,
+    "logical_server_monotonic": true,
+    "logical_utc_duplicates": 0,
+    "rows": 24439,
+    "server_offset_hours": [2, 3],
+    "utc_to_server_to_utc_mismatches": 0
+  },
+  "aggregation": {
+    "2023_H1": {"exact_buckets_with_incomplete_source_m15": 285, "exact_slot_buckets": 6204, "expected_m15_slots": 4, "information_time_duplicates": 0, "information_time_monotonic": true, "nonempty_buckets": 6208, "partial_buckets": 4, "partial_constituent_count_distribution": "{\"1\": 1, \"2\": 1, \"3\": 2}", "timeframe": "H1", "year": 2023},
+    "2023_H4": {"exact_buckets_with_incomplete_source_m15": 262, "exact_slot_buckets": 1547, "expected_m15_slots": 16, "information_time_duplicates": 0, "information_time_monotonic": true, "nonempty_buckets": 1554, "partial_buckets": 7, "partial_constituent_count_distribution": "{\"12\": 3, \"15\": 1, \"4\": 1, \"9\": 2}", "timeframe": "H4", "year": 2023},
+    "2024_H1": {"exact_buckets_with_incomplete_source_m15": 0, "exact_slot_buckets": 6109, "expected_m15_slots": 4, "information_time_duplicates": 0, "information_time_monotonic": true, "nonempty_buckets": 6110, "partial_buckets": 1, "partial_constituent_count_distribution": "{\"3\": 1}", "timeframe": "H1", "year": 2024},
+    "2024_H4": {"exact_buckets_with_incomplete_source_m15": 0, "exact_slot_buckets": 1508, "expected_m15_slots": 16, "information_time_duplicates": 0, "information_time_monotonic": true, "nonempty_buckets": 1563, "partial_buckets": 55, "partial_constituent_count_distribution": "{\"15\": 1, \"4\": 34, \"8\": 20}", "timeframe": "H4", "year": 2024}
+  },
+  "boundaries": {"2025_accessed": false, "MT4_accessed": false, "live_orders": false, "parameter_selected_from_outcomes": false, "strategy_PL_calculated": false, "strategy_signal_generated": false},
+  "contract": {
+    "2023_membership_key": "floor(first_timestamp_mt4_server, 15 minutes)",
+    "2024_membership_key": "historical UTC converted to MT4 server UTC+2 winter / UTC+3 US-DST",
+    "H1_bucket": "floor logical MT4 server timestamp to one hour",
+    "H4_bucket": "floor logical MT4 server timestamp to four hours",
+    "OHLC": "first open, maximum high, minimum low, last close",
+    "complete_bar_information_time": "server bucket close converted by historical ServerToUtc",
+    "execution_time": "first accepted M15 open at or after completed higher-timeframe information time",
+    "historical_2024_mutated": false,
+    "lookahead": false,
+    "state_update_eligibility": "only exact constituent-slot buckets; partial buckets are inventoried and do not update state"
+  },
+  "decision": "USE_LOGICAL_MT4_SERVER_M15_BUCKETS_NOT_ACCEPTED_FIRST_TICK_DISPLAY_TIMESTAMPS",
+  "evaluator_identity": {
+    "branch": "agent/rq022-native-htf-feasibility-v1",
+    "commit_after_source_alignment": "03765cfd1bf3fed8cccf47ca39d783e024e3df03",
+    "git_blob_sha1": "8cd329f0ae49d0495a86977ad687aa021b1fa43b",
+    "path": "tools/preflight_usdjpy_native_htf_architecture_v1.py",
+    "sha256": "c668ae96d23fddb4eceea9717807c62a128626da65c611379ee82dfceabbb076"
+  },
+  "interpretation": [
+    "Accepted 2023 first-tick timestamps preserve the binding 1,543-shift identity but 123 bars are not logical 15-minute boundaries.",
+    "Higher-timeframe membership therefore uses source server bucket boundaries while accepted first-tick timestamps remain unchanged for historical M15 identity.",
+    "Partial market-open, market-close and holiday buckets are excluded rather than imputed."
+  ],
+  "output_sha256": {"usdjpy_native_htf_construction_summary_v1.csv": "4710aa64ae33fd91943e742cb2366d04c6a54db00a208b58dbf0bb37f89b39e8", "usdjpy_native_htf_partial_bucket_inventory_v1.csv": "90bf0042493b635c82d2ea7a73ceeca06b62f7cb85699d8558f09da62ec8db41"},
+  "schema_version": "usdjpy_native_htf_construction_feasibility_result_v1",
+  "scientific_decision": "DATA_CONSTRUCTION_FEASIBLE_PROCEED_TO_PREOUTCOME_FINITE_PROTOCOL_FREEZE",
+  "source_identity": {"2023_m15_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78", "2024_m15_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c"},
+  "status": "PASS_DETERMINISTIC_NATIVE_H1_H4_CONSTRUCTION"
+}
