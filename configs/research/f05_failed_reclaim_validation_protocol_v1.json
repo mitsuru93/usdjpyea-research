@@ -1,0 +1,151 @@
+{
+  "schema_version": "f05_failed_reclaim_validation_protocol_v1",
+  "status": "FROZEN_BEFORE_OUTCOME_EXECUTION",
+  "frozen_at_utc": "2026-07-24T11:00:00Z",
+  "authorizing_instruction": {
+    "filename": "貼り付けたマークダウン（1）(4).md",
+    "sha256": "4408dc8c9cbe194d7fcd65be9864f2a7d8a21e5223edac04b4aecdf58ce40acd",
+    "authority": "direct_user_instruction_only",
+    "notion_task_dependency": false,
+    "registry_candidate_dependency": false,
+    "past_hypothesis_dependency": false
+  },
+  "repository_identity": {
+    "research_main_at_start": "5c8ed243734c47e35f29e4219d958fe2e6b70fd4",
+    "core_main_at_start": "b31405cd4c5380a376655ba240ccb100e230e775"
+  },
+  "candidates": {
+    "count": 2,
+    "binding_count": 1,
+    "binding": {
+      "candidate_id": "F05_FAILED_RECLAIM_BASIC_V1",
+      "entry": "accepted F05 baseline signal, entry time and executable entry price are unchanged",
+      "breakout_level": "canonical Donchian breakout level that generated the F05 entry",
+      "structural_close_price": {
+        "long": "executable Bid close",
+        "short": "executable Ask close under the applicable period contract"
+      },
+      "first_completed_m5": "when entry is on an M5 boundary, use the M5 beginning at entry; completion time is entry plus five minutes",
+      "initial_failure_arming": {
+        "condition": "maximum executable P/L from entry through the first completed M5 is <= 0.0 pips",
+        "2024": "raw Bid/Ask Tick exact ordering; Long entry Ask/mark Bid; Short entry Bid/mark Ask",
+        "2023": "accepted historical M1 contract, Bid OHLC plus 0.5 pip round-trip execution contract and side-specific favorable M1 extreme"
+      },
+      "initial_reentry": {
+        "long": "first_m5_executable_close <= breakout_level - 2.0 pips",
+        "short": "first_m5_executable_close >= breakout_level + 2.0 pips",
+        "action": "arm observation only; do not exit"
+      },
+      "first_reclaim": {
+        "search_start": "after initial failure arming is established",
+        "long": "first completed executable M1 close > breakout_level",
+        "short": "first completed executable M1 close < breakout_level",
+        "equality": "not a reclaim"
+      },
+      "profit_disarm": {
+        "window": "entry through binding failure-M5 trigger confirmation",
+        "condition": "any executable P/L > 0.0 pips permanently disarms the candidate",
+        "disarmed_action": "retain baseline exit"
+      },
+      "reclaim_failure": {
+        "bar_selection": "first M5 whose completion_time is strictly greater than reclaim_m1_close_time",
+        "same_timestamp_m5_forbidden": true,
+        "long": "failure_m5_executable_close <= breakout_level",
+        "short": "failure_m5_executable_close >= breakout_level",
+        "second_inside_buffer_pips": 0.0
+      },
+      "candidate_exit": {
+        "time": "next available M1 open after reclaim failure confirmation",
+        "2024": "first executable Tick at or after the specified next-M1 time; Long Bid, Short Ask",
+        "2023": "next M1 Bid open with accepted historical execution contract",
+        "baseline_precedence": "if candidate exit is not earlier than baseline exit, keep baseline"
+      }
+    },
+    "non_binding_sensitivity": {
+      "candidate_id": "F05_FAILED_RECLAIM_WEAK_QUICK_V1",
+      "base": "F05_FAILED_RECLAIM_BASIC_V1",
+      "additional_conditions": {
+        "first_reclaim_within_entry_minutes": 60,
+        "maximum_consecutive_outside_m1_closes_from_reclaim_before_failure_m5": 2
+      },
+      "binding": false,
+      "finalist_eligible": false,
+      "mt4_eligible": false,
+      "2025_eligible": false
+    }
+  },
+  "prohibited": [
+    "new candidate",
+    "new HYP number",
+    "threshold change",
+    "direction exception",
+    "session exception",
+    "year exception",
+    "strategy exception",
+    "exposure exception",
+    "stack exception",
+    "P1/P2/P3 gate",
+    "fixed pips SL",
+    "ATR SL",
+    "trailing stop",
+    "RSI",
+    "MACD",
+    "EMA",
+    "ADX",
+    "Bollinger Band",
+    "HYP-023/HYP-024 combination",
+    "sensitivity substitution"
+  ],
+  "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "data_contract": {
+    "2024_raw_tick_release": "usdjpy-2024-raw-bidask-ticks-v1",
+    "2024_mt4_tick_release": "usdjpy-2024-mt4-tick-import-v1",
+    "2024_derived_bar_release": "usdjpy-2024-derived-bars-v1",
+    "2024_timezone": "UTC; no historical-2023 clock transform",
+    "2023_lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+    "2023_spread_contract_pips": 0.5
+  },
+  "cost_contract": {
+    "default_2024": "actual variable-spread Bid/Ask",
+    "default_2023": "accepted 0.5 pip historical contract",
+    "severe_incremental_adverse_pips_on_changed_trade_entry_and_exit_total": 2.0
+  },
+  "result_layers": {
+    "trade_ledger_counterfactual": "reproduction and changed-trade audit only",
+    "portfolio_replay": "binding result; regenerate accepted signal stream, entries, exits, concurrent positions, stacking, exposure capacity and reopened capacity",
+    "binding_decision_source": "portfolio_replay"
+  },
+  "historical_gates": {
+    "fold_total": "default portfolio delta > 0 in all four folds",
+    "severe": "combined severe delta > 0 and at least three of four folds severe delta > 0",
+    "direction": "combined Long and Short delta > 0; each direction nonnegative in at least three of four folds",
+    "winner_damage": "Loser benefit > absolute Winner damage; combined top-decile retention >= 0.90; each-fold top-decile retention >= 0.85",
+    "breadth": "combined delta excluding best date > 0; excluding best two dates > 0; no month contributes > 50 percent of total improvement",
+    "trigger_breadth": "at least one candidate exit per fold; at least 10 total; at least 5 final Losers",
+    "reproduction": {
+      "expected_stopped_trades": 14,
+      "expected_total_delta_pips": 202.1,
+      "expected_long_delta_pips": 65.2,
+      "expected_short_delta_pips": 136.9,
+      "changed_trade_identity": "exact",
+      "pips_tolerance": 0.1,
+      "mismatch_action": "TECHNICAL_MISMATCH_STOP"
+    },
+    "tick_event_order": "all 2024 candidate exits must have logically consistent initial arming, reclaim, profit disarm, failure M5 and candidate exit chronology"
+  },
+  "execution": {
+    "workflow": ".github/workflows/validate_f05_failed_reclaim_v1.yml",
+    "runner": "ubuntu-latest",
+    "binding_trigger": "workflow_dispatch",
+    "first_scientific_run_is_binding": true,
+    "technical_rerun_only_same_commit_input_workflow": true,
+    "protocol_change_after_outcome_forbidden": true
+  },
+  "mt4_unlock": "all Research historical gates including reproduction and event order must pass",
+  "2025_lock": {
+    "H1_access_before_research_and_mt4_parity": false,
+    "H2_access": false,
+    "selection_use": false,
+    "logic_change_after_historical_result": false
+  }
+}
