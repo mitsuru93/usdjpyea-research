@@ -58,7 +58,7 @@ jobs:
           assert r['authorization']['notion_task_dependency'] is False
           evaluator=Path('tools/evaluate_f05_failed_reclaim_portfolio_v1.py')
           actual=hashlib.sha256(evaluator.read_bytes()).hexdigest()
-          assert actual=='c37aac2a23d18754041f8025af5395519a6c0ff5e89e4db32d6a62b734777ac0',actual
+          assert actual=='069fd15eda0a496a80f54697e34f5ca859661f4a8644b56fd9e5b69b36576c11',actual
           PY
 
       - name: Set up Python
@@ -100,7 +100,6 @@ jobs:
             validation_output/preflight_result_v1.json
 
       - name: Download and verify historical authorities
-        if: github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -126,7 +125,6 @@ jobs:
           sha256sum -c inputs/historical_member_SHA256SUMS
 
       - name: Download and verify 2024 derived bars
-        if: github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -144,7 +142,6 @@ jobs:
           sha256sum -c inputs/derived_SHA256SUMS
 
       - name: Download and verify required 2024 raw tick months
-        if: github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
