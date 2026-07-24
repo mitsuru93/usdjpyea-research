@@ -1,0 +1,7 @@
+cell,scope,primary_mean_auc_gain,robust_mean_auc_gain,bootstrap_ci_low,bootstrap_ci_high,default_delta_pips,stress_delta_pips,decision
+P3_B02_10m_MTF,B02 P3 Entry+10m,NA,NA,NA,NA,NA,NA,UNTESTABLE_2024H2_ZERO_P3
+P3_F05_5m_M5,F05 P3 Entry+5m M5,0.122521,0.029520,0.001103,0.069876,-271.4,-317.7,REJECT_ECONOMICALLY
+P2_B02_15m_M15,B02 P2 first-positive+15m M15,0.079232,0.042849,-0.059063,0.141605,-1952.4,-1978.2,REJECT_UNCERTAIN_AND_NEGATIVE
+P2_F05_MTF,F05 P2 multi-timeframe,NA,negative_all_models,NA,NA,NA,NA,NO_INCREMENTAL_INFORMATION
+P1_B02_MTF,B02 P1 +10 landmark multi-timeframe,0.007087_best,nonportable,NA,NA,NA,NA,DESCRIPTIVE_NOT_INCREMENTAL
+P1_F05_MTF,F05 P1 +10 landmark multi-timeframe,-0.004748_best,nonportable,NA,NA,NA,NA,DESCRIPTIVE_NOT_INCREMENTAL
