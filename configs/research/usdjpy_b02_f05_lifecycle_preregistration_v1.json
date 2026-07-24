@@ -1,0 +1,169 @@
+{
+  "schema_version": "usdjpy_b02_f05_lifecycle_preregistration_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_OUTCOME_EVALUATION",
+  "research_question_id": "USDJPY-RQ-024",
+  "family_ids": [
+    "L1_BREAKOUT_ESTABLISHMENT",
+    "L2_EARLY_CONTINUATION",
+    "L3_GIVEBACK_TERMINATION"
+  ],
+  "origin_report": {
+    "path": "docs/research/B02_F05_2024_release_tick_fourfold_analysis_v1.md",
+    "sha256": "8dd10ab65bf8be3b885c5adf526f3dbecf73ecddd6d7063dd8949e92c860190b"
+  },
+  "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "protected_periods": {
+    "2025H1": "locked until all 2023/2024 gates and Research/MT4 parity pass",
+    "2025H2": "locked"
+  },
+  "global_execution_contract": {
+    "completed_bars_only": true,
+    "long_short_symmetric": true,
+    "signal_information_time": "bar close",
+    "execution_time": "first available tick at the next protocol execution bar open",
+    "entry_price": "Ask for long and Bid for short",
+    "exit_price": "Bid for long and Ask for short",
+    "default_cost": "observed variable Bid/Ask spread with minimum 0.5 pip where accepted baseline uses the historical floor",
+    "severe_cost": "three times the default spread plus 1.0 pip",
+    "commission_and_swap": "retain accepted baseline treatment and report separately when nonzero",
+    "liquidation_boundary": "close at final available executable quote and flag boundary_liquidation; event-only metrics exclude it",
+    "missing_bar_rule": "no interpolation; a required incomplete bar cancels that transition observation",
+    "same_timestamp_rule": "existing baseline exit first, then candidate exit, then new baseline entry; one action per ticket per timestamp",
+    "duplicate_signal_rule": "same ticket and same candidate transition may trigger once only",
+    "stack_rule": "evaluate every baseline ticket independently while retaining exposure-state labels; candidate exit does not suppress other baseline signals",
+    "threshold_selection": "no medians, AUC optima, pip loss checkpoints, oscillator levels or post-result repairs"
+  },
+  "duplicate_audit": {
+    "Family_A": "not an M15 wick/outside entry threshold; observation begins after executable baseline entry and requires completed M5 transition",
+    "Family_C": "giveback trigger does not use MFE20 or return inside the original breakout level",
+    "Family_D": "not a 30/60-minute adverse-P/L persistence checkpoint",
+    "Family_E": "does not use exposure-state routing or 60/90-minute recovery windows",
+    "Family_F": "does not require a second B02/F05 signal",
+    "Family_G_H": "does not use breakout-level reacceptance as the termination trigger",
+    "Family_I": "not a static four-hour admission filter",
+    "RQ_016": "does not subdivide a post-invalidation P/L trajectory",
+    "RQ_020E_RQ_021": "not an unconditional fixed-horizon cell; observation times establish when completed structures can be read, while the action requires an event transition",
+    "HYP_023": "not a primary native H4/H1 strategy; this is a lifecycle overlay on accepted B02/F05 baseline tickets using M5/M15/M30 structure",
+    "novelty": "separate setup, establishment, continuation and decay states on the same accepted baseline ticket"
+  },
+  "candidates": [
+    {
+      "candidate_id": "L1_RETENTION_BODY",
+      "family": "L1_BREAKOUT_ESTABLISHMENT",
+      "target": ["P3", "P2"],
+      "timeframe": "M5",
+      "observation": {"F05": "first completed M5 after entry", "B02": "second completed M5 after entry"},
+      "state_components": [
+        "direction-aligned aggregate body from entry is strictly positive",
+        "latest completed M5 close remains on the breakout side of the frozen baseline breakout level"
+      ],
+      "transition": "PENDING -> ESTABLISHED when both components hold; otherwise PENDING -> FAILED",
+      "action": "FAILED exits at next M1 open; ESTABLISHED remains under baseline management",
+      "rejection": "reject if any fold fails P3 count and gross-loss-share improvement or right-tail gates"
+    },
+    {
+      "candidate_id": "L1_RETENTION_UPDATE",
+      "family": "L1_BREAKOUT_ESTABLISHMENT",
+      "target": ["P3", "P2"],
+      "timeframe": "M5 plus completed M1 sequence",
+      "observation": {"F05": "first completed M5 after entry", "B02": "second completed M5 after entry"},
+      "state_components": [
+        "latest completed M5 close remains on breakout side",
+        "at least one completed M1 favorable extreme update occurred after entry",
+        "last completed M1 close is not adverse to the entry-side aggregate open"
+      ],
+      "transition": "PENDING -> ESTABLISHED only when all components hold; otherwise FAILED",
+      "action": "FAILED exits at next M1 open"
+    },
+    {
+      "candidate_id": "L2_SWING_CONTINUATION",
+      "family": "L2_EARLY_CONTINUATION",
+      "target": ["P2"],
+      "timeframe": "M15",
+      "observation": {"F05": "first completed M15 after entry", "B02": "second completed M15 after entry"},
+      "eligibility": "ticket previously reached ESTABLISHED under L1_RETENTION_BODY",
+      "state_components": [
+        "latest completed M15 close remains on breakout side",
+        "latest completed M15 made a favorable extreme beyond the preceding completed M15",
+        "direction-aligned M15 body is nonnegative"
+      ],
+      "transition": "ESTABLISHED -> CONTINUING if all components hold; otherwise CONTINUATION_FAILED",
+      "action": "CONTINUATION_FAILED exits at next M1 open"
+    },
+    {
+      "candidate_id": "L2_RANGE_PATH_CONTINUATION",
+      "family": "L2_EARLY_CONTINUATION",
+      "target": ["P2"],
+      "timeframe": "M15",
+      "observation": {"F05": "first completed M15 after entry", "B02": "second completed M15 after entry"},
+      "eligibility": "ticket previously reached ESTABLISHED under L1_RETENTION_BODY",
+      "state_components": [
+        "latest completed M15 close remains on breakout side",
+        "latest completed M15 true range is greater than the immediately preceding completed M15 true range",
+        "latest favorable extreme is not lower than the prior favorable extreme"
+      ],
+      "transition": "ESTABLISHED -> CONTINUING if all components hold; otherwise CONTINUATION_FAILED",
+      "action": "CONTINUATION_FAILED exits at next M1 open"
+    },
+    {
+      "candidate_id": "L3_M30_STALL_REVERSAL",
+      "family": "L3_GIVEBACK_TERMINATION",
+      "target": ["P1"],
+      "timeframe": "M30",
+      "observation_start": "after first executable +10-pip path-class landmark; the landmark arms observation but is never an exit trigger",
+      "state_components": [
+        "PEAKED after a completed M30 favorable extreme update following observation start",
+        "STALLED after a later completed M30 fails to update the favorable extreme",
+        "REVERSED when the next completed M30 has adverse directional body and closes beyond the adverse extreme of the STALLED bar"
+      ],
+      "transition": "ARMED -> PEAKED -> STALLED -> REVERSED",
+      "action": "REVERSED exits at next M1 open",
+      "anti_trailing_stop": "no fixed distance from peak, entry or current P/L is used"
+    },
+    {
+      "candidate_id": "L3_M30_TWO_BAR_DECAY",
+      "family": "L3_GIVEBACK_TERMINATION",
+      "target": ["P1"],
+      "timeframe": "M30",
+      "observation_start": "after first executable +10-pip path-class landmark",
+      "state_components": [
+        "PEAKED after a completed favorable M30 extreme update",
+        "DECAY_1 when a completed M30 makes no favorable extreme update and has nonpositive directional body",
+        "DECAY_2 when the next completed M30 again makes no favorable extreme update and closes adverse to DECAY_1 close"
+      ],
+      "transition": "ARMED -> PEAKED -> DECAY_1 -> DECAY_2",
+      "action": "DECAY_2 exits at next M1 open",
+      "anti_trailing_stop": "event sequence only; no distance threshold"
+    }
+  ],
+  "binding_gates": {
+    "L1": [
+      "P3 count lower in every fold for B02 and F05 separately",
+      "P3 gross-loss share lower in every fold",
+      "winner and P1 removal reported and winner right tail retained",
+      "long and short both represented without exceptions",
+      "default and severe cost pass",
+      "month/date/session/exposure breadth pass"
+    ],
+    "L2": [
+      "P2 gross loss improves in every fold per strategy",
+      "net effect includes premature winner and P1 exits and remains positive",
+      "winner top 10 percent and top 5 percent tails retained",
+      "default and severe cost pass"
+    ],
+    "L3": [
+      "P1 giveback loss improves in every fold per strategy",
+      "winner top 10 percent and top 5 percent tails retained",
+      "next-bar execution remains positive under severe cost",
+      "not equivalent to fixed trailing stop or breakout reacceptance"
+    ],
+    "common": [
+      "half-year, month, best-one/date and best-two/date removal",
+      "direction, session, standalone/stack, exposure state",
+      "event-only and boundary-liquidation sensitivity"
+    ]
+  },
+  "maximum_finalists": {"per_family": 1, "total": 3},
+  "post_result_rule": "No threshold, observation time, component or gate repair after outcomes. Failed candidates close unchanged."
+}
