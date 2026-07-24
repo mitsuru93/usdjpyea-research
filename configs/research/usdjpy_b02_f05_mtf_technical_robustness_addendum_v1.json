@@ -1,0 +1,42 @@
+{
+  "schema_version": "usdjpy_b02_f05_mtf_technical_robustness_addendum_v1",
+  "hypothesis_id": "USDJPY-HYP-026",
+  "status": "POST_PRIMARY_OUTCOME_CONSERVATIVE_DIAGNOSTIC",
+  "rule": "These diagnostics may downgrade or reject a primary-pass cell but may not authorize a new cell, timeframe, feature family, threshold or candidate.",
+  "primary_cells_under_diagnostic": [
+    "F05|P3|entry_plus_5m|M5",
+    "B02|P2|first_positive_plus_15m|M15"
+  ],
+  "excluded_from_candidate_consideration": [
+    "F05 P3 H1 because the upper-timeframe state is largely pre-entry/static at the five-minute checkpoint",
+    "F05 P3 ALL because it is non-minimal and includes H1",
+    "B02 P3 because 2024H2 contains zero common-M1 P3 observations"
+  ],
+  "diagnostics": {
+    "feature_ablation": [
+      "enrich price baseline with same-timeframe body, wick and close-location geometry",
+      "technical features excluding bar geometry",
+      "oscillator-only",
+      "trend-and-momentum-only",
+      "volatility-only"
+    ],
+    "uncertainty": "stratified bootstrap of fixed out-of-fold predictions; 2000 replicates; report 95% interval for AUC and AUC gain",
+    "economic_counterfactual": {
+      "classification_threshold": 0.5,
+      "entry_changed": false,
+      "exit": "next available M1 open after completed observation bar",
+      "2024_execution": "actual Bid/Ask M1 open",
+      "2023_execution": "accepted 0.5-pip historical contract",
+      "scope": "fixed accepted trade ledger diagnostic only; not a binding portfolio replay"
+    }
+  },
+  "prohibited": [
+    "threshold optimization",
+    "feature selection from the robustness outcome",
+    "period or side exceptions",
+    "2025 access",
+    "MT4 execution",
+    "conversion of this diagnostic into an authorized candidate without a separate preregistration"
+  ],
+  "pre_diagnostic_branch_commit": "ec2c7a55e1a51a8a1e7dc3a8550b553cf2d1d22c"
+}
