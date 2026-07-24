@@ -1,0 +1,12 @@
+{
+  "schema_version": "f05_failed_reclaim_bundle_archive_repair_marker_v1",
+  "status": "ARMED_ONCE",
+  "branch": "agent/f05-failed-reclaim-source-restore-v1",
+  "binding_candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+  "expected_before_decoded_sha256": "4ce1940b9f76e0ed8a84a935590293f3837fabe9e889bb2b2eb024a1ec8d354f",
+  "expected_after_decoded_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d",
+  "outcomes_computed": false,
+  "portfolio_replay_computed": false,
+  "mt4_accessed": false,
+  "2025_accessed": false
+}
