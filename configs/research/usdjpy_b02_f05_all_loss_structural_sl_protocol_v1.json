@@ -8,8 +8,10 @@
     "closed_hypotheses_used_as_task_selector": false
   },
   "canonical_base": {
-    "research_main_commit": "32c054219dc8d0d58eb8cabe4afa047eca86e380",
-    "core_main_commit": "b31405cd4c5380a376655ba240ccb100e230e775"
+    "research_main_commit": "bd9be31f8512db20fb35bf46ac9035b5223edf51",
+    "core_main_commit": "b31405cd4c5380a376655ba240ccb100e230e775",
+    "exact_f05_exploration_source_committed": true,
+    "exact_f05_exploration_bundle_sha256": "463850652d08f7c3d6b170a345ba92a1f7228c9efb24eb0f89f90b13a59b686d"
   },
   "population": {
     "trade_count": 1882,
