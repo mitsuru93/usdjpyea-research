@@ -1,0 +1,105 @@
+{
+  "schema_version": "usdjpy_b02_f05_entry_exit_source_recovery_protocol_v1",
+  "status": "PREREGISTERED_SOURCE_RECOVERY_NO_STRATEGY_OUTCOMES",
+  "research_question": "USDJPY-RQ-024",
+  "scope": "Recover the exact B02/F05 P3 Entry, P2 early Exit and P1 giveback research source package and prove accepted full-OHLC/MT4 source parity before any scientific reproduction.",
+  "separation_from_hyp023": {
+    "hyp023_status": "CLOSED_FAIL_NO_ELIGIBLE_FAMILY_REGION",
+    "hyp023_must_not_be_repaired": true,
+    "rq024_parent_population": "accepted B02/F05 baseline trades",
+    "rq024_actions": [
+      "P3 pre-entry diagnosis",
+      "P2 post-entry early-failure diagnosis",
+      "P1 post-MFE giveback diagnosis"
+    ],
+    "not_a_native_h4_h1_primary_signal_family": true
+  },
+  "exact_source_targets": {
+    "human_report": {
+      "filename": "B02_F05_entry_exit_technical_factor_analysis_v1.md",
+      "file_library_id": "file_00000000c3cc81f597b34adbadfaa3b0",
+      "expected_sha256": "31e7fc2352effa08042cc86e58a980cb1234cc4bad64751495b1deab266d74c4"
+    },
+    "reproducibility_bundle": {
+      "filename": "B02_F05_entry_exit_technical_factor_analysis_bundle_v1.zip",
+      "expected_sha256": "64666e41f752bf2a56020b7fd22380f817b5fe35a1f64d1f49aa647815a14779"
+    },
+    "historical_wip_receipt": "configs/research/usdjpy_b02_f05_entry_exit_stage1_source_audit_wip_v1.json"
+  },
+  "accepted_population_contract": {
+    "strategies": [
+      "B02",
+      "F05"
+    ],
+    "folds": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ],
+    "expected_trades": 1882,
+    "path_classes": {
+      "P3_ENTRY_FAILURE": "never profitable on the accepted executable path",
+      "P2_EARLY_FAILURE": "minor favorable excursion below +10 pips, then final loss",
+      "P1_GIVEBACK": "reached at least +10 pips MFE, then final loss",
+      "WINNER": "final realized/accepted-mark P/L positive"
+    },
+    "historical_2024_source_immutable": true,
+    "2023_lineage": "USDJPY_HISTORICAL_2024_LEGACY_CONTRACT_APPLIED_TO_2023_V1",
+    "accepted_2023_shifted_m15_rows": 1543,
+    "accepted_2023_duplicates": 0
+  },
+  "permitted_stage": {
+    "locate_and_download_exact_report_bytes": true,
+    "locate_and_download_exact_bundle_bytes": true,
+    "verify_sha256_and_internal_manifest": true,
+    "materialize_accepted_2024_full_ohlc": [
+      "M1",
+      "M5",
+      "M15",
+      "H1"
+    ],
+    "neutral_mt4_history_source_probe": true,
+    "verify_timestamp_ohlc_and_indicator_source_parity": true,
+    "use_mt4_strategy_tester_for_candidate_outcomes": false,
+    "generate_candidate_signals": false,
+    "calculate_candidate_or_counterfactual_pl": false,
+    "feature_or_threshold_search": false,
+    "access_2025h1_or_2025h2": false,
+    "live_orders": false
+  },
+  "source_identity_gates": [
+    "human report raw bytes SHA-256 equals the frozen expected SHA-256",
+    "reproducibility bundle raw bytes SHA-256 equals the frozen expected SHA-256",
+    "bundle internal manifest enumerates scripts, inputs and outputs with exact hashes",
+    "accepted 2024 M1/M5/M15/H1 materialization is monotonic with zero conflicting duplicates",
+    "accepted historical 2024 content and timestamps are not rewritten",
+    "neutral MT4 source probe matches sampled source timestamps and OHLC before any candidate implementation",
+    "all technical outputs include repository, commit, Run ID, artifact ID, digest, internal path and SHA-256"
+  ],
+  "stage_e1_unlock": {
+    "automatic": false,
+    "condition": "all source identity and neutral MT4 source parity gates pass",
+    "required_action": "merge a newer Research registry that explicitly authorizes exact Stage E1 reproduction",
+    "outcomes_before_new_registry": false
+  },
+  "technical_failure_rule": {
+    "classification": "TECHNICAL_INCOMPLETE_NO_OUTCOMES",
+    "retry_budget_same_root_cause": 1,
+    "scientific_result": false
+  },
+  "period_firewall": {
+    "source_metadata_or_bar_materialization_only": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ],
+    "strategy_outcome_access_authorized": [],
+    "not_accessed": [
+      "2025H1",
+      "2025H2"
+    ],
+    "2025_feature_threshold_selection": false
+  }
+}
