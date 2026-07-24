@@ -1,0 +1,54 @@
+{
+  "schema_version": "f05_failed_reclaim_historical_authority_mirror_receipt_v1",
+  "status": "PASS_EXACT_CORE_ARTIFACTS_MIRRORED_TO_RESEARCH_RELEASE",
+  "release": {
+    "repository": "mitsuru93/usdjpyea-research",
+    "tag": "f05-failed-reclaim-historical-authorities-v1",
+    "workflow_run_id": 30101338646,
+    "mirror_commit": "c8337d60bc031f7fcdd08f7465ea2ed39471d6ee"
+  },
+  "assets": [
+    {
+      "name": "usdjpy-2023-canonical-baseline-prep-v1.zip",
+      "sha256": "22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+      "source_repository": "mitsuru93/usdjpyea-core",
+      "source_run_id": 29997167048,
+      "source_artifact_id": 8559483151
+    },
+    {
+      "name": "mt4-usdjpy-2024h1-event-audit-v1.zip",
+      "sha256": "e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+      "source_repository": "mitsuru93/usdjpyea-core",
+      "source_run_id": 29787357305,
+      "source_artifact_id": 8479048161
+    },
+    {
+      "name": "mt4-usdjpy-f05-extatr-h2-validation-v1.zip",
+      "sha256": "9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b",
+      "source_repository": "mitsuru93/usdjpyea-core",
+      "source_run_id": 29873856877,
+      "source_artifact_id": 8512432416
+    }
+  ],
+  "verified_members": {
+    "normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "normalized/usdjpy_2023_m1_bid_utc_rakuten_mt4_v1.csv.gz": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e",
+    "tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd"
+  },
+  "transport": {
+    "method": "one-shot GitHub App signed download to Research GitHub Actions, followed by exact-SHA Research Release publication",
+    "short_lived_urls_retained": false,
+    "future_acquisition": "gh release download f05-failed-reclaim-historical-authorities-v1 --repo mitsuru93/usdjpyea-research",
+    "user_attachment_required": false
+  },
+  "boundaries": {
+    "outcomes_computed": false,
+    "portfolio_replay_computed": false,
+    "mt4_new_execution": false,
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "candidate_changed": false,
+    "notion_task_dependency": false
+  }
+}
