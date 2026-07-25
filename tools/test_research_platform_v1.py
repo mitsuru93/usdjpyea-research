@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -19,6 +20,17 @@ from tools.research_platform.event_model_v1 import (  # noqa: E402
 from tools.research_platform.experiment_contract_v1 import (  # noqa: E402
     ExperimentContract,
     SCHEMA_VERSION as EXPERIMENT_SCHEMA,
+)
+from tools.research_platform.result_adapter_v1 import (  # noqa: E402
+    load_lifecycle_candidate_summary,
+    rank_candidates,
+)
+from tools.research_platform.source_inventory_v1 import (  # noqa: E402
+    SCHEMA_VERSION as INVENTORY_SCHEMA,
+    collection_required,
+    deterministic_inventory_sha256,
+    inspect_repository_file,
+    load_inventory,
 )
 
 
@@ -69,10 +81,72 @@ def test_experiment_contract() -> None:
         assert len(contract.contract_sha256()) == 64
 
 
+def test_source_inventory() -> None:
+    with TemporaryDirectory() as directory:
+        root = Path(directory)
+        fixture = root / "fixture.csv"
+        fixture.write_text("id,value\n1,a\n2,b\n", encoding="utf-8")
+        payload = {
+            "schema_version": INVENTORY_SCHEMA,
+            "sources": [
+                {
+                    "source_id": "fixture",
+                    "kind": "repository_file",
+                    "state": "available",
+                    "locator": "fixture.csv",
+                    "rows": 2,
+                    "notes": "test"
+                },
+                {
+                    "source_id": "release",
+                    "kind": "release",
+                    "state": "declared",
+                    "locator": "accepted-release",
+                    "notes": "test"
+                }
+            ]
+        }
+        inventory_path = root / "inventory.json"
+        inventory_path.write_text(json.dumps(payload), encoding="utf-8")
+        records = load_inventory(inventory_path)
+        assert len(deterministic_inventory_sha256(records)) == 64
+        inspection = inspect_repository_file(root, records[0])
+        assert inspection["exists"] is True
+        assert inspection["data_rows"] == 2
+        assert inspection["row_match"] is True
+        assert collection_required(records) is False
+
+
+def test_lifecycle_result_adapter() -> None:
+    fieldnames = [
+        "candidate_id", "stage", "fold_pass_count", "all_four_folds_pass",
+        "pooled_default_delta_pips", "pooled_severe_delta_pips",
+        "minimum_fold_default_delta_pips", "minimum_fold_severe_delta_pips",
+        "minimum_top10_retention", "minimum_top5_retention", "passing_folds",
+        "pooled_rank_within_stage"
+    ]
+    rows = [
+        ["CANDIDATE_B", "B", 1, "False", 10.0, 8.0, -1.0, -2.0, 0.90, 0.80, "2023H1", 2],
+        ["CANDIDATE_A", "A", 4, "True", 5.0, 4.0, 0.5, 0.2, 0.95, 0.85, "2023H1|2023H2|2024H1|2024H2", 1],
+    ]
+    with TemporaryDirectory() as directory:
+        path = Path(directory) / "summary.csv"
+        with path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.writer(handle)
+            writer.writerow(fieldnames)
+            writer.writerows(rows)
+        records = load_lifecycle_candidate_summary(path)
+        ranked = rank_candidates(records)
+        assert ranked[0].candidate_id == "CANDIDATE_A"
+        assert ranked[0].all_four_folds_pass is True
+
+
 def main() -> None:
     test_event_stream()
     test_rejects_non_monotonic_event()
     test_experiment_contract()
+    test_source_inventory()
+    test_lifecycle_result_adapter()
     print("research platform v1 tests: PASS")
 
 
