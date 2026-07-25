@@ -8,12 +8,14 @@ on:
       - 'tools/research_platform/**'
       - 'tools/test_research_platform_v1.py'
       - 'configs/research/usdjpy_b02_f05_source_inventory_v1.json'
+      - 'configs/research/usdjpy_b02_f05_experiment_registry_v1.json'
       - '.github/workflows/test_research_platform_v1.yml'
   pull_request:
     paths:
       - 'tools/research_platform/**'
       - 'tools/test_research_platform_v1.py'
       - 'configs/research/usdjpy_b02_f05_source_inventory_v1.json'
+      - 'configs/research/usdjpy_b02_f05_experiment_registry_v1.json'
       - '.github/workflows/test_research_platform_v1.yml'
   workflow_dispatch:
 
@@ -37,13 +39,20 @@ jobs:
             tools/research_platform/source_inventory_v1.py \
             tools/research_platform/result_adapter_v1.py \
             tools/research_platform/transition_rules_v1.py \
+            tools/research_platform/path_ledger_adapter_v1.py \
+            tools/research_platform/experiment_registry_v1.py \
             tools/test_research_platform_v1.py
       - name: Unit tests
         run: python tools/test_research_platform_v1.py
-      - name: Validate repository inventory without downloading market data
+      - name: Validate repository inventory and registry without downloading market data
         run: |
           python - <<'PY'
           from pathlib import Path
+          from tools.research_platform.experiment_registry_v1 import (
+              deterministic_registry_sha256,
+              load_registry,
+              validate_registry_paths,
+          )
           from tools.research_platform.source_inventory_v1 import (
               collection_required,
               deterministic_inventory_sha256,
@@ -62,9 +71,15 @@ jobs:
                   assert result.get('row_match', True), result
                   inspections.append(result)
           assert collection_required(records) is False
+
+          experiments = load_registry(root / 'configs/research/usdjpy_b02_f05_experiment_registry_v1.json')
+          missing = validate_registry_paths(root, experiments)
+          assert not missing, missing
           print({
               'inventory_sha256': deterministic_inventory_sha256(records),
+              'registry_sha256': deterministic_registry_sha256(experiments),
               'source_count': len(records),
+              'experiment_count': len(experiments),
               'repository_files_verified': len(inspections),
               'new_tick_collection': False,
           })
