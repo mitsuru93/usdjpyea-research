@@ -32,6 +32,9 @@ from tools.research_platform.source_inventory_v1 import (  # noqa: E402
     inspect_repository_file,
     load_inventory,
 )
+from tools.research_platform.transition_rules_v1 import (  # noqa: E402
+    assess_f05_failed_reclaim,
+)
 
 
 def test_event_stream() -> None:
@@ -141,12 +144,35 @@ def test_lifecycle_result_adapter() -> None:
         assert ranked[0].all_four_folds_pass is True
 
 
+def test_failed_reclaim_transition_rules() -> None:
+    trade_id = "F05-TRANSITION-001"
+    events = [
+        TradeEvent(trade_id, 0, "ENTRY", "2024-01-02T00:00:00Z", 0, 0.0, 0.0, 0.0, {}),
+        TradeEvent(trade_id, 1, "INITIAL_FAILURE_ARMED", "2024-01-02T00:05:00Z", 300000, -1.0, 0.0, 1.0, {}),
+        TradeEvent(trade_id, 2, "INITIAL_REENTRY", "2024-01-02T00:05:00Z", 300000, -2.1, 0.0, 2.1, {}),
+        TradeEvent(trade_id, 3, "FIRST_RECLAIM", "2024-01-02T00:06:00Z", 360000, -0.1, 0.0, 2.1, {}),
+        TradeEvent(trade_id, 4, "RECLAIM_FAILURE", "2024-01-02T00:10:00Z", 600000, -1.4, 0.0, 2.1, {}),
+        TradeEvent(trade_id, 5, "CANDIDATE_EXIT", "2024-01-02T00:11:00Z", 660000, -1.5, 0.0, 2.1, {}),
+    ]
+    result = assess_f05_failed_reclaim(events)
+    assert result.valid is True
+    assert result.terminal_state == "CANDIDATE_EXIT"
+
+    disarmed = events[:3] + [
+        TradeEvent(trade_id, 3, "PROFIT_DISARM", "2024-01-02T00:06:00Z", 360000, 0.1, 0.1, 2.1, {})
+    ]
+    result = assess_f05_failed_reclaim(disarmed)
+    assert result.valid is True
+    assert result.terminal_state == "PROFIT_DISARMED"
+
+
 def main() -> None:
     test_event_stream()
     test_rejects_non_monotonic_event()
     test_experiment_contract()
     test_source_inventory()
     test_lifecycle_result_adapter()
+    test_failed_reclaim_transition_rules()
     print("research platform v1 tests: PASS")
 
 
