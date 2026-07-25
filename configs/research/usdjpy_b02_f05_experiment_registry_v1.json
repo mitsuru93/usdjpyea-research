@@ -1,0 +1,65 @@
+{
+  "schema_version": "usdjpy_b02_f05_experiment_registry_v1",
+  "experiments": [
+    {
+      "experiment_id": "EXP-B02-F05-LIFECYCLE-ABC-V1",
+      "hypothesis_id": "LIFECYCLE-ABC",
+      "title": "B02/F05 lifecycle A-B-C structural exit evaluation",
+      "status": "completed",
+      "strategies": ["B02", "F05"],
+      "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+      "analysis_family": "state_transition_counterfactual",
+      "contract_path": "configs/research/usdjpy_b02_f05_lifecycle_abc_data_contract_v1.json",
+      "result_paths": [
+        "configs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.json",
+        "configs/research/usdjpy_b02_f05_lifecycle_abc_stage_summary_v1.csv",
+        "configs/research/usdjpy_b02_f05_lifecycle_abc_candidate_summary_v1.csv",
+        "docs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.md"
+      ],
+      "code_paths": ["tools/evaluate_usdjpy_b02_f05_lifecycle_abc_v1.py"],
+      "dataset_sources": ["stage1_path_class_ledger", "2024_raw_bidask_tick_release", "2023_accepted_m1_contract"],
+      "dependency_tier": "A",
+      "mechanism": "separate entry failure, post-profit collapse and delayed termination states",
+      "primary_endpoint": "four-fold portfolio delta under default and severe costs",
+      "falsification_rule": "reject candidates that fail required fold, cost, direction or winner-retention gates",
+      "decision": "no lifecycle candidate passed the full common gate"
+    },
+    {
+      "experiment_id": "EXP-F05-FAILED-RECLAIM-V1",
+      "hypothesis_id": "F05-FAILED-RECLAIM",
+      "title": "F05 failed reclaim structural termination",
+      "status": "preregistered",
+      "strategies": ["F05"],
+      "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+      "analysis_family": "state_transition_portfolio_replay",
+      "contract_path": "configs/research/f05_failed_reclaim_validation_protocol_v1.json",
+      "result_paths": [],
+      "code_paths": ["tools/research_platform/transition_rules_v1.py"],
+      "dataset_sources": ["2024_raw_bidask_tick_release", "2024_derived_bar_release", "2023_accepted_m1_contract"],
+      "dependency_tier": "B",
+      "mechanism": "breakout recovers after initial re-entry but subsequently fails to remain established",
+      "primary_endpoint": "four-fold binding portfolio delta with chronology and reproduction parity",
+      "falsification_rule": "reject on technical reproduction mismatch or failure of any frozen historical gate"
+    },
+    {
+      "experiment_id": "EXP-B02-F05-STRUCTURAL-SL-ATLAS-V2",
+      "hypothesis_id": "STRUCTURAL-SL-ATLAS",
+      "title": "B02/F05 all-loss structural SL atlas",
+      "status": "completed",
+      "strategies": ["B02", "F05"],
+      "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+      "analysis_family": "loss_path_atlas",
+      "contract_path": "configs/research/usdjpy_b02_f05_structural_sl_atlas_protocol_v2.json",
+      "result_paths": ["docs/research/USDJPY_B02_F05_structural_SL_atlas_v2.md"],
+      "code_paths": [
+        "tools/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.py",
+        "tools/verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.py"
+      ],
+      "dataset_sources": ["stage1_path_class_ledger", "2024_raw_bidask_tick_release", "2023_accepted_m1_contract"],
+      "dependency_tier": "A",
+      "mechanism": "map executable structural failure points across the complete loss population",
+      "primary_endpoint": "loss reduction versus winner damage across folds",
+      "falsification_rule": "reject structures without fold breadth, cost robustness or chronology validity"
+    }
+  ]
+}
