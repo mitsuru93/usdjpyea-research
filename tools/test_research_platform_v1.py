@@ -21,6 +21,13 @@ from tools.research_platform.experiment_contract_v1 import (  # noqa: E402
     ExperimentContract,
     SCHEMA_VERSION as EXPERIMENT_SCHEMA,
 )
+from tools.research_platform.experiment_registry_v1 import (  # noqa: E402
+    SCHEMA_VERSION as REGISTRY_SCHEMA,
+    deterministic_registry_sha256,
+    load_registry,
+    validate_registry_paths,
+)
+from tools.research_platform.path_ledger_adapter_v1 import load_path_ledger  # noqa: E402
 from tools.research_platform.result_adapter_v1 import (  # noqa: E402
     load_lifecycle_candidate_summary,
     rank_candidates,
@@ -32,9 +39,7 @@ from tools.research_platform.source_inventory_v1 import (  # noqa: E402
     inspect_repository_file,
     load_inventory,
 )
-from tools.research_platform.transition_rules_v1 import (  # noqa: E402
-    assess_f05_failed_reclaim,
-)
+from tools.research_platform.transition_rules_v1 import assess_f05_failed_reclaim  # noqa: E402
 
 
 def test_event_stream() -> None:
@@ -92,21 +97,8 @@ def test_source_inventory() -> None:
         payload = {
             "schema_version": INVENTORY_SCHEMA,
             "sources": [
-                {
-                    "source_id": "fixture",
-                    "kind": "repository_file",
-                    "state": "available",
-                    "locator": "fixture.csv",
-                    "rows": 2,
-                    "notes": "test"
-                },
-                {
-                    "source_id": "release",
-                    "kind": "release",
-                    "state": "declared",
-                    "locator": "accepted-release",
-                    "notes": "test"
-                }
+                {"source_id": "fixture", "kind": "repository_file", "state": "available", "locator": "fixture.csv", "rows": 2, "notes": "test"},
+                {"source_id": "release", "kind": "release", "state": "declared", "locator": "accepted-release", "notes": "test"}
             ]
         }
         inventory_path = root / "inventory.json"
@@ -157,13 +149,48 @@ def test_failed_reclaim_transition_rules() -> None:
     result = assess_f05_failed_reclaim(events)
     assert result.valid is True
     assert result.terminal_state == "CANDIDATE_EXIT"
-
-    disarmed = events[:3] + [
-        TradeEvent(trade_id, 3, "PROFIT_DISARM", "2024-01-02T00:06:00Z", 360000, 0.1, 0.1, 2.1, {})
-    ]
+    disarmed = events[:3] + [TradeEvent(trade_id, 3, "PROFIT_DISARM", "2024-01-02T00:06:00Z", 360000, 0.1, 0.1, 2.1, {})]
     result = assess_f05_failed_reclaim(disarmed)
     assert result.valid is True
     assert result.terminal_state == "PROFIT_DISARMED"
+
+
+def test_path_ledger_adapter() -> None:
+    with TemporaryDirectory() as directory:
+        path = Path(directory) / "ledger.csv"
+        path.write_text(
+            "signal_id,family,direction,fold,entry_utc,open_price,common_path_class,mfe_pips,mae_pips,extra\n"
+            "T-1,F05,SELL,2024H1,2024-01-02T00:00:00Z,140.1,P3,1.2,3.4,kept\n",
+            encoding="utf-8",
+        )
+        trades = load_path_ledger(path)
+        assert len(trades) == 1
+        assert trades[0].identity.strategy == "F05"
+        assert trades[0].events[1].event_type == "PATH_CLASSIFIED"
+        assert trades[0].events[1].payload["source_row"]["extra"] == "kept"
+
+
+def test_experiment_registry() -> None:
+    with TemporaryDirectory() as directory:
+        root = Path(directory)
+        (root / "contract.json").write_text("{}", encoding="utf-8")
+        payload = {
+            "schema_version": REGISTRY_SCHEMA,
+            "experiments": [{
+                "experiment_id": "EXP-1", "hypothesis_id": "HYP-1", "title": "test",
+                "status": "planned", "strategies": ["B02"], "periods": ["2023H1"],
+                "analysis_family": "state_transition", "contract_path": "contract.json",
+                "result_paths": [], "code_paths": [], "dataset_sources": ["fixture"],
+                "dependency_tier": "A", "mechanism": "mechanism", "primary_endpoint": "endpoint",
+                "falsification_rule": "reject on mismatch"
+            }]
+        }
+        path = root / "registry.json"
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        entries = load_registry(path)
+        assert len(entries) == 1
+        assert len(deterministic_registry_sha256(entries)) == 64
+        assert validate_registry_paths(root, entries) == []
 
 
 def main() -> None:
@@ -173,6 +200,8 @@ def main() -> None:
     test_source_inventory()
     test_lifecycle_result_adapter()
     test_failed_reclaim_transition_rules()
+    test_path_ledger_adapter()
+    test_experiment_registry()
     print("research platform v1 tests: PASS")
 
 
