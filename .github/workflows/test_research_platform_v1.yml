@@ -1,0 +1,30 @@
+name: Test USDJPY Research Platform v1
+
+on:
+  pull_request:
+    paths:
+      - 'tools/research_platform/**'
+      - 'tools/test_research_platform_v1.py'
+      - '.github/workflows/test_research_platform_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile
+        run: |
+          python -m py_compile \
+            tools/research_platform/event_model_v1.py \
+            tools/research_platform/experiment_contract_v1.py \
+            tools/test_research_platform_v1.py
+      - name: Test
+        run: python tools/test_research_platform_v1.py
