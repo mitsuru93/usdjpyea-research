@@ -1,0 +1,68 @@
+{
+  "schema_version": "usdjpy_b02_f05_source_inventory_v1",
+  "policy": {
+    "new_tick_collection_default": "FORBIDDEN",
+    "collection_duration_note": "A new Tick collection may take approximately 20 hours.",
+    "unlock_condition": "A required field cannot be reconstructed from accepted Releases, archives, receipts, derived bars, path ledgers or existing evaluator outputs, and the requirement is documented before collection starts."
+  },
+  "sources": [
+    {
+      "source_id": "release_usdjpy_2024_raw_bidask_ticks_v1",
+      "kind": "release",
+      "state": "declared",
+      "locator": "usdjpy-2024-raw-bidask-ticks-v1",
+      "rows": 40969081,
+      "notes": "Accepted 2024 raw Bid/Ask Tick Release; verify asset digest at materialization time."
+    },
+    {
+      "source_id": "release_usdjpy_2024_mt4_tick_import_v1",
+      "kind": "release",
+      "state": "declared",
+      "locator": "usdjpy-2024-mt4-tick-import-v1",
+      "notes": "Accepted MT4 Tick import Release."
+    },
+    {
+      "source_id": "release_usdjpy_2024_derived_bars_v1",
+      "kind": "release",
+      "state": "declared",
+      "locator": "usdjpy-2024-derived-bars-v1",
+      "notes": "Contains accepted M1/M5/M15/M30/H1/H4 derived bars."
+    },
+    {
+      "source_id": "contract_lifecycle_abc_data_v1",
+      "kind": "repository_file",
+      "state": "available",
+      "locator": "configs/research/usdjpy_b02_f05_lifecycle_abc_data_contract_v1.json",
+      "notes": "Frozen lineage, expected populations and Release identifiers."
+    },
+    {
+      "source_id": "ledger_stage1_path_class_v1",
+      "kind": "archive_member",
+      "state": "declared",
+      "locator": ".stage2_lifecycle_abc_package_v1.tar.gz::configs/research/usdjpy_b02_f05_stage1_path_class_ledger_v1.csv.gz",
+      "notes": "Materialize read-only from the existing archive before considering regeneration."
+    },
+    {
+      "source_id": "result_lifecycle_stage_summary_v1",
+      "kind": "repository_file",
+      "state": "available",
+      "locator": "configs/research/usdjpy_b02_f05_lifecycle_abc_stage_summary_v1.csv",
+      "rows": 3,
+      "notes": "Existing stage-level result adapter fixture."
+    },
+    {
+      "source_id": "result_lifecycle_candidate_summary_v1",
+      "kind": "repository_file",
+      "state": "available",
+      "locator": "configs/research/usdjpy_b02_f05_lifecycle_abc_candidate_summary_v1.csv",
+      "notes": "Existing candidate-level result adapter fixture."
+    },
+    {
+      "source_id": "protocol_f05_failed_reclaim_v1",
+      "kind": "repository_file",
+      "state": "available",
+      "locator": "configs/research/f05_failed_reclaim_validation_protocol_v1.json",
+      "notes": "Frozen event chronology and accepted period-specific execution contracts."
+    }
+  ]
+}
