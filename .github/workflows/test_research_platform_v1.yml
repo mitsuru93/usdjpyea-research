@@ -36,6 +36,7 @@ jobs:
             tools/research_platform/experiment_contract_v1.py \
             tools/research_platform/source_inventory_v1.py \
             tools/research_platform/result_adapter_v1.py \
+            tools/research_platform/transition_rules_v1.py \
             tools/test_research_platform_v1.py
       - name: Unit tests
         run: python tools/test_research_platform_v1.py
