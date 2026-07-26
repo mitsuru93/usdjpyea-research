@@ -8,9 +8,10 @@ The shared research platform is implemented on Research main. Historical 2023H1,
 
 - Static M15-local entry factors do not provide a portable winner/loser separator.
 - Broad common structural-stop families are closed after the comprehensive atlas found no robust survivor.
-- `F05_FAILED_RECLAIM_BASIC_V1` is the only narrow termination candidate that passed frozen historical Research/raw-tick gates.
+- `F05_FAILED_RECLAIM_BASIC_V1` is the only narrow termination candidate that passed frozen historical Research/raw-Tick gates.
 - Exact MT4 implementation parity for that candidate remains unresolved because M1/HST pseudo-ticks do not preserve the required intra-minute Bid/Ask ordering.
-- 2025H1 and 2025H2 M1/HST tester runs completed but produced zero candidate triggers and therefore do not confirm or reject the raw-tick candidate.
+- 2025H1 and 2025H2 M1/HST runs produced zero detected candidate events, but 2025 raw Bid/Ask Tick data were unavailable. The zero detections are therefore invalid as external-period efficacy evidence.
+- Failed reclaim must be tested again after 2025 Tick collection.
 - B02 has no authorized structural-stop candidate. Its principal remaining scientific direction is completed native H1/H4 state-transition confirmation and termination.
 
 ## Completed research
@@ -41,18 +42,20 @@ No additional common, B02-only or F05-only structural-stop family was authorized
 
 ### F05 failed reclaim
 
-Historical Research/raw-tick status: `PASS_RESEARCH_HISTORICAL_GATES`
+Historical Research/raw-Tick status: `PASS_RESEARCH_HISTORICAL_GATES`
 
 - Run `30104463746`
 - 15 binding events
-- all frozen historical gates passed
+- all frozen 2023H1-2024H2 historical gates passed
 - implementation work authorized
 
 MT4 M1/HST parity status: `FAIL_MT4_M1_HST_IMPLEMENTATION_PARITY`
 
-The failure is a data-path limitation: M1 OHLC/HST pseudo-ticks do not preserve permanent profit-disarm and first-executable-tick ordering required by the candidate. It is not a failure of the Research raw-tick historical result.
+The failure is a data-path limitation: M1 OHLC/HST pseudo-ticks do not preserve permanent profit-disarm and first-executable-tick ordering required by the candidate. It is not a failure of the Research raw-Tick historical result.
 
-2025H1 M1/HST run `30180390705` and 2025H2 run `30183522505` completed. Both had identical baseline and candidate gross-pips totals and zero candidate structural exits. Because exact HST parity failed, these runs are non-decisive for external raw-tick efficacy.
+2025H1 M1/HST run `30180390705` and 2025H2 run `30183522505` completed with zero detected candidate structural exits. Those runs lacked 2025 raw executable Bid/Ask Tick paths. Accordingly, the zero detections do not show that true 2025 Tick data contain no failed-reclaim events and cannot be used to pass or reject the candidate.
+
+2025 external-period status: `PENDING_2025_TICK_COLLECTION_AND_RETEST`
 
 See `docs/research/f05_failed_reclaim_cross_repo_status_v1.md`.
 
@@ -60,14 +63,16 @@ See `docs/research/f05_failed_reclaim_cross_repo_status_v1.md`.
 
 ### F05
 
-Retain `F05_FAILED_RECLAIM_BASIC_V1` as a historically passed Research candidate, but do not describe it as MT4-parity-complete or externally validated.
+Retain `F05_FAILED_RECLAIM_BASIC_V1` as a historically passed Research candidate, but do not describe it as externally validated or rejected.
 
 Required next gate:
 
-1. use an MT4-compatible replay mechanism preserving executable Bid/Ask Tick order;
-2. reproduce the six Research-confirmed 2024 events exactly;
-3. match trigger time and executable exit identity;
-4. then perform raw-tick-equivalent 2025 external-period evaluation.
+1. collect and archive accepted 2025 raw Bid/Ask Tick data;
+2. validate continuity, duplicates, gaps, timezone contract, Bid/Ask fields and deterministic hashes;
+3. replay the unchanged failed-reclaim state machine on 2025 Tick data;
+4. emit event identities, trigger timestamps, executable exits and full portfolio results;
+5. apply frozen external-period gates without threshold, side, session or year-specific adjustment;
+6. then decide 2025 generalization.
 
 Do not reopen broad structural-stop threshold searches unless materially new information or a new state mechanism is introduced.
 
@@ -118,11 +123,14 @@ The next priority is using this infrastructure for actual experiments rather tha
 
 ## Data-acquisition boundary
 
-No new Tick collection is currently required. Existing accepted raw Tick releases are the source authority. The unresolved F05 gap is MT4-compatible replay/parity, not absence of source Tick data.
+Existing accepted 2023-2024 Tick assets remain reusable and should not be recollected. However, the 2025 failed-reclaim external-period test requires 2025 raw Bid/Ask Tick data, which were not available in the M1/HST runs.
+
+A new 2025 Tick collection is therefore required before the binding retest. Because collection may take approximately 20 hours, the workflow must preserve partial progress where possible and immediately archive completed source files, manifests, hashes and receipts.
 
 ## Priority order
 
-1. Resolve exact F05 raw-tick-to-MT4 replay parity.
-2. Re-evaluate 2025H1/H2 only under a parity-capable replay path.
-3. Freeze and evaluate the B02/common native H1/H4 transition hypothesis.
-4. Keep the experiment registry and this current-state document synchronized after every binding result.
+1. Collect and archive the required 2025 raw Bid/Ask Tick data.
+2. Validate the 2025 Tick source contract and deterministic identities.
+3. Rerun unchanged `F05_FAILED_RECLAIM_BASIC_V1` on 2025 Tick data.
+4. Record the external-period pass/fail result in the registry and this current-state document.
+5. Freeze and evaluate the B02/common native H1/H4 transition hypothesis.
