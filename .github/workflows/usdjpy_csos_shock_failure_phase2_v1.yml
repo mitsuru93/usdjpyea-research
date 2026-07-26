@@ -7,6 +7,12 @@ on:
       - '.github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml'
       - '.github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml.gz.b64'
       - 'tools/csos_shock_failure_phase2_payload_v1.py.gz.b64'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml'
+      - '.github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml.gz.b64'
+      - 'tools/csos_shock_failure_phase2_payload_v1.py.gz.b64'
 
 permissions:
   contents: write
