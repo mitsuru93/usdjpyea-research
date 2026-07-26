@@ -33,6 +33,14 @@ def normalize_nullable(value):
     return int(number) if number.is_integer() else number
 
 
+def json_safe(value):
+    if pd.isna(value):
+        return None
+    if hasattr(value, "item"):
+        value = value.item()
+    return value
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-dir", required=True)
@@ -88,7 +96,7 @@ def main() -> None:
     ranked.insert(0, "rank", range(1, len(ranked) + 1))
     ranked.to_csv(out / "structural_grid_ranked.csv", index=False)
 
-    top = ranked.iloc[0].to_dict()
+    top = {key: json_safe(value) for key, value in ranked.iloc[0].to_dict().items()}
     lofo = pd.read_csv(lofo_path)
     stopped = pd.read_csv(stopped_path)
     fold = pd.read_csv(fold_path)
