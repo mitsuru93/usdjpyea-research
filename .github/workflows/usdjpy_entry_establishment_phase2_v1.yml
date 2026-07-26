@@ -1,6 +1,12 @@
 name: USDJPY Entry Establishment Phase 2 v1
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/evaluate_usdjpy_entry_establishment_phase2_v1.py'
+      - 'configs/research/usdjpy_entry_establishment_phase2_v1_prereg.json'
+      - '.github/workflows/usdjpy_entry_establishment_phase2_v1.yml'
   push:
     branches: [main]
     paths:
@@ -88,7 +94,7 @@ jobs:
           retention-days: 90
           compression-level: 0
       - name: Publish execution receipt issue
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
           ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
