@@ -1,0 +1,168 @@
+{
+  "schema_version": "usdjpy_csos_shock_failure_phase2_prereg_v1",
+  "status": "FROZEN_BEFORE_PHASE2_OUTCOMES",
+  "study_family": "D_SHOCK_FAILURE",
+  "objective": "Determine whether the CSOS Shock Failure mechanism is a portable independent strategy family across 2023H1, 2023H2, 2024H1 and 2024H2 after chronology, executable-price, cost, concentration, LOFO and portfolio-interaction audits.",
+  "scientific_authorities": {
+    "research_main_at_prereg": "2a245a36a97282cbf840e0e9f2ea26f18239cadc",
+    "core_main_inspected": "6ded071b3ba83cc13ff5aabb664017c80e421f9b",
+    "csos_pr": 295,
+    "csos_pr_head": "74c9dc6869c805e3ec3fe1db87e5744ef62729b6",
+    "csos_evaluator_source": "11643bd5c9d04dec1d8df34e681b6516cc39264b",
+    "csos_canonical_result": "88b88cd01bb84fafdf2e097401222d4f9dac1c6d",
+    "csos_release": "usdjpy-csos-opportunity-atlas-v1-r1",
+    "csos_run_id": 30202535070,
+    "csos_artifact_id": 8632092013,
+    "csos_artifact_digest": "sha256:c56754eafad6e52538f014a046d9f6f1bb203d03ba08031aa8f1c9d2ff33e9b8",
+    "csos_receipt_issue": 294
+  },
+  "development_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "forbidden_periods": ["2025H1", "2025H2"],
+  "boundaries": {
+    "2025_price_or_outcome_access": false,
+    "b02_f05_logic_change": false,
+    "threshold_grid_search": false,
+    "parameter_optimization": false,
+    "exit_grid_search": false,
+    "core_change": false,
+    "mt4_execution": false,
+    "production_authorization": false
+  },
+  "fixed_csos_mechanism": {
+    "timeframe": "M15",
+    "signal_price": "Bid OHLC",
+    "pip": 0.01,
+    "shock": "true_range_pips >= 2.5 * rolling_96_bar_median_true_range_pips AND absolute_body_pips >= 0.65 * true_range_pips",
+    "up_shock": "shock AND close > open AND close_position_in_range >= 0.80",
+    "down_shock": "shock AND close < open AND close_position_in_range <= 0.20",
+    "failure_up": "the immediately following completed M15 bar closes below the shock midpoint and closes below its own open",
+    "failure_down": "the immediately following completed M15 bar closes above the shock midpoint and closes above its own open",
+    "entry_side": "opposite original shock",
+    "csos_entry": "open of the first M15 bar after the failure bar",
+    "csos_exit": "open exactly 8 completed M15 bars after CSOS entry",
+    "csos_cost": "0.5 pip fixed round-trip deduction",
+    "same_variant_reentry": "not allowed until prior 8-bar holding interval has ended",
+    "cross_fold_trade": "not allowed"
+  },
+  "candidate_catalog": [
+    {
+      "candidate_id": "A_CSOS_FIXED_BAR",
+      "role": "audit_reference_not_executable_candidate",
+      "entry": "accepted M15 Bid open after failure",
+      "exit": "accepted M15 Bid open 8 bars later",
+      "cost": "fixed 0.5 pip",
+      "selection_eligible": false
+    },
+    {
+      "candidate_id": "B_EXECUTABLE_T0_8BAR",
+      "role": "primary_executable_candidate",
+      "entry": "first raw tick timestamp >= failure_bar_end; LONG at Ask, SHORT at Bid",
+      "exit": "first raw tick timestamp >= entry_boundary_plus_120_minutes; LONG at Bid, SHORT at Ask",
+      "stop": "none",
+      "timeout": "120 minutes",
+      "selection_eligible": true
+    },
+    {
+      "candidate_id": "C_M1_ACCEPTANCE_8BAR",
+      "role": "minimal_confirmation_variant",
+      "confirmation": "the first completed raw-tick-derived M1 bar after failure_bar_end must close on the failure side of the shock midpoint and have a body in the entry direction",
+      "entry": "first raw tick after that M1 bar completes; LONG at Ask, SHORT at Bid",
+      "exit": "first raw tick timestamp >= original failure_bar_end_plus_120_minutes; LONG at Bid, SHORT at Ask",
+      "stop": "none",
+      "timeout": "maximum 119 minutes after confirmed entry",
+      "selection_eligible": true
+    },
+    {
+      "candidate_id": "D_EXECUTABLE_T0_4BAR",
+      "role": "conservative_timeout_variant",
+      "entry": "same as B_EXECUTABLE_T0_8BAR",
+      "exit": "first raw tick timestamp >= failure_bar_end_plus_60_minutes; LONG at Bid, SHORT at Ask",
+      "stop": "none",
+      "timeout": "60 minutes",
+      "selection_eligible": true
+    }
+  ],
+  "chronology_classification": {
+    "EXACT_CONFIRMED": "raw Bid/Ask ticks cover shock, failure, entry and exit boundaries; raw-derived Bid bars reproduce every required predicate and the first executable ticks are identified",
+    "BOUNDED_SOURCE_MISMATCH": "raw ticks establish within-bar ordering and executable boundaries, but the accepted signal-bar authority is a different venue/source; required predicates do not contradict the accepted event",
+    "UNRESOLVED": "required tick interval is missing, first executable tick cannot be identified, or raw ordering contradicts the event materially"
+  },
+  "fixed_buckets": {
+    "shock_magnitude_ratio": ["2.50_to_lt_3.00", "3.00_to_lt_4.00", "ge_4.00"],
+    "shock_duration": "the qualifying shock itself is one completed M15 bar by definition; additionally report backward-looking consecutive same-direction body run ending at shock as 1, 2, or >=3 bars",
+    "session_utc": {
+      "TOKYO": "00:00-06:59",
+      "LONDON": "07:00-11:59",
+      "LONDON_NY_OVERLAP": "12:00-15:59",
+      "NEW_YORK": "16:00-20:59",
+      "TRANSITION": "21:00-23:59"
+    },
+    "baseline_day": ["POSITIVE", "NEGATIVE", "FLAT"],
+    "overlap": ["NONE", "SAME_DIRECTION", "OPPOSITE_DIRECTION", "EXISTING_DRAWDOWN", "LOSS_CLUSTER_NEARBY"]
+  },
+  "cost_stress": {
+    "baseline": "observed raw Bid/Ask executable prices",
+    "extra_spread_pips": [0.5, 1.0],
+    "slippage_pips_per_execution": [0.5, 1.0],
+    "entry_delay": ["ONE_TICK", "FIVE_SECONDS", "FIFTEEN_SECONDS"],
+    "spread_model": "widen Ask only by the stated extra spread; one spread increment affects one side of the round trip",
+    "slippage_model": "adverse slippage is applied independently at entry and exit, so 0.5 pip means 1.0 pip round-trip and 1.0 pip means 2.0 pips round-trip",
+    "severe_case": "observed spread plus 1.0 pip extra spread, 1.0 pip adverse slippage at both entry and exit, and 15-second entry delay"
+  },
+  "concentration_stress": [
+    "remove_top_1_event",
+    "remove_top_3_events",
+    "remove_top_5_events",
+    "remove_best_day",
+    "remove_best_month",
+    "remove_top_decile_wins",
+    "remove_each_session_in_turn",
+    "remove_each_side_in_turn",
+    "remove_each_fold_in_turn"
+  ],
+  "lofo_selection": {
+    "eligible_candidates": ["B_EXECUTABLE_T0_8BAR", "C_M1_ACCEPTANCE_8BAR", "D_EXECUTABLE_T0_4BAR"],
+    "training_gate": [
+      "pooled observed-spread net > 0",
+      "at least 2 of 3 training folds net > 0",
+      "best-day-excluded net > 0",
+      "top-3-event-excluded net > 0"
+    ],
+    "ranking": [
+      "highest median training-fold net under observed spread plus 0.5 pip extra spread and 0.5 pip slippage per execution",
+      "then highest pooled observed-spread PF",
+      "then lower median holding time",
+      "then candidate_id lexical order"
+    ],
+    "held_out_blinding": "held-out fold is never used for candidate selection or tie-breaking"
+  },
+  "portable_gate": {
+    "held_out_observed_spread_net_positive_folds_min": 3,
+    "pooled_observed_spread_net_positive": true,
+    "pooled_observed_spread_pf_min": 1.20,
+    "pooled_extra_spread_1pip_net_positive": true,
+    "pooled_severe_case_net_nonnegative": true,
+    "pooled_severe_case_pf_min": 1.00,
+    "best_day_excluded_net_positive": true,
+    "top_3_events_excluded_net_positive": true,
+    "both_sides_pooled_net_positive": true,
+    "each_side_positive_fold_cells_min": 1,
+    "b02_f05_negative_day_net_positive": true,
+    "chronology_unresolved_rate_max": 0.05,
+    "chronology_material_contradiction_rate_max": 0.05,
+    "combined_portfolio_mdd_increase_max_fraction": 0.10,
+    "production_authorized": false
+  },
+  "statistical_plan": {
+    "bootstrap_seed": 20260726,
+    "replicates": 10000,
+    "methods": ["event_bootstrap", "day_block_bootstrap", "session_block_bootstrap", "leave_one_month_out", "leave_one_fold_out", "matched_baseline_day_permutation"],
+    "machine_learning": false
+  },
+  "final_decision_enum": [
+    "PASS_PORTABLE_RESEARCH_CANDIDATE",
+    "PROMISING_NONPORTABLE_MECHANISM",
+    "REJECT_SHOCK_FAILURE_FAMILY",
+    "DATA_AUTHORITY_BLOCKED"
+  ]
+}

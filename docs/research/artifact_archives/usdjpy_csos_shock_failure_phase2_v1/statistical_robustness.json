@@ -1,0 +1,14 @@
+{
+  "day_block_bootstrap_net_ci95_jpy": [
+    3532.6999999997,
+    22437.424999999756
+  ],
+  "day_block_probability_positive": 0.9981,
+  "event_bootstrap_net_ci95_jpy": [
+    3580.9999999998986,
+    22677.02499999968
+  ],
+  "event_bootstrap_probability_positive": 0.9969,
+  "replicates": 10000,
+  "selected_candidate": "B_EXECUTABLE_T0_8BAR"
+}

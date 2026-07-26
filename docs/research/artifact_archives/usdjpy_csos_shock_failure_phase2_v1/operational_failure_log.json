@@ -1,0 +1,61 @@
+{
+  "failures": [
+    {
+      "cause": "Wrong verification working directory.",
+      "failure": "The first sha256sum -c invocation was launched from csos_output while manifest entries were rooted at csos_output/.",
+      "fix": "Reran verification from the extracted artifact root; every entry passed.",
+      "prevention": "All package verifiers now change to the archive root explicitly before sha256sum -c.",
+      "stage": "CSOS v1-r1 local checksum audit",
+      "wasted_processing": "File-open checks only; no market data, scientific result or package content was changed."
+    },
+    {
+      "cause": "Artifact size 539042664 bytes exceeded the connector limit 536870912 bytes.",
+      "failure": "The annual Actions artifact could not be downloaded through the connector.",
+      "fix": "Switched to the twelve preserved monthly artifacts/Release assets.",
+      "prevention": "Preflight artifact byte size and automatically select monthly packages when an annual package exceeds 512 MiB.",
+      "stage": "2024 raw Tick retrieval preflight",
+      "wasted_processing": "No partial annual download was retained and no recollection occurred."
+    },
+    {
+      "cause": "Expected SIGPIPE after head closed the pipeline.",
+      "failure": "A tar listing piped to head exited with status 141 under pipefail.",
+      "fix": "Inspected members through Python tarfile without a truncating shell pipeline.",
+      "prevention": "Use bounded tarfile iteration instead of tar|head under pipefail.",
+      "stage": "Tick package schema inspection",
+      "wasted_processing": "Only the listing command was repeated; no archive extraction or analysis was affected."
+    },
+    {
+      "cause": "Unnecessary runner-environment dependency.",
+      "failure": "Bootstrap failed before data access because PyYAML was assumed present.",
+      "fix": "Removed the PyYAML check and retained Python compile plus deterministic text assertions.",
+      "prevention": "Bootstrap validation must use declared dependencies only.",
+      "stage": "Bootstrap source assembly",
+      "wasted_processing": "Checkout and source materialization only."
+    },
+    {
+      "cause": "The workflow file was included in its own scan.",
+      "failure": "The firewall grep matched the workflow own forbidden-source pattern.",
+      "fix": "Restricted static source scan to the evaluator; runtime receipt still asserts no 2025 access.",
+      "prevention": "Firewall test fixtures and control text must be excluded from source-reference scans.",
+      "stage": "Period firewall",
+      "wasted_processing": "No authority download or analysis occurred."
+    },
+    {
+      "cause": "Result cleaner normalized numpy integers and floats but not numpy booleans.",
+      "failure": "Scientific computation reached result serialization but JSON writing rejected numpy.bool_.",
+      "fix": "Added numpy.bool_ to the JSON normalization layer only; no event, candidate, cost, gate or ranking logic changed.",
+      "prevention": "Schema serialization tests must include every numpy scalar type before full runs.",
+      "stage": "First complete Phase 2 evaluation",
+      "wasted_processing": "One full authority download and approximately three minutes of deterministic calculation were repeated."
+    },
+    {
+      "cause": "Large opaque base64 replacement was not independently round-trip verified after GitHub content upload.",
+      "failure": "A manually replaced compressed payload did not decode to a compilable source.",
+      "fix": "Recovered the known-good payload from Git history, applied the one-line bool normalization to plaintext, committed canonical evaluator source, and removed the opaque payload.",
+      "prevention": "Canonical research source must be stored as plaintext; opaque payloads may bootstrap once but must not remain the maintained source.",
+      "stage": "Compressed evaluator payload patch",
+      "wasted_processing": "One checkout and immediate compile attempt; no data access."
+    }
+  ],
+  "schema_version": "usdjpy_csos_shock_failure_phase2_operational_log_v1"
+}

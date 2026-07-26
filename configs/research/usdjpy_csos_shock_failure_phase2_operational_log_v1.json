@@ -1,0 +1,29 @@
+{
+  "schema_version": "usdjpy_csos_shock_failure_phase2_operational_log_v1",
+  "failures": [
+    {
+      "stage": "CSOS v1-r1 local checksum audit",
+      "failure": "The first sha256sum -c invocation was launched from csos_output while manifest entries were rooted at csos_output/.",
+      "cause": "Wrong verification working directory.",
+      "wasted_processing": "File-open checks only; no market data, scientific result or package content was changed.",
+      "fix": "Reran verification from the extracted artifact root; every entry passed.",
+      "prevention": "All package verifiers now change to the archive root explicitly before sha256sum -c."
+    },
+    {
+      "stage": "2024 raw Tick retrieval preflight",
+      "failure": "The annual Actions artifact could not be downloaded through the connector.",
+      "cause": "Artifact size 539042664 bytes exceeded the connector limit 536870912 bytes.",
+      "wasted_processing": "No partial annual download was retained and no recollection occurred.",
+      "fix": "Switched to the twelve preserved monthly artifacts/Release assets.",
+      "prevention": "Preflight artifact byte size and automatically select monthly packages when an annual package exceeds 512 MiB."
+    },
+    {
+      "stage": "Tick package schema inspection",
+      "failure": "A tar listing piped to head exited with status 141 under pipefail.",
+      "cause": "Expected SIGPIPE after head closed the pipeline.",
+      "wasted_processing": "Only the listing command was repeated; no archive extraction or analysis was affected.",
+      "fix": "Inspected members through Python tarfile without a truncating shell pipeline.",
+      "prevention": "Use bounded tarfile iteration instead of tar|head under pipefail."
+    }
+  ]
+}

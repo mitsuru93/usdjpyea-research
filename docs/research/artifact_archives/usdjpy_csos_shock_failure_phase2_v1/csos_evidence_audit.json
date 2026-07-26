@@ -1,0 +1,14 @@
+{
+  "artifact_digest": "sha256:c56754eafad6e52538f014a046d9f6f1bb203d03ba08031aa8f1c9d2ff33e9b8",
+  "artifact_id": 8632092013,
+  "evaluator_ref": "11643bd5c9d04dec1d8df34e681b6516cc39264b",
+  "package_checksum_verified_by_workflow": true,
+  "pr": 295,
+  "pr_head": "74c9dc6869c805e3ec3fe1db87e5744ef62729b6",
+  "receipt_issue": 294,
+  "release": "usdjpy-csos-opportunity-atlas-v1-r1",
+  "run_id": 30202535070,
+  "scientific_ref": "88b88cd01bb84fafdf2e097401222d4f9dac1c6d",
+  "scientific_results_unchanged": true,
+  "v1_r1_packaging_only_change": true
+}

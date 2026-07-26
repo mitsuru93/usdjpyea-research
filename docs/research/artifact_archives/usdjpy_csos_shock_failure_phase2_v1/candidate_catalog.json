@@ -1,0 +1,77 @@
+{
+  "candidates": [
+    {
+      "candidate_id": "A_CSOS_FIXED_BAR",
+      "cost": "fixed 0.5 pip",
+      "entry": "accepted M15 Bid open after failure",
+      "exit": "accepted M15 Bid open 8 bars later",
+      "role": "audit_reference_not_executable_candidate",
+      "selection_eligible": false
+    },
+    {
+      "candidate_id": "B_EXECUTABLE_T0_8BAR",
+      "entry": "first raw tick timestamp >= failure_bar_end; LONG at Ask, SHORT at Bid",
+      "exit": "first raw tick timestamp >= entry_boundary_plus_120_minutes; LONG at Bid, SHORT at Ask",
+      "role": "primary_executable_candidate",
+      "selection_eligible": true,
+      "stop": "none",
+      "timeout": "120 minutes"
+    },
+    {
+      "candidate_id": "C_M1_ACCEPTANCE_8BAR",
+      "confirmation": "the first completed raw-tick-derived M1 bar after failure_bar_end must close on the failure side of the shock midpoint and have a body in the entry direction",
+      "entry": "first raw tick after that M1 bar completes; LONG at Ask, SHORT at Bid",
+      "exit": "first raw tick timestamp >= original failure_bar_end_plus_120_minutes; LONG at Bid, SHORT at Ask",
+      "role": "minimal_confirmation_variant",
+      "selection_eligible": true,
+      "stop": "none",
+      "timeout": "maximum 119 minutes after confirmed entry"
+    },
+    {
+      "candidate_id": "D_EXECUTABLE_T0_4BAR",
+      "entry": "same as B_EXECUTABLE_T0_8BAR",
+      "exit": "first raw tick timestamp >= failure_bar_end_plus_60_minutes; LONG at Bid, SHORT at Ask",
+      "role": "conservative_timeout_variant",
+      "selection_eligible": true,
+      "stop": "none",
+      "timeout": "60 minutes"
+    }
+  ],
+  "portable_gate": {
+    "b02_f05_negative_day_net_positive": true,
+    "best_day_excluded_net_positive": true,
+    "both_sides_pooled_net_positive": true,
+    "chronology_material_contradiction_rate_max": 0.05,
+    "chronology_unresolved_rate_max": 0.05,
+    "combined_portfolio_mdd_increase_max_fraction": 0.1,
+    "each_side_positive_fold_cells_min": 1,
+    "held_out_observed_spread_net_positive_folds_min": 3,
+    "pooled_extra_spread_1pip_net_positive": true,
+    "pooled_observed_spread_net_positive": true,
+    "pooled_observed_spread_pf_min": 1.2,
+    "pooled_severe_case_net_nonnegative": true,
+    "pooled_severe_case_pf_min": 1.0,
+    "production_authorized": false,
+    "top_3_events_excluded_net_positive": true
+  },
+  "selection": {
+    "eligible_candidates": [
+      "B_EXECUTABLE_T0_8BAR",
+      "C_M1_ACCEPTANCE_8BAR",
+      "D_EXECUTABLE_T0_4BAR"
+    ],
+    "held_out_blinding": "held-out fold is never used for candidate selection or tie-breaking",
+    "ranking": [
+      "highest median training-fold net under observed spread plus 0.5 pip extra spread and 0.5 pip slippage per execution",
+      "then highest pooled observed-spread PF",
+      "then lower median holding time",
+      "then candidate_id lexical order"
+    ],
+    "training_gate": [
+      "pooled observed-spread net > 0",
+      "at least 2 of 3 training folds net > 0",
+      "best-day-excluded net > 0",
+      "top-3-event-excluded net > 0"
+    ]
+  }
+}

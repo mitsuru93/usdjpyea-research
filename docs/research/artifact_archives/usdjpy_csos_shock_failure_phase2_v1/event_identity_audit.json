@@ -1,0 +1,12 @@
+{
+  "bar_close_leakage_count": 0,
+  "duplicate_event_ids": 0,
+  "duplicate_shock_start_times": 0,
+  "expected_csos_events": 114,
+  "extra_event_ids": [],
+  "missing_event_ids": [],
+  "overlapping_duplicate_intervals": 0,
+  "reproduced_events": 114,
+  "same_shock_double_count": 0,
+  "timezone_mismatch_count": 0
+}

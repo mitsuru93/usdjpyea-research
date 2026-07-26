@@ -1,0 +1,165 @@
+{
+  "files": [
+    {
+      "bytes": 292,
+      "path": "REPRODUCE.md",
+      "sha256": "8b0b7b316fa3a96b71db24242dd793b8961e09e04ac89c7676a6ab2ae0277d3a"
+    },
+    {
+      "bytes": 4377,
+      "path": "baseline_state_metrics.csv",
+      "sha256": "e38b5fa65d0665b701fdb54455dfab311e23f8ef740aacb8a905ddc840c62018"
+    },
+    {
+      "bytes": 3083,
+      "path": "candidate_catalog.json",
+      "sha256": "ee4dcfb515236f40b75cdc5b2db170d1657b1036f65a77ed28960145fc1014ba"
+    },
+    {
+      "bytes": 1791,
+      "path": "candidate_metrics.csv",
+      "sha256": "1c33c8ae1c438df272b6a3dc04acab79eb60de4b4ca331aad364fa9caadfc3a2"
+    },
+    {
+      "bytes": 2068,
+      "path": "candidate_ranking.csv",
+      "sha256": "fb5e0ec14c622763984c40210223a167c5cfd700aa2e3974a0122de749b3f411"
+    },
+    {
+      "bytes": 38685,
+      "path": "candidate_trade_ledger.csv.gz",
+      "sha256": "cc4ad57b9ed339be1a6f318be492f22fed859d7f6ef93814eb1f53f59ffe8459"
+    },
+    {
+      "bytes": 39673,
+      "path": "chronology_audit.csv",
+      "sha256": "7b6500ef5d9e6a8fc822b1b68e1d370e58bc9eb8b73c7c2bafe26286e5676619"
+    },
+    {
+      "bytes": 801,
+      "path": "complementarity_metrics.csv",
+      "sha256": "dcd54c1b80445e036e9ff50b9f2eda86d8262ae2148ae59c774a974147cbed92"
+    },
+    {
+      "bytes": 20092,
+      "path": "concentration_report.csv",
+      "sha256": "cd2dfae5a73381e855d8ad0a6e80e8fbd827e780540bc6be1671ddf5defd1ad4"
+    },
+    {
+      "bytes": 7249,
+      "path": "cost_stress_report.csv",
+      "sha256": "5c00d5e275bc7fe52d4da1983cb4e729c2252b9d2c4bb936038740f68db926d7"
+    },
+    {
+      "bytes": 554,
+      "path": "csos_evidence_audit.json",
+      "sha256": "b0fdc13134493bf49003b6de4d5c19c10bd98517dc220585cb635e2487665bb2"
+    },
+    {
+      "bytes": 194416,
+      "path": "equity_curves.csv",
+      "sha256": "c41c9fba9d96236151307fd2afd877b8d75780f4c183bd6086f582a92b263124"
+    },
+    {
+      "bytes": 314,
+      "path": "event_identity_audit.json",
+      "sha256": "478cc9ddbc73b9d3c277c33efab16b97f280ee702d14bab834dd50802da6c31b"
+    },
+    {
+      "bytes": 76195,
+      "path": "event_identity_ledger.csv",
+      "sha256": "31e031c61294e83f4b09ccdd4cfb373f04b2f759f2f4bddf9c920123aefa2795"
+    },
+    {
+      "bytes": 3622,
+      "path": "execution_delay_report.csv",
+      "sha256": "349e39f7b9243886a433006b705074640f12421e61c4a849175293f82eb830e1"
+    },
+    {
+      "bytes": 1601,
+      "path": "execution_receipt.json",
+      "sha256": "2144051287e2c86eb9dfa64b936c29671de88833354827f6978268d819549f99"
+    },
+    {
+      "bytes": 4269,
+      "path": "final_decision.json",
+      "sha256": "90940fc45e8819e5709073ce0c53737ca08404f746590098dbd6e5083d418b07"
+    },
+    {
+      "bytes": 5919,
+      "path": "fold_metrics.csv",
+      "sha256": "20de530c23b67c19b8252ee62f34bc946e2e36e0d85cf0a6d028e6ce6f0f744e"
+    },
+    {
+      "bytes": 1121,
+      "path": "human_readable_report.md",
+      "sha256": "7bc7ab3e0be66ae58241f0717388e15f003fbb5c89fc6065b70d8601d1c62d5a"
+    },
+    {
+      "bytes": 2860,
+      "path": "lofo_selection_results.csv",
+      "sha256": "38c5822b4ee7a97f73dfd733297f5de467117957ff2711c11e8a01680fa2af9e"
+    },
+    {
+      "bytes": 1753,
+      "path": "operational_failure_log.json",
+      "sha256": "921a17acadf0428de0bc46b3627deb1c7bf399b91c465cbdcd338d3ee1b11e66"
+    },
+    {
+      "bytes": 2578,
+      "path": "overlap_report.csv",
+      "sha256": "8b002cb155bffee52f3b7455e4172d845cb94799f7f864655466cd02b0879ceb"
+    },
+    {
+      "bytes": 2896,
+      "path": "portfolio_interaction_report.csv",
+      "sha256": "da16430eca1688fdc637fb18ed404d25ee290c80baa29e6d373023db88b1d28d"
+    },
+    {
+      "bytes": 191,
+      "path": "run.log",
+      "sha256": "d9bb4608d050627cbc8ae71a5f89c2524182f8acad38192dc6d0042ec64849d5"
+    },
+    {
+      "bytes": 7183,
+      "path": "session_metrics.csv",
+      "sha256": "9b872d522ca99e80137a1e5be3b3db6ce398f43bfefdc421a00783c509e022fe"
+    },
+    {
+      "bytes": 4562,
+      "path": "shock_duration_metrics.csv",
+      "sha256": "2c827ba7717dedb06b6b051d5d73340848608ae5a126489c5735ea522b2c172a"
+    },
+    {
+      "bytes": 3132,
+      "path": "shock_failure_mechanism_contract.json",
+      "sha256": "d721f6c6439596be1e666b5943915daf611ba49199420539dca2d0845bbf43ec"
+    },
+    {
+      "bytes": 4635,
+      "path": "shock_size_metrics.csv",
+      "sha256": "25f3c348bcb0a2905165143777efb17942067b0ec2934a2dbe93358474b3f251"
+    },
+    {
+      "bytes": 3192,
+      "path": "side_metrics.csv",
+      "sha256": "9cc2a2455903fac994c77c9266a8cb225fd03ddf45e4afe1956a534562bea835"
+    },
+    {
+      "bytes": 1482,
+      "path": "source_authority_inventory.json",
+      "sha256": "6059998d1fb1ed9ef7aa75f6ae9cb537399cc1faec10407ec00d6740e0b91eef"
+    },
+    {
+      "bytes": 344,
+      "path": "statistical_robustness.json",
+      "sha256": "f01327a7044b62dc8cd684b5a5cec0d0d9686f599ef9df35d1eb3479f870622d"
+    },
+    {
+      "bytes": 8239,
+      "path": "usdjpy_csos_shock_failure_phase2_prereg_v1.json",
+      "sha256": "4f0a8e739ab6917712a6778118704a0d0078a6862e12f4aaab65df8ab7331e87"
+    }
+  ],
+  "schema_version": "usdjpy_csos_shock_failure_phase2_manifest_v1"
+}
