@@ -1,0 +1,30 @@
+name: Diagnose CSOS Shock Failure Phase 2 failure tail
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_csos_shock_failure_phase2_failure_tail.yml'
+
+permissions:
+  actions: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download failed job log
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          FAILED_JOB_ID: '89801739933'
+        run: |
+          set -euo pipefail
+          gh api -H 'Accept: application/vnd.github+json' "/repos/${REPO}/actions/jobs/${FAILED_JOB_ID}/logs" > failed_job.log
+          tail -n 160 failed_job.log > failure_tail.log
+          cat failure_tail.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: csos-phase2-failure-tail-${{ github.run_id }}
+          path: failure_tail.log
+          retention-days: 7
