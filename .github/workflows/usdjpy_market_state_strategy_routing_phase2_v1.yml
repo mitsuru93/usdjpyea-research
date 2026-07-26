@@ -70,21 +70,29 @@ jobs:
             --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
             --out-dir materialized
       - name: Run routing diagnosis
+        id: diagnosis
+        continue-on-error: true
         run: |
           p23=$(cat inputs/path23)
           p24=$(cat inputs/path24)
+          set +e
           python tools/evaluate_usdjpy_market_state_strategy_routing_phase2_v1.py \
             --trades materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv \
             --m15-2023 "$p23" --m15-2024 "$p24" --out-dir output \
-            --research-sha "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" | tee output/run.log
-          jq -e '.status=="PHASE2_DIAGNOSIS_COMPLETE_NO_CANDIDATE_AUTHORIZATION" and .population.trades==1882 and ."2025_accessed"==false and .candidate_authorized==false' output/execution_receipt.json
+            --research-sha "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" > output/run.log 2>&1
+          rc=$?
+          cat output/run.log
+          echo "$rc" > output/evaluator_exit_code.txt
+          exit 0
       - name: Package evidence
+        if: always()
         run: |
           cp configs/research/usdjpy_market_state_strategy_routing_phase2_v1_prereg.json output/
           cp materialized/usdjpy_b02_f05_hyp024_input_materialization_v2.json output/
           find output -type f -print0 | sort -z | xargs -0 sha256sum > output/PACKAGE_SHA256SUMS
           zip -q -X -r "usdjpy-market-state-routing-phase2-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" output
       - name: Upload artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: usdjpy-market-state-routing-phase2-v1-${{ github.run_id }}-${{ github.run_attempt }}
@@ -93,3 +101,7 @@ jobs:
             usdjpy-market-state-routing-phase2-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
           retention-days: 90
           compression-level: 0
+      - name: Enforce successful diagnosis
+        run: |
+          test "$(cat output/evaluator_exit_code.txt)" -eq 0
+          jq -e '.status=="PHASE2_DIAGNOSIS_COMPLETE_NO_CANDIDATE_AUTHORIZATION" and .population.trades==1882 and ."2025_accessed"==false and .candidate_authorized==false' output/execution_receipt.json
