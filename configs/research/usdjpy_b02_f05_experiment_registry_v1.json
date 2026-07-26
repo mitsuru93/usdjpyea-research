@@ -28,9 +28,9 @@
       "experiment_id": "EXP-F05-FAILED-RECLAIM-V1",
       "hypothesis_id": "F05-FAILED-RECLAIM",
       "title": "F05 failed reclaim structural termination",
-      "status": "completed",
+      "status": "running",
       "strategies": ["F05"],
-      "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+      "periods": ["2023H1", "2023H2", "2024H1", "2024H2", "2025H1", "2025H2"],
       "analysis_family": "state_transition_portfolio_replay",
       "contract_path": "configs/research/f05_failed_reclaim_validation_protocol_v1.json",
       "result_paths": [
@@ -40,12 +40,12 @@
         "tools/evaluate_f05_failed_reclaim_portfolio_v1.py",
         "tools/research_platform/transition_rules_v1.py"
       ],
-      "dataset_sources": ["2024_raw_bidask_tick_release", "2024_derived_bar_release", "2023_accepted_m1_contract"],
+      "dataset_sources": ["2024_raw_bidask_tick_release", "2024_derived_bar_release", "2023_accepted_m1_contract", "2025_raw_bidask_tick_pending"],
       "dependency_tier": "B",
       "mechanism": "breakout recovers after initial re-entry but subsequently fails to remain established",
-      "primary_endpoint": "four-fold binding portfolio delta with chronology and reproduction parity",
-      "falsification_rule": "reject on technical reproduction mismatch or failure of any frozen historical gate",
-      "decision": "PASS_RESEARCH_HISTORICAL_GATES on raw Bid/Ask Tick evidence; exact MT4 M1/HST parity failed because pseudo-ticks do not preserve the required intra-minute ordering; completed 2025H1/H2 HST runs had zero candidate triggers and are scientifically non-decisive"
+      "primary_endpoint": "historical four-fold binding portfolio delta plus raw-Tick external-period evaluation",
+      "falsification_rule": "reject on technical reproduction mismatch or failure of any frozen historical or external-period gate",
+      "decision": "PASS_RESEARCH_HISTORICAL_GATES for 2023H1-2024H2; 2025H1/H2 M1/HST zero detections are invalid as efficacy evidence because 2025 raw Bid/Ask Tick data were unavailable; collect 2025 Tick data and rerun failed reclaim before external-period judgment"
     },
     {
       "experiment_id": "EXP-B02-F05-STRUCTURAL-SL-ATLAS-V2",
