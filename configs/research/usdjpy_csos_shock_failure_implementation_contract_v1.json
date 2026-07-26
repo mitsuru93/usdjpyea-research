@@ -1,0 +1,114 @@
+{
+  "schema_version": "usdjpy_csos_shock_failure_implementation_contract_v1",
+  "status": "CONTRACT_ONLY_CORE_NOT_AUTHORIZED",
+  "candidate_id": "B_EXECUTABLE_T0_8BAR",
+  "candidate_freeze_path": "configs/research/usdjpy_csos_shock_failure_candidate_freeze_v1.json",
+  "target_architecture": {
+    "first_target": "standalone shadow/parity Expert; no B02/F05 source modification",
+    "suggested_core_path": "mql4/Experts/MT4_USDJPY_Shock_Failure_Parity_v1.mq4",
+    "portfolio_integration": "separate later stage after standalone parity",
+    "magic_number": "must be unique and collision-checked in the later Core implementation PR; value is not part of research semantics",
+    "one_family_position_maximum": true
+  },
+  "runtime_information_contract": {
+    "decision_trigger": "the first OnTick callback that observes a new M15 bar",
+    "completed_bar_mapping": {
+      "shift_1": "failure bar",
+      "shift_2": "shock bar",
+      "shock_reference_window": "96 completed observed M15 bars ending at shift 2; shifts 2 through 97 inclusive",
+      "previous_close_required_for_oldest_TR": "shift 98"
+    },
+    "server_time": "bar computation may use broker server time, but every emitted identity must include canonical UTC",
+    "utc_conversion": "must use a frozen, tested historical conversion table or rule; implicit machine-local timezone conversion is prohibited",
+    "price_source": "Bid bars for signal; current Bid/Ask quote for execution",
+    "future_information": false
+  },
+  "state_machine": {
+    "states": ["WARMUP", "IDLE", "OPEN_DECISION", "OPEN", "CLOSE_DECISION", "CLOSED", "INVALID_RUN"],
+    "WARMUP_to_IDLE": "required completed-bar history and evaluation admission boundary are satisfied",
+    "IDLE_to_OPEN_DECISION": "completed shift-2 shock plus shift-1 failure satisfy the frozen predicates and reentry suppression",
+    "OPEN_DECISION_to_OPEN": "submit on the same first tick; capture decision quote and actual fill separately",
+    "OPEN_to_CLOSE_DECISION": "current tick timestamp >= frozen decision boundary + 7200 seconds",
+    "CLOSE_DECISION_to_CLOSED": "close on that first tick and capture decision quote and actual fill separately",
+    "any_order_error": "INVALID_RUN for binding parity; no later tick may be silently substituted"
+  },
+  "execution_contract": {
+    "long_open": "buy at current Ask",
+    "short_open": "sell at current Bid",
+    "long_close": "close against current Bid",
+    "short_close": "close against current Ask",
+    "entry_time_anchor": "failure completion boundary, not actual OrderSend fill time",
+    "exit_time_anchor": "entry decision boundary + 7200 seconds, not actual fill time + 7200 seconds",
+    "stop_loss": 0,
+    "take_profit": 0,
+    "retry_in_binding_parity": 0,
+    "retry_note": "A retry changes the first-executable-tick contract. Any production retry policy requires a separate execution-robustness authorization.",
+    "slippage_optimization": false,
+    "spread_or_volatility_skip": false,
+    "order_send_failure_gate": 0,
+    "order_close_failure_gate": 0
+  },
+  "event_consumption_and_reentry": {
+    "event_consumed_at_decision": true,
+    "same_or_opposite_side_does_not_change_suppression": true,
+    "binding_rule": "candidate failure index j must be strictly greater than previous admitted failure index + 9",
+    "actual_order_lifetime_does_not_redefine_rule": true
+  },
+  "logging_contract": {
+    "required_event_fields": [
+      "candidate_id",
+      "event_id",
+      "shock_bar_start_utc",
+      "shock_OHLC_bid",
+      "shock_true_range_pips",
+      "median_tr96_pips",
+      "shock_midpoint",
+      "failure_bar_start_utc",
+      "failure_OHLC_bid",
+      "decision_boundary_utc",
+      "side",
+      "entry_decision_tick_utc",
+      "entry_decision_bid",
+      "entry_decision_ask",
+      "entry_actual_fill_utc",
+      "entry_actual_fill_price",
+      "scheduled_exit_boundary_utc",
+      "exit_decision_tick_utc",
+      "exit_decision_bid",
+      "exit_decision_ask",
+      "exit_actual_fill_utc",
+      "exit_actual_fill_price",
+      "pnl_pips",
+      "order_send_error",
+      "order_close_error"
+    ],
+    "canonical_float_serialization": "decimal text with sufficient precision for 1e-10 price comparison",
+    "duplicate_event_ids_allowed": false,
+    "missing_or_extra_events_allowed_in_formula_parity": false
+  },
+  "data_authority_boundary": {
+    "2023_signal_authority": "accepted Rakuten MT4-derived Bid M15",
+    "2024_signal_authority": "accepted Dukascopy Raw Tick-derived Bid M15",
+    "execution_chronology": "Dukascopy Raw Bid/Ask Tick for 2023 and 2024",
+    "critical_implication": "Exact formula parity must use the canonical accepted bars. A Rakuten 2024 MT4 run is a broker-source portability study and must not be mislabeled as exact reproduction of the canonical 2024 signal ledger.",
+    "hst_limitation": "M15 or M1 HST alone cannot prove first-tick Bid/Ask chronology or exact executable prices",
+    "tds_or_raw_tick_requirement": "binding execution parity requires TDS with the frozen tick source or an independently validated Raw Tick replay; HST-only evidence is signal/state parity only"
+  },
+  "portfolio_boundary": {
+    "initial_mode_if_later_integrated": "ADDITIVE",
+    "same_direction_skip": false,
+    "opposite_direction_skip": false,
+    "baseline_drawdown_skip": false,
+    "maximum_concurrent_two_rule": false,
+    "replacement_or_oracle_mode": false,
+    "B02_F05_logic_change": false
+  },
+  "authorization": {
+    "research_contract_creation": true,
+    "core_source_change": false,
+    "mt4_execution": false,
+    "2025_access": false,
+    "production": false,
+    "live_orders": false
+  }
+}
