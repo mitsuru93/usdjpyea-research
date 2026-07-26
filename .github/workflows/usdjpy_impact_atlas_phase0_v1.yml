@@ -1,0 +1,47 @@
+name: USDJPY Impact Atlas Phase 0 v1
+
+on:
+  pull_request:
+    paths:
+      - 'docs/research/USDJPY_IMPACT_ATLAS_*'
+      - 'docs/handoffs/USDJPY_IMPACT_ATLAS_*'
+      - 'configs/research/usdjpy_impact_atlas_v1_prereg.json'
+      - 'tools/build_usdjpy_impact_atlas_phase0_v1.py'
+      - 'tests/test_build_usdjpy_impact_atlas_phase0_v1.py'
+      - '.github/workflows/usdjpy_impact_atlas_phase0_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase0-contract-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile
+        run: python -m py_compile tools/build_usdjpy_impact_atlas_phase0_v1.py
+      - name: Unit tests
+        run: python -m pytest -q tests/test_build_usdjpy_impact_atlas_phase0_v1.py
+      - name: Repository contract audit
+        run: |
+          python tools/build_usdjpy_impact_atlas_phase0_v1.py \
+            --root . \
+            --out validation_output/source_inventory.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('validation_output/source_inventory.json').read_text())
+          assert p['status']=='PASS_REPOSITORY_CONTRACT_AUDIT'
+          assert p['selection_executed'] is False
+          assert p['2025_market_outcomes_accessed'] is False
+          assert p['excluded_selection_periods']==['2025H1','2025H2']
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-impact-atlas-phase0-${{ github.run_id }}-${{ github.run_attempt }}
+          path: validation_output/source_inventory.json
+          retention-days: 90
