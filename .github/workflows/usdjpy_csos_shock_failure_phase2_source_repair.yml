@@ -1,0 +1,40 @@
+name: Repair CSOS Shock Failure Phase 2 evaluator source
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_csos_shock_failure_phase2_source_repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/csos-shock-failure-phase2
+          fetch-depth: 0
+      - name: Recover known-good payload and commit corrected source
+        run: |
+          set -euo pipefail
+          git show 5058e9ce7a79fd1727bd4c887cc1255aa232df7b:tools/csos_shock_failure_phase2_payload_v1.py.gz.b64 > /tmp/evaluator.b64
+          base64 -d /tmp/evaluator.b64 | gzip -d > tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py')
+          s=p.read_text()
+          old=" if isinstance(v,(np.integer,)):return int(v)\n"
+          new=" if isinstance(v,(bool,np.bool_)):return bool(v)\n if isinstance(v,(np.integer,)):return int(v)\n"
+          assert old in s and new not in s
+          p.write_text(s.replace(old,new,1))
+          PY
+          python -m py_compile tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py
+          git rm tools/csos_shock_failure_phase2_payload_v1.py.gz.b64
+          git commit -m 'research: canonicalize corrected Shock Failure Phase 2 evaluator'
+          git push origin HEAD:agent/csos-shock-failure-phase2
