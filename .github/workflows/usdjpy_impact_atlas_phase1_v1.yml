@@ -1,0 +1,125 @@
+name: USDJPY Impact Atlas Phase 1 v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/evaluate_usdjpy_impact_atlas_phase1_v1.py'
+      - '.github/workflows/usdjpy_impact_atlas_phase1_v1.yml'
+      - 'configs/research/usdjpy_impact_atlas_v1_prereg.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  phase1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install frozen dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+      - name: Enforce preregistration boundary
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('configs/research/usdjpy_impact_atlas_v1_prereg.json'))
+          assert p['development_folds']==['2023H1','2023H2','2024H1','2024H2']
+          assert p['ranking_rule']['candidate_selection_authorized'] is False
+          assert set(p['external_periods'])=={'2025H1','2025H2'}
+          PY
+      - name: Download exact historical authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/historical inputs/2023 inputs/2024h1 inputs/2024h2 inputs/derived materialized
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/historical \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' \
+            --pattern 'EXPECTED_SHA256SUMS'
+          (cd inputs/historical && sha256sum -c EXPECTED_SHA256SUMS)
+          unzip -q inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip -d inputs/2023
+          unzip -q inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip -d inputs/2024h1
+          unzip -q inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip -d inputs/2024h2
+          gh release download usdjpy-2024-derived-bars-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/derived --pattern 'USDJPY-2024-m15-derived-bars-v1.csv.gz'
+          printf '%s  %s\n' \
+            '4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78' inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            '766be5ebba158e5b40f5da5d66929b4da8a25d42a8716b1e591d7c09dd87c2a3' inputs/derived/USDJPY-2024-m15-derived-bars-v1.csv.gz \
+            '9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a' inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            'a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd' inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv > inputs/SELECTED_SHA256SUMS
+          sha256sum -c inputs/SELECTED_SHA256SUMS
+      - name: Materialize canonical 1,882-trade path ledger
+        run: |
+          python tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m15-2024h1 inputs/derived/USDJPY-2024-m15-derived-bars-v1.csv.gz \
+            --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            --out-dir materialized
+      - name: Run Phase 1 diagnosis
+        run: |
+          python tools/evaluate_usdjpy_impact_atlas_phase1_v1.py \
+            --trades materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv \
+            --states materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz \
+            --out-dir impact_atlas_output \
+            --research-sha "$GITHUB_SHA" \
+            --core-sha 'aca45ab891d9a6da272b5111a99142d99e874929' \
+            --run-id "$GITHUB_RUN_ID" | tee impact_atlas_output/run.log
+          jq -e '.status=="PHASE1_DIAGNOSIS_COMPLETE_NO_CANDIDATE_AUTHORIZATION" and .population.total_trades==1882 and .population.loser_count==916 and ."2025_accessed"==false and .production_authorized==false' impact_atlas_output/execution_receipt.json
+      - name: Package evidence
+        run: |
+          cp configs/research/usdjpy_impact_atlas_v1_prereg.json impact_atlas_output/
+          cp materialized/usdjpy_b02_f05_hyp024_input_materialization_v2.json impact_atlas_output/
+          find impact_atlas_output -type f -print0 | sort -z | xargs -0 sha256sum > impact_atlas_output/PACKAGE_SHA256SUMS
+          zip -q -X -r "usdjpy-impact-atlas-phase1-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" impact_atlas_output
+      - name: Upload artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-impact-atlas-phase1-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            impact_atlas_output
+            usdjpy-impact-atlas-phase1-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0
+      - name: Publish immutable Release
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create usdjpy-impact-atlas-phase1-v1 "usdjpy-impact-atlas-phase1-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" \
+            --target "$GITHUB_SHA" --title 'USDJPY Impact Atlas Phase 1 v1' \
+            --notes 'Descriptive 2023H1-2024H2 B02/F05 Impact Atlas. No 2025 access, candidate selection, MT4 implementation, or production authorization.' --repo "$GITHUB_REPOSITORY"
+      - name: Publish execution receipt issue
+        if: always() && github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          status=$(jq -r '.status // "FAILED_BEFORE_RECEIPT"' impact_atlas_output/execution_receipt.json 2>/dev/null || echo FAILED_BEFORE_RECEIPT)
+          top=$(jq -r '.ranking[0].program // "NA"' impact_atlas_output/execution_receipt.json 2>/dev/null || echo NA)
+          cat > receipt.md <<EOF
+          workflow: usdjpy_impact_atlas_phase1_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          head_sha: ${GITHUB_SHA}
+          status: ${status}
+          top_program: ${top}
+          artifact_id: ${ARTIFACT_ID}
+          artifact_digest: ${ARTIFACT_DIGEST}
+          release_tag: usdjpy-impact-atlas-phase1-v1
+          2025_accessed: false
+          mt4_accessed: false
+          candidate_authorized: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[impact-atlas-phase1] ${GITHUB_RUN_ID} ${status}" --body-file receipt.md
