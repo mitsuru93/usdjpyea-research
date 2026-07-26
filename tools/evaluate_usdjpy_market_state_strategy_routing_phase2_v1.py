@@ -55,9 +55,7 @@ def main():
     for fold in FOLDS:
      idx=t.fold.eq(fold)&t.strategy.eq(strat);r=metrics(t[idx],allow[idx]);grid.append({"rule_id":rid,"cell":cid,"rule":rule,"fold":fold,"strategy":strat,**r})
    changed=t[~allow].copy();changed['rule_id']=rid;changed['h1_state']=h1srs[~allow].to_numpy();changed['h4_state']=h4srs[~allow].to_numpy();changed['delta_jpy']=-changed.realized_pl_jpy;trade_rows.append(changed[['rule_id','fold','strategy','side','entry_utc','realized_pl_jpy','h1_state','h4_state','delta_jpy']])
- g=pd.DataFrame(grid);overall=g[g.strategy.isna() if 'strategy' in g else pd.Series(False,index=g.index)] if 'strategy' in g else pd.DataFrame()
- # pandas creates NaN strategy for pooled rows
- pooled=g[g['strategy'].isna()].copy();foldmat=pooled.pivot(index='rule_id',columns='fold',values='net_delta_jpy')
+ g=pd.DataFrame(grid);pooled=g[g['strategy'].isna()].copy();foldmat=pooled.pivot(index='rule_id',columns='fold',values='net_delta_jpy')
  summaries=[]
  for rid,row in foldmat.iterrows():
   q=pooled[pooled.rule_id.eq(rid)];summaries.append({"rule_id":rid,"min_fold_net_jpy":float(row.min()),"pooled_net_jpy":float(row.sum()),"positive_folds":int((row>0).sum()),"blocked":int(q.blocked.sum()),"winner_damage_jpy":float(q.winner_damage_jpy.sum()),"loser_benefit_jpy":float(q.loser_benefit_jpy.sum())})
@@ -66,8 +64,9 @@ def main():
  for held in FOLDS:
   train=[f for f in FOLDS if f!=held];cand=[]
   for rid in foldmat.index:
-   q=foldmat.loc[rid,train];meta=s[s.rule_id.eq(rid)].iloc[0];cand.append((float(q.min()),float(q.sum()),-float(meta.winner_damage_jpy),-int(meta.blocked),rid))
-  rid=max(cand)[-1];heldrow=pooled[(pooled.rule_id.eq(rid))&(pooled.fold.eq(held))].iloc[0]
+   q=foldmat.loc[rid,train];meta=s[s.rule_id.eq(rid)].iloc[0];cand.append({"rule_id":rid,"min_train":float(q.min()),"pooled_train":float(q.sum()),"winner_damage":float(meta.winner_damage_jpy),"blocked":int(meta.blocked)})
+  c=pd.DataFrame(cand).sort_values(['min_train','pooled_train','winner_damage','blocked','rule_id'],ascending=[False,False,True,True,True],kind='mergesort').iloc[0];rid=str(c.rule_id)
+  heldrow=pooled[(pooled.rule_id.eq(rid))&(pooled.fold.eq(held))].iloc[0]
   rec={"held_out_fold":held,"selected_rule_id":rid,"held_out_net_delta_jpy":float(heldrow.net_delta_jpy),"held_out_blocked":int(heldrow.blocked)}
   for strat in ['B02','F05']:
    z=g[(g.rule_id.eq(rid))&(g.fold.eq(held))&(g.strategy.eq(strat))].iloc[0];rec[f"{strat}_net_delta_jpy"]=float(z.net_delta_jpy)
@@ -78,5 +77,7 @@ def main():
  result={"status":status,"population":{"trades":len(t)},"rules":len(s),"lofo_positive_folds":positive,"strategy_nonnegative_folds":breadth,"support_gate":support,"portable":portable,"descriptive_best":s.iloc[0].to_dict(),"2025_accessed":False,"mt4_accessed":False,"candidate_authorized":False,"research_sha":a.research_sha,"run_id":a.run_id}
  def clean(v):return v.item() if hasattr(v,'item') else v
  result={k:clean(v) for k,v in result.items()};result['descriptive_best']={k:clean(v) for k,v in result['descriptive_best'].items()}
- (a.out_dir/'result.json').write_text(json.dumps(result,indent=2,ensure_ascii=False,allow_nan=False)+'\n');receipt={"status":"PHASE2_DIAGNOSIS_COMPLETE_NO_CANDIDATE_AUTHORIZATION",**result};(a.out_dir/'execution_receipt.json').write_text(json.dumps(receipt,indent=2,ensure_ascii=False,allow_nan=False)+'\n');print(json.dumps(result,indent=2,ensure_ascii=False))
+ (a.out_dir/'result.json').write_text(json.dumps(result,indent=2,ensure_ascii=False,allow_nan=False)+'\n')
+ receipt={**result,"diagnostic_status":result['status'],"status":"PHASE2_DIAGNOSIS_COMPLETE_NO_CANDIDATE_AUTHORIZATION"}
+ (a.out_dir/'execution_receipt.json').write_text(json.dumps(receipt,indent=2,ensure_ascii=False,allow_nan=False)+'\n');print(json.dumps(result,indent=2,ensure_ascii=False))
 if __name__=='__main__':main()
