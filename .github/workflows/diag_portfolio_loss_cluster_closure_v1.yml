@@ -1,0 +1,35 @@
+name: Diagnose Portfolio Loss-Cluster closure validator
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/diag_portfolio_loss_cluster_closure_v1.yml'
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract failed log tail
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run view 30205640569 --repo "$GITHUB_REPOSITORY" --log-failed > failed.log 2>&1 || true
+          tail -n 120 failed.log > failed_tail.log
+          {
+            echo 'run_id: 30205640569'
+            echo 'classification: TECHNICAL_INCOMPLETE_CANONICALIZATION_VALIDATOR'
+            echo
+            echo '```text'
+            cat failed_tail.log
+            echo '```'
+          } > issue.md
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title '[portfolio-loss-cluster-closure-diagnostic] validator failure' \
+            --body-file issue.md
