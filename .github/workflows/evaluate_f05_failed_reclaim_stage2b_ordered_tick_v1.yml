@@ -62,8 +62,12 @@ jobs:
           gh release download usdjpy-2024-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/raw_ticks/2024 --pattern 'usdjpy-2024-??-raw-ticks-v1.tar.gz' --pattern 'SHA256SUMS'
           test "$(find inputs/raw_ticks/2023 -name 'usdjpy-2023-??-raw-ticks-v1.tar.gz' | wc -l)" -eq 12
           test "$(find inputs/raw_ticks/2024 -name 'usdjpy-2024-??-raw-ticks-v1.tar.gz' | wc -l)" -eq 12
-          (cd inputs/raw_ticks/2023 && sha256sum -c SHA256SUMS)
-          (cd inputs/raw_ticks/2024 && sha256sum -c SHA256SUMS)
+          grep -E 'usdjpy-2023-[0-9]{2}-raw-ticks-v1\.tar\.gz$' inputs/raw_ticks/2023/SHA256SUMS > inputs/raw_ticks/2023/SELECTED_SHA256SUMS
+          grep -E 'usdjpy-2024-[0-9]{2}-raw-ticks-v1\.tar\.gz$' inputs/raw_ticks/2024/SHA256SUMS > inputs/raw_ticks/2024/SELECTED_SHA256SUMS
+          test "$(wc -l < inputs/raw_ticks/2023/SELECTED_SHA256SUMS)" -eq 12
+          test "$(wc -l < inputs/raw_ticks/2024/SELECTED_SHA256SUMS)" -eq 12
+          (cd inputs/raw_ticks/2023 && sha256sum -c SELECTED_SHA256SUMS)
+          (cd inputs/raw_ticks/2024 && sha256sum -c SELECTED_SHA256SUMS)
 
       - name: Run Stage 2B ordered Tick grid
         shell: bash
