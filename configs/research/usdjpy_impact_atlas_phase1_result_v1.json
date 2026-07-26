@@ -1,0 +1,52 @@
+{
+  "schema_version": "usdjpy_impact_atlas_phase1_result_v1",
+  "status": "PHASE1_DIAGNOSIS_COMPLETE_NO_CANDIDATE_AUTHORIZATION",
+  "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "excluded_periods": ["2025H1", "2025H2"],
+  "population": {
+    "total_trades": 1882,
+    "B02": 429,
+    "F05": 1453,
+    "winners": 966,
+    "losers": 916,
+    "long": 1166,
+    "short": 716,
+    "state_rows": 68955,
+    "duplicate_trade_ids": 0,
+    "identity_mismatches": 0
+  },
+  "source_identity": {
+    "trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "state_ledger_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda"
+  },
+  "decision_ranking": [
+    "entry_establishment",
+    "market_state_strategy_routing",
+    "profit_lifecycle",
+    "portfolio_exposure_control",
+    "complementary_strategies",
+    "local_structural_exit"
+  ],
+  "raw_bounds": {
+    "entry_establishment": {"impact_upper_bound_jpy": 218465, "coverage": 0.582747, "prospective_winner_damage": "UNMEASURED"},
+    "market_state_strategy_routing": {"impact_upper_bound_jpy": 206188.4, "coverage": 0.55, "winner_damage_upper_bound_jpy": 93833.3},
+    "profit_lifecycle": {"impact_upper_bound_jpy": 279001, "coverage": 0.744225, "winner_damage_upper_bound_jpy": 174445},
+    "portfolio_exposure_control": {"impact_upper_bound_jpy": 325386, "coverage": 0.867955, "winner_damage_upper_bound_jpy": 242288},
+    "complementary_strategies": {"impact_upper_bound_jpy": 112466.4, "coverage": 0.3, "winner_damage": "UNKNOWN_ORACLE_ONLY"},
+    "local_structural_exit": {"impact_upper_bound_jpy": 156423, "coverage": 0.417253, "winner_damage_upper_bound_jpy": 85303}
+  },
+  "next_program": "ENTRY_ESTABLISHMENT_PHASE2_V1",
+  "execution": {
+    "phase1_run_id": 30199879517,
+    "research_ci_run_id": 30199879513,
+    "artifact_id": 8631307172,
+    "artifact_digest": "sha256:858f750534f772f25f1cf4f34d3fc72307fe9ce1a7906241f3386d91e6c95d21",
+    "artifact_expiry": "2026-10-24"
+  },
+  "boundaries": {
+    "2025_accessed": false,
+    "MT4_accessed": false,
+    "candidate_selected": false,
+    "production_authorized": false
+  }
+}
