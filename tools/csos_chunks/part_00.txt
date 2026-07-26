@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+import argparse,hashlib,json,math
+from datetime import datetime,timedelta,timezone
+from pathlib import Path
+import numpy as np,pandas as pd
+PIP=.01;COST=.5;JPYPP=10.;FOLDS=['2023H1','2023H2','2024H1','2024H2'];FAMS=list('ABCDEFGHIJK')
+NAMES={'A':'False Breakout Reversal','B':'Balance Mean Reversion','C':'Shock Continuation','D':'Shock Failure','E':'Session Transition','F':'Liquidity Sweep','G':'Trend Exhaustion','H':'Volatility Compression Breakout','I':'Failed Trend Continuation','J':'Pullback Continuation','K':'Other Literature- and Practice-Led Families'}
+V2F={'A_FALSE_BREAKOUT_REVERSAL':'A','B_BALANCE_MEAN_REVERSION':'B','C_SHOCK_CONTINUATION':'C','D_SHOCK_FAILURE':'D','E_TOKYO_LONDON':'E','E_LONDON_NY':'E','E_NY_TOKYO':'E','F_PREVIOUS_DAY_SWEEP':'F','F_ASIAN_RANGE_SWEEP':'F','G_TREND_EXHAUSTION':'G','H_COMPRESSION_BREAKOUT':'H','I_FAILED_TREND_CONTINUATION':'I','J_PULLBACK_CONTINUATION':'J','K_LONDON_OPENING_RANGE_BREAKOUT':'K','K_ROUND_NUMBER_REJECTION':'K','K_DAILY_TIME_SERIES_MOMENTUM':'K'}
+HOLD={'A_FALSE_BREAKOUT_REVERSAL':16,'B_BALANCE_MEAN_REVERSION':16,'C_SHOCK_CONTINUATION':8,'D_SHOCK_FAILURE':8,'E_TOKYO_LONDON':8,'E_LONDON_NY':8,'E_NY_TOKYO':8,'F_PREVIOUS_DAY_SWEEP':12,'F_ASIAN_RANGE_SWEEP':12,'G_TREND_EXHAUSTION':12,'H_COMPRESSION_BREAKOUT':16,'I_FAILED_TREND_CONTINUATION':12,'J_PULLBACK_CONTINUATION':16,'K_LONDON_OPENING_RANGE_BREAKOUT':8,'K_ROUND_NUMBER_REJECTION':12,'K_DAILY_TIME_SERIES_MOMENTUM':32}
+SIMPLE={'A':92,'B':86,'C':90,'D':88,'E':84,'F':90,'G':82,'H':91,'I':80,'J':87,'K':86}
+def sha(p):
+ h=hashlib.sha256()
+ with Path(p).open('rb') as f:
+  for c in iter(lambda:f.read(1<<20),b''):h.update(c)
+ return h.hexdigest()
+def sunday(y,m,n,h):
+ d=datetime(y,m,1,h,tzinfo=timezone.utc);return pd.Timestamp(d+timedelta(days=(6-d.weekday())%7+7*(n-1)))
+def histutc(t):
+ w=t-pd.Timedelta(hours=2);return t-pd.Timedelta(hours=3) if sunday(t.year,3,2,7)<=w<sunday(t.year,11,1,6) else w
+def finish(d):
+ x=d.sort_values('time').drop_duplicates('time').reset_index(drop=True);assert len(x) and x.time.is_monotonic_increasing
+ x['fold']=np.select([x.time<pd.Timestamp('2023-07-01',tz='UTC'),x.time<pd.Timestamp('2024-01-01',tz='UTC'),x.time<pd.Timestamp('2024-07-01',tz='UTC')],FOLDS[:3],default='2024H2');x['date']=x.time.dt.strftime('%Y-%m-%d');x['hour']=x.time.dt.hour;x['minute']=x.time.dt.minute;return x
+def bars23(p):
+ d=pd.read_csv(p);req={'timestamp_utc','open','high','low','close'};assert req<=set(d)
+ if 'first_timestamp_mt4_server' in d: t=pd.DatetimeIndex([histutc(z) for z in pd.to_datetime(d.first_timestamp_mt4_server,utc=True)])
+ else:t=pd.to_datetime(d.timestamp_utc,utc=True)
+ q=pd.DataFrame({'time':t,'open':d.open,'high':d.high,'low':d.low,'close':d.close});q=q[(q.time>=pd.Timestamp('2023-01-01',tz='UTC'))&(q.time<pd.Timestamp('2024-01-01',tz='UTC'))];return finish(q)
+def bars24(p):
+ d=pd.read_csv(p);req={'time','bid_open','bid_high','bid_low','bid_close'};assert req<=set(d)
+ q=pd.DataFrame({'time':pd.to_datetime(d.time,utc=True),'open':d.bid_open,'high':d.bid_high,'low':d.bid_low,'close':d.bid_close});q=q[(q.time>=pd.Timestamp('2024-01-01',tz='UTC'))&(q.time<pd.Timestamp('2025-01-01',tz='UTC'))];return finish(q)
+def features(x):
+ x=x.copy();pc=x.close.shift();tr=pd.concat([x.high-x.low,(x.high-pc).abs(),(x.low-pc).abs()],axis=1).max(axis=1);x['tr']=tr/PIP;x['body']=(x.close-x.open).abs()/PIP;x['dir']=np.sign(x.close-x.open);x['a16']=x.tr.rolling(16).mean();x['a20']=x.tr.rolling(20).mean();x['a96']=x.tr.rolling(96).mean();x['mtr']=x.tr.rolling(96).median();x['e20']=x.close.ewm(span=20,adjust=False).mean();x['e96']=x.close.ewm(span=96,adjust=False).mean();x['ts']=(x.e20-x.e96)/(x.a20*PIP);x['mu']=x.close.rolling(32).mean();sd=x.close.rolling(32).std(ddof=0);x['z']=(x.close-x.mu)/sd.replace(0,np.nan);x['hi16']=x.high.shift().rolling(16).max();x['lo16']=x.low.shift().rolling(16).min();x['hi32']=x.high.shift().rolling(32).max();x['lo32']=x.low.shift().rolling(32).min();path=x.close.diff().abs().rolling(32).sum()/PIP;x['eff']=(x.close-x.close.shift(32)).abs()/PIP/path.replace(0,np.nan);x['vr']=x.a20/x.a96;x['cr']=x.a16/x.a96
+ pos=(x.close-x.low)/(x.high-x.low).replace(0,np.nan);x['shock']=(x.tr>=2.5*x.mtr)&(x.body>=.65*x.tr);x['sup']=x.shock&(x.dir>0)&(pos>=.8);x['sdn']=x.shock&(x.dir<0)&(pos<=.2);x['session']=pd.cut(x.hour,[-1,6,12,20,23],labels=['TOKYO','LONDON','NEW_YORK','ROLLOVER']).astype(str);x['vol']=np.select([x.vr<.75,x.vr>1.25],['LOW','HIGH'],default='NORMAL');x['state']=np.select([x.ts>=1,x.ts<=-1,x.eff<=.35],['UP_TREND','DOWN_TREND','BALANCE'],default='TRANSITION')
+ day=x.groupby('date').agg(dh=('high','max'),dl=('low','min'));day['pdh']=day.dh.shift();day['pdl']=day.dl.shift();x=x.join(day[['pdh','pdl']],on='date');a=x[(x.hour>=0)&(x.hour<7)].groupby('date').agg(ah=('high','max'),al=('low','min'));x=x.join(a,on='date');o=x[x.hour==7].groupby('date').agg(oh=('high','max'),ol=('low','min'));return x.join(o,on='date')
+def signals(x):
+ fs=[]
+ def add(m,v,s,r):
+  idx=x.index[pd.Series(m,index=x.index).fillna(False).astype(bool)]
+  if len(idx):fs.append(pd.DataFrame({'i':idx,'variant':v,'side':s,'reason':r}))
+ rng=(x.high-x.low).replace(0,np.nan);br=(x.close-x.open).abs()/rng
+ add((x.high>x.hi32)&(x.close<x.hi32)&(x.close<x.open),'A_FALSE_BREAKOUT_REVERSAL',-1,'upper_range_sweep');add((x.low<x.lo32)&(x.close>x.lo32)&(x.close>x.open),'A_FALSE_BREAKOUT_REVERSAL',1,'lower_range_sweep')
+ bal=(x.ts.abs()<=.35)&(x.eff<=.35);add(bal&(x.z>=2),'B_BALANCE_MEAN_REVERSION',-1,'upper_two_sigma');add(bal&(x.z<=-2),'B_BALANCE_MEAN_REVERSION',1,'lower_two_sigma')
+ add(x.sup,'C_SHOCK_CONTINUATION',1,'up_shock');add(x.sdn,'C_SHOCK_CONTINUATION',-1,'down_shock');mid=(x.high.shift()+x.low.shift())/2;add(x.sup.shift().astype('boolean').fillna(False)&(x.close<mid)&(x.close<x.open),'D_SHOCK_FAILURE',-1,'up_shock_failed');add(x.sdn.shift().astype('boolean').fillna(False)&(x.close>mid)&(x.close>x.open),'D_SHOCK_FAILURE',1,'down_shock_failed')
+ for sh,eh,v in [(0,7,'E_TOKYO_LONDON'),(7,13,'E_LONDON_NY'),(13,21,'E_NY_TOKYO')]:
+  g=x[(x.hour>=sh)&(x.hour<eh)].groupby('date').agg(op=('open','first'),cl=('close','last'),hi=('high','max'),lo=('low','min'),n=('time','size'));g['rg']=g.hi-g.lo;g['ef']=(g.cl-g.op).abs()/g.rg.replace(0,np.nan);g['ps']=(g.cl-g.lo)/g.rg.replace(0,np.nan);t=x[(x.hour==eh)&(x.minute==0)][['date']].join(g,on='date');ok=t.n>=max(8,(eh-sh)*3);m=pd.Series(False,index=x.index);m.loc[t.index]=ok&(t.ef>=.6)&(t.ps>=.8);add(m,v,1,'prior_session_close_high');m.loc[t.index]=ok&(t.ef>=.6)&(t.ps<=.2);add(m,v,-1,'prior_session_close_low')
