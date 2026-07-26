@@ -1,0 +1,128 @@
+name: Validate F05 failed reclaim 2025 ordered tick OOS v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate_f05_failed_reclaim_2025_oos_v1.yml'
+      - 'tools/evaluate_f05_failed_reclaim_2025_oos_v1.py'
+      - 'configs/research/f05_failed_reclaim_2025_oos_prereg_v1.json'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type F05_FAILED_RECLAIM_2025_OOS_V1'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  CORE_REPO: mitsuru93/usdjpyea-core
+  H1_ARTIFACT_ID: '8625412799'
+  H2_ARTIFACT_ID: '8627634911'
+
+jobs:
+  validate-2025-oos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+
+      - name: Enforce frozen validation boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ '${{ github.event_name }}' == 'workflow_dispatch' ]]; then
+            [[ '${{ inputs.confirmation }}' == 'F05_FAILED_RECLAIM_2025_OOS_V1' ]]
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('configs/research/f05_failed_reclaim_2025_oos_prereg_v1.json').read_text())
+          assert p['status']=='FROZEN_BEFORE_2025_ORDERED_TICK_OUTCOME_EXECUTION'
+          assert p['validation_periods']==['2025H1','2025H2']
+          assert p['reoptimization_allowed'] is False
+          assert p['proxy_substitution_allowed'] is False
+          assert p['production_authorization'] is False
+          PY
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check 'pandas==2.2.3'
+
+      - name: Download frozen 2025 baseline ledgers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/core_h1 inputs/core_h2
+          gh api -H 'Accept: application/vnd.github+json' \
+            "/repos/$CORE_REPO/actions/artifacts/$H1_ARTIFACT_ID/zip" > inputs/h1.zip
+          gh api -H 'Accept: application/vnd.github+json' \
+            "/repos/$CORE_REPO/actions/artifacts/$H2_ARTIFACT_ID/zip" > inputs/h2.zip
+          unzip -q inputs/h1.zip -d inputs/core_h1
+          unzip -q inputs/h2.zip -d inputs/core_h2
+          test -f inputs/core_h1/baseline/fx2_f05_failed_reclaim_2025h1_baseline_v2.csv
+          test -f inputs/core_h2/baseline/fx2_usdjpy_b02_f05_2025h2_baseline_v2.csv
+
+      - name: Download and verify 2025 ordered Bid Ask Tick authority
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/raw_ticks/2025
+          gh release download usdjpy-2025-raw-bidask-ticks-v1 \
+            --repo "$GITHUB_REPOSITORY" \
+            --dir inputs/raw_ticks/2025 \
+            --pattern 'usdjpy-2025-??-raw-ticks-v1.tar.gz' \
+            --pattern 'SHA256SUMS'
+          test "$(find inputs/raw_ticks/2025 -name 'usdjpy-2025-??-raw-ticks-v1.tar.gz' | wc -l)" -eq 12
+          cd inputs/raw_ticks/2025
+          grep 'usdjpy-2025-..-raw-ticks-v1.tar.gz$' SHA256SUMS > TARS.SHA256SUMS
+          test "$(wc -l < TARS.SHA256SUMS)" -eq 12
+          sha256sum -c TARS.SHA256SUMS
+
+      - name: Run frozen 2025 ordered Tick OOS validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/evaluate_f05_failed_reclaim_2025_oos_v1.py \
+            --prereg configs/research/f05_failed_reclaim_2025_oos_prereg_v1.json \
+            --raw-tick-dir inputs/raw_ticks \
+            --h1-log inputs/core_h1/baseline/fx2_f05_failed_reclaim_2025h1_baseline_v2.csv \
+            --h2-log inputs/core_h2/baseline/fx2_usdjpy_b02_f05_2025h2_baseline_v2.csv \
+            --out-dir validation_output
+          jq -e '.status=="PASS_2025_ORDERED_TICK_OOS_VALIDATION" and .validation_periods==["2025H1","2025H2"] and .candidate_frozen_before_2025_outcome_execution==true and .reoptimization_performed==false and .proxy_substitution_used==false and .production_authorization==false' validation_output/result.json
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f05-failed-reclaim-2025-ordered-tick-oos-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: validation_output
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Comment execution receipt
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f validation_output/result.json ]]; then
+            status=$(jq -r '.status' validation_output/result.json)
+            summary=$(jq -c '{population_f05_trades,stopped_trades,winner_damage_pips,loser_benefit_pips,total_delta_pips,period_metrics}' validation_output/result.json)
+            gh issue comment 284 --repo "$GITHUB_REPOSITORY" --body "2025 ordered-Tick OOS validation completed. Run: $GITHUB_RUN_ID, attempt: $GITHUB_RUN_ATTEMPT, commit: $GITHUB_SHA. Status: \`$status\`. Frozen Stage 2B candidate: \`buf0.0_thr0.0_five_seconds_next_m5_d5\`. Result: \`$summary\`. 2025H1/H2 used for validation only; no reoptimization; no proxy substitution; no production authorization. Artifact: f05-failed-reclaim-2025-ordered-tick-oos-v1-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT."
+          else
+            gh issue comment 284 --repo "$GITHUB_REPOSITORY" --body "2025 ordered-Tick OOS validation failed before result creation. Run: $GITHUB_RUN_ID, attempt: $GITHUB_RUN_ATTEMPT, commit: $GITHUB_SHA. Inspect Actions logs and correct without changing the frozen candidate."
+          fi
