@@ -1,0 +1,113 @@
+name: USDJPY Entry Establishment Phase 2 v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/evaluate_usdjpy_entry_establishment_phase2_v1.py'
+      - 'configs/research/usdjpy_entry_establishment_phase2_v1_prereg.json'
+      - '.github/workflows/usdjpy_entry_establishment_phase2_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  phase2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install frozen dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+      - name: Enforce preregistration boundary
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('configs/research/usdjpy_entry_establishment_phase2_v1_prereg.json'))
+          assert p['development_folds']==['2023H1','2023H2','2024H1','2024H2']
+          assert p['external_periods_accessed'] is False
+          assert p['boundaries']['candidate_selection_authorized'] is False
+          assert p['boundaries']['mt4_implementation_authorized'] is False
+          PY
+      - name: Download and verify historical authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/historical inputs/2023 inputs/2024h1 inputs/2024h2 materialized
+          gh release download f05-failed-reclaim-historical-authorities-v1 \
+            --repo "$GITHUB_REPOSITORY" --dir inputs/historical \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' \
+            --pattern 'EXPECTED_SHA256SUMS'
+          (cd inputs/historical && sha256sum -c EXPECTED_SHA256SUMS)
+          unzip -q inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip -d inputs/2023
+          unzip -q inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip -d inputs/2024h1
+          unzip -q inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip -d inputs/2024h2
+      - name: Materialize canonical population
+        run: |
+          python tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv \
+            --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            --out-dir materialized
+      - name: Run Phase 2 prospective diagnostics
+        run: |
+          mkdir -p phase2_output
+          python tools/evaluate_usdjpy_entry_establishment_phase2_v1.py \
+            --trades materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv \
+            --states materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz \
+            --out-dir phase2_output \
+            --research-sha "$GITHUB_SHA" \
+            --core-sha 'aca45ab891d9a6da272b5111a99142d99e874929' \
+            --run-id "$GITHUB_RUN_ID" | tee phase2_output/run.log
+          jq -e '.status=="PHASE2_DIAGNOSIS_COMPLETE_NO_CANDIDATE_AUTHORIZATION" and .population.trades==1882 and .population.states==68955 and ."2025_accessed"==false and .candidate_authorized==false' phase2_output/execution_receipt.json
+      - name: Package evidence
+        run: |
+          cp configs/research/usdjpy_entry_establishment_phase2_v1_prereg.json phase2_output/
+          cp materialized/usdjpy_b02_f05_hyp024_input_materialization_v2.json phase2_output/
+          find phase2_output -type f -print0 | sort -z | xargs -0 sha256sum > phase2_output/PACKAGE_SHA256SUMS
+          zip -q -X -r "usdjpy-entry-establishment-phase2-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" phase2_output
+      - name: Upload artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-entry-establishment-phase2-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            phase2_output
+            usdjpy-entry-establishment-phase2-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0
+      - name: Publish execution receipt issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          status=$(jq -r '.status // "FAILED_BEFORE_RECEIPT"' phase2_output/execution_receipt.json 2>/dev/null || echo FAILED_BEFORE_RECEIPT)
+          signal=$(jq -r '.gate_interpretation // "NA"' phase2_output/execution_receipt.json 2>/dev/null || echo NA)
+          cat > receipt.md <<EOF
+          workflow: usdjpy_entry_establishment_phase2_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          head_sha: ${GITHUB_SHA}
+          status: ${status}
+          gate_interpretation: ${signal}
+          artifact_id: ${ARTIFACT_ID}
+          artifact_digest: ${ARTIFACT_DIGEST}
+          2025_accessed: false
+          mt4_accessed: false
+          candidate_authorized: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[entry-establishment-phase2] ${GITHUB_RUN_ID} ${status}" --body-file receipt.md
