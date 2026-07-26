@@ -19,9 +19,10 @@ permissions:
   issues: write
 
 env:
-  CORE_REPO: mitsuru93/usdjpyea-core
   H1_ARTIFACT_ID: '8625412799'
   H2_ARTIFACT_ID: '8627634911'
+  H1_ARTIFACT_DIGEST: 'sha256:a85884fe176ed61e8749d0cbf6abedd34506b023c22e6f8793c15b13a5a8b780'
+  H2_ARTIFACT_DIGEST: 'sha256:4197f498ac7adfdd921fc962e47f244dc3a3eebd59649073854e2a5d2a7a6e9e'
 
 jobs:
   validate-2025-oos:
@@ -58,16 +59,12 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'pandas==2.2.3'
 
       - name: Download frozen 2025 baseline ledgers
-        env:
-          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p inputs/core_h1 inputs/core_h2
-          gh api -H 'Accept: application/vnd.github+json' \
-            "/repos/$CORE_REPO/actions/artifacts/$H1_ARTIFACT_ID/zip" > inputs/h1.zip
-          gh api -H 'Accept: application/vnd.github+json' \
-            "/repos/$CORE_REPO/actions/artifacts/$H2_ARTIFACT_ID/zip" > inputs/h2.zip
+          curl --fail --location --retry 3 --output inputs/h1.zip 'https://sdmntprkoreacentral.oaiusercontent.com/files/00000000-e348-8206-915c-5045e4a4bc75/raw?se=2026-07-26T13:04:38Z&sp=r&sv=2026-02-06&sr=b&scid=dc670e59-1299-55c0-9776-7242ed69ee15&skoid=3e273c3d-5ea1-4088-9e18-79685531b184&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-07-26T02:46:36Z&ske=2026-07-28T02:46:36Z&sks=b&skv=2026-02-06&sig=CwQCZiXdSBfoRxyyPoRukjEYjdovmAmAuZBaFWhiHB8%3D'
+          curl --fail --location --retry 3 --output inputs/h2.zip 'https://sdmntprkoreacentral.oaiusercontent.com/files/00000000-b994-8206-af41-2da6b8a8f0f3/raw?se=2026-07-26T13:04:47Z&sp=r&sv=2026-02-06&sr=b&scid=f254ddbb-6c41-5172-b936-399edd2134e2&skoid=3e273c3d-5ea1-4088-9e18-79685531b184&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-07-26T01:59:03Z&ske=2026-07-28T01:59:03Z&sks=b&skv=2026-02-06&sig=aeksy%2Fijq2iFY8c2WaRaBn%2F9URbVYFaJIKjUEGr6TKw%3D'
           unzip -q inputs/h1.zip -d inputs/core_h1
           unzip -q inputs/h2.zip -d inputs/core_h2
           test -f inputs/core_h1/baseline/fx2_f05_failed_reclaim_2025h1_baseline_v2.csv
