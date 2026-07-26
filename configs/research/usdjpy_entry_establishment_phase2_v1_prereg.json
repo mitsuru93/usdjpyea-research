@@ -1,1 +1,33 @@
-{}
+{
+  "schema_version": "usdjpy_entry_establishment_phase2_v1_prereg",
+  "program": "ENTRY_ESTABLISHMENT_PHASE2_V1",
+  "status": "PREREGISTERED_NO_CANDIDATE_AUTHORIZATION",
+  "development_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "external_periods": ["2025H1", "2025H2"],
+  "external_periods_accessed": false,
+  "population": {
+    "trade_count": 1882,
+    "trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "state_ledger_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda"
+  },
+  "decision_points_minutes": [15, 30, 45, 60],
+  "mechanism_families": {
+    "non_expansion": {"thresholds_pips": [0.0, 1.0, 2.0, 3.0]},
+    "adverse_first": {"mae_thresholds_pips": [3.0, 5.0, 7.0, 10.0], "recovery_thresholds_pips": [0.0, 1.0, 2.0]},
+    "directional_confirmation": {"minimum_positive_votes": [1, 2, 3], "features": ["executable_pips", "mom4_dir_pips", "macd_hist_dir_pips", "price_ema20_dir_pips"]},
+    "signal_expiration": {"establishment_thresholds_pips": [2.0, 3.0, 5.0]}
+  },
+  "evaluation": {
+    "action": "close_at_checkpoint open price when rule fires",
+    "baseline": "canonical realized_pl_jpy",
+    "primary_endpoint": "net_delta_jpy_after_winner_damage",
+    "selection": "leave_one_fold_out",
+    "portability_gate": {"held_out_positive_folds_min": 3, "winner_damage_ratio_max": 0.35, "minimum_triggered_trades": 30}
+  },
+  "boundaries": {
+    "market_state_router_combination_authorized": false,
+    "mt4_implementation_authorized": false,
+    "candidate_selection_authorized": false,
+    "production_authorized": false
+  }
+}
