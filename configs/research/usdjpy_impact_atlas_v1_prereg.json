@@ -1,0 +1,69 @@
+{
+  "schema_version": "usdjpy_impact_atlas_prereg_v1",
+  "study_id": "USDJPY_IMPACT_ATLAS_V1",
+  "status": "PREREGISTERED_DESCRIPTIVE_DIAGNOSIS",
+  "strategies": ["B02", "F05"],
+  "development_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "external_periods": {
+    "2025H1": "LOCKED_FROM_SELECTION_PENDING_ACCEPTED_RAW_TICK",
+    "2025H2": "LOCKED_FROM_SELECTION_PENDING_PERIOD_POLICY_AND_ACCEPTED_RAW_TICK"
+  },
+  "primary_objective": "rank economically material improvement programs before candidate-rule formation",
+  "analysis_units": ["trade", "portfolio_event", "active_date", "market_state_episode"],
+  "required_programs": [
+    "market_state_strategy_permission",
+    "entry_establishment",
+    "portfolio_exposure",
+    "profit_lifecycle",
+    "complementary_strategy_gap",
+    "local_structural_exit"
+  ],
+  "required_metrics": [
+    "gross_loss_contribution",
+    "observation_count",
+    "active_date_count",
+    "avoidable_loss_upper_bound",
+    "winner_exposure",
+    "winner_damage_upper_bound",
+    "net_addressable_impact",
+    "fold_portability",
+    "direction_symmetry",
+    "temporal_breadth",
+    "implementation_observability",
+    "complementarity"
+  ],
+  "ranking_rule": {
+    "candidate_selection_authorized": false,
+    "pooled_profit_only_forbidden": true,
+    "minimum_fold_reporting": 4,
+    "priority_dimensions": [
+      "impact",
+      "coverage",
+      "portability",
+      "winner_damage",
+      "causal_clarity",
+      "implementability",
+      "complementarity"
+    ]
+  },
+  "phase1_outputs": [
+    "source_inventory.json",
+    "trade_loss_contribution.csv",
+    "portfolio_loss_clusters.csv",
+    "entry_establishment_cohorts.csv",
+    "market_state_cohorts.csv",
+    "profit_lifecycle_cohorts.csv",
+    "program_priority.csv",
+    "missing_data_report.json",
+    "impact_atlas_report.md"
+  ],
+  "prohibited": [
+    "2025_based_threshold_selection",
+    "silent_source_substitution",
+    "generic_sl_grid_reopening",
+    "calendar_label_as_causal_rule",
+    "side_label_as_causal_rule",
+    "multi_component_integration_before_independent_evaluation",
+    "notion_as_task_selector"
+  ]
+}
