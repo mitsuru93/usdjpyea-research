@@ -1,0 +1,128 @@
+{
+  "schema_version": "usdjpy_csos_family_catalog_v1",
+  "catalog_status": "FROZEN_BEFORE_OUTCOMES",
+  "families": [
+    {
+      "family_id": "A",
+      "family": "False Breakout Reversal",
+      "variants": ["A_FALSE_BREAKOUT_REVERSAL"],
+      "mechanism": "A prior 8-hour range boundary is swept intrabar and the completed bar closes back inside the range; enter opposite the sweep.",
+      "hold_bars": 16,
+      "simplicity_score": 92,
+      "required_data": "M15 Bid OHLC"
+    },
+    {
+      "family_id": "B",
+      "family": "Balance Mean Reversion",
+      "variants": ["B_BALANCE_MEAN_REVERSION"],
+      "mechanism": "Low directional efficiency and weak EMA separation define balance; a two-standard-deviation close is faded toward the local mean.",
+      "hold_bars": 16,
+      "simplicity_score": 86,
+      "required_data": "M15 Bid OHLC"
+    },
+    {
+      "family_id": "C",
+      "family": "Shock Continuation",
+      "variants": ["C_SHOCK_CONTINUATION"],
+      "mechanism": "An outsized range with a dominant body and extreme close is followed in the shock direction.",
+      "hold_bars": 8,
+      "simplicity_score": 90,
+      "required_data": "M15 Bid OHLC"
+    },
+    {
+      "family_id": "D",
+      "family": "Shock Failure",
+      "variants": ["D_SHOCK_FAILURE"],
+      "mechanism": "After a qualified shock, the next completed bar crosses back through the shock midpoint; enter opposite the original shock.",
+      "hold_bars": 8,
+      "simplicity_score": 88,
+      "required_data": "M15 Bid OHLC"
+    },
+    {
+      "family_id": "E",
+      "family": "Session Transition",
+      "variants": ["E_TOKYO_LONDON", "E_LONDON_NY", "E_NY_TOKYO"],
+      "mechanism": "At a fixed UTC session transition, continue a prior session move only when net displacement is at least 60% of its range and the session closes in its outer 20%.",
+      "hold_bars": 8,
+      "simplicity_score": 84,
+      "required_data": "M15 Bid OHLC and UTC session clock"
+    },
+    {
+      "family_id": "F",
+      "family": "Liquidity Sweep",
+      "variants": ["F_PREVIOUS_DAY_SWEEP", "F_ASIAN_RANGE_SWEEP"],
+      "mechanism": "Previous-day or Asian-session liquidity is swept and the bar closes back inside the reference range; enter the rejection.",
+      "hold_bars": 12,
+      "simplicity_score": 90,
+      "required_data": "M15 Bid OHLC and UTC day/session levels"
+    },
+    {
+      "family_id": "G",
+      "family": "Trend Exhaustion",
+      "variants": ["G_TREND_EXHAUSTION"],
+      "mechanism": "A mature EMA-separated trend produces a range expansion that closes through the prior bar in the opposite direction.",
+      "hold_bars": 12,
+      "simplicity_score": 82,
+      "required_data": "M15 Bid OHLC"
+    },
+    {
+      "family_id": "H",
+      "family": "Volatility Compression Breakout",
+      "variants": ["H_COMPRESSION_BREAKOUT"],
+      "mechanism": "Short-horizon ATR is no more than 60% of long-horizon ATR and a completed bar breaks a prior 4-hour range with a directional body.",
+      "hold_bars": 16,
+      "simplicity_score": 91,
+      "required_data": "M15 Bid OHLC"
+    },
+    {
+      "family_id": "I",
+      "family": "Failed Trend Continuation",
+      "variants": ["I_FAILED_TREND_CONTINUATION"],
+      "mechanism": "A strong trend attempts a new local extreme but closes across EMA20 in the opposite direction.",
+      "hold_bars": 12,
+      "simplicity_score": 80,
+      "required_data": "M15 Bid OHLC"
+    },
+    {
+      "family_id": "J",
+      "family": "Pullback Continuation",
+      "variants": ["J_PULLBACK_CONTINUATION"],
+      "mechanism": "A strong EMA-separated trend retraces to EMA20 and a completed bar closes back in the trend direction.",
+      "hold_bars": 16,
+      "simplicity_score": 87,
+      "required_data": "M15 Bid OHLC"
+    },
+    {
+      "family_id": "K",
+      "family": "Other Literature- and Practice-Led Families",
+      "variants": ["K_LONDON_OPENING_RANGE_BREAKOUT", "K_ROUND_NUMBER_REJECTION", "K_DAILY_TIME_SERIES_MOMENTUM"],
+      "mechanism": "Distinct fixed mechanisms: London opening-range expansion, half-yen round-number rejection, and once-daily four-day time-series momentum.",
+      "hold_bars": "variant-specific",
+      "simplicity_score": 86,
+      "required_data": "M15 Bid OHLC and UTC clock"
+    }
+  ],
+  "catalogued_but_not_quantified": [
+    {
+      "family": "FX carry",
+      "reason": "Requires authoritative synchronized interest-rate and tradable forward-point data not present in the accepted market package."
+    },
+    {
+      "family": "FX value / purchasing-power reversion",
+      "reason": "Requires macro valuation data and a much longer horizon than the two-year intraday study."
+    },
+    {
+      "family": "Dealer order-flow imbalance",
+      "reason": "Requires authoritative signed order-flow data; price-only proxies are not substituted."
+    },
+    {
+      "family": "Scheduled macro-announcement surprise",
+      "reason": "Requires a frozen point-in-time calendar, consensus and surprise dataset."
+    },
+    {
+      "family": "Options-implied volatility / risk-reversal strategies",
+      "reason": "Requires authoritative options surface history."
+    }
+  ],
+  "scientific_boundary": "Variants are distinct mechanisms or reference levels, not parameter-grid cells. Thresholds and horizons are frozen before outcome computation."
+}
