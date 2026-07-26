@@ -25,15 +25,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat tools/csos_chunks/part_*.txt > tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py
+          if compgen -G 'tools/csos_chunks/part_*.txt' >/dev/null; then
+            cat tools/csos_chunks/part_*.txt > tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py
+            git rm -r tools/csos_chunks
+            git commit -m 'research: assemble canonical CSOS evaluator v1'
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
           python -m py_compile tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py
-          git rm -r tools/csos_chunks
-          git commit -m 'research: assemble canonical CSOS evaluator v1'
-          git push origin "HEAD:${GITHUB_REF_NAME}"
-          echo "RESEARCH_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "RESEARCH_SHA=$(git log -n 1 --format=%H -- tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py)" >> "$GITHUB_ENV"
 
       - uses: actions/setup-python@v5
         with:
@@ -148,17 +150,18 @@ jobs:
 
       - name: Package immutable evidence
         run: |
-          find csos_output -type f -print0 | sort -z | xargs -0 sha256sum > csos_output/PACKAGE_SHA256SUMS
-          zip -q -X -r "usdjpy-csos-opportunity-atlas-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" csos_output
+          find csos_output -type f ! -name 'PACKAGE_SHA256SUMS' -print0 | sort -z | xargs -0 sha256sum > csos_output/PACKAGE_SHA256SUMS
+          sha256sum -c csos_output/PACKAGE_SHA256SUMS
+          zip -q -X -r "usdjpy-csos-opportunity-atlas-v1-r1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" csos_output
 
       - name: Upload Actions artifact
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: usdjpy-csos-opportunity-atlas-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          name: usdjpy-csos-opportunity-atlas-v1-r1-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             csos_output
-            usdjpy-csos-opportunity-atlas-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+            usdjpy-csos-opportunity-atlas-v1-r1-${{ github.run_id }}-${{ github.run_attempt }}.zip
           retention-days: 90
           compression-level: 0
 
@@ -168,17 +171,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          tag='usdjpy-csos-opportunity-atlas-v1'
+          tag='usdjpy-csos-opportunity-atlas-v1-r1'
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "Release $tag already exists; refusing to overwrite immutable evidence" >&2
             exit 1
           fi
           top_family=$(jq -r '.top_family.family_id + " — " + .top_family.family' csos_output/execution_receipt.json)
           gh release create "$tag" \
-            "usdjpy-csos-opportunity-atlas-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" \
+            "usdjpy-csos-opportunity-atlas-v1-r1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" \
             --target "$RELEASE_TARGET_SHA" \
-            --title 'USDJPY CSOS Opportunity Atlas v1' \
-            --notes "2023H1-2024H2 fixed-mechanism complementary-strategy Opportunity Atlas. Top research-priority family: ${top_family}. No 2025 access, B02/F05 modification, threshold optimization, EA implementation, MT4 execution, Core modification, or production authorization." \
+            --title 'USDJPY CSOS Opportunity Atlas v1 — evidence repair 1' \
+            --notes "Evidence-repaired immutable package superseding Run 30202064383; PACKAGE_SHA256SUMS excludes itself and is verified before upload. Scientific definitions and results are unchanged. 2023H1-2024H2 fixed-mechanism complementary-strategy Opportunity Atlas. Top research-priority family: ${top_family}. No 2025 access, B02/F05 modification, threshold optimization, EA implementation, MT4 execution, Core modification, or production authorization." \
             --repo "$GITHUB_REPOSITORY"
 
       - name: Publish execution receipt issue
@@ -203,7 +206,9 @@ jobs:
           top_family_score: ${top_score}
           artifact_id: ${ARTIFACT_ID}
           artifact_digest: ${ARTIFACT_DIGEST}
-          release_tag: usdjpy-csos-opportunity-atlas-v1
+          release_tag: usdjpy-csos-opportunity-atlas-v1-r1
+          supersedes_run: 30202064383
+          evidence_repair: PACKAGE_SHA256SUMS excludes itself and passed sha256sum -c
           analysis_periods: 2023H1,2023H2,2024H1,2024H2
           2025_accessed: false
           B02_F05_logic_changed: false
@@ -216,5 +221,5 @@ jobs:
           EOF
           gh issue create \
             --repo "$GITHUB_REPOSITORY" \
-            --title "[csos-opportunity-atlas] ${GITHUB_RUN_ID} ${status}" \
+            --title "[csos-opportunity-atlas-r1] ${GITHUB_RUN_ID} ${status}" \
             --body-file receipt.md
