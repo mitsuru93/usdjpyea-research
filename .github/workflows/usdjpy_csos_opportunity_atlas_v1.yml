@@ -106,7 +106,7 @@ jobs:
             --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
             --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv \
             --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
-            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_validation_v1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
             --out-dir materialized
           printf '%s  %s\n' \
             '98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca' \
