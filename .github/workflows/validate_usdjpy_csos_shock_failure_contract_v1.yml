@@ -1,0 +1,37 @@
+name: Validate USDJPY CSOS Shock Failure Contract v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_csos_shock_failure_candidate_freeze_v1.json'
+      - 'configs/research/usdjpy_csos_shock_failure_implementation_contract_v1.json'
+      - 'configs/research/usdjpy_csos_shock_failure_core_parity_plan_v1.json'
+      - 'docs/research/USDJPY_CSOS_Shock_Failure_candidate_freeze_and_implementation_contract_v1.md'
+      - 'tools/validate_usdjpy_csos_shock_failure_contract_v1.py'
+      - '.github/workflows/validate_usdjpy_csos_shock_failure_contract_v1.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_csos_shock_failure_candidate_freeze_v1.json'
+      - 'configs/research/usdjpy_csos_shock_failure_implementation_contract_v1.json'
+      - 'configs/research/usdjpy_csos_shock_failure_core_parity_plan_v1.json'
+      - 'docs/research/USDJPY_CSOS_Shock_Failure_candidate_freeze_and_implementation_contract_v1.md'
+      - 'tools/validate_usdjpy_csos_shock_failure_contract_v1.py'
+      - '.github/workflows/validate_usdjpy_csos_shock_failure_contract_v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile validator
+        run: python -m py_compile tools/validate_usdjpy_csos_shock_failure_contract_v1.py
+      - name: Validate frozen contract
+        run: python tools/validate_usdjpy_csos_shock_failure_contract_v1.py
