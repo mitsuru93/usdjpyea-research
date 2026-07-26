@@ -1,0 +1,120 @@
+name: Archive USDJPY Portfolio Loss-Cluster Phase 1 r1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/archive_usdjpy_portfolio_loss_cluster_phase1_r1.yml'
+      - 'configs/run_markers/usdjpy_portfolio_loss_cluster_phase1_archive_r1.json'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_portfolio_loss_cluster_phase1_archive_r1.json'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  preflight:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate evidence-only repair marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '.status=="ARMED_EVIDENCE_REPAIR_ONLY" and .source_run_id==30204173630 and .source_artifact_id==8632649725 and .scientific_result_changed==false and .candidate_or_gate_changed==false and ."2025_accessed"==false and .MT4_accessed==false' \
+            configs/run_markers/usdjpy_portfolio_loss_cluster_phase1_archive_r1.json
+
+  archive:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download exact original Release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source repaired
+          gh release download usdjpy-portfolio-loss-cluster-phase1-v1 \
+            --repo "$GITHUB_REPOSITORY" --dir source \
+            --pattern 'usdjpy-portfolio-loss-cluster-phase1-v1-30204173630-1.zip'
+          printf '%s  %s\n' \
+            'c9f401e13ccc01c473a56e00421e4b960a9acfacd8c20487bfc920075adb5fe7' \
+            source/usdjpy-portfolio-loss-cluster-phase1-v1-30204173630-1.zip \
+            > source/EXPECTED_SHA256SUMS
+          sha256sum -c source/EXPECTED_SHA256SUMS
+          unzip -q source/usdjpy-portfolio-loss-cluster-phase1-v1-30204173630-1.zip -d repaired
+      - name: Regenerate non-self-referential package manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm repaired/portfolio_loss_cluster_output/PACKAGE_SHA256SUMS
+          find repaired/portfolio_loss_cluster_output -type f \
+            ! -name 'PACKAGE_SHA256SUMS' -print0 | sort -z | \
+            xargs -0 sha256sum > repaired/portfolio_loss_cluster_output/PACKAGE_SHA256SUMS
+          sha256sum -c repaired/portfolio_loss_cluster_output/PACKAGE_SHA256SUMS
+          jq -e '.status=="PHASE1_COMPLETE_NO_PRODUCTION_IMPLEMENTATION" and .population.total_trades==1882 and .boundaries.MT4_implementation==false and .boundaries."2025H1_accessed"==false and .boundaries."2025H2_accessed"==false and .boundaries.production_authorized==false' \
+            repaired/portfolio_loss_cluster_output/result.json
+          (cd repaired && zip -q -X -0 -r ../usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip portfolio_loss_cluster_output)
+          sha256sum usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip > usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip.sha256
+      - name: Upload corrected evidence artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-portfolio-loss-cluster-phase1-v1-r1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip
+            usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip.sha256
+            repaired/portfolio_loss_cluster_output/PACKAGE_SHA256SUMS
+          retention-days: 90
+          compression-level: 0
+      - name: Publish corrected immutable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release create usdjpy-portfolio-loss-cluster-phase1-v1-r1 \
+            usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip \
+            usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip.sha256 \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title 'USDJPY Portfolio Loss-Cluster Study Phase 1 v1-r1' \
+            --notes 'Evidence-only archive repair. Scientific files and results are unchanged from Run 30204173630 / artifact 8632649725. PACKAGE_SHA256SUMS now excludes itself and passes full readback verification. No 2025, MT4, candidate, gate, or production change.'
+      - name: Publish archive repair receipt issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive_sha=$(cut -d' ' -f1 usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip.sha256)
+          cat > receipt.md <<EOF
+          source_run_id: 30204173630
+          source_artifact_id: 8632649725
+          source_artifact_digest: sha256:eb9e30b2e3cee27dddfaa354bdc5d460ed8e9e8845943dc3086d7daf575b8934
+          source_release_tag: usdjpy-portfolio-loss-cluster-phase1-v1
+          source_release_asset_sha256: c9f401e13ccc01c473a56e00421e4b960a9acfacd8c20487bfc920075adb5fe7
+          repair_run_id: ${GITHUB_RUN_ID}
+          repair_head_sha: ${GITHUB_SHA}
+          corrected_artifact_id: ${ARTIFACT_ID}
+          corrected_artifact_digest: ${ARTIFACT_DIGEST}
+          corrected_release_tag: usdjpy-portfolio-loss-cluster-phase1-v1-r1
+          corrected_release_asset_sha256: ${archive_sha}
+          evidence_repair: PACKAGE_SHA256SUMS excludes itself and passed sha256sum -c
+          scientific_result_changed: false
+          candidate_or_gate_changed: false
+          2025_accessed: false
+          MT4_accessed: false
+          production_authorized: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "[portfolio-loss-cluster-archive-r1] ${GITHUB_RUN_ID} VERIFIED" \
+            --body-file receipt.md
