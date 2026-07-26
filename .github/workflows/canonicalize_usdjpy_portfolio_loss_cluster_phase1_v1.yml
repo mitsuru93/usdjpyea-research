@@ -1,0 +1,93 @@
+name: Canonicalize USDJPY Portfolio Loss-Cluster Phase 1 v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/canonicalize_usdjpy_portfolio_loss_cluster_phase1_v1.yml'
+      - 'configs/research/usdjpy_portfolio_loss_cluster_phase1_closure_bundle_v1/**'
+      - 'configs/run_markers/usdjpy_portfolio_loss_cluster_phase1_closure_v1.json'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_portfolio_loss_cluster_phase1_closure_v1.json'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  canonicalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Decode exact closure bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat configs/research/usdjpy_portfolio_loss_cluster_phase1_closure_bundle_v1/part_*.b64 > /tmp/closure.b64
+          base64 -d /tmp/closure.b64 > /tmp/closure.zip
+          echo '41240e9b70c0a1d4666d62ff0acd985e99bbc49b27409ac1f88aa440d8f71e2e  /tmp/closure.zip' | sha256sum -c -
+          unzip -q -o /tmp/closure.zip -d .
+      - name: Validate canonical memory and boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/validate_usdjpy_research_memory_v1.py --root . --output /tmp/memory_validation.json
+          jq -e '.status=="PASS" and .registry_schema=="usdjpy_research_candidate_registry_v48" and .hypothesis_ledger_addendum=="configs/research/usdjpy_hypothesis_ledger_addendum_v22.json"' /tmp/memory_validation.json
+          jq -e '.status=="PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE_NO_IMPLEMENTATION" and .scope.total_trades==1882 and .boundaries.MT4_accessed==false and .boundaries."2025H1_accessed"==false and .boundaries."2025H2_accessed"==false and .boundaries.production_authorized==false' configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json
+          jq -e '.status=="USDJPY_HYP027_PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE" and .current_candidate=="SESSION_LOSS_CAP_2" and .run_authorization.MT4_parity==false and .run_authorization."2025_H1"==false' configs/research/usdjpy_research_candidate_registry_v48.json
+          jq -e '."2025H1_accessed"==false and ."2025H2_accessed"==false and .MT4_accessed==false' configs/research/usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1.json
+      - name: Commit atomic canonical closure
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json \
+            docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE1_RESULT_V1.md \
+            configs/research/usdjpy_portfolio_loss_cluster_phase1_execution_receipt_v1.json \
+            configs/research/usdjpy_portfolio_loss_cluster_phase1_output_manifest_v1.json \
+            configs/research/usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1.json \
+            configs/research/usdjpy_portfolio_loss_cluster_phase1_candidate_registry_v1.json \
+            configs/research/usdjpy_portfolio_loss_cluster_phase1_candidate_family_ranking_v1.csv \
+            configs/research/usdjpy_hypothesis_ledger_addendum_v22.json \
+            configs/research/usdjpy_research_candidate_registry_v48.json \
+            configs/research/usdjpy_2023_2024_hypothesis_program_v12.json \
+            configs/research/usdjpy_research_memory_manifest_v1.json
+          git diff --cached --exit-code && { echo 'No closure changes staged'; exit 1; } || true
+          git commit -m 'research: canonicalize Portfolio Loss-Cluster Phase 1 result'
+          git push origin HEAD:main
+      - name: Publish closure receipt issue
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          head=$(git rev-parse HEAD)
+          cat > /tmp/receipt.md <<EOF
+          hypothesis_id: USDJPY-HYP-027
+          status: PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE_NO_IMPLEMENTATION
+          canonical_commit: ${head}
+          scientific_run_id: 30204173630
+          scientific_artifact_id: 8632649725
+          corrected_release_tag: usdjpy-portfolio-loss-cluster-phase1-v1-r1
+          corrected_release_asset_sha256: 32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada
+          current_registry: configs/research/usdjpy_research_candidate_registry_v48.json
+          candidate: SESSION_LOSS_CAP_2
+          next_action: preregister unchanged SESSION_LOSS_CAP_2 Phase 2 confirmation
+          MT4_authorized: false
+          2025H1_authorized: false
+          2025H2_authorized: false
+          production_authorized: false
+          workflow_run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "[portfolio-loss-cluster-closure] ${head}" \
+            --body-file /tmp/receipt.md
