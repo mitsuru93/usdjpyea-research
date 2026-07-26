@@ -1,0 +1,38 @@
+{
+  "2023_raw_ticks": {
+    "annual_manifest_sha256": "b3b189c3b4f8781e95def16614b539d05741f1bf845a2e166215800b345095bb",
+    "bid_ask": true,
+    "limitation": "not Rakuten broker-native; chronology is bounded against accepted Rakuten-derived M15 identity",
+    "period": "2023",
+    "raw_tick": true,
+    "release": "usdjpy-2023-raw-bidask-ticks-v1",
+    "source": "Dukascopy BI5 public Bid/Ask",
+    "timeframe": "tick",
+    "timezone": "UTC"
+  },
+  "2023_signal_bars": {
+    "bar_construction": "historical server-time conversion with preserved first-tick identity",
+    "sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "source": "accepted Rakuten MT4-derived Bid M15"
+  },
+  "2024_raw_ticks": {
+    "annual_manifest_sha256": "f31f9a49766bd04d43e4aced81d6909246138a1e7a43e89d6e784979fab9e228",
+    "bid_ask": true,
+    "limitation": "not Rakuten broker-native; same source as accepted derived 2024 bars",
+    "period": "2024",
+    "raw_tick": true,
+    "release": "usdjpy-2024-raw-bidask-ticks-v1",
+    "source": "Dukascopy BI5 public Bid/Ask",
+    "timeframe": "tick",
+    "timezone": "UTC"
+  },
+  "2024_signal_bars": {
+    "bar_construction": "UTC raw Tick aggregation",
+    "sha256": "d22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020",
+    "source": "accepted Dukascopy Bid/Ask-derived M15"
+  },
+  "baseline_trades": {
+    "sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "trades": 1882
+  }
+}

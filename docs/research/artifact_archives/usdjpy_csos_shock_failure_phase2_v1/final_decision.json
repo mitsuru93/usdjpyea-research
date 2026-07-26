@@ -1,0 +1,125 @@
+{
+  "boundaries": {
+    "2025_accessed": false,
+    "B02_F05_changed": false,
+    "Core_changed": false,
+    "MT4_accessed": false,
+    "production_authorized": false
+  },
+  "candidate_freeze_allowed": true,
+  "chronology": {
+    "material_contradiction_rate": 0.02631578947368421,
+    "status_counts": {
+      "BOUNDED_SOURCE_MISMATCH": 53,
+      "EXACT_CONFIRMED": 58,
+      "UNRESOLVED": 3
+    },
+    "unresolved_rate": 0.02631578947368421
+  },
+  "complementarity": {
+    "correlation_to_B02": 0.05160151541882614,
+    "correlation_to_F05": -0.12571015863306345,
+    "existing_drawdown_rate": 0.9736842105263158,
+    "loss_cluster_nearby_rate": 0.02631578947368421,
+    "opposite_direction_overlap_rate": 0.5701754385964912,
+    "overlap_rate": 0.868421052631579,
+    "same_direction_overlap_rate": 0.47368421052631576,
+    "weak_market_coverage": 0.05382787953099812,
+    "weak_market_net_jpy": 9461.99999999982
+  },
+  "core_or_mt4_authorized": false,
+  "csos_event_reproduction": {
+    "bar_close_leakage_count": 0,
+    "duplicate_event_ids": 0,
+    "duplicate_shock_start_times": 0,
+    "expected_csos_events": 114,
+    "extra_event_ids": [],
+    "missing_event_ids": [],
+    "overlapping_duplicate_intervals": 0,
+    "reproduced_events": 114,
+    "same_shock_double_count": 0,
+    "timezone_mismatch_count": 0
+  },
+  "gate_checks": {
+    "best_day_excluded_positive": true,
+    "both_sides_positive": true,
+    "chronology_contradiction_within_limit": true,
+    "chronology_unresolved_within_limit": true,
+    "combined_mdd_increase_within_10pct": true,
+    "each_side_positive_fold_cell": true,
+    "held_out_positive_3_of_4": true,
+    "observed_net_positive": true,
+    "observed_pf_ge_1_20": true,
+    "severe_net_nonnegative": true,
+    "severe_pf_ge_1": true,
+    "spread_plus_1_net_positive": true,
+    "top3_excluded_positive": true,
+    "weak_market_net_positive": true
+  },
+  "portfolio_additive": {
+    "baseline_mdd_jpy": 40455.0,
+    "candidate_id": "B_EXECUTABLE_T0_8BAR",
+    "candidate_trades": 114,
+    "incremental_margin_jpy_estimate_at_25x": 6455.0,
+    "mdd_change_fraction": -0.05541960202694424,
+    "mode": "ADDITIVE",
+    "peak_concurrent_positions_estimate": 7.0,
+    "portfolio_mdd_jpy": 38212.99999999997,
+    "portfolio_net_jpy": 64128.99999999978
+  },
+  "proceed_to_2025_gate": false,
+  "schema_version": "usdjpy_csos_shock_failure_phase2_final_v1",
+  "selected_candidate": "B_EXECUTABLE_T0_8BAR",
+  "selected_metrics": {
+    "active_months": 24,
+    "all_fold_training_gate": true,
+    "average_mae_pips": -20.709649122807104,
+    "average_mfe_pips": 30.75087719298209,
+    "average_pnl_jpy": 109.66666666666475,
+    "best_day_excluded_net_jpy": 9402.999999999793,
+    "candidate_id": "B_EXECUTABLE_T0_8BAR",
+    "event_count": 114,
+    "gross_loss_jpy": -9055.00000000012,
+    "gross_profit_jpy": 21556.999999999898,
+    "lofo_positive_heldout_count": 2,
+    "lofo_selected_count": 2,
+    "maximum_drawdown_jpy": 1554.9999999999782,
+    "maximum_loss_jpy": -1231.9999999999993,
+    "maximum_win_jpy": 3098.9999999999895,
+    "median_fold_cost_net_jpy": 2081.999999999987,
+    "median_holding_minutes": 120.00054166666668,
+    "median_pnl_jpy": 55.999999999997385,
+    "month_breadth": 0.7083333333333334,
+    "net_profit_jpy": 12501.999999999782,
+    "positive_folds": 3,
+    "positive_months": 17,
+    "positive_session_cells": 4,
+    "positive_side_fold_cells": 6,
+    "profit_factor": 2.380673660960752,
+    "recovery_hours": 6177.5,
+    "scenario": "BASELINE",
+    "selected_all_fold": true,
+    "severe_net_jpy": 9689.000000000151,
+    "severe_pf": 1.964271496815313,
+    "spread_plus_1_net_jpy": 11361.999999999782,
+    "top3_excluded_net_jpy": 6599.999999999769,
+    "top_date_concentration": 0.14375840794173605,
+    "top_event_concentration": 0.14375840794173605,
+    "trades": 114,
+    "win_rate": 0.6228070175438597
+  },
+  "statistical_robustness": {
+    "day_block_bootstrap_net_ci95_jpy": [
+      3532.6999999997,
+      22437.424999999756
+    ],
+    "day_block_probability_positive": 0.9981,
+    "event_bootstrap_net_ci95_jpy": [
+      3580.9999999998986,
+      22677.02499999968
+    ],
+    "event_bootstrap_probability_positive": 0.9969,
+    "replicates": 10000
+  },
+  "status": "PASS_PORTABLE_RESEARCH_CANDIDATE"
+}

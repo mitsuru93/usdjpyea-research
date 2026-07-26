@@ -1,0 +1,239 @@
+{
+  "B_metrics_after_exclusion": {
+    "fold_net_jpy": {
+      "2023H1": 2323.000000000036,
+      "2023H2": -504.0000000000191,
+      "2024H1": 2152.999999999935,
+      "2024H2": 8234.999999999842
+    },
+    "gross_loss_jpy": -8897.000000000106,
+    "gross_profit_jpy": 21103.999999999898,
+    "negative_baseline_day_net_jpy": 9166.99999999983,
+    "net_profit_jpy": 12206.999999999793,
+    "positive_folds": 3,
+    "profit_factor": 2.3720355175901595,
+    "side_net_jpy": {
+      "LONG": 6834.999999999837,
+      "SHORT": 5371.999999999957
+    },
+    "trades": 111,
+    "win_rate": 0.6216216216216216
+  },
+  "B_metrics_before_exclusion": {
+    "fold_net_jpy": {
+      "2023H1": 2776.0000000000387,
+      "2023H2": -662.0000000000346,
+      "2024H1": 2152.999999999935,
+      "2024H2": 8234.999999999842
+    },
+    "gross_loss_jpy": -9055.00000000012,
+    "gross_profit_jpy": 21556.999999999898,
+    "negative_baseline_day_net_jpy": 9461.99999999982,
+    "net_profit_jpy": 12501.99999999978,
+    "positive_folds": 3,
+    "profit_factor": 2.380673660960752,
+    "side_net_jpy": {
+      "LONG": 7287.99999999984,
+      "SHORT": 5213.999999999942
+    },
+    "trades": 114,
+    "win_rate": 0.6228070175438597
+  },
+  "B_severe_after_exclusion": {
+    "fold_net_jpy": {
+      "2023H1": 1750.0000000000216,
+      "2023H2": -1538.9999999998065,
+      "2024H1": 1208.9999999999804,
+      "2024H2": 7612.999999999946
+    },
+    "gross_loss_jpy": -9861.999999999878,
+    "gross_profit_jpy": 18895.000000000022,
+    "negative_baseline_day_net_jpy": 7652.000000000027,
+    "net_profit_jpy": 9033.000000000142,
+    "positive_folds": 3,
+    "profit_factor": 1.915939971608219,
+    "side_net_jpy": {
+      "LONG": 4586.000000000039,
+      "SHORT": 4447.000000000103
+    },
+    "trades": 111,
+    "win_rate": 0.5405405405405406
+  },
+  "B_spread_plus_1_after_exclusion": {
+    "fold_net_jpy": {
+      "2023H1": 2133.000000000036,
+      "2023H2": -844.0000000000191,
+      "2024H1": 1852.9999999999347,
+      "2024H2": 7954.999999999843
+    },
+    "gross_loss_jpy": -9321.000000000113,
+    "gross_profit_jpy": 20417.999999999905,
+    "negative_baseline_day_net_jpy": 8576.99999999983,
+    "net_profit_jpy": 11096.999999999793,
+    "positive_folds": 3,
+    "profit_factor": 2.19053749597679,
+    "side_net_jpy": {
+      "LONG": 6104.999999999837,
+      "SHORT": 4991.999999999957
+    },
+    "trades": 111,
+    "win_rate": 0.6036036036036037
+  },
+  "all_fold_candidate_ranking_after_exclusion": [
+    {
+      "candidate_id": "B_EXECUTABLE_T0_8BAR",
+      "median_holding_seconds": 7200.034,
+      "median_training_fold_cost_net_jpy": 1870.499999999986,
+      "pooled_pf": 2.3720355175901595,
+      "training_gate": true
+    },
+    {
+      "candidate_id": "C_M1_ACCEPTANCE_8BAR",
+      "median_holding_seconds": 7140.03,
+      "median_training_fold_cost_net_jpy": 1439.0000000000139,
+      "pooled_pf": 2.8544395924308352,
+      "training_gate": true
+    },
+    {
+      "candidate_id": "D_EXECUTABLE_T0_4BAR",
+      "median_holding_seconds": 3600.01,
+      "median_training_fold_cost_net_jpy": 456.4999999999412,
+      "pooled_pf": 2.069016949152501,
+      "training_gate": true
+    }
+  ],
+  "interpretation": "The PASS decision and B candidate freeze do not depend on the three unresolved 2023 source-disagreement events. The rule-selected LOFO outcome remains positive in 3 of 4 held-out folds; selected sequence remains B,C,C,B.",
+  "lofo_after_exclusion": [
+    {
+      "held_out_fold": "2023H1",
+      "net_jpy": 2323.0000000000364,
+      "pf": 2.330469644902605,
+      "selected_candidate": "B_EXECUTABLE_T0_8BAR",
+      "trades": 19,
+      "training_ranking": [
+        {
+          "candidate_id": "B_EXECUTABLE_T0_8BAR",
+          "median_holding_seconds": 7200.0325,
+          "median_training_fold_cost_net_jpy": 1702.9999999999354,
+          "pooled_pf": 2.3821843098866875,
+          "training_gate": true
+        },
+        {
+          "candidate_id": "C_M1_ACCEPTANCE_8BAR",
+          "median_holding_seconds": 7140.025,
+          "median_training_fold_cost_net_jpy": 243.00000000000182,
+          "pooled_pf": 2.4372023809523653,
+          "training_gate": true
+        },
+        {
+          "candidate_id": "D_EXECUTABLE_T0_4BAR",
+          "median_holding_seconds": 3600.016,
+          "median_training_fold_cost_net_jpy": 532.9999999998904,
+          "pooled_pf": 2.2412310866574487,
+          "training_gate": true
+        }
+      ]
+    },
+    {
+      "held_out_fold": "2023H2",
+      "net_jpy": -129.99999999996703,
+      "pf": 0.8940505297473784,
+      "selected_candidate": "C_M1_ACCEPTANCE_8BAR",
+      "trades": 16,
+      "training_ranking": [
+        {
+          "candidate_id": "B_EXECUTABLE_T0_8BAR",
+          "median_holding_seconds": 7200.05,
+          "median_training_fold_cost_net_jpy": 2038.0000000000364,
+          "pooled_pf": 3.165417376490565,
+          "training_gate": true
+        },
+        {
+          "candidate_id": "C_M1_ACCEPTANCE_8BAR",
+          "median_holding_seconds": 7140.038,
+          "median_training_fold_cost_net_jpy": 2635.000000000026,
+          "pooled_pf": 3.6853195164075374,
+          "training_gate": true
+        },
+        {
+          "candidate_id": "D_EXECUTABLE_T0_4BAR",
+          "median_holding_seconds": 3599.998,
+          "median_training_fold_cost_net_jpy": 532.9999999998904,
+          "pooled_pf": 2.3659793814432337,
+          "training_gate": true
+        }
+      ]
+    },
+    {
+      "held_out_fold": "2024H1",
+      "net_jpy": 423.0000000000018,
+      "pf": 1.5430038510911475,
+      "selected_candidate": "C_M1_ACCEPTANCE_8BAR",
+      "trades": 12,
+      "training_ranking": [
+        {
+          "candidate_id": "B_EXECUTABLE_T0_8BAR",
+          "median_holding_seconds": 7200.027,
+          "median_training_fold_cost_net_jpy": 2038.0000000000364,
+          "pooled_pf": 2.3008151119161204,
+          "training_gate": true
+        },
+        {
+          "candidate_id": "C_M1_ACCEPTANCE_8BAR",
+          "median_holding_seconds": 7140.025,
+          "median_training_fold_cost_net_jpy": 2635.000000000026,
+          "pooled_pf": 3.160035895901846,
+          "training_gate": true
+        },
+        {
+          "candidate_id": "D_EXECUTABLE_T0_4BAR",
+          "median_holding_seconds": 3600.012,
+          "median_training_fold_cost_net_jpy": 379.99999999999204,
+          "pooled_pf": 2.251314596554822,
+          "training_gate": true
+        }
+      ]
+    },
+    {
+      "held_out_fold": "2024H2",
+      "net_jpy": 8234.999999999842,
+      "pf": 3.785859269282718,
+      "selected_candidate": "B_EXECUTABLE_T0_8BAR",
+      "trades": 28,
+      "training_ranking": [
+        {
+          "candidate_id": "B_EXECUTABLE_T0_8BAR",
+          "median_holding_seconds": 7200.063,
+          "median_training_fold_cost_net_jpy": 1702.9999999999354,
+          "pooled_pf": 1.6685743140885219,
+          "training_gate": true
+        },
+        {
+          "candidate_id": "C_M1_ACCEPTANCE_8BAR",
+          "median_holding_seconds": 7140.0125,
+          "median_training_fold_cost_net_jpy": 243.00000000000182,
+          "pooled_pf": 2.122832369942207,
+          "training_gate": true
+        },
+        {
+          "candidate_id": "D_EXECUTABLE_T0_4BAR",
+          "median_holding_seconds": 3600.005,
+          "median_training_fold_cost_net_jpy": 379.99999999999204,
+          "pooled_pf": 1.3938828795225404,
+          "training_gate": true
+        }
+      ]
+    }
+  ],
+  "purpose": "Remove every UNRESOLVED chronology event from candidate evaluation instead of relying on the preregistered <=5% tolerance.",
+  "schema_version": "usdjpy_csos_shock_failure_phase2_chronology_exclusion_sensitivity_v1",
+  "selected_candidate_after_exclusion": "B_EXECUTABLE_T0_8BAR",
+  "selected_candidate_before_exclusion": "B_EXECUTABLE_T0_8BAR",
+  "selected_candidate_unchanged": true,
+  "unresolved_count": 3,
+  "unresolved_event_ids": [
+    "2023H1|D_SHOCK_FAILURE|2023-03-15T12:30:00+00:00|1",
+    "2023H1|D_SHOCK_FAILURE|2023-03-23T06:45:00+00:00|1",
+    "2023H2|D_SHOCK_FAILURE|2023-09-29T09:15:00+00:00|-1"
+  ]
+}

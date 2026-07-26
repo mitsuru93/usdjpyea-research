@@ -1,0 +1,62 @@
+{
+  "candidate_catalog": [
+    {
+      "candidate_id": "A_CSOS_FIXED_BAR",
+      "cost": "fixed 0.5 pip",
+      "entry": "accepted M15 Bid open after failure",
+      "exit": "accepted M15 Bid open 8 bars later",
+      "role": "audit_reference_not_executable_candidate",
+      "selection_eligible": false
+    },
+    {
+      "candidate_id": "B_EXECUTABLE_T0_8BAR",
+      "entry": "first raw tick timestamp >= failure_bar_end; LONG at Ask, SHORT at Bid",
+      "exit": "first raw tick timestamp >= entry_boundary_plus_120_minutes; LONG at Bid, SHORT at Ask",
+      "role": "primary_executable_candidate",
+      "selection_eligible": true,
+      "stop": "none",
+      "timeout": "120 minutes"
+    },
+    {
+      "candidate_id": "C_M1_ACCEPTANCE_8BAR",
+      "confirmation": "the first completed raw-tick-derived M1 bar after failure_bar_end must close on the failure side of the shock midpoint and have a body in the entry direction",
+      "entry": "first raw tick after that M1 bar completes; LONG at Ask, SHORT at Bid",
+      "exit": "first raw tick timestamp >= original failure_bar_end_plus_120_minutes; LONG at Bid, SHORT at Ask",
+      "role": "minimal_confirmation_variant",
+      "selection_eligible": true,
+      "stop": "none",
+      "timeout": "maximum 119 minutes after confirmed entry"
+    },
+    {
+      "candidate_id": "D_EXECUTABLE_T0_4BAR",
+      "entry": "same as B_EXECUTABLE_T0_8BAR",
+      "exit": "first raw tick timestamp >= failure_bar_end_plus_60_minutes; LONG at Bid, SHORT at Ask",
+      "role": "conservative_timeout_variant",
+      "selection_eligible": true,
+      "stop": "none",
+      "timeout": "60 minutes"
+    }
+  ],
+  "chronology_rule": "failure is known only after the following M15 bar closes; entry is the first executable tick at or after that close",
+  "definition": {
+    "cross_fold_trade": "not allowed",
+    "csos_cost": "0.5 pip fixed round-trip deduction",
+    "csos_entry": "open of the first M15 bar after the failure bar",
+    "csos_exit": "open exactly 8 completed M15 bars after CSOS entry",
+    "down_shock": "shock AND close < open AND close_position_in_range <= 0.20",
+    "entry_side": "opposite original shock",
+    "failure_down": "the immediately following completed M15 bar closes above the shock midpoint and closes above its own open",
+    "failure_up": "the immediately following completed M15 bar closes below the shock midpoint and closes below its own open",
+    "pip": 0.01,
+    "same_variant_reentry": "not allowed until prior 8-bar holding interval has ended",
+    "shock": "true_range_pips >= 2.5 * rolling_96_bar_median_true_range_pips AND absolute_body_pips >= 0.65 * true_range_pips",
+    "signal_price": "Bid OHLC",
+    "timeframe": "M15",
+    "up_shock": "shock AND close > open AND close_position_in_range >= 0.80"
+  },
+  "event_count": 114,
+  "family": "D_SHOCK_FAILURE",
+  "same_shock_reentry": "prohibited by original CSOS active-window suppression",
+  "session_boundary": "events may cross sessions; session is classified at entry",
+  "spread_and_execution": "Mid is never used as an executable price; LONG buys Ask/sells Bid, SHORT sells Bid/buys Ask"
+}
