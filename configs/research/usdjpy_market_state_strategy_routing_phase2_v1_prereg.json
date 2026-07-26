@@ -1,0 +1,64 @@
+{
+  "schema_version": "usdjpy_market_state_strategy_routing_phase2_v1_prereg",
+  "status": "FROZEN_BEFORE_ROUTING_OUTCOME_EVALUATION",
+  "research_question": "Can native completed H1/H4 EMA states observed before B02/F05 entry define a portable permission layer that improves portfolio P/L after measured winner damage?",
+  "distinct_from_closed_hyp023": true,
+  "distinction": "HYP-023 was a primary native-H4 entry architecture. This study preserves every canonical B02/F05 entry and outcome and evaluates only a pre-entry permission overlay.",
+  "development_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "external_periods_accessed": false,
+  "population": {
+    "expected_trades": 1882,
+    "expected_strategies": ["B02", "F05"],
+    "canonical_trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca"
+  },
+  "state_authority": {
+    "construction_module": "tools/usdjpy_native_htf_state_data_v1.py",
+    "2023_m15_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "2024_m15_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c",
+    "completed_information_only": true,
+    "partial_buckets_update_state": false
+  },
+  "ema_cells": [
+    {"id":"S1","h4_fast":3,"h4_slow":12,"h1_fast":4,"h1_slow":16},
+    {"id":"S2","h4_fast":3,"h4_slow":12,"h1_fast":8,"h1_slow":32},
+    {"id":"S3","h4_fast":6,"h4_slow":24,"h1_fast":4,"h1_slow":16},
+    {"id":"S4","h4_fast":6,"h4_slow":24,"h1_fast":8,"h1_slow":32},
+    {"id":"S5","h4_fast":12,"h4_slow":48,"h1_fast":4,"h1_slow":16},
+    {"id":"S6","h4_fast":12,"h4_slow":48,"h1_fast":8,"h1_slow":32}
+  ],
+  "permission_rules": [
+    "H1_ALIGNED",
+    "H4_ALIGNED",
+    "BOTH_ALIGNED",
+    "H1_ALIGNED_H4_NOT_OPPOSED",
+    "H4_ALIGNED_H1_NOT_OPPOSED"
+  ],
+  "rule_count": 30,
+  "effect_contract": {
+    "blocked_trade_delta_jpy": "-realized_pl_jpy",
+    "loser_benefit_jpy": "sum positive blocked_trade_delta_jpy on baseline losers",
+    "winner_damage_jpy": "absolute sum negative blocked_trade_delta_jpy on baseline winners",
+    "net_delta_jpy": "loser_benefit_jpy - winner_damage_jpy"
+  },
+  "selection": {
+    "method": "leave-one-fold-out",
+    "training_rank": ["maximum minimum training-fold net delta", "maximum pooled training net delta", "minimum winner damage", "minimum blocked trades", "lexicographic rule id"],
+    "held_out_portability_gate": "held-out net delta > 0 in at least 3 of 4 folds",
+    "breadth_gate": "held-out B02 and F05 net delta are each non-negative in at least 3 of 4 folds",
+    "support_gate": "selected held-out rule blocks at least 5 trades in every fold"
+  },
+  "prohibited": [
+    "no threshold or period expansion after outcomes",
+    "no side, session, year or strategy exception",
+    "no combination with Entry Establishment Phase 2 rules",
+    "no 2025 access",
+    "no MT4 implementation",
+    "no candidate or production authorization from descriptive pooled positivity"
+  ],
+  "boundaries": {
+    "candidate_selection_authorized": false,
+    "mt4_implementation_authorized": false,
+    "production_authorized": false,
+    "2025_accessed": false
+  }
+}
