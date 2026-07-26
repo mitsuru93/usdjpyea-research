@@ -1,0 +1,36 @@
+name: Diagnose Portfolio Loss-Cluster Run 30203423794
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/diag_portfolio_loss_cluster_run_30203423794.yml'
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract failed log tail
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run view 30203423794 --repo "$GITHUB_REPOSITORY" --log-failed > failed.log 2>&1 || true
+          tail -n 160 failed.log > failed_tail.log
+          {
+            echo 'run_id: 30203423794'
+            echo 'job_id: 89797246594'
+            echo 'classification: TECHNICAL_INCOMPLETE_NO_RESULT'
+            echo
+            echo '```text'
+            cat failed_tail.log
+            echo '```'
+          } > issue.md
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title '[portfolio-loss-cluster-diagnostic] 30203423794 failed log tail' \
+            --body-file issue.md
