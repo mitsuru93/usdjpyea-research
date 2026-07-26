@@ -1,0 +1,12 @@
+{
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase1_execution_marker_v1",
+  "study_id": "USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE1-V1",
+  "hypothesis_id": "USDJPY-HYP-027",
+  "status": "ARMED_ONCE_AFTER_PREREGISTRATION_MERGE",
+  "workflow": ".github/workflows/usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+  "candidate_count": 27,
+  "development_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "2025_accessed": false,
+  "MT4_accessed": false,
+  "production_authorized": false
+}
