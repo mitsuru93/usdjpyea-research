@@ -1,0 +1,181 @@
+{
+  "schema_version": "usdjpy_csos_shock_failure_core_parity_plan_v1",
+  "status": "PLAN_FROZEN_CORE_AND_MT4_NOT_AUTHORIZED",
+  "candidate_id": "B_EXECUTABLE_T0_8BAR",
+  "research_authority": {
+    "scientific_merge_commit": "4a17c07139a564bc97d358da115f451e2316c562",
+    "phase2_run_id": 30206226997,
+    "phase2_artifact_id": 8633167258,
+    "phase2_artifact_digest": "sha256:0c9dd9d895255567ed63126f28335f120b2e68752e0bea785dcc3f83a2a1bca2",
+    "phase2_release": "usdjpy-csos-shock-failure-phase2-v1",
+    "phase2_receipt_issue": 312,
+    "event_identity_ledger_sha256": "31e031c61294e83f4b09ccdd4cfb373f04b2f759f2f4bddf9c920123aefa2795",
+    "candidate_trade_ledger_gzip_sha256": "cc4ad57b9ed339be1a6f318be492f22fed859d7f6ef93814eb1f53f59ffe8459"
+  },
+  "core_authority_observed": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "main_commit_at_plan_start": "1cf4cf3e98f6924b364a82a06d0bbefa07d83286",
+    "existing_reference_pattern": "standalone candidate lock plus shadow or MT4 parity evaluator and immutable receipt",
+    "core_modified_by_this_plan": false
+  },
+  "stages": [
+    {
+      "stage": "P0_RESEARCH_CONTRACT_VALIDATION",
+      "runner": "Research GitHub-hosted",
+      "authorized_now": true,
+      "purpose": "Validate candidate freeze, archive digests, exact semantics and downstream boundaries.",
+      "gates": {
+        "phase2_status": "PASS_PORTABLE_RESEARCH_CANDIDATE",
+        "selected_candidate": "B_EXECUTABLE_T0_8BAR",
+        "event_ledger_sha256_exact": true,
+        "mechanism_contract_sha256_exact": true,
+        "2025_accessed": false,
+        "core_changed": false
+      }
+    },
+    {
+      "stage": "P1_CORE_SHADOW_FORMULA_PARITY",
+      "runner": "Core build plus Research-hosted evaluator; MT4 only after separate authorization",
+      "authorized_now": false,
+      "purpose": "Implement the frozen formula in a standalone no-order shadow Expert and reproduce the canonical accepted-bar event ledger.",
+      "required_inputs": [
+        "canonical accepted 2023 and 2024 Bid M15 bars",
+        "frozen event_identity_ledger.csv",
+        "candidate freeze and implementation contract"
+      ],
+      "binding_gates": {
+        "compile_errors": 0,
+        "compile_warnings": 0,
+        "trading_calls_executed": 0,
+        "canonical_events_expected": 114,
+        "missing_event_ids": 0,
+        "extra_event_ids": 0,
+        "side_mismatches": 0,
+        "decision_boundary_mismatches": 0,
+        "shock_predicate_mismatches": 0,
+        "failure_predicate_mismatches": 0,
+        "reentry_suppression_mismatches": 0,
+        "price_tolerance": 1e-10
+      }
+    },
+    {
+      "stage": "P2_RAW_TICK_EXECUTION_PARITY",
+      "runner": "Research GitHub-hosted Raw Tick replay and, when separately authorized, Core TDS or equivalent",
+      "authorized_now": false,
+      "purpose": "Prove first-executable-tick entry and exit side and price semantics without HST chronology claims.",
+      "binding_gates": {
+        "events_replayed": 114,
+        "entry_tick_timestamp_mismatches": 0,
+        "exit_tick_timestamp_mismatches": 0,
+        "entry_bid_ask_side_mismatches": 0,
+        "exit_bid_ask_side_mismatches": 0,
+        "pnl_pips_tolerance": 1e-8,
+        "price_tolerance": 1e-10,
+        "order_send_failures_if_mt4_orders_are_used": 0,
+        "order_close_failures_if_mt4_orders_are_used": 0,
+        "runtime_errors": 0
+      },
+      "classification": {
+        "TDS_feed_pass": "may support MT4 execution parity when feed digest equals the frozen authority",
+        "validated_raw_tick_replay_pass": "supports execution-semantic parity but is not automatically MT4 engine parity",
+        "HST_only": "insufficient for this stage"
+      }
+    },
+    {
+      "stage": "P3_RAKUTEN_BROKER_SOURCE_PORTABILITY",
+      "runner": "Research GitHub-hosted comparison; MT4 extraction only after separate authorization",
+      "authorized_now": false,
+      "purpose": "Measure whether the frozen formula produces a materially equivalent event population on Rakuten data, especially for 2024 where canonical signal bars are Dukascopy-derived.",
+      "matching_rule": "same side and decision boundary within plus or minus one M15 bar",
+      "preregistered_gates": {
+        "2023_exact_event_identity_required": true,
+        "2023_expected_events": 56,
+        "2023_missing": 0,
+        "2023_extra": 0,
+        "2024H1_canonical_recall_min": 0.80,
+        "2024H1_rakuten_precision_min": 0.80,
+        "2024H2_canonical_recall_min": 0.80,
+        "2024H2_rakuten_precision_min": 0.80,
+        "matched_side_agreement": 1.0,
+        "matched_decision_delta_p95_minutes_max": 15,
+        "no_post_outcome_threshold_change": true
+      },
+      "failure_interpretation": "The frozen Research candidate remains valid on its canonical authority, but Rakuten implementation and 2025 Rakuten gate remain blocked."
+    },
+    {
+      "stage": "P4_STANDALONE_MT4_PARITY",
+      "runner": "Core self-hosted Windows MT4; separately authorized",
+      "authorized_now": false,
+      "purpose": "Run the standalone Expert with no B02/F05 integration after P1 through P3 pass.",
+      "binding_gates": {
+        "compile_errors": 0,
+        "compile_warnings": 0,
+        "event_identity_gate": "as defined by the passed authority and source stage",
+        "entry_blocks": 0,
+        "order_send_failures": 0,
+        "order_close_failures": 0,
+        "duplicate_orders": 0,
+        "runtime_errors": 0,
+        "scheduled_exit_decision_lag_seconds_max": 1,
+        "actual_fill_and_decision_quotes_logged": true
+      }
+    },
+    {
+      "stage": "P5_PORTFOLIO_INTEGRATION_PARITY",
+      "runner": "Core self-hosted Windows MT4; new separate authorization",
+      "authorized_now": false,
+      "purpose": "Add the candidate as an independent third strategy using additive behavior only.",
+      "binding_gates": {
+        "B02_entry_identity_unchanged": true,
+        "F05_entry_identity_unchanged": true,
+        "B02_exit_identity_unchanged": true,
+        "F05_exit_identity_unchanged": true,
+        "shock_failure_identity_matches_standalone": true,
+        "same_direction_skip_added": false,
+        "opposite_direction_skip_added": false,
+        "drawdown_skip_added": false,
+        "position_cap_added": false,
+        "replacement_or_oracle_logic_added": false
+      }
+    },
+    {
+      "stage": "P6_2025_GATE_APPLICATION",
+      "runner": "not selected",
+      "authorized_now": false,
+      "purpose": "Request, preregister and execute a one-time 2025 gate only after all preceding binding stages pass.",
+      "prerequisites": [
+        "P1 pass",
+        "P2 pass",
+        "P3 pass",
+        "P4 pass",
+        "P5 pass if portfolio gate is requested",
+        "candidate hash unchanged",
+        "separate user authorization",
+        "outcome-free 2025 gate preregistration"
+      ]
+    }
+  ],
+  "failure_policy": {
+    "implementation_mismatch": "fix implementation and rerun; do not alter the candidate",
+    "source_portability_failure": "classify as broker-source blocked; do not tune thresholds, sides, sessions or years",
+    "execution_parity_failure": "remain research-only and do not access 2025",
+    "any_2025_access_before_P6": "invalidate the development sequence"
+  },
+  "deliverables_for_later_core_stage": [
+    "Core candidate lock JSON",
+    "standalone shadow or parity Expert",
+    "deterministic event ledger",
+    "Raw Tick or TDS execution ledger",
+    "parity evaluator",
+    "GitHub Actions workflow",
+    "artifact and SHA-256 manifest",
+    "immutable receipt Issue"
+  ],
+  "authorization": {
+    "this_document_authorizes_research_validation_only": true,
+    "core_source_change": false,
+    "mt4": false,
+    "2025": false,
+    "production": false
+  }
+}
