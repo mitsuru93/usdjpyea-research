@@ -1,0 +1,36 @@
+name: Inspect Portfolio Loss-Cluster retry status
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/status_portfolio_loss_cluster_retry.yml'
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect latest main runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run list --repo "$GITHUB_REPOSITORY" \
+            --workflow usdjpy_portfolio_loss_cluster_phase1_v1.yml \
+            --branch main --limit 10 \
+            --json databaseId,status,conclusion,headSha,event,createdAt,updatedAt,url > runs.json
+          cat > issue.md <<EOF
+          target_main_sha: dcb8837c68abce39fbf70411d356878d871741d4
+
+          \`\`\`json
+          $(cat runs.json)
+          \`\`\`
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title '[portfolio-loss-cluster-status] retry main runs' \
+            --body-file issue.md
