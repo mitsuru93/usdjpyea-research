@@ -1,5 +1,6 @@
 from .candidate_rules import *
 
+
 def event_bootstrap(d: pd.DataFrame, weights: pd.Series, n: int = 2000) -> dict[str, Any]:
     x = d.copy()
     x["weight"] = x.trade_id.map(weights).fillna(0.0)
@@ -88,11 +89,20 @@ def family_lofo(d: pd.DataFrame, states: pd.DataFrame, candidates: list[Candidat
 
 
 def group_report(entry: pd.DataFrame, d: pd.DataFrame, flag: str) -> pd.DataFrame:
-    x = d.merge(entry[["trade_id", flag]], on="trade_id", validate="one_to_one")
+    if flag in d.columns:
+        if flag in entry.columns:
+            left = d.set_index("trade_id")[flag].sort_index().astype("string")
+            right = entry.set_index("trade_id")[flag].sort_index().astype("string")
+            if not left.equals(right):
+                raise AssertionError(f"grouping flag mismatch between trade and entry ledgers: {flag}")
+        x = d.copy()
+    else:
+        if flag not in entry.columns:
+            raise KeyError(flag)
+        x = d.merge(entry[["trade_id", flag]], on="trade_id", validate="one_to_one")
     total_loss = float(-x.loc[~x.winner, "realized_pl_jpy"].sum())
     rows = []
-    for val, g in x.groupby(flag, dropna=False):
+    for val, g in x.groupby(flag, dropna=False, observed=False):
         gp = float(g.loc[g.realized_pl_jpy > 0, "realized_pl_jpy"].sum()); gl = float(-g.loc[g.realized_pl_jpy < 0, "realized_pl_jpy"].sum())
         rows.append({flag: val, "trade_count": int(len(g)), "winner_count": int(g.winner.sum()), "loser_count": int((~g.winner).sum()), "gross_profit_jpy": gp, "gross_loss_jpy": gl, "net_profit_jpy": float(g.realized_pl_jpy.sum()), "profit_factor": None if gl == 0 else gp/gl, "win_rate": float(g.winner.mean()), "average_pnl_jpy": float(g.realized_pl_jpy.mean()), "median_pnl_jpy": float(g.realized_pl_jpy.median()), "total_loss_coverage": gl/total_loss if total_loss else 0.0})
     return pd.DataFrame(rows)
-

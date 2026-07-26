@@ -6,14 +6,31 @@ from .metrics import *
 from .candidate_rules import *
 from .robustness import *
 
+
 def preflight(protocol: Path, out_dir: Path) -> None:
     p = json.loads(protocol.read_text(encoding="utf-8"))
     assert p["status"] == "FROZEN_BEFORE_OUTCOME_EXECUTION"
     assert p["development_folds"] == FOLDS
     assert p["protected_periods"] == ["2025H1", "2025H2"]
     assert p["candidate_grid"]["candidate_count"] == len(candidate_set())
+    synthetic_d = pd.DataFrame({
+        "trade_id": ["a", "b"],
+        "realized_pl_jpy": [-100.0, 200.0],
+        "winner": [False, True],
+        "session_loss_chain_size": [1, 0],
+        "volatility_state": ["normal", "shock"],
+    })
+    synthetic_entry = pd.DataFrame({
+        "trade_id": ["a", "b"],
+        "session_loss_chain_size": [1, 0],
+        "volatility_state": ["normal", "shock"],
+        "concurrent_exposure": [False, True],
+    })
+    assert group_report(synthetic_entry, synthetic_d, "session_loss_chain_size").trade_count.sum() == 2
+    assert group_report(synthetic_entry, synthetic_d, "volatility_state").trade_count.sum() == 2
+    assert group_report(synthetic_entry, synthetic_d, "concurrent_exposure").trade_count.sum() == 2
     out_dir.mkdir(parents=True, exist_ok=True)
-    write_json(out_dir / "preflight_result.json", {"schema_version": "usdjpy_portfolio_loss_cluster_phase1_preflight_v1", "status": "PASS_NO_OUTCOMES", "outcomes_computed": False, "portfolio_replay_computed": False, "MT4_accessed": False, "2025H1_accessed": False, "2025H2_accessed": False, "protocol_sha256": sha256_file(protocol), "candidate_count": len(candidate_set())})
+    write_json(out_dir / "preflight_result.json", {"schema_version": "usdjpy_portfolio_loss_cluster_phase1_preflight_v1", "status": "PASS_NO_OUTCOMES", "outcomes_computed": False, "portfolio_replay_computed": False, "MT4_accessed": False, "2025H1_accessed": False, "2025H2_accessed": False, "protocol_sha256": sha256_file(protocol), "candidate_count": len(candidate_set()), "group_report_regression_passed": True})
 
 
 def main() -> None:
