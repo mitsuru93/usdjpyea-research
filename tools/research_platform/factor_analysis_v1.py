@@ -6,7 +6,7 @@ causality, select candidates, or mutate frozen research decisions.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, is_dataclass
 from hashlib import sha256
 import json
 import math
@@ -238,6 +238,14 @@ def analyze_categorical_factor(
     return result
 
 
+def _json_default(value: Any) -> Any:
+    if is_dataclass(value):
+        return asdict(value)
+    if isinstance(value, Mapping):
+        return dict(value)
+    raise TypeError(f"unsupported analysis payload type: {type(value).__name__}")
+
+
 def deterministic_analysis_sha256(payload: Any) -> str:
-    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False, default=lambda value: value.__dict__).encode("utf-8")
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False, default=_json_default).encode("utf-8")
     return sha256(encoded).hexdigest()
