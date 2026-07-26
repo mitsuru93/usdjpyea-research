@@ -1,0 +1,52 @@
+{
+  "schema_version": "usdjpy_entry_establishment_phase2_result_v1",
+  "status": "PHASE2_DIAGNOSIS_COMPLETE_NO_CANDIDATE_AUTHORIZATION",
+  "population": {"trades": 1882, "states": 68955},
+  "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "excluded_periods": ["2025H1", "2025H2"],
+  "lofo": {
+    "positive_held_out_folds": 1,
+    "required_positive_folds": 3,
+    "portable_gate_passed": false,
+    "held_out_results_jpy": {
+      "2023H1": 79,
+      "2023H2": -1427,
+      "2024H1": -167,
+      "2024H2": -21750
+    }
+  },
+  "descriptive_best": {
+    "candidate": "DC_m15_votes_lt_2",
+    "family": "directional_confirmation",
+    "checkpoint_minutes": 15,
+    "triggered": 15,
+    "losers": 11,
+    "winners": 4,
+    "gross_loss_avoided_jpy": 3852,
+    "winner_damage_jpy": 1184,
+    "net_delta_jpy": 2668,
+    "authorized": false
+  },
+  "decision": {
+    "portable_candidate": null,
+    "candidate_authorized": false,
+    "mt4_implementation_authorized": false,
+    "2025_gate_authorized": false,
+    "production_authorized": false,
+    "next_impact_atlas_program": "MARKET_STATE_STRATEGY_ROUTING_PHASE2_V1"
+  },
+  "execution": {
+    "run_id": 30201494372,
+    "artifact_id": 8631779176,
+    "artifact_digest": "sha256:c8ad3b2d2864db32015d5b7c68034a09b00ec0b16cfeee354e30387d2b7eb6f1",
+    "artifact_expiry": "2026-10-24",
+    "research_execution_sha": "20c415c3cbab81f27c59b53951fcefe6f729fbc6",
+    "core_sha": "aca45ab891d9a6da272b5111a99142d99e874929"
+  },
+  "boundaries": {
+    "2025_accessed": false,
+    "mt4_accessed": false,
+    "candidate_authorized": false,
+    "production_authorized": false
+  }
+}
