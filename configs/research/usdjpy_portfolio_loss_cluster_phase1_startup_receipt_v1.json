@@ -1,0 +1,40 @@
+{
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase1_startup_receipt_v1",
+  "study_id": "USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE1-V1",
+  "research_main_commit": "57dded3efa003c1644e4bae49a239d7a21b21429",
+  "core_main_commit": "aca45ab891d9a6da272b5111a99142d99e874929",
+  "mandatory_files_read": [
+    "AGENTS.md",
+    "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "configs/research/usdjpy_research_candidate_registry_v47.json",
+    "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v21.json",
+    "configs/research/usdjpy_period_role_policy_v5.json",
+    "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md",
+    "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.json",
+    "docs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.md"
+  ],
+  "current_registry_status": "v47; HYP-026 closed; no existing Portfolio Loss-Cluster Phase 1 candidate",
+  "relevant_hypothesis_ledger_ids": ["USDJPY-HYP-006", "USDJPY-HYP-009", "USDJPY-HYP-024", "USDJPY-HYP-026"],
+  "new_study_hypothesis_id": "USDJPY-HYP-027",
+  "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+  "period_access_boundaries": {
+    "development": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "prohibited_for_selection": ["2025H1", "2025H2"],
+    "MT4": "not authorized in Phase 1",
+    "production": "not authorized"
+  },
+  "open_pull_requests_at_start": {"research": [233, 159, 158, 157, 156, 155, 154], "core": []},
+  "source_lineage": {
+    "historical_release": "f05-failed-reclaim-historical-authorities-v1",
+    "canonical_population": 1882,
+    "trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "state_ledger_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "source_artifact_run_id": 30104463746,
+    "source_artifact_id": 8601002548,
+    "source_artifact_digest": "sha256:e0c0710890109298e4d65386c2a86bc75492b606c33013a0c75dd23ccb9271ef"
+  },
+  "duplicate_audit_decision": "HYP-006 static F05 overlap thresholds are not reopened; user-required simple caps are diagnostic counterfactual baselines only. New study scope is temporal loss-chain and portfolio-state interaction across both B02 and F05.",
+  "exact_next_action": "Merge outcome-free preregistration and evaluator, execute one GitHub-hosted Research workflow, preserve result atomically, then rank Phase 2 candidates without MT4 or 2025 access."
+}

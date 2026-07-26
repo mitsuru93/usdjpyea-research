@@ -1,0 +1,84 @@
+{
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase1_prereg_v1",
+  "study_id": "USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE1-V1",
+  "hypothesis_id": "USDJPY-HYP-027",
+  "status": "FROZEN_BEFORE_OUTCOME_EXECUTION",
+  "frozen_at_utc": "2026-07-26T12:40:00Z",
+  "purpose": "Quantify whether unchanged B02/F05 trades amplify portfolio loss and drawdown through temporal clustering, concurrent exposure, directional overlap, drawdown additions, session loss chains and shock-adjacent concentration.",
+  "scope_boundary": {"entry_logic_changed": false, "exit_logic_changed": false, "sl_changed": false, "tp_changed": false, "failed_reclaim_candidate_reused": false, "market_state_router_introduced": false, "production_EA_implementation": false},
+  "development_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "protected_periods": ["2025H1", "2025H2"],
+  "period_firewall": {"2025_outcomes_may_select_definition_threshold_weight_or_family": false, "2025_data_accessed_by_this_workflow": false, "MT4_accessed_by_this_workflow": false, "production_authorized": false},
+  "source_authority": {
+    "research_repository": "mitsuru93/usdjpyea-research", "research_main_at_start": "57dded3efa003c1644e4bae49a239d7a21b21429",
+    "core_repository": "mitsuru93/usdjpyea-core", "core_main_at_start": "aca45ab891d9a6da272b5111a99142d99e874929",
+    "historical_release": "f05-failed-reclaim-historical-authorities-v1", "historical_authority_run_id": 30101338646,
+    "four_fold_source_run_id": 30104463746, "four_fold_source_artifact_id": 8601002548,
+    "four_fold_source_artifact_digest": "sha256:e0c0710890109298e4d65386c2a86bc75492b606c33013a0c75dd23ccb9271ef",
+    "canonical_trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "canonical_state_ledger_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "2023_m15_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "2023_m1_sha256": "167509bde6553a468ffe48b082ed79de183cc57991f668cf4b3e7341350d307e",
+    "2024h1_event_sha256": "9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a",
+    "2024h2_event_sha256": "a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd",
+    "lineage": "HISTORICAL_2024_LEGACY_US_DST_CONVERSION_APPLIED_TO_2023_ONLY",
+    "timestamp_precision": "15-minute canonical observation grid; original Entry/Exit timestamps retained", "timezone": "UTC",
+    "2024_raw_tick_release": "usdjpy-2024-raw-bidask-ticks-v1",
+    "shock_common_contract": "causal completed/open M15 movement state across all four folds; not represented as raw Tick authority"
+  },
+  "novelty_and_duplicate_audit": {
+    "reviewed_prior_hypotheses": ["USDJPY-HYP-006", "USDJPY-HYP-009", "USDJPY-HYP-024", "USDJPY-HYP-026"],
+    "HYP_006_boundary": "Static F05 overlap/ordinal admission thresholds B1-B3 are closed and are not rescanned. Simple caps are retained only as user-mandated counterfactual baselines.",
+    "HYP_009_boundary": "State-adaptive F05 recovery exit is closed; this study neither changes exits nor reuses its candidate.",
+    "Impact_Atlas_boundary": "Impact Atlas supplied only an upper-bound prioritization; this study performs dedicated event-ledger and implementable-counterfactual analysis.",
+    "new_observables": ["time-connected portfolio event", "loss-cluster sequence", "drawdown-add event", "session loss chain", "recovery interference", "shock-adjacent exposure"],
+    "new_falsifiable_claim": "At least one simple exposure-control family can reduce maximum drawdown across folds while preserving most winner profit; failure is recorded if DD reduction is not portable or winner damage dominates."
+  },
+  "portfolio_event_contract": {
+    "A_standalone_trade": "No open position at Entry and no other Entry within the primary 60-minute connected-event gap.",
+    "B_concurrent_exposure": "At least one earlier accepted baseline trade remains open at Entry.",
+    "C_same_direction_overlap": "At least one open position has the same side at Entry.",
+    "D_opposite_direction_overlap": "At least one open position has the opposite side at Entry.",
+    "E_B02_F05_overlap": "At least one position from the other strategy remains open at Entry.",
+    "F_entry_cluster": {"primary_window_minutes": 60, "sensitivity_windows_minutes": [15, 30, 60], "finite_cooldown_windows_minutes": [5, 15, 30, 60]},
+    "G_loss_cluster": "Two or more losing trades whose close times are connected within 60 minutes; 15/30-minute sensitivity is reported.",
+    "H_drawdown_add_event": "A new Entry while realized portfolio equity is below its prior realized peak.",
+    "I_session_loss_chain": "Consecutive losses within the same UTC session key, reset at the next winner or session boundary.",
+    "J_shock_adjacent_cluster": "Entry in causal M15 shock or post-shock state under the frozen common four-fold movement contract.",
+    "K_recovery_interference": "A new Entry while at least one existing position remains open and aggregate open-position M15 mark-to-market is negative or recovering from a deeper adverse mark.",
+    "sessions_utc": {"Tokyo": "00:00-06:59", "London": "07:00-12:59", "London_NewYork_overlap": "13:00-15:59", "New_York": "16:00-19:59", "session_transition": "20:00-23:59"},
+    "volatility_states": ["contraction", "normal", "expansion", "shock", "post_shock"],
+    "shock_rule": "absolute M15 open-to-open movement >= max(15 pips, trailing-96-bar 95th percentile, 4x trailing median); post-shock through 60 minutes"
+  },
+  "candidate_grid": {
+    "candidate_count": 27,
+    "families": {
+      "concurrent_position_cap": ["MAX_CONCURRENT_1", "MAX_CONCURRENT_2", "MAX_CONCURRENT_3"],
+      "same_direction_exposure_cap": ["SAME_DIRECTION_CAP_1", "SAME_DIRECTION_CAP_2", "SAME_DIRECTION_CAP_3"],
+      "B02_F05_exclusivity": ["B02_F05_EXCLUSIVE"],
+      "strategy_priority_routing": ["B02_PRIORITY_SIMULTANEOUS", "F05_PRIORITY_SIMULTANEOUS"],
+      "entry_cooldown": ["ENTRY_COOLDOWN_5M", "ENTRY_COOLDOWN_15M", "ENTRY_COOLDOWN_30M", "ENTRY_COOLDOWN_60M"],
+      "loss_cooldown": ["LOSS_COOLDOWN_15M", "LOSS_COOLDOWN_30M", "LOSS_COOLDOWN_60M"],
+      "drawdown_aware_exposure_reduction": ["DRAWDOWN_BLOCK_500JPY", "DRAWDOWN_BLOCK_1000JPY", "DRAWDOWN_BLOCK_2000JPY"],
+      "session_loss_cap": ["SESSION_LOSS_CAP_2", "SESSION_LOSS_CAP_3"],
+      "shock_exposure_cap": ["SHOCK_TOTAL_CAP_1", "SHOCK_COOLDOWN_30M", "SHOCK_COOLDOWN_60M"],
+      "adaptive_position_sizing": ["HALF_SIZE_WHEN_OPEN", "HALF_SIZE_SAME_DIRECTION", "HALF_SIZE_DD_1000"]
+    },
+    "no_additional_threshold_search_after_outcome": true,
+    "oracle": "PERFECT_LOSS_CLUSTER_AVOIDANCE_ORACLE is reported separately and cannot be ranked as implementable"
+  },
+  "evaluation_contract": {
+    "primary_metrics": ["avoided_gross_loss", "lost_gross_profit", "net_improvement", "PF_change", "maximum_realized_DD_change", "maximum_M15_snapshot_DD_change", "trade_reduction", "winner_damage", "top20_winner_loss", "fold_portability"],
+    "required_slices": ["fold", "strategy", "side", "session", "month", "exposure_state", "volatility_state"],
+    "resampling": ["portfolio-event bootstrap", "date/session-aware bootstrap", "cluster-label permutation"],
+    "selection_diagnostic": "leave-one-fold-out; train selection requires winner retention >= 90% and positive realized DD reduction, then ranks DD reduction, net improvement and simplicity",
+    "phase1_candidate_authorization": false,
+    "phase2_recommendation_gate": {"positive_net_folds_minimum": 3, "positive_DD_reduction_folds_minimum": 3, "winner_retention_minimum": 0.90, "top_winner_retention_minimum": 0.90, "month_breadth_required": true}
+  },
+  "stop_rules": [
+    "Do not inspect or use 2025 outcomes.", "Do not execute MT4 or modify Core.",
+    "Do not expand the 27-candidate grid after observing outcomes.",
+    "Do not convert an oracle upper bound into an implementable claim.",
+    "Do not recommend any family that relies on pooled results while failing fold winner-damage or DD portability."
+  ]
+}
