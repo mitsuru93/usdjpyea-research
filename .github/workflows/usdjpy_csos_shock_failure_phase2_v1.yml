@@ -61,18 +61,14 @@ jobs:
           assert p['boundaries']['mt4_execution'] is False
           assert len(p['candidate_catalog'])==4
           PY
-          ! grep -R --line-number -E 'usdjpy-2025|2025-(raw|tick|m15|m1)|2025H[12].*(csv|zip|tar)' \
-            tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py \
-            .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml
+          ! grep -nE 'usdjpy-2025|2025-(raw|tick|m15|m1)|2025H[12].*(csv|zip|tar)' tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py
       - name: Download and verify CSOS v1-r1 evidence
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p inputs/csos inputs/csos_pkg
-          gh release download usdjpy-csos-opportunity-atlas-v1-r1 \
-            --repo "$GITHUB_REPOSITORY" --dir inputs/csos \
-            --pattern 'usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip'
+          gh release download usdjpy-csos-opportunity-atlas-v1-r1 --repo "$GITHUB_REPOSITORY" --dir inputs/csos --pattern 'usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip'
           unzip -q inputs/csos/usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip -d inputs/csos_pkg
           (cd inputs/csos_pkg && sha256sum -c csos_output/PACKAGE_SHA256SUMS)
           test "$(zcat inputs/csos_pkg/csos_output/strategy_opportunity_atlas.csv.gz | awk -F, '$4=="D_SHOCK_FAILURE"{n++} END{print n+0}')" = 114
@@ -82,32 +78,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p inputs/historical inputs/2023 inputs/2024h1 inputs/2024h2 inputs/2024derived materialized
-          gh release download f05-failed-reclaim-historical-authorities-v1 \
-            --repo "$GITHUB_REPOSITORY" --dir inputs/historical \
-            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
-            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
-            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' \
-            --pattern 'EXPECTED_SHA256SUMS'
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/historical --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' --pattern 'EXPECTED_SHA256SUMS'
           (cd inputs/historical && sha256sum -c EXPECTED_SHA256SUMS)
           unzip -q inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip -d inputs/2023
           unzip -q inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip -d inputs/2024h1
           unzip -q inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip -d inputs/2024h2
-          printf '%s  %s\n' \
-            '4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78' inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
-            '766be5ebba158e5b40f5da5d66929b4da8a25d42a8716b1e591d7c09dd87c2a3' inputs/2024h1/m15_utc_2024h1.csv \
-            '9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a' inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
-            'a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd' inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv > inputs/HISTORICAL_SHA256SUMS
+          printf '%s  %s\n' '4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78' inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz '766be5ebba158e5b40f5da5d66929b4da8a25d42a8716b1e591d7c09dd87c2a3' inputs/2024h1/m15_utc_2024h1.csv '9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a' inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv 'a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd' inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv > inputs/HISTORICAL_SHA256SUMS
           sha256sum -c inputs/HISTORICAL_SHA256SUMS
-          gh release download usdjpy-2024-derived-bars-v1 \
-            --repo "$GITHUB_REPOSITORY" --dir inputs/2024derived \
-            --pattern 'USDJPY-2024-m15-derived-bars-v1.csv.gz'
+          gh release download usdjpy-2024-derived-bars-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/2024derived --pattern 'USDJPY-2024-m15-derived-bars-v1.csv.gz'
           printf '%s  %s\n' 'd22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020' inputs/2024derived/USDJPY-2024-m15-derived-bars-v1.csv.gz | sha256sum -c -
-          python tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py \
-            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
-            --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv \
-            --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
-            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
-            --out-dir materialized
+          python tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv --out-dir materialized
           printf '%s  %s\n' '98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca' materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv | sha256sum -c -
       - name: Download and verify 2023 and 2024 raw Bid Ask Tick authorities only
         env:
@@ -115,16 +95,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p inputs/raw2023 inputs/raw2024
-          gh release download usdjpy-2023-raw-bidask-ticks-v1 \
-            --repo "$GITHUB_REPOSITORY" --dir inputs/raw2023 \
-            --pattern 'usdjpy-2023-??-raw-ticks-v1.tar.gz' \
-            --pattern 'usdjpy-2023-raw-ticks-v1.annual-manifest.json' \
-            --pattern 'SHA256SUMS'
-          gh release download usdjpy-2024-raw-bidask-ticks-v1 \
-            --repo "$GITHUB_REPOSITORY" --dir inputs/raw2024 \
-            --pattern 'usdjpy-2024-??-raw-ticks-v1.tar.gz' \
-            --pattern 'usdjpy-2024-raw-ticks-v1.annual-manifest.json' \
-            --pattern 'SHA256SUMS'
+          gh release download usdjpy-2023-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/raw2023 --pattern 'usdjpy-2023-??-raw-ticks-v1.tar.gz' --pattern 'usdjpy-2023-raw-ticks-v1.annual-manifest.json' --pattern 'SHA256SUMS'
+          gh release download usdjpy-2024-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/raw2024 --pattern 'usdjpy-2024-??-raw-ticks-v1.tar.gz' --pattern 'usdjpy-2024-raw-ticks-v1.annual-manifest.json' --pattern 'SHA256SUMS'
           (cd inputs/raw2023 && grep -E 'usdjpy-2023-(..-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
           (cd inputs/raw2024 && grep -E 'usdjpy-2024-(..-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
           test "$(find inputs/raw2023 -name '*.tar.gz' | wc -l)" = 12
@@ -133,18 +105,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p phase2_output
-          python tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py \
-            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
-            --m15-2024 inputs/2024derived/USDJPY-2024-m15-derived-bars-v1.csv.gz \
-            --csos-ledger inputs/csos_pkg/csos_output/strategy_opportunity_atlas.csv.gz \
-            --baseline-trades materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv \
-            --raw-2023 inputs/raw2023 \
-            --raw-2024 inputs/raw2024 \
-            --prereg configs/research/usdjpy_csos_shock_failure_phase2_prereg_v1.json \
-            --out-dir phase2_output \
-            --research-sha "$GITHUB_SHA" \
-            --core-sha '6ded071b3ba83cc13ff5aabb664017c80e421f9b' \
-            --run-id "$GITHUB_RUN_ID" | tee phase2_output/run.log
+          python tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz --m15-2024 inputs/2024derived/USDJPY-2024-m15-derived-bars-v1.csv.gz --csos-ledger inputs/csos_pkg/csos_output/strategy_opportunity_atlas.csv.gz --baseline-trades materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv --raw-2023 inputs/raw2023 --raw-2024 inputs/raw2024 --prereg configs/research/usdjpy_csos_shock_failure_phase2_prereg_v1.json --out-dir phase2_output --research-sha "$GITHUB_SHA" --core-sha '6ded071b3ba83cc13ff5aabb664017c80e421f9b' --run-id "$GITHUB_RUN_ID" | tee phase2_output/run.log
           cp configs/research/usdjpy_csos_shock_failure_phase2_prereg_v1.json phase2_output/
           cp configs/research/usdjpy_csos_shock_failure_phase2_operational_log_v1.json phase2_output/operational_failure_log.json
           jq -e '.boundaries."2025_accessed"==false and .boundaries.Core_changed==false and .boundaries.MT4_accessed==false and .csos_event_reproduction.reproduced_events==114' phase2_output/final_decision.json
@@ -156,8 +117,7 @@ jobs:
           python - <<'PY'
           import hashlib,json
           from pathlib import Path
-          root=Path('phase2_output')
-          rows=[]
+          root=Path('phase2_output'); rows=[]
           for p in sorted(root.iterdir()):
             if p.is_file() and p.name not in ('PACKAGE_SHA256SUMS','artifact_manifest.json'):
               rows.append({'path':p.name,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
@@ -184,18 +144,9 @@ jobs:
         run: |
           set -euo pipefail
           tag='usdjpy-csos-shock-failure-phase2-v1'
-          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "Immutable Release already exists: $tag" >&2
-            exit 1
-          fi
-          status=$(jq -r '.status' phase2_output/final_decision.json)
-          candidate=$(jq -r '.selected_candidate' phase2_output/final_decision.json)
-          gh release create "$tag" \
-            "usdjpy-csos-shock-failure-phase2-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" \
-            --target "$GITHUB_SHA" \
-            --title 'USDJPY CSOS Shock Failure Phase 2 v1' \
-            --notes "2023H1-2024H2 fixed-preregistration Shock Failure chronology, executable-price, cost, concentration, portfolio and LOFO study. Decision: ${status}; selected fixed candidate: ${candidate}. No 2025 access, Core modification, MT4 execution or production authorization." \
-            --repo "$GITHUB_REPOSITORY"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then echo "Immutable Release already exists: $tag" >&2; exit 1; fi
+          status=$(jq -r '.status' phase2_output/final_decision.json); candidate=$(jq -r '.selected_candidate' phase2_output/final_decision.json)
+          gh release create "$tag" "usdjpy-csos-shock-failure-phase2-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" --target "$GITHUB_SHA" --title 'USDJPY CSOS Shock Failure Phase 2 v1' --notes "2023H1-2024H2 fixed-preregistration Shock Failure chronology, executable-price, cost, concentration, portfolio and LOFO study. Decision: ${status}; selected fixed candidate: ${candidate}. No 2025 access, Core modification, MT4 execution or production authorization." --repo "$GITHUB_REPOSITORY"
       - name: Publish execution receipt Issue on main
         if: always() && github.event_name == 'push' && github.ref_name == 'main'
         env:
@@ -203,8 +154,7 @@ jobs:
           ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
           ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
         run: |
-          status=$(jq -r '.status // "FAILED_BEFORE_RECEIPT"' phase2_output/final_decision.json 2>/dev/null || echo FAILED_BEFORE_RECEIPT)
-          candidate=$(jq -r '.selected_candidate // "NA"' phase2_output/final_decision.json 2>/dev/null || echo NA)
+          status=$(jq -r '.status // "FAILED_BEFORE_RECEIPT"' phase2_output/final_decision.json 2>/dev/null || echo FAILED_BEFORE_RECEIPT); candidate=$(jq -r '.selected_candidate // "NA"' phase2_output/final_decision.json 2>/dev/null || echo NA)
           cat > receipt.md <<EOF
           workflow: usdjpy_csos_shock_failure_phase2_v1.yml
           run_id: ${GITHUB_RUN_ID}
