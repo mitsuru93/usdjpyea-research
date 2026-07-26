@@ -1,0 +1,31 @@
+{
+  "schema_version": "f05_failed_reclaim_2025_oos_prereg_v1",
+  "status": "FROZEN_BEFORE_2025_ORDERED_TICK_OUTCOME_EXECUTION",
+  "selection_source": {
+    "stage2b_run_id": 30201453371,
+    "stage2b_commit": "d3f7760bf35bb1eecd0219673def01c1d9a41827",
+    "candidate_id": "buf0.0_thr0.0_five_seconds_next_m5_d5"
+  },
+  "fixed_candidate": {
+    "maximum_sequence_count": 2,
+    "monitoring_horizon_minutes": 60,
+    "close_buffer_pips": 0.0,
+    "profit_disarm_threshold_executable_pips": 0.0,
+    "profit_persistence": "five_seconds",
+    "failure_confirmation": "next_m5",
+    "exit_delay_seconds": 5
+  },
+  "validation_periods": ["2025H1", "2025H2"],
+  "selection_periods_not_reopened": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "reoptimization_allowed": false,
+  "proxy_substitution_allowed": false,
+  "required_outputs": [
+    "result.json",
+    "changed_trade_ledger.csv",
+    "period_metrics.csv",
+    "monthly_metrics.csv",
+    "direction_metrics.csv",
+    "manifest.json"
+  ],
+  "production_authorization": false
+}
