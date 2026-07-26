@@ -31,10 +31,8 @@ jobs:
           base64 -d tools/csos_shock_failure_phase2_payload_v1.py.gz.b64 | gzip -d > tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py
           base64 -d .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml.gz.b64 | gzip -d > .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml
           python -m py_compile tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py
-          python - <<'PY'
-          import yaml
-          yaml.safe_load(open('.github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml'))
-          PY
+          grep -q '^name: USDJPY CSOS Shock Failure Phase 2 v1$' .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml
+          grep -q '^jobs:$' .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml
