@@ -1,0 +1,22 @@
+name: Collect USDJPY 2023 and 2025 Raw Ticks v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/collect_usdjpy_2023_2025_raw_ticks_v1.yml
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        year: [2023, 2025]
+    uses: ./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml
+    with:
+      year: ${{ matrix.year }}
