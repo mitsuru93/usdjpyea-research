@@ -1,0 +1,17 @@
+{
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase1_archive_r1_marker_v1",
+  "status": "ARMED_EVIDENCE_REPAIR_ONLY",
+  "source_run_id": 30204173630,
+  "source_artifact_id": 8632649725,
+  "source_artifact_digest": "sha256:eb9e30b2e3cee27dddfaa354bdc5d460ed8e9e8845943dc3086d7daf575b8934",
+  "source_release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1",
+  "source_release_asset_sha256": "c9f401e13ccc01c473a56e00421e4b960a9acfacd8c20487bfc920075adb5fe7",
+  "failure": "PACKAGE_SHA256SUMS included itself and therefore its self-entry did not match after write completion",
+  "repair": "exclude PACKAGE_SHA256SUMS from its own member list and verify every listed scientific file",
+  "corrected_release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1-r1",
+  "scientific_result_changed": false,
+  "candidate_or_gate_changed": false,
+  "2025_accessed": false,
+  "MT4_accessed": false,
+  "production_authorized": false
+}
