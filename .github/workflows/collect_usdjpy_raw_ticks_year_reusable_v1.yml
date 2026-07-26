@@ -1,0 +1,453 @@
+name: Collect USDJPY Raw Ticks Year Reusable v1
+
+on:
+  workflow_call:
+    inputs:
+      year:
+        description: UTC calendar year to collect
+        required: true
+        type: number
+  workflow_dispatch:
+    inputs:
+      year:
+        description: UTC calendar year to collect
+        required: true
+        default: 2023
+        type: number
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usdjpy-${{ inputs.year }}-raw-ticks-max-parallel-v1
+  cancel-in-progress: false
+
+env:
+  SYMBOL: USDJPY
+  YEAR: ${{ inputs.year }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      h1_dates: ${{ steps.matrix.outputs.h1_dates }}
+      h2_dates: ${{ steps.matrix.outputs.h2_dates }}
+      months: ${{ steps.matrix.outputs.months }}
+      expected_hours: ${{ steps.matrix.outputs.expected_hours }}
+    steps:
+      - name: Build yearly matrices
+        id: matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from datetime import date, timedelta
+
+          year = int(os.environ["YEAR"])
+          start = date(year, 1, 1)
+          split = date(year, 7, 1)
+          end = date(year + 1, 1, 1)
+          h1, h2 = [], []
+          current = start
+          while current < end:
+              (h1 if current < split else h2).append(current.isoformat())
+              current += timedelta(days=1)
+          total_days = (end - start).days
+          if len(h1) > 256 or len(h2) > 256 or len(h1) + len(h2) != total_days:
+              raise SystemExit(
+                  f"unexpected matrix sizes year={year} h1={len(h1)} h2={len(h2)} total={total_days}"
+              )
+          months = [f"{month:02d}" for month in range(1, 13)]
+          expected_hours = total_days * 24
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+              fh.write("h1_dates=" + json.dumps(h1, separators=(",", ":")) + "\n")
+              fh.write("h2_dates=" + json.dumps(h2, separators=(",", ":")) + "\n")
+              fh.write("months=" + json.dumps(months, separators=(",", ":")) + "\n")
+              fh.write(f"expected_hours={expected_hours}\n")
+          print(json.dumps({
+              "year": year,
+              "h1_days": len(h1),
+              "h2_days": len(h2),
+              "total_days": total_days,
+              "expected_hours": expected_hours,
+          }, sort_keys=True))
+          PY
+
+  collect-h1:
+    name: collect-${{ matrix.date }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        date: ${{ fromJSON(needs.prepare.outputs.h1_dates) }}
+      # No max-parallel: GitHub uses the repository/account concurrency ceiling.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile downloader
+        run: python -m py_compile tools/download_dukascopy_raw_tick_day_v1.py
+      - name: Download and preserve one UTC day
+        shell: bash
+        run: |
+          set -euo pipefail
+          DATE='${{ matrix.date }}'
+          NEXT_DATE=$(date -u -d "$DATE + 1 day" +%F)
+          ROOT="${RUNNER_TEMP}/usdjpy-${YEAR}-raw-ticks/${DATE}"
+          mkdir -p "$ROOT"
+          python tools/download_dukascopy_raw_tick_day_v1.py \
+            --symbol "$SYMBOL" \
+            --start "${DATE}T00" \
+            --end "${NEXT_DATE}T00" \
+            --output-root "$ROOT" \
+            --manifest-out "$ROOT/download_manifest.jsonl" \
+            --summary-out "$ROOT/day_summary.json" \
+            --retries 4 \
+            --retry-passes 3 \
+            --request-timeout 45 \
+            --request-interval 0.05 \
+            --max-errors 0
+      - name: Write per-file checksums
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="${RUNNER_TEMP}/usdjpy-${YEAR}-raw-ticks/${{ matrix.date }}"
+          if [ -d "$ROOT" ]; then
+            find "$ROOT" -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > "$ROOT/SHA256SUMS"
+          fi
+      - name: Upload immutable day packet
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-raw-ticks-${{ matrix.date }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/usdjpy-${{ inputs.year }}-raw-ticks
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+  collect-h2:
+    name: collect-${{ matrix.date }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        date: ${{ fromJSON(needs.prepare.outputs.h2_dates) }}
+      # No max-parallel: GitHub uses the repository/account concurrency ceiling.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile downloader
+        run: python -m py_compile tools/download_dukascopy_raw_tick_day_v1.py
+      - name: Download and preserve one UTC day
+        shell: bash
+        run: |
+          set -euo pipefail
+          DATE='${{ matrix.date }}'
+          NEXT_DATE=$(date -u -d "$DATE + 1 day" +%F)
+          ROOT="${RUNNER_TEMP}/usdjpy-${YEAR}-raw-ticks/${DATE}"
+          mkdir -p "$ROOT"
+          python tools/download_dukascopy_raw_tick_day_v1.py \
+            --symbol "$SYMBOL" \
+            --start "${DATE}T00" \
+            --end "${NEXT_DATE}T00" \
+            --output-root "$ROOT" \
+            --manifest-out "$ROOT/download_manifest.jsonl" \
+            --summary-out "$ROOT/day_summary.json" \
+            --retries 4 \
+            --retry-passes 3 \
+            --request-timeout 45 \
+            --request-interval 0.05 \
+            --max-errors 0
+      - name: Write per-file checksums
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="${RUNNER_TEMP}/usdjpy-${YEAR}-raw-ticks/${{ matrix.date }}"
+          if [ -d "$ROOT" ]; then
+            find "$ROOT" -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > "$ROOT/SHA256SUMS"
+          fi
+      - name: Upload immutable day packet
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-raw-ticks-${{ matrix.date }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/usdjpy-${{ inputs.year }}-raw-ticks
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+  package-months:
+    name: package-${{ inputs.year }}-${{ matrix.month }}
+    needs: [prepare, collect-h1, collect-h2]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        month: ${{ fromJSON(needs.prepare.outputs.months) }}
+    steps:
+      - name: Download all day packets for month
+        uses: actions/download-artifact@v4
+        with:
+          pattern: usdjpy-raw-ticks-${{ inputs.year }}-${{ matrix.month }}-*-${{ github.run_id }}-${{ github.run_attempt }}
+          path: staging
+          merge-multiple: true
+      - name: Validate month and build durable package
+        shell: bash
+        env:
+          MONTH: ${{ matrix.month }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import calendar
+          import hashlib
+          import json
+          import os
+          from datetime import date
+          from pathlib import Path
+
+          year = int(os.environ["YEAR"])
+          month = int(os.environ["MONTH"])
+          staging = Path("staging")
+          expected_days = calendar.monthrange(year, month)[1]
+          expected_dates = [date(year, month, day).isoformat() for day in range(1, expected_days + 1)]
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+              with path.open("rb") as fh:
+                  for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          failures = []
+          totals = {
+              "expected_days": expected_days,
+              "present_days": 0,
+              "expected_hours": expected_days * 24,
+              "resolved_hours": 0,
+              "downloaded_hours": 0,
+              "missing_404_hours": 0,
+              "no_tick_hours": 0,
+              "error_hours": 0,
+              "tick_rows": 0,
+              "negative_spread_rows": 0,
+              "source_bi5_bytes": 0,
+              "decoded_csv_bytes": 0,
+          }
+          day_summaries = []
+
+          for day in expected_dates:
+              root = staging / day
+              manifest_path = root / "download_manifest.jsonl"
+              summary_path = root / "day_summary.json"
+              checksums_path = root / "SHA256SUMS"
+              if not manifest_path.exists() or not summary_path.exists() or not checksums_path.exists():
+                  failures.append(f"missing day packet: {day}")
+                  continue
+              totals["present_days"] += 1
+              summary = json.loads(summary_path.read_text(encoding="utf-8"))
+              day_summaries.append(summary)
+              for key in (
+                  "resolved_hours", "downloaded_hours", "missing_404_hours", "no_tick_hours",
+                  "error_hours", "tick_rows", "negative_spread_rows", "source_bi5_bytes", "decoded_csv_bytes",
+              ):
+                  totals[key] += int(summary[key])
+
+              final = {}
+              for line in manifest_path.read_text(encoding="utf-8").splitlines():
+                  if line.strip():
+                      row = json.loads(line)
+                      final[row["hour_start_utc"]] = row
+              if len(final) != 24:
+                  failures.append(f"{day}: final hour records={len(final)} expected=24")
+              for row in final.values():
+                  if row["status"] == "error":
+                      failures.append(f"{day}: terminal error {row['hour_start_utc']} {row.get('error_type')}")
+                  if row["status"] == "downloaded":
+                      source = root / row["source_bi5_path"]
+                      decoded = root / row["decoded_csv_path"]
+                      if not source.exists() or sha256_file(source) != row["source_bi5_sha256"]:
+                          failures.append(f"{day}: source BI5 mismatch {row['hour_start_utc']}")
+                      if not decoded.exists() or sha256_file(decoded) != row["decoded_csv_sha256"]:
+                          failures.append(f"{day}: decoded CSV mismatch {row['hour_start_utc']}")
+
+          manifest = {
+              "schema_version": f"usdjpy_{year}_raw_tick_month_v1",
+              "symbol": "USDJPY",
+              "month": f"{year}-{month:02d}",
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+              "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "source": "Dukascopy BI5 public Bid/Ask ticks",
+              "totals": totals,
+              "failures": failures,
+              "day_summaries": day_summaries,
+              "accepted": (
+                  not failures
+                  and totals["present_days"] == totals["expected_days"]
+                  and totals["resolved_hours"] == totals["expected_hours"]
+                  and totals["error_hours"] == 0
+                  and totals["negative_spread_rows"] == 0
+              ),
+          }
+          out = Path("out") / f"usdjpy-{year}-{month:02d}-raw-ticks-v1.manifest.json"
+          out.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(json.dumps({"month": manifest["month"], "accepted": manifest["accepted"], **totals}, sort_keys=True))
+          if not manifest["accepted"]:
+              raise SystemExit("month validation failed: " + "; ".join(failures[:20]))
+          PY
+
+          mapfile -t DAY_DIRS < <(find staging -mindepth 1 -maxdepth 1 -type d -name "${YEAR}-${MONTH}-*" -printf '%f\n' | sort)
+          tar -czf "out/usdjpy-${YEAR}-${MONTH}-raw-ticks-v1.tar.gz" -C staging "${DAY_DIRS[@]}"
+          sha256sum "out/usdjpy-${YEAR}-${MONTH}-raw-ticks-v1.tar.gz" \
+            "out/usdjpy-${YEAR}-${MONTH}-raw-ticks-v1.manifest.json" \
+            > "out/usdjpy-${YEAR}-${MONTH}-raw-ticks-v1.SHA256SUMS"
+      - name: Upload validated monthly package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-${{ inputs.year }}-raw-ticks-month-${{ matrix.month }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: out
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 0
+
+  publish-release:
+    name: publish-${{ inputs.year }}-durable-release
+    needs: [prepare, package-months]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      EXPECTED_HOURS: ${{ needs.prepare.outputs.expected_hours }}
+    steps:
+      - name: Download all validated monthly packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: usdjpy-${{ inputs.year }}-raw-ticks-month-*-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release-assets
+          merge-multiple: true
+      - name: Build annual manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          year = int(os.environ["YEAR"])
+          expected_target = int(os.environ["EXPECTED_HOURS"])
+          root = Path("release-assets")
+          packages = sorted(root.glob(f"usdjpy-{year}-??-raw-ticks-v1.tar.gz"))
+          manifests = sorted(root.glob(f"usdjpy-{year}-??-raw-ticks-v1.manifest.json"))
+          if len(packages) != 12 or len(manifests) != 12:
+              raise SystemExit(
+                  f"expected 12 packages and manifests, got packages={len(packages)} manifests={len(manifests)}"
+              )
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+              with path.open("rb") as fh:
+                  for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          monthly = []
+          expected_hours = resolved_hours = tick_rows = 0
+          for manifest_path in manifests:
+              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+              if not manifest.get("accepted"):
+                  raise SystemExit(f"unaccepted month manifest: {manifest_path}")
+              month = manifest["month"]
+              package = root / f"usdjpy-{month}-raw-ticks-v1.tar.gz"
+              if not package.exists():
+                  raise SystemExit(f"missing package: {package}")
+              totals = manifest["totals"]
+              expected_hours += int(totals["expected_hours"])
+              resolved_hours += int(totals["resolved_hours"])
+              tick_rows += int(totals["tick_rows"])
+              monthly.append({
+                  "month": month,
+                  "package": package.name,
+                  "package_sha256": sha256_file(package),
+                  "package_bytes": package.stat().st_size,
+                  "manifest": manifest_path.name,
+                  "manifest_sha256": sha256_file(manifest_path),
+                  "totals": totals,
+              })
+
+          annual = {
+              "schema_version": f"usdjpy_{year}_raw_tick_annual_v1",
+              "symbol": "USDJPY",
+              "start_utc": f"{year}-01-01T00:00:00Z",
+              "end_utc": f"{year + 1}-01-01T00:00:00Z",
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+              "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "source": "Dukascopy BI5 public Bid/Ask ticks",
+              "expected_hours": expected_hours,
+              "resolved_hours": resolved_hours,
+              "tick_rows": tick_rows,
+              "accepted": expected_hours == expected_target and resolved_hours == expected_target,
+              "months": monthly,
+              "mt4_boundary": (
+                  "Raw BI5 and decoded Bid/Ask ticks are preserved; FXT/HST or importer conversion "
+                  "is still required before MT4 Strategy Tester use."
+              ),
+          }
+          if not annual["accepted"]:
+              raise SystemExit(
+                  f"annual validation failed expected={expected_hours} resolved={resolved_hours} target={expected_target}"
+              )
+          (root / f"usdjpy-{year}-raw-ticks-v1.annual-manifest.json").write_text(
+              json.dumps(annual, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+          )
+          with (root / "SHA256SUMS").open("w", encoding="utf-8", newline="\n") as fh:
+              for path in sorted(root.iterdir()):
+                  if path.is_file() and path.name != "SHA256SUMS":
+                      fh.write(f"{sha256_file(path)}  {path.name}\n")
+          print(json.dumps({
+              "accepted": True,
+              "year": year,
+              "expected_hours": expected_hours,
+              "resolved_hours": resolved_hours,
+              "tick_rows": tick_rows,
+          }, sort_keys=True))
+          PY
+      - name: Create or update durable Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: usdjpy-${{ inputs.year }}-raw-bidask-ticks-v1
+        run: |
+          set -euo pipefail
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "USDJPY ${YEAR} Raw Dukascopy Bid/Ask Ticks v1" \
+              --notes "${YEAR}-01-01 through $((YEAR + 1))-01-01 UTC. Preserves original hourly BI5 payloads and deterministic decoded Bid/Ask tick CSV.GZ files. This is a public Dukascopy proxy, not Rakuten quotes. MT4 Strategy Tester use still requires FXT/HST or importer conversion."
+          fi
+          gh release upload "$RELEASE_TAG" release-assets/* --repo "$GITHUB_REPOSITORY" --clobber
+      - name: Upload annual publication receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-${{ inputs.year }}-raw-ticks-release-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            release-assets/usdjpy-${{ inputs.year }}-raw-ticks-v1.annual-manifest.json
+            release-assets/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 90
