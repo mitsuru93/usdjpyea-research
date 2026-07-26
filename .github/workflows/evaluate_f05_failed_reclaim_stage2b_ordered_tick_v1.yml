@@ -1,0 +1,98 @@
+name: Evaluate F05 failed reclaim Stage 2B ordered tick v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/evaluate_f05_failed_reclaim_stage2b_ordered_tick_v1.yml'
+      - 'tools/evaluate_f05_failed_reclaim_stage2b_ordered_tick_v1.py'
+      - 'configs/research/f05_failed_reclaim_stage2b_prereg_v1.json'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type F05_FAILED_RECLAIM_STAGE2B_ORDERED_TICK_V1'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  stage2b-ordered-tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+
+      - name: Enforce frozen boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ '${{ github.event_name }}' == 'workflow_dispatch' ]]; then
+            [[ '${{ inputs.confirmation }}' == 'F05_FAILED_RECLAIM_STAGE2B_ORDERED_TICK_V1' ]]
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('configs/research/f05_failed_reclaim_stage2b_prereg_v1.json').read_text())
+          assert p['analysis_boundary']['included_periods']==['2023H1','2023H2','2024H1','2024H2']
+          assert p['analysis_boundary']['excluded_periods']==['2025H1','2025H2']
+          assert p['analysis_boundary']['selection_must_not_access_excluded_periods'] is True
+          assert p['missing_tick_policy']=='BLOCK_SELECTION_AND_REPORT_MISSING_AUTHORITY_WITHOUT_PROXY_SUBSTITUTION'
+          assert p['production_authorization'] is False
+          PY
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Acquire available ordered Bid Ask Tick authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/raw_ticks/2023 inputs/raw_ticks/2024
+          if gh release view usdjpy-2023-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release download usdjpy-2023-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/raw_ticks/2023 --pattern 'usdjpy-2023-??-raw-ticks-v1.tar.gz' --pattern 'SHA256SUMS'
+          fi
+          if gh release view usdjpy-2024-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release download usdjpy-2024-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/raw_ticks/2024 --pattern 'usdjpy-2024-??-raw-ticks-v1.tar.gz' --pattern 'SHA256SUMS'
+          fi
+          find inputs/raw_ticks -type f | sort
+
+      - name: Run Stage 2B ordered-tick authority gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/evaluate_f05_failed_reclaim_stage2b_ordered_tick_v1.py \
+            --prereg configs/research/f05_failed_reclaim_stage2b_prereg_v1.json \
+            --raw-tick-dir inputs/raw_ticks \
+            --out-dir validation_output
+          jq -e '.analysis_periods==["2023H1","2023H2","2024H1","2024H2"] and .excluded_periods_not_accessed==["2025H1","2025H2"] and .selection_executed==false and .proxy_substitution_used==false and .production_authorization==false' validation_output/preflight_result.json
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f05-failed-reclaim-stage2b-ordered-tick-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: validation_output
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Comment execution receipt
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f validation_output/preflight_result.json ]]; then
+            status=$(jq -r '.status' validation_output/preflight_result.json)
+            missing=$(jq -c '.missing_ordered_tick_years' validation_output/preflight_result.json)
+            count=$(jq -r '.grid_candidate_count' validation_output/preflight_result.json)
+            gh issue comment 284 --repo "$GITHUB_REPOSITORY" --body "Stage 2B ordered-Tick authority gate completed. Run: $GITHUB_RUN_ID, attempt: $GITHUB_RUN_ATTEMPT, commit: $GITHUB_SHA. Status: \`$status\`. Missing ordered-Tick years: \`$missing\`. Preregistered grid size: $count. 2025 not accessed; proxy substitution not used; selection not executed until all 2023–2024 ordered Bid/Ask Tick authorities are present. Artifact: f05-failed-reclaim-stage2b-ordered-tick-v1-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT."
+          fi
