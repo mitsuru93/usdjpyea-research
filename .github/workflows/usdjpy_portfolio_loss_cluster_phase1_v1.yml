@@ -1,0 +1,205 @@
+name: USDJPY Portfolio Loss-Cluster Phase 1 v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/evaluate_usdjpy_portfolio_loss_cluster_phase1_v1.py'
+      - 'tools/usdjpy_portfolio_loss_cluster_phase1_v1/**'
+      - 'configs/research/usdjpy_portfolio_loss_cluster_phase1_prereg_v1.json'
+      - 'configs/research/usdjpy_portfolio_loss_cluster_phase1_startup_receipt_v1.json'
+      - '.github/workflows/usdjpy_portfolio_loss_cluster_phase1_v1.yml'
+      - 'configs/run_markers/usdjpy_portfolio_loss_cluster_phase1_v1.json'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_portfolio_loss_cluster_phase1_v1.json'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  preflight:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install frozen dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+      - name: Compile evaluator
+        run: python -m py_compile tools/evaluate_usdjpy_portfolio_loss_cluster_phase1_v1.py tools/usdjpy_portfolio_loss_cluster_phase1_v1/*.py
+      - name: Outcome-free preregistration preflight
+        run: |
+          set -euo pipefail
+          rm -rf preflight_output
+          python tools/evaluate_usdjpy_portfolio_loss_cluster_phase1_v1.py \
+            --protocol configs/research/usdjpy_portfolio_loss_cluster_phase1_prereg_v1.json \
+            --out-dir preflight_output \
+            --preflight-only
+          jq -e '.status=="PASS_NO_OUTCOMES" and .candidate_count==27 and .outcomes_computed==false and .portfolio_replay_computed==false and .MT4_accessed==false and ."2025H1_accessed"==false and ."2025H2_accessed"==false' preflight_output/preflight_result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-portfolio-loss-cluster-phase1-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+          path: preflight_output
+          retention-days: 30
+          compression-level: 0
+
+  phase1:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install frozen dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+      - name: Enforce frozen boundary
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/evaluate_usdjpy_portfolio_loss_cluster_phase1_v1.py tools/usdjpy_portfolio_loss_cluster_phase1_v1/*.py
+          python - <<'PY'
+          import json
+          p=json.load(open('configs/research/usdjpy_portfolio_loss_cluster_phase1_prereg_v1.json'))
+          assert p['status']=='FROZEN_BEFORE_OUTCOME_EXECUTION'
+          assert p['development_folds']==['2023H1','2023H2','2024H1','2024H2']
+          assert p['protected_periods']==['2025H1','2025H2']
+          assert p['candidate_grid']['candidate_count']==27
+          assert p['period_firewall']['2025_data_accessed_by_this_workflow'] is False
+          assert p['period_firewall']['MT4_accessed_by_this_workflow'] is False
+          assert p['scope_boundary']['production_EA_implementation'] is False
+          PY
+      - name: Download and verify exact historical authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/historical inputs/2023 inputs/2024h1 inputs/2024h2 materialized impact_pre portfolio_loss_cluster_output
+          gh release download f05-failed-reclaim-historical-authorities-v1 \
+            --repo "$GITHUB_REPOSITORY" --dir inputs/historical \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip'
+          printf '%s  %s\n' \
+            '22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01' inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip \
+            'e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5' inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip \
+            '9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b' inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip \
+            > inputs/historical/SELECTED_ASSET_SHA256SUMS
+          sha256sum -c inputs/historical/SELECTED_ASSET_SHA256SUMS
+          unzip -q inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip -d inputs/2023
+          unzip -q inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip -d inputs/2024h1
+          unzip -q inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip -d inputs/2024h2
+          printf '%s  %s\n' \
+            '4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78' inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            '766be5ebba158e5b40f5da5d66929b4da8a25d42a8716b1e591d7c09dd87c2a3' inputs/2024h1/m15_utc_2024h1.csv \
+            '9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a' inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            'a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd' inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv > inputs/SELECTED_SHA256SUMS
+          sha256sum -c inputs/SELECTED_SHA256SUMS
+      - name: Materialize canonical four-fold ledgers
+        run: |
+          set -euo pipefail
+          python tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv \
+            --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            --out-dir materialized
+          printf '%s  %s\n' \
+            '98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca' materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv \
+            '2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda' materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz > materialized/EXPECTED_SHA256SUMS
+          sha256sum -c materialized/EXPECTED_SHA256SUMS
+      - name: Derive canonical trade diagnostics
+        run: |
+          set -euo pipefail
+          python tools/evaluate_usdjpy_impact_atlas_phase1_v1.py \
+            --trades materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv \
+            --states materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz \
+            --out-dir impact_pre \
+            --research-sha "$GITHUB_SHA" \
+            --core-sha 'aca45ab891d9a6da272b5111a99142d99e874929' \
+            --run-id "$GITHUB_RUN_ID"
+          test "$(python - <<'PY'
+          import pandas as pd
+          print(len(pd.read_csv('impact_pre/trade_level_diagnostic_ledger.csv.gz')))
+          PY
+          )" = 1882
+      - name: Execute Portfolio Loss-Cluster Phase 1
+        run: |
+          set -euo pipefail
+          python tools/evaluate_usdjpy_portfolio_loss_cluster_phase1_v1.py \
+            --protocol configs/research/usdjpy_portfolio_loss_cluster_phase1_prereg_v1.json \
+            --source-trades materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv \
+            --trade-diagnostics impact_pre/trade_level_diagnostic_ledger.csv.gz \
+            --states materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            --out-dir portfolio_loss_cluster_output \
+            --research-sha "$GITHUB_SHA" \
+            --core-sha 'aca45ab891d9a6da272b5111a99142d99e874929' \
+            --workflow-run-id "$GITHUB_RUN_ID" | tee portfolio_loss_cluster_output/run.log
+          jq -e '.status=="PHASE1_COMPLETE_NO_PRODUCTION_IMPLEMENTATION" and .population.total_trades==1882 and .boundaries.MT4_implementation==false and .boundaries."2025H1_accessed"==false and .boundaries."2025H2_accessed"==false and .boundaries.production_authorized==false' portfolio_loss_cluster_output/result.json
+      - name: Package evidence
+        run: |
+          set -euo pipefail
+          cp configs/research/usdjpy_portfolio_loss_cluster_phase1_prereg_v1.json portfolio_loss_cluster_output/
+          cp configs/research/usdjpy_portfolio_loss_cluster_phase1_startup_receipt_v1.json portfolio_loss_cluster_output/
+          cp materialized/usdjpy_b02_f05_hyp024_input_materialization_v2.json portfolio_loss_cluster_output/
+          find portfolio_loss_cluster_output -type f -print0 | sort -z | xargs -0 sha256sum > portfolio_loss_cluster_output/PACKAGE_SHA256SUMS
+          zip -q -X -0 -r "usdjpy-portfolio-loss-cluster-phase1-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" portfolio_loss_cluster_output
+      - name: Upload evidence artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-portfolio-loss-cluster-phase1-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            portfolio_loss_cluster_output
+            usdjpy-portfolio-loss-cluster-phase1-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0
+      - name: Publish immutable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create usdjpy-portfolio-loss-cluster-phase1-v1 \
+            "usdjpy-portfolio-loss-cluster-phase1-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title 'USDJPY Portfolio Loss-Cluster Study Phase 1 v1' \
+            --notes 'Canonical 2023H1-2024H2 B02/F05 portfolio event and exposure-control study. No MT4 implementation, 2025 access, candidate authorization, or production authorization.'
+      - name: Publish execution receipt issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          status=$(jq -r '.status // "FAILED_BEFORE_RESULT"' portfolio_loss_cluster_output/result.json 2>/dev/null || echo FAILED_BEFORE_RESULT)
+          top=$(jq -r '.candidate_top3[0].family // "NA"' portfolio_loss_cluster_output/result.json 2>/dev/null || echo NA)
+          cat > receipt.md <<EOF
+          workflow: usdjpy_portfolio_loss_cluster_phase1_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          head_sha: ${GITHUB_SHA}
+          status: ${status}
+          top_family: ${top}
+          artifact_id: ${ARTIFACT_ID:-NA}
+          artifact_digest: ${ARTIFACT_DIGEST:-NA}
+          release_tag: usdjpy-portfolio-loss-cluster-phase1-v1
+          source_trade_sha256: 98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca
+          source_state_sha256: 2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda
+          2025_accessed: false
+          MT4_accessed: false
+          production_authorized: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[portfolio-loss-cluster-phase1] ${GITHUB_RUN_ID} ${status}" --body-file receipt.md
