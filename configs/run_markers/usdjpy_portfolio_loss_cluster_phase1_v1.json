@@ -2,10 +2,24 @@
   "schema_version": "usdjpy_portfolio_loss_cluster_phase1_execution_marker_v1",
   "study_id": "USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE1-V1",
   "hypothesis_id": "USDJPY-HYP-027",
-  "status": "ARMED_ONCE_AFTER_PREREGISTRATION_MERGE",
+  "status": "RETRY_ARMED_AFTER_TECHNICAL_INCOMPLETE",
   "workflow": ".github/workflows/usdjpy_portfolio_loss_cluster_phase1_v1.yml",
   "candidate_count": 27,
   "development_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "failed_run": {
+    "run_id": 30203423794,
+    "classification": "TECHNICAL_INCOMPLETE_NO_RESULT",
+    "failure": "duplicate grouping field merge renamed session_loss_chain_size to suffixed columns",
+    "outcomes_packaged": false,
+    "artifact_created": false
+  },
+  "repair": {
+    "reuse_existing_trade_grouping_column": true,
+    "cross_ledger_equality_assertion": true,
+    "synthetic_regression_preflight": true,
+    "candidate_or_gate_changed": false
+  },
+  "retry_ordinal": 1,
   "2025_accessed": false,
   "MT4_accessed": false,
   "production_authorized": false
