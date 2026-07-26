@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import importlib.util
-import json
 from pathlib import Path
+import sys
 
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "tools" / "build_usdjpy_impact_atlas_phase0_v1.py"
 spec = importlib.util.spec_from_file_location("impact_phase0", MODULE_PATH)
-module = importlib.util.module_from_spec(spec)
 assert spec and spec.loader
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
 spec.loader.exec_module(module)
 
 
