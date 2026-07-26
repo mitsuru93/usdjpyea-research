@@ -1,0 +1,50 @@
+{
+  "schema_version": "usdjpy_market_state_router_candidate_freeze_v1",
+  "status": "FROZEN_FOR_RESEARCH_TO_CORE_PARITY",
+  "candidate_id": "S3_H4_ALIGNED",
+  "equivalence_class": ["S3_H4_ALIGNED", "S4_H4_ALIGNED"],
+  "selection_source": "configs/research/usdjpy_market_state_strategy_routing_phase2_result_v1.json",
+  "research_main_at_selection": "ffb199774a6334cf9816c67cfe580832d131b51f",
+  "population": {
+    "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "trades": 1882,
+    "trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca"
+  },
+  "state_contract": {
+    "timeframe": "H4",
+    "fast_ema": 6,
+    "slow_ema": 24,
+    "price": "completed exact-slot H4 close",
+    "ema": "recursive alpha=2/(span+1), pandas ewm adjust=false min_periods=slow",
+    "state": "+1 when fast>slow; -1 when fast<slow; 0 before initialization or exact equality",
+    "membership": "logical MT4 server H4 buckets reconstructed from exact M15 slots",
+    "information_time": "completed H4 server-bucket close converted through historical ServerToUtc",
+    "partial_buckets_update_state": false,
+    "permission": "allow entry iff latest completed H4 state at entry information time equals trade side",
+    "allow_exact_information_time_match": true,
+    "lookahead": false
+  },
+  "authority": {
+    "m15_2023_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "m15_2024_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c",
+    "state_module": "tools/usdjpy_native_htf_state_data_v1.py"
+  },
+  "required_parity": {
+    "reference_trade_rows": 1882,
+    "entry_permission_mismatches": 0,
+    "h4_state_mismatches": 0,
+    "information_time_mismatches": 0,
+    "ema_numeric_tolerance": 1e-10,
+    "blocked_trade_count": 671
+  },
+  "boundaries": {
+    "parameter_change_authorized": false,
+    "period_exception_authorized": false,
+    "strategy_exception_authorized": false,
+    "session_exception_authorized": false,
+    "2025_accessed": false,
+    "mt4_strategy_test_authorized": false,
+    "production_authorized": false
+  },
+  "next_action": "GENERATE_ROW_LEVEL_REFERENCE_AND_PROVE_CORE_PARITY"
+}
