@@ -1,0 +1,63 @@
+{
+  "schema_version": "usdjpy_market_state_strategy_routing_phase2_result_v1",
+  "status": "PASS_PORTABLE_MARKET_STATE_ROUTER_RESEARCH_CANDIDATE_ONLY",
+  "population": {
+    "trades": 1882,
+    "periods": ["2023H1", "2023H2", "2024H1", "2024H2"]
+  },
+  "selected_equivalence_class": {
+    "representative": "S3_H4_ALIGNED",
+    "equivalent_rule_ids": ["S3_H4_ALIGNED", "S4_H4_ALIGNED"],
+    "reason": "H1 parameters are unused by H4_ALIGNED; S3 is the lexicographically first deterministic representative",
+    "definition": {
+      "h4_fast_ema": 6,
+      "h4_slow_ema": 24,
+      "permission": "completed H4 state equals trade side",
+      "partial_h4_buckets_update_state": false,
+      "lookahead": false
+    }
+  },
+  "pooled": {
+    "blocked_trades": 671,
+    "loser_benefit_jpy": 146177,
+    "winner_damage_jpy": 123490,
+    "net_delta_jpy": 22687,
+    "positive_folds": 4,
+    "minimum_fold_net_jpy": 931
+  },
+  "lofo": [
+    {"held_out_fold":"2023H1","selected_rule_id":"S3_H4_ALIGNED","net_delta_jpy":7232,"blocked":197,"B02_net_delta_jpy":5040,"F05_net_delta_jpy":2192},
+    {"held_out_fold":"2023H2","selected_rule_id":"S3_H4_ALIGNED","net_delta_jpy":931,"blocked":177,"B02_net_delta_jpy":1386,"F05_net_delta_jpy":-455},
+    {"held_out_fold":"2024H1","selected_rule_id":"S3_H4_ALIGNED","net_delta_jpy":2816,"blocked":120,"B02_net_delta_jpy":69,"F05_net_delta_jpy":2747},
+    {"held_out_fold":"2024H2","selected_rule_id":"S3_H4_ALIGNED","net_delta_jpy":11708,"blocked":177,"B02_net_delta_jpy":709,"F05_net_delta_jpy":10999}
+  ],
+  "gates": {
+    "total_positive_folds": 4,
+    "B02_nonnegative_folds": 4,
+    "F05_nonnegative_folds": 3,
+    "support_gate": true,
+    "portable_gate": true
+  },
+  "authority": {
+    "trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "m15_2023_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "m15_2024_sha256": "1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c"
+  },
+  "execution": {
+    "pr": 293,
+    "workflow_run_id": 30202764106,
+    "research_ci_run_id": 30202764117,
+    "artifact_id": 8632158661,
+    "artifact_digest": "sha256:b2b13c8d50f9a29c49c122b8963e9f07687dac3db7e2fafc50dd34691e113a2c",
+    "artifact_expires": "2026-10-24"
+  },
+  "boundaries": {
+    "2025_accessed": false,
+    "mt4_accessed": false,
+    "candidate_authorized_for_parity_research": true,
+    "mt4_implementation_authorized": false,
+    "2025_evaluation_authorized": false,
+    "production_authorized": false
+  },
+  "next_action": "MARKET_STATE_ROUTER_CANDIDATE_FREEZE_AND_PARITY_V1"
+}
