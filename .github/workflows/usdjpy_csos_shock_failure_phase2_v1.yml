@@ -1,0 +1,37 @@
+name: Bootstrap USDJPY CSOS Shock Failure Phase 2 v1
+
+on:
+  push:
+    branches: [agent/csos-shock-failure-phase2]
+    paths:
+      - '.github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml'
+      - '.github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml.gz.b64'
+      - 'tools/csos_shock_failure_phase2_payload_v1.py.gz.b64'
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/csos-shock-failure-phase2
+          fetch-depth: 0
+      - name: Assemble canonical evaluator and workflow
+        run: |
+          set -euo pipefail
+          base64 -d tools/csos_shock_failure_phase2_payload_v1.py.gz.b64 | gzip -d > tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py
+          base64 -d .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml.gz.b64 | gzip -d > .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml
+          python -m py_compile tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py
+          python - <<'PY'
+          import yaml
+          yaml.safe_load(open('.github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml'))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/evaluate_usdjpy_csos_shock_failure_phase2_v1.py .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml
+          git rm tools/csos_shock_failure_phase2_payload_v1.py.gz.b64 .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml.gz.b64
+          git commit -m 'research: assemble canonical Shock Failure Phase 2 sources'
+          git push origin HEAD:agent/csos-shock-failure-phase2
