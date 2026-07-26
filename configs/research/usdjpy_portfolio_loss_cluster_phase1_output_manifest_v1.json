@@ -1,0 +1,124 @@
+{
+  "2025_accessed": false,
+  "MT4_accessed": false,
+  "large_evidence": {
+    "actions_artifact_digest": "sha256:22bda1a44494a57a9a236a9900e2ddf3da7900dfb7b4e6b8fa06b86a5df828c1",
+    "actions_artifact_id": 8632740782,
+    "member_files": {
+      "b02_f05_overlap_analysis.csv": {
+        "bytes": 424,
+        "sha256": "44c0c3ac927dcd2b56e7476ffdcbce9c78d7466967b0463d28c28f795900087f"
+      },
+      "baseline_M15_snapshot_equity_curve.csv.gz": {
+        "bytes": 240041,
+        "sha256": "9d77b0f6f87f180dbe493b98c27dd69ea68ffd753b207465fc5f9909c36e0da7"
+      },
+      "candidate_family_ranking.csv": {
+        "bytes": 1703,
+        "sha256": "e519c6fbf06f1bb5b958f26143f2391b2e0aef540e463e02af52eb5c44c96bb6"
+      },
+      "concurrent_exposure_analysis.csv": {
+        "bytes": 428,
+        "sha256": "325df05db2b38430d237f6d754069b81465eb2cfd3ad87a9b2ea587481e15c94"
+      },
+      "concurrent_exposure_ledger.csv.gz": {
+        "bytes": 111111,
+        "sha256": "3c7210c247d2ac04a91bb18a25e6f09793ab06151deaef719733548fbb38d17d"
+      },
+      "counterfactual_decision_audit.csv.gz": {
+        "bytes": 503854,
+        "sha256": "ca73044ae2c3c13dc25fd2225319ae9ee390a09d4fa07c0061cf1c20b7ea88f7"
+      },
+      "counterfactual_exposure_control_metrics.csv": {
+        "bytes": 12130,
+        "sha256": "ea852cc47919e16f6ffd9b0874784df3bbc7842d0a7ac8655144f956e9725509"
+      },
+      "drawdown_add_analysis.csv": {
+        "bytes": 780,
+        "sha256": "91e21bca0621f6d98b8d54f9b8044384292b5c0c3c2bf988aa592b7216708651"
+      },
+      "drawdown_recovery_survival.csv": {
+        "bytes": 7027,
+        "sha256": "ab1a76af42e4c63288915333189e78c7413d5a3767c66fb5becc96447d0e0f7a"
+      },
+      "execution_failures.json": {
+        "bytes": 317,
+        "sha256": "94cb75fa371b61fc1e86f53611f21ccb6d687ece4d187dd89efc32546b4305fc"
+      },
+      "execution_receipt.json": {
+        "bytes": 3412,
+        "sha256": "14ffbd0a8c8ab98e06a9402a2a5d98f970e4cbe8541ca6b13b1844111059d9a4"
+      },
+      "fold_strategy_side_session_metrics.csv.gz": {
+        "bytes": 61902,
+        "sha256": "547d571ea8aaf73e779d28e21aceb97fdd8f5d1b15037b02d15d6d08551a7762"
+      },
+      "leave_one_fold_out_results.csv": {
+        "bytes": 6801,
+        "sha256": "cec86e208afde1aa19ec15758816fffaeda2e53d0ebb7fe07daabe99ff8a15f9"
+      },
+      "loss_cluster_atlas.csv": {
+        "bytes": 717,
+        "sha256": "26472931d7b474859003f5f104d2185596fdacd21fbe3fbcef9b87ce351914d9"
+      },
+      "next_step_recommendation.md": {
+        "bytes": 677,
+        "sha256": "64d00769e349d6adb6654a7537729c06ff0fc732544b098fda6eb722d45a1c86"
+      },
+      "phase1_result_report.md": {
+        "bytes": 2120,
+        "sha256": "2f3d724de257ca8fcaefb03a2b05cf64a32c57d21408faeb9d6bef15f232f7b2"
+      },
+      "portfolio_event_contract.json": {
+        "bytes": 1883,
+        "sha256": "be0055b10524d87a569d83d4bfb3493a136f1553b377dfa3285c49a4f3385316"
+      },
+      "portfolio_event_ledger.csv.gz": {
+        "bytes": 14276,
+        "sha256": "e00b163b9757d0caa8c98592cd30ec6b45b12ba6582a158907fd66a0c7230739"
+      },
+      "result.json": {
+        "bytes": 10798,
+        "sha256": "125db4e7634c654eedfc8ea1447b1f8f8799f014b485ce5cc064a24739a2e53a"
+      },
+      "robustness_report.json": {
+        "bytes": 25047,
+        "sha256": "ceee49c7b6a724690cbc968f7de4020b7787024bf0ca59a4c451befa1575116a"
+      },
+      "run.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "session_loss_chain_analysis.csv": {
+        "bytes": 592,
+        "sha256": "5e38b8c0806adced1fe8cb88857838b372c4152e64bde51fce25ae32d5f8d205"
+      },
+      "shock_adjacent_exposure_analysis.csv": {
+        "bytes": 793,
+        "sha256": "ec0d1a4535be4ef50dc6e35002139b2f16c67e1d8fb145b660441698ed53f160"
+      },
+      "source_inventory.json": {
+        "bytes": 2021,
+        "sha256": "8c0fd3805ced9ba365893c3753198529b5496042bdab2abe66d385d278b9f129"
+      },
+      "trade_identity_audit.json": {
+        "bytes": 997,
+        "sha256": "af96362a74a832c7ad24f5b84df8b3291d173ee3fa1a7950814f52508fcbdad2"
+      }
+    },
+    "release_asset": "usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip",
+    "release_asset_sha256": "32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada",
+    "release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1-r1"
+  },
+  "repository_summary_files": {
+    "candidate_ranking": "configs/research/usdjpy_portfolio_loss_cluster_phase1_candidate_family_ranking_v1.csv",
+    "candidate_registry": "configs/research/usdjpy_portfolio_loss_cluster_phase1_candidate_registry_v1.json",
+    "canonical_report": "docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE1_RESULT_V1.md",
+    "canonical_result": "configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json",
+    "execution_receipt": "configs/research/usdjpy_portfolio_loss_cluster_phase1_execution_receipt_v1.json",
+    "period_access_receipt": "configs/research/usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1.json"
+  },
+  "reproduction_command": "python tools/evaluate_usdjpy_portfolio_loss_cluster_phase1_v1.py --protocol configs/research/usdjpy_portfolio_loss_cluster_phase1_prereg_v1.json --source-trades materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv --trade-diagnostics impact_pre/trade_level_diagnostic_ledger.csv.gz --states materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv --out-dir portfolio_loss_cluster_output",
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase1_output_manifest_v1",
+  "status": "COMPLETE_DURABLE_R1"
+}

@@ -1,0 +1,64 @@
+{
+  "archive_repair": {
+    "artifact_digest": "sha256:22bda1a44494a57a9a236a9900e2ddf3da7900dfb7b4e6b8fa06b86a5df828c1",
+    "artifact_id": 8632740782,
+    "full_manifest_readback": true,
+    "merge_sha": "249e38dd5e7ff3a536955eff772eacbab6b03009",
+    "pr": 305,
+    "receipt_issue": 306,
+    "release_asset_sha256": "32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada",
+    "release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1-r1",
+    "run_id": 30204835214,
+    "scientific_result_changed": false
+  },
+  "binding_decision": "ADVANCE_SESSION_LOSS_CAP_2_TO_PHASE2_CONFIRMATION_ONLY",
+  "boundaries": {
+    "Entry_Exit_SL_TP_changed": false,
+    "MT4_accessed": false,
+    "MT4_implementation": false,
+    "production_authorized": false
+  },
+  "hypothesis_id": "USDJPY-HYP-027",
+  "periods": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "development": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ]
+  },
+  "preregistration": {
+    "merge_sha": "a56c53dad75d083b9f2665faa01ebcfb3481fa35",
+    "pr": 296
+  },
+  "repair": {
+    "candidate_or_gate_changed": false,
+    "merge_sha": "dcb8837c68abce39fbf70411d356878d871741d4",
+    "pr": 301
+  },
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase1_execution_receipt_v1",
+  "scientific_execution": {
+    "artifact_digest": "sha256:eb9e30b2e3cee27dddfaa354bdc5d460ed8e9e8845943dc3086d7daf575b8934",
+    "artifact_id": 8632649725,
+    "job_id": 89799234054,
+    "receipt_issue": 304,
+    "release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1",
+    "result_sha256": "125db4e7634c654eedfc8ea1447b1f8f8799f014b485ce5cc064a24739a2e53a",
+    "run_id": 30204173630
+  },
+  "source_identity": {
+    "state_ledger_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "trades": 1882
+  },
+  "status": "COMPLETE_WITH_REPAIRED_DURABLE_ARCHIVE",
+  "technical_incomplete": {
+    "artifact_created": false,
+    "classification": "TECHNICAL_INCOMPLETE_NO_RESULT",
+    "diagnostic_issue": 300,
+    "issue": 298,
+    "run_id": 30203423794
+  }
+}

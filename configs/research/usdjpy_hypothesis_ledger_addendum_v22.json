@@ -1,0 +1,128 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "candidate_ids": [
+        "MAX_CONCURRENT_1",
+        "MAX_CONCURRENT_2",
+        "MAX_CONCURRENT_3",
+        "SAME_DIRECTION_CAP_1",
+        "SAME_DIRECTION_CAP_2",
+        "SAME_DIRECTION_CAP_3",
+        "B02_F05_EXCLUSIVE",
+        "B02_PRIORITY_SIMULTANEOUS",
+        "F05_PRIORITY_SIMULTANEOUS",
+        "ENTRY_COOLDOWN_5M",
+        "ENTRY_COOLDOWN_15M",
+        "ENTRY_COOLDOWN_30M",
+        "ENTRY_COOLDOWN_60M",
+        "LOSS_COOLDOWN_15M",
+        "LOSS_COOLDOWN_30M",
+        "LOSS_COOLDOWN_60M",
+        "DRAWDOWN_BLOCK_500JPY",
+        "DRAWDOWN_BLOCK_1000JPY",
+        "DRAWDOWN_BLOCK_2000JPY",
+        "SESSION_LOSS_CAP_2",
+        "SESSION_LOSS_CAP_3",
+        "SHOCK_TOTAL_CAP_1",
+        "SHOCK_COOLDOWN_30M",
+        "SHOCK_COOLDOWN_60M",
+        "HALF_SIZE_WHEN_OPEN",
+        "HALF_SIZE_SAME_DIRECTION",
+        "HALF_SIZE_DD_1000"
+      ],
+      "causal_hypothesis": "Loss amplification may arise from prospectively observable portfolio sequences—especially repeated realized losses within a session—rather than from concurrent or same-direction exposure itself.",
+      "decision": "Advance SESSION_LOSS_CAP_2 to a separately preregistered Phase 2 confirmation only. Do not implement in MT4 or access 2025. Broad concurrency, same-direction, cross-strategy, drawdown, entry-cooldown and shock controls are rejected under the tested contracts.",
+      "evidence_refs": [
+        {
+          "path": "configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "path": "docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE1_RESULT_V1.md",
+          "repository": "mitsuru93/usdjpyea-research"
+        },
+        {
+          "artifact_digest": "sha256:eb9e30b2e3cee27dddfaa354bdc5d460ed8e9e8845943dc3086d7daf575b8934",
+          "artifact_id": 8632649725,
+          "repository": "mitsuru93/usdjpyea-research",
+          "run_id": 30204173630
+        },
+        {
+          "release_asset_sha256": "32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada",
+          "release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1-r1",
+          "repository": "mitsuru93/usdjpyea-research"
+        }
+      ],
+      "falsified_or_unsupported_claims": [
+        "Concurrent exposure is generally a loss amplifier.",
+        "Same-direction overlap should be capped globally.",
+        "B02/F05 overlap is predominantly duplicate risk.",
+        "Any drawdown-state entry should be suppressed.",
+        "Shock or post-shock exposure should be broadly capped under the common M15 proxy.",
+        "Large oracle loss-cluster coverage is directly implementable."
+      ],
+      "family_ids": [
+        "R_PORTFOLIO_LOSS_CLUSTER_CONTROL"
+      ],
+      "hypothesis_id": "USDJPY-HYP-027",
+      "origin_analysis": "Impact Atlas identified a large portfolio-level loss surface, while prior HYP-006 had already falsified simple F05 static overlap/ordinal blocking. The user directed an independent event-sequence study across B02/F05 without changing Entry, Exit, SL or TP.",
+      "pre_result_predictions": [
+        "Losses will be concentrated in multi-trade portfolio events.",
+        "At least one implementable exposure-control family may reduce DD while retaining at least 90% of winner profit.",
+        "Broad concurrency and overlap caps must be rejected if DD reduction is purchased by material winner damage.",
+        "Any retained family must show fold, strategy, side, session and month breadth rather than pooled improvement alone."
+      ],
+      "prohibited_reuse": [
+        "Do not treat the perfect loss-cluster avoidance oracle as implementable performance.",
+        "Do not retune the session loss threshold, session definition, side, strategy or fold from Phase 1 outcomes.",
+        "Do not reopen static overlap/ordinal grids from HYP-006.",
+        "Do not implement broad concurrency, same-direction, B02/F05 exclusivity, drawdown or shock caps from their DD headline.",
+        "Do not access 2025 or MT4 before a separate unchanged Phase 2 protocol passes."
+      ],
+      "retained_findings": [
+        "Loss-cluster events cover 86.8% of gross loss but also carry substantial winner profit.",
+        "Standalone trades were materially worse than non-standalone trades in this population.",
+        "Entries after two prior same-session realized losses form a narrow prospective adverse state: 27 entries, PF 0.352, net -5585 JPY.",
+        "SESSION_LOSS_CAP_2 improved pooled net by 5585 JPY, reduced M15 DD by 3717 JPY, retained 99.29% of winner profit and lost no top-20 winner.",
+        "The candidate remains uncertain because 2024H1 was negative, Long-side pooled delta was negative, and event-bootstrap CI touched zero."
+      ],
+      "status": "PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE",
+      "successor_questions": [
+        "Does SESSION_LOSS_CAP_2 retain net and DD benefit in at least three folds under an exact Phase 2 confirmation?",
+        "Is the benefit broad enough across Long/Short and Tokyo/London rather than driven by Short-side losses?",
+        "Can Research-to-MT4 session and realized-loss state be proven exactly before any 2025 gate?"
+      ],
+      "target_failure_mode": [
+        "portfolio loss clustering",
+        "entries after repeated same-session realized losses",
+        "drawdown additions",
+        "shock-adjacent exposure concentration",
+        "cross-strategy overlap risk"
+      ],
+      "tests": [
+        {
+          "artifact_id": 8632649725,
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "result": {
+            "binding_phase1_candidate": "SESSION_LOSS_CAP_2",
+            "loss_cluster_events": 245,
+            "loss_cluster_gross_loss_coverage": 0.8679552292951495,
+            "portfolio_events": 435,
+            "session_loss_cap_2_M15_DD_reduction_jpy": 3717,
+            "session_loss_cap_2_net_improvement_jpy": 5585,
+            "session_loss_cap_2_positive_net_folds": 3,
+            "session_loss_cap_2_winner_retention": 0.9928912230519442,
+            "trades": 1882
+          },
+          "run_id": 30204173630,
+          "type": "four-fold fixed portfolio-event and 27-counterfactual study"
+        }
+      ]
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v22",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v21.json"
+}

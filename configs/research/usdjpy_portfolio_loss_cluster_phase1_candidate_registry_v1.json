@@ -1,0 +1,35 @@
+{
+  "boundaries": {
+    "2025H1_authorized": false,
+    "2025H2_authorized": false,
+    "MT4_authorized": false,
+    "production_authorized": false
+  },
+  "diagnostic_only": [
+    "LOSS_COOLDOWN_60M"
+  ],
+  "hypothesis_id": "USDJPY-HYP-027",
+  "next_action": "Create an outcome-free Phase 2 preregistration for SESSION_LOSS_CAP_2 only. Do not alter threshold, session definition, strategy, side or fold scope from Phase 1 outcomes.",
+  "oracle_not_candidate": "PERFECT_LOSS_CLUSTER_AVOIDANCE_ORACLE",
+  "phase2_research_candidate": {
+    "2025H1_authorized": false,
+    "MT4_authorized": false,
+    "candidate_id": "SESSION_LOSS_CAP_2",
+    "exact_rule": "At a prospective new entry, reject when two or more losses have already been realized in the same UTC session key.",
+    "family": "session_loss_cap",
+    "phase2_authorized": false,
+    "threshold_frozen_for_phase2": 2
+  },
+  "rejected_families": [
+    "concurrent_position_cap",
+    "same_direction_exposure_cap",
+    "B02_F05_exclusivity",
+    "strategy_priority_routing",
+    "entry_cooldown",
+    "drawdown_aware_exposure_reduction",
+    "shock_exposure_cap",
+    "adaptive_position_sizing"
+  ],
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase1_candidate_registry_v1",
+  "status": "PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE"
+}

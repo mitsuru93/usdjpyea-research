@@ -1,0 +1,64 @@
+{
+  "active_family": "R_PORTFOLIO_LOSS_CLUSTER_CONTROL",
+  "active_hypothesis": "USDJPY-HYP-027",
+  "candidate_ids": [
+    "SESSION_LOSS_CAP_2"
+  ],
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION",
+    "G_STRUCTURAL_BREAKOUT_INVALIDATION",
+    "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE",
+    "I_B02_SHORT_WEAK_4H_ALIGNMENT_ADMISSION",
+    "M_LOCAL_TECHNICAL_ENTRY_SEPARATOR",
+    "N_NATIVE_H4_H1_EMA_STATE_TRANSITION",
+    "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
+    "P_LIFECYCLE_PRICE_STRUCTURE_TRANSITIONS",
+    "Q_MTF_TECHNICAL_INCREMENTAL_STATE"
+  ],
+  "current_candidate": "SESSION_LOSS_CAP_2",
+  "current_open_research_question": null,
+  "hypothesis_program": "configs/research/usdjpy_2023_2024_hypothesis_program_v12.json",
+  "next_action": "Create and merge an outcome-free Phase 2 confirmation protocol for the unchanged SESSION_LOSS_CAP_2 rule on 2023H1, 2023H2, 2024H1 and 2024H2. Require net and DD breadth, winner retention >=99%, no top-winner loss, side/session/month breadth and event-level resampling. No MT4 or 2025 access is authorized.",
+  "phase1_candidate_registry": "configs/research/usdjpy_portfolio_loss_cluster_phase1_candidate_registry_v1.json",
+  "phase1_decision": {
+    "authorization": "PHASE2_PREREGISTRATION_REQUIRED",
+    "broad_exposure_controls_rejected": true,
+    "formal_rank_2_and_3_are_not_candidates": true,
+    "research_candidate": "SESSION_LOSS_CAP_2"
+  },
+  "phase1_execution_receipt": "configs/research/usdjpy_portfolio_loss_cluster_phase1_execution_receipt_v1.json",
+  "phase1_output_manifest": "configs/research/usdjpy_portfolio_loss_cluster_phase1_output_manifest_v1.json",
+  "phase1_period_access_receipt": "configs/research/usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1.json",
+  "phase1_preregistration": "configs/research/usdjpy_portfolio_loss_cluster_phase1_prereg_v1.json",
+  "phase1_result": "configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json",
+  "phase1_result_report": "docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE1_RESULT_V1.md",
+  "research_memory": {
+    "atomic_ledger_update_required_after_test": true,
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v22.json",
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "period_policy": "configs/research/usdjpy_period_role_policy_v5.json",
+    "startup_read_receipt_required": true
+  },
+  "run_authorization": {
+    "2023_2024_phase2_confirmation": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "MT4_parity": false,
+    "candidate_signal_generation": false,
+    "live_orders": false,
+    "portfolio_replay": false,
+    "production_implementation": false,
+    "side_or_strategy_exception": false,
+    "threshold_or_session_definition_change": false
+  },
+  "schema_version": "usdjpy_research_candidate_registry_v48",
+  "status": "USDJPY_HYP027_PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v47.json"
+}

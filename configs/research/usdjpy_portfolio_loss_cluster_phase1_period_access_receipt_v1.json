@@ -1,0 +1,19 @@
+{
+  "2025H1_accessed": false,
+  "2025H1_authorized": false,
+  "2025H2_accessed": false,
+  "2025H2_authorized": false,
+  "MT4_accessed": false,
+  "MT4_authorized": false,
+  "candidate_selection_from_2025": false,
+  "development_folds_accessed": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "hypothesis_id": "USDJPY-HYP-027",
+  "next_access_boundary": "Only after unchanged Phase 2 confirmation and Research-to-MT4 parity may a separate authorization consider 2025H1.",
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1",
+  "status": "FIREWALL_INTACT"
+}

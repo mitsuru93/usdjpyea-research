@@ -1,0 +1,321 @@
+{
+  "baseline": {
+    "average_pnl_jpy": 27.431987247608927,
+    "exposure_equivalent_trade_count": 1882.0,
+    "gross_loss_jpy": 374888.0,
+    "gross_profit_jpy": 426515.0,
+    "maximum_M15_snapshot_drawdown_jpy": 42660.0,
+    "maximum_realized_drawdown_jpy": 40487.0,
+    "median_pnl_jpy": 14.5,
+    "net_profit_jpy": 51627.0,
+    "partial_trade_count": 0,
+    "profit_factor": 1.1377131303215893,
+    "trade_count": 1882,
+    "win_rate": 0.5132837407013815
+  },
+  "boundaries": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "Entry_changed": false,
+    "Exit_changed": false,
+    "MT4_accessed": false,
+    "MT4_implementation_authorized": false,
+    "SL_TP_changed": false,
+    "production_authorized": false
+  },
+  "candidate_decision": {
+    "advance_to_phase2_confirmation_only": {
+      "M15_snapshot_DD_reduction_jpy": 3717,
+      "avoided_gross_loss_jpy": 8617,
+      "candidate_PF": 1.156201,
+      "candidate_id": "SESSION_LOSS_CAP_2",
+      "candidate_net_jpy": 57212,
+      "event_bootstrap_95ci_jpy": [
+        -248.725,
+        12065.675
+      ],
+      "event_bootstrap_probability_nonpositive": 0.035,
+      "family": "session_loss_cap",
+      "fold_DD_reduction_jpy": {
+        "2023H1": 1023,
+        "2023H2": 2241,
+        "2024H1": 213,
+        "2024H2": 0
+      },
+      "fold_net_jpy": {
+        "2023H1": 1476,
+        "2023H2": 2672,
+        "2024H1": -907,
+        "2024H2": 2344
+      },
+      "largest_positive_month_share": 0.205514,
+      "limitations": [
+        "bootstrap interval touches zero",
+        "Long side pooled delta -1570 JPY",
+        "2024H1 delta -907 JPY",
+        "2024H2 DD reduction 0 JPY",
+        "only 27 entries affected"
+      ],
+      "lost_gross_profit_jpy": 3032,
+      "negative_effect_months": 4,
+      "net_improvement_jpy": 5585,
+      "positive_DD_folds": 3,
+      "positive_effect_months": 9,
+      "positive_net_folds": 3,
+      "removed_trades": 27,
+      "rule": "reject a new entry after two realized losses already recorded in the same session",
+      "top20_winner_loss_jpy": 0,
+      "winner_retention": 0.992891
+    },
+    "broad_control_conclusion": "Concurrent caps, same-direction caps, B02/F05 exclusivity, broad drawdown blocks, entry cooldowns and shock caps reduce DD mainly by discarding profitable exposure; none is authorized.",
+    "formal_rank_2_and_3_not_candidates": [
+      {
+        "M15_snapshot_DD_reduction_jpy": 11837,
+        "family": "B02_F05_exclusivity",
+        "net_improvement_jpy": -12422,
+        "winner_retention": 0.686548
+      },
+      {
+        "M15_snapshot_DD_reduction_jpy": 21039,
+        "family": "adaptive_position_sizing",
+        "net_improvement_jpy": -27912,
+        "representative": "HALF_SIZE_DD_1000",
+        "winner_retention": 0.531972
+      }
+    ],
+    "secondary_diagnostic_only": {
+      "M15_snapshot_DD_reduction_jpy": 3914,
+      "candidate_id": "LOSS_COOLDOWN_60M",
+      "decision": "DO_NOT_ADVANCE_FROM_PHASE1",
+      "event_bootstrap_probability_nonpositive": 0.327,
+      "net_improvement_jpy": 2016,
+      "positive_net_folds": 2,
+      "winner_retention": 0.971764
+    }
+  },
+  "execution": {
+    "archive_repair": {
+      "artifact_digest": "sha256:22bda1a44494a57a9a236a9900e2ddf3da7900dfb7b4e6b8fa06b86a5df828c1",
+      "artifact_id": 8632740782,
+      "receipt_issue": 306,
+      "release_asset_sha256": "32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada",
+      "release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1-r1",
+      "run_id": 30204835214
+    },
+    "failed_run": {
+      "artifact_created": false,
+      "cause": "duplicate grouping field merge",
+      "classification": "TECHNICAL_INCOMPLETE_NO_RESULT",
+      "run_id": 30203423794
+    },
+    "successful_run": {
+      "artifact_digest": "sha256:eb9e30b2e3cee27dddfaa354bdc5d460ed8e9e8845943dc3086d7daf575b8934",
+      "artifact_id": 8632649725,
+      "receipt_issue": 304,
+      "release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1",
+      "run_id": 30204173630
+    }
+  },
+  "external_2025_gate_context": {
+    "expectation": "Development effect is modest and cannot be presumed to repair the known 2025H1 deficit. Only an unchanged Phase 2 pass, Research-to-MT4 parity and then binding 2025H1 execution could establish impact.",
+    "selection_used_2025": false
+  },
+  "hypothesis_id": "USDJPY-HYP-027",
+  "impact_atlas_relation": "Confirms the Impact Atlas warning: portfolio exposure has a large oracle loss surface but broad controls have high winner damage. The actionable signal is narrow session loss-chain state, not overlap itself.",
+  "next_action": "Preregister Phase 2 confirmation of SESSION_LOSS_CAP_2 only, unchanged. Require at least 3/4 positive net folds, 3/4 DD-positive folds, winner retention >=99%, top-winner loss 0, event-bootstrap support, side/session breadth and explicit 2025/MT4 firewall. Do not implement yet.",
+  "oracle": {
+    "avoided_gross_loss_jpy": 113792.0,
+    "classification": "ORACLE_UPPER_BOUND_NOT_IMPLEMENTABLE",
+    "lost_gross_profit_jpy": 0.0,
+    "name": "PERFECT_LOSS_CLUSTER_AVOIDANCE_ORACLE",
+    "net_improvement_jpy": 113792.0
+  },
+  "portfolio_structure": {
+    "B02_F05_overlap": {
+      "PF": 1.215703,
+      "net_jpy": 38831,
+      "trades": 1039
+    },
+    "B02_F05_overlap_count": 1039,
+    "cluster_minus_standalone_loss_rate": -0.06254631688157697,
+    "cluster_permutation_two_sided_p": 0.0385,
+    "concurrent_entry_count": 1400,
+    "drawdown_add_count": 1829,
+    "event_window_sensitivity": {
+      "15": {
+        "event_count": 462,
+        "gross_loss_in_loss_cluster_events_jpy": 318325.0,
+        "loss_cluster_event_count": 248
+      },
+      "30": {
+        "event_count": 452,
+        "gross_loss_in_loss_cluster_events_jpy": 321952.0,
+        "loss_cluster_event_count": 247
+      },
+      "60": {
+        "event_count": 435,
+        "gross_loss_in_loss_cluster_events_jpy": 325386.0,
+        "loss_cluster_event_count": 245
+      }
+    },
+    "gross_loss_in_loss_cluster_events_jpy": 325386.0,
+    "loss_cluster_event_count": 245,
+    "loss_cluster_events": {
+      "events": 245,
+      "gross_loss_jpy": 325386,
+      "gross_profit_jpy": 242288,
+      "loss_coverage": 0.867955,
+      "net_jpy": -83098,
+      "trades": 1348
+    },
+    "loss_cluster_loss_coverage": 0.8679552292951495,
+    "mixed_overlap": {
+      "PF": 1.207737,
+      "net_jpy": 3383,
+      "trades": 113
+    },
+    "no_cross_strategy_overlap": {
+      "PF": 1.065665,
+      "net_jpy": 12796,
+      "trades": 843
+    },
+    "no_overlap": {
+      "PF": 0.921826,
+      "net_jpy": -9052,
+      "trades": 482
+    },
+    "non_loss_cluster_events": {
+      "events": 190,
+      "gross_loss_jpy": 49502,
+      "gross_profit_jpy": 184227,
+      "net_jpy": 134725,
+      "trades": 534
+    },
+    "non_standalone_60m": {
+      "PF": 1.268341,
+      "net_jpy": 76744,
+      "trades": 1557,
+      "win_rate": 0.524085
+    },
+    "opposite_direction_only_overlap": {
+      "PF": 1.124231,
+      "net_jpy": 3936,
+      "trades": 133
+    },
+    "opposite_direction_overlap_count": 246,
+    "portfolio_event_count": 435,
+    "recovery_interference_count": 1,
+    "same_direction_only_overlap": {
+      "PF": 1.252739,
+      "net_jpy": 53360,
+      "trades": 1154
+    },
+    "same_direction_overlap_count": 1267,
+    "shock_or_post_shock_entry_count": 666,
+    "single_position_entry": {
+      "PF": 0.921826,
+      "net_jpy": -9052,
+      "trades": 482
+    },
+    "standalone_60m": {
+      "PF": 0.71745,
+      "net_jpy": -25117,
+      "trades": 325,
+      "win_rate": 0.461538
+    },
+    "three_plus_position_entry": {
+      "PF": 1.266505,
+      "net_jpy": 41543,
+      "trades": 898
+    },
+    "two_position_entry": {
+      "PF": 1.185401,
+      "net_jpy": 19136,
+      "trades": 502
+    }
+  },
+  "prospective_session_loss_state": {
+    "prior_losses_0": {
+      "PF": 1.177433,
+      "entries": 1706,
+      "net_jpy": 58167
+    },
+    "prior_losses_1": {
+      "PF": 0.975159,
+      "entries": 149,
+      "net_jpy": -955
+    },
+    "prior_losses_2_plus": {
+      "PF": 0.351863,
+      "entries": 27,
+      "gross_loss_jpy": 8617,
+      "gross_profit_jpy": 3032,
+      "net_jpy": -5585
+    }
+  },
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase1_canonical_result_v1",
+  "scope": {
+    "B02": 429,
+    "F05": 1453,
+    "development_folds": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ],
+    "long": 1166,
+    "losers": 916,
+    "lot_contract": "0.01 fixed; normalized exposure 1.0",
+    "protected_periods_not_accessed": [
+      "2025H1",
+      "2025H2"
+    ],
+    "short": 716,
+    "strategies": [
+      "B02",
+      "F05"
+    ],
+    "timestamp": "UTC; common M15 state precision, with native 2024 event timestamps retained",
+    "total_trades": 1882,
+    "winners": 966
+  },
+  "source_identity": {
+    "core_start_sha": "aca45ab891d9a6da272b5111a99142d99e874929",
+    "duplicate_trade_ids": 0,
+    "identity_mismatches": 0,
+    "research_start_sha": "57dded3efa003c1644e4bae49a239d7a21b21429",
+    "scientific_execution_sha": "dcb8837c68abce39fbf70411d356878d871741d4",
+    "state_ledger_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca"
+  },
+  "status": "PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE_NO_IMPLEMENTATION",
+  "study_id": "USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE1-V1",
+  "volatility": {
+    "authority_limit": "common completed/open M15 state; not raw-tick shock authority",
+    "contraction": {
+      "PF": 0.857923,
+      "net_jpy": -624,
+      "trades": 26
+    },
+    "expansion": {
+      "PF": 0.99922,
+      "net_jpy": -117,
+      "trades": 776
+    },
+    "normal": {
+      "PF": 1.272759,
+      "net_jpy": 19250,
+      "trades": 414
+    },
+    "post_shock": {
+      "PF": 0.994032,
+      "net_jpy": -241,
+      "trades": 175
+    },
+    "shock": {
+      "PF": 1.304409,
+      "net_jpy": 33359,
+      "trades": 491
+    }
+  }
+}

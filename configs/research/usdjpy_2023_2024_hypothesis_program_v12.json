@@ -1,0 +1,22 @@
+{
+  "2025_access": false,
+  "MT4_access": false,
+  "candidate_family_count": 10,
+  "completed_hypothesis": "USDJPY-HYP-027",
+  "family_id": "R_PORTFOLIO_LOSS_CLUSTER_CONTROL",
+  "folds": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "implementable_counterfactual_count": 27,
+  "next_action": "Create and merge an outcome-free Phase 2 confirmation protocol for the unchanged SESSION_LOSS_CAP_2 rule on 2023H1, 2023H2, 2024H1 and 2024H2. Require net and DD breadth, winner retention >=99%, no top-winner loss, side/session/month breadth and event-level resampling. No MT4 or 2025 access is authorized.",
+  "phase1_candidate": "SESSION_LOSS_CAP_2",
+  "phase1_candidate_status": "REQUIRES_SEPARATE_PHASE2_PREREGISTRATION",
+  "phase1_result": "configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json",
+  "phase1_result_report": "docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE1_RESULT_V1.md",
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v12",
+  "status": "HYP027_PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v11.json"
+}

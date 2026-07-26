@@ -15,10 +15,10 @@
     "base_operating_contract": "configs/research/usdjpy_validation_operating_contract_v3.json",
     "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
     "period_policy": "configs/research/usdjpy_period_role_policy_v5.json",
-    "current_candidate_registry": "configs/research/usdjpy_research_candidate_registry_v47.json",
+    "current_candidate_registry": "configs/research/usdjpy_research_candidate_registry_v48.json",
     "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
-    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v21.json",
-    "hypothesis_program": "configs/research/usdjpy_2023_2024_hypothesis_program_v11.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v22.json",
+    "hypothesis_program": "configs/research/usdjpy_2023_2024_hypothesis_program_v12.json",
     "current_lineage_preregistration": "configs/research/usdjpy_2023_legacy2024_lineage_prereg_v1.json",
     "current_2023_legacy2024_atlas_result": "configs/research/usdjpy_2023_legacy2024_architecture_atlas_result_v1.json",
     "known_2025h1_inventory": "configs/research/usdjpy_2025h1_result_inventory_v1.json",
@@ -43,20 +43,28 @@
     "hyp026_fixed_ledger": "configs/research/usdjpy_b02_f05_mtf_technical_fixed_ledger_counterfactual_v1.csv",
     "hyp026_evaluation_receipt": "configs/research/usdjpy_hyp026_mtf_technical_exact_evaluation_receipt_v1.json",
     "hyp026_period_access_receipt": "configs/research/usdjpy_hyp026_period_access_receipt_v1.json",
-    "hyp026_output_manifest": "configs/research/usdjpy_hyp026_mtf_technical_closure_output_manifest_v1.json"
+    "hyp026_output_manifest": "configs/research/usdjpy_hyp026_mtf_technical_closure_output_manifest_v1.json",
+    "hyp027_preregistration": "configs/research/usdjpy_portfolio_loss_cluster_phase1_prereg_v1.json",
+    "hyp027_result": "configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json",
+    "hyp027_result_report": "docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE1_RESULT_V1.md",
+    "hyp027_candidate_registry": "configs/research/usdjpy_portfolio_loss_cluster_phase1_candidate_registry_v1.json",
+    "hyp027_evaluation_receipt": "configs/research/usdjpy_portfolio_loss_cluster_phase1_execution_receipt_v1.json",
+    "hyp027_period_access_receipt": "configs/research/usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1.json",
+    "hyp027_output_manifest": "configs/research/usdjpy_portfolio_loss_cluster_phase1_output_manifest_v1.json",
+    "hyp027_candidate_ranking": "configs/research/usdjpy_portfolio_loss_cluster_phase1_candidate_family_ranking_v1.csv"
   },
   "current_state_snapshot": {
-    "registry_status": "USDJPY_HYP026_CLOSED_NO_ECONOMICALLY_VALID_INCREMENTAL_TECHNICAL_RULE",
-    "active_family": null,
-    "active_hypothesis": null,
-    "current_candidate": null,
+    "registry_status": "USDJPY_HYP027_PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE",
+    "active_family": "R_PORTFOLIO_LOSS_CLUSTER_CONTROL",
+    "active_hypothesis": "USDJPY-HYP-027",
+    "current_candidate": "SESSION_LOSS_CAP_2",
     "current_open_research_question": null,
     "candidate_signal_generation_authorized": false,
     "candidate_outcome_evaluation_authorized": false,
     "MT4_parity_authorized": false,
     "2025_H1_authorized": false,
     "2025_H2_authorized": false,
-    "next_action": "HYP-026 is closed. Do not optimize indicator thresholds, timeframes, sides or sessions from these outcomes. M1/M5/M15/M30/H1 technical state may be retained as descriptive diagnostics only. No HYP-026 portfolio replay, MT4 or 2025 access is authorized."
+    "next_action": "Create and merge an outcome-free Phase 2 confirmation protocol for the unchanged SESSION_LOSS_CAP_2 rule on 2023H1, 2023H2, 2024H1 and 2024H2. Require net and DD breadth, winner retention >=99%, no top-winner loss, side/session/month breadth and event-level resampling. No MT4 or 2025 access is authorized."
   },
   "lineage_rules": {
     "user_directed_2024_source_freeze": true,
@@ -79,7 +87,14 @@
     ]
   },
   "atomic_update_rule": {
-    "same_research_change_required_after_every_completed_test": ["result JSON", "human report", "candidate registry", "hypothesis ledger", "period access state", "next action"],
+    "same_research_change_required_after_every_completed_test": [
+      "result JSON",
+      "human report",
+      "candidate registry",
+      "hypothesis ledger",
+      "period access state",
+      "next action"
+    ],
     "notion_sync": "after merge update Current State and active task properties and body, fetch both back, and require GitHub agreement",
     "technical_incomplete_runs": "record separately; never count as scientific results"
   },
@@ -91,29 +106,146 @@
     "connector_write_plan": "sequential branch commits; squash merge required for atomic main state"
   },
   "mandatory_startup_read_order": [
-    {"ordinal": 1, "path": "AGENTS.md", "reason": "repository-wide AI operating rules"},
-    {"ordinal": 2, "path": "configs/research/usdjpy_research_memory_manifest_v1.json", "reason": "canonical pointers and startup gate"},
-    {"ordinal": 3, "path": "configs/research/usdjpy_research_candidate_registry_v47.json", "reason": "current closed state"},
-    {"ordinal": 4, "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md", "reason": "mandatory execution safeguards"},
-    {"ordinal": 5, "path": "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.json", "reason": "binding HYP-026 closure"},
-    {"ordinal": 6, "path": "docs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.md", "reason": "human HYP-026 report"},
-    {"ordinal": 7, "path": "configs/research/usdjpy_hyp026_mtf_technical_exact_evaluation_receipt_v1.json", "reason": "execution, source and process disclosure"},
-    {"ordinal": 8, "path": "configs/research/usdjpy_b02_f05_mtf_technical_fixed_ledger_counterfactual_v1.csv", "reason": "Winner and loss economics"},
-    {"ordinal": 9, "path": "configs/research/usdjpy_b02_f05_mtf_technical_robustness_result_v1.json", "reason": "geometry ablation and bootstrap result"},
-    {"ordinal": 10, "path": "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_prereg_v1.json", "reason": "outcome-free protocol and process disclosure"},
-    {"ordinal": 11, "path": "configs/research/usdjpy_hyp026_period_access_receipt_v1.json", "reason": "period firewall"},
-    {"ordinal": 12, "path": "configs/research/usdjpy_2023_2024_hypothesis_program_v11.json", "reason": "closed hypothesis program"},
-    {"ordinal": 13, "path": "configs/research/usdjpy_period_role_policy_v5.json", "reason": "period roles"},
-    {"ordinal": 14, "path": "configs/research/usdjpy_validation_operating_contract_v4.json", "reason": "lifecycle controls"},
-    {"ordinal": 15, "path": "configs/research/usdjpy_hypothesis_ledger_v1.json", "reason": "base causal memory"},
-    {"ordinal": 16, "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v21.json", "reason": "HYP-026 result memory"},
-    {"ordinal": 17, "path": "configs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.json", "reason": "HYP-025 price-only boundary"},
-    {"ordinal": 18, "path": "configs/research/usdjpy_2025h1_result_inventory_v1.json", "reason": "protected-period inventory"}
+    {
+      "ordinal": 1,
+      "path": "AGENTS.md",
+      "reason": "repository-wide AI operating rules"
+    },
+    {
+      "ordinal": 2,
+      "path": "configs/research/usdjpy_research_memory_manifest_v1.json",
+      "reason": "canonical pointers and startup gate"
+    },
+    {
+      "ordinal": 3,
+      "path": "configs/research/usdjpy_research_candidate_registry_v48.json",
+      "reason": "current HYP-027 Phase 1 state and exact next action"
+    },
+    {
+      "ordinal": 4,
+      "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md",
+      "reason": "mandatory execution safeguards"
+    },
+    {
+      "ordinal": 5,
+      "path": "configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json",
+      "reason": "binding HYP-027 Phase 1 result"
+    },
+    {
+      "ordinal": 6,
+      "path": "docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE1_RESULT_V1.md",
+      "reason": "human HYP-027 Phase 1 report"
+    },
+    {
+      "ordinal": 7,
+      "path": "configs/research/usdjpy_portfolio_loss_cluster_phase1_execution_receipt_v1.json",
+      "reason": "HYP-027 run, failure repair and durable archive identity"
+    },
+    {
+      "ordinal": 8,
+      "path": "configs/research/usdjpy_portfolio_loss_cluster_phase1_candidate_registry_v1.json",
+      "reason": "HYP-027 Phase 2 candidate boundary"
+    },
+    {
+      "ordinal": 9,
+      "path": "configs/research/usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1.json",
+      "reason": "HYP-027 period firewall"
+    },
+    {
+      "ordinal": 10,
+      "path": "configs/research/usdjpy_portfolio_loss_cluster_phase1_output_manifest_v1.json",
+      "reason": "HYP-027 artifact members and reproduction command"
+    },
+    {
+      "ordinal": 11,
+      "path": "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.json",
+      "reason": "binding HYP-026 closure"
+    },
+    {
+      "ordinal": 12,
+      "path": "docs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.md",
+      "reason": "human HYP-026 report"
+    },
+    {
+      "ordinal": 13,
+      "path": "configs/research/usdjpy_hyp026_mtf_technical_exact_evaluation_receipt_v1.json",
+      "reason": "HYP-026 execution, source and process disclosure"
+    },
+    {
+      "ordinal": 14,
+      "path": "configs/research/usdjpy_b02_f05_mtf_technical_fixed_ledger_counterfactual_v1.csv",
+      "reason": "HYP-026 Winner and loss economics"
+    },
+    {
+      "ordinal": 15,
+      "path": "configs/research/usdjpy_b02_f05_mtf_technical_robustness_result_v1.json",
+      "reason": "HYP-026 geometry ablation and bootstrap result"
+    },
+    {
+      "ordinal": 16,
+      "path": "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_prereg_v1.json",
+      "reason": "HYP-026 outcome-free protocol and process disclosure"
+    },
+    {
+      "ordinal": 17,
+      "path": "configs/research/usdjpy_hyp026_period_access_receipt_v1.json",
+      "reason": "HYP-026 period firewall"
+    },
+    {
+      "ordinal": 18,
+      "path": "configs/research/usdjpy_2023_2024_hypothesis_program_v12.json",
+      "reason": "current hypothesis program"
+    },
+    {
+      "ordinal": 19,
+      "path": "configs/research/usdjpy_period_role_policy_v5.json",
+      "reason": "period roles"
+    },
+    {
+      "ordinal": 20,
+      "path": "configs/research/usdjpy_validation_operating_contract_v4.json",
+      "reason": "lifecycle controls"
+    },
+    {
+      "ordinal": 21,
+      "path": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+      "reason": "base causal memory"
+    },
+    {
+      "ordinal": 22,
+      "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v22.json",
+      "reason": "HYP-026 and HYP-027 result memory"
+    },
+    {
+      "ordinal": 23,
+      "path": "configs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.json",
+      "reason": "HYP-025 price-only boundary"
+    },
+    {
+      "ordinal": 24,
+      "path": "configs/research/usdjpy_2025h1_result_inventory_v1.json",
+      "reason": "protected-period inventory"
+    }
   ],
   "startup_read_receipt_required": {
-    "required_before": ["mechanism diagnosis", "new hypothesis proposal", "finite family preregistration", "candidate outcome evaluation", "MT4 workflow design", "period-access decision"],
+    "required_before": [
+      "mechanism diagnosis",
+      "new hypothesis proposal",
+      "finite family preregistration",
+      "candidate outcome evaluation",
+      "MT4 workflow design",
+      "period-access decision"
+    ],
     "acceptable_location": "PR body, committed run manifest, result JSON, or explicit assistant work-start report",
-    "minimum_fields": ["research_main_commit", "files_read_with_paths_and_blob_or_sha", "current_registry_schema_and_status", "current_exact_next_action", "relevant_hypothesis_ledger_ids", "declared_lineage", "periods_accessed_or_not_accessed"],
+    "minimum_fields": [
+      "research_main_commit",
+      "files_read_with_paths_and_blob_or_sha",
+      "current_registry_schema_and_status",
+      "current_exact_next_action",
+      "relevant_hypothesis_ledger_ids",
+      "declared_lineage",
+      "periods_accessed_or_not_accessed"
+    ],
     "missing_receipt_action": "BLOCK_SCIENTIFIC_INTERPRETATION_AND_RELOAD_MEMORY"
   }
 }
