@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "status": "PREREGISTERED_STAGE2B_ORDERED_TICK_EXPLORATION",
+  "candidate": "F05_FAILED_RECLAIM_BASIC_V1",
+  "analysis_boundary": {
+    "included_periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "excluded_periods": ["2025H1", "2025H2"],
+    "selection_must_not_access_excluded_periods": true,
+    "all_included_periods_require_ordered_bid_ask_ticks": true
+  },
+  "structural_candidates": [
+    {"maximum_sequence_count": 2, "monitoring_minutes": 60, "close_buffer_pips": 0.0},
+    {"maximum_sequence_count": 2, "monitoring_minutes": 60, "close_buffer_pips": 0.5}
+  ],
+  "ordered_tick_axes": {
+    "profit_disarm_threshold_executable_pips": [0.0, 0.2, 0.5, 1.0],
+    "profit_persistence": ["one_tick", "two_consecutive_ticks", "five_seconds", "fifteen_seconds"],
+    "failure_confirmation": ["next_m5", "m1_early", "two_consecutive_m1"],
+    "exit_delay_seconds": [0, 1, 3, 5]
+  },
+  "selection_order": [
+    "all_four_folds_non_negative",
+    "minimize_winner_damage_abs",
+    "maximize_loser_benefit",
+    "maximize_minimum_fold",
+    "maximize_total_delta"
+  ],
+  "missing_tick_policy": "BLOCK_SELECTION_AND_REPORT_MISSING_AUTHORITY_WITHOUT_PROXY_SUBSTITUTION",
+  "production_authorization": false
+}
