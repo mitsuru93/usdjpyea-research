@@ -1,0 +1,15 @@
+{
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase1_closure_marker_v1",
+  "status": "ARMED_ATOMIC_CANONICALIZATION",
+  "bundle_sha256": "41240e9b70c0a1d4666d62ff0acd985e99bbc49b27409ac1f88aa440d8f71e2e",
+  "scientific_run_id": 30204173630,
+  "scientific_artifact_id": 8632649725,
+  "corrected_release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1-r1",
+  "corrected_release_asset_sha256": "32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada",
+  "candidate": "SESSION_LOSS_CAP_2",
+  "phase2_preregistration_required": true,
+  "MT4_authorized": false,
+  "2025H1_authorized": false,
+  "2025H2_authorized": false,
+  "production_authorized": false
+}
