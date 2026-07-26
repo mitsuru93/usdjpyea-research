@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from tools.research_platform.advanced_analysis_v1 import bootstrap_mean, interaction_analysis, matched_cohort
-from tools.research_platform.event_model_v1 import TradeEvent, TradeIdentity
-from tools.research_platform.factor_analysis_v1 import TradeObservation
-from tools.research_platform.observation_builder_v1 import CanonicalTradeRecord, build_observation
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from tools.research_platform.advanced_analysis_v1 import bootstrap_mean, interaction_analysis, matched_cohort  # noqa: E402
+from tools.research_platform.event_model_v1 import TradeEvent, TradeIdentity  # noqa: E402
+from tools.research_platform.factor_analysis_v1 import TradeObservation  # noqa: E402
+from tools.research_platform.observation_builder_v1 import CanonicalTradeRecord, build_observation  # noqa: E402
 
 
 def test_observation_builder() -> None:
