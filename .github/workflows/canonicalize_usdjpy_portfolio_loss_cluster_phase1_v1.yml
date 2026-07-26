@@ -40,7 +40,7 @@ jobs:
           jq -e '.status=="PASS" and .registry_schema=="usdjpy_research_candidate_registry_v48" and .hypothesis_ledger_addendum=="configs/research/usdjpy_hypothesis_ledger_addendum_v22.json"' /tmp/memory_validation.json
           jq -e '.status=="PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE_NO_IMPLEMENTATION" and .scope.total_trades==1882 and .boundaries.MT4_accessed==false and .boundaries."2025H1_accessed"==false and .boundaries."2025H2_accessed"==false and .boundaries.production_authorized==false' configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json
           jq -e '.status=="USDJPY_HYP027_PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE" and .current_candidate=="SESSION_LOSS_CAP_2" and .run_authorization.MT4_parity==false and .run_authorization."2025_H1"==false' configs/research/usdjpy_research_candidate_registry_v48.json
-          jq -e '.2025H1_accessed==false and .2025H2_accessed==false and .MT4_accessed==false' configs/research/usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1.json
+          jq -e '."2025H1_accessed"==false and ."2025H2_accessed"==false and .MT4_accessed==false' configs/research/usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1.json
       - name: Commit atomic canonical closure
         if: github.event_name == 'push'
         shell: bash
