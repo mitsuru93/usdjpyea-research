@@ -1,0 +1,94 @@
+name: Validate F05 failed reclaim extended grid v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate_f05_failed_reclaim_extended_grid_v1.yml'
+      - 'tools/evaluate_f05_failed_reclaim_extended_grid_v1.py'
+      - 'configs/research/f05_failed_reclaim_extended_grid_prereg_v1.json'
+      - 'configs/research/f05_failed_reclaim_event_sequence_v1/**'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type F05_FAILED_RECLAIM_EXTENDED_GRID_V1'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  stage2a-structural-grid:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+
+      - name: Enforce analysis boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ '${{ github.event_name }}' == 'workflow_dispatch' ]]; then
+            [[ '${{ inputs.confirmation }}' == 'F05_FAILED_RECLAIM_EXTENDED_GRID_V1' ]]
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('configs/research/f05_failed_reclaim_extended_grid_prereg_v1.json').read_text())
+          assert p['status']=='PREREGISTERED_EXPLORATORY_NOT_PRODUCTION_AUTHORIZED'
+          assert p['analysis_boundary']['included_periods']==['2023H1','2023H2','2024H1','2024H2']
+          assert p['analysis_boundary']['excluded_periods']==['2025H1','2025H2']
+          assert p['analysis_boundary']['selection_must_not_access_excluded_periods'] is True
+          assert p['production_authorization'] is False
+          PY
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check 'pandas==2.2.3'
+
+      - name: Decode frozen event-sequence bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/event_sequence
+          base64 -d configs/research/f05_failed_reclaim_event_sequence_v1/F05_structural_SL_event_sequence_bundle_v1.zip.b64 > inputs/event_sequence_bundle.zip
+          unzip -q inputs/event_sequence_bundle.zip -d inputs/event_sequence
+          find inputs/event_sequence -type f | sort
+
+      - name: Run Stage 2A structural grid
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/evaluate_f05_failed_reclaim_extended_grid_v1.py \
+            --input-dir inputs/event_sequence \
+            --prereg configs/research/f05_failed_reclaim_extended_grid_prereg_v1.json \
+            --out-dir validation_output
+          jq -e '.status=="PASS_STAGE2A_STRUCTURAL_GRID" and .analysis_periods==["2023H1","2023H2","2024H1","2024H2"] and .excluded_periods_not_accessed==["2025H1","2025H2"] and .production_authorization==false' validation_output/result.json
+          (cd validation_output && sha256sum -c sha256sums.txt)
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f05-failed-reclaim-extended-grid-stage2a-${{ github.run_id }}-${{ github.run_attempt }}
+          path: validation_output
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Comment execution receipt
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          selected=$(jq -c '.selected_structural_candidate' validation_output/result.json)
+          gh issue comment 284 --repo "$GITHUB_REPOSITORY" --body "Stage 2A structural grid completed. Run: $GITHUB_RUN_ID, attempt: $GITHUB_RUN_ATTEMPT, commit: $GITHUB_SHA. Analysis periods: 2023H1–2024H2 only; 2025 not accessed. Selected under preregistered ordering: \`$selected\`. Artifact: f05-failed-reclaim-extended-grid-stage2a-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT. Stage 2B ordered-Tick axes remain pending; no production authorization."
