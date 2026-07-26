@@ -40,21 +40,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p inputs/historical inputs/a23 inputs/a24 inputs/2023 inputs/2024h1 inputs/2024h2 materialized output
+          mkdir -p inputs/historical inputs/a24 inputs/2023 inputs/2024h1 inputs/2024h2 materialized output
           gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/historical \
             --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
             --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
             --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' \
             --pattern 'EXPECTED_SHA256SUMS'
           (cd inputs/historical && sha256sum -c EXPECTED_SHA256SUMS)
-          gh api repos/mitsuru93/usdjpyea-core/actions/artifacts/8559483151/zip > inputs/a23.zip
           gh api repos/mitsuru93/usdjpyea-research/actions/artifacts/8428199309/zip > inputs/a24.zip
-          unzip -q inputs/a23.zip -d inputs/a23
           unzip -q inputs/a24.zip -d inputs/a24
           unzip -q inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip -d inputs/2023
           unzip -q inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip -d inputs/2024h1
           unzip -q inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip -d inputs/2024h2
-          find inputs/a23 -type f -print0 | xargs -0 sha256sum | grep '^4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78 ' | sed 's/^[^ ]*  //' > inputs/path23
+          find inputs/2023 -type f -print0 | xargs -0 sha256sum | grep '^4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78 ' | sed 's/^[^ ]*  //' > inputs/path23
           find inputs/a24 -type f -print0 | xargs -0 sha256sum | grep '^1566b9d0497f3a2aa156868144d31b89721fca48329feaf82035826ada7ee25c ' | sed 's/^[^ ]*  //' > inputs/path24
           test "$(wc -l < inputs/path23)" -eq 1
           test "$(wc -l < inputs/path24)" -eq 1
