@@ -1,0 +1,9 @@
+{
+  "schema_version": "usdjpy_csos_shock_failure_phase2_main_reproduction_trigger_v1",
+  "merged_scientific_commit": "4a17c07139a564bc97d358da115f451e2316c562",
+  "purpose": "Trigger the canonical main-branch reproduction after the workflow became present on main through PR #307.",
+  "scientific_definition_changed": false,
+  "candidate_changed": false,
+  "period_boundary_changed": false,
+  "created_date": "2026-07-26"
+}
