@@ -1,0 +1,235 @@
+name: Snapshot USDJPY Tick Collection Status v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/snapshot_usdjpy_tick_collection_status_v1.yml
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Query current collection status
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import base64
+          import datetime as dt
+          import json
+          import os
+          import re
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from collections import Counter, defaultdict
+          from pathlib import Path
+
+          repo = os.environ["REPOSITORY"]
+          token = os.environ["GH_TOKEN"]
+          api = "https://api.github.com"
+          workflow = "collect_usdjpy_2023_2025_raw_ticks_v1.yml"
+
+          def get(path):
+              req = urllib.request.Request(
+                  api + path,
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "Authorization": f"Bearer {token}",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                      "User-Agent": "usdjpyea-research-status-snapshot-v1",
+                  },
+              )
+              try:
+                  with urllib.request.urlopen(req, timeout=60) as response:
+                      return json.load(response)
+              except urllib.error.HTTPError as exc:
+                  if exc.code == 404:
+                      return None
+                  raise
+
+          def paged(path, key):
+              rows = []
+              page = 1
+              while True:
+                  sep = "&" if "?" in path else "?"
+                  payload = get(f"{path}{sep}per_page=100&page={page}")
+                  if payload is None:
+                      return rows
+                  batch = payload.get(key, [])
+                  rows.extend(batch)
+                  if len(batch) < 100:
+                      break
+                  page += 1
+              return rows
+
+          encoded_workflow = urllib.parse.quote(workflow, safe="")
+          runs_payload = get(f"/repos/{repo}/actions/workflows/{encoded_workflow}/runs?per_page=10") or {}
+          runs = runs_payload.get("workflow_runs", [])
+
+          compact_runs = [
+              {
+                  "id": r.get("id"),
+                  "run_number": r.get("run_number"),
+                  "run_attempt": r.get("run_attempt"),
+                  "event": r.get("event"),
+                  "status": r.get("status"),
+                  "conclusion": r.get("conclusion"),
+                  "head_sha": r.get("head_sha"),
+                  "created_at": r.get("created_at"),
+                  "updated_at": r.get("updated_at"),
+                  "html_url": r.get("html_url"),
+              }
+              for r in runs
+          ]
+
+          output = {
+              "schema_version": "usdjpy_tick_collection_status_snapshot_v1",
+              "observed_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+              "repository": repo,
+              "workflow": workflow,
+              "runs": compact_runs,
+              "latest_run": None,
+              "releases": {},
+          }
+
+          if runs:
+              latest = runs[0]
+              run_id = latest["id"]
+              jobs = paged(f"/repos/{repo}/actions/runs/{run_id}/jobs", "jobs")
+              artifacts = paged(f"/repos/{repo}/actions/runs/{run_id}/artifacts", "artifacts")
+
+              status_counts = Counter(j.get("status") for j in jobs)
+              conclusion_counts = Counter(j.get("conclusion") for j in jobs)
+              year_counts = defaultdict(lambda: {"total": 0, "queued": 0, "in_progress": 0, "completed": 0, "success": 0, "failure": 0, "cancelled": 0, "skipped": 0, "other": 0})
+              stage_counts = Counter()
+              active = []
+              failed = []
+
+              for j in jobs:
+                  name = j.get("name") or ""
+                  year_match = re.search(r"(?:^|\D)(2023|2025)(?:\D|$)", name)
+                  year = year_match.group(1) if year_match else "unclassified"
+                  bucket = year_counts[year]
+                  bucket["total"] += 1
+                  status = j.get("status") or "other"
+                  conclusion = j.get("conclusion") or "other"
+                  if status in bucket:
+                      bucket[status] += 1
+                  else:
+                      bucket["other"] += 1
+                  if conclusion in bucket:
+                      bucket[conclusion] += 1
+                  elif conclusion not in (None, "other"):
+                      bucket["other"] += 1
+
+                  lowered = name.lower()
+                  if "collect-" in lowered:
+                      stage_counts["daily_collect"] += 1
+                  elif "package-" in lowered:
+                      stage_counts["monthly_package"] += 1
+                  elif "publish-" in lowered or "durable-release" in lowered:
+                      stage_counts["annual_publish"] += 1
+                  elif "prepare" in lowered:
+                      stage_counts["prepare"] += 1
+                  else:
+                      stage_counts["other"] += 1
+
+                  compact = {
+                      "id": j.get("id"),
+                      "name": name,
+                      "status": status,
+                      "conclusion": j.get("conclusion"),
+                      "started_at": j.get("started_at"),
+                      "completed_at": j.get("completed_at"),
+                      "html_url": j.get("html_url"),
+                  }
+                  if status != "completed" and len(active) < 50:
+                      active.append(compact)
+                  if conclusion in ("failure", "cancelled", "timed_out", "action_required") and len(failed) < 100:
+                      failed.append(compact)
+
+              output["latest_run"] = {
+                  **compact_runs[0],
+                  "jobs_total": len(jobs),
+                  "job_status_counts": dict(status_counts),
+                  "job_conclusion_counts": {str(k): v for k, v in conclusion_counts.items()},
+                  "year_counts": dict(year_counts),
+                  "stage_counts": dict(stage_counts),
+                  "active_jobs_sample": active,
+                  "failed_jobs_sample": failed,
+                  "artifacts_total": len(artifacts),
+                  "artifacts": [
+                      {
+                          "id": a.get("id"),
+                          "name": a.get("name"),
+                          "size_in_bytes": a.get("size_in_bytes"),
+                          "expired": a.get("expired"),
+                          "created_at": a.get("created_at"),
+                          "expires_at": a.get("expires_at"),
+                          "digest": a.get("digest"),
+                      }
+                      for a in artifacts
+                  ],
+              }
+
+          for year in (2023, 2025):
+              tag = f"usdjpy-{year}-raw-bidask-ticks-v1"
+              release = get(f"/repos/{repo}/releases/tags/{urllib.parse.quote(tag, safe='')}")
+              if release is None:
+                  output["releases"][str(year)] = {"tag": tag, "exists": False}
+              else:
+                  output["releases"][str(year)] = {
+                      "tag": tag,
+                      "exists": True,
+                      "id": release.get("id"),
+                      "html_url": release.get("html_url"),
+                      "published_at": release.get("published_at"),
+                      "assets": [
+                          {
+                              "id": a.get("id"),
+                              "name": a.get("name"),
+                              "size": a.get("size"),
+                              "digest": a.get("digest"),
+                              "created_at": a.get("created_at"),
+                          }
+                          for a in release.get("assets", [])
+                      ],
+                  }
+
+          path = Path("docs/diagnostics/usdjpy_tick_collection_status_latest.json")
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(json.dumps(output, indent=2, sort_keys=True))
+          PY
+
+      - name: Commit snapshot
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/diagnostics/usdjpy_tick_collection_status_latest.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "diagnostics: update USDJPY tick collection status"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          exit 1
