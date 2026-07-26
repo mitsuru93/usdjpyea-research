@@ -1,0 +1,138 @@
+{
+  "schema_version": "usdjpy_csos_shock_failure_candidate_freeze_v1",
+  "status": "FROZEN_RESEARCH_CANDIDATE_PRE_IMPLEMENTATION",
+  "family": "D_SHOCK_FAILURE",
+  "candidate_id": "B_EXECUTABLE_T0_8BAR",
+  "decision": "PASS_PORTABLE_RESEARCH_CANDIDATE",
+  "created_date": "2026-07-27",
+  "authority": {
+    "research_repository": "mitsuru93/usdjpyea-research",
+    "scientific_merge_commit": "4a17c07139a564bc97d358da115f451e2316c562",
+    "main_observed_at_contract_start": "198ab20c5add9623dc13246d9f74a22c7716675e",
+    "phase2_run_id": 30206226997,
+    "phase2_artifact_id": 8633167258,
+    "phase2_artifact_digest": "sha256:0c9dd9d895255567ed63126f28335f120b2e68752e0bea785dcc3f83a2a1bca2",
+    "phase2_release": "usdjpy-csos-shock-failure-phase2-v1",
+    "phase2_receipt_issue": 312,
+    "canonical_archive": "docs/research/artifact_archives/usdjpy_csos_shock_failure_phase2_v1",
+    "event_identity_ledger_sha256": "31e031c61294e83f4b09ccdd4cfb373f04b2f759f2f4bddf9c920123aefa2795",
+    "candidate_trade_ledger_gzip_sha256": "cc4ad57b9ed339be1a6f318be492f22fed859d7f6ef93814eb1f53f59ffe8459",
+    "mechanism_contract_sha256": "d721f6c6439596be1e666b5943915daf611ba49199420539dca2d0845bbf43ec",
+    "final_decision_sha256": "90940fc45e8819e5709073ce0c53737ca08404f746590098dbd6e5083d418b07"
+  },
+  "research_scope": {
+    "folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "core_changed": false,
+    "mt4_accessed": false,
+    "production_authorized": false
+  },
+  "frozen_semantics": {
+    "symbol": "USDJPY",
+    "signal_timeframe": "M15",
+    "signal_price": "Bid OHLC",
+    "pip_size": 0.01,
+    "bar_sequence": "continuous ordered observed M15 bars; no synthetic weekend or missing-slot bars",
+    "true_range": "max(high-low, abs(high-previous_close), abs(low-previous_close))",
+    "rolling_reference": {
+      "statistic": "median",
+      "window_observed_bars": 96,
+      "includes_current_shock_bar": true,
+      "minimum_periods": 96,
+      "reset_at_month_fold_or_year_boundary": false
+    },
+    "warmup_and_admission": {
+      "failure_bar_zero_based_index_minimum": 100,
+      "reason": "exact Phase 2 evaluator guard i >= 100",
+      "evaluation_cross_fold_trade_allowed": false,
+      "runtime_calendar_fold_gate": false,
+      "evaluation_boundary_note": "A replay fold admits an event only when failure and scheduled exit boundary remain in the same authorized fold. This is an evaluation boundary, not a live calendar rule."
+    },
+    "shock": {
+      "tr_ratio_minimum": 2.5,
+      "body_to_true_range_minimum": 0.65,
+      "up": "close > open AND (close-low)/(high-low) >= 0.80",
+      "down": "close < open AND (close-low)/(high-low) <= 0.20",
+      "zero_range_bar": "not eligible"
+    },
+    "failure": {
+      "bar": "the immediately following completed M15 bar",
+      "up_shock_failure": "failure close < shock midpoint AND failure close < failure open",
+      "down_shock_failure": "failure close > shock midpoint AND failure close > failure open",
+      "shock_midpoint": "(shock high + shock low) / 2",
+      "knowledge_time": "failure bar end; no intra-bar high/low ordering inference"
+    },
+    "entry": {
+      "side": "opposite the shock direction",
+      "decision_boundary": "failure bar end / next M15 bar start",
+      "tick": "first executable tick timestamp >= decision boundary",
+      "long_price": "Ask",
+      "short_price": "Bid",
+      "mid_price_executable": false
+    },
+    "exit": {
+      "scheduled_boundary": "decision boundary + 120 minutes",
+      "not_measured_from_actual_fill": true,
+      "tick": "first executable tick timestamp >= scheduled boundary",
+      "long_price": "Bid",
+      "short_price": "Ask",
+      "stop_loss": null,
+      "take_profit": null,
+      "trailing_or_break_even": false
+    },
+    "event_identity": {
+      "format": "{fold}|D_SHOCK_FAILURE|{decision_boundary_utc_iso}|{side_integer}",
+      "side_integer_long": 1,
+      "side_integer_short": -1
+    },
+    "reentry_suppression": {
+      "scope": "all D_SHOCK_FAILURE events, independent of side",
+      "exact_rule": "after admitting failure index i, reject any later candidate failure index j where j <= i + 9",
+      "consequence": "a failure bar beginning at the prior scheduled exit boundary is still suppressed; the next admissible entry boundary is at least 10 M15 bars after the prior decision boundary",
+      "based_on_actual_fill_or_close": false
+    },
+    "session_side_and_baseline_filters": {
+      "session_filter": null,
+      "side_exception": null,
+      "B02_F05_conflict_filter": null,
+      "baseline_drawdown_filter": null,
+      "spread_filter": null,
+      "news_filter": null
+    }
+  },
+  "economic_normalization": {
+    "binding_unit": "pips",
+    "phase2_reference_jpy_per_pip": 10.0,
+    "phase2_fixed_notional_is_not_production_risk_sizing": true,
+    "production_lot_sizing_authorized": false
+  },
+  "prohibited_changes": [
+    "shock threshold changes",
+    "rolling-window changes",
+    "failure predicate changes",
+    "entry confirmation",
+    "entry delay optimization",
+    "timeout changes",
+    "stop or take-profit addition",
+    "side, session, fold or year exceptions",
+    "B02/F05 entry or exit changes",
+    "same-direction or opposite-direction conflict filters",
+    "2025 access before separate authorization",
+    "production or live-order authorization"
+  ],
+  "next_scope": {
+    "allowed": [
+      "freeze this exact contract in Research",
+      "define a standalone Core parity harness plan",
+      "define outcome-free parity gates"
+    ],
+    "not_allowed": [
+      "modify Core",
+      "run MT4",
+      "access 2025H1 or 2025H2",
+      "integrate with B02/F05",
+      "place live orders"
+    ]
+  }
+}
