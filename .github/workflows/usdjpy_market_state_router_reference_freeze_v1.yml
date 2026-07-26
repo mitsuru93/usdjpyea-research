@@ -1,0 +1,75 @@
+name: USDJPY Market-State Router Reference Freeze v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_market_state_router_candidate_freeze_v1.json'
+      - 'tools/generate_usdjpy_market_state_router_reference_v1.py'
+      - '.github/workflows/usdjpy_market_state_router_reference_freeze_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+      - name: Download authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/historical inputs/a24 inputs/2023 inputs/2024h1 inputs/2024h2 materialized output
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/historical \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' \
+            --pattern 'EXPECTED_SHA256SUMS'
+          (cd inputs/historical && sha256sum -c EXPECTED_SHA256SUMS)
+          gh release download usdjpy-r0-canonical-2024-v1 --repo "$GITHUB_REPOSITORY" --dir inputs \
+            --pattern 'usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip'
+          unzip -q inputs/usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip -d inputs/a24
+          unzip -q inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip -d inputs/2023
+          unzip -q inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip -d inputs/2024h1
+          unzip -q inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip -d inputs/2024h2
+          mapfile -t M15_2024 < <(find inputs/a24 -type f -path '*/canonical/bars/M15/USDJPY_M15.csv.gz' | sort)
+          test "${#M15_2024[@]}" -eq 1
+          printf '%s\n' "${M15_2024[0]}" > inputs/path24
+      - name: Materialize canonical population
+        run: |
+          python tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv \
+            --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            --out-dir materialized
+      - name: Generate frozen reference
+        run: |
+          python tools/generate_usdjpy_market_state_router_reference_v1.py \
+            --trades materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m15-2024 "$(cat inputs/path24)" --out-dir output \
+            --research-sha "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" | tee output/run.log
+          jq -e '.status=="PASS_REFERENCE_FREEZE" and .population_trades==1882 and .blocked_trades==671 and .net_delta_jpy==22687 and ."2025_accessed"==false' output/reference_receipt.json
+      - name: Package and upload
+        run: |
+          cp configs/research/usdjpy_market_state_router_candidate_freeze_v1.json output/
+          find output -type f -print0 | sort -z | xargs -0 sha256sum > output/PACKAGE_SHA256SUMS
+          zip -q -X -r "usdjpy-market-state-router-reference-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" output
+      - uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-market-state-router-reference-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            output
+            usdjpy-market-state-router-reference-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0

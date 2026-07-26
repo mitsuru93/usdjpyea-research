@@ -1,0 +1,26 @@
+{
+  "schema_version": "usdjpy_market_state_router_reference_freeze_result_v1",
+  "status": "PASS_REFERENCE_FREEZE",
+  "candidate_id": "S3_H4_ALIGNED",
+  "population_trades": 1882,
+  "blocked_trades": 671,
+  "net_delta_jpy": 22687,
+  "reference_trade_sha256": "5e0ddd9d1bee14742446f0708e4a07c654c3e1972eb54b7521a86a6a3a973fa4",
+  "reference_h4_sha256": "5a574f9b1c49149cb31a7c0d67dc8a08b979797fdead62cf85f3984f7b241b6b",
+  "execution": {
+    "workflow_run_id": 30203414571,
+    "artifact_id": 8632343416,
+    "artifact_digest": "sha256:fb0f0de8ea975b26e3864aede0e1b62c40867bb43667081a957caf8642995877",
+    "artifact_expires": "2026-10-24",
+    "head_sha": "c09d845f8b2cab98158a5e8631090ba844aae2f0"
+  },
+  "boundaries": {
+    "2025_accessed": false,
+    "mt4_accessed": false,
+    "candidate_parameters_frozen": true,
+    "core_parity_authorized": true,
+    "mt4_strategy_test_authorized": false,
+    "production_authorized": false
+  },
+  "next_action": "CORE_OUTCOME_FREE_PARITY_PREFLIGHT"
+}
