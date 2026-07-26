@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "candidate_family": "F05_FAILED_RECLAIM_EXTENDED_GRID_V1",
+  "status": "PREREGISTERED_EXPLORATORY_NOT_PRODUCTION_AUTHORIZED",
+  "analysis_boundary": {
+    "included_periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "excluded_periods": ["2025H1", "2025H2"],
+    "selection_must_not_access_excluded_periods": true
+  },
+  "lead_family": {
+    "max_sequence_count": 2,
+    "representative_monitoring_minutes": 60,
+    "supported_time_plateau_minutes": [55, 90],
+    "close_buffer_pips": 0.0,
+    "maximum_reclaim_width_pips": null
+  },
+  "grid": {
+    "monitoring_minutes": [45, 55, 60, 75, 90],
+    "maximum_sequence_count": [1, 2, 3, null],
+    "close_buffer_pips": [0.0, 0.25, 0.5],
+    "profit_disarm_threshold_executable_pips": [0.0, 0.2, 0.5, 1.0],
+    "profit_persistence": [
+      {"mode": "consecutive_ticks", "value": 1},
+      {"mode": "consecutive_ticks", "value": 2},
+      {"mode": "seconds", "value": 5},
+      {"mode": "seconds", "value": 15}
+    ],
+    "failure_confirmation": ["NEXT_COMPLETED_M5", "M1_EARLY", "TWO_CONSECUTIVE_M1"],
+    "exit_delay_seconds": [0, 1, 3, 5]
+  },
+  "required_outputs": [
+    "full_grid_metrics.csv",
+    "fold_metrics.csv",
+    "direction_metrics.csv",
+    "monthly_metrics.csv",
+    "changed_trade_ledger.csv",
+    "leave_one_fold_out.csv",
+    "winner_damage_audit.csv",
+    "manifest.json",
+    "sha256sums.txt"
+  ],
+  "selection_order": [
+    "all_four_folds_non_negative",
+    "minimize_winner_damage",
+    "maximize_loser_benefit",
+    "maximize_minimum_fold_delta",
+    "maximize_total_delta",
+    "prefer_broad_parameter_plateau_over_sharp_optimum",
+    "prefer_simpler_operational_definition"
+  ],
+  "production_authorization": false,
+  "notes": [
+    "Stage 1 supports a 55-90 minute plateau rather than a unique 60-minute optimum.",
+    "Negative-MFE severity proxies were not supported and must not replace exact ordered-tick profit disarm.",
+    "The frozen binding candidate and its historical receipt remain unchanged."
+  ]
+}
