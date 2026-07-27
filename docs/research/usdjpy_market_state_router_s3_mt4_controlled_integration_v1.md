@@ -44,16 +44,23 @@ Repair Run: `30241915781`
 - Repaired mismatch rows: 0
 - Repaired status: PASS
 
-## Tester comparison
+## Tester comparison — currency-label correction
+
+The original table labelled balance and equity values as JPY. The later ticket-level Economic Attribution audit proved that the effective Strategy Tester account currency was **USD**. The JPY labels below are therefore superseded; the values were account-currency figures.
 
 | Metric | Baseline | S3 candidate | Delta |
 |---|---:|---:|---:|
-| Balance net, JPY | 317.00 | 496.78 | +179.78 |
-| Maximum equity DD, JPY | 311.87 | 201.70 | −110.17 |
+| Balance net, effective account currency USD | $317.00 | $496.78 | +$179.78 |
+| Original report maximum equity DD, effective account currency USD | $311.87 | $201.70 | −$110.17 |
 | Maximum open orders | 9 | 9 | 0 |
 | Maximum open lots | 0.09 | 0.09 | 0.00 |
 
-The stage passes because permission decisions, order admission, order exclusion, order opening, and fixed-time closing are internally consistent in MT4. The outcome comparison is secondary to the order-path identity gate.
+The controlled-integration stage passes because permission decisions, order admission, order exclusion, order opening, and fixed-time closing are internally consistent in MT4. The authoritative economic interpretation is now:
+
+- `docs/research/usdjpy_market_state_router_s3_mt4_economic_attribution_v1.md`
+- `configs/research/usdjpy_market_state_router_s3_mt4_economic_attribution_receipt_v1.json`
+
+The Economic Attribution audit separately reports quote-currency gross P/L in JPY and account-currency P/L in USD, reconciles every final balance, and identifies the controlled-integration JPY labels as an accounting-unit defect.
 
 ## Authorization boundary
 
@@ -73,6 +80,6 @@ Core canonical receipt:
 
 `docs/research/market_state_router_s3_h4_aligned_mt4_controlled_integration_v1/final_receipt.json`
 
-Planned immutable Core evidence Release:
+Immutable Core evidence Release:
 
 `usdjpy-market-state-router-s3-controlled-integration-v1`
