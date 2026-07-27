@@ -1,0 +1,99 @@
+{
+  "schema_version": "usdjpy_market_state_router_native_equity_dd_reconciliation_protocol_v1",
+  "status": "PREREGISTERED_BEFORE_RECONCILIATION_EXECUTION",
+  "candidate_id": "S3_H4_ALIGNED",
+  "research_main_at_preregistration": "bb5fa53c670c5539c9a3cd536c99a858e9126227",
+  "question": "Does the published native full-equity DD deterioration persist after removing pre-2023 equity observations and resetting the running peak within the frozen 2023H1-2024H2 study window, and what balance/floating-exposure state explains any remaining difference?",
+  "trigger": {
+    "legacy_baseline_max_equity_dd_usd": 615.74,
+    "legacy_candidate_max_equity_dd_usd": 687.48,
+    "legacy_baseline_peak_utc": "2021-06-04T07:33:59Z",
+    "legacy_candidate_peak_utc": "2021-06-04T07:33:59Z",
+    "problem": "The published peak predates the frozen 2023H1-2024H2 research population and therefore cannot by itself establish an in-window S3 drawdown effect."
+  },
+  "immutable_input": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "release_tag": "usdjpy-market-state-router-s3-economic-attribution-v1",
+    "release_target_commitish": "2deb131bdda3dd13d0b5b69d0c80967235fb3e66",
+    "archive_name": "usdjpy-s3-economic-attribution-30256893465.zip",
+    "archive_sha256": "40cdd1f8c6e7984e500a79ce430e697c3c33d31c6c4d8daa30e6ad6a5bb7062b",
+    "required_native_populations": ["native_baseline", "native_candidate"],
+    "required_ledger_columns": [
+      "row_type",
+      "observation_utc",
+      "ticket",
+      "trade_id",
+      "strategy",
+      "side",
+      "open_utc",
+      "close_utc",
+      "lots",
+      "account_balance",
+      "account_equity",
+      "account_margin",
+      "account_free_margin",
+      "orders_total",
+      "open_buy_count",
+      "open_sell_count",
+      "open_buy_lots",
+      "open_sell_lots"
+    ]
+  },
+  "frozen_window": {
+    "timezone": "UTC",
+    "pooled_start_inclusive": "2023-01-01T00:00:00Z",
+    "pooled_end_exclusive": "2025-01-01T00:00:00Z",
+    "folds": [
+      {"id": "2023H1", "start_inclusive": "2023-01-01T00:00:00Z", "end_exclusive": "2023-07-01T00:00:00Z"},
+      {"id": "2023H2", "start_inclusive": "2023-07-01T00:00:00Z", "end_exclusive": "2024-01-01T00:00:00Z"},
+      {"id": "2024H1", "start_inclusive": "2024-01-01T00:00:00Z", "end_exclusive": "2024-07-01T00:00:00Z"},
+      {"id": "2024H2", "start_inclusive": "2024-07-01T00:00:00Z", "end_exclusive": "2025-01-01T00:00:00Z"}
+    ]
+  },
+  "snapshot_contract": {
+    "row_selection": "row_type equals equity_snapshot, observation_utc is parseable UTC, and account_equity is finite",
+    "deduplication": "hard fail on duplicate observation_utc within a population",
+    "ordering": "strict ascending observation_utc",
+    "running_peak_initialization": "first valid equity snapshot inside each evaluated window",
+    "drawdown": "running_peak_equity minus current_equity",
+    "maximum_drawdown": "maximum nonnegative drawdown within the evaluated window",
+    "tie_break": "earliest trough; its running-peak source is the latest occurrence of the maximum peak available before that trough",
+    "recovery": "first later in-window snapshot with equity greater than or equal to the peak equity; null when unrecovered before window end",
+    "currency": "effective MT4 account currency USD",
+    "floating_pl_proxy": "account_equity minus account_balance"
+  },
+  "mandatory_analyses": [
+    "Reproduce the legacy unbounded DD from all available equity_snapshot rows for both native populations.",
+    "Compute pooled bounded DD with the running peak reset at the first 2023-2024 snapshot.",
+    "Compute independently reset DD for each of 2023H1, 2023H2, 2024H1 and 2024H2.",
+    "At every pooled and fold trough, report balance, equity, floating P/L proxy, margin, free margin, open counts and open lots.",
+    "At each population's pooled trough time, obtain the other population's latest snapshot at or before that time when the time gap is no more than 60 seconds; otherwise report no aligned comparison.",
+    "Reconstruct active ticket identities at each pooled trough from rows carrying ticket, open_utc and close_utc; summarize strategy, side and lots without estimating unavailable per-ticket floating P/L.",
+    "Report observation coverage, first/last timestamp, median interval, maximum interval and duplicate count for each population.",
+    "Separate balance-path contribution from floating-P/L contribution at the drawdown trough; do not infer causal per-ticket mark-to-market when it is not present in the ledger."
+  ],
+  "classification_rules": {
+    "PASS_PREPERIOD_PEAK_CONTAMINATION_RESOLVED_BOUNDED_DD_NONWORSE": "Legacy candidate DD is worse, but pooled 2023-2024 bounded candidate DD is less than or equal to bounded baseline DD.",
+    "FAIL_BOUNDED_NATIVE_EQUITY_DD_WORSE": "Pooled 2023-2024 bounded candidate DD remains greater than bounded baseline DD.",
+    "TECHNICAL_STOP_INSUFFICIENT_NATIVE_EQUITY_AUTHORITY": "Any immutable input, required column, equity_snapshot population, uniqueness or legacy-reproduction check fails."
+  },
+  "decision_boundaries": {
+    "candidate_definition_changed": false,
+    "parameter_change_authorized": false,
+    "B02_F05_semantic_change_authorized": false,
+    "2025H1_access": false,
+    "2025H2_access": false,
+    "2025_gate_authorized_by_this_protocol": false,
+    "production_authorized": false,
+    "live_orders_authorized": false
+  },
+  "required_outputs": [
+    "native_equity_dd_reconciliation_result.json",
+    "native_equity_dd_windows.csv",
+    "native_equity_dd_trough_states.csv",
+    "native_equity_dd_active_tickets.csv",
+    "native_equity_snapshot_coverage.csv",
+    "PACKAGE_SHA256SUMS"
+  ],
+  "next_decision": "After immutable result archiving, Research must separately decide whether the fixed S3 candidate is eligible for a preregistered one-shot 2025 gate. No automatic 2025 dispatch is permitted."
+}
