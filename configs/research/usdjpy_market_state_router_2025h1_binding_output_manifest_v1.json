@@ -1,0 +1,48 @@
+{
+  "schema_version": "usdjpy_market_state_router_2025h1_binding_output_manifest_v1",
+  "status": "COMPLETE_ATOMIC_RESEARCH_CLOSURE_PACKAGE",
+  "hypothesis_id": "USDJPY-HYP-029",
+  "candidate_id": "S3_H4_ALIGNED",
+  "decision": "FAIL_2025H1_BINDING",
+  "scientific_authority": {
+    "core_repository": "mitsuru93/usdjpyea-core",
+    "preflight_run_id": 30283392068,
+    "binding_run_id": 30283492240,
+    "binding_core_sha": "1df0c1ef154a4ac8a24e3d4f9f414f1fc9332dbf",
+    "release_tag": "usdjpy-s3-market-state-2025h1-binding-v1",
+    "release_asset": "usdjpy-s3-market-state-2025h1-30283492240-1.zip",
+    "release_asset_sha256": "9961bbb2b19d9947d03ffd3446ec351ab3ebc458c3949f838d17bb354eee7865"
+  },
+  "research_outputs": [
+    "configs/research/usdjpy_market_state_router_2025h1_binding_result_v1.json",
+    "docs/research/USDJPY_MARKET_STATE_ROUTER_2025H1_BINDING_RESULT_V1.md",
+    "configs/research/usdjpy_market_state_router_2025h1_core_release_readback_receipt_v1.json",
+    "configs/research/usdjpy_market_state_router_track_registry_v1.json",
+    "configs/research/usdjpy_market_state_router_period_access_receipt_v1.json",
+    "configs/research/usdjpy_research_candidate_registry_v52.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v26.json",
+    "configs/research/usdjpy_research_memory_manifest_v1.json"
+  ],
+  "closure_requirements": {
+    "binding_result_json": true,
+    "human_readable_report": true,
+    "track_registry_updated": true,
+    "hypothesis_ledger_updated": true,
+    "period_access_state_updated": true,
+    "candidate_registry_updated": true,
+    "memory_manifest_updated": true,
+    "immutable_core_release_readback_committed": true,
+    "exact_next_action_committed": true
+  },
+  "period_firewall": {
+    "2025H1_candidate_specific_accessed": true,
+    "authorized_execution_count": 1,
+    "completed_scientific_execution_count": 1,
+    "additional_2025H1_run_authorized": false,
+    "2025H2_accessed": false,
+    "2025H2_authorized": false
+  },
+  "production_authorized": false,
+  "live_orders_authorized": false,
+  "exact_next_action": "Close S3_H4_ALIGNED and keep 2025H2 locked. Continue USDJPY-HYP-027 Phase 2 unchanged; any later market-state family requires a new preregistered causal mechanism and may not repair S3 from 2025 evidence."
+}
