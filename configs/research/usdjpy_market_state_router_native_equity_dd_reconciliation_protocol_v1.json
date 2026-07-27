@@ -1,8 +1,15 @@
 {
   "schema_version": "usdjpy_market_state_router_native_equity_dd_reconciliation_protocol_v1",
-  "status": "PREREGISTERED_BEFORE_RECONCILIATION_EXECUTION",
+  "status": "PREREGISTERED_WITH_PREOUTCOME_SCHEMA_AMENDMENT",
   "candidate_id": "S3_H4_ALIGNED",
   "research_main_at_preregistration": "bb5fa53c670c5539c9a3cd536c99a858e9126227",
+  "schema_amendment": {
+    "reason": "Technical Run 30260878426 stopped before any DD result because native ledger files do not contain trade_id or strategy; the co-archived native audit order_opened rows are the identity authority.",
+    "outcome_observed_before_amendment": false,
+    "analysis_window_changed": false,
+    "drawdown_definition_changed": false,
+    "classification_rule_changed": false
+  },
   "question": "Does the published native full-equity DD deterioration persist after removing pre-2023 equity observations and resetting the running peak within the frozen 2023H1-2024H2 study window, and what balance/floating-exposure state explains any remaining difference?",
   "trigger": {
     "legacy_baseline_max_equity_dd_usd": 615.74,
@@ -22,8 +29,6 @@
       "row_type",
       "observation_utc",
       "ticket",
-      "trade_id",
-      "strategy",
       "side",
       "open_utc",
       "close_utc",
@@ -37,7 +42,15 @@
       "open_sell_count",
       "open_buy_lots",
       "open_sell_lots"
-    ]
+    ],
+    "required_audit_columns": [
+      "event",
+      "ticket",
+      "trade_id",
+      "strategy",
+      "side"
+    ],
+    "identity_join": "Map native history tickets to the unique audit event=order_opened row by ticket; audit trade_id, strategy and side fill identity fields absent from native ledger."
   },
   "frozen_window": {
     "timezone": "UTC",
@@ -68,14 +81,14 @@
     "Compute independently reset DD for each of 2023H1, 2023H2, 2024H1 and 2024H2.",
     "At every pooled and fold trough, report balance, equity, floating P/L proxy, margin, free margin, open counts and open lots.",
     "At each population's pooled trough time, obtain the other population's latest snapshot at or before that time when the time gap is no more than 60 seconds; otherwise report no aligned comparison.",
-    "Reconstruct active ticket identities at each pooled trough from rows carrying ticket, open_utc and close_utc; summarize strategy, side and lots without estimating unavailable per-ticket floating P/L.",
+    "Reconstruct active tickets from native ledger history timing and join trade identity, strategy and side from the co-archived native audit order_opened rows; do not estimate unavailable per-ticket floating P/L.",
     "Report observation coverage, first/last timestamp, median interval, maximum interval and duplicate count for each population.",
     "Separate balance-path contribution from floating-P/L contribution at the drawdown trough; do not infer causal per-ticket mark-to-market when it is not present in the ledger."
   ],
   "classification_rules": {
     "PASS_PREPERIOD_PEAK_CONTAMINATION_RESOLVED_BOUNDED_DD_NONWORSE": "Legacy candidate DD is worse, but pooled 2023-2024 bounded candidate DD is less than or equal to bounded baseline DD.",
     "FAIL_BOUNDED_NATIVE_EQUITY_DD_WORSE": "Pooled 2023-2024 bounded candidate DD remains greater than bounded baseline DD.",
-    "TECHNICAL_STOP_INSUFFICIENT_NATIVE_EQUITY_AUTHORITY": "Any immutable input, required column, equity_snapshot population, uniqueness or legacy-reproduction check fails."
+    "TECHNICAL_STOP_INSUFFICIENT_NATIVE_EQUITY_AUTHORITY": "Any immutable input, required ledger or audit column, equity_snapshot population, uniqueness or legacy-reproduction check fails."
   },
   "decision_boundaries": {
     "candidate_definition_changed": false,
