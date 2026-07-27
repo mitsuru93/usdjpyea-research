@@ -6,7 +6,7 @@ Candidate `B_EXECUTABLE_T0_8BAR` was not changed. No direction, session, month, 
 
 ## Authority
 
-- Research SHA: `e695895089f58358c4a5fa561609ef9f527258c4`
+- Research SHA: `1fee26ee33de503195454e0dca8f3db31ebf87bc`
 - Core SHA: `e92ac28d908cb5c6ca89224507b24690822e0f35`
 - P6 Run: `30229496015`
 - Original artifact: `8639969385`, SHA-256 `70088c66cd1014391cabbb6f533462dcd3dbedbd7d6c537a5dc0798343594a6a`

@@ -45,6 +45,25 @@ def write_json(path: Path, obj):
     path.write_text(json.dumps(clean(obj), indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def read_csv_robust(path: Path, **kwargs):
+    path = Path(path)
+    raw = path.read_bytes()
+    has_gzip_magic = raw[:2] == b"\x1f\x8b"
+    if path.suffix.lower() == ".gz" and not has_gzip_magic:
+        raise RuntimeError(f"gzip suffix without gzip magic: {path}")
+    if has_gzip_magic:
+        try:
+            raw = gzip.decompress(raw)
+        except OSError as exc:
+            raise RuntimeError(f"invalid gzip payload: {path}") from exc
+    for encoding in ("utf-8-sig", "utf-8", "cp932", "cp1252", "latin-1"):
+        try:
+            return pd.read_csv(io.BytesIO(raw), encoding=encoding, **kwargs)
+        except UnicodeDecodeError:
+            continue
+    raise RuntimeError(f"unable to decode CSV: {path}")
+
+
 def sha256_file(path: Path):
     h = hashlib.sha256()
     with path.open("rb") as f:
@@ -209,7 +228,7 @@ class TickArchiveStore:
 
 
 def load_bars23(path: Path):
-    d = pd.read_csv(path)
+    d = read_csv_robust(path)
     t = pd.to_datetime(d["first_timestamp_mt4_server"], utc=True)
 
     def sunday(y, m, n, hour):
@@ -226,7 +245,7 @@ def load_bars23(path: Path):
 
 
 def load_bars24(path: Path):
-    d = pd.read_csv(path)
+    d = read_csv_robust(path)
     q = pd.DataFrame({"time": pd.to_datetime(d.time, utc=True), "open": d.bid_open.astype(float), "high": d.bid_high.astype(float), "low": d.bid_low.astype(float), "close": d.bid_close.astype(float)})
     return q[(q.time >= pd.Timestamp("2024-01-01", tz="UTC")) & (q.time < pd.Timestamp("2025-01-01", tz="UTC"))].sort_values("time").drop_duplicates("time").reset_index(drop=True)
 
@@ -453,7 +472,7 @@ def classify(row):
 
 
 def parse_shock_audit(path: Path, half):
-    d = pd.read_csv(path)
+    d = read_csv_robust(path)
     op = d[d.event == "order_opened"].copy()
     cl = d[d.event == "order_closed"].copy()
     for c in ["shock_utc", "failure_utc", "decision_utc", "utc_time"]:
@@ -477,7 +496,7 @@ def parse_shock_audit(path: Path, half):
 
 
 def parse_base_trades(path: Path):
-    d = pd.read_csv(path)
+    d = read_csv_robust(path)
     op = d[d.event == "order_opened"].copy()
     cl = d[d.event == "order_closed"].copy()
     for c in ["signal_utc", "entry_utc", "utc_time"]:
@@ -622,7 +641,7 @@ def main():
     b23=enrich_bars(load_bars23(a.m15_2023));b24=enrich_bars(load_bars24(a.m15_2024));b25=enrich_bars(store.build_m15(2025))
     bars_by_year={2023:b23,2024:b24,2025:b25}
 
-    phase=pd.read_csv(a.phase2_ledger,compression="infer")
+    phase=read_csv_robust(a.phase2_ledger)
     dev=phase[(phase.candidate_id=="B_EXECUTABLE_T0_8BAR") & phase.admitted.fillna(False)].copy()
     for c in ["entry_utc","exit_utc","entry_tick_utc","exit_tick_utc","shock_start_utc","failure_end_utc"]: dev[c]=pd.to_datetime(dev[c],utc=True,format='mixed')
     dev["event_id"]=dev.opportunity_id;dev["entry_decision_utc"]=dev.entry_utc;dev["month"]=dev.entry_utc.dt.strftime("%Y-%m");dev["day"]=dev.entry_utc.dt.strftime("%Y-%m-%d")
@@ -731,7 +750,7 @@ def main():
         decision="SHOCK_FAILURE_SIGNAL_MECHANISM_FAILED"
     else:
         decision="CURRENT_FIXED_CANDIDATE_EXTERNAL_PORTABILITY_FAILED_FAMILY_RETAINED"
-    final={"schema_version":"usdjpy_shock_failure_2025_postmortem_decision_v1","status":"PASS_POSTMORTEM_COMPLETED_NO_RETUNING","candidate_id":"B_EXECUTABLE_T0_8BAR","decision_class":decision,"fixed_candidate_status":"REJECTED_EXTERNAL_GATE_FAILED","family_status":"RETAIN_FOR_NEW_HYPOTHESIS_ONLY" if decision!="SHOCK_FAILURE_FAMILY_REJECTED" else "REJECTED","mt4_2025_metrics":mt4_metrics,"raw_2025_metrics":raw_metrics,"source_parity":parity,"failure_class_share":class_share,"exit_failure_share":exit_share,"signal_failure_share":signal_share,"side_net_jpy":side_net.to_dict(),"session_net_jpy":session_net.to_dict(),"new_candidate_allowed_only_with_new_id":True,"2025_available_as_future_holdout":False,"production_authorized":False,"live_orders_authorized":False,"next_external_period":"2026 only after complete immutable data availability and new preregistration; otherwise reserve the next fully unused future period","macro_event_proximity":"PENDING_PRIMARY_SOURCE_ANNOTATION_FOR_WORST_EVENTS"}
+    final={"schema_version":"usdjpy_shock_failure_2025_postmortem_decision_v1","status":"PASS_POSTMORTEM_COMPLETED_NO_RETUNING","candidate_id":"B_EXECUTABLE_T0_8BAR","decision_class":decision,"fixed_candidate_status":"REJECTED_FOR_PRODUCTION_AND_PORTABLE_CORE_ADOPTION","family_status":"RETAIN_FOR_NEW_HYPOTHESIS_ONLY" if decision!="SHOCK_FAILURE_FAMILY_REJECTED" else "REJECTED","mt4_2025_metrics":mt4_metrics,"raw_2025_metrics":raw_metrics,"source_parity":parity,"failure_class_share":class_share,"exit_failure_share":exit_share,"signal_failure_share":signal_share,"side_net_jpy":side_net.to_dict(),"session_net_jpy":session_net.to_dict(),"new_candidate_allowed_only_with_new_id":True,"2025_available_as_future_holdout":False,"production_authorized":False,"live_orders_authorized":False,"next_external_period":"2026 only after complete immutable data availability and new preregistration; otherwise reserve the next fully unused future period","macro_event_proximity":"PENDING_PRIMARY_SOURCE_ANNOTATION_FOR_WORST_EVENTS"}
     write_json(a.out_dir/"final_decision.json",final)
 
     # Human-readable report.
@@ -742,7 +761,7 @@ def main():
     report=f"""# USDJPY Shock Failure 2025 External-Gate Failure Postmortem v1\n\n## Boundary\n\nCandidate `B_EXECUTABLE_T0_8BAR` was not changed. No direction, session, month, threshold, median length, failure rule, entry timing, timeout or exit was selected. Oracle diagnostics are labelled `{ORACLE_LABEL}` and are not implementation candidates.\n\n## Authority\n\n- Research SHA: `{a.research_sha}`\n- Core SHA: `{a.core_sha}`\n- P6 Run: `30229496015`\n- Original artifact: `8639969385`, SHA-256 `70088c66cd1014391cabbb6f533462dcd3dbedbd7d6c537a5dc0798343594a6a`\n- Corrected evidence status: `{p6['status']}`\n\n## Evidence repair\n\nThe integrated Shock audit omitted a duplicate `account_contract` row. The original evaluator raised before writing the P6 JSON. Packaging was repaired by reading the same integrated test's base-audit contract. Logs, outcomes, periods, gates, formulas and MT4 code were unchanged.\n\n## Fold metrics\n\n{fold_table}\n\n## 2025 side metrics\n\n{side_table}\n\n## 2025 session metrics\n\n{session_table}\n\n## Signal vs Exit lifecycle classification\n\n{class_table}\n\n## Source/history/spread comparison\n\n- MT4 events: {parity['mt4_events']}\n- Raw Tick candidate events: {parity['raw_events']}\n- Matched: {parity['matched']}\n- MT4-only: {parity['mt4_only']}\n- Raw-only: {parity['raw_only']}\n\n## Decision\n\n`{decision}`\n\nThe fixed candidate failed its consumed 2025 external gate and is not eligible for production. Any continuation requires a new hypothesis ID, candidate ID and preregistration using only 2023H1–2024H2 for development. 2025 remains postmortem evidence and cannot be reused as holdout.\n"""
     (a.out_dir/"human_readable_report.md").write_text(report,encoding="utf-8")
 
-    reproduction=f"python tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py --phase2-ledger <candidate_trade_ledger.csv.gz> --m15-2023 <2023_m15.csv.gz> --m15-2024 <2024_m15.csv.gz> --raw-2025 <dir> --mt4-context-dir <dir> --portfolio-context <json> --corrected-p6 <json> --protocol <json> --out-dir <dir>\n"
+    reproduction=f"python tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py --phase2-ledger <candidate_trade_ledger.csv.gz> --m15-2023 <2023_m15.csv.gz> --m15-2024 <2024_m15.csv.gz> --raw-2025 <dir> --mt4-context-dir <dir> --portfolio-context <json> --corrected-p6 <json> --protocol <json> --out-dir <dir>\n"
     (a.out_dir/"REPRODUCE.md").write_text(reproduction,encoding="utf-8")
     # Source inventory and manifest.
     write_json(a.out_dir/"source_inventory.json",{"research_sha":a.research_sha,"core_sha":a.core_sha,"run_id":a.run_id,"phase2_ledger_sha256":sha256_file(a.phase2_ledger),"m15_2023_sha256":sha256_file(a.m15_2023),"m15_2024_sha256":sha256_file(a.m15_2024),"corrected_p6_sha256":sha256_file(a.corrected_p6),"portfolio_context_sha256":sha256_file(a.portfolio_context),"mt4_context_authority":mt4_authority,"candidate_changed":False,"2025_used_for_selection":False})

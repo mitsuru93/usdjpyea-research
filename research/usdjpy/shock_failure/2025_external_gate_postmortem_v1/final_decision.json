@@ -9,7 +9,7 @@
     "H_SUSTAINED_REVERSAL": 0.2978723404255319
   },
   "family_status": "RETAIN_FOR_NEW_HYPOTHESIS_ONLY",
-  "fixed_candidate_status": "REJECTED_EXTERNAL_GATE_FAILED",
+  "fixed_candidate_status": "REJECTED_FOR_PRODUCTION_AND_PORTABLE_CORE_ADOPTION",
   "live_orders_authorized": false,
   "macro_event_proximity": "PENDING_PRIMARY_SOURCE_ANNOTATION_FOR_WORST_EVENTS",
   "mt4_2025_metrics": {

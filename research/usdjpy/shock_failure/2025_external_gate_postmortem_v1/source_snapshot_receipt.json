@@ -1,0 +1,18 @@
+{
+  "base64_snapshot_sha256": "8c9997171ba21d1d4bfede6d4c37d4addca750bc1988bda383c392069dded6c3",
+  "candidate_changed": false,
+  "gzip_sha256": "2c736d73368afe4895dbb2e3339eb4204077ac9e844054dba5b332c61a982d56",
+  "previous_failed_source_git_blob_sha1": "0c24aa7372dad2b6e00ff9fcc5e8b876b11a176b",
+  "protocol_changed": false,
+  "repair_scope": [
+    "CSV_GZIP_TRANSPORT_READER",
+    "MIXED_ISO8601_TIMESTAMP_PARSING",
+    "MT4_DECISION_TIME_CANONICAL_ALIAS",
+    "FIXED_CANDIDATE_STATUS_LABEL"
+  ],
+  "schema_version": "usdjpy_shock_failure_2025_postmortem_source_snapshot_receipt_v1",
+  "scientific_logic_changed": false,
+  "source_git_blob_sha1": "2b1389437fded60186712345d7dadd5b763766a1",
+  "source_sha256": "f87f747004d417bf8983d309ead2b28d3ce32218ccabc00ba098b12a56fdfe55",
+  "threshold_or_period_changed": false
+}

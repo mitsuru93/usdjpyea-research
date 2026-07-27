@@ -1,0 +1,15 @@
+{
+  "annual_manifest_accepted": true,
+  "annual_manifest_sha256": "bb659502db32cfe784f62c1801d7bc3d8f7a5b1062e12430314b3b50b8fc4119",
+  "expected_hours": 8760,
+  "hourly_files_verified": 6226,
+  "integrity_blocked": false,
+  "matched": 39,
+  "mt4_events": 47,
+  "mt4_recall": 0.8297872340425532,
+  "raw_events": 46,
+  "raw_precision": 0.8478260869565217,
+  "release_tag": "usdjpy-2025-raw-bidask-ticks-v1",
+  "resolved_hours": 8760,
+  "schema_version": "usdjpy_shock_failure_2025_raw_tick_portability_report_v1"
+}
