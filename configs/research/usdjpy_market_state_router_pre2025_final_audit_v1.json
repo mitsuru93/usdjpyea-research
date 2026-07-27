@@ -1,0 +1,186 @@
+{
+  "schema_version": "usdjpy_market_state_router_pre2025_final_audit_v1",
+  "as_of_utc": "2026-07-27",
+  "status": "PASS_HISTORICAL_ECONOMIC_ATTRIBUTION_HOLD_2025_GATE_FOR_EQUITY_DD_AUTHORITY",
+  "candidate_id": "S3_H4_ALIGNED",
+  "candidate_definition": {
+    "timeframe": "H4",
+    "fast_ema": 6,
+    "slow_ema": 24,
+    "price_side": "Bid",
+    "state_source": "latest completed exact-slot H4 row at entry information time",
+    "permission": "allow entry iff H4 state equals trade side",
+    "neutral_permission": "block",
+    "strategy_exceptions": false,
+    "side_exceptions": false,
+    "session_exceptions": false,
+    "period_exceptions": false,
+    "candidate_definition_changed": false,
+    "parameter_change": false
+  },
+  "research_selection": {
+    "periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "population_trades": 1882,
+    "blocked_trades": 671,
+    "allowed_trades": 1211,
+    "research_counterfactual_net_delta_jpy": 22687,
+    "positive_folds": 4,
+    "minimum_fold_net_delta_jpy": 931,
+    "source_result": "configs/research/usdjpy_market_state_strategy_routing_phase2_result_v1.json",
+    "source_contract": "configs/research/usdjpy_market_state_router_exact_implementation_contract_v1.json"
+  },
+  "implementation_and_parity": {
+    "h4_state_rows": 3055,
+    "h4_state_mismatches": 0,
+    "information_time_mismatches": 0,
+    "reference_trade_rows": 1882,
+    "reference_permission_mismatches": 0,
+    "controlled_native_candidate_rows": 1898,
+    "controlled_native_blocked": 676,
+    "controlled_native_allowed": 1222,
+    "candidate_opened": 1222,
+    "candidate_closed": 1222,
+    "order_send_failures": 0,
+    "order_close_failures": 0,
+    "status": "PASS_ZERO_MISMATCH_PARITY_AND_CONTROLLED_ORDER_PATH_INTEGRATION"
+  },
+  "economic_attribution": {
+    "effective_account_currency": "USD",
+    "requested_tester_currency_assumption_rejected": true,
+    "accounting_reconciliation_pass": true,
+    "unexplained_balance_residual_all_populations": 0.0,
+    "maximum_absolute_ticket_conversion_residual_usd_lt": 0.005,
+    "commission": 0.0,
+    "swap": 0.0,
+    "native": {
+      "baseline": {
+        "trades": 1898,
+        "net_account_usd": 317.0,
+        "gross_quote_jpy": 51408.0,
+        "pf": 1.121774137785324,
+        "closed_trade_mdd_usd": 296.11,
+        "max_equity_dd_usd": 615.74
+      },
+      "candidate": {
+        "trades": 1222,
+        "net_account_usd": 496.78,
+        "gross_quote_jpy": 76391.0,
+        "pf": 1.3113319880174972,
+        "closed_trade_mdd_usd": 195.06,
+        "max_equity_dd_usd": 687.48
+      },
+      "delta": {
+        "net_account_usd": 179.78,
+        "gross_quote_jpy": 24983.0,
+        "closed_trade_mdd_usd": -101.05,
+        "closed_trade_mdd_pct": -34.1258316166,
+        "max_equity_dd_usd": 71.74,
+        "max_equity_dd_pct": 11.6510215351
+      }
+    },
+    "binding_reference_population": {
+      "baseline": {
+        "trades": 1882,
+        "net_account_usd": 294.56,
+        "gross_quote_jpy": 48203.0,
+        "pf": 1.113795634537377,
+        "closed_trade_mdd_usd": 296.11
+      },
+      "candidate": {
+        "trades": 1211,
+        "net_account_usd": 467.24,
+        "gross_quote_jpy": 72081.0,
+        "pf": 1.2943911690210064,
+        "closed_trade_mdd_usd": 195.06
+      },
+      "delta": {
+        "net_account_usd": 172.68,
+        "gross_quote_jpy": 23878.0
+      }
+    },
+    "population_boundary": {
+      "research_rows": 1882,
+      "native_rows": 1898,
+      "net_difference": 16,
+      "research_only_missing_native": 9,
+      "native_only_extra": 25,
+      "nonmatching_trade_ids": 34,
+      "classification_ledger_archived": true
+    },
+    "status": "PASS_ECONOMIC_ATTRIBUTION_ACCOUNTING_ERROR_REPAIRED"
+  },
+  "drawdown_authority_decision": {
+    "closed_trade_balance_drawdown": {
+      "result": "IMPROVED",
+      "baseline_usd": 296.11,
+      "candidate_usd": 195.06,
+      "delta_usd": -101.05,
+      "delta_pct": -34.1258316166
+    },
+    "native_full_equity_drawdown": {
+      "result": "WORSE",
+      "baseline_usd": 615.74,
+      "candidate_usd": 687.48,
+      "delta_usd": 71.74,
+      "delta_pct": 11.6510215351
+    },
+    "binding_filtered_equity_drawdown": {
+      "baseline_usd": 360.0,
+      "candidate_usd": 360.0,
+      "authority_status": "DIAGNOSTIC_ONLY_NOT_CANONICAL_FOR_GATE",
+      "reason": "The filtered reports contain synthetic population and margin-state effects and cannot supersede the native full MT4 equity path."
+    },
+    "canonical_future_gate_metric": {
+      "metric": "native full MT4 equity-curve peak-to-trough maximum drawdown in effective account currency",
+      "includes_intratrade_floating_pl": true,
+      "comparison": "fixed Baseline versus fixed Baseline plus S3_H4_ALIGNED",
+      "closed_trade_mdd_role": "secondary diagnostic only",
+      "rationale": "Margin and stopout risk are functions of the full equity path, not only realized closed-trade balance."
+    },
+    "historical_gate_result": "FAIL_NON_WORSE_NATIVE_FULL_EQUITY_DD",
+    "authority_frozen_before_2025_access": true
+  },
+  "gate_matrix": {
+    "research_portability": "PASS",
+    "exact_candidate_freeze": "PASS",
+    "h4_state_parity": "PASS",
+    "trade_permission_parity": "PASS",
+    "controlled_order_path_integration": "PASS",
+    "accounting_reconciliation": "PASS",
+    "historical_net_improvement": "PASS",
+    "historical_pf_improvement": "PASS",
+    "historical_closed_trade_mdd_improvement": "PASS_DIAGNOSTIC",
+    "historical_native_full_equity_mdd_non_worse": "FAIL",
+    "2025_gate_authorized": false,
+    "production_authorized": false,
+    "live_orders_authorized": false
+  },
+  "evidence": {
+    "research_prs": [286, 293, 297, 316],
+    "core_issues": [314, 315, 321, 325, 328, 332, 333, 368, 371, 376],
+    "core_runs": {
+      "h4_parity": 30237882923,
+      "reference_trade_identity": 30238772493,
+      "preimplementation_audit": 30239760337,
+      "controlled_order_path": 30241915781,
+      "economic_attribution": 30256893465,
+      "final_release_content_readback": 30259786568
+    },
+    "core_release": {
+      "tag": "usdjpy-market-state-router-s3-economic-attribution-v1",
+      "target_commitish": "2deb131bdda3dd13d0b5b69d0c80967235fb3e66",
+      "archive": "usdjpy-s3-economic-attribution-30256893465.zip",
+      "archive_sha256": "40cdd1f8c6e7984e500a79ce430e697c3c33d31c6c4d8daa30e6ad6a5bb7062b",
+      "required_members_read_back": 7
+    }
+  },
+  "boundaries": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "2025_gate_authorized": false,
+    "candidate_retuning_authorized": false,
+    "production_authorized": false,
+    "live_orders_authorized": false
+  },
+  "next_action": "PREREGISTER_AND_EXECUTE_PRE2025_NATIVE_FULL_EQUITY_DD_RECONCILIATION_WITHOUT_CHANGING_S3_OR_ACCESSING_2025"
+}
