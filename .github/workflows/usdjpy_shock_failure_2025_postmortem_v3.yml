@@ -1,4 +1,4 @@
-name: USDJPY Shock Failure 2025 Postmortem v3
+name: USDJPY Shock Failure 2025 Postmortem v4
 
 on:
   pull_request:
@@ -7,6 +7,7 @@ on:
       - '.github/workflows/usdjpy_shock_failure_2025_postmortem_v3.yml'
       - 'tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py.gz.b64.part*'
       - 'configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json'
+      - 'research_inputs/usdjpy/shock_failure/2025_postmortem_v1/**'
   workflow_dispatch:
 
 permissions:
@@ -16,7 +17,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: usdjpy-shock-failure-2025-postmortem-v3
+  group: usdjpy-shock-failure-2025-postmortem-v4
   cancel-in-progress: true
 
 jobs:
@@ -26,12 +27,12 @@ jobs:
     env:
       PHASE2_RELEASE: usdjpy-csos-shock-failure-phase2-v1
       PHASE2_ASSET: usdjpy-csos-shock-failure-phase2-v1-30206226997-1.zip
-      CORE_REPO: mitsuru93/usdjpyea-core
-      CORE_REPAIR_RELEASE: usdjpy-shock-failure-p6-evidence-repair-v1
-      ORIGINAL_ARTIFACT_SHA256: 70088c66cd1014391cabbb6f533462dcd3dbedbd7d6c537a5dc0798343594a6a
-      RELEASE_TAG: usdjpy-shock-failure-2025-postmortem-v1
+      RELEASE_TAG: usdjpy-shock-failure-2025-postmortem-v1-r1
       HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
       HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      MT4_CONTEXT_DIR: research_inputs/usdjpy/shock_failure/2025_postmortem_v1
+      CORRECTED_P6: research_inputs/usdjpy/shock_failure/2025_postmortem_v1/corrected_p6_result_compact.json
+
     steps:
       - name: Check out exact head
         uses: actions/checkout@v4
@@ -55,12 +56,12 @@ jobs:
       - name: Install fixed dependencies
         run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3' 'scipy==1.14.1' 'tabulate==0.9.0'
 
-      - name: Validate no-retuning protocol
+      - name: Validate no-retuning protocol and fixed Core-derived inputs
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json
+          import glob,json
           p=json.load(open('configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json'))
           assert p['status']=='FROZEN_NO_CANDIDATE_SELECTION'
           assert p['candidate_id']=='B_EXECUTABLE_T0_8BAR'
@@ -68,18 +69,35 @@ jobs:
           assert p['consumed_external_evidence']==['2025H1','2025H2']
           assert p['oracle_exit_label']=='ORACLE_DIAGNOSTIC_NOT_IMPLEMENTABLE_CANDIDATE'
           assert p['production_authorized'] is False and p['live_orders_authorized'] is False
+          files=sorted(glob.glob('research_inputs/usdjpy/shock_failure/2025_postmortem_v1/mt4_events_*.json'))
+          assert len(files)==5
+          events=[]
+          for path in files:
+              x=json.load(open(path))
+              assert x['authority']['core_run_id']==30229496015
+              assert x['authority']['core_artifact_id']==8639969385
+              assert x['authority']['core_artifact_sha256']=='70088c66cd1014391cabbb6f533462dcd3dbedbd7d6c537a5dc0798343594a6a'
+              events.extend(x['events'])
+          assert len(events)==47 and len({x['event_id'] for x in events})==47
+          p6=json.load(open('research_inputs/usdjpy/shock_failure/2025_postmortem_v1/corrected_p6_result_compact.json'))
+          assert p6['candidate_id']=='B_EXECUTABLE_T0_8BAR'
+          assert p6['status']=='FAIL_P6_2025_GATE_RESEARCH_ONLY_NO_RETUNING'
+          assert p6['standalone_combined']['closed_trades']==47
+          assert abs(p6['standalone_combined']['net_jpy']+1277.0)<1e-6
+          assert p6['scientific_semantics']=='IDENTICAL_TO_PREREGISTERED_P6_EVALUATOR'
+          print('PASS_FIXED_RESEARCH_INPUTS')
           PY
 
-      - name: Prepare roots
+      - name: Prepare isolated roots
         shell: bash
         run: |
           set -euo pipefail
-          root="$RUNNER_TEMP/shock-failure-postmortem-v3"
+          root="$RUNNER_TEMP/shock-failure-postmortem-v4"
           rm -rf "$root"
-          mkdir -p "$root"/{phase2-download,phase2,history,history2023,bars2024,raw2025,core,core-artifact,out,release,readback}
+          mkdir -p "$root"/{phase2-download,phase2,raw-download,raw,out,release,readback}
           echo "PM_ROOT=$root" >> "$GITHUB_ENV"
 
-      - name: Download Phase2 authority
+      - name: Download and verify Phase 2 authority
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -94,147 +112,143 @@ jobs:
           d=pd.read_csv(p)
           x=d[(d.candidate_id=='B_EXECUTABLE_T0_8BAR') & d.admitted.fillna(False)]
           assert len(x)==114
+          assert set(x['fold'])=={'2023H1','2023H2','2024H1','2024H2'}
+          print('PASS_PHASE2_LEDGER',len(x))
           PY
 
-      - name: Download M15 authorities
+      - name: Download, verify, and extract immutable 2025 Raw Tick authority
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir "$PM_ROOT/history" --pattern usdjpy-2023-canonical-baseline-prep-v1.zip --pattern EXPECTED_SHA256SUMS
-          (cd "$PM_ROOT/history" && sha256sum -c EXPECTED_SHA256SUMS --ignore-missing)
-          unzip -q "$PM_ROOT/history/usdjpy-2023-canonical-baseline-prep-v1.zip" -d "$PM_ROOT/history2023"
-          printf '%s  %s\n' 4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78 "$PM_ROOT/history2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" | sha256sum -c -
-          gh release download usdjpy-2024-derived-bars-v1 --repo "$GITHUB_REPOSITORY" --dir "$PM_ROOT/bars2024" --pattern USDJPY-2024-m15-derived-bars-v1.csv.gz
-          printf '%s  %s\n' d22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020 "$PM_ROOT/bars2024/USDJPY-2024-m15-derived-bars-v1.csv.gz" | sha256sum -c -
-
-      - name: Download immutable 2025 Raw Tick authority
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          gh release download usdjpy-2025-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir "$PM_ROOT/raw2025" --pattern 'usdjpy-2025-??-raw-ticks-v1.tar.gz' --pattern usdjpy-2025-raw-ticks-v1.annual-manifest.json --pattern SHA256SUMS
-          test "$(find "$PM_ROOT/raw2025" -maxdepth 1 -name 'usdjpy-2025-??-raw-ticks-v1.tar.gz' | wc -l)" = 12
-          (cd "$PM_ROOT/raw2025" && grep -E 'usdjpy-2025-(..-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
-          jq -e '.accepted==true and .resolved_hours==.expected_hours and .tick_rows>0' "$PM_ROOT/raw2025/usdjpy-2025-raw-ticks-v1.annual-manifest.json"
-
-      - name: Download corrected P6 and original MT4 logs
-        shell: bash
-        run: |
-          set -euo pipefail
-          for name in corrected_p6_result.json p6_repair_receipt.json release_readback_receipt.json usdjpy-shock-failure-p6-original-artifact-8639969385.zip; do
-            curl --fail --location --retry 3 --retry-all-errors \
-              "https://github.com/$CORE_REPO/releases/download/$CORE_REPAIR_RELEASE/$name" \
-              --output "$PM_ROOT/core/$name"
+          gh release download usdjpy-2025-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir "$PM_ROOT/raw-download" \
+            --pattern 'usdjpy-2025-??-raw-ticks-v1.tar.gz' \
+            --pattern usdjpy-2025-raw-ticks-v1.annual-manifest.json \
+            --pattern SHA256SUMS
+          test "$(find "$PM_ROOT/raw-download" -maxdepth 1 -name 'usdjpy-2025-??-raw-ticks-v1.tar.gz' | wc -l)" = 12
+          (cd "$PM_ROOT/raw-download" && grep -E 'usdjpy-2025-(..-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
+          jq -e '.accepted==true and .resolved_hours==.expected_hours and .tick_rows>0' "$PM_ROOT/raw-download/usdjpy-2025-raw-ticks-v1.annual-manifest.json"
+          for a in "$PM_ROOT"/raw-download/usdjpy-2025-??-raw-ticks-v1.tar.gz; do
+            tar -xzf "$a" -C "$PM_ROOT/raw"
           done
-          jq -e '.status=="FAIL_P6_2025_GATE_RESEARCH_ONLY_NO_RETUNING"' "$PM_ROOT/core/corrected_p6_result.json"
-          jq -e '.status=="PASS_EVIDENCE_PACKAGING_REPAIRED_SCIENTIFIC_RESULT_UNCHANGED"' "$PM_ROOT/core/p6_repair_receipt.json"
-          jq -e '.status=="PASS_SHA256_READBACK"' "$PM_ROOT/core/release_readback_receipt.json"
-          test "$(sha256sum "$PM_ROOT/core/usdjpy-shock-failure-p6-original-artifact-8639969385.zip" | awk '{print $1}')" = "$ORIGINAL_ARTIFACT_SHA256"
-          unzip -q "$PM_ROOT/core/usdjpy-shock-failure-p6-original-artifact-8639969385.zip" -d "$PM_ROOT/core-artifact"
-          test -f "$PM_ROOT/core-artifact/p6/h1/standalone/sf_2025h1_standalone.csv"
-          test -f "$PM_ROOT/core-artifact/p6/h2/standalone/sf_2025h2_standalone.csv"
+          count=$(find "$PM_ROOT/raw" -type f -name '*.csv.gz' | wc -l)
+          test "$count" -ge 8000
+          cp "$PM_ROOT/raw-download/usdjpy-2025-raw-ticks-v1.annual-manifest.json" "$PM_ROOT/raw/"
+          echo "PASS_RAW_2025_HOURLY_FILES=$count"
 
       - name: Execute fixed-candidate postmortem
         shell: bash
         run: |
           set -euo pipefail
           python tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py \
-            --phase2-ledger "$PM_ROOT/phase2/phase2_output/candidate_trade_ledger.csv.gz" \
-            --m15-2023 "$PM_ROOT/history2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" \
-            --m15-2024 "$PM_ROOT/bars2024/USDJPY-2024-m15-derived-bars-v1.csv.gz" \
-            --raw-2025 "$PM_ROOT/raw2025" \
-            --core-artifact-root "$PM_ROOT/core-artifact" \
-            --corrected-p6 "$PM_ROOT/core/corrected_p6_result.json" \
-            --protocol configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json \
+            --phase2-dir "$PM_ROOT/phase2" \
+            --mt4-context-dir "$MT4_CONTEXT_DIR" \
+            --raw-2025-root "$PM_ROOT/raw" \
+            --corrected-p6 "$CORRECTED_P6" \
             --out-dir "$PM_ROOT/out" \
             --research-sha "$HEAD_SHA" \
             --core-sha 0dfec6a7a9245acecbd8961a4e784efde857ef69 \
             --run-id "$GITHUB_RUN_ID" | tee "$PM_ROOT/out/run.log"
-          jq -e '.status=="PASS_POSTMORTEM_COMPLETED_NO_RETUNING" and .candidate_id=="B_EXECUTABLE_T0_8BAR" and .production_authorized==false and .live_orders_authorized==false and ."2025_available_as_future_holdout"==false' "$PM_ROOT/out/final_decision.json"
-          test "$(($(wc -l < "$PM_ROOT/out/event_ledger_2025_mt4_enriched.csv")-1))" = 47
-          grep -q ORACLE_DIAGNOSTIC_NOT_IMPLEMENTABLE_CANDIDATE "$PM_ROOT/out/oracle_exit_diagnostics_2025.csv"
+          jq -e '.candidate_id=="B_EXECUTABLE_T0_8BAR" and .fixed_candidate_status=="REJECTED_FOR_PRODUCTION_AND_PORTABLE_CORE_ADOPTION" and .no_retuning==true and ."2025_consumed"==true and ."2025_reusable_as_holdout"==false' "$PM_ROOT/out/final_decision.json"
+          test "$(($(gzip -cd "$PM_ROOT/out/2025_event_ledger.csv.gz" | wc -l)-1))" = 47
+          grep -q ORACLE_DIAGNOSTIC_NOT_IMPLEMENTABLE_CANDIDATE "$PM_ROOT/out/oracle_exit_diagnostics.csv"
           (cd "$PM_ROOT/out" && sha256sum -c SHA256SUMS)
-          cp tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py "$PM_ROOT/out/postmortem_source_snapshot.py"
-          cp "$PM_ROOT/core/p6_repair_receipt.json" "$PM_ROOT/out/"
-          cp "$PM_ROOT/core/release_readback_receipt.json" "$PM_ROOT/out/core_release_readback_receipt.json"
-          cp configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json "$PM_ROOT/out/"
 
-      - name: Finalize manifest
+      - name: Finalize evidence manifest
         shell: bash
         run: |
           set -euo pipefail
-          rm -f "$PM_ROOT/out/MANIFEST.json" "$PM_ROOT/out/SHA256SUMS"
+          cp tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py "$PM_ROOT/out/postmortem_source_snapshot.py"
+          cp configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json "$PM_ROOT/out/"
+          cp "$CORRECTED_P6" "$PM_ROOT/out/corrected_p6_result.json"
+          cp "$MT4_CONTEXT_DIR"/mt4_events_*.json "$PM_ROOT/out/"
+          cp "$PM_ROOT/raw/usdjpy-2025-raw-ticks-v1.annual-manifest.json" "$PM_ROOT/out/"
+          rm -f "$PM_ROOT/out/manifest.json" "$PM_ROOT/out/SHA256SUMS"
           python - <<'PY'
           import hashlib,json,os
           from pathlib import Path
           root=Path(os.environ['PM_ROOT'])/'out'
           def sha(p):
-            h=hashlib.sha256()
-            with p.open('rb') as f:
-              for c in iter(lambda:f.read(1<<20),b''):h.update(c)
-            return h.hexdigest()
-          rows=[{'path':p.name,'bytes':p.stat().st_size,'sha256':sha(p)} for p in sorted(root.iterdir()) if p.is_file() and p.name not in {'MANIFEST.json','SHA256SUMS'}]
-          (root/'MANIFEST.json').write_text(json.dumps({'schema_version':'usdjpy_shock_failure_2025_postmortem_manifest_v1','files':rows},indent=2,sort_keys=True)+'\n')
+              h=hashlib.sha256()
+              with p.open('rb') as f:
+                  for c in iter(lambda:f.read(1<<20),b''): h.update(c)
+              return h.hexdigest()
+          rows=[{'path':p.name,'bytes':p.stat().st_size,'sha256':sha(p)} for p in sorted(root.iterdir()) if p.is_file() and p.name not in {'manifest.json','SHA256SUMS'}]
+          (root/'manifest.json').write_text(json.dumps({'schema_version':'usdjpy_shock_failure_2025_postmortem_manifest_v1','files':rows},indent=2,sort_keys=True)+'\n')
           with (root/'SHA256SUMS').open('w') as f:
-            for p in sorted(root.iterdir()):
-              if p.is_file() and p.name!='SHA256SUMS':f.write(f'{sha(p)}  {p.name}\n')
+              for p in sorted(root.iterdir()):
+                  if p.is_file() and p.name!='SHA256SUMS': f.write(f'{sha(p)}  {p.name}\n')
           PY
           (cd "$PM_ROOT/out" && sha256sum -c SHA256SUMS)
 
-      - name: Commit canonical outputs
+      - name: Commit canonical Research outputs
         shell: bash
         run: |
           set -euo pipefail
           target=research/usdjpy/shock_failure/2025_external_gate_postmortem_v1
-          rm -rf "$target"; mkdir -p "$target"
+          rm -rf "$target"
+          mkdir -p "$target"
           cp "$PM_ROOT/out"/* "$target/"
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add "$target"
-          git commit -m 'research: record completed Shock Failure 2025 postmortem'
-          git pull --rebase origin "$HEAD_BRANCH"
-          git push origin "HEAD:$HEAD_BRANCH"
+          if ! git diff --cached --quiet; then
+            git commit -m 'research: record completed Shock Failure 2025 postmortem'
+            git push origin "HEAD:$HEAD_BRANCH"
+          fi
           echo "PUBLICATION_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
-      - name: Publish immutable Release and read back
+      - name: Publish immutable Release and verify readback
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tar -czf "$PM_ROOT/release/usdjpy-shock-failure-2025-postmortem-v1.tar.gz" -C "$PM_ROOT/out" .
-          cp "$PM_ROOT/out/MANIFEST.json" "$PM_ROOT/out/SHA256SUMS" "$PM_ROOT/release/"
-          (cd "$PM_ROOT/release" && sha256sum usdjpy-shock-failure-2025-postmortem-v1.tar.gz MANIFEST.json SHA256SUMS > RELEASE_SHA256SUMS)
-          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "Existing immutable Release will be verified."
-          else
-            gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --target "$PUBLICATION_SHA" --title 'USDJPY Shock Failure 2025 External-Gate Postmortem v1' --notes 'Fixed candidate postmortem; no retuning. 2025 remains consumed external evidence.'
+          tar -czf "$PM_ROOT/release/usdjpy-shock-failure-2025-postmortem-v1-r1.tar.gz" -C "$PM_ROOT/out" .
+          cp "$PM_ROOT/out/manifest.json" "$PM_ROOT/out/SHA256SUMS" "$PM_ROOT/release/"
+          (cd "$PM_ROOT/release" && sha256sum usdjpy-shock-failure-2025-postmortem-v1-r1.tar.gz manifest.json SHA256SUMS > RELEASE_SHA256SUMS)
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            decision=$(jq -r .decision "$PM_ROOT/out/final_decision.json")
+            gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --target "$PUBLICATION_SHA" \
+              --title 'USDJPY Shock Failure 2025 External-Gate Postmortem v1-r1' \
+              --notes "Fixed candidate B_EXECUTABLE_T0_8BAR postmortem. Decision: $decision. No retuning; 2025 is consumed external evidence; production and live orders remain unauthorized."
             gh release upload "$RELEASE_TAG" "$PM_ROOT/release"/* --repo "$GITHUB_REPOSITORY"
           fi
           gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir "$PM_ROOT/readback"
           (cd "$PM_ROOT/readback" && sha256sum -c RELEASE_SHA256SUMS)
 
-      - name: Comment decision on PR
+      - name: Comment final decision on PR
+        if: github.event_name == 'pull_request'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           python - <<'PY'
           import json,os
           from pathlib import Path
-          r=Path(os.environ['PM_ROOT']);x=json.loads((r/'out/final_decision.json').read_text())
-          body=f"## Shock Failure 2025 postmortem completed\n\n- Decision: `{x['decision_class']}`\n- Fixed candidate: `{x['fixed_candidate_status']}`\n- Family: `{x['family_status']}`\n- Release: `{os.environ['RELEASE_TAG']}`\n- Publication commit: `{os.environ['PUBLICATION_SHA']}`\n- 2025 reusable as holdout: `false`\n- Retuning: `false`\n"
-          (r/'pr-comment.md').write_text(body)
+          root=Path(os.environ['PM_ROOT'])
+          x=json.loads((root/'out'/'final_decision.json').read_text())
+          d=x['diagnostics']
+          body=("## Shock Failure 2025 postmortem completed\n\n"
+                f"- Decision: `{x['decision']}`\n"
+                f"- Fixed candidate: `{x['fixed_candidate_status']}`\n"
+                f"- Family: `{x['family_status']}`\n"
+                f"- MT4 net/PF: `{d['mt4_combined_net_jpy']:.0f} JPY / {d['mt4_pf']:.3f}`\n"
+                f"- Raw-source identity match: `{d['raw_identity_match_rate']:.1%}`\n"
+                f"- 2025 reusable as holdout: `{str(x['2025_reusable_as_holdout']).lower()}`\n"
+                f"- Release: `{os.environ['RELEASE_TAG']}`\n"
+                f"- Publication commit: `{os.environ['PUBLICATION_SHA']}`\n\n"
+                "No candidate parameter, side, session, threshold, failure rule, entry timing, timeout, spread convention, Bid/Ask convention, or B02/F05 semantic was changed.")
+          (root/'pr-comment.md').write_text(body)
           PY
           gh pr comment "${{ github.event.pull_request.number }}" --repo "$GITHUB_REPOSITORY" --body-file "$PM_ROOT/pr-comment.md"
 
-      - name: Upload evidence
+      - name: Upload complete evidence
         uses: actions/upload-artifact@v4
         with:
-          name: usdjpy-shock-failure-2025-postmortem-v3-${{ github.run_id }}-${{ github.run_attempt }}
+          name: usdjpy-shock-failure-2025-postmortem-v4-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             ${{ env.PM_ROOT }}/out
             ${{ env.PM_ROOT }}/release
