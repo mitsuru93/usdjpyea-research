@@ -1,0 +1,56 @@
+{
+  "schema_version": "usdjpy_market_state_router_2025h1_core_release_readback_receipt_v1",
+  "status": "PASS_IMMUTABLE_CORE_RELEASE_READBACK",
+  "hypothesis_id": "USDJPY-HYP-029",
+  "candidate_id": "S3_H4_ALIGNED",
+  "decision": "FAIL_2025H1_BINDING",
+  "core_repository": "mitsuru93/usdjpyea-core",
+  "preflight_run_id": 30283392068,
+  "binding_run_id": 30283492240,
+  "binding_run_conclusion": "success",
+  "binding_core_sha": "1df0c1ef154a4ac8a24e3d4f9f414f1fc9332dbf",
+  "research_protocol_sha": "a4074e8124c7c23d7bcb69a74a18b5edb29c3eab",
+  "result_issue": 455,
+  "completion_issue": 456,
+  "release": {
+    "tag": "usdjpy-s3-market-state-2025h1-binding-v1",
+    "target_commitish": "1df0c1ef154a4ac8a24e3d4f9f414f1fc9332dbf",
+    "asset_count": 1,
+    "asset_name": "usdjpy-s3-market-state-2025h1-30283492240-1.zip",
+    "asset_size": 754850,
+    "asset_digest": "sha256:9961bbb2b19d9947d03ffd3446ec351ab3ebc458c3949f838d17bb354eee7865"
+  },
+  "archive_receipt": {
+    "archive": "usdjpy-s3-market-state-2025h1-30283492240-1.zip",
+    "sha256": "9961bbb2b19d9947d03ffd3446ec351ab3ebc458c3949f838d17bb354eee7865",
+    "size": 754850,
+    "matches_release_asset": true
+  },
+  "result_readback": {
+    "status": "COMPLETE_SCIENTIFIC_RESULT",
+    "terminal_stage": "COMPLETE",
+    "decision": "FAIL_2025H1_BINDING",
+    "candidate_definition_changed": false,
+    "parameter_change": false,
+    "2025H2_accessed": false,
+    "additional_2025H1_run_authorized": false,
+    "production_authorized": false,
+    "live_orders_authorized": false
+  },
+  "post_binding_infrastructure_restore": {
+    "temporary_compatibility_launcher_removed": true,
+    "restore_commit": "dbffc656a0793a2efd9bd54394223f1239de2afa",
+    "restored_path": ".github/workflows/validate_usdjpy_market_state_router_historical_mt4_v1.yml",
+    "restored_blob_sha": "24a7298d6e08ff248b67ae230874d198b56be619",
+    "restored_to_pre_launcher_identity": true
+  },
+  "period_firewall": {
+    "2025H1_candidate_specific_execution_consumed": true,
+    "2025H1_scientific_execution_count": 1,
+    "additional_2025H1_execution_authorized": false,
+    "2025H2_accessed": false,
+    "2025H2_authorized": false
+  },
+  "authoritative_result_path": "configs/research/usdjpy_market_state_router_2025h1_binding_result_v1.json",
+  "human_report_path": "docs/research/USDJPY_MARKET_STATE_ROUTER_2025H1_BINDING_RESULT_V1.md"
+}
