@@ -36,7 +36,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
 
-      - name: Set up Python and archive tools
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -63,6 +63,9 @@ jobs:
           assert p6['status']=='FAIL_P6_2025_GATE_RESEARCH_ONLY_NO_RETUNING'
           assert p6['standalone_combined']['closed_trades']==47
           assert abs(p6['standalone_combined']['net_jpy']+1277)<1e-6
+          inv=json.load(open('research_inputs/usdjpy/shock_failure/2025_postmortem_v1/research_release_inventory.json'))
+          rel=[x for x in inv['releases'] if x['tag_name']=='usdjpy-2025-raw-bidask-ticks-v1']
+          assert len(rel)==1 and len(rel[0]['assets'])==37
           print('PASS_CORE_DERIVED_INPUT_CONTRACT')
           PY
 
@@ -87,18 +90,29 @@ jobs:
         run: |
           set -euo pipefail
           tag=usdjpy-2025-raw-bidask-ticks-v1
-          gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
           echo "RAW_2025_RELEASE=$tag" >> "$GITHUB_ENV"
           gh release download "$tag" --repo "$GITHUB_REPOSITORY" --dir "$POSTMORTEM_ROOT/raw-download"
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          tag='usdjpy-2025-raw-bidask-ticks-v1'
+          inv=json.load(open('research_inputs/usdjpy/shock_failure/2025_postmortem_v1/research_release_inventory.json'))
+          rel=next(x for x in inv['releases'] if x['tag_name']==tag)
+          root=Path(os.environ['POSTMORTEM_ROOT'])/'raw-download'
+          expected={a['name']:a['digest'].split(':',1)[1] for a in rel['assets']}
+          actual={p.name:p for p in root.iterdir() if p.is_file()}
+          assert set(actual)==set(expected),(set(expected)-set(actual),set(actual)-set(expected))
+          for name,p in actual.items():
+            h=hashlib.sha256(p.read_bytes()).hexdigest()
+            assert h==expected[name],(name,h,expected[name])
+          print('PASS_RELEASE_ASSET_SHA256',len(actual))
+          PY
           shopt -s nullglob
           archives=("$POSTMORTEM_ROOT"/raw-download/usdjpy-2025-??-raw-ticks-v1.tar.gz)
           manifests=("$POSTMORTEM_ROOT"/raw-download/usdjpy-2025-??-raw-ticks-v1.manifest.json)
-          sums=("$POSTMORTEM_ROOT"/raw-download/usdjpy-2025-??-raw-ticks-v1.SHA256SUMS)
           test "${#archives[@]}" -eq 12
           test "${#manifests[@]}" -eq 12
-          test "${#sums[@]}" -eq 12
           test -f "$POSTMORTEM_ROOT/raw-download/usdjpy-2025-raw-ticks-v1.annual-manifest.json"
-          for s in "${sums[@]}"; do (cd "$POSTMORTEM_ROOT/raw-download" && sha256sum -c "$(basename "$s")"); done
           expected=0
           for a in "${archives[@]}"; do
             n=$(tar -tzf "$a" | grep -cE '\.csv\.gz$' || true)
