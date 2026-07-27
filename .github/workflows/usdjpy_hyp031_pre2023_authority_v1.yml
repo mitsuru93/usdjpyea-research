@@ -1,10 +1,6 @@
 name: USDJPY HYP031 Pre-2023 Authority v1
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - '.github/workflows/usdjpy_hyp031_pre2023_authority_v1.yml'
   workflow_dispatch:
 
 permissions:
