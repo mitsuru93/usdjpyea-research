@@ -2,6 +2,7 @@
   "schema_version": "usdjpy_shock_failure_2025_external_gate_postmortem_protocol_v1",
   "status": "FROZEN_NO_CANDIDATE_SELECTION",
   "candidate_id": "B_EXECUTABLE_T0_8BAR",
+  "execution_revision": "binding-postmortem-v2",
   "authority": {
     "research_phase2_commit": "4a17c07139a564bc97d358da115f451e2316c562",
     "research_exact_contract_commit": "2ade5c61ebc16e389da569d24fe678b081a56419",
