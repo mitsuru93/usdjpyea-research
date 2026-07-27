@@ -1,0 +1,67 @@
+name: Archive USDJPY Market-State Router Reference v2
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+jobs:
+  archive:
+    if: github.event_name == 'workflow_dispatch' || github.event.issue.title == '[MARKET-STATE-REFERENCE-ARCHIVE] v2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ARTIFACT_ID: '8638538919'
+      ARTIFACT_DIGEST: 'sha256:d08e570a5bcc618bdecc01e77fe811d4b91e493f9480e17a01b2833f6add6595'
+      RELEASE_TAG: usdjpy-market-state-router-reference-v2
+      ASSET_NAME: usdjpy-market-state-router-reference-v2-run-30225889285-artifact-8638538919.zip
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download exact accepted artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p archive extracted
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > "archive/$ASSET_NAME"
+          actual="sha256:$(sha256sum "archive/$ASSET_NAME" | awk '{print $1}')"
+          test "$actual" = "$ARTIFACT_DIGEST"
+          unzip -q "archive/$ASSET_NAME" -d extracted
+          test -f extracted/output/reference_receipt_v2.json
+          jq -e '.status=="PASS_COMPLETE_REFERENCE_FREEZE" and .population_trades==1882 and .blocked_trades==671 and .allowed_trades==1211 and .duplicate_trade_id==0 and .missing_state==0 and .future_information_use==0 and ."2025_accessed"==false' extracted/output/reference_receipt_v2.json
+          sha256sum "archive/$ASSET_NAME" > archive/SHA256SUMS
+      - name: Publish immutable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          notes='Frozen S3_H4_ALIGNED Research reference v2. Source Run 30225889285; artifact 8638538919; digest sha256:d08e570a5bcc618bdecc01e77fe811d4b91e493f9480e17a01b2833f6add6595; 2025 not accessed.'
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "archive/$ASSET_NAME" archive/SHA256SUMS --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$RELEASE_TAG" "archive/$ASSET_NAME" archive/SHA256SUMS --target "$GITHUB_SHA" --title 'USDJPY Market-State Router Reference v2' --notes "$notes" --repo "$GITHUB_REPOSITORY"
+          fi
+      - name: Publish receipt issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          body=$(cat <<EOF
+          status: PASS_REFERENCE_V2_RELEASE_ARCHIVE
+          source_run_id: 30225889285
+          source_artifact_id: 8638538919
+          source_artifact_digest: sha256:d08e570a5bcc618bdecc01e77fe811d4b91e493f9480e17a01b2833f6add6595
+          release_tag: $RELEASE_TAG
+          release_asset: $ASSET_NAME
+          release_asset_sha256: $(sha256sum "archive/$ASSET_NAME" | awk '{print $1}')
+          reference_trade_sha256: 2eb44690bcc9865248eda6ccd151e327e1676266247924078dcdbe740db4432c
+          reference_h4_sha256: c721fad5aad85c8ff60943f1283eb80a0388503cc4afd8f81789fb88521294a2
+          candidate: S3_H4_ALIGNED
+          2025_accessed: false
+          EOF
+          )
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[market-state-reference-v2-release] $GITHUB_RUN_ID PASS" --body "$body"
