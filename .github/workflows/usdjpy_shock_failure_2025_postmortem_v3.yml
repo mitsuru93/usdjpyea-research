@@ -122,11 +122,13 @@ jobs:
 
       - name: Download corrected P6 and original MT4 logs
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh release download "$CORE_REPAIR_RELEASE" --repo "$CORE_REPO" --dir "$PM_ROOT/core" --pattern corrected_p6_result.json --pattern p6_repair_receipt.json --pattern release_readback_receipt.json --pattern usdjpy-shock-failure-p6-original-artifact-8639969385.zip
+          for name in corrected_p6_result.json p6_repair_receipt.json release_readback_receipt.json usdjpy-shock-failure-p6-original-artifact-8639969385.zip; do
+            curl --fail --location --retry 3 --retry-all-errors \
+              "https://github.com/$CORE_REPO/releases/download/$CORE_REPAIR_RELEASE/$name" \
+              --output "$PM_ROOT/core/$name"
+          done
           jq -e '.status=="FAIL_P6_2025_GATE_RESEARCH_ONLY_NO_RETUNING"' "$PM_ROOT/core/corrected_p6_result.json"
           jq -e '.status=="PASS_EVIDENCE_PACKAGING_REPAIRED_SCIENTIFIC_RESULT_UNCHANGED"' "$PM_ROOT/core/p6_repair_receipt.json"
           jq -e '.status=="PASS_SHA256_READBACK"' "$PM_ROOT/core/release_readback_receipt.json"
@@ -193,6 +195,7 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add "$target"
           git commit -m 'research: record completed Shock Failure 2025 postmortem'
+          git pull --rebase origin "$HEAD_BRANCH"
           git push origin "HEAD:$HEAD_BRANCH"
           echo "PUBLICATION_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
