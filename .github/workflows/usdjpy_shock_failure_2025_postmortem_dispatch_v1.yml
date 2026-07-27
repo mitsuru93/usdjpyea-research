@@ -1,0 +1,28 @@
+name: Dispatch USDJPY Shock Failure 2025 Postmortem v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_shock_failure_2025_postmortem_dispatch_v1.json'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate one-shot marker
+        uses: actions/checkout@v4
+      - name: Dispatch main-registered bridge workflow
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          jq -e '.schema_version=="usdjpy_shock_failure_2025_postmortem_dispatch_v1" and .target_branch=="agent/shock-failure-2025-postmortem-v1" and .candidate_id=="B_EXECUTABLE_T0_8BAR" and .no_retuning==true' configs/research/usdjpy_shock_failure_2025_postmortem_dispatch_v1.json
+          gh workflow run usdjpy_shock_failure_2025_postmortem_bridge_v1.yml --repo "$GITHUB_REPOSITORY" --ref main
+          echo "DISPATCHED_BRIDGE_WORKFLOW"
