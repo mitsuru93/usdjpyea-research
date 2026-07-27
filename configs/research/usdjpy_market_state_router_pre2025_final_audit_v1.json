@@ -1,8 +1,10 @@
 {
   "schema_version": "usdjpy_market_state_router_pre2025_final_audit_v1",
   "as_of_utc": "2026-07-27",
-  "status": "PASS_HISTORICAL_ECONOMIC_ATTRIBUTION_HOLD_2025_GATE_FOR_EQUITY_DD_AUTHORITY",
+  "status": "PASS_PRE2025_ALL_GATES_ELIGIBLE_FOR_SEPARATE_2025_PREREGISTRATION",
   "candidate_id": "S3_H4_ALIGNED",
+  "supersedes_status": "PASS_HISTORICAL_ECONOMIC_ATTRIBUTION_HOLD_2025_GATE_FOR_EQUITY_DD_AUTHORITY",
+  "correction_reason": "The earlier audit treated an unbounded equity DD whose running peak was a single 2021-06-04 snapshot as 2023-2024 gate authority. The preregistered bounded reconciliation reset the peak inside the frozen study window and showed that candidate DD improves in the pooled window and every half-year fold.",
   "candidate_definition": {
     "timeframe": "H4",
     "fast_ema": 6,
@@ -58,24 +60,20 @@
         "net_account_usd": 317.0,
         "gross_quote_jpy": 51408.0,
         "pf": 1.121774137785324,
-        "closed_trade_mdd_usd": 296.11,
-        "max_equity_dd_usd": 615.74
+        "closed_trade_mdd_usd": 296.11
       },
       "candidate": {
         "trades": 1222,
         "net_account_usd": 496.78,
         "gross_quote_jpy": 76391.0,
         "pf": 1.3113319880174972,
-        "closed_trade_mdd_usd": 195.06,
-        "max_equity_dd_usd": 687.48
+        "closed_trade_mdd_usd": 195.06
       },
       "delta": {
         "net_account_usd": 179.78,
         "gross_quote_jpy": 24983.0,
         "closed_trade_mdd_usd": -101.05,
-        "closed_trade_mdd_pct": -34.1258316166,
-        "max_equity_dd_usd": 71.74,
-        "max_equity_dd_pct": 11.6510215351
+        "closed_trade_mdd_pct": -34.1258316166
       }
     },
     "binding_reference_population": {
@@ -111,34 +109,46 @@
   },
   "drawdown_authority_decision": {
     "closed_trade_balance_drawdown": {
+      "authority_role": "SECONDARY_DIAGNOSTIC",
       "result": "IMPROVED",
       "baseline_usd": 296.11,
       "candidate_usd": 195.06,
       "delta_usd": -101.05,
       "delta_pct": -34.1258316166
     },
-    "native_full_equity_drawdown": {
-      "result": "WORSE",
+    "legacy_unbounded_native_full_equity_drawdown": {
+      "authority_role": "DIAGNOSTIC_ONLY_PREPERIOD_CONTAMINATED",
       "baseline_usd": 615.74,
       "candidate_usd": 687.48,
       "delta_usd": 71.74,
-      "delta_pct": 11.6510215351
+      "delta_pct": 11.6510215351,
+      "common_peak_utc": "2021-06-04T07:33:59Z",
+      "pre_2023_snapshot_rows_per_population": 1,
+      "result": "SUPERSEDED_FOR_HISTORICAL_GATE"
     },
-    "binding_filtered_equity_drawdown": {
-      "baseline_usd": 360.0,
-      "candidate_usd": 360.0,
-      "authority_status": "DIAGNOSTIC_ONLY_NOT_CANONICAL_FOR_GATE",
-      "reason": "The filtered reports contain synthetic population and margin-state effects and cannot supersede the native full MT4 equity path."
+    "bounded_2023_2024_native_full_equity_drawdown": {
+      "authority_role": "CANONICAL_HISTORICAL_GATE",
+      "window_start_inclusive_utc": "2023-01-01T00:00:00Z",
+      "window_end_exclusive_utc": "2025-01-01T00:00:00Z",
+      "baseline_usd": 311.87,
+      "candidate_usd": 201.70,
+      "delta_usd": -110.17,
+      "delta_pct": -35.3256164427,
+      "result": "IMPROVED",
+      "fold_nonworse_count": 4,
+      "fold_count": 4
     },
     "canonical_future_gate_metric": {
-      "metric": "native full MT4 equity-curve peak-to-trough maximum drawdown in effective account currency",
+      "metric": "native full MT4 equity-curve peak-to-trough maximum drawdown in effective account currency with the running peak initialized at the first valid snapshot inside the evaluated gate window",
       "includes_intratrade_floating_pl": true,
       "comparison": "fixed Baseline versus fixed Baseline plus S3_H4_ALIGNED",
       "closed_trade_mdd_role": "secondary diagnostic only",
-      "rationale": "Margin and stopout risk are functions of the full equity path, not only realized closed-trade balance."
+      "preperiod_snapshots": "excluded from running-peak initialization",
+      "rationale": "The gate must measure equity risk generated inside its declared period and must not inherit a peak from an unrelated pre-period snapshot."
     },
-    "historical_gate_result": "FAIL_NON_WORSE_NATIVE_FULL_EQUITY_DD",
-    "authority_frozen_before_2025_access": true
+    "historical_gate_result": "PASS_NON_WORSE_BOUNDED_NATIVE_FULL_EQUITY_DD",
+    "authority_frozen_before_2025_access": true,
+    "source_result": "configs/research/usdjpy_market_state_router_native_equity_dd_reconciliation_result_v1.json"
   },
   "gate_matrix": {
     "research_portability": "PASS",
@@ -150,28 +160,37 @@
     "historical_net_improvement": "PASS",
     "historical_pf_improvement": "PASS",
     "historical_closed_trade_mdd_improvement": "PASS_DIAGNOSTIC",
-    "historical_native_full_equity_mdd_non_worse": "FAIL",
+    "historical_bounded_native_full_equity_mdd_non_worse": "PASS",
+    "historical_half_year_equity_mdd_breadth": "PASS_4_OF_4",
+    "2025_gate_eligibility": "PASS_SEPARATE_PREREGISTRATION_ALLOWED",
     "2025_gate_authorized": false,
     "production_authorized": false,
     "live_orders_authorized": false
   },
   "evidence": {
-    "research_prs": [286, 293, 297, 316],
-    "core_issues": [314, 315, 321, 325, 328, 332, 333, 368, 371, 376],
+    "research_prs": [286, 293, 297, 316, 326, 327, 328, 329],
+    "core_prs": [387],
+    "core_issues": [314, 315, 321, 325, 328, 332, 333, 368, 371, 376, 395],
     "core_runs": {
       "h4_parity": 30237882923,
       "reference_trade_identity": 30238772493,
       "preimplementation_audit": 30239760337,
       "controlled_order_path": 30241915781,
       "economic_attribution": 30256893465,
-      "final_release_content_readback": 30259786568
+      "economic_release_content_readback": 30259786568,
+      "bounded_native_equity_dd_reconciliation": 30261603069
     },
-    "core_release": {
+    "economic_release": {
       "tag": "usdjpy-market-state-router-s3-economic-attribution-v1",
       "target_commitish": "2deb131bdda3dd13d0b5b69d0c80967235fb3e66",
       "archive": "usdjpy-s3-economic-attribution-30256893465.zip",
-      "archive_sha256": "40cdd1f8c6e7984e500a79ce430e697c3c33d31c6c4d8daa30e6ad6a5bb7062b",
-      "required_members_read_back": 7
+      "archive_sha256": "40cdd1f8c6e7984e500a79ce430e697c3c33d31c6c4d8daa30e6ad6a5bb7062b"
+    },
+    "dd_reconciliation_release": {
+      "tag": "usdjpy-s3-native-equity-dd-reconciliation-v1",
+      "target_commitish": "b3cc4faa4c83e6a3c00df0fec8262b7d9290f7e1",
+      "archive": "usdjpy-s3-native-equity-dd-30261603069-1.zip",
+      "archive_sha256": "8896d464935eccaba551847de3a332d5d744f3d1e42d1e0d7b7851af9a83fa72"
     }
   },
   "boundaries": {
@@ -182,5 +201,5 @@
     "production_authorized": false,
     "live_orders_authorized": false
   },
-  "next_action": "PREREGISTER_AND_EXECUTE_PRE2025_NATIVE_FULL_EQUITY_DD_RECONCILIATION_WITHOUT_CHANGING_S3_OR_ACCESSING_2025"
+  "next_action": "PREREGISTER_A_SEPARATE_OUTCOME_FREE_ONE_SHOT_2025_GATE_FOR_THE_UNCHANGED_S3_H4_ALIGNED_CANDIDATE"
 }
