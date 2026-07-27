@@ -1,0 +1,134 @@
+{
+  "schema_version": "usdjpy_market_state_router_native_equity_dd_reconciliation_result_v1",
+  "status": "PASS_PREPERIOD_PEAK_CONTAMINATION_RESOLVED_BOUNDED_DD_NONWORSE",
+  "candidate_id": "S3_H4_ALIGNED",
+  "as_of_utc": "2026-07-27",
+  "research_protocol_sha": "f6ab7cdbfb51cd46bbc4c02c2a2be7be6ee60a8b",
+  "core_implementation_sha": "0a942a6b1e61dce98b96dae63cf71cb9f89a4ca7",
+  "authoritative_run_id": 30261603069,
+  "authoritative_issue": 395,
+  "immutable_input": {
+    "release_tag": "usdjpy-market-state-router-s3-economic-attribution-v1",
+    "archive": "usdjpy-s3-economic-attribution-30256893465.zip",
+    "archive_sha256": "40cdd1f8c6e7984e500a79ce430e697c3c33d31c6c4d8daa30e6ad6a5bb7062b"
+  },
+  "legacy_unbounded_reproduction": {
+    "authority_role": "DIAGNOSTIC_ONLY_PREPERIOD_CONTAMINATED",
+    "baseline_max_equity_dd_usd": 615.74,
+    "candidate_max_equity_dd_usd": 687.48,
+    "candidate_minus_baseline_usd": 71.74,
+    "baseline_peak_utc": "2021-06-04T07:33:59Z",
+    "candidate_peak_utc": "2021-06-04T07:33:59Z",
+    "pre_2023_snapshot_rows_per_population": 1,
+    "reason_not_gate_authority": "The running peak is a single snapshot 578 days before the 2023-2024 research observations and lies outside the frozen study window."
+  },
+  "bounded_2023_2024": {
+    "window_start_inclusive_utc": "2023-01-01T00:00:00Z",
+    "window_end_exclusive_utc": "2025-01-01T00:00:00Z",
+    "snapshots_per_population": 49163,
+    "median_snapshot_interval_seconds": 900,
+    "duplicate_observation_utc_rows": 0,
+    "baseline": {
+      "initial_equity_usd": 10000.0,
+      "peak_equity_usd": 10013.13,
+      "peak_utc": "2023-01-05T15:30:00Z",
+      "trough_equity_usd": 9701.26,
+      "trough_utc": "2023-10-26T13:45:00Z",
+      "recovery_utc": "2024-03-19T09:45:01Z",
+      "max_equity_dd_usd": 311.87,
+      "max_equity_dd_pct_of_peak": 3.1146105164,
+      "balance_path_contribution_usd": 278.67,
+      "floating_path_contribution_usd": 33.20,
+      "trough_margin_usd": 80.0,
+      "trough_free_margin_usd": 9621.26,
+      "trough_orders_total": 2,
+      "trough_open_buy_lots": 0.02,
+      "trough_open_sell_lots": 0.0
+    },
+    "candidate": {
+      "initial_equity_usd": 10000.0,
+      "peak_equity_usd": 10011.0,
+      "peak_utc": "2023-01-13T16:00:00Z",
+      "trough_equity_usd": 9809.30,
+      "trough_utc": "2023-10-30T11:45:00Z",
+      "recovery_utc": "2024-01-03T15:30:01Z",
+      "max_equity_dd_usd": 201.70,
+      "max_equity_dd_pct_of_peak": 2.0147837379,
+      "balance_path_contribution_usd": 188.91,
+      "floating_path_contribution_usd": 12.79,
+      "trough_margin_usd": 40.0,
+      "trough_free_margin_usd": 9769.30,
+      "trough_orders_total": 1,
+      "trough_open_buy_lots": 0.0,
+      "trough_open_sell_lots": 0.01
+    },
+    "delta": {
+      "max_equity_dd_usd": -110.17,
+      "max_equity_dd_pct_of_baseline": -35.3256164427,
+      "result": "IMPROVED"
+    }
+  },
+  "folds": [
+    {
+      "fold": "2023H1",
+      "baseline_max_equity_dd_usd": 256.03,
+      "candidate_max_equity_dd_usd": 198.06,
+      "delta_usd": -57.97,
+      "delta_pct": -22.6418779049,
+      "candidate_nonworse": true
+    },
+    {
+      "fold": "2023H2",
+      "baseline_max_equity_dd_usd": 182.36,
+      "candidate_max_equity_dd_usd": 131.75,
+      "delta_usd": -50.61,
+      "delta_pct": -27.7527966659,
+      "candidate_nonworse": true
+    },
+    {
+      "fold": "2024H1",
+      "baseline_max_equity_dd_usd": 67.17,
+      "candidate_max_equity_dd_usd": 57.86,
+      "delta_usd": -9.31,
+      "delta_pct": -13.8603543248,
+      "candidate_nonworse": true
+    },
+    {
+      "fold": "2024H2",
+      "baseline_max_equity_dd_usd": 124.62,
+      "candidate_max_equity_dd_usd": 96.59,
+      "delta_usd": -28.03,
+      "delta_pct": -22.4923768255,
+      "candidate_nonworse": true
+    }
+  ],
+  "decision": {
+    "historical_native_full_equity_mdd_non_worse": "PASS",
+    "all_half_year_folds_non_worse": true,
+    "legacy_apparent_worsening_explained": true,
+    "candidate_definition_changed": false,
+    "parameter_change": false,
+    "B02_F05_semantic_change": false,
+    "2025_gate_eligibility": "PASS_SEPARATE_PREREGISTRATION_ALLOWED",
+    "2025_gate_authorized_by_this_result": false,
+    "production_authorized": false,
+    "live_orders_authorized": false
+  },
+  "evidence": {
+    "core_pr": 387,
+    "core_run": 30261603069,
+    "core_issue": 395,
+    "release_tag": "usdjpy-s3-native-equity-dd-reconciliation-v1",
+    "release_target_commitish": "b3cc4faa4c83e6a3c00df0fec8262b7d9290f7e1",
+    "release_archive": "usdjpy-s3-native-equity-dd-30261603069-1.zip",
+    "release_archive_sha256": "8896d464935eccaba551847de3a332d5d744f3d1e42d1e0d7b7851af9a83fa72"
+  },
+  "boundaries": {
+    "2025H1_accessed": false,
+    "2025H2_accessed": false,
+    "candidate_retuning_authorized": false,
+    "production_authorized": false,
+    "live_orders_authorized": false
+  },
+  "next_action": "FREEZE_A_SEPARATE_OUTCOME_FREE_ONE_SHOT_2025_GATE_PROTOCOL_FOR_THE_UNCHANGED_S3_H4_ALIGNED_CANDIDATE"
+}
