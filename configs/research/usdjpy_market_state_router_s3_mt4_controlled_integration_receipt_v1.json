@@ -30,13 +30,26 @@
     "order_close_failed": 0,
     "router_data_errors": 0
   },
-  "tester_outcomes": {
-    "baseline_balance_net_jpy": 317.0,
-    "candidate_balance_net_jpy": 496.78000000000065,
-    "balance_net_delta_jpy": 179.78000000000065,
-    "baseline_max_equity_dd_jpy": 311.869999999999,
-    "candidate_max_equity_dd_jpy": 201.70000000000073,
-    "max_equity_dd_delta_jpy": -110.16999999999825
+  "tester_outcomes_original_labels_superseded": {
+    "effective_account_currency": "USD",
+    "currency_correction_authority": "configs/research/usdjpy_market_state_router_s3_mt4_economic_attribution_receipt_v1.json",
+    "deprecated_fields": {
+      "baseline_balance_net_jpy": 317.0,
+      "candidate_balance_net_jpy": 496.78000000000065,
+      "balance_net_delta_jpy": 179.78000000000065,
+      "baseline_max_equity_dd_jpy": 311.869999999999,
+      "candidate_max_equity_dd_jpy": 201.70000000000073,
+      "max_equity_dd_delta_jpy": -110.16999999999825
+    },
+    "corrected_interpretation": {
+      "baseline_balance_net_usd": 317.0,
+      "candidate_balance_net_usd": 496.78000000000065,
+      "balance_net_delta_usd": 179.78000000000065,
+      "baseline_report_max_equity_dd_usd": 311.869999999999,
+      "candidate_report_max_equity_dd_usd": 201.70000000000073,
+      "report_max_equity_dd_delta_usd": -110.16999999999825
+    },
+    "note": "The controlled-integration order-path PASS remains valid. Only the JPY currency labels are superseded by the later ticket-level Economic Attribution authority."
   },
   "evidence_release": {
     "tag": "usdjpy-market-state-router-s3-controlled-integration-v1",
@@ -47,6 +60,7 @@
   "scientific_classification": {
     "binding_reference_trade_parity": "PASS",
     "native_order_path_integration": "PASS",
+    "economic_outcome_authority": "configs/research/usdjpy_market_state_router_s3_mt4_economic_attribution_receipt_v1.json",
     "native_trade_universe_is_binding": false,
     "candidate_definition_changed": false,
     "parameter_change": false,
