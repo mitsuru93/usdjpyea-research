@@ -1,0 +1,121 @@
+{
+  "schema_version": "usdjpy_market_state_router_s3_mt4_preimplementation_audit_receipt_v1",
+  "status": "PASS_RESEARCH_CORE_PARITY_AND_MT4_PREIMPLEMENTATION_AUDIT",
+  "candidate_id": "S3_H4_ALIGNED",
+  "research_authority": {
+    "repository": "mitsuru93/usdjpyea-research",
+    "main_sha_before_receipt": "9697d3a0fe1e58520c30d7f1a9d86f9e51a1b886",
+    "exact_implementation_contract_commit": "2ade5c61ebc16e389da569d24fe678b081a56419",
+    "exact_implementation_contract_path": "configs/research/usdjpy_market_state_router_exact_implementation_contract_v1.json",
+    "candidate_freeze_path": "configs/research/usdjpy_market_state_router_candidate_freeze_v1.json",
+    "legacy_reference_release_tag": "usdjpy-market-state-router-reference-v2"
+  },
+  "frozen_rule": {
+    "fast_ema_span": 6,
+    "slow_ema_span": 24,
+    "h4_constituent_m15_slots": 16,
+    "price_side": "Bid",
+    "digits": 3,
+    "permission": "h4_state == trade_side",
+    "strategy_exceptions": false,
+    "side_exceptions": false,
+    "session_exceptions": false,
+    "parameter_change": false,
+    "candidate_definition_changed": false
+  },
+  "reference_correction": {
+    "legacy_defect": "The 2024 reference generator selected Mid OHLC even though the frozen exact implementation contract requires Bid OHLC with USDJPY digits=3.",
+    "legacy_mid_reference_csv_sha256": "c1aebc9eb33f8c4b41f639eb180ddb5e26ea99acee9510b5a7a259bd3b64842a",
+    "corrected_bid_reference_csv_sha256": "8a7aeb6c193c93038e7ed36edc4586fd05032e8dc8ac7ff76e6fca0c703a11ac",
+    "mt4_canonical_csv_sha256": "8a7aeb6c193c93038e7ed36edc4586fd05032e8dc8ac7ff76e6fca0c703a11ac",
+    "selection_change": false,
+    "candidate_change": false,
+    "parameter_change": false,
+    "interpretation": "Evidence/reference repair only. The frozen permission rule and candidate identity are unchanged."
+  },
+  "core_authority": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "final_cleanup_main_sha": "1c02971b44594b2341b0db6756c8025527056488",
+    "canonical_receipt_path": "docs/research/market_state_router_s3_h4_aligned_mt4_preimplementation_audit_v1/final_receipt.json",
+    "canonical_report_path": "docs/research/market_state_router_s3_h4_aligned_mt4_preimplementation_audit_v1/README.md",
+    "release_tag": "usdjpy-market-state-router-s3-mt4-preaudit-v1",
+    "release_target_sha": "55bc21b00e5af07bb695fd16cf99d67051e4b9c5",
+    "release_readback_verified": true,
+    "core_issue_number": 328
+  },
+  "h4_state_parity": {
+    "status": "PASS_ZERO_MISMATCH_MT4_H4_STATE_PARITY",
+    "core_sha": "227a514fd2df6b18274867d1782ccb18b614ef1f",
+    "run_id": 30237882923,
+    "artifact_id": 8642244150,
+    "artifact_digest": "b5724d09aecb8e2b2228acf6f461f36e106bad3c8aa82768803ed5ff0d4433a8",
+    "h4_rows": 3055,
+    "bucket_time_mismatches": 0,
+    "information_time_mismatches": 0,
+    "close_mismatches": 0,
+    "fast_ema_mismatches": 0,
+    "slow_ema_mismatches": 0,
+    "h4_state_mismatches": 0,
+    "permission_truth_table_mismatches": 0,
+    "numeric_tolerance": 1e-10,
+    "maximum_fast_ema_absolute_error": 5.115907697472721e-13,
+    "maximum_slow_ema_absolute_error": 5.115907697472721e-13
+  },
+  "historical_reference_trade_parity": {
+    "status": "PASS_MT4_HISTORICAL_REFERENCE_TRADE_IDENTITY",
+    "binding_population": "exact frozen 1882 Research reference trades",
+    "source_mt4_core_sha": "149c43caf573ab9cf5767d010183928f6a8b35fa",
+    "source_mt4_run_id": 30238471176,
+    "source_mt4_artifact_id": 8642446637,
+    "source_mt4_artifact_digest": "7a8ab34a9c0d1827d64bc4c139303bb47643cff1c4592569bedc16e56df89339",
+    "evaluator_repair_run_id": 30238772493,
+    "repaired_artifact_id": 8642512253,
+    "repaired_artifact_digest": "ebcd0ebc629b97e40562003a01746d944f65cb56bbd23d602a4baa36ed42f94e",
+    "rows": 1882,
+    "mismatch_rows": 0,
+    "blocked": 671,
+    "allowed": 1211,
+    "permission_mismatches": 0,
+    "missed_entry_bars": 0,
+    "router_data_errors": 0,
+    "orders_sent": 0,
+    "mt4_rerun_for_evaluator_repair": false,
+    "evaluator_logic_changed": false,
+    "evaluator_repair_scope": "JSON serialization of NumPy scalar booleans only"
+  },
+  "integrated_implementation_repair": {
+    "defect": "The integrated candidate did not preload available closed M15 history before its first entry decision.",
+    "repair_commit": "4e7900872f69db586f1c1b3d16cdb7afd77d4581",
+    "repair": "Warm all available closed M15 bars from the frozen authority start in ascending order before the first decision.",
+    "candidate_definition_changed": false,
+    "parameter_change": false
+  },
+  "auxiliary_native_regeneration": {
+    "run_id": 30237456639,
+    "status": "AUXILIARY_FAIL_BASELINE_TRADE_UNIVERSE_DRIFT_NON_BINDING",
+    "reference_trades": 1882,
+    "native_regenerated_decisions": 1898,
+    "missing_reference_trade_ids": 9,
+    "extra_native_trade_ids": 25,
+    "order_send_failures": 0,
+    "order_close_failures": 0,
+    "binding_interpretation": "Diagnostic of B02/F05 baseline regeneration drift only. It does not replace the preregistered exact 1882-trade binding population."
+  },
+  "period_boundaries": {
+    "validated": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ],
+    "2025H1_accessed": false,
+    "2025H2_accessed": false
+  },
+  "decision": {
+    "research_core_parity": "PASS",
+    "mt4_preimplementation_audit": "PASS",
+    "portable_candidate_status": "ELIGIBLE_FOR_NEXT_CONTROLLED_INTEGRATION_STAGE",
+    "production_authorized": false,
+    "live_orders_authorized": false
+  }
+}
