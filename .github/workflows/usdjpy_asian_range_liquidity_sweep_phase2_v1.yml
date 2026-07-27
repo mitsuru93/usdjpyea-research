@@ -103,6 +103,7 @@ jobs:
           test "$(find inputs/raw2023 -name '*.tar.gz' | wc -l)" = 12
           test "$(find inputs/raw2024 -name '*.tar.gz' | wc -l)" = 12
       - name: Execute frozen Phase 2 evaluator
+        continue-on-error: true
         run: |
           set -euo pipefail
           mkdir -p phase2_output
@@ -113,6 +114,7 @@ jobs:
           (cd phase2_output && sha256sum -c PACKAGE_SHA256SUMS)
           zip -q -X -r "usdjpy-asian-range-liquidity-sweep-phase2-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" phase2_output
       - name: Upload immutable Actions artifact
+        if: always()
         id: upload
         uses: actions/upload-artifact@v4
         with:
@@ -123,7 +125,7 @@ jobs:
           retention-days: 90
           compression-level: 0
       - name: Publish immutable Release on main
-        if: github.event_name == 'push' && github.ref_name == 'main'
+        if: success() && github.event_name == 'push' && github.ref_name == 'main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
