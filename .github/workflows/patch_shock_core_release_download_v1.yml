@@ -1,0 +1,44 @@
+name: Patch Shock Core Release Download v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/patch_shock_core_release_download_v1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/shock-failure-2025-postmortem-v1
+          fetch-depth: 0
+      - name: Replace scoped gh download with public immutable asset URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.github/workflows/usdjpy_shock_failure_2025_postmortem_v3.yml')
+          s=p.read_text(encoding='utf-8')
+          old='          gh release download "$CORE_REPAIR_RELEASE" --repo "$CORE_REPO" --dir "$PM_ROOT/core" --pattern corrected_p6_result.json --pattern p6_repair_receipt.json --pattern release_readback_receipt.json --pattern usdjpy-shock-failure-p6-original-artifact-8639969385.zip'
+          new='''          for name in corrected_p6_result.json p6_repair_receipt.json release_readback_receipt.json usdjpy-shock-failure-p6-original-artifact-8639969385.zip; do
+            curl --fail --location --retry 3 --retry-all-errors \
+              "https://github.com/$CORE_REPO/releases/download/$CORE_REPAIR_RELEASE/$name" \
+              --output "$PM_ROOT/core/$name"
+          done'''
+          if old not in s:
+              raise SystemExit('target Core download command not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .github/workflows/usdjpy_shock_failure_2025_postmortem_v3.yml
+          git commit -m 'ci: download public Core evidence Release without scoped token'
+          git pull --rebase origin agent/shock-failure-2025-postmortem-v1
+          git push origin HEAD:agent/shock-failure-2025-postmortem-v1
