@@ -17,24 +17,26 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
-      - name: Persist immutable release REST inventory
+      - name: Persist Research release inventory
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
-          target=research_inputs/usdjpy/shock_failure/2025_postmortem_v1/raw_tick_release_rest_inventory.json
-          gh api "repos/$GITHUB_REPOSITORY/releases/tags/usdjpy-raw-ticks-2025-v1" > "$target"
-          python - "$target" <<'PY'
+          target=research_inputs/usdjpy/shock_failure/2025_postmortem_v1/research_release_inventory.json
+          gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" --paginate --slurp > "$RUNNER_TEMP/pages.json"
+          python - "$RUNNER_TEMP/pages.json" "$target" <<'PY'
           import json,sys
-          x=json.load(open(sys.argv[1]))
-          assert x['tag_name']=='usdjpy-raw-ticks-2025-v1'
-          assert len(x['assets'])==13
-          print([(a['name'],a['size']) for a in x['assets']])
+          pages=json.load(open(sys.argv[1]));rows=[]
+          for page in pages:
+            for x in page:
+              rows.append({'tag_name':x['tag_name'],'name':x.get('name'),'draft':x['draft'],'prerelease':x['prerelease'],'target_commitish':x['target_commitish'],'published_at':x.get('published_at'),'assets':[{'id':a['id'],'name':a['name'],'size':a['size'],'digest':a.get('digest'),'url':a['url']} for a in x['assets']]})
+          json.dump({'release_count':len(rows),'releases':rows},open(sys.argv[2],'w'),indent=2,sort_keys=True)
+          print([x['tag_name'] for x in rows if '2025' in x['tag_name'].lower() or 'tick' in x['tag_name'].lower()])
           PY
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add "$target"
-          git commit -m "evidence: record immutable 2025 Raw Tick release inventory"
+          git commit -m "evidence: record Research release inventory"
           git push origin "HEAD:$HEAD_BRANCH"
