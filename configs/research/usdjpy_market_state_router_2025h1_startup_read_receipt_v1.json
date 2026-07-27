@@ -36,7 +36,8 @@
     {"path":"configs/research/usdjpy_market_state_router_s3_mt4_economic_attribution_receipt_v1.json","research_main_commit":"78d7e52f5ee315b28bc9536e1ad8504f9eddd9cf"},
     {"path":"docs/research/usdjpy_market_state_router_s3_mt4_economic_attribution_v1.md","research_main_commit":"73559a5036104677ec8020d3246d6eed8496762b"},
     {"path":"configs/research/usdjpy_validation_operating_contract_v3.json","blob":"c9c2c16b3ab1cff99902078bceaf87b223bb58f6"},
-    {"repository":"mitsuru93/usdjpyea-core","path":"tools/build_usdjpy_market_state_router_s3_v1.py","blob":"0e22b0f3c40811b809fb6334fcd2a5b326d2707c"}
+    {"repository":"mitsuru93/usdjpyea-core","path":"tools/build_usdjpy_market_state_router_s3_v1.py","blob":"0e22b0f3c40811b809fb6334fcd2a5b326d2707c"},
+    {"path":"configs/research/usdjpy_hypothesis_ledger_addendum_v23.json","blob":"4fa7d6f20804f0ff9060da0c1fb7838ebd1ec4e8","reason":"confirm USDJPY-HYP-028 already belongs to Shock Failure Regime Discriminator"}
   ],
   "current_global_registry": {
     "schema_version":"usdjpy_research_candidate_registry_v48",
@@ -47,16 +48,16 @@
     "preserved_unchanged":true
   },
   "declared_parallel_lineage": {
-    "hypothesis_id":"USDJPY-HYP-028",
-    "family_id":"S_MARKET_STATE_STRATEGY_ROUTING",
+    "hypothesis_id":"USDJPY-HYP-029",
+    "family_id":"T_MARKET_STATE_STRATEGY_ROUTING",
     "lineage_id":"IMPACT_ATLAS_MARKET_STATE_ROUTER_S3_V1",
     "candidate_id":"S3_H4_ALIGNED",
-    "relationship_to_global_state":"independent binding-validation track; does not replace or authorize HYP-027",
+    "relationship_to_global_state":"independent binding-validation track; does not replace or authorize HYP-027 or reopen HYP-028",
     "candidate_already_frozen":true,
     "new_mechanism_or_threshold_search":false
   },
   "duplicate_and_novelty_audit": {
-    "relevant_prior_ids_reviewed":["USDJPY-HYP-001","USDJPY-HYP-002","USDJPY-HYP-003","USDJPY-HYP-004","USDJPY-HYP-005","USDJPY-HYP-006","USDJPY-HYP-007","USDJPY-HYP-008","USDJPY-HYP-009","USDJPY-HYP-010","USDJPY-HYP-025","USDJPY-HYP-026","USDJPY-HYP-027"],
+    "relevant_prior_ids_reviewed":["USDJPY-HYP-001","USDJPY-HYP-002","USDJPY-HYP-003","USDJPY-HYP-004","USDJPY-HYP-005","USDJPY-HYP-006","USDJPY-HYP-007","USDJPY-HYP-008","USDJPY-HYP-009","USDJPY-HYP-010","USDJPY-HYP-025","USDJPY-HYP-026","USDJPY-HYP-027","USDJPY-HYP-028"],
     "finding":"S3_H4_ALIGNED is not a threshold repair of the closed shock/exit/technical/portfolio families. It is the already-selected portable market-state admission router from Impact Atlas Phase 1 and Market-State Routing Phase 2.",
     "closed_candidate_reopened":false,
     "known_2025_outcome_used_for_candidate_selection":false,
