@@ -1,5 +1,31 @@
 Traceback (most recent call last):
-  File "/home/runner/work/usdjpyea-research/usdjpyea-research/tools/run_usdjpy_shock_failure_2025_postmortem_v1.py", line 6, in <module>
-    SOURCE=zlib.decompress(base64.b64decode(PAYLOAD))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-zlib.error: Error -3 while decompressing data: incorrect data check
+  File "/home/runner/work/usdjpyea-research/usdjpyea-research/tools/run_usdjpy_shock_failure_2025_postmortem_v1.py", line 21, in <module>
+    exec(compile(source, str(decoded), "exec"), {"__name__": "__main__", "__file__": str(decoded)})
+  File "/home/runner/work/usdjpyea-research/usdjpyea-research/tools/run_usdjpy_shock_failure_2025_postmortem_v1.decoded.py", line 313, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/runner/work/usdjpyea-research/usdjpyea-research/tools/run_usdjpy_shock_failure_2025_postmortem_v1.decoded.py", line 245, in main
+    phase=read_csv_robust(locate(a.phase2_dir,'candidate_trade_ledger.csv.gz'));hist=phase[(phase.candidate_id==CANDIDATE)&phase.admitted.fillna(False)].copy();hist['entry_utc']=pd.to_datetime(hist.entry_utc,utc=True);hist['exit_utc']=pd.to_datetime(hist.exit_utc,utc=True);hist['month']=hist.entry_utc.dt.strftime('%Y-%m');hist['day']=hist.entry_utc.dt.strftime('%Y-%m-%d');hist['pnl_jpy']=hist.pnl_jpy.astype(float)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/usdjpyea-research/usdjpyea-research/tools/run_usdjpy_shock_failure_2025_postmortem_v1.decoded.py", line 58, in read_csv_robust
+    try:return pd.read_csv(pd.io.common.BytesIO(raw),encoding=enc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 626, in _read
+    return parser.read(nrows)
+           ^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1923, in read
+    ) = self._engine.read(  # type: ignore[attr-defined]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/pandas/io/parsers/c_parser_wrapper.py", line 234, in read
+    chunks = self._reader.read_low_memory(nrows)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "parsers.pyx", line 838, in pandas._libs.parsers.TextReader.read_low_memory
+  File "parsers.pyx", line 905, in pandas._libs.parsers.TextReader._read_rows
+  File "parsers.pyx", line 874, in pandas._libs.parsers.TextReader._tokenize_rows
+  File "parsers.pyx", line 891, in pandas._libs.parsers.TextReader._check_tokenize_status
+  File "parsers.pyx", line 2061, in pandas._libs.parsers.raise_parser_error
+pandas.errors.ParserError: Error tokenizing data. C error: Expected 1 fields in line 4, saw 2
+
