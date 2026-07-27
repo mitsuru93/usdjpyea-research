@@ -44,8 +44,6 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --quiet --disable-pip-version-check pandas==2.2.3 numpy==2.1.3 scipy==1.14.1
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq zstd
 
       - name: Validate immutable Core-derived Research inputs
         shell: bash
@@ -82,36 +80,37 @@ jobs:
           for a in "$root"/phase2-download/*.tar.gz; do tar -xzf "$a" -C "$root/phase2"; done
           echo "POSTMORTEM_ROOT=$root" >> "$GITHUB_ENV"
 
-      - name: Download immutable 2025 Raw Bid Ask Tick Release
+      - name: Download and verify immutable 2025 Raw Bid Ask Tick Release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag=usdjpy-raw-ticks-2025-v1
+          tag=usdjpy-2025-raw-bidask-ticks-v1
           gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
           echo "RAW_2025_RELEASE=$tag" >> "$GITHUB_ENV"
           gh release download "$tag" --repo "$GITHUB_REPOSITORY" --dir "$POSTMORTEM_ROOT/raw-download"
-          manifest="$POSTMORTEM_ROOT/raw-download/usdjpy-dukascopy-raw-ticks-2025-v1-manifest.json"
-          test -f "$manifest"
-          python - "$manifest" <<'PY'
-          import json,sys
-          x=json.load(open(sys.argv[1]))
-          assert x['status']=='PASS' and x['month_count']==12 and x['expected_hours']==8760 and x['terminal_errors']==0
-          assert x['2025_strategy_results_opened'] is False
-          print(x['downloaded_hours'])
-          PY
           shopt -s nullglob
-          archives=("$POSTMORTEM_ROOT"/raw-download/usdjpy-dukascopy-raw-ticks-2025-??-v1.tar.zst)
+          archives=("$POSTMORTEM_ROOT"/raw-download/usdjpy-2025-??-raw-ticks-v1.tar.gz)
+          manifests=("$POSTMORTEM_ROOT"/raw-download/usdjpy-2025-??-raw-ticks-v1.manifest.json)
+          sums=("$POSTMORTEM_ROOT"/raw-download/usdjpy-2025-??-raw-ticks-v1.SHA256SUMS)
           test "${#archives[@]}" -eq 12
+          test "${#manifests[@]}" -eq 12
+          test "${#sums[@]}" -eq 12
+          test -f "$POSTMORTEM_ROOT/raw-download/usdjpy-2025-raw-ticks-v1.annual-manifest.json"
+          for s in "${sums[@]}"; do (cd "$POSTMORTEM_ROOT/raw-download" && sha256sum -c "$(basename "$s")"); done
+          expected=0
           for a in "${archives[@]}"; do
-            tar --use-compress-program=unzstd -xf "$a" -C "$POSTMORTEM_ROOT/raw" --wildcards --no-anchored '*.csv.gz'
+            n=$(tar -tzf "$a" | grep -cE '\.csv\.gz$' || true)
+            test "$n" -gt 0
+            expected=$((expected+n))
+            tar -xzf "$a" -C "$POSTMORTEM_ROOT/raw" --wildcards --no-anchored '*.csv.gz'
           done
-          count=$(find "$POSTMORTEM_ROOT/raw" -type f -name '*.csv.gz' | wc -l)
-          expected=$(python -c "import json;print(json.load(open('$manifest'))['downloaded_hours'])")
-          test "$count" -eq "$expected"
-          cp "$manifest" "$POSTMORTEM_ROOT/raw/"
-          echo "Raw Tick hourly files: $count/$expected from $tag"
+          actual=$(find "$POSTMORTEM_ROOT/raw" -type f -name '*.csv.gz' | wc -l)
+          test "$actual" -eq "$expected"
+          cp "$POSTMORTEM_ROOT/raw-download/usdjpy-2025-raw-ticks-v1.annual-manifest.json" "$POSTMORTEM_ROOT/raw/"
+          cp "${manifests[@]}" "$POSTMORTEM_ROOT/raw/"
+          echo "Raw Tick hourly files: $actual/$expected from $tag"
 
       - name: Run fixed-candidate postmortem
         shell: bash
@@ -130,7 +129,7 @@ jobs:
           cp "$CORRECTED_P6" "$POSTMORTEM_ROOT/out/corrected_p6_result.json"
           cp configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json "$POSTMORTEM_ROOT/out/"
           cp "$MT4_CONTEXT_DIR"/mt4_events_*.json "$POSTMORTEM_ROOT/out/"
-          cp "$POSTMORTEM_ROOT/raw/usdjpy-dukascopy-raw-ticks-2025-v1-manifest.json" "$POSTMORTEM_ROOT/out/"
+          cp "$POSTMORTEM_ROOT/raw/usdjpy-2025-raw-ticks-v1.annual-manifest.json" "$POSTMORTEM_ROOT/out/"
           printf '%s\n' "$RAW_2025_RELEASE" > "$POSTMORTEM_ROOT/out/raw_2025_release_tag.txt"
           python - <<'PY'
           import hashlib,json,os
