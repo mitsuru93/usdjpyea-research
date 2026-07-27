@@ -1,0 +1,128 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v26",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v25.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v25.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-029",
+      "family_ids": ["T_MARKET_STATE_STRATEGY_ROUTING"],
+      "candidate_ids": ["S3_H4_ALIGNED"],
+      "status": "CLOSED_FAIL_2025H1_BINDING",
+      "origin_analysis": "Impact Atlas and Market-State Strategy Routing Phase 2 identified an H4 directional permission rule as the most portable pre-2025 market-state candidate. The candidate was frozen before protected-period access and passed Research portability, exact Core contract, pre-2025 state parity, controlled integration, economic attribution and bounded native-equity drawdown audits.",
+      "causal_hypothesis": "B02 and F05 entries should be permitted only when the latest completed exact H4 state, defined by recursive EMA 6 versus EMA 24 on completed Rakuten M15 Bid slots, aligns with trade direction. Blocking neutral and opposed states should remove degraded entries more reliably than profitable continuation entries and convert the adverse 2025H1 portfolio into a positive, lower-drawdown outcome.",
+      "target_failure_mode": [
+        "B02/F05 entries taken against the completed H4 directional state",
+        "F05 loss concentration during opposed higher-timeframe states",
+        "portfolio tick-equity drawdown amplification from non-aligned entries"
+      ],
+      "pre_result_predictions": [
+        "Candidate 2025H1 net is positive and above the same-run baseline.",
+        "Candidate profit factor is at least 1.0 and not below baseline.",
+        "Maximum tick-equity drawdown is below baseline and minimum equity is above baseline.",
+        "Both 2025Q1 and 2025Q2 candidate nets are nonnegative and both deltas versus baseline are positive.",
+        "At least four months improve and at most one month deteriorates.",
+        "The total delta remains positive after removing the two best positive entry dates.",
+        "B02 and F05 deltas are nonnegative and blocked-loser benefit exceeds blocked-winner harm.",
+        "Baseline reproduction, entry identity, execution, accounting and independent router parity all pass with zero mismatch."
+      ],
+      "tests": [
+        {
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "type": "research_core_parity_preimplementation_and_economic_attribution",
+          "result": {
+            "candidate_definition": "FROZEN_S3_H4_ALIGNED_EMA6_EMA24",
+            "research_portability": "PASS",
+            "exact_implementation_contract": "PASS",
+            "research_to_core_state_parity": "PASS_ZERO_MISMATCH",
+            "reference_trade_permission_parity": "PASS_ZERO_MISMATCH",
+            "controlled_order_path_integration": "PASS",
+            "economic_attribution": "PASS",
+            "bounded_native_full_equity_DD": "PASS",
+            "pre2025_gate_matrix": "PASS_ALL"
+          }
+        },
+        {
+          "period": "2025H1",
+          "type": "one_shot_same_run_baseline_vs_S3_Rakuten_MT4_binding",
+          "run_id": 30283492240,
+          "result": {
+            "decision": "FAIL_2025H1_BINDING",
+            "baseline_opened": 463,
+            "candidate_opened": 271,
+            "blocked_entries": 192,
+            "baseline_net_jpy": -20808.0,
+            "candidate_net_jpy": -11947.0,
+            "net_delta_jpy": 8861.0,
+            "baseline_profit_factor": 0.8294076655052265,
+            "candidate_profit_factor": 0.8399469481806977,
+            "baseline_maximum_tick_equity_drawdown_jpy": 42737.0,
+            "candidate_maximum_tick_equity_drawdown_jpy": 23593.0,
+            "drawdown_delta_jpy": -19144.0,
+            "B02_delta_jpy": 439.0,
+            "F05_delta_jpy": 8422.0,
+            "2025Q1_candidate_net_jpy": -15059.0,
+            "2025Q1_delta_jpy": 13972.0,
+            "2025Q2_candidate_net_jpy": 3112.0,
+            "2025Q2_delta_jpy": -5111.0,
+            "positive_effect_months": 4,
+            "negative_effect_months": 2,
+            "ex_best_two_entry_dates_delta_jpy": 1978.0,
+            "blocked_loser_benefit_jpy": 47331.0,
+            "blocked_winner_harm_jpy": 38470.0,
+            "independent_router_mismatches": 128,
+            "execution_failures": 0,
+            "accounting_reconciled": true,
+            "2025H2_accessed": false
+          },
+          "failed_gates": [
+            "candidate_net_positive",
+            "candidate_pf_at_least_1",
+            "january_to_march_net_nonnegative",
+            "both_half_period_deltas_positive",
+            "negative_effect_months_max_1",
+            "router_parity_zero_mismatch"
+          ]
+        }
+      ],
+      "decision": "CLOSED_FAIL_2025H1_BINDING. The frozen H4 permission rule materially reduced loss and tick-equity drawdown, particularly for F05, but remained loss-making with PF below 1, left Q1 negative, worsened Q2 versus baseline, produced two negative-effect months and failed the preregistered zero-mismatch independent router audit. The one-shot authorization is consumed; 2025H2 remains locked.",
+      "falsified_or_unsupported_claims": [
+        "The unchanged S3_H4_ALIGNED permission rule converts the adverse 2025H1 portfolio to positive net and PF at least 1.0.",
+        "H4 alignment improves both halves of 2025H1 versus baseline without sacrificing the profitable Q2 regime.",
+        "No more than one month is harmed by the frozen permission rule.",
+        "The MQ4 router and independent exact-H4 evaluator agree within the preregistered 1e-10 tolerance on every candidate entry."
+      ],
+      "retained_findings": [
+        "Blocking 192 opposed-state entries improved 2025H1 net by JPY8861.",
+        "Maximum tick-equity drawdown fell by JPY19144 and minimum equity rose by JPY19842.",
+        "F05 contributed JPY8422 of the improvement while B02 contributed JPY439.",
+        "Blocked-loser benefit exceeded blocked-winner harm by a ratio of 1.2303.",
+        "The delta remained JPY1978 after removing the two best positive entry dates, so the effect was not explained only by two dates.",
+        "Trade-admission behavior was coherent: no blocked entry opened, no allowed entry was missing, and no candidate trade opened without allow.",
+        "The mechanism is useful prior evidence for risk compression, not a passing positive-return strategy."
+      ],
+      "prohibited_reuse": [
+        "Do not retune EMA spans, neutral permission, strategy scope, side scope, session scope or period exceptions from this 2025H1 result.",
+        "Do not relax the independent EMA parity tolerance after observing the result.",
+        "Do not execute a second candidate-specific 2025H1 scientific run.",
+        "Do not access 2025H2 for S3_H4_ALIGNED.",
+        "Do not promote S3_H4_ALIGNED to production or live orders.",
+        "Do not relabel risk and drawdown compression as a passing strategy gate."
+      ],
+      "successor_questions": [
+        "Can a genuinely new, preregistered causal mechanism preserve the observed F05 risk compression without sacrificing the profitable May-June regime?",
+        "Can future cross-runtime state logic define an implementation-identical numerical contract before any protected-period outcome, without repairing S3_H4_ALIGNED?"
+      ],
+      "evidence_refs": [
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_market_state_router_2025h1_one_shot_gate_protocol_v1.json", "commit": "a4074e8124c7c23d7bcb69a74a18b5edb29c3eab"},
+        {"repository": "mitsuru93/usdjpyea-core", "run_id": 30283392068, "role": "preflight"},
+        {"repository": "mitsuru93/usdjpyea-core", "run_id": 30283492240, "issue": 455, "commit": "1df0c1ef154a4ac8a24e3d4f9f414f1fc9332dbf", "release_tag": "usdjpy-s3-market-state-2025h1-binding-v1", "release_asset": "usdjpy-s3-market-state-2025h1-30283492240-1.zip", "release_asset_digest": "sha256:9961bbb2b19d9947d03ffd3446ec351ab3ebc458c3949f838d17bb354eee7865"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_market_state_router_2025h1_binding_result_v1.json"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "docs/research/USDJPY_MARKET_STATE_ROUTER_2025H1_BINDING_RESULT_V1.md"},
+        {"repository": "mitsuru93/usdjpyea-research", "path": "configs/research/usdjpy_market_state_router_2025h1_core_release_readback_receipt_v1.json"}
+      ]
+    }
+  ]
+}
