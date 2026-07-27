@@ -7,6 +7,7 @@ on:
       - .github/workflows/usdjpy_shock_failure_2025_postmortem_v1.yml
       - tools/run_usdjpy_shock_failure_2025_postmortem_v1.py
       - configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json
+      - research_inputs/usdjpy/shock_failure/2025_postmortem_v1/**
   workflow_dispatch:
 
 permissions:
@@ -16,18 +17,18 @@ permissions:
 
 concurrency:
   group: usdjpy-shock-failure-2025-postmortem-v1
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   postmortem:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
-      CORE_REPOSITORY: mitsuru93/usdjpyea-core
-      CORE_REPAIR_RELEASE: usdjpy-shock-failure-p6-evidence-repair-v1
       PHASE2_RELEASE: usdjpy-csos-shock-failure-phase2-v1
       POSTMORTEM_RELEASE: usdjpy-shock-failure-2025-postmortem-v1
-      DEFINITION_SHA: 706d9a2efb68925504182abe6e1698a51aa1dbdb
+      DEFINITION_SHA: 96d4551d6bf4238701ed2a146913c851491dd529
+      MT4_CONTEXT_DIR: research_inputs/usdjpy/shock_failure/2025_postmortem_v1
+      CORRECTED_P6: research_inputs/usdjpy/shock_failure/2025_postmortem_v1/corrected_p6_result_compact.json
     steps:
       - name: Check out exact head revision
         uses: actions/checkout@v4
@@ -46,24 +47,39 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq zstd
 
-      - name: Download frozen Phase 2 and repaired Core P6 authorities
+      - name: Validate immutable Core-derived Research inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,glob
+          files=sorted(glob.glob('research_inputs/usdjpy/shock_failure/2025_postmortem_v1/mt4_events_*.json'))
+          assert len(files)==5
+          events=[]
+          for p in files:
+            x=json.load(open(p));assert x['authority']['core_run_id']==30229496015;assert x['authority']['core_artifact_id']==8639969385
+            assert x['authority']['core_artifact_sha256']=='70088c66cd1014391cabbb6f533462dcd3dbedbd7d6c537a5dc0798343594a6a'
+            events.extend(x['events'])
+          assert len(events)==47 and len({x['event_id'] for x in events})==47
+          p6=json.load(open('research_inputs/usdjpy/shock_failure/2025_postmortem_v1/corrected_p6_result_compact.json'))
+          assert p6['status']=='FAIL_P6_2025_GATE_RESEARCH_ONLY_NO_RETUNING'
+          assert p6['standalone_combined']['closed_trades']==47
+          assert abs(p6['standalone_combined']['net_jpy']+1277)<1e-6
+          print('PASS_CORE_DERIVED_INPUT_CONTRACT')
+          PY
+
+      - name: Download frozen Phase 2 authority
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           root="$RUNNER_TEMP/usdjpy-shock-failure-2025-postmortem-v1"
-          rm -rf "$root"; mkdir -p "$root"/{phase2-download,phase2,p6-download,p6,raw-download,raw,out,release,readback}
+          rm -rf "$root"; mkdir -p "$root"/{phase2-download,phase2,raw-download,raw,out,release,readback}
           gh release download "$PHASE2_RELEASE" --repo "$GITHUB_REPOSITORY" --dir "$root/phase2-download"
-          for z in "$root"/phase2-download/*.zip; do [ -e "$z" ] && unzip -q "$z" -d "$root/phase2"; done
-          for i in $(seq 1 60); do
-            if gh release view "$CORE_REPAIR_RELEASE" --repo "$CORE_REPOSITORY" >/dev/null 2>&1; then break; fi
-            [ "$i" -eq 60 ] && { echo 'Core repaired P6 Release unavailable' >&2; exit 1; }
-            sleep 10
-          done
-          gh release download "$CORE_REPAIR_RELEASE" --repo "$CORE_REPOSITORY" --dir "$root/p6-download"
-          test "$(sha256sum "$root/p6-download/usdjpy-shock-failure-p6-original-artifact-8639969385.zip"|awk '{print $1}')" = "70088c66cd1014391cabbb6f533462dcd3dbedbd7d6c537a5dc0798343594a6a"
-          unzip -q "$root/p6-download/usdjpy-shock-failure-p6-original-artifact-8639969385.zip" -d "$root/p6"
+          shopt -s nullglob
+          for z in "$root"/phase2-download/*.zip; do unzip -q "$z" -d "$root/phase2"; done
+          for a in "$root"/phase2-download/*.tar.gz; do tar -xzf "$a" -C "$root/phase2"; done
           echo "POSTMORTEM_ROOT=$root" >> "$GITHUB_ENV"
 
       - name: Download immutable 2025 Raw Bid Ask Tick Release
@@ -92,26 +108,23 @@ jobs:
           test "$count" -ge 8000
           echo "Raw Tick hourly files: $count from $tag"
 
-      - name: Run fixed-candidate evidence repair postmortem
+      - name: Run fixed-candidate postmortem
         shell: bash
         run: |
           set -euo pipefail
-          corrected="$POSTMORTEM_ROOT/p6-download/corrected_p6_result.json"
-          test -f "$corrected"
           python tools/run_usdjpy_shock_failure_2025_postmortem_v1.py \
             --phase2-dir "$POSTMORTEM_ROOT/phase2" \
-            --p6-root "$POSTMORTEM_ROOT/p6" \
+            --mt4-context-dir "$MT4_CONTEXT_DIR" \
             --raw-2025-root "$POSTMORTEM_ROOT/raw" \
-            --corrected-p6 "$corrected" \
+            --corrected-p6 "$CORRECTED_P6" \
             --out-dir "$POSTMORTEM_ROOT/out" \
             --research-sha "$DEFINITION_SHA" \
             --core-sha "e92ac28d908cb5c6ca89224507b24690822e0f35" \
-            --run-id "GITHUB_ACTIONS_BINDING"
+            --run-id "$GITHUB_RUN_ID"
           cp tools/run_usdjpy_shock_failure_2025_postmortem_v1.decoded.py "$POSTMORTEM_ROOT/out/postmortem_source_snapshot.py"
-          cp "$POSTMORTEM_ROOT/p6-download/corrected_p6_result.json" "$POSTMORTEM_ROOT/out/"
-          cp "$POSTMORTEM_ROOT/p6-download/p6_repair_receipt.json" "$POSTMORTEM_ROOT/out/"
-          cp "$POSTMORTEM_ROOT/p6-download/p6_source_inventory.json" "$POSTMORTEM_ROOT/out/"
-          cp "$POSTMORTEM_ROOT/p6-download/p6_evidence_repair_report.md" "$POSTMORTEM_ROOT/out/"
+          cp "$CORRECTED_P6" "$POSTMORTEM_ROOT/out/corrected_p6_result.json"
+          cp configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json "$POSTMORTEM_ROOT/out/"
+          cp "$MT4_CONTEXT_DIR"/mt4_events_*.json "$POSTMORTEM_ROOT/out/"
           printf '%s\n' "$RAW_2025_RELEASE" > "$POSTMORTEM_ROOT/out/raw_2025_release_tag.txt"
           python - <<'PY'
           import hashlib,json,os
@@ -168,8 +181,7 @@ jobs:
           python - <<'PY'
           import json,os
           from pathlib import Path
-          root=Path(os.environ['POSTMORTEM_ROOT'])
-          x=json.loads((root/'out'/'final_decision.json').read_text())
+          root=Path(os.environ['POSTMORTEM_ROOT']);x=json.loads((root/'out'/'final_decision.json').read_text())
           body=(f"## Shock Failure 2025 postmortem\n\n- Decision: `{x['decision']}`\n- Fixed candidate: `{x['fixed_candidate_status']}`\n- Family: `{x['family_status']}`\n- Release: `{os.environ['POSTMORTEM_RELEASE']}`\n- Publication commit: `{os.environ['PUBLICATION_SHA']}`\n- 2025 reused as holdout: `false`\n")
           (root/'pr-comment.md').write_text(body)
           PY
