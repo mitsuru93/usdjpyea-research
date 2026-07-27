@@ -38,6 +38,12 @@
     "candidate_max_equity_dd_jpy": 201.70000000000073,
     "max_equity_dd_delta_jpy": -110.16999999999825
   },
+  "evidence_release": {
+    "tag": "usdjpy-market-state-router-s3-controlled-integration-v1",
+    "archive_run_id": 30242254591,
+    "release_target_sha": "1f9715e7a2d2f73f990ff45bcf5c328d5ddb71a8",
+    "readback_verified": true
+  },
   "scientific_classification": {
     "binding_reference_trade_parity": "PASS",
     "native_order_path_integration": "PASS",
@@ -49,7 +55,7 @@
     "live_orders_authorized": false
   },
   "core_canonical_receipt": "docs/research/market_state_router_s3_h4_aligned_mt4_controlled_integration_v1/final_receipt.json",
-  "core_evidence_release_tag": "usdjpy-market-state-router-s3-controlled-integration-v1",
+  "core_release_receipt": "docs/research/market_state_router_s3_h4_aligned_mt4_controlled_integration_v1/release_receipt.json",
   "2025H1_accessed": false,
   "2025H2_accessed": false,
   "production_authorized": false,
