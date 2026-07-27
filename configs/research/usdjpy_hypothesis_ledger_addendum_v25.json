@@ -1,0 +1,86 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v25",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v24.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v24.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-030",
+      "family_ids": ["S_ASIAN_RANGE_LIQUIDITY_SWEEP"],
+      "candidate_ids": ["A_EXACT_EXECUTABLE_12BAR"],
+      "status": "COMPLETE_NO_PORTABLE_CANDIDATE",
+      "origin_analysis": "CSOS Opportunity Atlas v1 ranked the fixed F_ASIAN_RANGE_SWEEP variant as a 545-opportunity, 4/4-positive-fold liquidity-sweep mechanism. Phase 2 first reproduced the Atlas event identity exactly, then translated the unchanged signal and 12-bar hold to first executable Raw Bid/Ask ticks.",
+      "causal_hypothesis": "After the completed 00:00-07:00 UTC Asian range is formed, a completed M15 bar that sweeps an Asian extreme and closes back inside creates a short-horizon liquidity rejection edge opposite the sweep and can complement B02/F05 loss states.",
+      "target_failure_mode": [
+        "B02/F05 negative days during post-Asian liquidity rejection",
+        "B02/F05 drawdown states lacking an independent reversal payoff",
+        "portfolio concentration around London and New York transitions"
+      ],
+      "pre_result_predictions": [
+        "Reproduce all 545 Atlas opportunities with zero identity mismatch.",
+        "Realistic first-tick Bid/Ask execution remains combined-net positive with PF at least 1.05.",
+        "At least three of four half-year folds remain positive and the minimum fold remains at least minus JPY1000.",
+        "Top-five winner removal and plus-one-pip spread stress remain nonnegative.",
+        "B02/F05 negative-day contribution is positive and additive portfolio MDD is non-worse than baseline."
+      ],
+      "tests": [
+        {
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "type": "atlas_identity_reproduction_and_exact_raw_bidask_executable_translation",
+          "result": {
+            "atlas_authority_events": 545,
+            "atlas_reproduced_events": 545,
+            "identity_mismatches": 0,
+            "unresolved_execution_events": 0,
+            "trades": 545,
+            "net_jpy": 7432.0,
+            "profit_factor": 1.1263945578231316,
+            "mdd_jpy": 6702.0,
+            "positive_folds": 4,
+            "positive_months": 18,
+            "raw_source_side_match_rate": 0.963302752293578,
+            "B02_F05_negative_days_net_jpy": 18055.0,
+            "baseline_portfolio_mdd_jpy": 40487.0,
+            "additive_portfolio_mdd_jpy": 40548.0,
+            "portfolio_mdd_improvement_jpy": -61.0
+          }
+        },
+        {
+          "period": "2025H1_2025H2",
+          "type": "strategy_specific_external_gate",
+          "result": "NOT_AUTHORIZED_NOT_ACCESSED"
+        }
+      ],
+      "decision": "NO_PORTABLE_CANDIDATE. The exact executable candidate passed every preregistered Research portable gate except portfolio_mdd_nonworse: additive B02/F05 portfolio MDD increased from JPY40487 to JPY40548. No candidate freeze, Core implementation, MT4 test, or 2025 access is authorized.",
+      "falsified_or_unsupported_claims": [
+        "A positive standalone net, PF and 4/4 fold breadth are sufficient to authorize Asian Range Sweep as the third strategy.",
+        "The Liquidity Sweep family-level MDD improvement can be attributed to F_ASIAN_RANGE_SWEEP alone."
+      ],
+      "retained_findings": [
+        "Atlas identity is reproducible exactly at 545/545 events.",
+        "The unchanged mechanism remains standalone positive after first-tick Bid/Ask execution.",
+        "The candidate contributes JPY18055 on B02/F05 negative days and has negative daily correlation with both B02 and F05.",
+        "The long side is profitable while the short side is negative, but side exclusion was not permitted or adopted.",
+        "The full unfiltered candidate fails the non-worse portfolio MDD gate by JPY61."
+      ],
+      "prohibited_reuse": [
+        "Do not implement or run this candidate in Core or MT4.",
+        "Do not access or use 2025 to rescue thresholds, sides, sessions or hold time.",
+        "Do not remove the short side, London bucket, losing months or event-specific dates post hoc.",
+        "Do not combine F_PREVIOUS_DAY_SWEEP or family-level Liquidity Sweep results with this candidate.",
+        "Do not claim production authorization from positive standalone economics."
+      ],
+      "successor_questions": [
+        "Which next CSOS family has an independently preregistered mechanism and can improve portfolio MDD rather than only net and PF?"
+      ],
+      "evidence_refs": [
+        {"repository":"mitsuru93/usdjpyea-research","pr":332,"run_id":30266063378,"artifact_id":8653034729,"artifact_digest":"sha256:f9558ba903c01c6f59df50424efe5c04bb423674e4c75247449a797d751c0c1f"},
+        {"repository":"mitsuru93/usdjpyea-research","path":"docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/final_decision.json"},
+        {"repository":"mitsuru93/usdjpyea-research","path":"configs/research/usdjpy_asian_range_liquidity_sweep_phase2_candidate_registry_v1.json"},
+        {"repository":"mitsuru93/usdjpyea-research","path":"configs/research/usdjpy_asian_range_liquidity_sweep_phase2_period_access_receipt_v1.json"}
+      ]
+    }
+  ]
+}
