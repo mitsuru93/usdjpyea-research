@@ -1,7 +1,7 @@
 {
   "schema_version": "usdjpy_market_state_router_period_access_receipt_v1",
   "status": "AUTHORIZE_ONE_UNCHANGED_2025H1_BINDING_RUN_AFTER_PROTOCOL_MERGE_AND_PREFLIGHT",
-  "hypothesis_id": "USDJPY-HYP-028",
+  "hypothesis_id": "USDJPY-HYP-029",
   "candidate_id": "S3_H4_ALIGNED",
   "research_base_sha": "73559a5036104677ec8020d3246d6eed8496762b",
   "development_and_falsification_access": {
