@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: usdjpy-shock-failure-2025-postmortem-v4
+  group: usdjpy-shock-failure-2025-postmortem-v4-${{ github.run_id }}
   cancel-in-progress: false
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
           ref: ${{ env.HEAD_SHA }}
           fetch-depth: 0
 
-      - name: Materialize verified analyzer
+      - name: Materialize verified analyzer and repair mixed ISO parsing
         shell: bash
         run: |
           set -euo pipefail
@@ -42,6 +42,15 @@ jobs:
           gzip -t "$RUNNER_TEMP/analyzer.py.gz"
           gzip -dc "$RUNNER_TEMP/analyzer.py.gz" > tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py
           test "$(sha256sum tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py | awk '{print $1}')" = 2a6718e9e67ce41f7ee27d17a3b65cd28a181dabe18a06f41d71acadc5e5d4cc
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py')
+          s=p.read_text(encoding='utf-8')
+          old="pd.to_datetime(dev[c],utc=True)"
+          new="pd.to_datetime(dev[c],utc=True,format='mixed')"
+          assert s.count(old)==1, s.count(old)
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
           python -m py_compile tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py
 
       - uses: actions/setup-python@v5
