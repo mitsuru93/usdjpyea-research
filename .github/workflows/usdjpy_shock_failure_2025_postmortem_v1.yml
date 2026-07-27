@@ -1,0 +1,187 @@
+name: USDJPY Shock Failure 2025 External-Gate Postmortem v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/usdjpy_shock_failure_2025_postmortem_v1.yml
+      - tools/run_usdjpy_shock_failure_2025_postmortem_v1.py
+      - configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: usdjpy-shock-failure-2025-postmortem-v1
+  cancel-in-progress: false
+
+jobs:
+  postmortem:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      CORE_REPOSITORY: mitsuru93/usdjpyea-core
+      CORE_REPAIR_RELEASE: usdjpy-shock-failure-p6-evidence-repair-v1
+      PHASE2_RELEASE: usdjpy-csos-shock-failure-phase2-v1
+      POSTMORTEM_RELEASE: usdjpy-shock-failure-2025-postmortem-v1
+      DEFINITION_SHA: 706d9a2efb68925504182abe6e1698a51aa1dbdb
+    steps:
+      - name: Check out exact head revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Set up Python and archive tools
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet --disable-pip-version-check pandas==2.2.3 numpy==2.1.3 scipy==1.14.1
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq zstd
+
+      - name: Download frozen Phase 2 and repaired Core P6 authorities
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/usdjpy-shock-failure-2025-postmortem-v1"
+          rm -rf "$root"; mkdir -p "$root"/{phase2-download,phase2,p6-download,p6,raw-download,raw,out,release,readback}
+          gh release download "$PHASE2_RELEASE" --repo "$GITHUB_REPOSITORY" --dir "$root/phase2-download"
+          for z in "$root"/phase2-download/*.zip; do [ -e "$z" ] && unzip -q "$z" -d "$root/phase2"; done
+          for i in $(seq 1 60); do
+            if gh release view "$CORE_REPAIR_RELEASE" --repo "$CORE_REPOSITORY" >/dev/null 2>&1; then break; fi
+            [ "$i" -eq 60 ] && { echo 'Core repaired P6 Release unavailable' >&2; exit 1; }
+            sleep 10
+          done
+          gh release download "$CORE_REPAIR_RELEASE" --repo "$CORE_REPOSITORY" --dir "$root/p6-download"
+          test "$(sha256sum "$root/p6-download/usdjpy-shock-failure-p6-original-artifact-8639969385.zip"|awk '{print $1}')" = "70088c66cd1014391cabbb6f533462dcd3dbedbd7d6c537a5dc0798343594a6a"
+          unzip -q "$root/p6-download/usdjpy-shock-failure-p6-original-artifact-8639969385.zip" -d "$root/p6"
+          echo "POSTMORTEM_ROOT=$root" >> "$GITHUB_ENV"
+
+      - name: Download immutable 2025 Raw Bid Ask Tick Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view usdjpy-2025-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            tag=usdjpy-2025-raw-bidask-ticks-v1
+          elif gh release view usdjpy-raw-ticks-2025-v1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            tag=usdjpy-raw-ticks-2025-v1
+          else
+            echo 'No immutable 2025 Raw Tick Release found' >&2; exit 1
+          fi
+          echo "RAW_2025_RELEASE=$tag" >> "$GITHUB_ENV"
+          gh release download "$tag" --repo "$GITHUB_REPOSITORY" --dir "$POSTMORTEM_ROOT/raw-download"
+          shopt -s nullglob
+          for a in "$POSTMORTEM_ROOT"/raw-download/*.tar.gz; do
+            tar -xzf "$a" -C "$POSTMORTEM_ROOT/raw" --wildcards --no-anchored '*.csv.gz'
+          done
+          for a in "$POSTMORTEM_ROOT"/raw-download/*.tar.zst; do
+            tar --use-compress-program=unzstd -xf "$a" -C "$POSTMORTEM_ROOT/raw" --wildcards --no-anchored '*.csv.gz'
+          done
+          count=$(find "$POSTMORTEM_ROOT/raw" -type f -name '*.csv.gz' | wc -l)
+          test "$count" -ge 8000
+          echo "Raw Tick hourly files: $count from $tag"
+
+      - name: Run fixed-candidate evidence repair postmortem
+        shell: bash
+        run: |
+          set -euo pipefail
+          corrected="$POSTMORTEM_ROOT/p6-download/corrected_p6_result.json"
+          test -f "$corrected"
+          python tools/run_usdjpy_shock_failure_2025_postmortem_v1.py \
+            --phase2-dir "$POSTMORTEM_ROOT/phase2" \
+            --p6-root "$POSTMORTEM_ROOT/p6" \
+            --raw-2025-root "$POSTMORTEM_ROOT/raw" \
+            --corrected-p6 "$corrected" \
+            --out-dir "$POSTMORTEM_ROOT/out" \
+            --research-sha "$DEFINITION_SHA" \
+            --core-sha "e92ac28d908cb5c6ca89224507b24690822e0f35" \
+            --run-id "GITHUB_ACTIONS_BINDING"
+          cp tools/run_usdjpy_shock_failure_2025_postmortem_v1.decoded.py "$POSTMORTEM_ROOT/out/postmortem_source_snapshot.py"
+          cp "$POSTMORTEM_ROOT/p6-download/corrected_p6_result.json" "$POSTMORTEM_ROOT/out/"
+          cp "$POSTMORTEM_ROOT/p6-download/p6_repair_receipt.json" "$POSTMORTEM_ROOT/out/"
+          cp "$POSTMORTEM_ROOT/p6-download/p6_source_inventory.json" "$POSTMORTEM_ROOT/out/"
+          cp "$POSTMORTEM_ROOT/p6-download/p6_evidence_repair_report.md" "$POSTMORTEM_ROOT/out/"
+          printf '%s\n' "$RAW_2025_RELEASE" > "$POSTMORTEM_ROOT/out/raw_2025_release_tag.txt"
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['POSTMORTEM_ROOT'])/'out'
+          def sha(p):
+            h=hashlib.sha256()
+            with p.open('rb') as f:
+              for c in iter(lambda:f.read(1<<20),b''):h.update(c)
+            return h.hexdigest()
+          files=[{'path':p.name,'bytes':p.stat().st_size,'sha256':sha(p)} for p in sorted(root.iterdir()) if p.is_file() and p.name not in {'manifest.json','SHA256SUMS'}]
+          (root/'manifest.json').write_text(json.dumps({'schema_version':'usdjpy_shock_failure_2025_postmortem_manifest_v1','files':files},indent=2,sort_keys=True)+'\n')
+          with (root/'SHA256SUMS').open('w') as f:
+            for p in sorted(root.iterdir()):
+              if p.is_file() and p.name!='SHA256SUMS':f.write(f'{sha(p)}  {p.name}\n')
+          PY
+
+      - name: Commit canonical Research outputs to PR branch
+        shell: bash
+        env:
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          target=research/usdjpy/shock_failure/2025_external_gate_postmortem_v1
+          rm -rf "$target"; mkdir -p "$target"
+          cp "$POSTMORTEM_ROOT/out"/* "$target/"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add "$target"
+          if ! git diff --cached --quiet; then
+            git commit -m "research: record Shock Failure 2025 external-gate postmortem"
+            git push origin "HEAD:$HEAD_BRANCH"
+          fi
+          echo "PUBLICATION_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Publish immutable postmortem Release and verify readback
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tar -czf "$POSTMORTEM_ROOT/release/usdjpy-shock-failure-2025-postmortem-v1.tar.gz" -C "$POSTMORTEM_ROOT/out" .
+          cp "$POSTMORTEM_ROOT/out/manifest.json" "$POSTMORTEM_ROOT/release/"
+          cp "$POSTMORTEM_ROOT/out/SHA256SUMS" "$POSTMORTEM_ROOT/release/"
+          (cd "$POSTMORTEM_ROOT/release" && sha256sum usdjpy-shock-failure-2025-postmortem-v1.tar.gz manifest.json SHA256SUMS > RELEASE_SHA256SUMS)
+          if ! gh release view "$POSTMORTEM_RELEASE" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$POSTMORTEM_RELEASE" --repo "$GITHUB_REPOSITORY" --target "$PUBLICATION_SHA" \
+              --title "USDJPY Shock Failure 2025 External-Gate Postmortem v1" \
+              --notes "Fixed candidate B_EXECUTABLE_T0_8BAR. Evidence repair and postmortem only; no retuning. 2025 remains consumed external evidence and is not reusable as a holdout."
+            gh release upload "$POSTMORTEM_RELEASE" "$POSTMORTEM_ROOT/release"/* --repo "$GITHUB_REPOSITORY"
+          fi
+          gh release download "$POSTMORTEM_RELEASE" --repo "$GITHUB_REPOSITORY" --dir "$POSTMORTEM_ROOT/readback"
+          (cd "$POSTMORTEM_ROOT/readback" && sha256sum -c RELEASE_SHA256SUMS)
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['POSTMORTEM_ROOT'])
+          x=json.loads((root/'out'/'final_decision.json').read_text())
+          body=(f"## Shock Failure 2025 postmortem\n\n- Decision: `{x['decision']}`\n- Fixed candidate: `{x['fixed_candidate_status']}`\n- Family: `{x['family_status']}`\n- Release: `{os.environ['POSTMORTEM_RELEASE']}`\n- Publication commit: `{os.environ['PUBLICATION_SHA']}`\n- 2025 reused as holdout: `false`\n")
+          (root/'pr-comment.md').write_text(body)
+          PY
+          gh pr comment "${{ github.event.pull_request.number }}" --repo "$GITHUB_REPOSITORY" --body-file "$POSTMORTEM_ROOT/pr-comment.md"
+
+      - name: Upload complete postmortem evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-shock-failure-2025-postmortem-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.POSTMORTEM_ROOT }}/out
+            ${{ env.POSTMORTEM_ROOT }}/release
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
