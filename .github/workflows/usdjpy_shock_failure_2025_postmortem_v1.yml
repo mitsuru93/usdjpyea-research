@@ -130,10 +130,11 @@ jobs:
           cp "${manifests[@]}" "$POSTMORTEM_ROOT/raw/"
           echo "Raw Tick hourly files: $actual/$expected from $tag"
 
-      - name: Run fixed-candidate postmortem
+      - name: Run fixed-candidate postmortem and retain diagnostics
+        id: evaluate
         shell: bash
         run: |
-          set -euo pipefail
+          set +e
           python tools/run_usdjpy_shock_failure_2025_postmortem_v1.py \
             --phase2-dir "$POSTMORTEM_ROOT/phase2" \
             --mt4-context-dir "$MT4_CONTEXT_DIR" \
@@ -142,8 +143,14 @@ jobs:
             --out-dir "$POSTMORTEM_ROOT/out" \
             --research-sha "$DEFINITION_SHA" \
             --core-sha "e92ac28d908cb5c6ca89224507b24690822e0f35" \
-            --run-id "$GITHUB_RUN_ID"
-          cp tools/run_usdjpy_shock_failure_2025_postmortem_v1.decoded.py "$POSTMORTEM_ROOT/out/postmortem_source_snapshot.py"
+            --run-id "$GITHUB_RUN_ID" \
+            >"$POSTMORTEM_ROOT/out/evaluator_stdout.log" \
+            2>"$POSTMORTEM_ROOT/out/evaluator_stderr.log"
+          code=$?
+          echo "$code" > "$POSTMORTEM_ROOT/out/evaluator_exit_code.txt"
+          cat "$POSTMORTEM_ROOT/out/evaluator_stdout.log"
+          cat "$POSTMORTEM_ROOT/out/evaluator_stderr.log" >&2
+          cp tools/run_usdjpy_shock_failure_2025_postmortem_v1.decoded.py "$POSTMORTEM_ROOT/out/postmortem_source_snapshot.py" 2>/dev/null || true
           cp "$CORRECTED_P6" "$POSTMORTEM_ROOT/out/corrected_p6_result.json"
           cp configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json "$POSTMORTEM_ROOT/out/"
           cp "$MT4_CONTEXT_DIR"/mt4_events_*.json "$POSTMORTEM_ROOT/out/"
@@ -164,8 +171,10 @@ jobs:
             for p in sorted(root.iterdir()):
               if p.is_file() and p.name!='SHA256SUMS':f.write(f'{sha(p)}  {p.name}\n')
           PY
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
 
-      - name: Commit canonical Research outputs to PR branch
+      - name: Commit canonical or diagnostic Research outputs to PR branch
         shell: bash
         env:
           HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
@@ -178,17 +187,19 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add "$target"
           if ! git diff --cached --quiet; then
-            git commit -m "research: record Shock Failure 2025 external-gate postmortem"
+            git commit -m "research: record Shock Failure 2025 external-gate postmortem evidence"
             git push origin "HEAD:$HEAD_BRANCH"
           fi
           echo "PUBLICATION_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Publish immutable postmortem Release and verify readback
+        if: steps.evaluate.outputs.exit_code == '0'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          test -f "$POSTMORTEM_ROOT/out/final_decision.json"
           tar -czf "$POSTMORTEM_ROOT/release/usdjpy-shock-failure-2025-postmortem-v1.tar.gz" -C "$POSTMORTEM_ROOT/out" .
           cp "$POSTMORTEM_ROOT/out/manifest.json" "$POSTMORTEM_ROOT/release/"
           cp "$POSTMORTEM_ROOT/out/SHA256SUMS" "$POSTMORTEM_ROOT/release/"
@@ -210,7 +221,13 @@ jobs:
           PY
           gh pr comment "${{ github.event.pull_request.number }}" --repo "$GITHUB_REPOSITORY" --body-file "$POSTMORTEM_ROOT/pr-comment.md"
 
+      - name: Enforce evaluator result
+        shell: bash
+        run: |
+          test "${{ steps.evaluate.outputs.exit_code }}" = "0"
+
       - name: Upload complete postmortem evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: usdjpy-shock-failure-2025-postmortem-v1-${{ github.run_id }}-${{ github.run_attempt }}
