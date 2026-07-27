@@ -1,0 +1,14 @@
+{
+  "core_sha_inspected": "8950067e602abce3622b8e0c3d23b96b877dd5ce",
+  "raw_2023_release": "usdjpy-2023-raw-bidask-ticks-v1",
+  "raw_2024_release": "usdjpy-2024-raw-bidask-ticks-v1",
+  "research_sha": "c80dcc9f09ebd66160bde09be699567e490e7c27",
+  "run_id": "30266063378",
+  "sources": {
+    "baseline_trades": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "csos_ledger": "0ef866993590ac9cd4712be2d23158341b66fb789898c42acbbe75f2cf01377c",
+    "m15_2023": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+    "m15_2024": "d22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020",
+    "prereg": "56b5f46520948dd3a9192ee9d6391e34fa8bd55a5caff046d68a4504333b7853"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "average_trade_jpy": 13.636697247706712,
+  "gross_loss_jpy": 58800.000000000044,
+  "gross_profit_jpy": 66232.00000000019,
+  "mdd_jpy": 6702.0000000000555,
+  "median_trade_jpy": -5.000000000023874,
+  "months": 24,
+  "net_jpy": 7432.000000000158,
+  "net_pips": 743.2000000000158,
+  "pf": 1.1263945578231316,
+  "positive_folds": 4,
+  "positive_months": 18,
+  "recovery_factor": 1.1089227096389283,
+  "trades": 545,
+  "win_rate": 0.48623853211009177
+}

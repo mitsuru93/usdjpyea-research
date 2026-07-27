@@ -1,0 +1,21 @@
+{
+  "B02_F05_drawdown_days_net_jpy": 8799.000000000118,
+  "B02_F05_negative_days_net_jpy": 18055.000000000065,
+  "additive_portfolio_mdd_jpy": 40547.999999999956,
+  "additive_portfolio_net_jpy": 59059.00000000016,
+  "additive_portfolio_pf_daily": 1.229262744367324,
+  "baseline_mdd_jpy": 40487.0,
+  "baseline_net_jpy": 51627.0,
+  "baseline_pf_daily": 1.193878738945115,
+  "candidate_net_jpy": 7432.000000000158,
+  "daily_pl_correlation_B02": -0.2642032555548941,
+  "daily_pl_correlation_F05": -0.10041682348230956,
+  "loss_day_overlap": 116,
+  "mdd_improvement_jpy": -60.999999999956344,
+  "weak_market_coverage": 0.1621645980810035,
+  "winner_day_overlap": 47,
+  "worst_day": "2023-01-06",
+  "worst_day_jpy": -8169.000000000005,
+  "worst_month": "2023-03",
+  "worst_month_jpy": -10661.999999999967
+}

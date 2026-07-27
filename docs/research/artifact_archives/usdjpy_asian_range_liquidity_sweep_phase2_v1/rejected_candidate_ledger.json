@@ -1,0 +1,10 @@
+{
+  "rejected": [
+    {
+      "candidate_id": "A_EXACT_EXECUTABLE_12BAR",
+      "reason": [
+        "portfolio_mdd_nonworse"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "usdjpy_asian_range_liquidity_sweep_phase2_evidence_repair_receipt_v1",
+  "status": "TECHNICAL_PACKAGE_REPAIR_SCIENTIFIC_RESULT_UNCHANGED",
+  "source_run_id": 30266063378,
+  "source_artifact_id": 8653034729,
+  "source_artifact_digest": "sha256:f9558ba903c01c6f59df50424efe5c04bb423674e4c75247449a797d751c0c1f",
+  "source_head_sha": "403ea2282f9dae023b09ca722af00aa7f5940376",
+  "evaluator_sha256": "91bf81605075bf2ce30419f7f848bafc6a4e36d5d0f43bd0f6c1c8b6e1132b14",
+  "repair_scope": "Recompute package manifest and SHA256SUMS after tee completed run.log; no candidate, rule, gate, input, output value or decision changed.",
+  "scientific_decision": "NO_PORTABLE_CANDIDATE",
+  "protected_period_accessed": false,
+  "core_changed": false,
+  "mt4_accessed": false
+}

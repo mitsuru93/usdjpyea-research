@@ -1,0 +1,23 @@
+{
+  "by_year": [
+    {
+      "events": 280,
+      "net_jpy": 3559.0000000001396,
+      "raw_side_match_rate": 0.9285714285714286,
+      "resolved_rate": 1.0,
+      "year": 2023
+    },
+    {
+      "events": 265,
+      "net_jpy": 3873.00000000002,
+      "raw_side_match_rate": 1.0,
+      "resolved_rate": 1.0,
+      "year": 2024
+    }
+  ],
+  "raw_asian_range_high_abs_diff_pips_median": 0.0,
+  "raw_asian_range_low_abs_diff_pips_median": 0.0,
+  "raw_side_match_rate": 0.963302752293578,
+  "raw_side_matches": 525,
+  "raw_side_mismatches": 20
+}
