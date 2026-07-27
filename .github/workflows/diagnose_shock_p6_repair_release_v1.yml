@@ -1,0 +1,44 @@
+name: Diagnose Shock P6 Repair Release v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/diagnose_shock_p6_repair_release_v1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: List and download Core Release assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CORE_REPO: mitsuru93/usdjpyea-core
+          TAG: usdjpy-shock-failure-p6-evidence-repair-v1
+        run: |
+          set -u
+          root="$RUNNER_TEMP/core-release-diagnostic"
+          mkdir -p "$root"
+          gh release view "$TAG" --repo "$CORE_REPO" --json tagName,targetCommitish,assets > "$root/release.json" 2> "$root/view.err"
+          gh release view "$TAG" --repo "$CORE_REPO" --json assets --jq '.assets[] | [.name,.size,.digest] | @tsv' > "$root/assets.tsv" 2>> "$root/view.err"
+          for name in corrected_p6_result.json p6_repair_receipt.json release_readback_receipt.json usdjpy-shock-failure-p6-original-artifact-8639969385.zip; do
+            mkdir -p "$root/$name.dir"
+            gh release download "$TAG" --repo "$CORE_REPO" --dir "$root/$name.dir" --pattern "$name" > "$root/$name.out" 2> "$root/$name.err"
+            echo "$?" > "$root/$name.code"
+          done
+          find "$root" -maxdepth 3 -type f -printf '%p %s\n' | sort > "$root/files.txt"
+          cat "$root/assets.tsv" || true
+          cat "$root/files.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shock-p6-repair-release-diagnostic-${{ github.run_id }}
+          path: ${{ runner.temp }}/core-release-diagnostic
+          if-no-files-found: error
+          retention-days: 30
