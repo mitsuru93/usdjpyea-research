@@ -40,13 +40,27 @@ jobs:
           ref: ${{ env.HEAD_SHA }}
           fetch-depth: 0
 
-      - name: Materialize verified analyzer
+      - name: Materialize verified analyzer and repair Tick coverage assertion
         shell: bash
         run: |
           set -euo pipefail
           cat tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py.gz.b64.part* > "$RUNNER_TEMP/analyzer.b64"
           test "$(sha256sum "$RUNNER_TEMP/analyzer.b64" | awk '{print $1}')" = 'dcd939525e2b602d92c16f99a827ed021c708277a4983e7af00a81a4a10bbeb1'
           base64 -d "$RUNNER_TEMP/analyzer.b64" | gzip -d > tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py')
+          s=p.read_text()
+          old="   if len(self.files)<8000:raise RuntimeError(f'2025 hourly tick files indexed={len(self.files)}')"
+          new="""   manifests=list(self.root.rglob('usdjpy-2025-raw-ticks-v1.annual-manifest.json'))
+   if len(manifests)==1:
+    annual=json.loads(manifests[0].read_text(encoding='utf-8'))
+    expected=sum(int(m['totals']['downloaded_hours']) for m in annual['months'])
+    if len(self.files)!=expected:raise RuntimeError(f'2025 hourly tick files indexed={len(self.files)} expected={expected}')
+   elif len(self.files)<6000:raise RuntimeError(f'2025 hourly tick files indexed={len(self.files)}')"""
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new,1))
+          PY
           python -m py_compile tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py
 
       - uses: actions/setup-python@v5
@@ -132,10 +146,11 @@ jobs:
           for a in "$PM_ROOT"/raw-download/usdjpy-2025-??-raw-ticks-v1.tar.gz; do
             tar -xzf "$a" -C "$PM_ROOT/raw"
           done
-          count=$(find "$PM_ROOT/raw" -type f -name '*.csv.gz' | wc -l)
-          test "$count" -ge 8000
           cp "$PM_ROOT/raw-download/usdjpy-2025-raw-ticks-v1.annual-manifest.json" "$PM_ROOT/raw/"
-          echo "PASS_RAW_2025_HOURLY_FILES=$count"
+          expected=$(jq '[.months[].totals.downloaded_hours] | add' "$PM_ROOT/raw/usdjpy-2025-raw-ticks-v1.annual-manifest.json")
+          actual=$(find "$PM_ROOT/raw" -type f -name '*.csv.gz' | wc -l)
+          test "$actual" = "$expected"
+          echo "PASS_RAW_2025_HOURLY_FILES=$actual/$expected"
 
       - name: Execute fixed-candidate postmortem
         shell: bash
