@@ -88,25 +88,30 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if gh release view usdjpy-2025-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            tag=usdjpy-2025-raw-bidask-ticks-v1
-          elif gh release view usdjpy-raw-ticks-2025-v1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            tag=usdjpy-raw-ticks-2025-v1
-          else
-            echo 'No immutable 2025 Raw Tick Release found' >&2; exit 1
-          fi
+          tag=usdjpy-raw-ticks-2025-v1
+          gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
           echo "RAW_2025_RELEASE=$tag" >> "$GITHUB_ENV"
           gh release download "$tag" --repo "$GITHUB_REPOSITORY" --dir "$POSTMORTEM_ROOT/raw-download"
+          manifest="$POSTMORTEM_ROOT/raw-download/usdjpy-dukascopy-raw-ticks-2025-v1-manifest.json"
+          test -f "$manifest"
+          python - "$manifest" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1]))
+          assert x['status']=='PASS' and x['month_count']==12 and x['expected_hours']==8760 and x['terminal_errors']==0
+          assert x['2025_strategy_results_opened'] is False
+          print(x['downloaded_hours'])
+          PY
           shopt -s nullglob
-          for a in "$POSTMORTEM_ROOT"/raw-download/*.tar.gz; do
-            tar -xzf "$a" -C "$POSTMORTEM_ROOT/raw" --wildcards --no-anchored '*.csv.gz'
-          done
-          for a in "$POSTMORTEM_ROOT"/raw-download/*.tar.zst; do
+          archives=("$POSTMORTEM_ROOT"/raw-download/usdjpy-dukascopy-raw-ticks-2025-??-v1.tar.zst)
+          test "${#archives[@]}" -eq 12
+          for a in "${archives[@]}"; do
             tar --use-compress-program=unzstd -xf "$a" -C "$POSTMORTEM_ROOT/raw" --wildcards --no-anchored '*.csv.gz'
           done
           count=$(find "$POSTMORTEM_ROOT/raw" -type f -name '*.csv.gz' | wc -l)
-          test "$count" -ge 8000
-          echo "Raw Tick hourly files: $count from $tag"
+          expected=$(python -c "import json;print(json.load(open('$manifest'))['downloaded_hours'])")
+          test "$count" -eq "$expected"
+          cp "$manifest" "$POSTMORTEM_ROOT/raw/"
+          echo "Raw Tick hourly files: $count/$expected from $tag"
 
       - name: Run fixed-candidate postmortem
         shell: bash
@@ -125,6 +130,7 @@ jobs:
           cp "$CORRECTED_P6" "$POSTMORTEM_ROOT/out/corrected_p6_result.json"
           cp configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json "$POSTMORTEM_ROOT/out/"
           cp "$MT4_CONTEXT_DIR"/mt4_events_*.json "$POSTMORTEM_ROOT/out/"
+          cp "$POSTMORTEM_ROOT/raw/usdjpy-dukascopy-raw-ticks-2025-v1-manifest.json" "$POSTMORTEM_ROOT/out/"
           printf '%s\n' "$RAW_2025_RELEASE" > "$POSTMORTEM_ROOT/out/raw_2025_release_tag.txt"
           python - <<'PY'
           import hashlib,json,os
