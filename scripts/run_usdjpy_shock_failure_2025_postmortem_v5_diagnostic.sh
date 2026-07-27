@@ -14,6 +14,7 @@ test "$(sha256sum "$finalizer_b64" | awk '{print $1}')" = 7a4d10dd82d21c15a3f225
 base64 -d "$finalizer_b64" > "$finalizer"
 test "$(sha256sum "$finalizer" | awk '{print $1}')" = 9b188e655795a9f5fb5de1f31b5bd5c503fc834e47f9a3178db7b007648d9c3e
 bash -n "$finalizer"
+python -m pip install --disable-pip-version-check 'pytest==8.3.4'
 
 git fetch --no-tags origin main
 git checkout -B main origin/main
