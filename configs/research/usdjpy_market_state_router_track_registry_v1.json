@@ -12,8 +12,8 @@
     "S3_does_not_authorize_HYP027_MT4_or_2025": true
   },
   "track": {
-    "hypothesis_id": "USDJPY-HYP-028",
-    "family_id": "S_MARKET_STATE_STRATEGY_ROUTING",
+    "hypothesis_id": "USDJPY-HYP-029",
+    "family_id": "T_MARKET_STATE_STRATEGY_ROUTING",
     "lineage_id": "IMPACT_ATLAS_MARKET_STATE_ROUTER_S3_V1",
     "candidate_id": "S3_H4_ALIGNED",
     "candidate_definition_frozen": true,
