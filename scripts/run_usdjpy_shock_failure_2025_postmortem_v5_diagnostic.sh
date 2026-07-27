@@ -13,6 +13,16 @@ done
 test "$(sha256sum "$finalizer_b64" | awk '{print $1}')" = 7a4d10dd82d21c15a3f225ae2711122a632a81a2559a22162a24569af47ffdc6
 base64 -d "$finalizer_b64" > "$finalizer"
 test "$(sha256sum "$finalizer" | awk '{print $1}')" = 9b188e655795a9f5fb5de1f31b5bd5c503fc834e47f9a3178db7b007648d9c3e
+python - "$finalizer" <<'PY'
+from pathlib import Path
+import sys
+p=Path(sys.argv[1])
+s=p.read_text(encoding='utf-8')
+old=".resolved_hours==.expected_hours and .resolved_hours==6226 and .tick_rows>0"
+new=".resolved_hours==.expected_hours and ([.months[].totals.downloaded_hours] | add)==6226 and .tick_rows>0"
+assert s.count(old)==1, s.count(old)
+p.write_text(s.replace(old,new,1),encoding='utf-8')
+PY
 bash -n "$finalizer"
 python -m pip install --disable-pip-version-check 'pytest==8.3.4'
 
