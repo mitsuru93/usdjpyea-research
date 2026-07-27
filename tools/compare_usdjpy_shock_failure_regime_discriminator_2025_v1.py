@@ -13,6 +13,12 @@ decision=json.loads(a.final_decision.read_text())
 assert decision['2025_used_for_selection'] is False
 
 def summarize(period: str, df: pd.DataFrame) -> list[dict]:
+    if period == 'CONSUMED_POSTMORTEM_2025':
+        if 'fold' not in df.columns:
+            raise ValueError('2025 comparison input requires fold column for period isolation')
+        df=df[df['fold'].astype(str).isin(['2025H1','2025H2'])].copy()
+        if df.empty:
+            raise ValueError('2025H1/H2 rows missing from postmortem comparison input')
     if 'failure_class' in df.columns and 'lifecycle_class' not in df.columns:
         df=df.rename(columns={'failure_class':'lifecycle_class'})
     if 'lifecycle_class' not in df.columns:
@@ -38,6 +44,7 @@ dev=pd.read_csv(a.dev_lifecycle,compression='infer')
 y25=pd.read_csv(a.postmortem_2025_lifecycle)
 rows=summarize('DEVELOPMENT_2023_2024',dev)+summarize('CONSUMED_POSTMORTEM_2025',y25)
 out=pd.DataFrame(rows)
+assert int(out.loc[out.period_role=='CONSUMED_POSTMORTEM_2025','events'].sum()) == 47
 out.to_csv(a.out,index=False)
 receipt={
   'schema_version':'usdjpy_shock_failure_regime_discriminator_2025_comparison_v1',
@@ -45,6 +52,8 @@ receipt={
   'selection_status':decision['status'],
   'selected_candidate_id':decision.get('selected_candidate_id'),
   '2025_role':'CONSUMED_POSTMORTEM_COMPARISON_ONLY',
+  '2025_folds_included':['2025H1','2025H2'],
+  '2025_event_count':47,
   '2025_used_for_feature_threshold_model_or_rule_selection':False,
   'comparison_input_supports_event_or_aggregate_lifecycle':True
 }
