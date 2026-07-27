@@ -1,0 +1,9 @@
+{
+  "schema_version": "usdjpy_shock_failure_2025_postmortem_dispatch_v1",
+  "target_branch": "agent/shock-failure-2025-postmortem-v1",
+  "target_pr": 320,
+  "candidate_id": "B_EXECUTABLE_T0_8BAR",
+  "no_retuning": true,
+  "production_authorized": false,
+  "live_orders_authorized": false
+}
