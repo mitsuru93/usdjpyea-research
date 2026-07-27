@@ -1,0 +1,92 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v24",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v23.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v23.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-029",
+      "family_ids": ["T_MARKET_STATE_STRATEGY_ROUTING"],
+      "candidate_ids": ["S3_H4_ALIGNED"],
+      "status": "PRE2025_PASS_2025H1_ONE_SHOT_PREREGISTERED",
+      "origin_analysis": "Impact Atlas Phase 1 found a broad higher-timeframe market-state surface requiring a dedicated routing study. Market-State Routing Phase 2 selected the portable H4-alignment equivalence class across 2023H1, 2023H2, 2024H1 and 2024H2. Core then proved exact H4-state and permission parity, controlled order-path integration, account-currency reconciliation and bounded native full-equity DD improvement.",
+      "causal_hypothesis": "B02 and F05 entries taken against the latest completed exact-slot H4 EMA(6,24) directional state have lower expected value than aligned entries, so blocking opposed or neutral entries should improve portfolio net, PF and equity DD without strategy-specific repair.",
+      "target_failure_mode": [
+        "B02/F05 entries against higher-timeframe directional state",
+        "cross-regime continuation failure",
+        "portfolio equity drawdown caused by retained opposed entries"
+      ],
+      "pre_result_predictions": [
+        "The unchanged candidate produces positive 2025H1 net and PF at least 1.0.",
+        "Candidate net and PF exceed the accepted baseline.",
+        "Bounded 2025H1 tick-equity DD is below baseline and minimum equity is above baseline.",
+        "Both 2025Q1 and 2025Q2 candidate nets are nonnegative and both deltas are positive.",
+        "At least four months improve and no more than one month worsens.",
+        "Ex-best-two positive entry-date delta remains positive.",
+        "Neither B02 nor F05 is harmed; at least one strategy improves strictly.",
+        "Blocked-loser benefit exceeds blocked-winner harm.",
+        "Independent exact H4-state and permission audit has zero mismatch."
+      ],
+      "tests": [
+        {
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "type": "portable_research_market_state_routing_and_exact_core_mt4_validation",
+          "result": {
+            "research_population": 1882,
+            "blocked": 671,
+            "allowed": 1211,
+            "research_net_delta_jpy": 22687,
+            "positive_folds": 4,
+            "minimum_fold_delta_jpy": 931,
+            "h4_state_mismatches": 0,
+            "permission_mismatches": 0,
+            "native_net_delta_usd": 179.78,
+            "native_pf_baseline": 1.121774137785324,
+            "native_pf_candidate": 1.3113319880174972,
+            "bounded_native_equity_DD_baseline_usd": 311.87,
+            "bounded_native_equity_DD_candidate_usd": 201.70,
+            "bounded_native_equity_DD_delta_pct": -35.3256164427,
+            "half_year_DD_nonworse_count": 4
+          }
+        },
+        {
+          "period": "2025H1",
+          "type": "single_binding_Rakuten_MT4_Baseline_vs_unchanged_S3",
+          "result": "AUTHORIZED_NOT_EXECUTED",
+          "protocol": "configs/research/usdjpy_market_state_router_2025h1_one_shot_gate_protocol_v1.json"
+        }
+      ],
+      "decision": "All pre-2025 gates pass. Authorize one unchanged candidate-specific 2025H1 Rakuten MT4 binding exposure only after the outcome-free protocol is merged and the reusable workflow preflight passes. Keep 2025H2 locked.",
+      "falsified_or_unsupported_claims": [
+        "The unbounded $615.74 versus $687.48 equity-DD comparison represented 2023-2024 risk; it inherited a single 2021 running peak and was superseded by bounded in-window authority."
+      ],
+      "retained_findings": [
+        "Research counterfactual net improvement is positive in all four half-year folds.",
+        "Exact H4 state and row-level permission parity are zero mismatch.",
+        "Native account net and PF improve after accounting-currency repair.",
+        "Bounded full-equity DD improves by $110.17 or 35.33%, with candidate non-worse in all four half-year folds.",
+        "The candidate is a shared B02/F05 admission router, not a repair of Entry, Exit, SL or TP."
+      ],
+      "prohibited_reuse": [
+        "Do not retune EMA spans, neutral handling or exceptions from 2025.",
+        "Do not run a second scientific 2025H1 candidate after a valid outcome.",
+        "Do not substitute Python counterfactuals for binding Rakuten MT4.",
+        "Do not access 2025H2 unless unchanged H1 passes every frozen gate and closure is merged.",
+        "Do not claim S3 authorizes HYP-027, replaces the global candidate registry or reopens HYP-028."
+      ],
+      "successor_questions": [
+        "Does the portable H4-alignment edge survive the known adverse 2025H1 regime under every frozen gate?",
+        "If H1 passes, does the unchanged rule remain positive and non-worse in 2025H2 under a separately authorized gate?"
+      ],
+      "evidence_refs": [
+        {"repository":"mitsuru93/usdjpyea-research","path":"configs/research/usdjpy_market_state_strategy_routing_phase2_result_v1.json","pr":293,"run_id":30202764106},
+        {"repository":"mitsuru93/usdjpyea-research","path":"configs/research/usdjpy_market_state_router_pre2025_final_audit_v1.json"},
+        {"repository":"mitsuru93/usdjpyea-research","path":"configs/research/usdjpy_market_state_router_s3_mt4_economic_attribution_receipt_v1.json"},
+        {"repository":"mitsuru93/usdjpyea-core","issue":395,"run_id":30261603069,"release_tag":"usdjpy-s3-native-equity-dd-reconciliation-v1","archive_sha256":"8896d464935eccaba551847de3a332d5d744f3d1e42d1e0d7b7851af9a83fa72"},
+        {"repository":"mitsuru93/usdjpyea-research","path":"configs/research/usdjpy_market_state_router_2025h1_one_shot_gate_protocol_v1.json"}
+      ]
+    }
+  ]
+}
