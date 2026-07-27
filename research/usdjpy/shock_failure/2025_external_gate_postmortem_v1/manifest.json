@@ -1,0 +1,65 @@
+{
+  "files": [
+    {
+      "bytes": 3396,
+      "path": "corrected_p6_result.json",
+      "sha256": "5556c63acd2e8ed662478ae89ee4c31d4ec2143bc800babb73c39e8edff3920b"
+    },
+    {
+      "bytes": 2,
+      "path": "evaluator_exit_code.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "bytes": 348,
+      "path": "evaluator_stderr.log",
+      "sha256": "4198a4c66047e512938d08cd5d07f9473503c501ae5599e9572c9a9baf236469"
+    },
+    {
+      "bytes": 0,
+      "path": "evaluator_stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 7947,
+      "path": "mt4_events_01.json",
+      "sha256": "a659195f78365045f9a35f3b98a1aaad1f308bc57673f286c8b8aa47f99ff508"
+    },
+    {
+      "bytes": 7920,
+      "path": "mt4_events_02.json",
+      "sha256": "b80b603b83fcb56a66c961f1613b5cbf121058dea3765c79cc7690a379ecfb27"
+    },
+    {
+      "bytes": 7934,
+      "path": "mt4_events_03.json",
+      "sha256": "8fa8d795e170719915dfdfa39c290538231854e4f87d76d34d0a67ec2a7befe8"
+    },
+    {
+      "bytes": 7932,
+      "path": "mt4_events_04.json",
+      "sha256": "5c77e135c3b3cf60da8d8e26eb6ae0fc01615cd8c588d184759cfda16041a0a8"
+    },
+    {
+      "bytes": 5626,
+      "path": "mt4_events_05.json",
+      "sha256": "87d6e9cd297d2416202f3d4f9c08d966e70963e4a06fe9d2c2e57f4de129e54b"
+    },
+    {
+      "bytes": 32,
+      "path": "raw_2025_release_tag.txt",
+      "sha256": "9db9953941c4c3b45190b42127e5131bf63920fb5011e362eefdc8d4e6710571"
+    },
+    {
+      "bytes": 9917,
+      "path": "usdjpy-2025-raw-ticks-v1.annual-manifest.json",
+      "sha256": "bb659502db32cfe784f62c1801d7bc3d8f7a5b1062e12430314b3b50b8fc4119"
+    },
+    {
+      "bytes": 1483,
+      "path": "usdjpy_shock_failure_2025_postmortem_protocol_v1.json",
+      "sha256": "4fecd63cc749df47b2c0bb1ef9754fa933ce9334584732d74621e561c9339165"
+    }
+  ],
+  "schema_version": "usdjpy_shock_failure_2025_postmortem_manifest_v1"
+}

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/runner/work/usdjpyea-research/usdjpyea-research/tools/run_usdjpy_shock_failure_2025_postmortem_v1.py", line 6, in <module>
+    SOURCE=zlib.decompress(base64.b64decode(PAYLOAD))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+zlib.error: Error -3 while decompressing data: incorrect data check
