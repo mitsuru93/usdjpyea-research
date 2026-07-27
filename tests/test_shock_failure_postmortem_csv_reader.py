@@ -11,7 +11,12 @@ import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-ANALYZER_PATH = REPO_ROOT / "tools" / "analyze_usdjpy_shock_failure_2025_postmortem_v1.py"
+ANALYZER_PATH = Path(
+    os.environ.get(
+        "SHOCK_POSTMORTEM_ANALYZER",
+        REPO_ROOT / "tools" / "analyze_usdjpy_shock_failure_2025_postmortem_v3.py",
+    )
+)
 
 
 def _load_analyzer():
@@ -61,11 +66,15 @@ def test_gz_suffix_without_gzip_magic_is_rejected(tmp_path: Path, analyzer) -> N
         analyzer.read_csv_robust(path)
 
 
-def test_cp932_fallback(tmp_path: Path, analyzer) -> None:
-    path = tmp_path / "cp932.csv"
-    path.write_bytes("key,value\n候補,失敗\n".encode("cp932"))
-    actual = analyzer.read_csv_robust(path)
-    assert actual.to_dict("records") == [{"key": "候補", "value": "失敗"}]
+def test_utf8_and_cp932_fallbacks(tmp_path: Path, analyzer) -> None:
+    utf8 = tmp_path / "utf8.csv"
+    cp932 = tmp_path / "cp932.csv"
+    text = "key,value\n候補,失敗\n"
+    utf8.write_bytes(text.encode("utf-8"))
+    cp932.write_bytes(text.encode("cp932"))
+    expected = [{"key": "候補", "value": "失敗"}]
+    assert analyzer.read_csv_robust(utf8).to_dict("records") == expected
+    assert analyzer.read_csv_robust(cp932).to_dict("records") == expected
 
 
 def test_phase2_candidate_ledger_reads_114_events(analyzer) -> None:
