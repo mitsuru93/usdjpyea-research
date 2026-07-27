@@ -1,0 +1,24 @@
+{
+  "schema_version": "usdjpy_asian_range_liquidity_sweep_phase2_period_access_receipt_v1",
+  "status": "CLOSED_WITHOUT_PROTECTED_PERIOD_ACCESS",
+  "hypothesis_id": "USDJPY-HYP-030",
+  "development_periods_accessed": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "protected_periods": {
+    "2025H1": "NOT_ACCESSED_NOT_AUTHORIZED",
+    "2025H2": "NOT_ACCESSED_NOT_AUTHORIZED",
+    "combined_2025": "NOT_ACCESSED_NOT_AUTHORIZED"
+  },
+  "access_block_reason": "The exact executable candidate failed the preregistered Research portable gate portfolio_mdd_nonworse, so candidate freeze, Core/MT4 work, and the 2025 strategy-specific external gate were not authorized.",
+  "candidate_selected": false,
+  "candidate_freeze_created": false,
+  "Core_modified": false,
+  "MT4_accessed": false,
+  "B02_F05_logic_changed": false,
+  "parameter_grid_search": false,
+  "side_or_session_exclusion": false,
+  "production_authorized": false,
+  "scientific_run_id": 30266063378,
+  "scientific_artifact_id": 8653034729,
+  "scientific_artifact_digest": "sha256:f9558ba903c01c6f59df50424efe5c04bb423674e4c75247449a797d751c0c1f",
+  "binding_decision": "NO_PORTABLE_CANDIDATE"
+}
