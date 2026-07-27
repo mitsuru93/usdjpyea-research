@@ -1,0 +1,31 @@
+{
+  "assets": [
+    {
+      "bytes": 273,
+      "name": "RELEASE_SHA256SUMS",
+      "sha256": "3517706b82be9aacdcc0b05166951fb7d7aaada4caaed2eeb590134abc7bf1e6"
+    },
+    {
+      "bytes": 3592,
+      "name": "SHA256SUMS",
+      "sha256": "98e31edf184d075e06a7c9a055ffed3071abec4ca0c7fe8227b0a35a1bb96482"
+    },
+    {
+      "bytes": 6289,
+      "name": "manifest.json",
+      "sha256": "e82de93cd5c422b7260b031df97c810795ce73d61db2bea0a378881c9fa257ef"
+    },
+    {
+      "bytes": 134085,
+      "name": "usdjpy-shock-failure-2025-postmortem-v1-r2.tar.gz",
+      "sha256": "16b47b6ff9b12692c2c68f711a60cec029e7770c881dd5f40cb9451f662a8f5e"
+    }
+  ],
+  "binding_run_id": 30241426251,
+  "exact_input_head_sha": "1fee26ee33de503195454e0dca8f3db31ebf87bc",
+  "publication_commit": "822ee8389423376dd4990e923fcafc9f8d563798",
+  "release_package_sha256": "16b47b6ff9b12692c2c68f711a60cec029e7770c881dd5f40cb9451f662a8f5e",
+  "release_tag": "usdjpy-shock-failure-2025-postmortem-v1-r2",
+  "schema_version": "usdjpy_shock_failure_2025_postmortem_release_readback_receipt_v2",
+  "status": "PASS_SHA256_FULL_READBACK"
+}
