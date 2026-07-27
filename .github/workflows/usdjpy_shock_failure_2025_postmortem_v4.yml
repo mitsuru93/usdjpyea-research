@@ -1,13 +1,74 @@
-name: USDJPY Shock Failure 2025 Postmortem v4
+name: USDJPY Shock Failure 2025 Postmortem v4 Binding
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_shock_failure_2025_postmortem_v4.yml'
+      - 'tools/finalize_usdjpy_shock_failure_2025_postmortem_r2.sh.b64.part*'
+      - 'tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py'
+      - 'tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py.gz.b64'
+      - 'tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py.gz.b64.part*'
+      - 'tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.*.sha256'
+      - 'tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.snapshot_receipt.json'
+      - 'tests/test_shock_failure_postmortem_csv_reader.py'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  actions: read
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: usdjpy-shock-failure-2025-postmortem-v4-binding
+  cancel-in-progress: false
 
 jobs:
-  staging:
+  bind:
     runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      HEAD_BRANCH: ${{ github.event.pull_request.head.ref || 'agent/shock-failure-2025-postmortem-v1' }}
     steps:
-      - run: echo 'Canonical source snapshot and publication workflow are being staged.'
+      - name: Check out exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.HEAD_SHA }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install fixed dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3' 'scipy==1.14.1' 'tabulate==0.9.0' 'pytest==8.3.4'
+
+      - name: Materialize and execute the pinned finalizer
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cat tools/finalize_usdjpy_shock_failure_2025_postmortem_r2.sh.b64.part* > "$RUNNER_TEMP/finalizer.b64"
+          test "$(sha256sum "$RUNNER_TEMP/finalizer.b64" | awk '{print $1}')" = 7a4d10dd82d21c15a3f225ae2711122a632a81a2559a22162a24569af47ffdc6
+          base64 -d "$RUNNER_TEMP/finalizer.b64" > "$RUNNER_TEMP/finalizer.sh"
+          test "$(sha256sum "$RUNNER_TEMP/finalizer.sh" | awk '{print $1}')" = 9b188e655795a9f5fb5de1f31b5bd5c503fc834e47f9a3178db7b007648d9c3e
+          bash -n "$RUNNER_TEMP/finalizer.sh"
+          bash "$RUNNER_TEMP/finalizer.sh"
+
+      - name: Upload complete r2 evidence
+        if: env.POSTMORTEM_COMPLETE == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-shock-failure-2025-postmortem-r2-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.PM_ROOT }}/out
+            ${{ env.PM_ROOT }}/release
+            configs/research/usdjpy_shock_failure_2025_postmortem_release_receipt_v2.json
+            ${{ env.PM_ROOT }}/issue.md
+            ${{ env.PM_ROOT }}/pr-comment.md
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
