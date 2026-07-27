@@ -1,6 +1,13 @@
 name: USDJPY Shock Failure 2025 Postmortem v4 Binding
 
 on:
+  push:
+    branches: ['agent/shock-failure-2025-postmortem-v1']
+    paths:
+      - '.github/workflows/usdjpy_shock_failure_2025_postmortem_v4.yml'
+      - 'tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py.gz.b64.part*'
+      - 'configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json'
+      - 'research_inputs/usdjpy/shock_failure/2025_postmortem_v1/**'
   pull_request:
     branches: [main]
     paths:
@@ -28,7 +35,7 @@ jobs:
       PHASE2_RELEASE: usdjpy-csos-shock-failure-phase2-v1
       PHASE2_ASSET: usdjpy-csos-shock-failure-phase2-v1-30206226997-1.zip
       RELEASE_TAG: usdjpy-shock-failure-2025-postmortem-v1-r1
-      HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+      HEAD_BRANCH: agent/shock-failure-2025-postmortem-v1
       HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       MT4_CONTEXT_DIR: research_inputs/usdjpy/shock_failure/2025_postmortem_v1
       CORRECTED_P6: research_inputs/usdjpy/shock_failure/2025_postmortem_v1/corrected_p6_result_compact.json
@@ -233,8 +240,7 @@ jobs:
           gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir "$PM_ROOT/readback"
           (cd "$PM_ROOT/readback" && sha256sum -c RELEASE_SHA256SUMS)
 
-      - name: Comment final decision on PR
-        if: github.event_name == 'pull_request'
+      - name: Comment final decision on PR 320
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -258,7 +264,7 @@ jobs:
                 "No candidate parameter, side, session, threshold, failure rule, entry timing, timeout, spread convention, Bid/Ask convention, or B02/F05 semantic was changed.")
           (root/'pr-comment.md').write_text(body)
           PY
-          gh pr comment "${{ github.event.pull_request.number }}" --repo "$GITHUB_REPOSITORY" --body-file "$PM_ROOT/pr-comment.md"
+          gh pr comment 320 --repo "$GITHUB_REPOSITORY" --body-file "$PM_ROOT/pr-comment.md"
 
       - name: Upload complete evidence
         uses: actions/upload-artifact@v4
