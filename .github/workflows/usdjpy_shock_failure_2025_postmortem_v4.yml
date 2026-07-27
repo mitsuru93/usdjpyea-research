@@ -11,6 +11,10 @@ on:
       - 'tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.*.sha256'
       - 'tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.snapshot_receipt.json'
       - 'tests/test_shock_failure_postmortem_csv_reader.py'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_shock_failure_2025_postmortem_dispatch_v1.json'
   workflow_dispatch:
 
 permissions:
@@ -28,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
-      HEAD_SHA: ${{ github.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.base.sha || github.sha }}
       HEAD_BRANCH: main
       FINALIZER_COMMIT: bac409cf96b9c8d70abf6f29335c05c634297007
       BINDING_TRIGGER: canonical-reader-snapshot-745d9f1
