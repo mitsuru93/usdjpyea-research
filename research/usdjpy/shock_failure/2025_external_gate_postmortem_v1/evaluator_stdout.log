@@ -1,0 +1,137 @@
+{
+  "2025_available_as_future_holdout": false,
+  "candidate_id": "B_EXECUTABLE_T0_8BAR",
+  "decision_class": "DIRECTIONAL_OR_REGIME_CONDITIONAL_MECHANISM",
+  "exit_failure_share": 0.2553191489361702,
+  "failure_class_share": {
+    "D_PROFIT_THEN_GIVEBACK": 0.2553191489361702,
+    "F_CONTINUATION_RESUMPTION": 0.44680851063829785,
+    "H_SUSTAINED_REVERSAL": 0.2978723404255319
+  },
+  "family_status": "RETAIN_FOR_NEW_HYPOTHESIS_ONLY",
+  "fixed_candidate_status": "REJECTED_EXTERNAL_GATE_FAILED",
+  "live_orders_authorized": false,
+  "macro_event_proximity": "PENDING_PRIMARY_SOURCE_ANNOTATION_FOR_WORST_EVENTS",
+  "mt4_2025_metrics": {
+    "gross_loss": -6298.0,
+    "gross_profit": 5021.0,
+    "immediate_failure_rate": 0.0,
+    "mdd": 3214.0,
+    "mean_mae_pips": -24.8617021276597,
+    "mean_mfe_pips": 22.142553191489686,
+    "median": -47.0,
+    "net": -1277.0,
+    "pf": 0.7972372181644967,
+    "positive_months": 5,
+    "profit_then_giveback_rate": 0.2553191489361702,
+    "timeout_truncation_rate": 0.0,
+    "trades": 47,
+    "win_rate": 0.40425531914893614
+  },
+  "new_candidate_allowed_only_with_new_id": true,
+  "next_external_period": "2026 only after complete immutable data availability and new preregistration; otherwise reserve the next fully unused future period",
+  "production_authorized": false,
+  "raw_2025_metrics": {
+    "gross_loss": -5729.000000000098,
+    "gross_profit": 5429.99999999992,
+    "immediate_failure_rate": 0.0,
+    "mdd": 2720.000000000141,
+    "mean_mae_pips": -24.12826086956544,
+    "mean_mfe_pips": 24.195652173913032,
+    "median": 2.4999999999977263,
+    "net": -299.0000000001771,
+    "pf": 0.9478093908186118,
+    "positive_months": 5,
+    "profit_then_giveback_rate": 0.2608695652173913,
+    "timeout_truncation_rate": 0.0,
+    "trades": 46,
+    "win_rate": 0.5
+  },
+  "schema_version": "usdjpy_shock_failure_2025_postmortem_decision_v1",
+  "session_net_jpy": {
+    "LONDON": -2401.0,
+    "LONDON_NY_OVERLAP": 881.0,
+    "NEW_YORK": 19.0,
+    "TOKYO": 330.0,
+    "TRANSITION": -106.0
+  },
+  "side_net_jpy": {
+    "LONG": 98.0,
+    "SHORT": -1375.0
+  },
+  "signal_failure_share": 0.44680851063829785,
+  "source_parity": {
+    "matched": 39,
+    "mt4_events": 47,
+    "mt4_only": 8,
+    "mt4_only_keys": [
+      [
+        "2025-02-03 15:30:00",
+        1
+      ],
+      [
+        "2025-08-19 17:30:00",
+        1
+      ],
+      [
+        "2025-10-12 22:15:00",
+        1
+      ],
+      [
+        "2025-12-03 14:45:00",
+        -1
+      ],
+      [
+        "2025-12-09 15:30:00",
+        -1
+      ],
+      [
+        "2025-12-19 14:30:00",
+        1
+      ],
+      [
+        "2025-12-19 17:30:00",
+        -1
+      ],
+      [
+        "2025-12-22 14:00:00",
+        1
+      ]
+    ],
+    "precision_vs_mt4": 0.8478260869565217,
+    "raw_events": 46,
+    "raw_only": 7,
+    "raw_only_keys": [
+      [
+        "2025-03-17 14:00:00",
+        -1
+      ],
+      [
+        "2025-03-27 14:00:00",
+        1
+      ],
+      [
+        "2025-05-19 01:15:00",
+        1
+      ],
+      [
+        "2025-09-30 15:15:00",
+        1
+      ],
+      [
+        "2025-10-12 21:15:00",
+        1
+      ],
+      [
+        "2025-11-19 13:30:00",
+        1
+      ],
+      [
+        "2025-12-22 13:45:00",
+        -1
+      ]
+    ],
+    "recall_vs_mt4": 0.8297872340425532
+  },
+  "status": "PASS_POSTMORTEM_COMPLETED_NO_RETUNING"
+}

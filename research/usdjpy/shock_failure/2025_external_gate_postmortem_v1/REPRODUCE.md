@@ -1,0 +1,1 @@
+python tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py --phase2-ledger <candidate_trade_ledger.csv.gz> --m15-2023 <2023_m15.csv.gz> --m15-2024 <2024_m15.csv.gz> --raw-2025 <dir> --mt4-context-dir <dir> --portfolio-context <json> --corrected-p6 <json> --protocol <json> --out-dir <dir>

@@ -1,0 +1,2752 @@
+{
+  "release_count": 34,
+  "releases": [
+    {
+      "assets": [
+        {
+          "digest": "sha256:3e63adea0df3495d222a983c11df05707033b02dd1b5747f15ef05c179b37826",
+          "id": 490808659,
+          "name": "SHA256SUMS",
+          "size": 154,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490808659"
+        },
+        {
+          "digest": "sha256:d08e570a5bcc618bdecc01e77fe811d4b91e493f9480e17a01b2833f6add6595",
+          "id": 490808657,
+          "name": "usdjpy-market-state-router-reference-v2-run-30225889285-artifact-8638538919.zip",
+          "size": 297046,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490808657"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY Market-State Router Reference v2",
+      "prerelease": false,
+      "published_at": "2026-07-27T00:02:59Z",
+      "tag_name": "usdjpy-market-state-router-reference-v2",
+      "target_commitish": "9697d3a0fe1e58520c30d7f1a9d86f9e51a1b886"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada",
+          "id": 490393376,
+          "name": "usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip",
+          "size": 1037115,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490393376"
+        },
+        {
+          "digest": "sha256:846cf8b6071d823943d3ba2e30f020216bc340f94fbb51e6b130f8f6a8722ffd",
+          "id": 490393377,
+          "name": "usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip.sha256",
+          "size": 113,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490393377"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY Portfolio Loss-Cluster Study Phase 1 v1-r1",
+      "prerelease": false,
+      "published_at": "2026-07-26T13:49:59Z",
+      "tag_name": "usdjpy-portfolio-loss-cluster-phase1-v1-r1",
+      "target_commitish": "249e38dd5e7ff3a536955eff772eacbab6b03009"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:c9f401e13ccc01c473a56e00421e4b960a9acfacd8c20487bfc920075adb5fe7",
+          "id": 490387430,
+          "name": "usdjpy-portfolio-loss-cluster-phase1-v1-30204173630-1.zip",
+          "size": 1036969,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490387430"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY Portfolio Loss-Cluster Study Phase 1 v1",
+      "prerelease": false,
+      "published_at": "2026-07-26T13:40:26Z",
+      "tag_name": "usdjpy-portfolio-loss-cluster-phase1-v1",
+      "target_commitish": "dcb8837c68abce39fbf70411d356878d871741d4"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:e6dac7c0ddf00d13f3be9ac7386129556f9b754302c70c4bc31b02a0fb8c2043",
+          "id": 490426245,
+          "name": "usdjpy-csos-shock-failure-phase2-v1-30206226997-1.zip",
+          "size": 130446,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490426245"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY CSOS Shock Failure Phase 2 v1",
+      "prerelease": false,
+      "published_at": "2026-07-26T14:34:37Z",
+      "tag_name": "usdjpy-csos-shock-failure-phase2-v1",
+      "target_commitish": "4a17c07139a564bc97d358da115f451e2316c562"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:f5feef1a1eb06cfdc284d3642c7050b05da3fc6fa31f67a4205c7faf3e72a72f",
+          "id": 490344054,
+          "name": "usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip",
+          "size": 1029501,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490344054"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY CSOS Opportunity Atlas v1 \u2014 evidence repair 1",
+      "prerelease": false,
+      "published_at": "2026-07-26T12:41:27Z",
+      "tag_name": "usdjpy-csos-opportunity-atlas-v1-r1",
+      "target_commitish": "88b88cd01bb84fafdf2e097401222d4f9dac1c6d"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:df197a4746118ac94790abe0b80a9a59d1df04bc157d922415a3111867a65c81",
+          "id": 490334868,
+          "name": "usdjpy-csos-opportunity-atlas-v1-30202064383-1.zip",
+          "size": 1029577,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490334868"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY CSOS Opportunity Atlas v1",
+      "prerelease": false,
+      "published_at": "2026-07-26T12:27:55Z",
+      "tag_name": "usdjpy-csos-opportunity-atlas-v1",
+      "target_commitish": "da530419e929ff5d5a127194d13754ec4f6761d6"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:b42f108734b2cad0b48fb57d65c2a5ab96b72b7f602d1cf7eefe29b56ab8d14a",
+          "id": 490126820,
+          "name": "SHA256SUMS",
+          "size": 3880,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126820"
+        },
+        {
+          "digest": "sha256:2e1c0afcb67fc2ec73ef72464acdc92a4d651b36d7d5a6194b43fb50170b844c",
+          "id": 490126824,
+          "name": "usdjpy-2025-01-raw-ticks-v1.manifest.json",
+          "size": 18025,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126824"
+        },
+        {
+          "digest": "sha256:9b39347a787fbf0a9e1cf9055c524248407ceabc500c7699377190594279fb25",
+          "id": 490126822,
+          "name": "usdjpy-2025-01-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126822"
+        },
+        {
+          "digest": "sha256:4438408a83db20cedf9e625bf912a08221cd4a53aa3e78840beb46b3b854c9d3",
+          "id": 490126821,
+          "name": "usdjpy-2025-01-raw-ticks-v1.tar.gz",
+          "size": 46170515,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126821"
+        },
+        {
+          "digest": "sha256:ca12ad0b5992cc66b8ed58267539e33d1cddab115cabfb9aa77f8d4deecfe8c6",
+          "id": 490126826,
+          "name": "usdjpy-2025-02-raw-ticks-v1.manifest.json",
+          "size": 16341,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126826"
+        },
+        {
+          "digest": "sha256:8c61f963e670f5934daf329286cdbc320cc81522aacef7446d69f24c6685ff84",
+          "id": 490126823,
+          "name": "usdjpy-2025-02-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126823"
+        },
+        {
+          "digest": "sha256:a70aa88649fd6736662e8469749ed622f796851bf4c97d489ade0a56090bb84f",
+          "id": 490126827,
+          "name": "usdjpy-2025-02-raw-ticks-v1.tar.gz",
+          "size": 42749733,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126827"
+        },
+        {
+          "digest": "sha256:f3db391b0af60966f77afff5100888e353628f39ab9bcd4126a00965354ec143",
+          "id": 490126828,
+          "name": "usdjpy-2025-03-raw-ticks-v1.manifest.json",
+          "size": 18018,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126828"
+        },
+        {
+          "digest": "sha256:a609364da2658e471dd63694789fd081456ecc56e94f7595f6580bcfd87b0012",
+          "id": 490126829,
+          "name": "usdjpy-2025-03-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126829"
+        },
+        {
+          "digest": "sha256:2e985b3dbfb55becb14d8e00da2af09e434facebfa61d6eb41b35ea7ddb9c414",
+          "id": 490126832,
+          "name": "usdjpy-2025-03-raw-ticks-v1.tar.gz",
+          "size": 51359862,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126832"
+        },
+        {
+          "digest": "sha256:412fac26b2411b830304ff9d211f35988980506b28d101368a7144c6fa91070e",
+          "id": 490126833,
+          "name": "usdjpy-2025-04-raw-ticks-v1.manifest.json",
+          "size": 17483,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126833"
+        },
+        {
+          "digest": "sha256:58a0de08f200174c333c2cadeede9c8a2756eab9a38734095fa8c3d7317d54fa",
+          "id": 490126834,
+          "name": "usdjpy-2025-04-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126834"
+        },
+        {
+          "digest": "sha256:4feb3bb14325f1659b838d08a47d194177b1b7e4f3441151d09be7559b5f2ad7",
+          "id": 490126836,
+          "name": "usdjpy-2025-04-raw-ticks-v1.tar.gz",
+          "size": 71152058,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126836"
+        },
+        {
+          "digest": "sha256:04bfcbca5d48c5e0817143cfab64464c56ec9a340edc619cff75def49ad05525",
+          "id": 490126838,
+          "name": "usdjpy-2025-05-raw-ticks-v1.manifest.json",
+          "size": 18015,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126838"
+        },
+        {
+          "digest": "sha256:3bd43691feb97c21b9bcb8bbf3c0c89e0fcf133ae21ecb547808c79089d32161",
+          "id": 490126835,
+          "name": "usdjpy-2025-05-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126835"
+        },
+        {
+          "digest": "sha256:fd89bf2e31be06c96aa370c18e81eef3b35a002a75c8a489e58ab98e141d576c",
+          "id": 490126839,
+          "name": "usdjpy-2025-05-raw-ticks-v1.tar.gz",
+          "size": 43156932,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126839"
+        },
+        {
+          "digest": "sha256:5fb964be4bdf30d36b681b75ec877152f3f3521cfb5039746bd6dd8844b73b83",
+          "id": 490126844,
+          "name": "usdjpy-2025-06-raw-ticks-v1.manifest.json",
+          "size": 17449,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126844"
+        },
+        {
+          "digest": "sha256:2e9098fe6adc418fdacada0697b00b24552b5c25565e59c3e27c2183f0cd2b70",
+          "id": 490126841,
+          "name": "usdjpy-2025-06-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126841"
+        },
+        {
+          "digest": "sha256:a16b3915a596d10a1eed66b152f7f1eb554d9f1dc68d59f897a64a971089a4be",
+          "id": 490126845,
+          "name": "usdjpy-2025-06-raw-ticks-v1.tar.gz",
+          "size": 31956306,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126845"
+        },
+        {
+          "digest": "sha256:29a83880564af11a7a4516de74cf1ef507df67819445e37b81390fd7cb667e3a",
+          "id": 490126850,
+          "name": "usdjpy-2025-07-raw-ticks-v1.manifest.json",
+          "size": 17993,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126850"
+        },
+        {
+          "digest": "sha256:fcaf47c94724cf1716776fb031ed322736325aa4c2df9d27c882ac698d32d6d6",
+          "id": 490126848,
+          "name": "usdjpy-2025-07-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126848"
+        },
+        {
+          "digest": "sha256:fbe0bac1f96857f073ae420cb945fb40e0aebb233fb40a17a410c48dbef55a09",
+          "id": 490126851,
+          "name": "usdjpy-2025-07-raw-ticks-v1.tar.gz",
+          "size": 28692745,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126851"
+        },
+        {
+          "digest": "sha256:134009624498e68c80a3faf47d4de20da889e79775aa1aeab64b8aef3604bdfc",
+          "id": 490126854,
+          "name": "usdjpy-2025-08-raw-ticks-v1.manifest.json",
+          "size": 17972,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126854"
+        },
+        {
+          "digest": "sha256:cd678bf52142d84849b52873af4d1ec3aec1fd239d16351d2e99dc6059e12d4d",
+          "id": 490126853,
+          "name": "usdjpy-2025-08-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126853"
+        },
+        {
+          "digest": "sha256:21c56381a678e4cf4872ec1ac63a66736f2b9a7f3e78fcec4733e45ec1dc076c",
+          "id": 490126855,
+          "name": "usdjpy-2025-08-raw-ticks-v1.tar.gz",
+          "size": 23922173,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126855"
+        },
+        {
+          "digest": "sha256:678c3d31bdddb0cc1de2c0ec6b916b6e1393bc9118ac49acb39d30f8c07322c4",
+          "id": 490126858,
+          "name": "usdjpy-2025-09-raw-ticks-v1.manifest.json",
+          "size": 17434,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126858"
+        },
+        {
+          "digest": "sha256:4848007ab86b255de1a64efa6e67803f01c949fd3efb567ebd2a9082626863f6",
+          "id": 490126857,
+          "name": "usdjpy-2025-09-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126857"
+        },
+        {
+          "digest": "sha256:732ecb4e9c5e3ee83360bc399e870734f73445ade5b2085a8340983e7ecff760",
+          "id": 490126859,
+          "name": "usdjpy-2025-09-raw-ticks-v1.tar.gz",
+          "size": 27389486,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126859"
+        },
+        {
+          "digest": "sha256:9703921c0117c2611f67fd00f208e3e3f413e7558bf805c58c6ddb6235e5c4f6",
+          "id": 490126862,
+          "name": "usdjpy-2025-10-raw-ticks-v1.manifest.json",
+          "size": 18010,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126862"
+        },
+        {
+          "digest": "sha256:23e96aaff829f354c2685fbf783e5d7c556c1d119c87223314b157d3d40f032f",
+          "id": 490126860,
+          "name": "usdjpy-2025-10-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126860"
+        },
+        {
+          "digest": "sha256:c2fb4bd85e098a4647f129fa5c857a9c4dca5226f996b78d7b18b7ffe6a4c507",
+          "id": 490126864,
+          "name": "usdjpy-2025-10-raw-ticks-v1.tar.gz",
+          "size": 32173369,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126864"
+        },
+        {
+          "digest": "sha256:083ef786be6deeb13673c20e155ca63c86e7701275d91988463bdb974e36b639",
+          "id": 490126867,
+          "name": "usdjpy-2025-11-raw-ticks-v1.manifest.json",
+          "size": 17417,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126867"
+        },
+        {
+          "digest": "sha256:8c7423fb6a27770323cc1d1c846f363dd47b5cae9b70274c9d29209dc9b65d16",
+          "id": 490126866,
+          "name": "usdjpy-2025-11-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126866"
+        },
+        {
+          "digest": "sha256:9afb428f6f87140309885d120619c696ec7b601031f3471ba4f9df614343ce4f",
+          "id": 490126868,
+          "name": "usdjpy-2025-11-raw-ticks-v1.tar.gz",
+          "size": 27220986,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126868"
+        },
+        {
+          "digest": "sha256:54241e60788a54524e4a909cac5c18f1ddd505b5f93dd6f973b36afc019dc809",
+          "id": 490126871,
+          "name": "usdjpy-2025-12-raw-ticks-v1.manifest.json",
+          "size": 17987,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126871"
+        },
+        {
+          "digest": "sha256:0dcacc0c84397955b0260bef80ba2f70b92f15e2364744bdc5b17d58d41c2143",
+          "id": 490126870,
+          "name": "usdjpy-2025-12-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126870"
+        },
+        {
+          "digest": "sha256:27052d35ce21be4c7c9c04148e22683297254888f6f03cc20a1e28f56abbc7ca",
+          "id": 490126872,
+          "name": "usdjpy-2025-12-raw-ticks-v1.tar.gz",
+          "size": 25690068,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126872"
+        },
+        {
+          "digest": "sha256:bb659502db32cfe784f62c1801d7bc3d8f7a5b1062e12430314b3b50b8fc4119",
+          "id": 490126875,
+          "name": "usdjpy-2025-raw-ticks-v1.annual-manifest.json",
+          "size": 9917,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490126875"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY 2025 Raw Dukascopy Bid/Ask Ticks v1",
+      "prerelease": false,
+      "published_at": "2026-07-26T06:49:14Z",
+      "tag_name": "usdjpy-2025-raw-bidask-ticks-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:669a1e282b7bc337d35da15cf4ce26f31e60e36d9e6642220a1c18d94e1abbf5",
+          "id": 490123015,
+          "name": "SHA256SUMS",
+          "size": 3880,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123015"
+        },
+        {
+          "digest": "sha256:8813536490ee8b24a9c20ebdc84a25d1f978092c8210562ff4ed6598fc3ce7c3",
+          "id": 490123018,
+          "name": "usdjpy-2023-01-raw-ticks-v1.manifest.json",
+          "size": 18033,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123018"
+        },
+        {
+          "digest": "sha256:de0deab753bb9500e78ee8619062aa88ce507deffd8bbe45e9ec955eb1a3a312",
+          "id": 490123016,
+          "name": "usdjpy-2023-01-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123016"
+        },
+        {
+          "digest": "sha256:7ae415c0ead81635c6000fe6c3c2c0beff64fbdbadd06c2e2fa69380955240f3",
+          "id": 490123019,
+          "name": "usdjpy-2023-01-raw-ticks-v1.tar.gz",
+          "size": 62685196,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123019"
+        },
+        {
+          "digest": "sha256:fa9064bc154f0e707c69b45c4b3fb327d04c30a42e9674a3e00604de34e47203",
+          "id": 490123028,
+          "name": "usdjpy-2023-02-raw-ticks-v1.manifest.json",
+          "size": 16345,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123028"
+        },
+        {
+          "digest": "sha256:12fcf38af4ab937e2e0f043c334bfe20669c0545e8cd97af5872bee5a9544e9b",
+          "id": 490123017,
+          "name": "usdjpy-2023-02-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123017"
+        },
+        {
+          "digest": "sha256:4e2af4ec7f37d644dc4f45fb60a5b6d339d32338a08f50e9169d1a56ee84001e",
+          "id": 490123033,
+          "name": "usdjpy-2023-02-raw-ticks-v1.tar.gz",
+          "size": 53189140,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123033"
+        },
+        {
+          "digest": "sha256:1f8d3a7c1e4e9bb257f5947c9c720ecba2412949027a96ebac14b45bb2a35b73",
+          "id": 490123031,
+          "name": "usdjpy-2023-03-raw-ticks-v1.manifest.json",
+          "size": 18050,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123031"
+        },
+        {
+          "digest": "sha256:229736c7de839fb50abcb8af41103cef566867a4c6dd320755e771261331ed9a",
+          "id": 490123032,
+          "name": "usdjpy-2023-03-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123032"
+        },
+        {
+          "digest": "sha256:196269bcff1e5175bbcd7fb2ad0a6fe7def6dfa75929477c613342f2840c67b7",
+          "id": 490123040,
+          "name": "usdjpy-2023-03-raw-ticks-v1.tar.gz",
+          "size": 72733119,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123040"
+        },
+        {
+          "digest": "sha256:d150091a2292a3cfee8b764783d46157ba3bf9b2bc276fb7ff943fadb8cd9da4",
+          "id": 490123043,
+          "name": "usdjpy-2023-04-raw-ticks-v1.manifest.json",
+          "size": 17449,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123043"
+        },
+        {
+          "digest": "sha256:266757a0dcf17f7714a65e5778c7495d87dab180d2efb1c1a5d574cb145da97e",
+          "id": 490123042,
+          "name": "usdjpy-2023-04-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123042"
+        },
+        {
+          "digest": "sha256:df61c3f4e8f562272250e5959c2741f17435efbc79b3b66eb0873c9e9b4a8719",
+          "id": 490123048,
+          "name": "usdjpy-2023-04-raw-ticks-v1.tar.gz",
+          "size": 44081578,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123048"
+        },
+        {
+          "digest": "sha256:d17f5d3af6dc57d5ca12a132c1a9e2c2c515ba546936222ad12d7d53f0431e65",
+          "id": 490123053,
+          "name": "usdjpy-2023-05-raw-ticks-v1.manifest.json",
+          "size": 18032,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123053"
+        },
+        {
+          "digest": "sha256:b892fba77596315497090e69c27338d10e268087296b57fedf12379165fdee2d",
+          "id": 490123049,
+          "name": "usdjpy-2023-05-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123049"
+        },
+        {
+          "digest": "sha256:a2c62754a30fd6979029c393c62b868d52be62a288c8ee4623093c42dc8cc116",
+          "id": 490123058,
+          "name": "usdjpy-2023-05-raw-ticks-v1.tar.gz",
+          "size": 49614512,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123058"
+        },
+        {
+          "digest": "sha256:b01890f0ec7c2f9669b82fd926493d45a8d5824d1c05a3720e8280188d495fa8",
+          "id": 490123074,
+          "name": "usdjpy-2023-06-raw-ticks-v1.manifest.json",
+          "size": 17467,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123074"
+        },
+        {
+          "digest": "sha256:02f892e9ef85b690b446945f6b85137d63abfbb9be53cbc901714e1c4be26430",
+          "id": 490123071,
+          "name": "usdjpy-2023-06-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123071"
+        },
+        {
+          "digest": "sha256:9bb7fc63336004586e4a10705b22dac901d99d585d886697339c395a872675fc",
+          "id": 490123076,
+          "name": "usdjpy-2023-06-raw-ticks-v1.tar.gz",
+          "size": 42055587,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123076"
+        },
+        {
+          "digest": "sha256:7f6976b86b69ce4544d17505f75541d6b477da62c6ce6b201b1520173e397c4d",
+          "id": 490123079,
+          "name": "usdjpy-2023-07-raw-ticks-v1.manifest.json",
+          "size": 18009,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123079"
+        },
+        {
+          "digest": "sha256:63789388879fc13adcfe32fd895812202a231bfc7b002267367bbae3cc8c8c0e",
+          "id": 490123077,
+          "name": "usdjpy-2023-07-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123077"
+        },
+        {
+          "digest": "sha256:7e0b20be800620b39fb7bf0f10e4d329df26cb3fd03bcf633dca213f5faecf24",
+          "id": 490123084,
+          "name": "usdjpy-2023-07-raw-ticks-v1.tar.gz",
+          "size": 42507994,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123084"
+        },
+        {
+          "digest": "sha256:e10626a3daed873ab057f1b86386bc9b1aa0672e142f91d8dd6b254ae4905227",
+          "id": 490123090,
+          "name": "usdjpy-2023-08-raw-ticks-v1.manifest.json",
+          "size": 18031,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123090"
+        },
+        {
+          "digest": "sha256:7f1024ec6188fe8d35bdf2ef24010cffb23d9fa84e5cc66aff84618b379eefb0",
+          "id": 490123088,
+          "name": "usdjpy-2023-08-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123088"
+        },
+        {
+          "digest": "sha256:609e66552fb0fb2fd29f2af70fe892075a84d7721d239276c615387a87439eb2",
+          "id": 490123091,
+          "name": "usdjpy-2023-08-raw-ticks-v1.tar.gz",
+          "size": 44882924,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123091"
+        },
+        {
+          "digest": "sha256:bb88c1804494b307c8b8d683fb47799154e72d25aefa61dc94ee196193a47a44",
+          "id": 490123094,
+          "name": "usdjpy-2023-09-raw-ticks-v1.manifest.json",
+          "size": 17442,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123094"
+        },
+        {
+          "digest": "sha256:42e7d60ea69e39bcb70e38fc087200782cd7cd38c190e96acb0d316e5b2b4b0b",
+          "id": 490123093,
+          "name": "usdjpy-2023-09-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123093"
+        },
+        {
+          "digest": "sha256:bf65fa3cf8817930e1e2622562c20233efa84c2a0b3711c0a62cfbe1ea417778",
+          "id": 490123097,
+          "name": "usdjpy-2023-09-raw-ticks-v1.tar.gz",
+          "size": 32602778,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123097"
+        },
+        {
+          "digest": "sha256:a10a67f8cf195c813455eec9be76560401699bae6f5489b4c5139a51269a8df4",
+          "id": 490123102,
+          "name": "usdjpy-2023-10-raw-ticks-v1.manifest.json",
+          "size": 18005,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123102"
+        },
+        {
+          "digest": "sha256:08ba65a1c1bb10ac2df8a26ada6587b6de2742fd349161544b52923368d1421c",
+          "id": 490123101,
+          "name": "usdjpy-2023-10-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123101"
+        },
+        {
+          "digest": "sha256:7198e94c192343cccde85afbb8b05e18218a4a5d130ced3fe8c01b3982ae46e1",
+          "id": 490123107,
+          "name": "usdjpy-2023-10-raw-ticks-v1.tar.gz",
+          "size": 31096112,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123107"
+        },
+        {
+          "digest": "sha256:67953ff3247ed6e8f1cf91a0e6e745d2f335d8924c995167f96d3828d91aee93",
+          "id": 490123108,
+          "name": "usdjpy-2023-11-raw-ticks-v1.manifest.json",
+          "size": 17443,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123108"
+        },
+        {
+          "digest": "sha256:c237901f295181602ebc6acd3f0b3908aee38f54e4d30a6da2f346eaa3eef044",
+          "id": 490123111,
+          "name": "usdjpy-2023-11-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123111"
+        },
+        {
+          "digest": "sha256:f2baf0b2c4af2c1759b752c96f3ba8819e49d7527d650d794dc381a15b300e7b",
+          "id": 490123113,
+          "name": "usdjpy-2023-11-raw-ticks-v1.tar.gz",
+          "size": 33020242,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123113"
+        },
+        {
+          "digest": "sha256:f419ca834f8bb1802fb3b591eb02fda423835045d8724d0ea4e20041abca47c5",
+          "id": 490123120,
+          "name": "usdjpy-2023-12-raw-ticks-v1.manifest.json",
+          "size": 17995,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123120"
+        },
+        {
+          "digest": "sha256:fe2d6876cb7407083c540b403ae412095804a6a8f9f60d205e772ad6921159b8",
+          "id": 490123114,
+          "name": "usdjpy-2023-12-raw-ticks-v1.SHA256SUMS",
+          "size": 217,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123114"
+        },
+        {
+          "digest": "sha256:608b51589d7dc6b7f1042ec1f5a8c122882694849091c7ced5045ca5e8f0595b",
+          "id": 490123121,
+          "name": "usdjpy-2023-12-raw-ticks-v1.tar.gz",
+          "size": 51910051,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123121"
+        },
+        {
+          "digest": "sha256:b3b189c3b4f8781e95def16614b539d05741f1bf845a2e166215800b345095bb",
+          "id": 490123125,
+          "name": "usdjpy-2023-raw-ticks-v1.annual-manifest.json",
+          "size": 9922,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/490123125"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY 2023 Raw Dukascopy Bid/Ask Ticks v1",
+      "prerelease": false,
+      "published_at": "2026-07-26T06:42:04Z",
+      "tag_name": "usdjpy-2023-raw-bidask-ticks-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:cf9f1b2052479af0ceedbc70b4da20407091aa00d8558c2210055fc17281d12b",
+          "id": 488986331,
+          "name": "usdjpy-b02-f05-structural-sl-policy-regime-v3-30133986189-1.zip",
+          "size": 3341739,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488986331"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY B02/F05 structural SL policy/regime v3",
+      "prerelease": false,
+      "published_at": "2026-07-25T00:38:58Z",
+      "tag_name": "usdjpy-b02-f05-structural-sl-policy-regime-v3",
+      "target_commitish": "5e1d7610d90819898fe43335f2191f1cd33b8b94"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:1dc33656397608108cf00b74b9b9c93a8887daab01f073942834a9b410de8beb",
+          "id": 488572209,
+          "name": "usdjpy-b02-f05-structural-sl-atlas-v2-30106687299-1.zip",
+          "size": 9154768,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488572209"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY B02/F05 structural SL atlas v2",
+      "prerelease": false,
+      "published_at": "2026-07-24T15:55:20Z",
+      "tag_name": "usdjpy-b02-f05-structural-sl-atlas-v2",
+      "target_commitish": "37833fe29cb5cfa13bcfb1e6896e0dcb584aa926"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:88d54ca1433ba21ffd3b31875276bdde80cf44e6623fd3b46bce4a293f57ff86",
+          "id": 488504802,
+          "name": "usdjpy-b02-f05-all-loss-structural-sl-v4-30101951761-1.zip",
+          "size": 150075,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488504802"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY B02/F05 all-loss structural SL v4",
+      "prerelease": false,
+      "published_at": "2026-07-24T14:40:16Z",
+      "tag_name": "usdjpy-b02-f05-all-loss-structural-sl-v4",
+      "target_commitish": "b1bb2d4fd12d6dc7722f30a6da8ad18c7a387309"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:a20fd98934106fea94f0f1eb5d32f820d008d3fe9eaefeba6e5b19a5480055e0",
+          "id": 488111570,
+          "name": "README.md",
+          "size": 801,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111570"
+        },
+        {
+          "digest": "sha256:7463796c82c6b12eb8c47e435bd70e1cb9c5cb4d540929072d22e802592fc49c",
+          "id": 488111569,
+          "name": "SHA256SUMS",
+          "size": 3378,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111569"
+        },
+        {
+          "digest": "sha256:4195e40ba65ed60ed7719fc694a66650a8a4a6340aeb1cad3bf2bad1d98cda11",
+          "id": 488111572,
+          "name": "USDJPY-2024-01-m1-derived-bars-v1.csv.gz",
+          "size": 1517249,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111572"
+        },
+        {
+          "digest": "sha256:8230ba80eac24fd43f7f959dc82796a06e0d24c928f4024dd4250226a09ce85f",
+          "id": 488111568,
+          "name": "USDJPY-2024-01-m5-derived-bars-v1.csv.gz",
+          "size": 338288,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111568"
+        },
+        {
+          "digest": "sha256:ea45b9bbbc519ed9f4cbfffff4910fa51a99986eaeeaeac6f4b6c322a9ff8a7d",
+          "id": 488111571,
+          "name": "USDJPY-2024-02-m1-derived-bars-v1.csv.gz",
+          "size": 1383776,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111571"
+        },
+        {
+          "digest": "sha256:37fe65287784107e32f3da859e363a8d1533c8f72055fa2a93b38c4f39c86dbb",
+          "id": 488111582,
+          "name": "USDJPY-2024-02-m5-derived-bars-v1.csv.gz",
+          "size": 309128,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111582"
+        },
+        {
+          "digest": "sha256:b177bcc86f935a9a2c567216a8871e6fc5add30415fc97848f26b9d3a9d6c55d",
+          "id": 488111586,
+          "name": "USDJPY-2024-03-m1-derived-bars-v1.csv.gz",
+          "size": 1386261,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111586"
+        },
+        {
+          "digest": "sha256:018249355e0b0c93f83578916d1ff209e8b6d4cf8a4f077330b7a92cdc32fb5b",
+          "id": 488111587,
+          "name": "USDJPY-2024-03-m5-derived-bars-v1.csv.gz",
+          "size": 311201,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111587"
+        },
+        {
+          "digest": "sha256:27eacd284d00d23f4c86cdc9ab38751cb744d26fb22617c1879e5485219c1bf3",
+          "id": 488111588,
+          "name": "USDJPY-2024-04-m1-derived-bars-v1.csv.gz",
+          "size": 1410692,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111588"
+        },
+        {
+          "digest": "sha256:350e51465154ac39808ffe6255773b674be70446466091019f652b8324435ff4",
+          "id": 488111589,
+          "name": "USDJPY-2024-04-m5-derived-bars-v1.csv.gz",
+          "size": 317497,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111589"
+        },
+        {
+          "digest": "sha256:199a55dac4d56782101a5f343734999b3c9956ba831c7d427f35d001b147e673",
+          "id": 488111594,
+          "name": "USDJPY-2024-05-m1-derived-bars-v1.csv.gz",
+          "size": 1494375,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111594"
+        },
+        {
+          "digest": "sha256:f9f821f065769cb9bf60356da9136c93f6ebe3154f751ba9f006f71364358386",
+          "id": 488111595,
+          "name": "USDJPY-2024-05-m5-derived-bars-v1.csv.gz",
+          "size": 339319,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111595"
+        },
+        {
+          "digest": "sha256:cd52f4170d0a77859bce51e379e0958cb05d2daf37b9a7f7830c6c4fc44c230e",
+          "id": 488111597,
+          "name": "USDJPY-2024-06-m1-derived-bars-v1.csv.gz",
+          "size": 1327729,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111597"
+        },
+        {
+          "digest": "sha256:cb60fcbd072790792c010b97ad8c5e3d47c9648d84ed49e8546148ed2ba56b19",
+          "id": 488111596,
+          "name": "USDJPY-2024-06-m5-derived-bars-v1.csv.gz",
+          "size": 301130,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111596"
+        },
+        {
+          "digest": "sha256:cfd8c36d03589b7c1d93a92c7fabe7af9aec92db2306a2f13bafe4e90ff8cd10",
+          "id": 488111598,
+          "name": "USDJPY-2024-07-m1-derived-bars-v1.csv.gz",
+          "size": 1576153,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111598"
+        },
+        {
+          "digest": "sha256:4d22c58a17c66db34e07f21b373614bbe41b9b2d8f1562e4cd46a3a0210ee2ff",
+          "id": 488111606,
+          "name": "USDJPY-2024-07-m5-derived-bars-v1.csv.gz",
+          "size": 353800,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111606"
+        },
+        {
+          "digest": "sha256:8706e84e07b69daa026c1ffd97b5ce569cc8631045d84d5291bc312bcfb6efa3",
+          "id": 488111605,
+          "name": "USDJPY-2024-08-m1-derived-bars-v1.csv.gz",
+          "size": 1598998,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111605"
+        },
+        {
+          "digest": "sha256:0740ceb9b34d75343f855dede30fd2c0831c116f33a3b9a6c01888ab0406b013",
+          "id": 488111607,
+          "name": "USDJPY-2024-08-m5-derived-bars-v1.csv.gz",
+          "size": 352270,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111607"
+        },
+        {
+          "digest": "sha256:af3417ea169cc7ea9febef3397ee60a0f31ef804f21ce1629359a11665ada955",
+          "id": 488111610,
+          "name": "USDJPY-2024-09-m1-derived-bars-v1.csv.gz",
+          "size": 1512538,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111610"
+        },
+        {
+          "digest": "sha256:bb1f4bdfcde9e7a5aad0998398cd81911a6dd0cdf6d25d39a83ea0c16a324b38",
+          "id": 488111609,
+          "name": "USDJPY-2024-09-m5-derived-bars-v1.csv.gz",
+          "size": 336367,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111609"
+        },
+        {
+          "digest": "sha256:4900fc671bd5d37158053ce8ce5bdc21941bcdd2a33f7e85cac1bd706bc121ce",
+          "id": 488111614,
+          "name": "USDJPY-2024-10-m1-derived-bars-v1.csv.gz",
+          "size": 1586726,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111614"
+        },
+        {
+          "digest": "sha256:1cfba3088a03d48d0c722ae3f048723a9cc6cda3ca9e0b3fb6073bb039ae5bb9",
+          "id": 488111617,
+          "name": "USDJPY-2024-10-m5-derived-bars-v1.csv.gz",
+          "size": 355658,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111617"
+        },
+        {
+          "digest": "sha256:9731dbb4584eabb0d229db0377fbae4a7453a2cb5a77cda35e56e2fc87fc16c8",
+          "id": 488111620,
+          "name": "USDJPY-2024-11-m1-derived-bars-v1.csv.gz",
+          "size": 1470348,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111620"
+        },
+        {
+          "digest": "sha256:2d9322524edcbb982dcebd769b11ef119126eae5e9e0e2856962eecb80126024",
+          "id": 488111621,
+          "name": "USDJPY-2024-11-m5-derived-bars-v1.csv.gz",
+          "size": 326565,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111621"
+        },
+        {
+          "digest": "sha256:df5e80c445bb440ce6d98b1d621ad1880acb3bfae342e24cfcdb78bc841a0b12",
+          "id": 488111622,
+          "name": "USDJPY-2024-12-m1-derived-bars-v1.csv.gz",
+          "size": 1462257,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111622"
+        },
+        {
+          "digest": "sha256:b85b74682d5ba133c61180d1cfd29f68d79ddf19c7708c795bc3b852ed3f2a4f",
+          "id": 488111626,
+          "name": "USDJPY-2024-12-m5-derived-bars-v1.csv.gz",
+          "size": 329600,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111626"
+        },
+        {
+          "digest": "sha256:e2c54c8423eea10ad995bf2d0fa316c4ea7cdb197619333c357e5b323278446e",
+          "id": 488111627,
+          "name": "USDJPY-2024-derived-bars-v1.manifest.json",
+          "size": 13986,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111627"
+        },
+        {
+          "digest": "sha256:6fcdfaf00f45b361d7688db0f23f3d8429205025e8c30e181744a8feab007a81",
+          "id": 488111628,
+          "name": "USDJPY-2024-h1-derived-bars-v1.csv.gz",
+          "size": 373829,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111628"
+        },
+        {
+          "digest": "sha256:c98aed3ac3d495dd4f377a3d67922131e777963a6f195b35730e804c744bf49e",
+          "id": 488111630,
+          "name": "USDJPY-2024-h4-derived-bars-v1.csv.gz",
+          "size": 102069,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111630"
+        },
+        {
+          "digest": "sha256:f9f56be2daa39f07dc39cec197306fb87821ead01e4a640a73f17715bf27dde0",
+          "id": 488111629,
+          "name": "USDJPY-2024-m1-derived-bars-v1.csv.gz",
+          "size": 17725737,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111629"
+        },
+        {
+          "digest": "sha256:d22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020",
+          "id": 488111632,
+          "name": "USDJPY-2024-m15-derived-bars-v1.csv.gz",
+          "size": 1402981,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111632"
+        },
+        {
+          "digest": "sha256:d0b8d2388f4edd4f9726aaf570c635bea170ab595fa67ecdc184ea1e619f8e7c",
+          "id": 488111633,
+          "name": "USDJPY-2024-m30-derived-bars-v1.csv.gz",
+          "size": 725365,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111633"
+        },
+        {
+          "digest": "sha256:af04cf642171a1916abc11a77d0120e88a1f61382385e54c9a49d9107d5d7f36",
+          "id": 488111635,
+          "name": "USDJPY-2024-m5-derived-bars-v1.csv.gz",
+          "size": 3968804,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488111635"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY 2024 Derived UTC Bars v1",
+      "prerelease": false,
+      "published_at": "2026-07-24T06:48:13Z",
+      "tag_name": "usdjpy-2024-derived-bars-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:a7d30e07cbe2e4f0c17d721fceca3e9ed341bef4725c9e487e35350f1df9037d",
+          "id": 488536017,
+          "name": "f05-failed-reclaim-result-30104463746-1.json",
+          "size": 18183,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488536017"
+        },
+        {
+          "digest": "sha256:4b8819b6b3545adab586671eac65544d8c0a4ce839e4b8258ff92bbd7702eafd",
+          "id": 488416284,
+          "name": "f05-failed-reclaim-validation-v1-30095266485-1.zip",
+          "size": 17691,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488416284"
+        },
+        {
+          "digest": "sha256:4f59216f8dd865b32b9f1d180e6f844998b5930fbf000ec0f957c2d3dd5c8a1b",
+          "id": 488536016,
+          "name": "f05-failed-reclaim-validation-v1-30104463746-1.zip",
+          "size": 2032002,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488536016"
+        }
+      ],
+      "draft": false,
+      "name": "F05 failed reclaim validation v1 \u2014 PASS_RESEARCH_HISTORICAL_GATES",
+      "prerelease": false,
+      "published_at": "2026-07-24T13:01:58Z",
+      "tag_name": "f05-failed-reclaim-validation-v1",
+      "target_commitish": "86426cab5ff0491a18116574860274c89b5077ea"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:a54bb85beadd62b8c2db9d5a001af3c99611b02486f2a29a112a8c1ea5df2109",
+          "id": 488495555,
+          "name": "EXPECTED_SHA256SUMS",
+          "size": 321,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488495555"
+        },
+        {
+          "digest": "sha256:b47f7f5ba2a023ce80d0dd8bc760d5122be374fd9c29c3d940d0eb006a087be0",
+          "id": 488495554,
+          "name": "mirror_receipt.json",
+          "size": 2188,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488495554"
+        },
+        {
+          "digest": "sha256:e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5",
+          "id": 488495553,
+          "name": "mt4-usdjpy-2024h1-event-audit-v1.zip",
+          "size": 567069,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488495553"
+        },
+        {
+          "digest": "sha256:9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b",
+          "id": 488495557,
+          "name": "mt4-usdjpy-f05-extatr-h2-validation-v1.zip",
+          "size": 1615165,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488495557"
+        },
+        {
+          "digest": "sha256:22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01",
+          "id": 488495556,
+          "name": "usdjpy-2023-canonical-baseline-prep-v1.zip",
+          "size": 11270877,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/488495556"
+        }
+      ],
+      "draft": false,
+      "name": "F05 failed reclaim historical authorities v1",
+      "prerelease": false,
+      "published_at": "2026-07-24T14:31:14Z",
+      "tag_name": "f05-failed-reclaim-historical-authorities-v1",
+      "target_commitish": "c8337d60bc031f7fcdd08f7465ea2ed39471d6ee"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:cd8ff9447f32be74aad1d0094bd3866c23d61bcdf90d84db8880976c90ba21ef",
+          "id": 484080603,
+          "name": "eurusd-2024-01-raw-ticks-v1.manifest.json",
+          "size": 21215,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080603"
+        },
+        {
+          "digest": "sha256:e42db3188a742536c26d7a377666ce5ad468c56d94eb8e5292765c9253885684",
+          "id": 484080605,
+          "name": "eurusd-2024-01-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080605"
+        },
+        {
+          "digest": "sha256:e7f457e63abf4bfb06815184627b6e7f7621bd42860b935c1bcc4841e1b4891b",
+          "id": 484080601,
+          "name": "eurusd-2024-01-raw-ticks-v1.tar.gz",
+          "size": 30994372,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080601"
+        },
+        {
+          "digest": "sha256:f4d6d7335dcf50b873b0fd23498c323ad80eac073874f8f2486025c969ac9c16",
+          "id": 484080609,
+          "name": "eurusd-2024-01-source-artifacts.json",
+          "size": 10286,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080609"
+        },
+        {
+          "digest": "sha256:bf17fd47edb4d8fdfffbf05b9d4d2f57a420390aefd4a932cbf8ff6da8040e70",
+          "id": 484080613,
+          "name": "eurusd-2024-02-raw-ticks-v1.manifest.json",
+          "size": 16619,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080613"
+        },
+        {
+          "digest": "sha256:936a912dc6e2c1fb3870f6157e7f6cb819144480b9322965dfd13c884322fc4d",
+          "id": 484080610,
+          "name": "eurusd-2024-02-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080610"
+        },
+        {
+          "digest": "sha256:bb354eac1b81df53da8387c8abd1afa29a758bffddf3fd143da312abcf53d614",
+          "id": 484080612,
+          "name": "eurusd-2024-02-raw-ticks-v1.tar.gz",
+          "size": 24220707,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080612"
+        },
+        {
+          "digest": "sha256:e7f5bf3a80b3afdf5b8499218470478967be570bf4f1947b654cd0097c786143",
+          "id": 484080615,
+          "name": "eurusd-2024-02-source-artifacts.json",
+          "size": 9631,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080615"
+        },
+        {
+          "digest": "sha256:611aaa66225914dd19c66814720826c95cfaa12d67f8cbd7cbf1aa8afdc9916b",
+          "id": 484080620,
+          "name": "eurusd-2024-03-raw-ticks-v1.manifest.json",
+          "size": 20079,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080620"
+        },
+        {
+          "digest": "sha256:5675cd8ef4cc4e33a80a2747fae5a7f60362f35612fe69fb3bf6cd22ea1411df",
+          "id": 484080617,
+          "name": "eurusd-2024-03-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080617"
+        },
+        {
+          "digest": "sha256:aba4164e42275e0f11bc893efa246e46eaf33dd75dae5f6829a9b9a70e30d027",
+          "id": 484080621,
+          "name": "eurusd-2024-03-raw-ticks-v1.tar.gz",
+          "size": 20752356,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080621"
+        },
+        {
+          "digest": "sha256:a282f820dca61b558168098f7ca5534b8b22d80c3bc8f4f1af47e3487d43609e",
+          "id": 484080624,
+          "name": "eurusd-2024-03-source-artifacts.json",
+          "size": 10275,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080624"
+        },
+        {
+          "digest": "sha256:d7da1a0d7225387fdac5f378b11a55f72ad8ad62ab8a168e9bba995c8d90f1df",
+          "id": 484080628,
+          "name": "eurusd-2024-04-raw-ticks-v1.manifest.json",
+          "size": 17166,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080628"
+        },
+        {
+          "digest": "sha256:bcd5782757f06d9d0645fd3871f39a0e7bf516af307bb2ce98b4bf1dfbe367f4",
+          "id": 484080627,
+          "name": "eurusd-2024-04-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080627"
+        },
+        {
+          "digest": "sha256:d7b1e42c75239e21d3698de4193ffa134b73519328d291b62aefeb3118987a6a",
+          "id": 484080631,
+          "name": "eurusd-2024-04-raw-ticks-v1.tar.gz",
+          "size": 22996098,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080631"
+        },
+        {
+          "digest": "sha256:af5a932a6e8b288d9a027d626b828407716f5b15cbfb46e4695c210029e6ad19",
+          "id": 484080633,
+          "name": "eurusd-2024-04-source-artifacts.json",
+          "size": 9956,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080633"
+        },
+        {
+          "digest": "sha256:7a9d2cda308da9e65e941450d4d4ec93cd39c2a3e38032d7da7bfb8b72776fb3",
+          "id": 484080635,
+          "name": "eurusd-2024-05-raw-ticks-v1.manifest.json",
+          "size": 18771,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080635"
+        },
+        {
+          "digest": "sha256:8a30d12ff15b97813910fd3c9efe60997548464862f2a001ca31b55f535ca096",
+          "id": 484080634,
+          "name": "eurusd-2024-05-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080634"
+        },
+        {
+          "digest": "sha256:859dfac1faf20521d2b2e89d1105edd82fd9c5ea36c341983cbb58002ba61c4a",
+          "id": 484080637,
+          "name": "eurusd-2024-05-raw-ticks-v1.tar.gz",
+          "size": 18405548,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080637"
+        },
+        {
+          "digest": "sha256:99e73819048e97339097de12daf00b97fe5136cc00f2dd164ca396f68d1c1506",
+          "id": 484080638,
+          "name": "eurusd-2024-05-source-artifacts.json",
+          "size": 10270,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080638"
+        },
+        {
+          "digest": "sha256:7d0ecad06efb5f0b90e02f54713b1974ac5a696f147dc2dd709dc78d617c2c74",
+          "id": 484080640,
+          "name": "eurusd-2024-06-raw-ticks-v1.manifest.json",
+          "size": 19533,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080640"
+        },
+        {
+          "digest": "sha256:91aca2387bf82aef68068e56546cc886c322cb154ed3c947bee1c58c80493c2c",
+          "id": 484080639,
+          "name": "eurusd-2024-06-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080639"
+        },
+        {
+          "digest": "sha256:7508d4415f1addd94f66bc03255c7f5c6ca0907325249181e445724d99907f69",
+          "id": 484080648,
+          "name": "eurusd-2024-06-raw-ticks-v1.tar.gz",
+          "size": 19323510,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080648"
+        },
+        {
+          "digest": "sha256:2725a898fc9e04d61e0476aafb831f5c3f01a444070b3f95070050463bcde33a",
+          "id": 484080649,
+          "name": "eurusd-2024-06-source-artifacts.json",
+          "size": 9948,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080649"
+        },
+        {
+          "digest": "sha256:83833851c728d2191c2e176e09e5169ec2ac0976f5b6b88d22d2cebe5179b41a",
+          "id": 484080651,
+          "name": "eurusd-2024-07-raw-ticks-v1.manifest.json",
+          "size": 18765,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080651"
+        },
+        {
+          "digest": "sha256:69905dea6b2e88f80cb917c8fed26f59e9c92a680349478e36d5de42fae08515",
+          "id": 484080650,
+          "name": "eurusd-2024-07-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080650"
+        },
+        {
+          "digest": "sha256:ffb9b357c79f24a6d8f9618a78f3d107be4495baae5401777da25b6cbe3d78ef",
+          "id": 484080653,
+          "name": "eurusd-2024-07-raw-ticks-v1.tar.gz",
+          "size": 21344102,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080653"
+        },
+        {
+          "digest": "sha256:05cfd9ffda4a2c16c9776997efc3d0d890eff6a5756ac342d4e0a80ba52c8373",
+          "id": 484080655,
+          "name": "eurusd-2024-07-source-artifacts.json",
+          "size": 10274,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080655"
+        },
+        {
+          "digest": "sha256:01acefff09ff99e0f145013e7d0cd4a07bf797054a7771da11e82818068b0486",
+          "id": 484080657,
+          "name": "eurusd-2024-08-raw-ticks-v1.manifest.json",
+          "size": 17707,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080657"
+        },
+        {
+          "digest": "sha256:353e3f2edec61b01f88a5794226107c805f7e55a41fdd7d9bc4474da637d7994",
+          "id": 484080656,
+          "name": "eurusd-2024-08-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080656"
+        },
+        {
+          "digest": "sha256:122ed4ccd5fb7dfe8ffdaea097e0527cecaa59c64a01a4bd4b1be6c84043b957",
+          "id": 484080659,
+          "name": "eurusd-2024-08-raw-ticks-v1.tar.gz",
+          "size": 26112140,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080659"
+        },
+        {
+          "digest": "sha256:22f76851d70b356b38d34cfa481566b3fca15a4550caea24528fc702e71f2ce3",
+          "id": 484080662,
+          "name": "eurusd-2024-08-source-artifacts.json",
+          "size": 10281,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080662"
+        },
+        {
+          "digest": "sha256:f0457f1d7d626d9436a0ebf4894a6b5818bcbf612d6479a81bf9086e3fef3de9",
+          "id": 484080664,
+          "name": "eurusd-2024-09-raw-ticks-v1.manifest.json",
+          "size": 21137,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080664"
+        },
+        {
+          "digest": "sha256:8ac57c15e7d736cdc459caa184a9ab96e4bd842e8a0e42d6027b8dbeebe0326e",
+          "id": 484080663,
+          "name": "eurusd-2024-09-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080663"
+        },
+        {
+          "digest": "sha256:cf5a5ee62a2a257c20d59b90bc25919cad8efdeec9f1b2b4f3f0fd5322c6f786",
+          "id": 484080666,
+          "name": "eurusd-2024-09-raw-ticks-v1.tar.gz",
+          "size": 25595239,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080666"
+        },
+        {
+          "digest": "sha256:c9dcfd90fe847ada167d8109ca901ffe3769d41b4f32ee199aaeca4aab9d8b7c",
+          "id": 484080668,
+          "name": "eurusd-2024-09-source-artifacts.json",
+          "size": 9957,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080668"
+        },
+        {
+          "digest": "sha256:62d877250799cb19fec7ff788f72e2bfac947e952d1bbbe1b93f4899c34f16bd",
+          "id": 484080670,
+          "name": "eurusd-2024-10-raw-ticks-v1.manifest.json",
+          "size": 23832,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080670"
+        },
+        {
+          "digest": "sha256:d7326b164e280c017405dfaea8841802ae646e550a953bdff2d6ffdb0218087c",
+          "id": 484080667,
+          "name": "eurusd-2024-10-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080667"
+        },
+        {
+          "digest": "sha256:ecc5df886cbec79b8e9f5958c4af8caedae5ce5a38ef29300a73216b7b839275",
+          "id": 484080673,
+          "name": "eurusd-2024-10-raw-ticks-v1.tar.gz",
+          "size": 25451338,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080673"
+        },
+        {
+          "digest": "sha256:3eef9bebebfea554cdc295593fbf506190857cd50903458fed6292672775b61a",
+          "id": 484080676,
+          "name": "eurusd-2024-10-source-artifacts.json",
+          "size": 10282,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080676"
+        },
+        {
+          "digest": "sha256:cdb67c9d17628d90e26e3425ded73ed42a5140e0dd50799abe658266a0752566",
+          "id": 484080679,
+          "name": "eurusd-2024-11-raw-ticks-v1.manifest.json",
+          "size": 18518,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080679"
+        },
+        {
+          "digest": "sha256:e3dff1ae1db4a004f2716067934f332cff6026885e7386f02ddc970b82fa4bd2",
+          "id": 484080677,
+          "name": "eurusd-2024-11-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080677"
+        },
+        {
+          "digest": "sha256:40a6655347d629484a886dc4f7434805e21ceb43f329f7e8a04323fa7209338a",
+          "id": 484080680,
+          "name": "eurusd-2024-11-raw-ticks-v1.tar.gz",
+          "size": 33581798,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080680"
+        },
+        {
+          "digest": "sha256:59afec0919f029e43585ec0552fdf2c7896081f57fabb6fc545ef71383952938",
+          "id": 484080681,
+          "name": "eurusd-2024-11-source-artifacts.json",
+          "size": 9961,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080681"
+        },
+        {
+          "digest": "sha256:2bd7e2a0db354b3b230b3507b4fdd51744372a9f4d4cb5fd7e9eb4a3c1aefed1",
+          "id": 484080684,
+          "name": "eurusd-2024-12-raw-ticks-v1.manifest.json",
+          "size": 18776,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080684"
+        },
+        {
+          "digest": "sha256:901592d28ddb04ab0b085b4db693d8fa6fb1682d7de4dc03d10e8d31529505af",
+          "id": 484080683,
+          "name": "eurusd-2024-12-raw-ticks-v1.SHA256SUMS",
+          "size": 312,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080683"
+        },
+        {
+          "digest": "sha256:299035ed86b9f2aa26eb18c53e9afcfa328c105f8053ca69fb91e18b14cfe5f6",
+          "id": 484080685,
+          "name": "eurusd-2024-12-raw-ticks-v1.tar.gz",
+          "size": 28084523,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080685"
+        },
+        {
+          "digest": "sha256:6ea76fb6b9b21b88ec196effb938711a4c54e07eb7cd69b991c518a608af1330",
+          "id": 484080689,
+          "name": "eurusd-2024-12-source-artifacts.json",
+          "size": 10283,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080689"
+        },
+        {
+          "digest": "sha256:ac70ab1634056d1dcd49920dbe229a2494d5c38ba5c3ea990514b53cc0f977a6",
+          "id": 484080690,
+          "name": "eurusd-2024-raw-ticks-v1.annual-manifest.json",
+          "size": 13489,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080690"
+        },
+        {
+          "digest": "sha256:83b3f406312006850254e8f995a44f48d609903eef0ee0c3aaf220c33486ee66",
+          "id": 484080604,
+          "name": "RELEASE_NOTES.md",
+          "size": 461,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080604"
+        },
+        {
+          "digest": "sha256:391fbb12eedeed22b16ec770551fbee103d9824b4c2796acda010eb8b6923b72",
+          "id": 484080602,
+          "name": "SHA256SUMS",
+          "size": 5199,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/484080602"
+        }
+      ],
+      "draft": false,
+      "name": "EURUSD 2024 Raw Dukascopy Bid/Ask Ticks v1",
+      "prerelease": false,
+      "published_at": "2026-07-21T00:49:38Z",
+      "tag_name": "eurusd-2024-raw-bidask-ticks-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:f0072db525fbc890aa9237856aade93c59b12722bab452000ebb2932e162f0e0",
+          "id": 483072984,
+          "name": "RELEASE_NOTES.md",
+          "size": 755,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483072984"
+        },
+        {
+          "digest": "sha256:2e614478ceb0b2fbc6db13b35c5db5af2a44ef119d1a61726a95ab7323958401",
+          "id": 483072987,
+          "name": "SHA256SUMS",
+          "size": 6542,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483072987"
+        },
+        {
+          "digest": "sha256:7361305e032f8fb4c302977253bcccb422ee3ecbc3d2f869a0fe900d254938d4",
+          "id": 483072983,
+          "name": "usdjpy-2024-01-raw-ticks-v1.manifest.json",
+          "size": 18087,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483072983"
+        },
+        {
+          "digest": "sha256:b231ca093473f248b2406409b7d1927557bb6d8310c11ed72b1b93a50b87c24c",
+          "id": 483072988,
+          "name": "usdjpy-2024-01-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483072988"
+        },
+        {
+          "digest": "sha256:46eca97a4ca3a577200bffc2ec4f698dfc830d25f0c552510f33414f0b6971aa",
+          "id": 483072985,
+          "name": "usdjpy-2024-01-raw-ticks-v1.tar.gz",
+          "size": 49791370,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483072985"
+        },
+        {
+          "digest": "sha256:28c900ebeaa7dae8fead94cb8ddb4d642e5148f93f80b2dc94bcc39293cc7354",
+          "id": 483072992,
+          "name": "usdjpy-2024-01-repair-artifacts.json",
+          "size": 1033,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483072992"
+        },
+        {
+          "digest": "sha256:fbf7e6b69757ade02602b8d05805bea0216533590ba39380dd0545a21008381f",
+          "id": 483072995,
+          "name": "usdjpy-2024-01-source-artifacts.json",
+          "size": 11150,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483072995"
+        },
+        {
+          "digest": "sha256:c7a7a3d17b36ae7d9c5f4cf8a43771a39f14852091c2883f3126a0fe4c9ef5e8",
+          "id": 483072999,
+          "name": "usdjpy-2024-02-raw-ticks-v1.manifest.json",
+          "size": 16960,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483072999"
+        },
+        {
+          "digest": "sha256:84c135fdf017631b5e268be6baf65c424ac5174fe2dda18d85a00079d442a9de",
+          "id": 483072996,
+          "name": "usdjpy-2024-02-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483072996"
+        },
+        {
+          "digest": "sha256:7aec2c9498504c7895bd716daa381e7d150a2ee9b85f6c09c3b9f807cdec5f55",
+          "id": 483073005,
+          "name": "usdjpy-2024-02-raw-ticks-v1.tar.gz",
+          "size": 41527678,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073005"
+        },
+        {
+          "digest": "sha256:a95a0faa788340cc31cfe42d439c1ad1211084d457db34f7bad7509964ad58bb",
+          "id": 483073007,
+          "name": "usdjpy-2024-02-repair-artifacts.json",
+          "size": 1388,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073007"
+        },
+        {
+          "digest": "sha256:0807e8e1bd6ecfe04563ca356b6f26b8ead6417157f464ac28d3f2e056e9d036",
+          "id": 483073010,
+          "name": "usdjpy-2024-02-source-artifacts.json",
+          "size": 10452,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073010"
+        },
+        {
+          "digest": "sha256:3e04da03ddd657407ca1c83e7a3767503676b55efed4872ac637bd28a1cc2487",
+          "id": 483073014,
+          "name": "usdjpy-2024-03-raw-ticks-v1.manifest.json",
+          "size": 18061,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073014"
+        },
+        {
+          "digest": "sha256:6b3a9e653e9f305f2fa6d6b7825b25cd51366441bc83c499e83249c684e7764b",
+          "id": 483073012,
+          "name": "usdjpy-2024-03-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073012"
+        },
+        {
+          "digest": "sha256:8df1c1723025bc3d0a058e1d8c5797d5232bc40a63ac9b8f8f838e6295998dcd",
+          "id": 483073016,
+          "name": "usdjpy-2024-03-raw-ticks-v1.tar.gz",
+          "size": 35979157,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073016"
+        },
+        {
+          "digest": "sha256:3d72a0aefd2d301511033fa59e22e1cc1ad658d28cf6285e7e5e6549b2009171",
+          "id": 483073017,
+          "name": "usdjpy-2024-03-repair-artifacts.json",
+          "size": 676,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073017"
+        },
+        {
+          "digest": "sha256:b847e955e5e691ed944a642703ff7ee07b5390fb80103494509a9ed0b99f5f06",
+          "id": 483073021,
+          "name": "usdjpy-2024-03-source-artifacts.json",
+          "size": 11148,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073021"
+        },
+        {
+          "digest": "sha256:2d44b551837348d3703e93ad4432076d5b3b3532614e8c1470fa2b8e3a3f0cd1",
+          "id": 483073030,
+          "name": "usdjpy-2024-04-raw-ticks-v1.manifest.json",
+          "size": 17503,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073030"
+        },
+        {
+          "digest": "sha256:b1422af7442eebeb653521cf8f92d063aa929d29c1fad3267aa5792cdce3b127",
+          "id": 483073022,
+          "name": "usdjpy-2024-04-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073022"
+        },
+        {
+          "digest": "sha256:c927f48a0e886ba0099fc215d3a35321a6ba2f8902744bbfdbe9c5b409c2778f",
+          "id": 483073033,
+          "name": "usdjpy-2024-04-raw-ticks-v1.tar.gz",
+          "size": 31534630,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073033"
+        },
+        {
+          "digest": "sha256:aecf5e7364804ea77ad9b3dbe7527cdf52c8f157f3a3cbeca1e0f1325968fd63",
+          "id": 483073039,
+          "name": "usdjpy-2024-04-repair-artifacts.json",
+          "size": 676,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073039"
+        },
+        {
+          "digest": "sha256:228e7b5b657e7fcd0d6bc87b0cbacb153e2e61c95f9563af7a545c0ebdbe237a",
+          "id": 483073042,
+          "name": "usdjpy-2024-04-source-artifacts.json",
+          "size": 10803,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073042"
+        },
+        {
+          "digest": "sha256:d04eca643016da57efa670f52e8e4262459d87e904c935503d9a3bc06e65dac0",
+          "id": 483073051,
+          "name": "usdjpy-2024-05-raw-ticks-v1.manifest.json",
+          "size": 18059,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073051"
+        },
+        {
+          "digest": "sha256:c8e835b2ef16b89e68bb2556c89c0b108a61a419a770cab0038e97f70a6874de",
+          "id": 483073044,
+          "name": "usdjpy-2024-05-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073044"
+        },
+        {
+          "digest": "sha256:d000758e97dd4acdd4cdd379563634a4cceb44a70147fa7c3e3c03015e7487e7",
+          "id": 483073054,
+          "name": "usdjpy-2024-05-raw-ticks-v1.tar.gz",
+          "size": 29446668,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073054"
+        },
+        {
+          "digest": "sha256:7eb9816ad9ec6c39e75328ec91a2f732f83e61c145c2fb16202202d01b007ebe",
+          "id": 483073056,
+          "name": "usdjpy-2024-05-repair-artifacts.json",
+          "size": 1388,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073056"
+        },
+        {
+          "digest": "sha256:f86e43feb79a301bd2a00c75dee391c218f0173b6d5e0345c9cb2d1411b6dd45",
+          "id": 483073055,
+          "name": "usdjpy-2024-05-source-artifacts.json",
+          "size": 11149,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073055"
+        },
+        {
+          "digest": "sha256:cb3eb916c436dc928f49ab90df918006bd4f6d3411f8792c0c718d1b23f26606",
+          "id": 483073062,
+          "name": "usdjpy-2024-06-raw-ticks-v1.manifest.json",
+          "size": 17486,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073062"
+        },
+        {
+          "digest": "sha256:941a44c8bf05c52d650f4a028295b3ed972de6ef7510a99cce79a0e9e38451e0",
+          "id": 483073058,
+          "name": "usdjpy-2024-06-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073058"
+        },
+        {
+          "digest": "sha256:4c3cf4e64836a2308b1524b113fe9b59765fee0fa6accbf27116708e7332833b",
+          "id": 483073064,
+          "name": "usdjpy-2024-06-raw-ticks-v1.tar.gz",
+          "size": 29227452,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073064"
+        },
+        {
+          "digest": "sha256:5633454bf1bbc5e29771c0d5f8025859e83f95712336977aea9b0b472a1651f0",
+          "id": 483073065,
+          "name": "usdjpy-2024-06-repair-artifacts.json",
+          "size": 676,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073065"
+        },
+        {
+          "digest": "sha256:4002859261d348f42cc20ea6f4c646e1dbc14827053f2dbd684a1f0db6e41c96",
+          "id": 483073070,
+          "name": "usdjpy-2024-06-source-artifacts.json",
+          "size": 10797,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073070"
+        },
+        {
+          "digest": "sha256:767a389caef9d043cbacf8071458ec6b1b31880d8bbf5a84c104dd2ef22e5c26",
+          "id": 483073074,
+          "name": "usdjpy-2024-07-raw-ticks-v1.manifest.json",
+          "size": 18082,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073074"
+        },
+        {
+          "digest": "sha256:dd6266a86dc4150dce0e1d7ed0d583587b09b58e9ea79e474b200cec365f9ebf",
+          "id": 483073075,
+          "name": "usdjpy-2024-07-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073075"
+        },
+        {
+          "digest": "sha256:2fe3beb7d506ecb58600c1ddd2a9ab2dff7ea7a6b9e5a16b59a32fc130837bde",
+          "id": 483073077,
+          "name": "usdjpy-2024-07-raw-ticks-v1.tar.gz",
+          "size": 44861519,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073077"
+        },
+        {
+          "digest": "sha256:ffef4076bb9515cee0a0dc6cc5127896adb4edeb23cead19f27aa37703356d4b",
+          "id": 483073082,
+          "name": "usdjpy-2024-07-repair-artifacts.json",
+          "size": 2452,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073082"
+        },
+        {
+          "digest": "sha256:faaade66cabc21a2082203d86f547db879722ae020f43f5eafb8377a984f8e72",
+          "id": 483073081,
+          "name": "usdjpy-2024-07-source-artifacts.json",
+          "size": 11153,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073081"
+        },
+        {
+          "digest": "sha256:215df530d77296849208d31a6d6052609b4d623a611a67dfb28f160580dcf521",
+          "id": 483073091,
+          "name": "usdjpy-2024-08-raw-ticks-v1.manifest.json",
+          "size": 18090,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073091"
+        },
+        {
+          "digest": "sha256:4eb28d592f1117403057e688f62b210c93b55135160afa1cc16aeb171ea5ae0a",
+          "id": 483073085,
+          "name": "usdjpy-2024-08-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073085"
+        },
+        {
+          "digest": "sha256:93c1363488000d2f5a2f795c5937b97aaa68a760d6b3a6912df64dd463a45d7f",
+          "id": 483073093,
+          "name": "usdjpy-2024-08-raw-ticks-v1.tar.gz",
+          "size": 65497573,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073093"
+        },
+        {
+          "digest": "sha256:91725d99f9d74f9499e0e480b5202f894e852a8270f8129ed3987838e492643d",
+          "id": 483073095,
+          "name": "usdjpy-2024-08-repair-artifacts.json",
+          "size": 676,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073095"
+        },
+        {
+          "digest": "sha256:66311a7b2ebe054f2940ddcd952c06cad4064e055fa3161061ef6daebfb94a91",
+          "id": 483073097,
+          "name": "usdjpy-2024-08-source-artifacts.json",
+          "size": 11153,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073097"
+        },
+        {
+          "digest": "sha256:dc46d25b8673912286c4392b2b4c867637ea59e3e1902019e8acbf85a3fad75f",
+          "id": 483073106,
+          "name": "usdjpy-2024-09-raw-ticks-v1.manifest.json",
+          "size": 17533,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073106"
+        },
+        {
+          "digest": "sha256:51f562f9485d1605c8751d4d0faf7b82eb9dca22cfdd124b8952e1196437d184",
+          "id": 483073105,
+          "name": "usdjpy-2024-09-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073105"
+        },
+        {
+          "digest": "sha256:c06ffc1a151da5b5fe3b29be8d6a1c0199218510e7d833b326004e3e219d96d2",
+          "id": 483073107,
+          "name": "usdjpy-2024-09-raw-ticks-v1.tar.gz",
+          "size": 59441446,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073107"
+        },
+        {
+          "digest": "sha256:a6fd60b9c4945a05734c55e9899a381a909aab4cb19b004dede07cd74855d224",
+          "id": 483073111,
+          "name": "usdjpy-2024-09-repair-artifacts.json",
+          "size": 1033,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073111"
+        },
+        {
+          "digest": "sha256:67e18dd88eabb3023c7356ea2edc320ef8f1e71ba98d803236988fd0428998a0",
+          "id": 483073113,
+          "name": "usdjpy-2024-09-source-artifacts.json",
+          "size": 10807,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073113"
+        },
+        {
+          "digest": "sha256:80e03cb1dcca745c077c9a26f14d3231ec51b59a1fe873b987b1083f253c62ec",
+          "id": 483073120,
+          "name": "usdjpy-2024-10-raw-ticks-v1.manifest.json",
+          "size": 18091,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073120"
+        },
+        {
+          "digest": "sha256:e8b64e6c458d3f2612b183b7633f044a8b87ebe011fcf56066417df886778322",
+          "id": 483073116,
+          "name": "usdjpy-2024-10-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073116"
+        },
+        {
+          "digest": "sha256:f6d8ec55d96cce0f15eb4e99ab753439e2af33d66f9e25b6e2010d2b84d9fd76",
+          "id": 483073121,
+          "name": "usdjpy-2024-10-raw-ticks-v1.tar.gz",
+          "size": 46677269,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073121"
+        },
+        {
+          "digest": "sha256:e45b41be36efba0d593bc04e0748349397853a04cfbb297d75b32b0a7a4e684b",
+          "id": 483073126,
+          "name": "usdjpy-2024-10-repair-artifacts.json",
+          "size": 1390,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073126"
+        },
+        {
+          "digest": "sha256:281e51af99d3a13eee69247eb463e2c463fc0818188004527c6cfb9f0f04d078",
+          "id": 483073127,
+          "name": "usdjpy-2024-10-source-artifacts.json",
+          "size": 11154,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073127"
+        },
+        {
+          "digest": "sha256:8739559e407d1b95a88d3945600fd92669ae3f9a476e5fa29225a0099489d6f1",
+          "id": 483073138,
+          "name": "usdjpy-2024-11-raw-ticks-v1.manifest.json",
+          "size": 17519,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073138"
+        },
+        {
+          "digest": "sha256:8867171b90855b527dce83d31f4afb64450dab727f379d50d83604aa6b7e7c9e",
+          "id": 483073134,
+          "name": "usdjpy-2024-11-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073134"
+        },
+        {
+          "digest": "sha256:1493c570509921104c5e441af2f49af64dac011d05497fd4852b1381d9760bbc",
+          "id": 483073148,
+          "name": "usdjpy-2024-11-raw-ticks-v1.tar.gz",
+          "size": 58494113,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073148"
+        },
+        {
+          "digest": "sha256:8fe713fa76b3bd2e21e99705e1cfc8e513a1267d1e34c7b8eee848aab66b95a3",
+          "id": 483073149,
+          "name": "usdjpy-2024-11-repair-artifacts.json",
+          "size": 1030,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073149"
+        },
+        {
+          "digest": "sha256:12cb6e72ce89259502f01cd5f780763642e831bd9c1817e39daba083b5d5d2a6",
+          "id": 483073152,
+          "name": "usdjpy-2024-11-source-artifacts.json",
+          "size": 10802,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073152"
+        },
+        {
+          "digest": "sha256:60f37dd49e6c79a7f8343beea5b39f4d6a457b3b5830a5b270e8566bcaf53743",
+          "id": 483073161,
+          "name": "usdjpy-2024-12-raw-ticks-v1.manifest.json",
+          "size": 18085,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073161"
+        },
+        {
+          "digest": "sha256:8af782721f0c5e3de23a9cb31cf642e4517fb21de0cf936bd047f723565d7632",
+          "id": 483073159,
+          "name": "usdjpy-2024-12-raw-ticks-v1.SHA256SUMS",
+          "size": 415,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073159"
+        },
+        {
+          "digest": "sha256:82ca954155ad6a3f94272cda3a14551d639bc54247713f812d990eb20f066e44",
+          "id": 483073164,
+          "name": "usdjpy-2024-12-raw-ticks-v1.tar.gz",
+          "size": 46162713,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073164"
+        },
+        {
+          "digest": "sha256:c4620f1141d3b40d36fba66862451fc12058a6009342fbd03fa8383c7cd88a54",
+          "id": 483073165,
+          "name": "usdjpy-2024-12-repair-artifacts.json",
+          "size": 1387,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073165"
+        },
+        {
+          "digest": "sha256:d1f4b5db3785c4447be5cfdd30ec2030aee40a17df6ae0bda5ec9085fd8c02ec",
+          "id": 483073167,
+          "name": "usdjpy-2024-12-source-artifacts.json",
+          "size": 11150,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073167"
+        },
+        {
+          "digest": "sha256:d31e1b5155529f70d037d7366b32612e175658f77fc0bb098179a4f70c2f6889",
+          "id": 483073169,
+          "name": "usdjpy-2024-raw-tick-repair-lock-v1.json",
+          "size": 4921,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073169"
+        },
+        {
+          "digest": "sha256:f31f9a49766bd04d43e4aced81d6909246138a1e7a43e89d6e784979fab9e228",
+          "id": 483073174,
+          "name": "usdjpy-2024-raw-ticks-v1.annual-manifest.json",
+          "size": 14227,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483073174"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY 2024 Raw Dukascopy Bid/Ask Ticks v1",
+      "prerelease": false,
+      "published_at": "2026-07-20T04:53:18Z",
+      "tag_name": "usdjpy-2024-raw-bidask-ticks-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:55379c3302bb2fafb49e78e57d39e8cb1e8371b52f937cd29ee9aeaf986207b0",
+          "id": 483356014,
+          "name": "IMPORT_GUIDE.md",
+          "size": 769,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356014"
+        },
+        {
+          "digest": "sha256:12908bdd910151c96d7949668ea69ade993c622db1e440aab951a08c1770a36c",
+          "id": 483356011,
+          "name": "SHA256SUMS",
+          "size": 1477,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356011"
+        },
+        {
+          "digest": "sha256:bd008d96b8620bfea362b58e89c3d6a2869a758347ea5efd329c50414efd1df1",
+          "id": 483356012,
+          "name": "USDJPY-2024-01-mt4-tick-import-v1.csv.gz",
+          "size": 32191275,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356012"
+        },
+        {
+          "digest": "sha256:ef732b8d806f52d86e0c73f57222f9c5076ac986a636ba11ba9856d31a077069",
+          "id": 483356013,
+          "name": "USDJPY-2024-02-mt4-tick-import-v1.csv.gz",
+          "size": 26806675,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356013"
+        },
+        {
+          "digest": "sha256:81c7ab72927780c2590b9f363c07d8d5fb94af899ec627b013aee7a477c0fb53",
+          "id": 483356015,
+          "name": "USDJPY-2024-03-mt4-tick-import-v1.csv.gz",
+          "size": 23227995,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356015"
+        },
+        {
+          "digest": "sha256:1a8f674d3daf5bbbef268054a980386f15bfec2c6151bc400eb4b87cd2638c83",
+          "id": 483356020,
+          "name": "USDJPY-2024-04-mt4-tick-import-v1.csv.gz",
+          "size": 20291117,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356020"
+        },
+        {
+          "digest": "sha256:d29a0fe11304ad76de63758683fc01ac7e43195ad2fb03c73d9ef5d085ac3009",
+          "id": 483356022,
+          "name": "USDJPY-2024-05-mt4-tick-import-v1.csv.gz",
+          "size": 18904362,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356022"
+        },
+        {
+          "digest": "sha256:4f3e067bb26fbb59571de0e032b010be75f3c6e5281d1711d5f21b4be1cc5710",
+          "id": 483356026,
+          "name": "USDJPY-2024-06-mt4-tick-import-v1.csv.gz",
+          "size": 18823453,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356026"
+        },
+        {
+          "digest": "sha256:7b1a1938c60fe6523a30400a5e83e865824c8c195586cee74fe68f74f62536f3",
+          "id": 483356029,
+          "name": "USDJPY-2024-07-mt4-tick-import-v1.csv.gz",
+          "size": 29100069,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356029"
+        },
+        {
+          "digest": "sha256:618bd2ba4156c92f58d42df0d6aab264a6a1ee8d243e917859091e6343e1175e",
+          "id": 483356033,
+          "name": "USDJPY-2024-08-mt4-tick-import-v1.csv.gz",
+          "size": 42871126,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356033"
+        },
+        {
+          "digest": "sha256:8e48c5db68c617f5a9f6aa270742cdf82f47d9410d6857209c84ccc02702e6d6",
+          "id": 483356032,
+          "name": "USDJPY-2024-09-mt4-tick-import-v1.csv.gz",
+          "size": 38682547,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356032"
+        },
+        {
+          "digest": "sha256:4dd4efa380c6dc96d4452ec6056dac7759e5fd9854cbc71bdbf845d396ea86b3",
+          "id": 483356030,
+          "name": "USDJPY-2024-10-mt4-tick-import-v1.csv.gz",
+          "size": 30209952,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356030"
+        },
+        {
+          "digest": "sha256:9cfe8ce7669e94ee1b73b385fd0fa48b53a789ff06d08750b2c044410498e8b2",
+          "id": 483356038,
+          "name": "USDJPY-2024-11-mt4-tick-import-v1.csv.gz",
+          "size": 38026933,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356038"
+        },
+        {
+          "digest": "sha256:f4cc0d233ea953e92167ad4243b9ddfcab7278b3d175203b7e006c3d08db72d3",
+          "id": 483356054,
+          "name": "USDJPY-2024-12-mt4-tick-import-v1.csv.gz",
+          "size": 29901688,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356054"
+        },
+        {
+          "digest": "sha256:fc54b5adea145509e4792ccf35843fbad07c64cb58bcc6abc67810f1bea2da0d",
+          "id": 483356059,
+          "name": "USDJPY-2024-mt4-tick-import-v1.manifest.json",
+          "size": 7901,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483356059"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY 2024 MT4 Tick Import v1",
+      "prerelease": false,
+      "published_at": "2026-07-20T10:42:53Z",
+      "tag_name": "usdjpy-2024-mt4-tick-import-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:50233542913b27d59edb29876186c241d2064d43481a84af1073405656e74a34",
+          "id": 483180127,
+          "name": "analysis_summary.md",
+          "size": 5077,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483180127"
+        },
+        {
+          "digest": "sha256:96785ecf4445fad2f8bccba8dbd6d59ce95078b752ddb231f8fc66d4aee9ff17",
+          "id": 483180123,
+          "name": "development_lock.json",
+          "size": 1819,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483180123"
+        },
+        {
+          "digest": "sha256:a9bb8dd69525fd4382eea41f09ec4f7a90dad0571dd07fd823636c6e6c0cecb8",
+          "id": 483180126,
+          "name": "eurusd-h1-h2-v2-validation-2024-v1.tar.gz",
+          "size": 195750,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483180126"
+        },
+        {
+          "digest": "sha256:91ff9666f026c1ecde5547c5d39bc91115b727b160348ea896e2b8293e412625",
+          "id": 483180125,
+          "name": "eurusd-h1-h2-v2-validation-2024-v1.tar.gz.sha256",
+          "size": 108,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483180125"
+        },
+        {
+          "digest": "sha256:2a9126075139ac70624bd31d8ba6b7bf3585de692fccbfbad2a655dd18f6df51",
+          "id": 483180137,
+          "name": "SHA256SUMS",
+          "size": 1300,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483180137"
+        },
+        {
+          "digest": "sha256:7451c98b3d0638621161fd386ca2a0745c5c03af6a6a60f2aff910286c62b02b",
+          "id": 483180124,
+          "name": "validation_result.json",
+          "size": 396,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483180124"
+        }
+      ],
+      "draft": false,
+      "name": "EURUSD H1-derived v2 Fixed H2 Validation",
+      "prerelease": false,
+      "published_at": "2026-07-20T07:15:02Z",
+      "tag_name": "eurusd-h1-h2-v2-validation-2024-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:c2bbc34944a6f39b6436209ac3d0105db01ca5d27f17aebd8923b7f062dadcf2",
+          "id": 483448755,
+          "name": "analysis_summary.md",
+          "size": 2075,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483448755"
+        },
+        {
+          "digest": "sha256:69426e0dd6fe6ffb8efa8172b32798b4b802af0a789db402608f3c5297172ac1",
+          "id": 483448810,
+          "name": "candidate_summary.csv",
+          "size": 970,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483448810"
+        },
+        {
+          "digest": "sha256:eac7baa8d147bc20fdbd269d62d345ea9f9c2fbf60b56999aa86e75f80f4a43f",
+          "id": 483448756,
+          "name": "diagnostic_result.json",
+          "size": 2633,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483448756"
+        },
+        {
+          "digest": "sha256:140e60cd423f6f09823925974991f379730b801fecdf2a8ce55bb945e42c98f5",
+          "id": 483448754,
+          "name": "eurusd-fv2-h1-diagnostic-v1.tar.gz",
+          "size": 19719,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483448754"
+        },
+        {
+          "digest": "sha256:3937247f1b86918290acc870dc2f3fdb4517b4f7ef061cbad5e8e34dead180db",
+          "id": 483448757,
+          "name": "eurusd-fv2-h1-diagnostic-v1.tar.gz.sha256",
+          "size": 101,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483448757"
+        },
+        {
+          "digest": "sha256:8201203bcdaf3a47d8a11027da3dd3beaa112a6bc495c8ae6210970e3640a9c1",
+          "id": 483448761,
+          "name": "execution_receipt.json",
+          "size": 702,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483448761"
+        },
+        {
+          "digest": "sha256:acc767d0ed881d85b01ec06a24109b249c2de5c800995f9f7d94e00d3efd2377",
+          "id": 483448809,
+          "name": "SHA256SUMS",
+          "size": 1478,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483448809"
+        }
+      ],
+      "draft": false,
+      "name": "EURUSD F v2 2024 H1 diagnostic v1",
+      "prerelease": false,
+      "published_at": "2026-07-20T12:39:13Z",
+      "tag_name": "eurusd-fv2-h1-diagnostic-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:a24523d5bb553d3ba720e09ae4f82caf4e5368915edee8eaa85ee84ba70dc0f7",
+          "id": 483460295,
+          "name": "analysis_summary.md",
+          "size": 2600,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483460295"
+        },
+        {
+          "digest": "sha256:46244794cb7b057252eb9c2e925895c05ad3a143021d779c0dbe96cd680fb6fd",
+          "id": 483460288,
+          "name": "eurusd-fv2-cost-execution-stress-v1.tar.gz",
+          "size": 6661,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483460288"
+        },
+        {
+          "digest": "sha256:8b8ba2f3d1726cc8fa86a1c65e4333c3b41cc921bf885b6b75f6dac8e30cdcec",
+          "id": 483460297,
+          "name": "eurusd-fv2-cost-execution-stress-v1.tar.gz.sha256",
+          "size": 109,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483460297"
+        },
+        {
+          "digest": "sha256:f78f0f97f0f20cc7a3976c1966252fefd0f36a91f707979cf4e396560fd5ec5f",
+          "id": 483460289,
+          "name": "execution_receipt.json",
+          "size": 789,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483460289"
+        },
+        {
+          "digest": "sha256:b38c7b74311a2b2f05dc48231bd0e4f72d836c1ee849d771e1b12bf93b089635",
+          "id": 483460304,
+          "name": "registered_scenarios.csv",
+          "size": 3463,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483460304"
+        },
+        {
+          "digest": "sha256:58970796dc3086d4f235f8a6e2b41671f691f3a1ac3735ec4dfae5281b41dd9c",
+          "id": 483460305,
+          "name": "SHA256SUMS",
+          "size": 519,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483460305"
+        },
+        {
+          "digest": "sha256:7476ae276934317d5d66d5eddb9ba0568952fa852093a27d448728dc36c64384",
+          "id": 483460299,
+          "name": "stress_result.json",
+          "size": 2603,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/483460299"
+        }
+      ],
+      "draft": false,
+      "name": "EURUSD F v2 cost and execution stress v1",
+      "prerelease": false,
+      "published_at": "2026-07-20T12:51:44Z",
+      "tag_name": "eurusd-fv2-cost-execution-stress-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:9c74fd1f5c58529dce1f3eac8f8c96330e256f8d384ec3f6c2245d38eba3dda7",
+          "id": 482095612,
+          "name": "SHA256SUMS",
+          "size": 278,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482095612"
+        },
+        {
+          "digest": "sha256:c1b3d25dad9df59bb89f308e6d292852bdf8940b30721c0b1124d0fe1942b4d1",
+          "id": 482095611,
+          "name": "usdjpy-v1-candidate-specific-h2-validation-v1-manifest.json",
+          "size": 2564,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482095611"
+        },
+        {
+          "digest": "sha256:19acb99e0ad286b3d2593b6f9df59a6675920eb3734d5901b70e4d8dc9a7c6b8",
+          "id": 482095610,
+          "name": "usdjpy-v1-candidate-specific-h2-validation-v1-run-29673802426-artifact-8438161821.zip",
+          "size": 154529,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482095610"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY V1 Candidate-Specific 2024 H2 Validation v1",
+      "prerelease": false,
+      "published_at": "2026-07-19T04:49:45Z",
+      "tag_name": "usdjpy-v1-candidate-specific-h2-validation-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:0674c20fa6c73376a9d982815beaf22fb1842e7d0a78b94209dbfbfac0bbfe05",
+          "id": 482073023,
+          "name": "SHA256SUMS",
+          "size": 262,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482073023"
+        },
+        {
+          "digest": "sha256:5418d8753245fa6e52ff67fd211ec9e068ce186a5200a9d79e2bc6d3c4a546e6",
+          "id": 482073022,
+          "name": "usdjpy-r6-complete-strategy-freeze-v1-manifest.json",
+          "size": 2014,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482073022"
+        },
+        {
+          "digest": "sha256:e15d63fb0fcebf18f623e10852548420ec21affef459de1f8912a78e16d02320",
+          "id": 482073024,
+          "name": "usdjpy-r6-complete-strategy-freeze-v1-run-29672853145-artifact-8437864148.zip",
+          "size": 18871,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482073024"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY R6 Complete-Strategy Freeze v1",
+      "prerelease": false,
+      "published_at": "2026-07-19T04:14:56Z",
+      "tag_name": "usdjpy-r6-complete-strategy-freeze-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:a699985be7293bb3c237ecee61effb4171c3599b07428a96feca2a94e92b27ed",
+          "id": 481924317,
+          "name": "SHA256SUMS",
+          "size": 244,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481924317"
+        },
+        {
+          "digest": "sha256:bbbc7b70e441dcb4e2d9a1edb22b0672cc83c41997cec0b88122c194a5728c21",
+          "id": 481924316,
+          "name": "usdjpy-r5-controlled-exit-v1-manifest.json",
+          "size": 1620,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481924316"
+        },
+        {
+          "digest": "sha256:0f0238a509c4bd6dc9bbe43c941001b7d2c54c66ba07b48f0aa9343f6c4a05cb",
+          "id": 481924318,
+          "name": "usdjpy-r5-controlled-exit-v1-run-29666989206-artifact-8436023286.zip",
+          "size": 989935,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481924318"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY R5 Controlled Exit Research v1",
+      "prerelease": false,
+      "published_at": "2026-07-19T00:33:27Z",
+      "tag_name": "usdjpy-r5-controlled-exit-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:964db7c214cb52b1d64746db935680cc074dd30d57fb54b21af3597b445cfbfd",
+          "id": 482738595,
+          "name": "analysis_summary.md",
+          "size": 6947,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482738595"
+        },
+        {
+          "digest": "sha256:fb1b1d791272e421a9f95d991542ce09723e95122a33dfbdaef1673106350fbf",
+          "id": 482738596,
+          "name": "development_lock.json",
+          "size": 1370,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482738596"
+        },
+        {
+          "digest": "sha256:568a9593d41458ad07eacc620ad9b6446b4c5eabe4e288272577a8e1a47124f7",
+          "id": 482738597,
+          "name": "eurusd-h1-h2-screen-2024-v1.tar.gz",
+          "size": 1074095,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482738597"
+        },
+        {
+          "digest": "sha256:cfd591d845913b27c438bc6cbd4b938a699deb92b4cd771156d945f9d06745fa",
+          "id": 482738599,
+          "name": "eurusd-h1-h2-screen-2024-v1.tar.gz.sha256",
+          "size": 101,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482738599"
+        },
+        {
+          "digest": "sha256:613c9f708a32f744430d5be7e4213269b377768d47e5e7084a0a78380f9a85f4",
+          "id": 482738601,
+          "name": "SHA256SUMS",
+          "size": 2414,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482738601"
+        },
+        {
+          "digest": "sha256:891715f93f1ed116bd0f200203db399537d0f5bd7f20586db760c9dcba83440d",
+          "id": 482738598,
+          "name": "validation_result.json",
+          "size": 413,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482738598"
+        }
+      ],
+      "draft": false,
+      "name": "EURUSD 2024 H1 Development H2 Validation v1",
+      "prerelease": false,
+      "published_at": "2026-07-19T17:20:49Z",
+      "tag_name": "eurusd-h1-h2-screen-2024-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [],
+      "draft": false,
+      "name": "EURUSD 2024 Tick Data Archive v1",
+      "prerelease": false,
+      "published_at": "2026-07-19T13:26:52Z",
+      "tag_name": "eurusd-2024-tick-data-archive-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:238f68f25a5d0c2e96573d7ecb52f91b776212bd88409c71b74c0ad697d7d813",
+          "id": 482388175,
+          "name": "eurusd-2024-source-artifact-archive-manifest-v1.json",
+          "size": 1672,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482388175"
+        },
+        {
+          "digest": "sha256:7d6e282172ec4290465b61dece886df0407f983726c4f51fb9eddd028318a685",
+          "id": 482388174,
+          "name": "eurusd-2024-source-artifact-id-8441596981.zip",
+          "size": 19261430,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482388174"
+        },
+        {
+          "digest": "sha256:fba3cee19891b6e5829662c5916848d75e7a1886d06fab53ec39af27097bc2e0",
+          "id": 482388173,
+          "name": "SHA256SUMS",
+          "size": 231,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/482388173"
+        }
+      ],
+      "draft": false,
+      "name": "EURUSD 2024 Source Artifact Archive v1",
+      "prerelease": false,
+      "published_at": "2026-07-19T12:49:14Z",
+      "tag_name": "eurusd-2024-source-artifact-archive-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:daa39d283e05f34ff055d510333feccec0c80514799392cc31032439541443a4",
+          "id": 481887463,
+          "name": "SHA256SUMS",
+          "size": 260,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481887463"
+        },
+        {
+          "digest": "sha256:0406ade71d02b4bd40a5c778b6e1363322301c9c1be7306df4d57b0fb42c5781",
+          "id": 481887462,
+          "name": "usdjpy-r4-entry-horizon-selection-v1-manifest.json",
+          "size": 3338,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481887462"
+        },
+        {
+          "digest": "sha256:b201565ab5d1a531f54c066849e92223d0a4fa722f110bef7925cde7c10a4a97",
+          "id": 481887464,
+          "name": "usdjpy-r4-entry-horizon-selection-v1-run-29665005273-artifact-8435465130.zip",
+          "size": 136824,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481887464"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY R4 Entry/Horizon Selection v1",
+      "prerelease": false,
+      "published_at": "2026-07-18T23:25:18Z",
+      "tag_name": "usdjpy-r4-entry-horizon-selection-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:028cffa9c0a9e0e19239685158f27724344cebb552033933f4f8085d2a0e8870",
+          "id": 481531130,
+          "name": "SHA256SUMS",
+          "size": 250,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481531130"
+        },
+        {
+          "digest": "sha256:202c67fe133bc85c174f4b80ee7a1dd54d8f1cbb8a204e52855fd7f51854fb25",
+          "id": 481531128,
+          "name": "usdjpy-r3-temporal-stability-v1-manifest.json",
+          "size": 1620,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481531128"
+        },
+        {
+          "digest": "sha256:bf906aa45e426146073d099ac2cf692067b4831256cd22de11e25f0e13b3e292",
+          "id": 481531129,
+          "name": "usdjpy-r3-temporal-stability-v1-run-29647304892-artifact-8430424186.zip",
+          "size": 2272687,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481531129"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY R3 Temporal Stability v1",
+      "prerelease": false,
+      "published_at": "2026-07-18T14:18:16Z",
+      "tag_name": "usdjpy-r3-temporal-stability-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:443852b62f277941d28aea1f3e6abe51d455c7bc2093e97f0080accc2b0624c8",
+          "id": 481495672,
+          "name": "SHA256SUMS",
+          "size": 244,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481495672"
+        },
+        {
+          "digest": "sha256:d0196f7a1a53cf44ffc52296c996b6e03d8071ce7046e639b32f4fb47ec7aa20",
+          "id": 481495673,
+          "name": "usdjpy-r2-horizon-surface-v1-manifest.json",
+          "size": 1206,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481495673"
+        },
+        {
+          "digest": "sha256:84a495b7c7cddf1c719bb4c8ce78bfef2c990b355649d362c18481836d953426",
+          "id": 481495671,
+          "name": "usdjpy-r2-horizon-surface-v1-run-29646040010-artifact-8430064217.zip",
+          "size": 24156347,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481495671"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY R2 Fixed-Horizon Surface v1",
+      "prerelease": false,
+      "published_at": "2026-07-18T13:35:58Z",
+      "tag_name": "usdjpy-r2-horizon-surface-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:6bb8feb03ffb9ba395a268d1e1802e415aa215fcc2a569a7147a11bb7cc0b573",
+          "id": 481406505,
+          "name": "SHA256SUMS",
+          "size": 242,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481406505"
+        },
+        {
+          "digest": "sha256:d3392bbf7de5faf4e232813848f15b91eef20a5fb4a04dbfd730c88aefc4f95f",
+          "id": 481406504,
+          "name": "usdjpy-r1-entry-registry-v2-manifest.json",
+          "size": 986,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481406504"
+        },
+        {
+          "digest": "sha256:0e0de71ccc56409a919d48d61e4dcb12502cefdb3944374b9163eda76d222d74",
+          "id": 481406503,
+          "name": "usdjpy-r1-entry-registry-v2-run-29642282221-artifact-8428977454.zip",
+          "size": 382308,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481406503"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY R1 Entry Registry v2",
+      "prerelease": false,
+      "published_at": "2026-07-18T11:19:11Z",
+      "tag_name": "usdjpy-r1-entry-registry-v2",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:8573e802ac63966f41a2c10e07a24d5e87b4dba2199b4a7cbfa8ec4e86525475",
+          "id": 481397989,
+          "name": "SHA256SUMS",
+          "size": 242,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481397989"
+        },
+        {
+          "digest": "sha256:62149d21b5fed2c7d2f5466cb7e686393c07a14082a390cdaa003dffedfd4e00",
+          "id": 481397990,
+          "name": "usdjpy-r1-entry-registry-v1-manifest.json",
+          "size": 1408,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481397990"
+        },
+        {
+          "digest": "sha256:a284e599c67910912d1e51c79d55ba4334e726ef423aba1b8ecb6a3e1ef9f27c",
+          "id": 481397988,
+          "name": "usdjpy-r1-entry-registry-v1-run-29641805182-artifact-8428842719.zip",
+          "size": 377775,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481397988"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY R1 Entry Registry v1",
+      "prerelease": false,
+      "published_at": "2026-07-18T11:03:51Z",
+      "tag_name": "usdjpy-r1-entry-registry-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:5b3852407e43ff294ff2c661369894e2b81326fceab75f4f114b5b64ecb29417",
+          "id": 481356347,
+          "name": "SHA256SUMS",
+          "size": 242,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481356347"
+        },
+        {
+          "digest": "sha256:8d70ddf794222fc5546be3b082fa7ff77bb07344e92c140bc4d8c791042bb521",
+          "id": 481356348,
+          "name": "usdjpy-r0-canonical-2024-v1-manifest.json",
+          "size": 1511,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481356348"
+        },
+        {
+          "digest": "sha256:d67db9b051a03050ddedb720d407b73cb48c5eacf7a441b1b8ff98dd77dc2015",
+          "id": 481356346,
+          "name": "usdjpy-r0-canonical-2024-v1-run-29639548804-artifact-8428199309.zip",
+          "size": 68554885,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481356346"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY R0 Canonical 2024 Bundle v1",
+      "prerelease": false,
+      "published_at": "2026-07-18T09:56:32Z",
+      "tag_name": "usdjpy-r0-canonical-2024-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:f95a0a450aa3b821dbcb20ea4f3410f345668606bf5f20a766a3e01d8a6e89e4",
+          "id": 481276967,
+          "name": "authoritative_h1_entry_horizon_v2-id-8408094591.zip",
+          "size": 3336255,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276967"
+        },
+        {
+          "digest": "sha256:b5fd40e7c37cd3c4c417b9e02547ce6d7195f0f989266e4f0e3ae0305947ec94",
+          "id": 481276963,
+          "name": "authoritative_h1_multi_family_screen_v2-id-8394436272.zip",
+          "size": 525707,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276963"
+        },
+        {
+          "digest": "sha256:182840ea48bf9d375ce718a5c940cee064fbccb4c36b659a80e7678938664364",
+          "id": 481276964,
+          "name": "authoritative_joint_h2_a1_e3_v1-id-8424623578.zip",
+          "size": 95545,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276964"
+        },
+        {
+          "digest": "sha256:1ae2511d9bb3c916ef5742d4324901b2ed153360f1791505e24adc13e3d50ee9",
+          "id": 481276965,
+          "name": "SHA256SUMS",
+          "size": 3060,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276965"
+        },
+        {
+          "digest": "sha256:69c78151cfc7ae60e482535b7ee641f1e3113457c9f9268f86b7868bb851e2c7",
+          "id": 481276968,
+          "name": "usdjpy-2024-01-baseline-id-8301048206.zip",
+          "size": 4923368,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276968"
+        },
+        {
+          "digest": "sha256:4171bfc333e2fb4d21e3a8920962513f67ec499e5eeb79ec714c3d38573341f0",
+          "id": 481276976,
+          "name": "usdjpy-2024-01-source-artifacts-v1.tar.gz",
+          "size": 2061027,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276976"
+        },
+        {
+          "digest": "sha256:6ad8f9afb8c5e96782e1885ce1f8e3dec2417f351c2cf73ea830791e8b9b47c9",
+          "id": 481276975,
+          "name": "usdjpy-2024-02-baseline-id-8331088231.zip",
+          "size": 3506466,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276975"
+        },
+        {
+          "digest": "sha256:c496de3fa33ffb1693e6e470e7ef420a18671ad9dd245ad50f92ee75f2ce02d3",
+          "id": 481276973,
+          "name": "usdjpy-2024-02-source-artifacts-v1.tar.gz",
+          "size": 1900702,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276973"
+        },
+        {
+          "digest": "sha256:684b836630b480b5086a59c44c4a37c1c8e4cd94271d756aa92dbc60b80aeb17",
+          "id": 481276978,
+          "name": "usdjpy-2024-03-baseline-id-8345360140.zip",
+          "size": 4122084,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276978"
+        },
+        {
+          "digest": "sha256:a3e7dad54f6e7a623ebfda8af704ab58f9bbd65bee80e5cd2b485bdcd59e0260",
+          "id": 481276982,
+          "name": "usdjpy-2024-03-source-artifacts-v1.tar.gz",
+          "size": 1909954,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276982"
+        },
+        {
+          "digest": "sha256:d96813ab4d06216684805eede6f60c75f31051fd5a6fb9bb1bd57c9e383524ac",
+          "id": 481276985,
+          "name": "usdjpy-2024-04-baseline-id-8359147323.zip",
+          "size": 3429885,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276985"
+        },
+        {
+          "digest": "sha256:6350543d13c4a2dd5f1c643e2cbb1ac936ce9b57278350aee796e577e363e2ac",
+          "id": 481276988,
+          "name": "usdjpy-2024-04-source-artifacts-v1.tar.gz",
+          "size": 1976701,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276988"
+        },
+        {
+          "digest": "sha256:d48d231309177ab27ca5914537e60efb4eb945d9b6c854021e463c1ce027f702",
+          "id": 481276987,
+          "name": "usdjpy-2024-05-baseline-id-8364319250.zip",
+          "size": 4357753,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276987"
+        },
+        {
+          "digest": "sha256:0db2a59582fee886ceb6a7cb7d44c62f05c543a9f7cffc0cd1c7bb8de0dba58c",
+          "id": 481276989,
+          "name": "usdjpy-2024-05-source-artifacts-v1.tar.gz",
+          "size": 2042639,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276989"
+        },
+        {
+          "digest": "sha256:a1c5b6812b801e003dd1db7ac2f2716ed332e275d2b0288f8220cbf8470885af",
+          "id": 481276992,
+          "name": "usdjpy-2024-06-baseline-id-8366496997.zip",
+          "size": 3929398,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276992"
+        },
+        {
+          "digest": "sha256:de1d6abe082537457d89cd7641e5abe7fb5a0c87b894197ce14ad03ce3ca7576",
+          "id": 481276994,
+          "name": "usdjpy-2024-06-source-artifacts-v1.tar.gz",
+          "size": 1817428,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276994"
+        },
+        {
+          "digest": "sha256:e7dfc13f5186f29f0d9e83bf5554e30f615821638d4fde11fe0be353d1e6d6d2",
+          "id": 481276993,
+          "name": "usdjpy-2024-07-baseline-id-8397515234.zip",
+          "size": 5298001,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276993"
+        },
+        {
+          "digest": "sha256:245cd92377526883c987fbe6fe73259dc1ed6b640c7e189d04ade6629051244d",
+          "id": 481276999,
+          "name": "usdjpy-2024-07-source-artifacts-v1.tar.gz",
+          "size": 2208144,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481276999"
+        },
+        {
+          "digest": "sha256:e5dd5f183b4a414c2b25bb4f6e46f627c07660358533d9a097dec01a2968b7c6",
+          "id": 481277006,
+          "name": "usdjpy-2024-08-baseline-id-8401670704.zip",
+          "size": 6313759,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277006"
+        },
+        {
+          "digest": "sha256:3ab277f9cbe46a58307b84ee813ed4f723cacb1361cf3e01a7b0472f27b772fc",
+          "id": 481277005,
+          "name": "usdjpy-2024-08-source-artifacts-v1.tar.gz",
+          "size": 2228387,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277005"
+        },
+        {
+          "digest": "sha256:1975d70dbbe40db942495fef8903078de73cf29af4cee65db176a18be6b45b31",
+          "id": 481277008,
+          "name": "usdjpy-2024-09-baseline-id-8423361030.zip",
+          "size": 5990912,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277008"
+        },
+        {
+          "digest": "sha256:fa58d69f6030fae2f735a906c85b27d920db27c6d35915356c341fd304407d56",
+          "id": 481277009,
+          "name": "usdjpy-2024-09-source-artifacts-v1.tar.gz",
+          "size": 2063894,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277009"
+        },
+        {
+          "digest": "sha256:fbae37c01ef7d342fd524b738116563cc99206850f7e200c7dd42e7fdb7ce57d",
+          "id": 481277011,
+          "name": "usdjpy-2024-10-baseline-id-8423402213.zip",
+          "size": 5507558,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277011"
+        },
+        {
+          "digest": "sha256:a387f77d96b6c567d3baa2e5e366cda47354bda3f601d629138a412bf20f93bb",
+          "id": 481277013,
+          "name": "usdjpy-2024-10-source-artifacts-v1.tar.gz",
+          "size": 2211363,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277013"
+        },
+        {
+          "digest": "sha256:d83599f9080ed603fd5fc36cd0742a6281c26af4672bdf8e5216fcaf39779507",
+          "id": 481277017,
+          "name": "usdjpy-2024-11-baseline-id-8423419800.zip",
+          "size": 5321864,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277017"
+        },
+        {
+          "digest": "sha256:2c12bc33b85ce533cb5f6806fa99e5bc0fbbae7e9ca6bd926dad86aac2c2b574",
+          "id": 481277019,
+          "name": "usdjpy-2024-11-source-artifacts-v1.tar.gz",
+          "size": 2087243,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277019"
+        },
+        {
+          "digest": "sha256:49e4748b6cd197e406ad14c59a37f873c96592bae4da1ba548ca11a0fad454f5",
+          "id": 481277027,
+          "name": "usdjpy-2024-12-baseline-id-8423376366.zip",
+          "size": 4802899,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277027"
+        },
+        {
+          "digest": "sha256:4032d1ca76f560ec0efd9621819f7f8d4ca64da7df5e366730b84455499c1330",
+          "id": 481277031,
+          "name": "usdjpy-2024-12-source-artifacts-v1.tar.gz",
+          "size": 2044780,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277031"
+        },
+        {
+          "digest": "sha256:6c54aafd98b2d9187c340eb34109e9cc8ec85a785cc7c295654fd36d17b36ba3",
+          "id": 481277033,
+          "name": "usdjpy-r0-artifact-archive-manifest-v1.json",
+          "size": 184184,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/481277033"
+        }
+      ],
+      "draft": false,
+      "name": "USDJPY R0 Artifact Archive 2024 v1",
+      "prerelease": false,
+      "published_at": "2026-07-18T07:43:12Z",
+      "tag_name": "usdjpy-r0-artifact-archive-2024-v1",
+      "target_commitish": "main"
+    },
+    {
+      "assets": [
+        {
+          "digest": "sha256:16dc2cab7d46504082be01520c6d5b95fa7bfa9089947afb6f22e4cb1edde6ac",
+          "id": 394673320,
+          "name": "USDJPY_M1_2024-01-02_2026-02-18.csv",
+          "size": 41495383,
+          "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/394673320"
+        }
+      ],
+      "draft": false,
+      "name": "Research datasets v1",
+      "prerelease": false,
+      "published_at": "2026-04-12T10:53:50Z",
+      "tag_name": "research-datasets-v1",
+      "target_commitish": "main"
+    }
+  ]
+}

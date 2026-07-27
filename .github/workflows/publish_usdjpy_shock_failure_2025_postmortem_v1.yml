@@ -1,0 +1,223 @@
+name: Publish USDJPY Shock Failure 2025 Postmortem v1
+
+on:
+  push:
+    branches: ['agent/shock-failure-2025-postmortem-v1']
+    paths:
+      - '.github/workflows/publish_usdjpy_shock_failure_2025_postmortem_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: publish-usdjpy-shock-failure-2025-postmortem-v1-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SOURCE_RUN_ID: '30248513727'
+      SOURCE_ARTIFACT_ID: '8646162604'
+      SOURCE_ARTIFACT_SHA256: 'bb3aa0f3f5c18be295f154437736316f84c813ae453e72e39649ed5341a67583'
+      RELEASE_TAG: 'usdjpy-shock-failure-2025-postmortem-v1-r1'
+      HEAD_BRANCH: 'agent/shock-failure-2025-postmortem-v1'
+    steps:
+      - name: Check out exact publication head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Download and verify successful binding artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/shock-failure-postmortem-publication"
+          rm -rf "$root"
+          mkdir -p "$root"/{source,release,readback}
+          zip="$root/source-artifact.zip"
+          curl --fail --location \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$SOURCE_ARTIFACT_ID/zip" \
+            --output "$zip"
+          test "$(sha256sum "$zip" | awk '{print $1}')" = "$SOURCE_ARTIFACT_SHA256"
+          unzip -q "$zip" -d "$root/source"
+          echo "PUB_ROOT=$root" >> "$GITHUB_ENV"
+
+      - name: Validate scientific result and repair packaging order only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['PUB_ROOT'])/'source'
+          def sha(p):
+              h=hashlib.sha256()
+              with p.open('rb') as f:
+                  for c in iter(lambda:f.read(1<<20),b''):h.update(c)
+              return h.hexdigest()
+          assert (root/'evaluator_exit_code.txt').read_text().strip()=='0'
+          final=json.loads((root/'final_decision.json').read_text())
+          assert final['status']=='PASS_POSTMORTEM_COMPLETED_NO_RETUNING'
+          assert final['candidate_id']=='B_EXECUTABLE_T0_8BAR'
+          assert final['fixed_candidate_status']=='REJECTED_EXTERNAL_GATE_FAILED'
+          assert final['2025_available_as_future_holdout'] is False
+          assert final['production_authorized'] is False
+          assert final['live_orders_authorized'] is False
+          assert final['mt4_2025_metrics']['trades']==47
+          assert abs(final['mt4_2025_metrics']['net']+1277.0)<1e-9
+          assert final['raw_2025_metrics']['trades']==46
+          assert abs(final['raw_2025_metrics']['net']+299.0)<1e-6
+          assert final['source_parity']['matched']==39
+          old_manifest=json.loads((root/'MANIFEST.json').read_text())
+          mismatches=[]
+          for row in old_manifest['files']:
+              p=root/row['path']
+              if not p.is_file() or p.stat().st_size!=row['bytes'] or sha(p)!=row['sha256']:
+                  mismatches.append(row['path'])
+          assert mismatches==['evaluator_stdout.log'],mismatches
+          receipt={
+            'schema_version':'usdjpy_shock_failure_2025_postmortem_packaging_repair_receipt_v1',
+            'status':'PASS_PACKAGING_ORDER_REPAIRED_SCIENTIFIC_OUTPUTS_UNCHANGED',
+            'source_run_id':30248513727,
+            'source_artifact_id':8646162604,
+            'source_artifact_sha256':os.environ['SOURCE_ARTIFACT_SHA256'],
+            'candidate_id':'B_EXECUTABLE_T0_8BAR',
+            'scientific_status':final['status'],
+            'scientific_decision_class':final['decision_class'],
+            'defect':'evaluator_stdout.log was populated by the workflow after the analyzer had generated MANIFEST.json and SHA256SUMS',
+            'original_manifest_mismatches':mismatches,
+            'source_logs_modified':False,
+            'scientific_outputs_modified':False,
+            'candidate_or_gate_modified':False,
+          }
+          (root/'packaging_repair_receipt.json').write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
+          for name in ('MANIFEST.json','SHA256SUMS'):
+              (root/name).unlink(missing_ok=True)
+          files=[]
+          for p in sorted(root.iterdir()):
+              if p.is_file() and p.name not in {'MANIFEST.json','SHA256SUMS'}:
+                  files.append({'path':p.name,'bytes':p.stat().st_size,'sha256':sha(p)})
+          manifest={
+            'schema_version':'usdjpy_shock_failure_2025_postmortem_manifest_v1_repacked',
+            'source_run_id':30248513727,
+            'source_artifact_id':8646162604,
+            'source_artifact_sha256':os.environ['SOURCE_ARTIFACT_SHA256'],
+            'files':files,
+          }
+          (root/'MANIFEST.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+          with (root/'SHA256SUMS').open('w',newline='\n') as f:
+              for p in sorted(root.iterdir()):
+                  if p.is_file() and p.name!='SHA256SUMS':f.write(f'{sha(p)}  {p.name}\n')
+          PY
+          (cd "$PUB_ROOT/source" && sha256sum -c SHA256SUMS)
+
+      - name: Commit canonical Research evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          target=research/usdjpy/shock_failure/2025_external_gate_postmortem_v1
+          rm -rf "$target"
+          mkdir -p "$target"
+          cp "$PUB_ROOT/source"/* "$target/"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add "$target"
+          if ! git diff --cached --quiet; then
+            git commit -m 'research: canonicalize Shock Failure 2025 postmortem'
+            git pull --rebase origin "$HEAD_BRANCH"
+            git push origin "HEAD:$HEAD_BRANCH"
+          fi
+          echo "PUBLICATION_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Publish immutable Release and verify SHA-256 readback
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tar -czf "$PUB_ROOT/release/usdjpy-shock-failure-2025-postmortem-v1-r1.tar.gz" -C "$PUB_ROOT/source" .
+          cp "$PUB_ROOT/source/MANIFEST.json" "$PUB_ROOT/source/SHA256SUMS" "$PUB_ROOT/release/"
+          (cd "$PUB_ROOT/release" && sha256sum usdjpy-shock-failure-2025-postmortem-v1-r1.tar.gz MANIFEST.json SHA256SUMS > RELEASE_SHA256SUMS)
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Immutable Release already exists; refusing mutation: $RELEASE_TAG" >&2
+            exit 1
+          fi
+          decision=$(jq -r .decision_class "$PUB_ROOT/source/final_decision.json")
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --target "$PUBLICATION_SHA" \
+            --title 'USDJPY Shock Failure 2025 External-Gate Postmortem v1-r1' \
+            --notes "Fixed candidate B_EXECUTABLE_T0_8BAR postmortem. Decision class: $decision. No retuning; 2025 is consumed evidence; production and live orders remain unauthorized."
+          gh release upload "$RELEASE_TAG" "$PUB_ROOT/release"/* --repo "$GITHUB_REPOSITORY"
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir "$PUB_ROOT/readback"
+          (cd "$PUB_ROOT/readback" && sha256sum -c RELEASE_SHA256SUMS)
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['PUB_ROOT'])
+          def sha(p):
+              h=hashlib.sha256()
+              with p.open('rb') as f:
+                  for c in iter(lambda:f.read(1<<20),b''):h.update(c)
+              return h.hexdigest()
+          receipt={
+            'schema_version':'usdjpy_shock_failure_2025_postmortem_release_readback_receipt_v1',
+            'status':'PASS_SHA256_READBACK',
+            'release_tag':os.environ['RELEASE_TAG'],
+            'publication_commit':os.environ['PUBLICATION_SHA'],
+            'source_run_id':30248513727,
+            'source_artifact_id':8646162604,
+            'source_artifact_sha256':os.environ['SOURCE_ARTIFACT_SHA256'],
+            'assets':[{'name':p.name,'bytes':p.stat().st_size,'sha256':sha(p)} for p in sorted((root/'readback').iterdir()) if p.is_file()],
+          }
+          (root/'release_readback_receipt.json').write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
+          PY
+          gh release upload "$RELEASE_TAG" "$PUB_ROOT/release_readback_receipt.json" --repo "$GITHUB_REPOSITORY"
+
+      - name: Comment final result on PR 320
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['PUB_ROOT']);x=json.loads((root/'source'/'final_decision.json').read_text())
+          body=("## Shock Failure 2025 postmortem canonicalized\n\n"
+                f"- Decision class: `{x['decision_class']}`\n"
+                f"- Fixed candidate: `{x['fixed_candidate_status']}`\n"
+                f"- Family: `{x['family_status']}`\n"
+                f"- MT4 2025: `{x['mt4_2025_metrics']['trades']} trades / {x['mt4_2025_metrics']['net']:.0f} JPY / PF {x['mt4_2025_metrics']['pf']:.3f}`\n"
+                f"- Raw 2025: `{x['raw_2025_metrics']['trades']} trades / {x['raw_2025_metrics']['net']:.0f} JPY / PF {x['raw_2025_metrics']['pf']:.3f}`\n"
+                f"- Source match: `{x['source_parity']['matched']}/{x['source_parity']['mt4_events']}` MT4 events\n"
+                f"- Release: `{os.environ['RELEASE_TAG']}`\n"
+                f"- Publication commit: `{os.environ['PUBLICATION_SHA']}`\n"
+                "- 2025 reusable as holdout: `false`\n"
+                "- Production/live authorization: `false`\n\n"
+                "No candidate parameter, side, session, threshold, failure rule, entry timing, timeout, spread convention, Bid/Ask convention, or B02/F05 semantic was changed.")
+          (root/'pr-comment.md').write_text(body)
+          PY
+          gh pr comment 320 --repo "$GITHUB_REPOSITORY" --body-file "$PUB_ROOT/pr-comment.md"
+
+      - name: Upload publication receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-shock-failure-2025-postmortem-publication-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.PUB_ROOT }}/source
+            ${{ env.PUB_ROOT }}/release
+            ${{ env.PUB_ROOT }}/release_readback_receipt.json
+            ${{ env.PUB_ROOT }}/pr-comment.md
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0

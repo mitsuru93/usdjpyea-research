@@ -1,0 +1,13 @@
+name: USDJPY Shock Failure 2025 Postmortem v4
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'Canonical source snapshot and publication workflow are being staged.'

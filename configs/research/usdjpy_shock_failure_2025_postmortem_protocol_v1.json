@@ -1,0 +1,36 @@
+{
+  "schema_version": "usdjpy_shock_failure_2025_external_gate_postmortem_protocol_v1",
+  "status": "FROZEN_NO_CANDIDATE_SELECTION",
+  "candidate_id": "B_EXECUTABLE_T0_8BAR",
+  "execution_revision": "binding-postmortem-v3-manifest-aligned",
+  "authority": {
+    "research_phase2_commit": "4a17c07139a564bc97d358da115f451e2316c562",
+    "research_exact_contract_commit": "2ade5c61ebc16e389da569d24fe678b081a56419",
+    "core_p1_p3_merge": "18737aab8b1028ffa39d3a8804f968ffb22b8565",
+    "core_p6_run": 30229496015,
+    "core_p6_artifact": 8639969385,
+    "core_p6_artifact_sha256": "70088c66cd1014391cabbb6f533462dcd3dbedbd7d6c537a5dc0798343594a6a",
+    "core_issue": 297,
+    "core_implementation_pr": 276
+  },
+  "fixed_candidate_changes_permitted": false,
+  "forbidden": [
+    "candidate retuning",
+    "direction selection",
+    "session exclusion",
+    "month exclusion",
+    "shock threshold change",
+    "median length change",
+    "failure rule change",
+    "entry delay optimization",
+    "timeout or exit optimization",
+    "2025-conditioned candidate selection",
+    "production authorization"
+  ],
+  "development_comparison_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "consumed_external_evidence": ["2025H1", "2025H2"],
+  "oracle_exit_label": "ORACLE_DIAGNOSTIC_NOT_IMPLEMENTABLE_CANDIDATE",
+  "future_candidate_rule": "Any specification derived from this postmortem requires a new hypothesis ID, candidate ID and preregistration. 2025 cannot be its holdout.",
+  "production_authorized": false,
+  "live_orders_authorized": false
+}
