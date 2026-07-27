@@ -1,0 +1,17 @@
+{
+  "2025_used_for_selection": false,
+  "candidate_changed": false,
+  "core_sha": "e92ac28d908cb5c6ca89224507b24690822e0f35",
+  "corrected_p6_sha256": "97f352c298aba1cbe9a25d93214a8d9014aedea2e406efccb9c2496dccae3337",
+  "m15_2023_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+  "m15_2024_sha256": "d22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020",
+  "mt4_context_authority": {
+    "core_artifact_id": 8639969385,
+    "core_artifact_sha256": "70088c66cd1014391cabbb6f533462dcd3dbedbd7d6c537a5dc0798343594a6a",
+    "core_run_id": 30229496015
+  },
+  "phase2_ledger_sha256": "8de783dd8b560f976f31b7a28a640997b92c4814013692dde8ad4f3f48758011",
+  "portfolio_context_sha256": "e3375cdf431fda0780f37b2eccd06e70643a7ba805ed4a666a162e583fac0e8b",
+  "research_sha": "e695895089f58358c4a5fa561609ef9f527258c4",
+  "run_id": "30248513727"
+}

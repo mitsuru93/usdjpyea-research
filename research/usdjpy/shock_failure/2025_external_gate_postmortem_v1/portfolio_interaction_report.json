@@ -1,0 +1,146 @@
+{
+  "authority": {
+    "core_artifact_id": 8639969385,
+    "core_artifact_sha256": "70088c66cd1014391cabbb6f533462dcd3dbedbd7d6c537a5dc0798343594a6a",
+    "core_evidence_repair_run": 30234058336,
+    "core_run_id": 30229496015
+  },
+  "b02_negative_day_contribution_jpy": -46215.0,
+  "baseline": {
+    "closed_trades": 970,
+    "gross_loss_jpy": -198046.0,
+    "gross_profit_jpy": 204788.0,
+    "mdd_trade_sequence_jpy": 42154.0,
+    "median_jpy": 6.5,
+    "net_jpy": 6742.0,
+    "profit_factor": 1.0340425961645274,
+    "win_rate": 0.5041237113402062,
+    "worst_day_jpy": -5765.0,
+    "worst_month_jpy": -18485.0
+  },
+  "baseline_loss_days": 162,
+  "daily_correlation_all_days": -0.26439498029750735,
+  "daily_correlation_event_days": -0.5157524081815026,
+  "f05_negative_day_contribution_jpy": -106551.0,
+  "halves": {
+    "h1": {
+      "baseline_risk": {
+        "final_balance_jpy": 79192.0,
+        "final_equity_jpy": 79192.0,
+        "initial_balance_jpy": 100000.0,
+        "maximum_equity_drawdown_jpy": 42737.0,
+        "maximum_equity_drawdown_percent": 42.7092,
+        "maximum_open_lots": 0.08,
+        "maximum_open_orders": 8,
+        "minimum_equity_jpy": 57328.0,
+        "stopout_breached": false
+      },
+      "identity": {
+        "B02": {
+          "close_exact": true,
+          "open_exact": true
+        },
+        "F05": {
+          "close_exact": true,
+          "open_exact": true
+        }
+      },
+      "integrated_risk": {
+        "final_balance_jpy": 78912.0,
+        "final_equity_jpy": 78912.0,
+        "initial_balance_jpy": 100000.0,
+        "maximum_equity_drawdown_jpy": 42387.0,
+        "maximum_equity_drawdown_percent": 42.3595,
+        "maximum_open_lots": 0.08,
+        "maximum_open_orders": 8,
+        "minimum_equity_jpy": 57678.0,
+        "stopout_breached": false
+      },
+      "shock_identity_exact": true,
+      "standalone": {
+        "closed_trades": 17,
+        "net_jpy": -280.0000000000655,
+        "profit_factor": 0.9028115237764465,
+        "side_net_jpy": {
+          "-1": -361.99999999998806,
+          "1": 81.99999999992257
+        },
+        "win_rate": 0.35294117647058826
+      }
+    },
+    "h2": {
+      "baseline_risk": {
+        "final_balance_jpy": 127269.0,
+        "final_equity_jpy": 127269.0,
+        "initial_balance_jpy": 100000.0,
+        "maximum_equity_drawdown_jpy": 16527.0,
+        "maximum_equity_drawdown_percent": 12.996,
+        "maximum_open_lots": 0.08,
+        "maximum_open_orders": 8,
+        "minimum_equity_jpy": 95609.0,
+        "stopout_breached": false
+      },
+      "identity": {
+        "B02": {
+          "close_exact": true,
+          "open_exact": true
+        },
+        "F05": {
+          "close_exact": true,
+          "open_exact": true
+        }
+      },
+      "integrated_risk": {
+        "final_balance_jpy": 126553.0,
+        "final_equity_jpy": 126553.0,
+        "initial_balance_jpy": 100000.0,
+        "maximum_equity_drawdown_jpy": 16531.0,
+        "maximum_equity_drawdown_percent": 13.1035,
+        "maximum_open_lots": 0.08,
+        "maximum_open_orders": 8,
+        "minimum_equity_jpy": 95605.0,
+        "stopout_breached": false
+      },
+      "shock_identity_exact": true,
+      "standalone": {
+        "closed_trades": 30,
+        "net_jpy": -997.0000000000146,
+        "profit_factor": 0.7082235879426375,
+        "side_net_jpy": {
+          "-1": -1013.0000000000292,
+          "1": 16.00000000001461
+        },
+        "win_rate": 0.43333333333333335
+      }
+    }
+  },
+  "integrated": {
+    "closed_trades": 1017,
+    "gross_loss_jpy": -204344.0,
+    "gross_profit_jpy": 209809.0,
+    "mdd_trade_sequence_jpy": 41804.0,
+    "median_jpy": 0.0,
+    "net_jpy": 5465.0,
+    "profit_factor": 1.026744117762205,
+    "win_rate": 0.4995083579154376,
+    "worst_day_jpy": -5765.0,
+    "worst_month_jpy": -18348.0
+  },
+  "loss_day_overlap_count": 10,
+  "maximum_simultaneous_baseline_positions": 6,
+  "opposite_direction_overlap_events": 31,
+  "overlap_rate_of_shock_loss_days": 0.4,
+  "portfolio_gates": {
+    "B02_F05_identity_exact": true,
+    "execution_clean": true,
+    "final_equity_not_worse": false,
+    "mdd_within_10_percent": true,
+    "no_stopout": true,
+    "shock_identity_exact": true
+  },
+  "same_direction_overlap_events": 12,
+  "shock_closed_trades": 47,
+  "shock_loss_days": 25,
+  "shock_net_jpy": -1277.0,
+  "shock_pf": 0.7972372181644967
+}

@@ -1,0 +1,17 @@
+{
+  "candidate_id": "B_EXECUTABLE_T0_8BAR",
+  "candidate_or_gate_modified": false,
+  "defect": "evaluator_stdout.log was populated by the workflow after the analyzer had generated MANIFEST.json and SHA256SUMS",
+  "original_manifest_mismatches": [
+    "evaluator_stdout.log"
+  ],
+  "schema_version": "usdjpy_shock_failure_2025_postmortem_packaging_repair_receipt_v1",
+  "scientific_decision_class": "DIRECTIONAL_OR_REGIME_CONDITIONAL_MECHANISM",
+  "scientific_outputs_modified": false,
+  "scientific_status": "PASS_POSTMORTEM_COMPLETED_NO_RETUNING",
+  "source_artifact_id": 8646162604,
+  "source_artifact_sha256": "bb3aa0f3f5c18be295f154437736316f84c813ae453e72e39649ed5341a67583",
+  "source_logs_modified": false,
+  "source_run_id": 30248513727,
+  "status": "PASS_PACKAGING_ORDER_REPAIRED_SCIENTIFIC_OUTPUTS_UNCHANGED"
+}
