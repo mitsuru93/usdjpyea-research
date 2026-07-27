@@ -43,14 +43,14 @@ jobs:
         shell: bash
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: bash scripts/run_usdjpy_shock_failure_2025_postmortem_v4.sh
-      - name: Upload complete evidence
+        run: bash scripts/run_usdjpy_shock_failure_2025_postmortem_v4_diagnostic.sh
+      - name: Upload complete evidence and diagnostics
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: usdjpy-shock-failure-2025-postmortem-v4-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            ${{ runner.temp }}/shock-failure-postmortem-v4/out
-            ${{ runner.temp }}/shock-failure-postmortem-v4/release
+            ${{ runner.temp }}/shock-failure-postmortem-v4
           if-no-files-found: error
           retention-days: 90
           compression-level: 0
