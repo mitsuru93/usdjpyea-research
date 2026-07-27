@@ -1,11 +1,11 @@
 {
   "schema_version": "usdjpy_market_state_router_track_registry_v1",
-  "status": "S3_2025H1_ONE_SHOT_PREREGISTERED_AWAITING_CORE_PREFLIGHT",
+  "status": "COMPLETE_FAIL_2025H1_BINDING_CANDIDATE_CLOSED",
   "track_type": "PARALLEL_INDEPENDENT_BINDING_VALIDATION",
   "global_registry": {
-    "path": "configs/research/usdjpy_research_candidate_registry_v48.json",
-    "schema_version": "usdjpy_research_candidate_registry_v48",
-    "status": "USDJPY_HYP027_PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE",
+    "path": "configs/research/usdjpy_research_candidate_registry_v52.json",
+    "schema_version": "usdjpy_research_candidate_registry_v52",
+    "status": "USDJPY_HYP027_REMAINS_ACTIVE_HYP028_HYP029_HYP030_CLOSED",
     "active_hypothesis": "USDJPY-HYP-027",
     "current_candidate": "SESSION_LOSS_CAP_2",
     "preserved_unchanged": true,
@@ -20,15 +20,42 @@
     "candidate_selection_complete": true,
     "research_portability": "PASS",
     "exact_implementation_contract": "PASS",
-    "research_to_core_state_parity": "PASS_ZERO_MISMATCH",
-    "reference_trade_permission_parity": "PASS_ZERO_MISMATCH",
+    "research_to_core_state_parity": "PASS_ZERO_MISMATCH_PRE2025",
+    "reference_trade_permission_parity": "PASS_ZERO_MISMATCH_PRE2025",
     "controlled_order_path_integration": "PASS",
-    "economic_attribution": "PASS",
-    "bounded_native_full_equity_DD": "PASS",
+    "economic_attribution": "PASS_PRE2025",
+    "bounded_native_full_equity_DD": "PASS_PRE2025",
     "pre2025_gate_matrix": "PASS_ALL",
-    "current_stage": "2025H1_OUTCOME_FREE_PREREGISTRATION",
-    "current_candidate_specific_2025H1_accessed": false,
-    "current_candidate_specific_2025H2_accessed": false
+    "current_stage": "COMPLETE_SCIENTIFIC_RESULT",
+    "binding_decision": "FAIL_2025H1_BINDING",
+    "candidate_status": "CLOSED_FAIL_2025H1_BINDING",
+    "current_candidate_specific_2025H1_accessed": true,
+    "current_candidate_specific_2025H2_accessed": false,
+    "2025H1_scientific_execution_count": 1,
+    "additional_2025H1_run_authorized": false,
+    "2025H2_authorized": false,
+    "production_authorized": false,
+    "live_orders_authorized": false
+  },
+  "binding_summary": {
+    "baseline_net_jpy": -20808.0,
+    "candidate_net_jpy": -11947.0,
+    "net_delta_jpy": 8861.0,
+    "baseline_profit_factor": 0.8294076655052265,
+    "candidate_profit_factor": 0.8399469481806977,
+    "baseline_maximum_tick_equity_drawdown_jpy": 42737.0,
+    "candidate_maximum_tick_equity_drawdown_jpy": 23593.0,
+    "drawdown_delta_jpy": -19144.0,
+    "blocked_entries": 192,
+    "independent_router_mismatches": 128,
+    "failed_gates": [
+      "candidate_net_positive",
+      "candidate_pf_at_least_1",
+      "january_to_march_net_nonnegative",
+      "both_half_period_deltas_positive",
+      "negative_effect_months_max_1",
+      "router_parity_zero_mismatch"
+    ]
   },
   "authorities": {
     "phase1_pr": 286,
@@ -40,11 +67,20 @@
     "dd_reconciliation_result": "configs/research/usdjpy_market_state_router_native_equity_dd_reconciliation_result_v1.json",
     "2025H1_protocol": "configs/research/usdjpy_market_state_router_2025h1_one_shot_gate_protocol_v1.json",
     "startup_receipt": "configs/research/usdjpy_market_state_router_2025h1_startup_read_receipt_v1.json",
-    "period_access_receipt": "configs/research/usdjpy_market_state_router_period_access_receipt_v1.json"
+    "period_access_receipt": "configs/research/usdjpy_market_state_router_period_access_receipt_v1.json",
+    "binding_result": "configs/research/usdjpy_market_state_router_2025h1_binding_result_v1.json",
+    "binding_report": "docs/research/USDJPY_MARKET_STATE_ROUTER_2025H1_BINDING_RESULT_V1.md",
+    "core_release_readback": "configs/research/usdjpy_market_state_router_2025h1_core_release_readback_receipt_v1.json",
+    "output_manifest": "configs/research/usdjpy_market_state_router_2025h1_binding_output_manifest_v1.json",
+    "core_preflight_run_id": 30283392068,
+    "core_binding_run_id": 30283492240,
+    "core_binding_sha": "1df0c1ef154a4ac8a24e3d4f9f414f1fc9332dbf",
+    "core_release_tag": "usdjpy-s3-market-state-2025h1-binding-v1",
+    "core_release_asset_sha256": "9961bbb2b19d9947d03ffd3446ec351ab3ebc458c3949f838d17bb354eee7865"
   },
-  "run_authorization_after_protocol_merge": {
-    "core_preflight_without_candidate_2025H1_economics": true,
-    "single_unchanged_2025H1_Rakuten_MT4_binding_run": true,
+  "run_authorization": {
+    "core_preflight": false,
+    "single_unchanged_2025H1_Rakuten_MT4_binding_run": false,
     "additional_2025H1_candidate_runs": false,
     "2025H2": false,
     "candidate_retuning": false,
@@ -52,7 +88,15 @@
     "production": false,
     "live_orders": false
   },
-  "binding_failure_action": "CLOSE_S3_H4_ALIGNED_FAIL_2025H1_AND_KEEP_2025H2_LOCKED",
-  "binding_pass_action": "ATOMIC_RESEARCH_RESULT_UPDATE_THEN_SEPARATE_UNCHANGED_2025H2_AUTHORIZATION_DECISION",
-  "exact_next_action": "Merge the outcome-free 2025H1 protocol, implement and pass the non-candidate Core workflow preflight, and execute one unchanged Baseline-versus-S3 Rakuten MT4 2025H1 binding run."
+  "retained_finding": "The frozen H4 alignment permission rule materially reduced 2025H1 loss and tick-equity drawdown, especially for F05, but did not produce positive portfolio economics or cross-half stability and failed the independent zero-mismatch router audit.",
+  "prohibited_reuse": [
+    "Do not retune or narrow S3_H4_ALIGNED from the 2025H1 result.",
+    "Do not run a second candidate-specific 2025H1 scientific comparison.",
+    "Do not access 2025H2 for this candidate.",
+    "Do not relax the preregistered router parity tolerance.",
+    "Do not authorize production or live orders."
+  ],
+  "binding_failure_action": "COMPLETED_CLOSE_S3_H4_ALIGNED_FAIL_2025H1_AND_KEEP_2025H2_LOCKED",
+  "binding_pass_action": "NOT_APPLICABLE_RESULT_WAS_FAIL",
+  "exact_next_action": "Continue the separately governed HYP-027 Phase 2 sequence unchanged. Any new market-state study must open a new Hypothesis ID and preregister a distinct causal mechanism; it may not repair S3_H4_ALIGNED from 2025 evidence."
 }
