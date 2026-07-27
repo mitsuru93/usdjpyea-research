@@ -132,7 +132,7 @@ jobs:
           test -f study_output/final_decision.json
           mkdir -p inputs/postmortem2025 inputs/postmortem2025_pkg
           gh release download usdjpy-shock-failure-2025-postmortem-v1-r2 --repo "$GITHUB_REPOSITORY" --dir inputs/postmortem2025 --pattern 'usdjpy-shock-failure-2025-postmortem-v1-r2.tar.gz' --pattern 'RELEASE_SHA256SUMS'
-          (cd inputs/postmortem2025 && sha256sum -c RELEASE_SHA256SUMS)
+          (cd inputs/postmortem2025 && grep 'usdjpy-shock-failure-2025-postmortem-v1-r2.tar.gz' RELEASE_SHA256SUMS | sha256sum -c -)
           tar -xzf inputs/postmortem2025/usdjpy-shock-failure-2025-postmortem-v1-r2.tar.gz -C inputs/postmortem2025_pkg
           python tools/compare_usdjpy_shock_failure_regime_discriminator_2025_v1.py \
             --dev-lifecycle study_output/lifecycle_ledger.csv.gz \
