@@ -1,9 +1,8 @@
 name: Patch Shock Failure Postmortem Materializer v1
 
 on:
-  push:
-    branches:
-      - agent/shock-failure-2025-postmortem-v1
+  pull_request:
+    branches: [main]
     paths:
       - .github/workflows/patch_shock_postmortem_materializer_v1.yml
   workflow_dispatch:
@@ -39,14 +38,17 @@ jobs:
           test "$actual" = "dcd939525e2b602d92c16f99a827ed021c708277a4983e7af00a81a4a10bbeb1"
           base64 -d "$RUNNER_TEMP/analyzer.b64" | gzip -d > tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py'''
           if old_path not in s:
-              raise SystemExit('single-payload trigger path not found')
-          if old_cmd not in s:
-              raise SystemExit('single-payload materializer command not found')
-          s=s.replace(old_path,new_path,1).replace(old_cmd,new_cmd,1)
-          p.write_text(s,encoding='utf-8')
+              print('Target workflow already uses split payload.')
+          else:
+              if old_cmd not in s:
+                  raise SystemExit('single-payload materializer command not found')
+              s=s.replace(old_path,new_path,1).replace(old_cmd,new_cmd,1)
+              p.write_text(s,encoding='utf-8')
           PY
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add .github/workflows/usdjpy_shock_failure_2025_postmortem_v1.yml
-          git commit -m 'ci: verify and materialize split Shock Failure analyzer'
-          git push origin HEAD:agent/shock-failure-2025-postmortem-v1
+          if ! git diff --cached --quiet; then
+            git commit -m 'ci: verify and materialize split Shock Failure analyzer'
+            git push origin HEAD:agent/shock-failure-2025-postmortem-v1
+          fi
