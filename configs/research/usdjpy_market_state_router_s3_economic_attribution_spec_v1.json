@@ -1,0 +1,113 @@
+{
+  "schema_version": "usdjpy_market_state_router_s3_economic_attribution_spec_v1",
+  "status": "PREREGISTERED_BEFORE_ECONOMIC_AUDIT_EXECUTION",
+  "candidate_id": "S3_H4_ALIGNED",
+  "research_start_main_sha": "2c9f87c9d7b5ccca978928fefa19e4e0c7d26f72",
+  "core_start_main_sha": "21565b92a1197381211987a866bef714367970a4",
+  "binding_authorities": {
+    "research_reference_release": "usdjpy-market-state-router-reference-v2",
+    "preaudit_release": "usdjpy-market-state-router-s3-mt4-preaudit-v1",
+    "controlled_integration_release": "usdjpy-market-state-router-s3-controlled-integration-v1",
+    "h4_parity_run_id": 30237882923,
+    "reference_trade_parity_run_id": 30238772493,
+    "controlled_integration_source_run_id": 30241240995,
+    "controlled_integration_repair_run_id": 30241915781,
+    "controlled_integration_archive_run_id": 30242254591
+  },
+  "frozen_candidate": {
+    "h4_fast_ema": 6,
+    "h4_slow_ema": 24,
+    "permission": "latest completed H4 state equals trade side",
+    "neutral_blocked": true,
+    "incomplete_h4_updates_state": false,
+    "b02_f05_entry_exit_sl_tp_changed": false,
+    "strategy_exceptions": false,
+    "side_exceptions": false,
+    "session_exceptions": false,
+    "period_exceptions": false
+  },
+  "populations": {
+    "binding_research": {
+      "rows": 1882,
+      "blocked": 671,
+      "allowed": 1211,
+      "scientific_binding": true
+    },
+    "native_regenerated": {
+      "baseline_rows": 1898,
+      "blocked": 676,
+      "allowed": 1222,
+      "scientific_binding": false,
+      "purpose": "real MT4 native order-path accounting and diagnostic attribution"
+    }
+  },
+  "execution_matrix": [
+    {
+      "id": "NATIVE_BASELINE",
+      "population": "native regenerated B02/F05",
+      "router_enabled": false
+    },
+    {
+      "id": "NATIVE_S3",
+      "population": "same native regenerated B02/F05",
+      "router_enabled": true
+    },
+    {
+      "id": "BINDING_BASELINE",
+      "population": "exact frozen 1882 schedule",
+      "router_enabled": false
+    },
+    {
+      "id": "BINDING_S3",
+      "population": "same exact frozen 1882 schedule",
+      "router_enabled": true
+    }
+  ],
+  "accounting_contract": {
+    "account_currency_must_be_read_from_mt4": true,
+    "requested_test_currency_is_not_assumed_effective": true,
+    "ticket_fields": [
+      "ticket", "strategy", "side", "signal_time", "entry_time", "exit_time",
+      "entry_price", "exit_price", "lots", "contract_size", "order_profit",
+      "order_swap", "order_commission", "account_currency", "balance", "equity"
+    ],
+    "price_pnl_formula": "side * (exit_price-entry_price) * contract_size * lots",
+    "account_reported_formula": "OrderProfit + OrderSwap + OrderCommission",
+    "unexplained_residual_tolerance_account_currency": 0.01,
+    "partial_close_detection": true,
+    "multiple_close_detection": true,
+    "balance_only_detection": true,
+    "credit_deposit_withdrawal_detection": true,
+    "period_end_forced_close_detection": true,
+    "boundary_open_detection": true
+  },
+  "required_outputs": [
+    "ticket_accounting_ledger.csv",
+    "balance_event_ledger.csv",
+    "swap_ledger.csv",
+    "commission_ledger.csv",
+    "accounting_reconciliation.json",
+    "cost_scenarios.csv",
+    "dd_attribution.json",
+    "research_mt4_pl_bridge.json",
+    "population_delta_ledger.csv",
+    "final_decision.json"
+  ],
+  "classification_set": [
+    "PASS_ECONOMIC_ATTRIBUTION_ACCOUNTING_ERROR_REPAIRED",
+    "PASS_PRICE_EDGE_SWAP_SENSITIVE",
+    "PASS_PRICE_EDGE_COMMISSION_MODEL_SENSITIVE",
+    "PASS_DD_ONLY_ROUTER",
+    "PASS_NET_AND_DD_ROUTER",
+    "FAIL_ECONOMIC_VALUE_NOT_PORTABLE",
+    "DATA_OR_ACCOUNTING_AUTHORITY_BLOCKED"
+  ],
+  "hard_boundaries": {
+    "parameter_tuning": false,
+    "candidate_definition_change": false,
+    "2025H1_access": false,
+    "2025H2_access": false,
+    "production_authorized": false,
+    "live_orders_authorized": false
+  }
+}
