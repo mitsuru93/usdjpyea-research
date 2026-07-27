@@ -1,0 +1,57 @@
+{
+  "schema_version": "usdjpy_market_state_router_s3_mt4_controlled_integration_research_receipt_v1",
+  "status": "PASS_MT4_CONTROLLED_ORDER_PATH_INTEGRATION",
+  "candidate_id": "S3_H4_ALIGNED",
+  "core_repository": "mitsuru93/usdjpyea-core",
+  "binding_preaudit": {
+    "status": "PASS_RESEARCH_CORE_PARITY_AND_MT4_PREIMPLEMENTATION_AUDIT",
+    "h4_parity_run_id": 30237882923,
+    "reference_trade_parity_run_id": 30238772493,
+    "binding_population_trades": 1882,
+    "binding_permission_mismatches": 0,
+    "release_tag": "usdjpy-market-state-router-s3-mt4-preaudit-v1"
+  },
+  "controlled_integration": {
+    "source_mt4_run_id": 30241240995,
+    "source_core_sha": "f47f89e47bf13c45c77def2e8665f578b804d513",
+    "source_artifact_id": 8643373780,
+    "source_artifact_digest": "833b090c94ebfea425a95c5850615504779dbba17763dad46828e001f764a0e4",
+    "evaluator_repair_run_id": 30241915781,
+    "repair_artifact_id": 8643561027,
+    "repair_artifact_digest": "259dd476976623c987312d0dfac711a7a328ec92e6a64d2fb05d875349326da0",
+    "native_baseline_opened": 1898,
+    "router_decisions": 1898,
+    "blocked": 676,
+    "allowed": 1222,
+    "candidate_opened": 1222,
+    "candidate_closed": 1222,
+    "mismatch_rows": 0,
+    "order_send_failed": 0,
+    "order_close_failed": 0,
+    "router_data_errors": 0
+  },
+  "tester_outcomes": {
+    "baseline_balance_net_jpy": 317.0,
+    "candidate_balance_net_jpy": 496.78000000000065,
+    "balance_net_delta_jpy": 179.78000000000065,
+    "baseline_max_equity_dd_jpy": 311.869999999999,
+    "candidate_max_equity_dd_jpy": 201.70000000000073,
+    "max_equity_dd_delta_jpy": -110.16999999999825
+  },
+  "scientific_classification": {
+    "binding_reference_trade_parity": "PASS",
+    "native_order_path_integration": "PASS",
+    "native_trade_universe_is_binding": false,
+    "candidate_definition_changed": false,
+    "parameter_change": false,
+    "2025_gate_authorized": false,
+    "production_authorized": false,
+    "live_orders_authorized": false
+  },
+  "core_canonical_receipt": "docs/research/market_state_router_s3_h4_aligned_mt4_controlled_integration_v1/final_receipt.json",
+  "core_evidence_release_tag": "usdjpy-market-state-router-s3-controlled-integration-v1",
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_orders_authorized": false
+}
