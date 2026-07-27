@@ -17,13 +17,13 @@ python - <<'PY_ANALYZER'
 from pathlib import Path
 p=Path('tools/analyze_usdjpy_shock_failure_2025_postmortem_v1.py')
 s=p.read_text()
-old="   if len(self.files)<8000:raise RuntimeError(f'2025 hourly tick files indexed={len(self.files)}')"
-new="""   manifests=list(self.root.rglob('usdjpy-2025-raw-ticks-v1.annual-manifest.json'))
-   if len(manifests)==1:
-    annual=json.loads(manifests[0].read_text(encoding='utf-8'))
-    expected=sum(int(m['totals']['downloaded_hours']) for m in annual['months'])
-    if len(self.files)!=expected:raise RuntimeError(f'2025 hourly tick files indexed={len(self.files)} expected={expected}')
-   elif len(self.files)<6000:raise RuntimeError(f'2025 hourly tick files indexed={len(self.files)}')"""
+old="  if len(self.files)<8000:raise RuntimeError(f'2025 hourly tick files indexed={len(self.files)}')"
+new="""  manifests=list(self.root.rglob('usdjpy-2025-raw-ticks-v1.annual-manifest.json'))
+  if len(manifests)==1:
+   annual=json.loads(manifests[0].read_text(encoding='utf-8'))
+   expected=sum(int(m['totals']['downloaded_hours']) for m in annual['months'])
+   if len(self.files)!=expected:raise RuntimeError(f'2025 hourly tick files indexed={len(self.files)} expected={expected}')
+  elif len(self.files)<6000:raise RuntimeError(f'2025 hourly tick files indexed={len(self.files)}')"""
 assert s.count(old)==1
 p.write_text(s.replace(old,new,1))
 PY_ANALYZER
