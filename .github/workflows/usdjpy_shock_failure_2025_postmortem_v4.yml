@@ -31,7 +31,7 @@ jobs:
           ref: ${{ env.HEAD_SHA }}
           fetch-depth: 0
 
-      - name: Materialize verified analyzer and repair mixed ISO parsing
+      - name: Materialize verified analyzer and repair transport parsing
         shell: bash
         run: |
           set -euo pipefail
@@ -49,7 +49,11 @@ jobs:
           old="pd.to_datetime(dev[c],utc=True)"
           new="pd.to_datetime(dev[c],utc=True,format='mixed')"
           assert s.count(old)==1, s.count(old)
-          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          s=s.replace(old,new,1)
+          old2="    mt4_enriched=pd.DataFrame(mt4_rows)"
+          new2="    mt4_enriched=pd.DataFrame(mt4_rows);mt4_enriched['entry_decision_utc']=mt4_enriched['decision_utc']"
+          assert s.count(old2)==1, s.count(old2)
+          p.write_text(s.replace(old2,new2,1),encoding='utf-8')
           PY
           python -m py_compile tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py
 
