@@ -1,0 +1,10 @@
+{
+  "event_bootstrap_net_benefit_ci95_jpy": [
+    -7232.300000000051,
+    2544.0000000000377
+  ],
+  "event_bootstrap_probability_positive": 0.2122,
+  "oof_auc": 0.5153153153153154,
+  "permutation_auc_p_value": 0.3968015992003998,
+  "replicates": 5000
+}

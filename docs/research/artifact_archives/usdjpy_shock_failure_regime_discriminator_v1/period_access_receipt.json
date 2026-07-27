@@ -1,0 +1,22 @@
+{
+  "2025_loaded": false,
+  "2025_used_for_feature_selection": false,
+  "2025_used_for_model_selection": false,
+  "2025_used_for_threshold_selection": false,
+  "development_folds": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "pass": true,
+  "schema_version": "usdjpy_shock_failure_regime_discriminator_v1_period_access_receipt",
+  "selection_script_inputs": [
+    "inputs/phase2_pkg/phase2_output/candidate_trade_ledger.csv.gz",
+    "inputs/history2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz",
+    "inputs/derived2024/USDJPY-2024-m15-derived-bars-v1.csv.gz",
+    "inputs/raw2023",
+    "inputs/raw2024",
+    "configs/research/usdjpy_shock_failure_regime_discriminator_prereg_v1.json"
+  ]
+}

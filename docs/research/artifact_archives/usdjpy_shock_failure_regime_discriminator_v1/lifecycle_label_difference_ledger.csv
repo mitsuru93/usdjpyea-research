@@ -1,0 +1,4 @@
+event_id,fold,old_label,exact_label,reason
+2023H2|D_SHOCK_FAILURE|2023-09-11T06:30:00+00:00|1,2023H2,H_SUSTAINED_REVERSAL,B_DELAYED_REVERSAL,exact Raw Tick timing and canonical classifier reconstructed; old label preserved
+2024H1|D_SHOCK_FAILURE|2024-01-17T15:15:00+00:00|-1,2024H1,A_IMMEDIATE_SIGNAL_FAILURE,C_INSUFFICIENT_REVERSAL,exact Raw Tick timing and canonical classifier reconstructed; old label preserved
+2024H2|D_SHOCK_FAILURE|2024-09-13T08:30:00+00:00|1,2024H2,A_IMMEDIATE_SIGNAL_FAILURE,E_TIMEOUT_TRUNCATION,exact Raw Tick timing and canonical classifier reconstructed; old label preserved

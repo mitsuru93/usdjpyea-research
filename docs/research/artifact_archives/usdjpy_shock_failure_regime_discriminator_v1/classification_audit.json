@@ -1,0 +1,20 @@
+{
+  "classes": {
+    "B_DELAYED_REVERSAL": 1,
+    "C_INSUFFICIENT_REVERSAL": 1,
+    "D_PROFIT_THEN_GIVEBACK": 29,
+    "E_TIMEOUT_TRUNCATION": 1,
+    "F_CONTINUATION_RESUMPTION": 37,
+    "H_SUSTAINED_REVERSAL": 45
+  },
+  "definitions": {
+    "D_PROFIT_THEN_GIVEBACK": "profitable before 120 minutes, then closes nonpositive or below 50% of MFE without meeting continuation-resumption severity",
+    "F_CONTINUATION_RESUMPTION": "profitable before 120 minutes, closes negative at 120 minutes, and MAE reaches at least 0.5 shock magnitude against the entry",
+    "H_SUSTAINED_REVERSAL": "profitable before 120 minutes and not classified as delayed, giveback, continuation, timeout, insufficient reversal, immediate failure, or anomaly"
+  },
+  "events": 114,
+  "exact_reproduction_pass": true,
+  "label_difference_count": 3,
+  "lookahead_violation_count": 0,
+  "schema_version": "usdjpy_shock_failure_regime_discriminator_v1_classification_audit"
+}

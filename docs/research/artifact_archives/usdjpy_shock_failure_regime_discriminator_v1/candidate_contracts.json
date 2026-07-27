@@ -1,0 +1,189 @@
+{
+  "RD_LOGIT_10F_V1": {
+    "all_development_fit": {
+      "coefficients_standardized": {
+        "failure_body_ratio": 0.10683749852716717,
+        "failure_close_to_shock_origin_entry_pips": -0.07982453693800531,
+        "failure_window_entry_direction_acceleration_pips_per_min": 0.07372965315908392,
+        "failure_window_entry_direction_tick_imbalance": -0.34474293910543363,
+        "h1_ema20_slope_shock_signed_pips": 0.1654141039378108,
+        "h4_ema20_slope_shock_signed_pips": 0.06540803136452919,
+        "retracement_ratio": -0.14678684500296235,
+        "shock_duration_bars": 0.5858728018514535,
+        "shock_ratio": 0.08099062425264769,
+        "shock_window_shock_direction_tick_imbalance": -0.14231659823070242
+      },
+      "intercept": 0.039204580046404806
+    },
+    "features": [
+      "shock_ratio",
+      "shock_duration_bars",
+      "failure_body_ratio",
+      "retracement_ratio",
+      "failure_close_to_shock_origin_entry_pips",
+      "shock_window_shock_direction_tick_imbalance",
+      "failure_window_entry_direction_tick_imbalance",
+      "failure_window_entry_direction_acceleration_pips_per_min",
+      "h1_ema20_slope_shock_signed_pips",
+      "h4_ema20_slope_shock_signed_pips"
+    ],
+    "gate_checks": {
+      "accepted_trade_floor": true,
+      "both_sides_present": true,
+      "continuation_resumption_loss_rejection": true,
+      "delay15_positive": true,
+      "minimum_fold_not_fatal": false,
+      "model_stability": true,
+      "month_breadth": true,
+      "positive_fold_benefit_3_of_4": false,
+      "predictive_auc": false,
+      "session_breadth": true,
+      "side_benefit_not_fatal": false,
+      "spread_plus_1_positive": true,
+      "sustained_reversal_profit_retention": true,
+      "threshold_neighborhood": false,
+      "top3_removed_positive": true,
+      "top_event_dependence": true
+    },
+    "model": "RD_LOGIT_10F_V1",
+    "stability": {
+      "coefficient_sign_consistency": {
+        "failure_body_ratio": 0.75,
+        "failure_close_to_shock_origin_entry_pips": 1.0,
+        "failure_window_entry_direction_acceleration_pips_per_min": 0.5,
+        "failure_window_entry_direction_tick_imbalance": 1.0,
+        "h1_ema20_slope_shock_signed_pips": 1.0,
+        "h4_ema20_slope_shock_signed_pips": 0.75,
+        "retracement_ratio": 1.0,
+        "shock_duration_bars": 1.0,
+        "shock_ratio": 0.75,
+        "shock_window_shock_direction_tick_imbalance": 0.5
+      }
+    },
+    "threshold": 0.4
+  },
+  "RD_RANK6_V1": {
+    "all_development_fit": {
+      "medians": {
+        "failure_close_to_shock_origin_entry_pips": -4.600000000002069,
+        "failure_window_entry_direction_tick_imbalance": 0.019894996131485425,
+        "h1_ema20_slope_shock_signed_pips": -0.12476640467582456,
+        "h4_ema20_slope_shock_signed_pips": -0.9214577927210144,
+        "retracement_ratio": 0.5826334560514983,
+        "shock_window_shock_direction_tick_imbalance": 0.028276536326368625
+      },
+      "scales": {
+        "failure_close_to_shock_origin_entry_pips": 9.074999999997857,
+        "failure_window_entry_direction_tick_imbalance": 0.0431184892250237,
+        "h1_ema20_slope_shock_signed_pips": 6.785666686743497,
+        "h4_ema20_slope_shock_signed_pips": 8.700504042010238,
+        "retracement_ratio": 0.30708204977487735,
+        "shock_window_shock_direction_tick_imbalance": 0.03991158783150196
+      },
+      "signs": {
+        "failure_close_to_shock_origin_entry_pips": 1,
+        "failure_window_entry_direction_tick_imbalance": -1,
+        "h1_ema20_slope_shock_signed_pips": 1,
+        "h4_ema20_slope_shock_signed_pips": 1,
+        "retracement_ratio": 1,
+        "shock_window_shock_direction_tick_imbalance": 1
+      }
+    },
+    "features": [
+      "retracement_ratio",
+      "failure_close_to_shock_origin_entry_pips",
+      "shock_window_shock_direction_tick_imbalance",
+      "failure_window_entry_direction_tick_imbalance",
+      "h1_ema20_slope_shock_signed_pips",
+      "h4_ema20_slope_shock_signed_pips"
+    ],
+    "gate_checks": {
+      "accepted_trade_floor": true,
+      "both_sides_present": true,
+      "continuation_resumption_loss_rejection": true,
+      "delay15_positive": true,
+      "minimum_fold_not_fatal": false,
+      "model_stability": true,
+      "month_breadth": true,
+      "positive_fold_benefit_3_of_4": false,
+      "predictive_auc": false,
+      "session_breadth": true,
+      "side_benefit_not_fatal": false,
+      "spread_plus_1_positive": true,
+      "sustained_reversal_profit_retention": true,
+      "threshold_neighborhood": false,
+      "top3_removed_positive": true,
+      "top_event_dependence": true
+    },
+    "model": "RD_RANK6_V1",
+    "stability": {
+      "rank_orientation_consistency": {
+        "failure_close_to_shock_origin_entry_pips": 1.0,
+        "failure_window_entry_direction_tick_imbalance": 1.0,
+        "h1_ema20_slope_shock_signed_pips": 1.0,
+        "h4_ema20_slope_shock_signed_pips": 1.0,
+        "retracement_ratio": 1.0,
+        "shock_window_shock_direction_tick_imbalance": 0.75
+      }
+    },
+    "threshold": 0.45
+  },
+  "RD_TREE_D2_V1": {
+    "all_development_fit": {
+      "feature_importances": {
+        "failure_body_ratio": 0.21752649850503114,
+        "failure_close_to_shock_origin_entry_pips": 0.34100178889857463,
+        "failure_window_entry_direction_acceleration_pips_per_min": 0.0,
+        "failure_window_entry_direction_tick_imbalance": 0.0,
+        "h1_ema20_slope_shock_signed_pips": 0.0,
+        "h4_ema20_slope_shock_signed_pips": 0.0,
+        "retracement_ratio": 0.0,
+        "shock_duration_bars": 0.44147171259639423,
+        "shock_ratio": 0.0,
+        "shock_window_shock_direction_tick_imbalance": 0.0
+      },
+      "tree_text": "|--- shock_duration_bars <= 2.50\n|   |--- failure_close_to_shock_origin_entry_pips <= -4.70\n|   |   |--- class: 0\n|   |--- failure_close_to_shock_origin_entry_pips >  -4.70\n|   |   |--- class: 1\n|--- shock_duration_bars >  2.50\n|   |--- failure_body_ratio <= 0.75\n|   |   |--- class: 1\n|   |--- failure_body_ratio >  0.75\n|   |   |--- class: 1\n"
+    },
+    "features": [
+      "shock_ratio",
+      "shock_duration_bars",
+      "failure_body_ratio",
+      "retracement_ratio",
+      "failure_close_to_shock_origin_entry_pips",
+      "shock_window_shock_direction_tick_imbalance",
+      "failure_window_entry_direction_tick_imbalance",
+      "failure_window_entry_direction_acceleration_pips_per_min",
+      "h1_ema20_slope_shock_signed_pips",
+      "h4_ema20_slope_shock_signed_pips"
+    ],
+    "gate_checks": {
+      "accepted_trade_floor": true,
+      "both_sides_present": true,
+      "continuation_resumption_loss_rejection": true,
+      "delay15_positive": true,
+      "minimum_fold_not_fatal": false,
+      "model_stability": false,
+      "month_breadth": true,
+      "positive_fold_benefit_3_of_4": false,
+      "predictive_auc": false,
+      "session_breadth": true,
+      "side_benefit_not_fatal": false,
+      "spread_plus_1_positive": true,
+      "sustained_reversal_profit_retention": false,
+      "threshold_neighborhood": false,
+      "top3_removed_positive": true,
+      "top_event_dependence": true
+    },
+    "model": "RD_TREE_D2_V1",
+    "stability": {
+      "modal_top_split": "shock_duration_bars",
+      "top_split_features": [
+        "failure_close_to_shock_origin_entry_pips",
+        "shock_duration_bars",
+        "retracement_ratio",
+        "shock_ratio"
+      ]
+    },
+    "threshold": 0.35
+  }
+}

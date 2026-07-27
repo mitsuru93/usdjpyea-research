@@ -1,0 +1,20 @@
+{
+  "schema_version": "usdjpy_shock_failure_regime_discriminator_v1_final_decision",
+  "hypothesis_id": "USDJPY-HYP-028",
+  "status": "NO_PORTABLE_CANDIDATE",
+  "selected_candidate_id": null,
+  "best_diagnostic_model": "RD_TREE_D2_V1",
+  "development_periods": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "2025_used_for_selection": false,
+  "next_stage_authorized": "NONE",
+  "core_source_change_authorized": false,
+  "mt4_economic_evaluation_authorized": false,
+  "production_authorized": false,
+  "selected_metrics": null,
+  "interpretation": "A candidate is portable only when every preregistered gate passes; otherwise the correct outcome is NO_PORTABLE_CANDIDATE."
+}

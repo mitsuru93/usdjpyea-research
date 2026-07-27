@@ -1,0 +1,20 @@
+{
+  "feature_columns": [
+    "failure_body_ratio",
+    "failure_close_to_shock_origin_entry_pips",
+    "failure_window_entry_direction_acceleration_pips_per_min",
+    "failure_window_entry_direction_tick_imbalance",
+    "h1_ema20_slope_shock_signed_pips",
+    "h4_ema20_slope_shock_signed_pips",
+    "retracement_ratio",
+    "shock_duration_bars",
+    "shock_ratio",
+    "shock_window_shock_direction_tick_imbalance"
+  ],
+  "feature_timestamp_contract": "all features must be complete and observable at or before entry_decision_utc",
+  "higher_timeframe_incomplete_bars_used": false,
+  "oracle_labels_used_as_predictors": false,
+  "pass": true,
+  "post_entry_mfe_mae_pnl_used_as_predictors": false,
+  "schema_version": "usdjpy_shock_failure_regime_discriminator_v1_leakage_audit"
+}

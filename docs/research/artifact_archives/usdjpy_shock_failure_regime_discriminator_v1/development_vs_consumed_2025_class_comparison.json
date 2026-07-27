@@ -1,0 +1,14 @@
+{
+  "2025_event_count": 47,
+  "2025_folds_included": [
+    "2025H1",
+    "2025H2"
+  ],
+  "2025_role": "CONSUMED_POSTMORTEM_COMPARISON_ONLY",
+  "2025_used_for_feature_threshold_model_or_rule_selection": false,
+  "comparison_input_supports_event_or_aggregate_lifecycle": true,
+  "schema_version": "usdjpy_shock_failure_regime_discriminator_2025_comparison_v1",
+  "selected_candidate_id": null,
+  "selection_completed_before_2025_comparison": true,
+  "selection_status": "NO_PORTABLE_CANDIDATE"
+}

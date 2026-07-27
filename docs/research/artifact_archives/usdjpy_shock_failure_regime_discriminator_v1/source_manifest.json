@@ -1,0 +1,18 @@
+{
+  "2025_inputs_present_in_selection_process": false,
+  "core_sha_read_only": "151d84b0dca3fe92a59663f56fd458727de2dbe0",
+  "development_periods": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "m15_2023_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+  "m15_2024_sha256": "d22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020",
+  "phase2_ledger_sha256": "8de783dd8b560f976f31b7a28a640997b92c4814013692dde8ad4f3f48758011",
+  "raw_2023_monthly_archives": 12,
+  "raw_2024_monthly_archives": 12,
+  "research_sha": "8d1b13b5d6ff51e589e345bb13b25d9924694eab",
+  "run_id": "30259805223",
+  "schema_version": "usdjpy_shock_failure_regime_discriminator_v1_source_manifest"
+}
