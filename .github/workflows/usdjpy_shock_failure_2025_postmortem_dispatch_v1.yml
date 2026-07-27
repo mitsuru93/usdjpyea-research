@@ -24,5 +24,7 @@ jobs:
         run: |
           set -euo pipefail
           jq -e '.schema_version=="usdjpy_shock_failure_2025_postmortem_dispatch_v1" and .target_branch=="agent/shock-failure-2025-postmortem-v1" and .candidate_id=="B_EXECUTABLE_T0_8BAR" and .no_retuning==true' configs/research/usdjpy_shock_failure_2025_postmortem_dispatch_v1.json
-          gh workflow run usdjpy_shock_failure_2025_postmortem_bridge_v1.yml --repo "$GITHUB_REPOSITORY" --ref main
-          echo "DISPATCHED_BRIDGE_WORKFLOW"
+          gh api --method POST \
+            "repos/$GITHUB_REPOSITORY/actions/workflows/usdjpy_shock_failure_2025_postmortem_bridge_v1.yml/dispatches" \
+            -f ref=main
+          echo "DISPATCHED_BRIDGE_WORKFLOW_BY_REST_PATH"
