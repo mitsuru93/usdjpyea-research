@@ -17,20 +17,34 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      - name: Materialize and inspect analyzer
+      - name: Materialize and inspect analyzer with persistent diagnostics
         shell: bash
         run: |
-          set -euo pipefail
-          cat tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py.gz.b64.part* > "$RUNNER_TEMP/analyzer.b64"
-          base64 -d "$RUNNER_TEMP/analyzer.b64" | gzip -d > "$RUNNER_TEMP/analyzer.py"
-          python -m py_compile "$RUNNER_TEMP/analyzer.py"
-          sha256sum "$RUNNER_TEMP/analyzer.b64" "$RUNNER_TEMP/analyzer.py" | tee "$RUNNER_TEMP/SHA256SUMS"
-          python "$RUNNER_TEMP/analyzer.py" --help | tee "$RUNNER_TEMP/cli.txt"
+          set +e
+          out="$RUNNER_TEMP/shock-postmortem-v3-cli"
+          mkdir -p "$out"
+          find tools -maxdepth 1 -type f -name 'analyze_usdjpy_shock_failure_2025_postmortem_v3.py.gz.b64.part*' -printf '%f %s bytes\n' | sort | tee "$out/parts.txt"
+          cat tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py.gz.b64.part* > "$out/analyzer.b64"
+          sha256sum "$out/analyzer.b64" | tee "$out/base64.sha256"
+          wc -c "$out/analyzer.b64" | tee "$out/base64.bytes"
+          base64 -d "$out/analyzer.b64" > "$out/analyzer.py.gz" 2> "$out/base64.stderr"
+          echo "$?" > "$out/base64.exit"
+          sha256sum "$out/analyzer.py.gz" | tee "$out/gzip.sha256"
+          gzip -t "$out/analyzer.py.gz" 2> "$out/gzip-test.stderr"
+          echo "$?" > "$out/gzip-test.exit"
+          gzip -dc "$out/analyzer.py.gz" > "$out/analyzer.py" 2> "$out/gzip-decode.stderr"
+          echo "$?" > "$out/gzip-decode.exit"
+          sha256sum "$out/analyzer.py" | tee "$out/python.sha256"
+          python -m py_compile "$out/analyzer.py" > "$out/compile.stdout" 2> "$out/compile.stderr"
+          echo "$?" > "$out/compile.exit"
+          python "$out/analyzer.py" --help > "$out/cli.txt" 2> "$out/help.stderr"
+          echo "$?" > "$out/help.exit"
+          cat "$out"/*.exit "$out"/*.stderr "$out/cli.txt" || true
+          exit 0
       - uses: actions/upload-artifact@v4
         with:
           name: shock-postmortem-v3-cli-${{ github.run_id }}
-          path: |
-            ${{ runner.temp }}/cli.txt
-            ${{ runner.temp }}/SHA256SUMS
+          path: ${{ runner.temp }}/shock-postmortem-v3-cli
           if-no-files-found: error
           retention-days: 7
+          compression-level: 0
