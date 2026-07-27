@@ -1,0 +1,101 @@
+{
+  "schema_version": "usdjpy_shock_failure_regime_discriminator_prereg_v1",
+  "status": "FROZEN_BEFORE_REGIME_DISCRIMINATOR_OUTCOMES",
+  "hypothesis_id": "USDJPY-HYP-028",
+  "family_id": "S_SHOCK_FAILURE_REGIME_DISCRIMINATION",
+  "research_question": "Can information fully available no later than the Shock Failure entry decision boundary distinguish continuation resumption from sustained reversal across 2023H1-2024H2?",
+  "parent_evidence": {
+    "fixed_candidate": "B_EXECUTABLE_T0_8BAR",
+    "fixed_candidate_status": "REJECTED_FOR_PRODUCTION_AND_PORTABLE_CORE_ADOPTION",
+    "postmortem_release": "usdjpy-shock-failure-2025-postmortem-v1-r2",
+    "postmortem_receipt_issue": 322,
+    "decision_class": "DIRECTIONAL_OR_REGIME_CONDITIONAL_MECHANISM"
+  },
+  "development_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "forbidden_selection_periods": ["2025H1", "2025H2"],
+  "old_candidate_retuning_permitted": false,
+  "profit_then_giveback_exit_optimization_permitted": false,
+  "oracle_label_as_feature_permitted": false,
+  "candidate_models": {
+    "RD_LOGIT_10F_V1": [
+      "shock_ratio",
+      "shock_duration_bars",
+      "failure_body_ratio",
+      "retracement_ratio",
+      "failure_close_to_shock_origin_entry_pips",
+      "shock_window_shock_direction_tick_imbalance",
+      "failure_window_entry_direction_tick_imbalance",
+      "failure_window_entry_direction_acceleration_pips_per_min",
+      "h1_ema20_slope_shock_signed_pips",
+      "h4_ema20_slope_shock_signed_pips"
+    ],
+    "RD_TREE_D2_V1": [
+      "shock_ratio",
+      "shock_duration_bars",
+      "failure_body_ratio",
+      "retracement_ratio",
+      "failure_close_to_shock_origin_entry_pips",
+      "shock_window_shock_direction_tick_imbalance",
+      "failure_window_entry_direction_tick_imbalance",
+      "failure_window_entry_direction_acceleration_pips_per_min",
+      "h1_ema20_slope_shock_signed_pips",
+      "h4_ema20_slope_shock_signed_pips"
+    ],
+    "RD_RANK6_V1": [
+      "retracement_ratio",
+      "failure_close_to_shock_origin_entry_pips",
+      "shock_window_shock_direction_tick_imbalance",
+      "failure_window_entry_direction_tick_imbalance",
+      "h1_ema20_slope_shock_signed_pips",
+      "h4_ema20_slope_shock_signed_pips"
+    ]
+  },
+  "threshold_grid": [0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65],
+  "portable_gates": {
+    "minimum_nonnegative_fold_benefit_count": 3,
+    "minimum_fold_net_benefit_jpy": -500,
+    "minimum_sustained_reversal_profit_retention": 0.70,
+    "minimum_continuation_resumption_loss_rejection": 0.25,
+    "minimum_accepted_trades": 30,
+    "minimum_accepted_trades_each_side": 8,
+    "minimum_side_net_benefit_jpy": -250,
+    "minimum_accepted_sessions": 3,
+    "minimum_positive_months": 8,
+    "minimum_nonnegative_threshold_neighbors": 2,
+    "minimum_oof_auc": 0.60,
+    "minimum_model_stability": 0.60,
+    "maximum_top_event_profit_share": 0.35
+  },
+  "model_contract": {
+    "logistic": "L2 logistic regression, C=0.5, balanced classes, median imputation, standardized predictors",
+    "tree": "decision tree depth <=2, minimum leaf 10, balanced classes",
+    "rank": "equal-weight monotonic score using training-only median, IQR and class-orientation",
+    "outer_validation": "Leave-One-Fold-Out across the four development folds",
+    "threshold_selection": "fixed grid selected inside the three training folds; the outer fold is never used to select its threshold",
+    "final_freeze": "one model family and one threshold may be frozen only from development OOF evidence and only if every portable gate passes"
+  },
+  "feature_timestamp_contract": {
+    "cutoff": "entry_decision_utc",
+    "m15": "shock and failure bars must be completed",
+    "m1_m5": "only completed bars ending no later than entry_decision_utc",
+    "h1_h4": "only completed higher-timeframe bars; current incomplete bar is forbidden",
+    "ticks": "timestamp_utc < entry_decision_utc, except the executable entry tick is retained only in lifecycle/execution fields and never in candidate predictors",
+    "post_entry_mfe_mae_pnl": "labels and evaluation only, never predictors"
+  },
+  "stress_contract": {
+    "spread": ["observed", "+1 pip", "+2 pips"],
+    "execution_delay": ["5 seconds", "15 seconds"],
+    "concentration": ["remove top 1", "remove top 3", "remove top 5"],
+    "bootstrap_replicates": 5000,
+    "permutation_replicates": 2000,
+    "threshold_neighborhood": "selected threshold and adjacent fixed-grid thresholds"
+  },
+  "authorization": {
+    "research_analysis": true,
+    "core_source_change": false,
+    "mt4_economic_evaluation": false,
+    "2025_clean_holdout": false,
+    "production": false,
+    "live_orders": false
+  }
+}

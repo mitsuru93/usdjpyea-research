@@ -1,0 +1,337 @@
+{
+  "schema_version": "usdjpy_shock_failure_regime_discriminator_result_v1",
+  "hypothesis_id": "USDJPY-HYP-028",
+  "family_id": "S_SHOCK_FAILURE_REGIME_DISCRIMINATION",
+  "status": "NO_PORTABLE_CANDIDATE",
+  "selected_candidate_id": null,
+  "best_diagnostic_model": "RD_TREE_D2_V1",
+  "scientific_question": "Can information fully available no later than the Shock Failure entry decision boundary distinguish continuation resumption from sustained reversal across 2023H1-2024H2?",
+  "period_contract": {
+    "development_and_selection": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ],
+    "2025H1_H2_role": "CONSUMED_POSTMORTEM_COMPARISON_ONLY",
+    "2025_used_for_feature_selection": false,
+    "2025_used_for_threshold_selection": false,
+    "2025_used_for_model_selection": false,
+    "2025_used_for_candidate_selection": false
+  },
+  "lifecycle_reconstruction": {
+    "events": 114,
+    "lookahead_violations": 0,
+    "preserved_approximation_label_differences": 3,
+    "differences_are_separate_not_overwritten": true,
+    "class_totals": {
+      "B_DELAYED_REVERSAL": {
+        "events": 1,
+        "net_jpy": 117.0
+      },
+      "C_INSUFFICIENT_REVERSAL": {
+        "events": 1,
+        "net_jpy": -184.0
+      },
+      "D_PROFIT_THEN_GIVEBACK": {
+        "events": 29,
+        "net_jpy": 1141.0
+      },
+      "E_TIMEOUT_TRUNCATION": {
+        "events": 1,
+        "net_jpy": -318.0
+      },
+      "F_CONTINUATION_RESUMPTION": {
+        "events": 37,
+        "net_jpy": -8171.0
+      },
+      "H_SUSTAINED_REVERSAL": {
+        "events": 45,
+        "net_jpy": 19917.0
+      }
+    }
+  },
+  "development_vs_consumed_2025": {
+    "development_2023_2024": {
+      "D_PROFIT_THEN_GIVEBACK": {
+        "events": 29,
+        "share": 0.2543859649122807,
+        "net_jpy": 1141.0
+      },
+      "F_CONTINUATION_RESUMPTION": {
+        "events": 37,
+        "share": 0.32456140350877194,
+        "net_jpy": -8171.0
+      },
+      "H_SUSTAINED_REVERSAL": {
+        "events": 45,
+        "share": 0.39473684210526316,
+        "net_jpy": 19917.0
+      }
+    },
+    "consumed_postmortem_2025": {
+      "events": 47,
+      "D_PROFIT_THEN_GIVEBACK": {
+        "events": 12,
+        "share": 0.2553191489361702,
+        "net_jpy": -89.0
+      },
+      "F_CONTINUATION_RESUMPTION": {
+        "events": 21,
+        "share": 0.44680851063829785,
+        "net_jpy": -5975.0
+      },
+      "H_SUSTAINED_REVERSAL": {
+        "events": 14,
+        "share": 0.2978723404255319,
+        "net_jpy": 4787.0
+      }
+    }
+  },
+  "fold_class_metrics": {
+    "2023H1": {
+      "D_PROFIT_THEN_GIVEBACK": {"events": 5, "net_jpy": 173.0},
+      "F_CONTINUATION_RESUMPTION": {"events": 7, "net_jpy": -1746.0},
+      "H_SUSTAINED_REVERSAL": {"events": 9, "net_jpy": 4349.0}
+    },
+    "2023H2": {
+      "B_DELAYED_REVERSAL": {"events": 1, "net_jpy": 117.0},
+      "D_PROFIT_THEN_GIVEBACK": {"events": 9, "net_jpy": -81.0},
+      "F_CONTINUATION_RESUMPTION": {"events": 15, "net_jpy": -2866.0},
+      "H_SUSTAINED_REVERSAL": {"events": 10, "net_jpy": 2168.0}
+    },
+    "2024H1": {
+      "C_INSUFFICIENT_REVERSAL": {"events": 1, "net_jpy": -184.0},
+      "D_PROFIT_THEN_GIVEBACK": {"events": 9, "net_jpy": 632.0},
+      "F_CONTINUATION_RESUMPTION": {"events": 8, "net_jpy": -921.0},
+      "H_SUSTAINED_REVERSAL": {"events": 12, "net_jpy": 2626.0}
+    },
+    "2024H2": {
+      "D_PROFIT_THEN_GIVEBACK": {"events": 6, "net_jpy": 417.0},
+      "E_TIMEOUT_TRUNCATION": {"events": 1, "net_jpy": -318.0},
+      "F_CONTINUATION_RESUMPTION": {"events": 7, "net_jpy": -2638.0},
+      "H_SUSTAINED_REVERSAL": {"events": 14, "net_jpy": 10774.0}
+    }
+  },
+  "side_class_metrics": {
+    "Long": {
+      "F_CONTINUATION_RESUMPTION": {"events": 23, "net_jpy": -4239.0},
+      "H_SUSTAINED_REVERSAL": {"events": 31, "net_jpy": 10710.0},
+      "D_PROFIT_THEN_GIVEBACK": {"events": 19, "net_jpy": 1018.0},
+      "B_DELAYED_REVERSAL": {"events": 1, "net_jpy": 117.0},
+      "E_TIMEOUT_TRUNCATION": {"events": 1, "net_jpy": -318.0}
+    },
+    "Short": {
+      "F_CONTINUATION_RESUMPTION": {"events": 14, "net_jpy": -3932.0},
+      "H_SUSTAINED_REVERSAL": {"events": 14, "net_jpy": 9207.0},
+      "D_PROFIT_THEN_GIVEBACK": {"events": 10, "net_jpy": 123.0},
+      "C_INSUFFICIENT_REVERSAL": {"events": 1, "net_jpy": -184.0}
+    }
+  },
+  "session_class_metrics": {
+    "London": {
+      "F_CONTINUATION_RESUMPTION": {"events": 5, "net_jpy": -610.0},
+      "H_SUSTAINED_REVERSAL": {"events": 5, "net_jpy": 1294.0},
+      "D_PROFIT_THEN_GIVEBACK": {"events": 5, "net_jpy": 411.0},
+      "E_TIMEOUT_TRUNCATION": {"events": 1, "net_jpy": -318.0}
+    },
+    "London_NY_overlap": {
+      "F_CONTINUATION_RESUMPTION": {"events": 18, "net_jpy": -3201.0},
+      "H_SUSTAINED_REVERSAL": {"events": 20, "net_jpy": 8519.0},
+      "D_PROFIT_THEN_GIVEBACK": {"events": 13, "net_jpy": 231.0},
+      "C_INSUFFICIENT_REVERSAL": {"events": 1, "net_jpy": -184.0}
+    },
+    "New_York": {
+      "F_CONTINUATION_RESUMPTION": {"events": 6, "net_jpy": -1190.0},
+      "H_SUSTAINED_REVERSAL": {"events": 6, "net_jpy": 1262.0},
+      "D_PROFIT_THEN_GIVEBACK": {"events": 3, "net_jpy": 134.0}
+    },
+    "Tokyo": {
+      "F_CONTINUATION_RESUMPTION": {"events": 6, "net_jpy": -1574.0},
+      "H_SUSTAINED_REVERSAL": {"events": 13, "net_jpy": 8289.0},
+      "D_PROFIT_THEN_GIVEBACK": {"events": 7, "net_jpy": 286.0},
+      "B_DELAYED_REVERSAL": {"events": 1, "net_jpy": 117.0}
+    },
+    "transition": {
+      "F_CONTINUATION_RESUMPTION": {"events": 2, "net_jpy": -1596.0},
+      "H_SUSTAINED_REVERSAL": {"events": 1, "net_jpy": 553.0},
+      "D_PROFIT_THEN_GIVEBACK": {"events": 1, "net_jpy": 79.0}
+    }
+  },
+  "univariate_separation": {
+    "most_informative": {
+      "feature": "shock_duration_bars",
+      "H_median": 2.0,
+      "F_median": 1.0,
+      "auc": 0.6345345345345346,
+      "permutation_p": 0.023952095808383235,
+      "fold_direction_consistency": 1.0,
+      "interpretation": "Longer impulses were more often followed by sustained reversal, but the effect alone was insufficient for a portable permission rule."
+    },
+    "secondary": [
+      {"feature": "failure_window_entry_direction_tick_imbalance", "absolute_auc": 0.574, "permutation_p": 0.267},
+      {"feature": "h4_ema20_slope_shock_signed_pips", "absolute_auc": 0.566, "permutation_p": 0.289},
+      {"feature": "h1_ema20_slope_shock_signed_pips", "absolute_auc": 0.562, "permutation_p": 0.333},
+      {"feature": "retracement_ratio", "absolute_auc": 0.545, "permutation_p": 0.505}
+    ],
+    "ineffective_or_near_chance": [
+      {"feature": "shock_ratio", "absolute_auc": 0.534, "permutation_p": 0.621},
+      {"feature": "shock_window_shock_direction_tick_imbalance", "absolute_auc": 0.508, "permutation_p": 0.904},
+      {"feature": "failure_window_entry_direction_acceleration_pips_per_min", "absolute_auc": 0.508, "permutation_p": 0.888},
+      {"feature": "failure_body_ratio", "absolute_auc": 0.505, "permutation_p": 0.932},
+      {"feature": "failure_close_to_shock_origin_entry_pips", "absolute_auc": 0.504, "permutation_p": 0.946}
+    ]
+  },
+  "baseline": {
+    "trades": 114,
+    "net_jpy": 12502.0,
+    "profit_factor": 2.381,
+    "max_drawdown_jpy": 1555.0
+  },
+  "candidate_metrics": {
+    "RD_TREE_D2_V1": {
+      "threshold": 0.35,
+      "accepted_trades": 69,
+      "rejected_trades": 45,
+      "net_jpy": 10521.0,
+      "profit_factor": 3.401,
+      "max_drawdown_jpy": 1232.0,
+      "recovery_factor": 8.54,
+      "net_benefit_jpy": -1981.0,
+      "winner_damage_jpy": 6654.0,
+      "loser_benefit_jpy": 4673.0,
+      "sustained_reversal_count_retention": 0.60,
+      "sustained_reversal_profit_retention": 0.6793,
+      "continuation_resumption_count_rejection": 0.4595,
+      "continuation_resumption_loss_rejection": 0.4881,
+      "nonnegative_benefit_folds": 2,
+      "minimum_fold_benefit_jpy": -2895.0,
+      "oof_auc": 0.5153153153153153,
+      "model_stability": 0.25,
+      "positive_months": 18,
+      "accepted_sessions": 5,
+      "top_event_removal": {"top1_net_jpy": 7422.0, "top3_net_jpy": 5091.0, "top5_net_jpy": 3816.0},
+      "spread_stress": {"plus_1_pip_net_jpy": 9831.0, "plus_2_pips_net_jpy": 9141.0},
+      "execution_delay_stress": {"delay_5_seconds_net_jpy": 10999.0, "delay_15_seconds_net_jpy": 11331.0},
+      "bootstrap_net_benefit_ci95_jpy": [-7232.3, 2544.0],
+      "bootstrap_probability_positive": 0.2122,
+      "permutation_p": 0.3968,
+      "rejection_reasons": [
+        "nonnegative fold benefit below 3 of 4",
+        "minimum fold benefit below -500 JPY",
+        "sustained reversal profit retention below 70%",
+        "side benefit gate failed",
+        "threshold neighborhood gate failed",
+        "OOF AUC below 0.60",
+        "model stability below 0.60"
+      ]
+    },
+    "RD_RANK6_V1": {
+      "threshold": 0.45,
+      "accepted_trades": 78,
+      "net_jpy": 9670.0,
+      "profit_factor": 2.642,
+      "max_drawdown_jpy": 1488.0,
+      "net_benefit_jpy": -2832.0,
+      "sustained_reversal_profit_retention": 0.7135,
+      "continuation_resumption_loss_rejection": 0.3501,
+      "nonnegative_benefit_folds": 1,
+      "minimum_fold_benefit_jpy": -2301.0,
+      "oof_auc": 0.552553,
+      "model_stability": 0.958,
+      "rejection_reasons": [
+        "nonnegative fold benefit below 3 of 4",
+        "minimum fold benefit below -500 JPY",
+        "side benefit gate failed",
+        "threshold neighborhood gate failed",
+        "OOF AUC below 0.60"
+      ]
+    },
+    "RD_LOGIT_10F_V1": {
+      "threshold": 0.40,
+      "accepted_trades": 68,
+      "net_jpy": 9262.0,
+      "profit_factor": 2.645,
+      "max_drawdown_jpy": 1176.0,
+      "net_benefit_jpy": -3240.0,
+      "sustained_reversal_profit_retention": 0.7014,
+      "continuation_resumption_loss_rejection": 0.3743,
+      "nonnegative_benefit_folds": 1,
+      "minimum_fold_benefit_jpy": -1503.0,
+      "oof_auc": 0.546547,
+      "model_stability": 0.825,
+      "rejection_reasons": [
+        "nonnegative fold benefit below 3 of 4",
+        "minimum fold benefit below -500 JPY",
+        "side benefit gate failed",
+        "threshold neighborhood gate failed",
+        "OOF AUC below 0.60"
+      ]
+    }
+  },
+  "best_diagnostic_lofo": {
+    "2023H1": {"accepted_trades": 12, "accepted_net_jpy": 3001.0, "net_benefit_jpy": 225.0},
+    "2023H2": {"accepted_trades": 23, "accepted_net_jpy": 562.0, "net_benefit_jpy": 1224.0},
+    "2024H1": {"accepted_trades": 9, "accepted_net_jpy": 973.0, "net_benefit_jpy": -1180.0, "sustained_reversal_profit_retention": 0.2529},
+    "2024H2": {"accepted_trades": 14, "accepted_net_jpy": 5340.0, "net_benefit_jpy": -2895.0, "sustained_reversal_profit_retention": 0.6154}
+  },
+  "best_diagnostic_side_benefit": {
+    "Long": {"baseline_net_jpy": 7288.0, "accepted_net_jpy": 6859.0, "net_benefit_jpy": -429.0},
+    "Short": {"baseline_net_jpy": 5214.0, "accepted_net_jpy": 3662.0, "net_benefit_jpy": -1552.0}
+  },
+  "best_diagnostic_session_benefit_jpy": {
+    "London": -116.0,
+    "London_NY_overlap": -1345.0,
+    "New_York": 428.0,
+    "Tokyo": -948.0,
+    "transition": 0.0
+  },
+  "best_diagnostic_threshold_stability": [
+    {"threshold": 0.35, "net_jpy": 10521.0, "net_benefit_jpy": -1981.0, "nonnegative_folds": 2, "minimum_fold_benefit_jpy": -2895.0},
+    {"threshold": 0.40, "net_jpy": 10521.0, "net_benefit_jpy": -1981.0, "nonnegative_folds": 2, "minimum_fold_benefit_jpy": -2895.0},
+    {"threshold": 0.45, "net_jpy": 7781.0, "net_benefit_jpy": -4721.0, "nonnegative_folds": 2, "minimum_fold_benefit_jpy": -5635.0},
+    {"threshold": 0.50, "net_jpy": 7781.0, "net_benefit_jpy": -4721.0, "nonnegative_folds": 2, "minimum_fold_benefit_jpy": -5635.0},
+    {"threshold": 0.55, "net_jpy": 7283.0, "net_benefit_jpy": -5219.0, "nonnegative_folds": 2},
+    {"threshold": 0.60, "net_jpy": 4790.0, "net_benefit_jpy": -7712.0, "nonnegative_folds": 1},
+    {"threshold": 0.65, "net_jpy": 3241.0, "net_benefit_jpy": -9261.0, "nonnegative_folds": 1}
+  ],
+  "timestamp_and_leakage_audit": {
+    "all_predictor_timestamps_at_or_before_entry_decision": true,
+    "completed_m15_bars_only": true,
+    "completed_h1_h4_bars_only": true,
+    "raw_ticks_strictly_before_entry_decision_for_predictors": true,
+    "oracle_labels_used_as_predictors": false,
+    "post_entry_mfe_mae_pnl_used_as_predictors": false,
+    "2025_loaded_by_selection_evaluator": false,
+    "pass": true
+  },
+  "interpretation": {
+    "mechanism_replicated": true,
+    "entry_time_discrimination_portable": false,
+    "why": "Continuation-resumption losses and sustained-reversal profits exist across all four development folds, both sides and multiple sessions. However, the frozen simple entry-time feature catalog did not generalize. Every model removed meaningful continuation-resumption loss but removed more sustained-reversal winner profit, produced negative pooled net benefit, failed fold breadth, and had near-chance OOF discrimination.",
+    "2023H2": "The weak development fold was dominated by the same continuation-resumption mechanism seen in 2025: 15 F events for -2866 JPY versus 10 H events for +2168 JPY.",
+    "diagnostic_tree_is_not_a_candidate_rule": true
+  },
+  "authorization": {
+    "research_candidate_freeze": false,
+    "core_implementation_contract": false,
+    "core_source_change": false,
+    "mt4_economic_evaluation": false,
+    "2025_clean_external_gate": false,
+    "production": false,
+    "live_orders": false
+  },
+  "next_external_gate": {
+    "reserved_period": null,
+    "reason": "No new candidate was frozen. A future candidate must be materially new, preregistered and frozen before any unused 2026-or-later external data are accessed."
+  },
+  "evidence": {
+    "pr": 323,
+    "canonical_pr_run_id": 30258797448,
+    "canonical_pr_artifact_id": 8650040013,
+    "canonical_pr_artifact_digest": "sha256:25be1e2b42f5f95870c8f0d3d24591f422e5b66cada601744c3ef691323e81ff",
+    "canonical_pr_artifact_created_at": "2026-07-27T10:39:18Z",
+    "pr_head_sha": "577c68d87969abd53bebde51bfde52d8d077b86f",
+    "planned_release_tag": "usdjpy-shock-failure-regime-discriminator-v1"
+  }
+}

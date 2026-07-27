@@ -1,0 +1,131 @@
+{
+  "schema_version": "usdjpy_shock_failure_regime_discriminator_candidate_registry_v1",
+  "hypothesis_id": "USDJPY-HYP-028",
+  "family_id": "S_SHOCK_FAILURE_REGIME_DISCRIMINATION",
+  "status": "COMPLETE_NO_PORTABLE_CANDIDATE",
+  "parent_fixed_candidate": {
+    "candidate_id": "B_EXECUTABLE_T0_8BAR",
+    "status": "REJECTED_FOR_PRODUCTION_AND_PORTABLE_CORE_ADOPTION",
+    "modified_by_this_study": false
+  },
+  "development_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "2025_role": "CONSUMED_POSTMORTEM_COMPARISON_ONLY",
+  "selected_candidate_id": null,
+  "candidate_ids": [
+    "RD_LOGIT_10F_V1",
+    "RD_TREE_D2_V1",
+    "RD_RANK6_V1"
+  ],
+  "candidates": [
+    {
+      "candidate_id": "RD_LOGIT_10F_V1",
+      "architecture": "STATE_SCORE_LOGISTIC",
+      "status": "REJECTED",
+      "frozen_threshold": 0.40,
+      "accepted_trades": 68,
+      "net_jpy": 9262.0,
+      "profit_factor": 2.645,
+      "max_drawdown_jpy": 1176.0,
+      "net_benefit_jpy": -3240.0,
+      "sustained_reversal_profit_retention": 0.7014,
+      "continuation_resumption_loss_rejection": 0.3743,
+      "nonnegative_benefit_folds": 1,
+      "minimum_fold_benefit_jpy": -1503.0,
+      "oof_auc": 0.546547,
+      "model_stability": 0.825,
+      "rejection_reasons": [
+        "Fewer than three nonnegative-benefit folds",
+        "Minimum fold benefit below -500 JPY",
+        "Side breadth gate failed",
+        "Threshold-neighborhood net-benefit gate failed",
+        "OOF AUC below 0.60"
+      ]
+    },
+    {
+      "candidate_id": "RD_TREE_D2_V1",
+      "architecture": "SHALLOW_DECISION_TREE_PERMISSION",
+      "status": "REJECTED_DIAGNOSTIC_BEST_ONLY",
+      "frozen_threshold": 0.35,
+      "accepted_trades": 69,
+      "rejected_trades": 45,
+      "net_jpy": 10521.0,
+      "profit_factor": 3.401,
+      "max_drawdown_jpy": 1232.0,
+      "recovery_factor": 8.54,
+      "net_benefit_jpy": -1981.0,
+      "winner_damage_jpy": 6654.0,
+      "loser_benefit_jpy": 4673.0,
+      "sustained_reversal_count_retention": 0.60,
+      "sustained_reversal_profit_retention": 0.6793,
+      "continuation_resumption_count_rejection": 0.4595,
+      "continuation_resumption_loss_rejection": 0.4881,
+      "nonnegative_benefit_folds": 2,
+      "minimum_fold_benefit_jpy": -2895.0,
+      "oof_auc": 0.5153153153153153,
+      "model_stability": 0.25,
+      "rejection_reasons": [
+        "Fewer than three nonnegative-benefit folds",
+        "Minimum fold benefit below -500 JPY",
+        "Sustained-reversal profit retention below 70%",
+        "Side breadth gate failed",
+        "Threshold-neighborhood net-benefit gate failed",
+        "OOF AUC below 0.60",
+        "Model split stability below 0.60"
+      ],
+      "prohibited_interpretation": "The all-development tree is diagnostic only and must not be converted into a candidate rule."
+    },
+    {
+      "candidate_id": "RD_RANK6_V1",
+      "architecture": "MONOTONIC_RANK_SCORE_PERMISSION",
+      "status": "REJECTED",
+      "frozen_threshold": 0.45,
+      "accepted_trades": 78,
+      "net_jpy": 9670.0,
+      "profit_factor": 2.642,
+      "max_drawdown_jpy": 1488.0,
+      "net_benefit_jpy": -2832.0,
+      "sustained_reversal_profit_retention": 0.7135,
+      "continuation_resumption_loss_rejection": 0.3501,
+      "nonnegative_benefit_folds": 1,
+      "minimum_fold_benefit_jpy": -2301.0,
+      "oof_auc": 0.552553,
+      "model_stability": 0.958,
+      "rejection_reasons": [
+        "Fewer than three nonnegative-benefit folds",
+        "Minimum fold benefit below -500 JPY",
+        "Side breadth gate failed",
+        "Threshold-neighborhood net-benefit gate failed",
+        "OOF AUC below 0.60"
+      ]
+    }
+  ],
+  "portable_gate_result": {
+    "all_required_gates_passed": false,
+    "candidate_freeze_authorized": false,
+    "implementation_contract_authorized": false,
+    "core_or_mt4_authorized": false
+  },
+  "rejected_candidate_ledger": [
+    {
+      "candidate_id": "RD_LOGIT_10F_V1",
+      "primary_failure": "Near-chance OOF discrimination and negative net benefit"
+    },
+    {
+      "candidate_id": "RD_TREE_D2_V1",
+      "primary_failure": "Winner damage exceeded loser benefit and fold/split stability failed"
+    },
+    {
+      "candidate_id": "RD_RANK6_V1",
+      "primary_failure": "Stable score construction did not translate into fold-portable economic benefit"
+    }
+  ],
+  "next_action": "Do not tune nearby thresholds, add 2025-derived side/session exclusions, or implement any tested score. A successor study requires a materially different preregistered representation rather than another permutation of the same entry-time summary features.",
+  "evidence": {
+    "pr": 323,
+    "run_id": 30258797448,
+    "artifact_id": 8650040013,
+    "artifact_digest": "sha256:25be1e2b42f5f95870c8f0d3d24591f422e5b66cada601744c3ef691323e81ff",
+    "artifact_created_at": "2026-07-27T10:39:18Z",
+    "release_tag": "usdjpy-shock-failure-regime-discriminator-v1"
+  }
+}
