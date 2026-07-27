@@ -11,15 +11,32 @@ ap.add_argument('--out',type=Path,required=True)
 a=ap.parse_args()
 decision=json.loads(a.final_decision.read_text())
 assert decision['2025_used_for_selection'] is False
+
+def summarize(period: str, df: pd.DataFrame) -> list[dict]:
+    if 'failure_class' in df.columns and 'lifecycle_class' not in df.columns:
+        df=df.rename(columns={'failure_class':'lifecycle_class'})
+    if 'lifecycle_class' not in df.columns:
+        raise ValueError(f'{period}: lifecycle class column missing')
+    rows=[]
+    if {'trades','net_jpy'}.issubset(df.columns):
+        grouped=(df.groupby('lifecycle_class',dropna=False)
+                   .agg(events=('trades','sum'),net_jpy=('net_jpy','sum'))
+                   .reset_index())
+        total=float(grouped.events.sum())
+        for r in grouped.itertuples(index=False):
+            rows.append({'period_role':period,'lifecycle_class':r.lifecycle_class,'events':int(r.events),'share':float(r.events/total) if total else 0.0,'net_jpy':float(r.net_jpy)})
+        return rows
+    pnl_col='realized_pnl_jpy' if 'realized_pnl_jpy' in df.columns else 'pnl_jpy'
+    if pnl_col not in df.columns:
+        raise ValueError(f'{period}: event-level P/L column missing')
+    total=float(len(df))
+    for cls,g in df.groupby('lifecycle_class',dropna=False):
+        rows.append({'period_role':period,'lifecycle_class':cls,'events':int(len(g)),'share':float(len(g)/total) if total else 0.0,'net_jpy':float(pd.to_numeric(g[pnl_col],errors='coerce').sum())})
+    return rows
+
 dev=pd.read_csv(a.dev_lifecycle,compression='infer')
 y25=pd.read_csv(a.postmortem_2025_lifecycle)
-if 'failure_class' in y25.columns:
-    y25=y25.rename(columns={'failure_class':'lifecycle_class'})
-rows=[]
-for period,df in [('DEVELOPMENT_2023_2024',dev),('CONSUMED_POSTMORTEM_2025',y25)]:
-    for cls,g in df.groupby('lifecycle_class',dropna=False):
-        pnl_col='realized_pnl_jpy' if 'realized_pnl_jpy' in g.columns else 'pnl_jpy'
-        rows.append({'period_role':period,'lifecycle_class':cls,'events':len(g),'share':len(g)/len(df),'net_jpy':pd.to_numeric(g[pnl_col],errors='coerce').sum()})
+rows=summarize('DEVELOPMENT_2023_2024',dev)+summarize('CONSUMED_POSTMORTEM_2025',y25)
 out=pd.DataFrame(rows)
 out.to_csv(a.out,index=False)
 receipt={
@@ -28,6 +45,7 @@ receipt={
   'selection_status':decision['status'],
   'selected_candidate_id':decision.get('selected_candidate_id'),
   '2025_role':'CONSUMED_POSTMORTEM_COMPARISON_ONLY',
-  '2025_used_for_feature_threshold_model_or_rule_selection':False
+  '2025_used_for_feature_threshold_model_or_rule_selection':False,
+  'comparison_input_supports_event_or_aggregate_lifecycle':True
 }
 a.out.with_suffix('.json').write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
