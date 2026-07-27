@@ -7,28 +7,34 @@ on:
       - .github/workflows/probe_usdjpy_raw_ticks_2025_release_v1.yml
 
 permissions:
-  contents: read
-  pull-requests: write
+  contents: write
 
 jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Inventory immutable release assets
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Persist immutable release REST inventory
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
-          gh release view usdjpy-raw-ticks-2025-v1 --repo "$GITHUB_REPOSITORY" --json tagName,targetCommitish,assets > "$RUNNER_TEMP/release.json"
-          python - <<'PY'
-          import json,os
-          from pathlib import Path
-          p=Path(os.environ['RUNNER_TEMP'])/'release.json';x=json.loads(p.read_text())
-          rows=[]
-          for a in x['assets']:
-              rows.append(f"| `{a['name']}` | {a.get('size',0)} | {a.get('digest','')} |")
-          body='<!-- usdjpy-raw-ticks-2025-release-probe-v1 -->\n## Raw Tick Release inventory\n\n| Asset | Bytes | Digest |\n|---|---:|---|\n'+'\n'.join(rows)+f"\n\nTotal bytes: `{sum(a.get('size',0) for a in x['assets'])}`\n"
-          (Path(os.environ['RUNNER_TEMP'])/'comment.md').write_text(body)
+          target=research_inputs/usdjpy/shock_failure/2025_postmortem_v1/raw_tick_release_rest_inventory.json
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/usdjpy-raw-ticks-2025-v1" > "$target"
+          python - "$target" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1]))
+          assert x['tag_name']=='usdjpy-raw-ticks-2025-v1'
+          assert len(x['assets'])==13
+          print([(a['name'],a['size']) for a in x['assets']])
           PY
-          gh pr comment "${{ github.event.pull_request.number }}" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/comment.md"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add "$target"
+          git commit -m "evidence: record immutable 2025 Raw Tick release inventory"
+          git push origin "HEAD:$HEAD_BRANCH"
