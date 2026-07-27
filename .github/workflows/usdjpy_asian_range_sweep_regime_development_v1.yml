@@ -59,6 +59,7 @@ jobs:
             gh release download "usdjpy-${year}-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" --dir "inputs/raw/$year" \
               --pattern "usdjpy-${year}-??-raw-ticks-v1.tar.gz" \
               --pattern "usdjpy-${year}-??-raw-ticks-v1.manifest.json" \
+              --pattern "usdjpy-${year}-??-raw-ticks-v1.SHA256SUMS" \
               --pattern "usdjpy-${year}-raw-ticks-v1.annual-manifest.json" \
               --pattern 'SHA256SUMS'
             (cd "inputs/raw/$year" && sha256sum -c SHA256SUMS)
