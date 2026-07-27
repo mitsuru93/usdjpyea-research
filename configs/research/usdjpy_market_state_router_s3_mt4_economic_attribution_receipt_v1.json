@@ -1,0 +1,87 @@
+{
+  "schema_version": "usdjpy_market_state_router_s3_mt4_economic_attribution_research_receipt_v1",
+  "status": "PASS_ECONOMIC_ATTRIBUTION_ACCOUNTING_ERROR_REPAIRED",
+  "final_release_readback_status": "PASS_FINAL_RELEASE_CONTENT_READBACK",
+  "candidate_id": "S3_H4_ALIGNED",
+  "core_repository": "mitsuru93/usdjpyea-core",
+  "core_authorities": {
+    "source_mt4_run_id": 30256893465,
+    "source_core_sha": "2deb131bdda3dd13d0b5b69d0c80967235fb3e66",
+    "source_pass_issue": 368,
+    "final_content_readback_run_id": 30259858011,
+    "final_content_readback_issue": 377,
+    "canonical_accounting_correction_issue": 379,
+    "release_tag": "usdjpy-market-state-router-s3-economic-attribution-v1",
+    "archive_name": "usdjpy-s3-economic-attribution-30256893465.zip",
+    "archive_sha256": "40cdd1f8c6e7984e500a79ce430e697c3c33d31c6c4d8daa30e6ad6a5bb7062b"
+  },
+  "accounting_authority": {
+    "effective_account_currency": "USD",
+    "requested_test_currency_jpy_effective": false,
+    "controlled_integration_jpy_labels_superseded": true,
+    "unexplained_final_balance_residual_usd": {
+      "native_baseline": 0.0,
+      "native_candidate": 0.0,
+      "binding_baseline": 0.0,
+      "binding_candidate": 0.0
+    },
+    "swap_usd": 0.0,
+    "commission_usd": 0.0
+  },
+  "native_order_path": {
+    "binding": false,
+    "baseline_trades": 1898,
+    "candidate_trades": 1222,
+    "blocked": 676,
+    "baseline_net_account_usd": 317.0,
+    "candidate_net_account_usd": 496.78,
+    "net_delta_usd": 179.78,
+    "baseline_pf": 1.121774137785324,
+    "candidate_pf": 1.3113319880174972,
+    "baseline_closed_trade_mdd_usd": 296.11,
+    "candidate_closed_trade_mdd_usd": 195.06,
+    "gross_delta_jpy": 24983.0
+  },
+  "binding_reference_population": {
+    "binding": true,
+    "baseline_trades": 1882,
+    "candidate_trades": 1211,
+    "blocked": 671,
+    "baseline_net_account_usd": 294.56,
+    "candidate_net_account_usd": 467.24,
+    "net_delta_usd": 172.68,
+    "baseline_pf": 1.113795634537377,
+    "candidate_pf": 1.2943911690210064,
+    "baseline_closed_trade_mdd_usd": 296.11,
+    "candidate_closed_trade_mdd_usd": 195.06,
+    "gross_delta_jpy": 23878.0
+  },
+  "research_mt4_bridge": {
+    "research_counterfactual_delta_jpy": 22687.0,
+    "binding_mt4_gross_delta_jpy": 23878.0,
+    "difference_jpy": 1191.0,
+    "native_population": 1898,
+    "research_population": 1882,
+    "research_only_missing_native": 9,
+    "native_only_extra": 25,
+    "nonmatching_trade_ids": 34
+  },
+  "scientific_interpretation": {
+    "binding_permission_parity_remains_authority": true,
+    "economic_direction_supported_in_binding_mt4": true,
+    "native_order_path_direction_supported": true,
+    "closed_trade_mdd_improved": true,
+    "equity_snapshot_dd_is_primary": false,
+    "equity_snapshot_warning": "Snapshot peak timestamp is outside the 2023-2024 audit window and is retained as a diagnostic only.",
+    "candidate_definition_changed": false,
+    "parameter_change": false,
+    "2025_gate_authorized": false,
+    "production_authorized": false,
+    "live_orders_authorized": false
+  },
+  "core_canonical_receipt": "docs/research/market_state_router_s3_h4_aligned_mt4_economic_attribution_v1/final_receipt.json",
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_orders_authorized": false
+}
