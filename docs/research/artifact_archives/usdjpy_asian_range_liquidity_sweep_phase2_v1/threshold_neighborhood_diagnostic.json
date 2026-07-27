@@ -1,0 +1,17 @@
+[
+  {
+    "atlas_reference_net_jpy": 8708.00000000022,
+    "epsilon_pips": -0.1,
+    "events": 545
+  },
+  {
+    "atlas_reference_net_jpy": 8708.00000000022,
+    "epsilon_pips": 0.0,
+    "events": 545
+  },
+  {
+    "atlas_reference_net_jpy": 9733.00000000026,
+    "epsilon_pips": 0.1,
+    "events": 531
+  }
+]

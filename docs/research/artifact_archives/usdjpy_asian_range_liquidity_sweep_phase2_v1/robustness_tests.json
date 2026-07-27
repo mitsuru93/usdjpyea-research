@@ -1,0 +1,124 @@
+{
+  "best_day_removal": {
+    "remaining_net_jpy": 5963.000000000164,
+    "removed_day": "2023-02-03",
+    "removed_jpy": 1468.999999999994
+  },
+  "best_month_removal": {
+    "remaining_net_jpy": 5442.000000000235,
+    "removed_jpy": 1989.9999999999238,
+    "removed_month": "2024-09"
+  },
+  "entry_delay_15s": {
+    "average_trade_jpy": 15.601834862385138,
+    "gross_loss_jpy": 57935.00000000006,
+    "gross_profit_jpy": 66437.99999999997,
+    "mdd_jpy": 5790.000000000017,
+    "median_trade_jpy": 0.9999999999763531,
+    "months": 24,
+    "net_jpy": 8502.9999999999,
+    "net_pips": 850.2999999999901,
+    "pf": 1.1467679295762476,
+    "positive_folds": 4,
+    "positive_months": 18,
+    "recovery_factor": 1.4685664939550733,
+    "trades": 545,
+    "win_rate": 0.5009174311926605
+  },
+  "entry_delay_1s": {
+    "average_trade_jpy": 14.209174311926242,
+    "gross_loss_jpy": 58212.00000000016,
+    "gross_profit_jpy": 65955.99999999996,
+    "mdd_jpy": 6292.000000000088,
+    "median_trade_jpy": -2.0000000000095497,
+    "months": 24,
+    "net_jpy": 7743.999999999802,
+    "net_pips": 774.3999999999801,
+    "pf": 1.1330309901738433,
+    "positive_folds": 4,
+    "positive_months": 17,
+    "recovery_factor": 1.230769230769182,
+    "trades": 545,
+    "win_rate": 0.4935779816513762
+  },
+  "entry_delay_5s": {
+    "average_trade_jpy": 14.1431192660552,
+    "gross_loss_jpy": 57851.0,
+    "gross_profit_jpy": 65559.00000000009,
+    "mdd_jpy": 6751.999999999924,
+    "median_trade_jpy": 2.0000000000095497,
+    "months": 24,
+    "net_jpy": 7708.000000000084,
+    "net_pips": 770.8000000000084,
+    "pf": 1.1332388377037577,
+    "positive_folds": 4,
+    "positive_months": 17,
+    "recovery_factor": 1.1415876777251437,
+    "trades": 545,
+    "win_rate": 0.5045871559633027
+  },
+  "exit_delay_5s": {
+    "average_trade_jpy": 15.513761467890038,
+    "gross_loss_jpy": 58671.99999999996,
+    "gross_profit_jpy": 67127.00000000003,
+    "mdd_jpy": 6386.999999999999,
+    "median_trade_jpy": -1.999999999981128,
+    "months": 24,
+    "net_jpy": 8455.000000000071,
+    "net_pips": 845.5000000000069,
+    "pf": 1.1441062176165815,
+    "positive_folds": 4,
+    "positive_months": 18,
+    "recovery_factor": 1.3237826835760251,
+    "trades": 545,
+    "win_rate": 0.4954128440366973
+  },
+  "fold_bootstrap": {
+    "iterations": 10000,
+    "median_net_jpy": 7432.000000000158,
+    "p05_net_jpy": 4072.0000000005143,
+    "p95_net_jpy": 10791.999999999802,
+    "p_net_positive": 1.0
+  },
+  "spread_plus_0p5_pip": {
+    "net_jpy": 4707.000000000158,
+    "pf": 1.0781841738090516
+  },
+  "spread_plus_1p0_pip": {
+    "net_jpy": 1982.000000000159,
+    "pf": 1.032152880294602
+  },
+  "spread_plus_2p0_pip": {
+    "net_jpy": -3467.9999999998413,
+    "pf": 0.946317451472093
+  },
+  "top_1_event_removal": {
+    "net_jpy": 5963.00000000016,
+    "pf": 1.101411564625853
+  },
+  "top_3_event_removal": {
+    "net_jpy": 3272.0000000001673,
+    "pf": 1.055646258503404
+  },
+  "top_5_event_removal": {
+    "net_jpy": 1062.0000000001528,
+    "pf": 1.0180612244897984
+  },
+  "trade_bootstrap": {
+    "iterations": 5000,
+    "median_net_jpy": 7335.9999999999545,
+    "p05_net_jpy": -5250.299999999802,
+    "p95_net_jpy": 20116.40000000008,
+    "p_net_positive": 0.8306
+  },
+  "worst_day_removal": {
+    "remaining_net_jpy": 8909.000000000162,
+    "removed_day": "2023-07-21",
+    "removed_jpy": -1477.0000000000039
+  },
+  "worst_month_removal": {
+    "remaining_net_jpy": 10333.000000000196,
+    "removed_jpy": -2901.000000000039,
+    "removed_month": "2023-05"
+  }
+}

@@ -1,0 +1,134 @@
+name: USDJPY Asian Range Liquidity Sweep Phase 2 Evidence Repair v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_asian_range_liquidity_sweep_phase2_evidence_repair_v1.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_asian_range_liquidity_sweep_phase2_evidence_repair_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+  issues: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          fetch-depth: 0
+      - name: Download binding scientific output
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run download 30266063378 --repo "$GITHUB_REPOSITORY" --name usdjpy-asian-range-liquidity-sweep-phase2-v1-30266063378-1 --dir source_artifact
+          test -f source_artifact/phase2_output/final_decision.json
+          jq -e '.status=="NO_PORTABLE_CANDIDATE" and .atlas_reproduction.pass==true and .atlas_reproduction.identity_intersection==545 and .boundaries.protected_period_accessed==false and .boundaries.Core_changed==false and .boundaries.MT4_accessed==false' source_artifact/phase2_output/final_decision.json
+          (cd source_artifact/phase2_output && grep -v '  run.log$' PACKAGE_SHA256SUMS | sha256sum -c -)
+      - name: Rebuild deterministic evidence package
+        run: |
+          set -euo pipefail
+          rm -rf repaired_output
+          cp -a source_artifact/phase2_output repaired_output
+          rm -f repaired_output/PACKAGE_SHA256SUMS repaired_output/artifact_manifest.json
+          cat > repaired_output/evidence_repair_receipt.json <<'JSON'
+          {
+            "schema_version": "usdjpy_asian_range_liquidity_sweep_phase2_evidence_repair_receipt_v1",
+            "status": "TECHNICAL_PACKAGE_REPAIR_SCIENTIFIC_RESULT_UNCHANGED",
+            "source_run_id": 30266063378,
+            "source_artifact_id": 8653034729,
+            "source_artifact_digest": "sha256:f9558ba903c01c6f59df50424efe5c04bb423674e4c75247449a797d751c0c1f",
+            "source_head_sha": "403ea2282f9dae023b09ca722af00aa7f5940376",
+            "evaluator_sha256": "91bf81605075bf2ce30419f7f848bafc6a4e36d5d0f43bd0f6c1c8b6e1132b14",
+            "repair_scope": "Recompute package manifest and SHA256SUMS after tee completed run.log; no candidate, rule, gate, input, output value or decision changed.",
+            "scientific_decision": "NO_PORTABLE_CANDIDATE",
+            "protected_period_accessed": false,
+            "core_changed": false,
+            "mt4_accessed": false
+          }
+          JSON
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('repaired_output'); rows=[]
+          for p in sorted(root.iterdir()):
+            if p.is_file() and p.name not in ('PACKAGE_SHA256SUMS','artifact_manifest.json'):
+              rows.append({'path':p.name,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+          manifest={'schema_version':'usdjpy_asian_range_liquidity_sweep_phase2_manifest_v1','status':'CANONICAL_REPAIRED_PACKAGE','scientific_result_unchanged':True,'source_run_id':30266063378,'source_artifact_id':8653034729,'source_artifact_digest':'sha256:f9558ba903c01c6f59df50424efe5c04bb423674e4c75247449a797d751c0c1f','evaluator_sha256':'91bf81605075bf2ce30419f7f848bafc6a4e36d5d0f43bd0f6c1c8b6e1132b14','files':rows}
+          (root/'artifact_manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+          sums=rows+[{'path':'artifact_manifest.json','sha256':hashlib.sha256((root/'artifact_manifest.json').read_bytes()).hexdigest()}]
+          (root/'PACKAGE_SHA256SUMS').write_text(''.join(f"{r['sha256']}  {r['path']}\n" for r in sums))
+          PY
+          (cd repaired_output && sha256sum -c PACKAGE_SHA256SUMS)
+          zip -q -X -r "usdjpy-asian-range-liquidity-sweep-phase2-v1-r1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" repaired_output
+      - name: Commit canonical Research archive to PR branch
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          archive='docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1'
+          rm -rf "$archive"
+          mkdir -p "$archive"
+          cp -a repaired_output/. "$archive/"
+          git add "$archive"
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research: archive Asian Range Phase 2 rejection evidence'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+      - name: Upload canonical repaired artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-asian-range-liquidity-sweep-phase2-v1-r1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            repaired_output
+            usdjpy-asian-range-liquidity-sweep-phase2-v1-r1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0
+      - name: Publish immutable Release on main
+        if: github.event_name == 'push' && github.ref_name == 'main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag='usdjpy-asian-range-liquidity-sweep-phase2-v1'
+          ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1
+          gh release create "$tag" "usdjpy-asian-range-liquidity-sweep-phase2-v1-r1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" --target "$GITHUB_SHA" --title 'USDJPY Asian Range Liquidity Sweep Phase 2 v1' --notes 'HYP-030 fixed 2023H1-2024H2 Atlas reproduction and Raw Bid/Ask executable evaluation. Decision: NO_PORTABLE_CANDIDATE because additive B02/F05 portfolio MDD worsened by JPY61. Atlas 545/545 exact. No Core/MT4/2025 access. Package r1 repairs manifest timing only; scientific result unchanged.' --repo "$GITHUB_REPOSITORY"
+      - name: Publish immutable receipt Issue on main
+        if: github.event_name == 'push' && github.ref_name == 'main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          cat > receipt.md <<EOF
+          workflow: usdjpy_asian_range_liquidity_sweep_phase2_evidence_repair_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          head_sha: ${GITHUB_SHA}
+          status: NO_PORTABLE_CANDIDATE
+          hypothesis_id: USDJPY-HYP-030
+          source_scientific_run_id: 30266063378
+          source_artifact_id: 8653034729
+          source_artifact_digest: sha256:f9558ba903c01c6f59df50424efe5c04bb423674e4c75247449a797d751c0c1f
+          canonical_artifact_id: ${ARTIFACT_ID}
+          canonical_artifact_digest: ${ARTIFACT_DIGEST}
+          release_tag: usdjpy-asian-range-liquidity-sweep-phase2-v1
+          atlas_reproduction: 545/545
+          failed_gate: portfolio_mdd_nonworse
+          protected_period_accessed: false
+          MT4_accessed: false
+          Core_modified: false
+          production_authorized: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[asian-range-liquidity-sweep-phase2] ${GITHUB_RUN_ID} NO_PORTABLE_CANDIDATE" --body-file receipt.md

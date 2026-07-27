@@ -1,0 +1,39 @@
+{
+  "status": "NO_PORTABLE_CANDIDATE",
+  "atlas": {
+    "authority_events": 545,
+    "reproduced_events": 545,
+    "identity_intersection": 545,
+    "missing_from_reproduction": 0,
+    "extra_in_reproduction": 0,
+    "fold_mismatches": 0,
+    "signal_utc_mismatches": 0,
+    "entry_utc_mismatches": 0,
+    "exit_utc_mismatches": 0,
+    "side_mismatches": 0,
+    "entry_bid_max_abs_delta": 0.0,
+    "exit_bid_max_abs_delta": 0.0,
+    "net_pips_max_abs_delta": 2.842170943040401e-14,
+    "normalized_pl_jpy_max_abs_delta": 2.2737367544323206e-13,
+    "pass": true
+  },
+  "overall": {
+    "trades": 545,
+    "net_jpy": 7432.000000000158,
+    "net_pips": 743.2000000000158,
+    "pf": 1.1263945578231316,
+    "mdd_jpy": 6702.0000000000555,
+    "recovery_factor": 1.1089227096389283,
+    "win_rate": 0.48623853211009177,
+    "median_trade_jpy": -5.000000000023874,
+    "average_trade_jpy": 13.636697247706712,
+    "gross_profit_jpy": 66232.00000000019,
+    "gross_loss_jpy": 58800.000000000044,
+    "positive_months": 18,
+    "months": 24,
+    "positive_folds": 4
+  },
+  "failed_gates": [
+    "portfolio_mdd_nonworse"
+  ]
+}

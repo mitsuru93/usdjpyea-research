@@ -1,0 +1,132 @@
+{
+  "atlas_reproduction": {
+    "authority_events": 545,
+    "entry_bid_max_abs_delta": 0.0,
+    "entry_utc_mismatches": 0,
+    "exit_bid_max_abs_delta": 0.0,
+    "exit_utc_mismatches": 0,
+    "extra_in_reproduction": 0,
+    "fold_mismatches": 0,
+    "identity_intersection": 545,
+    "missing_from_reproduction": 0,
+    "net_pips_max_abs_delta": 2.842170943040401e-14,
+    "normalized_pl_jpy_max_abs_delta": 2.2737367544323206e-13,
+    "pass": true,
+    "reproduced_events": 545,
+    "side_mismatches": 0,
+    "signal_utc_mismatches": 0
+  },
+  "boundaries": {
+    "B02_F05_logic_changed": false,
+    "Core_changed": false,
+    "MT4_accessed": false,
+    "parameter_grid_search": false,
+    "production_authorized": false,
+    "protected_period_accessed": false
+  },
+  "candidate_freeze": {
+    "candidate_id": null,
+    "family_id": "S_ASIAN_RANGE_LIQUIDITY_SWEEP",
+    "hypothesis_id": "USDJPY-HYP-030",
+    "no_retuning_after_protected_period_access": true,
+    "production_authorized": false,
+    "rule": null,
+    "status": "NOT_CREATED_CANDIDATE_REJECTED"
+  },
+  "concurrency_margin_proxy": {
+    "lot_assumption": "COUNT_PROXY_ONLY_NO_ACCOUNT_MARGIN_AUTHORITY",
+    "max_absolute_directional_position_units": 8,
+    "max_concurrent_positions": 10
+  },
+  "data_integrity": {
+    "accepted_duplicate_bars": 0,
+    "accepted_incomplete_event_days": 0,
+    "post_0700_bars_in_asian_range": 0,
+    "raw_incomplete_event_days": 0,
+    "unresolved_events": 0
+  },
+  "family_id": "S_ASIAN_RANGE_LIQUIDITY_SWEEP",
+  "gates": {
+    "B02_F05_negative_day_contribution_positive": true,
+    "atlas_event_identity_complete": true,
+    "chronology_complete": true,
+    "combined_net_positive": true,
+    "entry_delay_15s_nonnegative": true,
+    "entry_delay_5s_positive": true,
+    "implementation_possible": true,
+    "lookahead_zero": true,
+    "minimum_fold_at_least_minus_1000_jpy": true,
+    "portfolio_mdd_nonworse": false,
+    "positive_folds_at_least_3": true,
+    "positive_months_at_least_14": true,
+    "realistic_pf_at_least_1p05": true,
+    "runtime_and_data_integrity_clean": true,
+    "side_breadth_each_pf_at_least_0p75": true,
+    "source_side_match_at_least_0p80": true,
+    "spread_plus_1pip_nonnegative": true,
+    "top5_removal_positive": true
+  },
+  "hypothesis_id": "USDJPY-HYP-030",
+  "overall": {
+    "average_trade_jpy": 13.636697247706712,
+    "gross_loss_jpy": 58800.000000000044,
+    "gross_profit_jpy": 66232.00000000019,
+    "mdd_jpy": 6702.0000000000555,
+    "median_trade_jpy": -5.000000000023874,
+    "months": 24,
+    "net_jpy": 7432.000000000158,
+    "net_pips": 743.2000000000158,
+    "pf": 1.1263945578231316,
+    "positive_folds": 4,
+    "positive_months": 18,
+    "recovery_factor": 1.1089227096389283,
+    "trades": 545,
+    "win_rate": 0.48623853211009177
+  },
+  "portfolio": {
+    "B02_F05_drawdown_days_net_jpy": 8799.000000000118,
+    "B02_F05_negative_days_net_jpy": 18055.000000000065,
+    "additive_portfolio_mdd_jpy": 40547.999999999956,
+    "additive_portfolio_net_jpy": 59059.00000000016,
+    "additive_portfolio_pf_daily": 1.229262744367324,
+    "baseline_mdd_jpy": 40487.0,
+    "baseline_net_jpy": 51627.0,
+    "baseline_pf_daily": 1.193878738945115,
+    "candidate_net_jpy": 7432.000000000158,
+    "daily_pl_correlation_B02": -0.2642032555548941,
+    "daily_pl_correlation_F05": -0.10041682348230956,
+    "loss_day_overlap": 116,
+    "mdd_improvement_jpy": -60.999999999956344,
+    "weak_market_coverage": 0.1621645980810035,
+    "winner_day_overlap": 47,
+    "worst_day": "2023-01-06",
+    "worst_day_jpy": -8169.000000000005,
+    "worst_month": "2023-03",
+    "worst_month_jpy": -10661.999999999967
+  },
+  "selected_candidate": null,
+  "source_portability": {
+    "by_year": [
+      {
+        "events": 280,
+        "net_jpy": 3559.0000000001396,
+        "raw_side_match_rate": 0.9285714285714286,
+        "resolved_rate": 1.0,
+        "year": 2023
+      },
+      {
+        "events": 265,
+        "net_jpy": 3873.00000000002,
+        "raw_side_match_rate": 1.0,
+        "resolved_rate": 1.0,
+        "year": 2024
+      }
+    ],
+    "raw_asian_range_high_abs_diff_pips_median": 0.0,
+    "raw_asian_range_low_abs_diff_pips_median": 0.0,
+    "raw_side_match_rate": 0.963302752293578,
+    "raw_side_matches": 525,
+    "raw_side_mismatches": 20
+  },
+  "status": "NO_PORTABLE_CANDIDATE"
+}

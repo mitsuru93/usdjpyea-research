@@ -1,0 +1,9 @@
+{
+  "candidate_id": null,
+  "family_id": "S_ASIAN_RANGE_LIQUIDITY_SWEEP",
+  "hypothesis_id": "USDJPY-HYP-030",
+  "no_retuning_after_protected_period_access": true,
+  "production_authorized": false,
+  "rule": null,
+  "status": "NOT_CREATED_CANDIDATE_REJECTED"
+}

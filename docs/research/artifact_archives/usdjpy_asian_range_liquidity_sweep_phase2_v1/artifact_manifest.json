@@ -1,0 +1,131 @@
+{
+  "evaluator_sha256": "91bf81605075bf2ce30419f7f848bafc6a4e36d5d0f43bd0f6c1c8b6e1132b14",
+  "files": [
+    {
+      "bytes": 61196,
+      "path": "asian_range_daily_ledger.csv",
+      "sha256": "5b8288525a9d3143f6f2fe7836aece8983295c643da57aab1450afea4a13b473"
+    },
+    {
+      "bytes": 64013,
+      "path": "atlas_identity_delta_ledger.csv",
+      "sha256": "ea98d985f8dc33aba39e07dbcb63f8b5ca7d1a123ef6945526f8255673f48bb3"
+    },
+    {
+      "bytes": 159082,
+      "path": "atlas_reproduced_opportunity_ledger.csv",
+      "sha256": "3f07265361d754677ac8084d889acf2a39ff4519323893bd8197e7f7380d9d9f"
+    },
+    {
+      "bytes": 261,
+      "path": "candidate_freeze_contract.json",
+      "sha256": "4d311fa67a9bd430cf242f2b7b0745850c0c291f67344257e32f44de577780ee"
+    },
+    {
+      "bytes": 801,
+      "path": "complementarity_report.json",
+      "sha256": "05c05bfbb41286af306eb5aec63f46acb64ee1c7cb225a9f5975187e3faa3aa0"
+    },
+    {
+      "bytes": 721,
+      "path": "data_source_inventory.json",
+      "sha256": "fde907abec7eb1babc141d87ee6b12d634d3e442ec3695ee8a19afc74cf88f02"
+    },
+    {
+      "bytes": 786,
+      "path": "evidence_repair_receipt.json",
+      "sha256": "a4ff0611b241766ab3f53bfd1e823b7041067954de5879d106028201892fe34f"
+    },
+    {
+      "bytes": 476573,
+      "path": "executable_trade_ledger.csv",
+      "sha256": "3264c12912b91e2c5bf28be5df705a18efaa2d6a63e428e78235ce0225afbc3f"
+    },
+    {
+      "bytes": 4331,
+      "path": "final_decision.json",
+      "sha256": "90fd761de07c15b7717f160fcbcfa1026f344b1dbd35dc81d0bdc53287d5b2ec"
+    },
+    {
+      "bytes": 827,
+      "path": "fold_metrics.csv",
+      "sha256": "69adb641ebb72ddc38f912816c85f657bc6fa22730be652eceec69d8563670a3"
+    },
+    {
+      "bytes": 530,
+      "path": "human_report.md",
+      "sha256": "6512fd8af1e618e9a667ebb359bb318bf023326a2509e9895b46f0137c05e564"
+    },
+    {
+      "bytes": 4336,
+      "path": "month_metrics.csv",
+      "sha256": "8e60fe7bc3290acde13e8c375397c9131a87e16999cd4a5bc45e8efbd25e3c2d"
+    },
+    {
+      "bytes": 476573,
+      "path": "opportunity_event_ledger.csv",
+      "sha256": "3264c12912b91e2c5bf28be5df705a18efaa2d6a63e428e78235ce0225afbc3f"
+    },
+    {
+      "bytes": 145,
+      "path": "rejected_candidate_ledger.json",
+      "sha256": "42a27450881cf92232d78a47ac842b7d54bcecf132c159959742999961588102"
+    },
+    {
+      "bytes": 89,
+      "path": "reproduction_commands.txt",
+      "sha256": "b4cc9303c9bc8cbdf47f302a94a94cfcc100b066c7d312f790137c498ec43ba0"
+    },
+    {
+      "bytes": 3536,
+      "path": "robustness_tests.json",
+      "sha256": "873cf074ec179a6dd4adb5e89286dd16d407d1713eb12ff0a8a2643aafc398d6"
+    },
+    {
+      "bytes": 1118,
+      "path": "run.log",
+      "sha256": "6605dd6e5284c8291fa94321af2979e1ddb5656b6b41be27c84ba957ac1b7e4b"
+    },
+    {
+      "bytes": 643,
+      "path": "session_metrics.csv",
+      "sha256": "86cf3502bfb54eeab30674fe7a2f3ed4a0bb8ae706642d744ffa4eed917bdb41"
+    },
+    {
+      "bytes": 476,
+      "path": "side_metrics.csv",
+      "sha256": "2a9fab083a0af55ae91cc3e50e6188c57ecdf9edefe68683c770fc5f9b646c12"
+    },
+    {
+      "bytes": 542,
+      "path": "source_portability_report.json",
+      "sha256": "86eb568db2698177962dfeb8c55290593483382098b494fee7aa648d8ed33508"
+    },
+    {
+      "bytes": 452,
+      "path": "standalone_metrics.json",
+      "sha256": "b4a799200bdcd7e753b96bbe57bab9962cf0087a9c3fafaf13fefc37296e8f6a"
+    },
+    {
+      "bytes": 307,
+      "path": "threshold_neighborhood_diagnostic.json",
+      "sha256": "595cb572541dec7da8c9a23539b9f270f8e212fcbdcbc3c6551a926dc72a670d"
+    },
+    {
+      "bytes": 4373,
+      "path": "usdjpy_asian_range_liquidity_sweep_phase2_prereg_v1.json",
+      "sha256": "56b5f46520948dd3a9192ee9d6391e34fa8bd55a5caff046d68a4504333b7853"
+    },
+    {
+      "bytes": 1025,
+      "path": "weekday_metrics.csv",
+      "sha256": "79e00a6e84d75cba8901d7daf66a1a660a937af225d7af120d66508ea13d2e7f"
+    }
+  ],
+  "schema_version": "usdjpy_asian_range_liquidity_sweep_phase2_manifest_v1",
+  "scientific_result_unchanged": true,
+  "source_artifact_digest": "sha256:f9558ba903c01c6f59df50424efe5c04bb423674e4c75247449a797d751c0c1f",
+  "source_artifact_id": 8653034729,
+  "source_run_id": 30266063378,
+  "status": "CANONICAL_REPAIRED_PACKAGE"
+}
