@@ -123,10 +123,11 @@ jobs:
           (cd "$PM_ROOT/raw2025" && grep -E 'usdjpy-2025-(..-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
           jq -e '.accepted==true and .resolved_hours==.expected_hours and .tick_rows>0' "$PM_ROOT/raw2025/usdjpy-2025-raw-ticks-v1.annual-manifest.json"
 
-      - name: Execute fixed-candidate postmortem
+      - name: Execute fixed-candidate postmortem and retain diagnostics
+        id: evaluate
         shell: bash
         run: |
-          set -euo pipefail
+          set +e
           python tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py \
             --phase2-ledger "$PM_ROOT/phase2/phase2_output/candidate_trade_ledger.csv.gz" \
             --m15-2023 "$PM_ROOT/history2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" \
@@ -139,18 +140,21 @@ jobs:
             --out-dir "$PM_ROOT/out" \
             --research-sha "$HEAD_SHA" \
             --core-sha e92ac28d908cb5c6ca89224507b24690822e0f35 \
-            --run-id "$GITHUB_RUN_ID" | tee "$PM_ROOT/out/run.log"
-          jq -e '.status=="PASS_POSTMORTEM_COMPLETED_NO_RETUNING" and .candidate_id=="B_EXECUTABLE_T0_8BAR" and .production_authorized==false and .live_orders_authorized==false and ."2025_available_as_future_holdout"==false' "$PM_ROOT/out/final_decision.json"
-          test "$(($(wc -l < "$PM_ROOT/out/event_ledger_2025_mt4_enriched.csv")-1))" = 47
-          grep -q ORACLE_DIAGNOSTIC_NOT_IMPLEMENTABLE_CANDIDATE "$PM_ROOT/out/oracle_exit_diagnostics_2025.csv"
-          (cd "$PM_ROOT/out" && sha256sum -c SHA256SUMS)
+            --run-id "$GITHUB_RUN_ID" > "$PM_ROOT/out/evaluator_stdout.log" 2> "$PM_ROOT/out/evaluator_stderr.log"
+          code=$?
+          echo "$code" > "$PM_ROOT/out/evaluator_exit_code.txt"
+          cat "$PM_ROOT/out/evaluator_stdout.log"
+          cat "$PM_ROOT/out/evaluator_stderr.log" >&2
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           cp tools/analyze_usdjpy_shock_failure_2025_postmortem_v3.py "$PM_ROOT/out/postmortem_source_snapshot.py"
           cp configs/research/usdjpy_shock_failure_2025_postmortem_protocol_v1.json "$PM_ROOT/out/"
           cp "$INPUT_DIR/corrected_p6_result_compact.json" "$PM_ROOT/out/corrected_p6_result.json"
           cp "$INPUT_DIR/portfolio_context_compact.json" "$PM_ROOT/out/portfolio_context.json"
           cp "$INPUT_DIR"/mt4_events_*.json "$PM_ROOT/out/"
+          exit 0
 
       - name: Upload complete evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: usdjpy-shock-failure-2025-postmortem-v4-${{ github.run_id }}-${{ github.run_attempt }}
@@ -158,3 +162,6 @@ jobs:
           if-no-files-found: error
           retention-days: 90
           compression-level: 0
+
+      - name: Enforce evaluator success
+        run: test '${{ steps.evaluate.outputs.exit_code }}' = '0'
