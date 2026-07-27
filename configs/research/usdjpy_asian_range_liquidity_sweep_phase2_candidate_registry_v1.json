@@ -1,0 +1,53 @@
+{
+  "schema_version": "usdjpy_asian_range_liquidity_sweep_phase2_candidate_registry_v1",
+  "status": "COMPLETE_NO_PORTABLE_CANDIDATE",
+  "hypothesis_id": "USDJPY-HYP-030",
+  "family_id": "S_ASIAN_RANGE_LIQUIDITY_SWEEP",
+  "atlas_reference_variant": "F_ASIAN_RANGE_SWEEP",
+  "tested_candidate_ids": ["A_EXACT_EXECUTABLE_12BAR"],
+  "selected_candidate_id": null,
+  "candidate_freeze_created": false,
+  "tested_candidate": {
+    "candidate_id": "A_EXACT_EXECUTABLE_12BAR",
+    "mechanism": "Completed M15 sweep of the fixed 00:00-07:00 UTC Asian High or Low followed by a close back inside; trade opposite the sweep at the first executable Bid/Ask tick after signal completion and exit at the first executable tick at the frozen 12-bar boundary.",
+    "development_periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "atlas_identity": "545_of_545_exact",
+    "executable_trades": 545,
+    "net_jpy": 7432.0,
+    "profit_factor": 1.1263945578231316,
+    "mdd_jpy": 6702.0,
+    "positive_folds": 4,
+    "positive_months": 18,
+    "failed_gates": ["portfolio_mdd_nonworse"]
+  },
+  "portfolio_gate": {
+    "baseline_mdd_jpy": 40487.0,
+    "additive_portfolio_mdd_jpy": 40548.0,
+    "mdd_improvement_jpy": -61.0,
+    "decision": "FAIL_PORTFOLIO_MDD_NONWORSE"
+  },
+  "authorization": {
+    "Research_portable_candidate": false,
+    "Core_formula_parity": false,
+    "Core_raw_tick_parity": false,
+    "MT4_standalone": false,
+    "MT4_integrated": false,
+    "external_2025_gate": false,
+    "production": false
+  },
+  "protected_period_access": {
+    "2025H1": false,
+    "2025H2": false,
+    "combined_2025": false
+  },
+  "evidence": {
+    "pr": 332,
+    "scientific_run_id": 30266063378,
+    "scientific_artifact_id": 8653034729,
+    "scientific_artifact_digest": "sha256:f9558ba903c01c6f59df50424efe5c04bb423674e4c75247449a797d751c0c1f",
+    "archive": "docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1",
+    "result": "docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/final_decision.json",
+    "human_report": "docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/human_report.md"
+  },
+  "next_action": "Do not implement, retune, run MT4, or access 2025 for this candidate. Close HYP-030 as NO_PORTABLE_CANDIDATE and return CSOS prioritization to the next independently preregistered family."
+}
