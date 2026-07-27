@@ -1,0 +1,116 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v23",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v22.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-028",
+      "family_ids": [
+        "S_SHOCK_FAILURE_REGIME_DISCRIMINATION"
+      ],
+      "candidate_ids": [
+        "RD_LOGIT_10F_V1",
+        "RD_TREE_D2_V1",
+        "RD_RANK6_V1"
+      ],
+      "origin_analysis": "The 2025 External-Gate Failure Postmortem showed that the rejected fixed Shock Failure candidate mixed a major loss class, F_CONTINUATION_RESUMPTION, with a profitable H_SUSTAINED_REVERSAL class. The user authorized a new independent hypothesis to test whether those paths could be distinguished using information available no later than the original entry decision boundary, without retuning B_EXECUTABLE_T0_8BAR or using 2025 for selection.",
+      "causal_hypothesis": "The strength and duration of the original shock, the quality of the completed failure, residual continuation pressure and completed higher-timeframe trend state may contain a portable pre-entry distinction between continuation resumption and sustained reversal.",
+      "target_failure_mode": [
+        "Shock Failure continuation resumption after failure confirmation",
+        "winner damage from suppressing genuine sustained reversals",
+        "fold-unstable entry permission filters",
+        "lookahead contamination from lifecycle outcomes"
+      ],
+      "pre_result_predictions": [
+        "Continuation-resumption losses and sustained-reversal profits will be present in the 2023H1-2024H2 development population under the same lifecycle definitions.",
+        "At least one small, explicit model may reject a material share of continuation-resumption loss while retaining at least 70% of sustained-reversal profit.",
+        "A portable candidate must show nonnegative net benefit in at least three of four folds and cannot rely on one side, one session or one event.",
+        "If OOF discrimination remains near chance or winner damage exceeds loser benefit, the correct decision is NO_PORTABLE_CANDIDATE."
+      ],
+      "tests": [
+        {
+          "type": "four-fold Raw Tick lifecycle reconstruction, timestamp audit, univariate separation, nested LOFO model selection, stress and concentration study",
+          "period": "2023H1_2023H2_2024H1_2024H2",
+          "run_id": 30258797448,
+          "artifact_id": 8650040013,
+          "result": {
+            "events": 114,
+            "continuation_resumption_events": 37,
+            "continuation_resumption_net_jpy": -8171.0,
+            "sustained_reversal_events": 45,
+            "sustained_reversal_net_jpy": 19917.0,
+            "most_informative_feature": "shock_duration_bars",
+            "most_informative_feature_auc": 0.6345345345345346,
+            "best_diagnostic_model": "RD_TREE_D2_V1",
+            "best_diagnostic_oof_auc": 0.5153153153153153,
+            "best_diagnostic_net_benefit_jpy": -1981.0,
+            "best_diagnostic_nonnegative_folds": 2,
+            "best_diagnostic_sustained_reversal_profit_retention": 0.6793,
+            "best_diagnostic_continuation_resumption_loss_rejection": 0.4881,
+            "final_decision": "NO_PORTABLE_CANDIDATE"
+          }
+        }
+      ],
+      "decision": "Close the frozen USDJPY-HYP-028 candidate catalog with NO_PORTABLE_CANDIDATE. The development lifecycle mechanism is real and is also visible in the consumed 2025 comparison, but the tested entry-time summaries cannot discriminate it portably. Do not implement any tested score in Core, do not run MT4 economics, and do not call 2025 a holdout.",
+      "status": "COMPLETE_NO_PORTABLE_CANDIDATE",
+      "retained_findings": [
+        "The lifecycle reconstruction reproduced 114 opportunities with zero lookahead violations; three differences from the preserved historical approximation were recorded separately rather than overwritten.",
+        "F_CONTINUATION_RESUMPTION was negative in every development fold and totaled 37 events / -8171 JPY, while H_SUSTAINED_REVERSAL totaled 45 events / +19917 JPY.",
+        "The weak 2023H2 fold had the same central mechanism later seen in 2025: 15 continuation-resumption events / -2866 JPY versus 10 sustained reversals / +2168 JPY.",
+        "The only material univariate association was shock duration: H median two bars versus F median one bar, AUC 0.635, permutation p 0.024, with consistent direction across folds.",
+        "Tick imbalance, acceleration, retracement, failure body, failure close relative to shock origin and H1/H4 slopes were weak or near chance as standalone separators.",
+        "All three frozen models reduced continuation-resumption losses but removed more sustained-reversal winner profit, creating negative net benefit and poor fold breadth.",
+        "The best diagnostic tree retained only 67.93% of sustained-reversal profit, rejected 48.81% of continuation-resumption loss, had OOF AUC 0.515 and nonnegative benefit in only two folds.",
+        "2025H1/H2 were physically unavailable to the selection evaluator and were downloaded only after final_decision.json existed; the post-selection comparison contained exactly 47 consumed 2025 events."
+      ],
+      "falsified_or_unsupported_claims": [
+        "The tested finite catalog of simple pre-entry impulse, failure-quality, tick-pressure and higher-timeframe features can produce a portable Shock Failure permission filter.",
+        "Higher-timeframe EMA alignment alone materially separates continuation resumption from sustained reversal in this family.",
+        "Failure-window tick imbalance or acceleration provides stable classification across the four development folds.",
+        "A shallow tree's pooled profit factor improvement is evidence of portable economic improvement.",
+        "Removing approximately half of continuation-resumption losses necessarily improves the fixed candidate once sustained-reversal winner damage is counted."
+      ],
+      "prohibited_reuse": [
+        "Do not convert the all-development RD_TREE_D2_V1 split into a candidate rule; it is diagnostic only and its LOFO split stability was 0.25.",
+        "Do not tune nearby thresholds, feature subsets or score weights from these outcomes without a materially new preregistration.",
+        "Do not use 2025 Short, London, month or event results to define a replacement rule.",
+        "Do not mix Profit Then Giveback exit optimization into this closed entry-discrimination hypothesis.",
+        "Do not implement in Core, run MT4 economics, authorize production, or reserve an external gate because no candidate was frozen.",
+        "Do not treat 2025H1/H2 as clean holdout evidence for any successor candidate."
+      ],
+      "successor_questions": [
+        "Can a materially different ordered state-transition representation, rather than another threshold combination of summary features, identify genuine reversal establishment before entry?",
+        "Can a future independent hypothesis use native event sequences, market-state transitions or causal event context while preserving a strict timestamp contract and without reusing 2025 for selection?",
+        "Which completely unused 2026-or-later period can be reserved only after a successor candidate is preregistered and frozen before any access?"
+      ],
+      "evidence_refs": [
+        {
+          "repository": "mitsuru93/usdjpyea-research",
+          "path": "configs/research/usdjpy_shock_failure_regime_discriminator_prereg_v1.json"
+        },
+        {
+          "repository": "mitsuru93/usdjpyea-research",
+          "path": "configs/research/usdjpy_shock_failure_regime_discriminator_result_v1.json"
+        },
+        {
+          "repository": "mitsuru93/usdjpyea-research",
+          "path": "docs/research/USDJPY_SHOCK_FAILURE_REGIME_DISCRIMINATOR_RESULT_V1.md"
+        },
+        {
+          "repository": "mitsuru93/usdjpyea-research",
+          "pr": 323,
+          "run_id": 30258797448,
+          "artifact_id": 8650040013,
+          "artifact_digest": "sha256:25be1e2b42f5f95870c8f0d3d24591f422e5b66cada601744c3ef691323e81ff",
+          "artifact_created_at": "2026-07-27T10:39:18Z"
+        },
+        {
+          "repository": "mitsuru93/usdjpyea-research",
+          "release_tag": "usdjpy-shock-failure-regime-discriminator-v1"
+        }
+      ]
+    }
+  ]
+}
