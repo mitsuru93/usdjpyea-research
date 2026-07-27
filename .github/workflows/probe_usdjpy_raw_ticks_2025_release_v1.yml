@@ -1,0 +1,34 @@
+name: Probe USDJPY Raw Ticks 2025 Release v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/probe_usdjpy_raw_ticks_2025_release_v1.yml
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inventory immutable release assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release view usdjpy-raw-ticks-2025-v1 --repo "$GITHUB_REPOSITORY" --json tagName,targetCommitish,assets > "$RUNNER_TEMP/release.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ['RUNNER_TEMP'])/'release.json';x=json.loads(p.read_text())
+          rows=[]
+          for a in x['assets']:
+              rows.append(f"| `{a['name']}` | {a.get('size',0)} | {a.get('digest','')} |")
+          body='<!-- usdjpy-raw-ticks-2025-release-probe-v1 -->\n## Raw Tick Release inventory\n\n| Asset | Bytes | Digest |\n|---|---:|---|\n'+'\n'.join(rows)+f"\n\nTotal bytes: `{sum(a.get('size',0) for a in x['assets'])}`\n"
+          (Path(os.environ['RUNNER_TEMP'])/'comment.md').write_text(body)
+          PY
+          gh pr comment "${{ github.event.pull_request.number }}" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/comment.md"
