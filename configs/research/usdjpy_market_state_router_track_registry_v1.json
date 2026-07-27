@@ -1,0 +1,58 @@
+{
+  "schema_version": "usdjpy_market_state_router_track_registry_v1",
+  "status": "S3_2025H1_ONE_SHOT_PREREGISTERED_AWAITING_CORE_PREFLIGHT",
+  "track_type": "PARALLEL_INDEPENDENT_BINDING_VALIDATION",
+  "global_registry": {
+    "path": "configs/research/usdjpy_research_candidate_registry_v48.json",
+    "schema_version": "usdjpy_research_candidate_registry_v48",
+    "status": "USDJPY_HYP027_PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE",
+    "active_hypothesis": "USDJPY-HYP-027",
+    "current_candidate": "SESSION_LOSS_CAP_2",
+    "preserved_unchanged": true,
+    "S3_does_not_authorize_HYP027_MT4_or_2025": true
+  },
+  "track": {
+    "hypothesis_id": "USDJPY-HYP-029",
+    "family_id": "T_MARKET_STATE_STRATEGY_ROUTING",
+    "lineage_id": "IMPACT_ATLAS_MARKET_STATE_ROUTER_S3_V1",
+    "candidate_id": "S3_H4_ALIGNED",
+    "candidate_definition_frozen": true,
+    "candidate_selection_complete": true,
+    "research_portability": "PASS",
+    "exact_implementation_contract": "PASS",
+    "research_to_core_state_parity": "PASS_ZERO_MISMATCH",
+    "reference_trade_permission_parity": "PASS_ZERO_MISMATCH",
+    "controlled_order_path_integration": "PASS",
+    "economic_attribution": "PASS",
+    "bounded_native_full_equity_DD": "PASS",
+    "pre2025_gate_matrix": "PASS_ALL",
+    "current_stage": "2025H1_OUTCOME_FREE_PREREGISTRATION",
+    "current_candidate_specific_2025H1_accessed": false,
+    "current_candidate_specific_2025H2_accessed": false
+  },
+  "authorities": {
+    "phase1_pr": 286,
+    "phase2_pr": 293,
+    "candidate_freeze_pr": 297,
+    "exact_contract_pr": 316,
+    "pre2025_final_audit": "configs/research/usdjpy_market_state_router_pre2025_final_audit_v1.json",
+    "economic_receipt": "configs/research/usdjpy_market_state_router_s3_mt4_economic_attribution_receipt_v1.json",
+    "dd_reconciliation_result": "configs/research/usdjpy_market_state_router_native_equity_dd_reconciliation_result_v1.json",
+    "2025H1_protocol": "configs/research/usdjpy_market_state_router_2025h1_one_shot_gate_protocol_v1.json",
+    "startup_receipt": "configs/research/usdjpy_market_state_router_2025h1_startup_read_receipt_v1.json",
+    "period_access_receipt": "configs/research/usdjpy_market_state_router_period_access_receipt_v1.json"
+  },
+  "run_authorization_after_protocol_merge": {
+    "core_preflight_without_candidate_2025H1_economics": true,
+    "single_unchanged_2025H1_Rakuten_MT4_binding_run": true,
+    "additional_2025H1_candidate_runs": false,
+    "2025H2": false,
+    "candidate_retuning": false,
+    "strategy_side_session_period_exception": false,
+    "production": false,
+    "live_orders": false
+  },
+  "binding_failure_action": "CLOSE_S3_H4_ALIGNED_FAIL_2025H1_AND_KEEP_2025H2_LOCKED",
+  "binding_pass_action": "ATOMIC_RESEARCH_RESULT_UPDATE_THEN_SEPARATE_UNCHANGED_2025H2_AUTHORIZATION_DECISION",
+  "exact_next_action": "Merge the outcome-free 2025H1 protocol, implement and pass the non-candidate Core workflow preflight, and execute one unchanged Baseline-versus-S3 Rakuten MT4 2025H1 binding run."
+}

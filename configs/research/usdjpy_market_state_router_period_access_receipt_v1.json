@@ -1,0 +1,57 @@
+{
+  "schema_version": "usdjpy_market_state_router_period_access_receipt_v1",
+  "status": "AUTHORIZE_ONE_UNCHANGED_2025H1_BINDING_RUN_AFTER_PROTOCOL_MERGE_AND_PREFLIGHT",
+  "hypothesis_id": "USDJPY-HYP-029",
+  "candidate_id": "S3_H4_ALIGNED",
+  "research_base_sha": "73559a5036104677ec8020d3246d6eed8496762b",
+  "development_and_falsification_access": {
+    "2023H1": "ACCESSED_COMPLETE",
+    "2023H2": "ACCESSED_COMPLETE",
+    "2024H1": "ACCESSED_COMPLETE",
+    "2024H2": "ACCESSED_COMPLETE"
+  },
+  "protected_periods": {
+    "2025H1": {
+      "candidate_specific_accessed_at_receipt_creation": false,
+      "authorization_effective_only_after_research_protocol_merge": true,
+      "preflight_required_before_binding_run": true,
+      "authorized_execution_count": 1,
+      "execution": "Rakuten MT4 Strategy Tester",
+      "candidate_change": false,
+      "gate_change": false,
+      "known_baseline_inventory_may_define_gate": true,
+      "known_closed_candidate_outcomes_may_select_or_repair_S3": false
+    },
+    "2025H2": {
+      "accessed": false,
+      "authorized": false,
+      "unlock_condition": "UNCHANGED_S3_2025H1_PASS_ALL_BINDING_GATES_AND_ATOMIC_RESEARCH_CLOSURE_MERGED",
+      "automatic_dispatch": false
+    }
+  },
+  "technical_failure_boundary": {
+    "technical_run_may_be_repeated": true,
+    "condition": "No candidate economic result was produced or read and the failure is limited to workflow, compile, data identity, audit, parity, accounting, receipt or archive mechanics.",
+    "scientific_failure_may_be_repeated": false,
+    "candidate_specific_result_guided_workflow_change": false
+  },
+  "global_state_invariance": {
+    "global_registry_path": "configs/research/usdjpy_research_candidate_registry_v48.json",
+    "global_active_hypothesis": "USDJPY-HYP-027",
+    "global_current_candidate": "SESSION_LOSS_CAP_2",
+    "global_state_changed_by_this_receipt": false,
+    "HYP027_2025_access_authorized": false
+  },
+  "prohibited": [
+    "EMA span change",
+    "neutral-state permission change",
+    "strategy, side, session or date exception",
+    "B02/F05 signal, Exit, SL or TP change",
+    "Python-only candidate substitute",
+    "gate relaxation after outcome",
+    "second scientific 2025H1 exposure",
+    "candidate-specific 2025H2 access before H1 PASS",
+    "production or live orders"
+  ],
+  "next_action": "After merge, perform Core preflight without candidate-specific 2025H1 economics, then execute the one authorized unchanged 2025H1 binding comparison."
+}

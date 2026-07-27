@@ -1,0 +1,76 @@
+{
+  "schema_version": "usdjpy_market_state_router_2025h1_startup_read_receipt_v1",
+  "status": "PASS_M0_M1_M2_MEMORY_AND_LINEAGE_RECONCILIATION",
+  "research_main_commit": "73559a5036104677ec8020d3246d6eed8496762b",
+  "read_at_utc": "2026-07-27",
+  "mandatory_files_read": [
+    {"ordinal":1,"path":"AGENTS.md","blob":"2d4ad6"},
+    {"ordinal":2,"path":"configs/research/usdjpy_research_memory_manifest_v1.json","blob":"fbc9dc9529722c855b4705d8966c425b3ef97e73"},
+    {"ordinal":3,"path":"configs/research/usdjpy_research_candidate_registry_v48.json","blob":"0a5354e7e006be26dda2feb336d0dc32e27c4233"},
+    {"ordinal":4,"path":"docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md","blob":"70da18"},
+    {"ordinal":5,"path":"configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json","blob":"73f718"},
+    {"ordinal":6,"path":"docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE1_RESULT_V1.md","blob":"b561ce"},
+    {"ordinal":7,"path":"configs/research/usdjpy_portfolio_loss_cluster_phase1_execution_receipt_v1.json","blob":"504357"},
+    {"ordinal":8,"path":"configs/research/usdjpy_portfolio_loss_cluster_phase1_candidate_registry_v1.json","blob":"9c83fc"},
+    {"ordinal":9,"path":"configs/research/usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1.json","blob":"09ca4d"},
+    {"ordinal":10,"path":"configs/research/usdjpy_portfolio_loss_cluster_phase1_output_manifest_v1.json","blob":"9a8367"},
+    {"ordinal":11,"path":"configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.json","blob":"1e7810"},
+    {"ordinal":12,"path":"docs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.md","blob":"1f7bfd"},
+    {"ordinal":13,"path":"configs/research/usdjpy_hyp026_mtf_technical_exact_evaluation_receipt_v1.json","blob":"0b59a3"},
+    {"ordinal":14,"path":"configs/research/usdjpy_b02_f05_mtf_technical_fixed_ledger_counterfactual_v1.csv","blob":"b57b75"},
+    {"ordinal":15,"path":"configs/research/usdjpy_b02_f05_mtf_technical_robustness_result_v1.json","blob":"bac5db1f69f3427e4ab6d6b688530d5deda71c52"},
+    {"ordinal":16,"path":"configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_prereg_v1.json","blob":"487532f442b911a15cba268897a8c5689636b7f3"},
+    {"ordinal":17,"path":"configs/research/usdjpy_hyp026_period_access_receipt_v1.json","blob":"4b3627475e304c77b045e50e2b8dc3d63dd86a4d"},
+    {"ordinal":18,"path":"configs/research/usdjpy_2023_2024_hypothesis_program_v12.json","blob":"eea88519b626397c2f55fceb7667d69e1f049f22"},
+    {"ordinal":19,"path":"configs/research/usdjpy_period_role_policy_v5.json","blob":"a0f6d2aec3ed15aaec96df4b40babc351f43b3cd"},
+    {"ordinal":20,"path":"configs/research/usdjpy_validation_operating_contract_v4.json","blob":"ee221e451c086dc51ec36ec7a642607d2335a816"},
+    {"ordinal":21,"path":"configs/research/usdjpy_hypothesis_ledger_v1.json","blob":"33ea2b5baa9aea6f3ce97ff2a91d824058abd360"},
+    {"ordinal":22,"path":"configs/research/usdjpy_hypothesis_ledger_addendum_v22.json","blob":"69b981a4f6b4e60f50b46d76e65bd0e24cc6e39e"},
+    {"ordinal":23,"path":"configs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.json","blob":"6cddcaf8d14f21ff4a53579e77f604eaaa5c492b"},
+    {"ordinal":24,"path":"configs/research/usdjpy_2025h1_result_inventory_v1.json","blob":"0ee9900e6c11399326c137490f7078683a55eb4b"}
+  ],
+  "additional_s3_authorities_read": [
+    {"path":"configs/research/usdjpy_market_state_strategy_routing_phase2_result_v1.json","blob":"b1f48c62b5ee198be8ca9a4c2a1f3fb14a533b62"},
+    {"path":"configs/research/usdjpy_market_state_router_exact_implementation_contract_v1.json","blob":"e8abb7b43da6af16739011d1a78ac52843d82911"},
+    {"path":"configs/research/usdjpy_market_state_router_pre2025_final_audit_v1.json","blob":"5ebef9251c7eb051941c5d1bd8c71f8598ca9264"},
+    {"path":"configs/research/usdjpy_market_state_router_s3_mt4_economic_attribution_receipt_v1.json","research_main_commit":"78d7e52f5ee315b28bc9536e1ad8504f9eddd9cf"},
+    {"path":"docs/research/usdjpy_market_state_router_s3_mt4_economic_attribution_v1.md","research_main_commit":"73559a5036104677ec8020d3246d6eed8496762b"},
+    {"path":"configs/research/usdjpy_validation_operating_contract_v3.json","blob":"c9c2c16b3ab1cff99902078bceaf87b223bb58f6"},
+    {"repository":"mitsuru93/usdjpyea-core","path":"tools/build_usdjpy_market_state_router_s3_v1.py","blob":"0e22b0f3c40811b809fb6334fcd2a5b326d2707c"},
+    {"path":"configs/research/usdjpy_hypothesis_ledger_addendum_v23.json","blob":"4fa7d6f20804f0ff9060da0c1fb7838ebd1ec4e8","reason":"confirm USDJPY-HYP-028 already belongs to Shock Failure Regime Discriminator"}
+  ],
+  "current_global_registry": {
+    "schema_version":"usdjpy_research_candidate_registry_v48",
+    "status":"USDJPY_HYP027_PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE",
+    "active_hypothesis":"USDJPY-HYP-027",
+    "current_candidate":"SESSION_LOSS_CAP_2",
+    "exact_next_action":"Create and merge an outcome-free Phase 2 confirmation protocol for the unchanged SESSION_LOSS_CAP_2 rule on 2023H1, 2023H2, 2024H1 and 2024H2. No MT4 or 2025 access is authorized.",
+    "preserved_unchanged":true
+  },
+  "declared_parallel_lineage": {
+    "hypothesis_id":"USDJPY-HYP-029",
+    "family_id":"T_MARKET_STATE_STRATEGY_ROUTING",
+    "lineage_id":"IMPACT_ATLAS_MARKET_STATE_ROUTER_S3_V1",
+    "candidate_id":"S3_H4_ALIGNED",
+    "relationship_to_global_state":"independent binding-validation track; does not replace or authorize HYP-027 or reopen HYP-028",
+    "candidate_already_frozen":true,
+    "new_mechanism_or_threshold_search":false
+  },
+  "duplicate_and_novelty_audit": {
+    "relevant_prior_ids_reviewed":["USDJPY-HYP-001","USDJPY-HYP-002","USDJPY-HYP-003","USDJPY-HYP-004","USDJPY-HYP-005","USDJPY-HYP-006","USDJPY-HYP-007","USDJPY-HYP-008","USDJPY-HYP-009","USDJPY-HYP-010","USDJPY-HYP-025","USDJPY-HYP-026","USDJPY-HYP-027","USDJPY-HYP-028"],
+    "finding":"S3_H4_ALIGNED is not a threshold repair of the closed shock/exit/technical/portfolio families. It is the already-selected portable market-state admission router from Impact Atlas Phase 1 and Market-State Routing Phase 2.",
+    "closed_candidate_reopened":false,
+    "known_2025_outcome_used_for_candidate_selection":false,
+    "threshold_or_feature_selected_from_2025":false
+  },
+  "period_access": {
+    "development_periods_already_accessed":["2023H1","2023H2","2024H1","2024H2"],
+    "2025H1_candidate_specific_accessed":false,
+    "2025H2_candidate_specific_accessed":false,
+    "2025H1_known_baseline_inventory_read_for_gate_definition_only":true,
+    "2025H2_unlocked":false
+  },
+  "base_is_current":true,
+  "scientific_interpretation_blocked":false,
+  "next_action":"Merge the outcome-free S3 2025H1 protocol, then implement and preflight a reusable exact Baseline-versus-S3 Rakuten MT4 workflow before the single candidate-specific 2025H1 execution."
+}
