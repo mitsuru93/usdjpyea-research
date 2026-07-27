@@ -1,0 +1,94 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v49",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v48.json",
+  "status": "USDJPY_HYP027_REMAINS_ACTIVE_HYP028_COMPLETE_NO_PORTABLE_CANDIDATE",
+  "active_family": "R_PORTFOLIO_LOSS_CLUSTER_CONTROL",
+  "active_hypothesis": "USDJPY-HYP-027",
+  "current_candidate": "SESSION_LOSS_CAP_2",
+  "candidate_ids": [
+    "SESSION_LOSS_CAP_2"
+  ],
+  "current_open_research_question": null,
+  "hypothesis_program": "configs/research/usdjpy_2023_2024_hypothesis_program_v12.json",
+  "next_action": "Continue the separately governed HYP-027 Phase 2 sequence unchanged. HYP-028 is closed with NO_PORTABLE_CANDIDATE: do not tune RD_LOGIT_10F_V1, RD_TREE_D2_V1 or RD_RANK6_V1, do not implement them in Core, and do not use 2025 to define side/session exclusions. Any future Shock Failure discriminator study must use a materially different preregistered representation and may reserve 2026-or-later external data only after candidate freeze.",
+  "phase1_candidate_registry": "configs/research/usdjpy_portfolio_loss_cluster_phase1_candidate_registry_v1.json",
+  "phase1_decision": {
+    "authorization": "PHASE2_PREREGISTRATION_REQUIRED",
+    "broad_exposure_controls_rejected": true,
+    "formal_rank_2_and_3_are_not_candidates": true,
+    "research_candidate": "SESSION_LOSS_CAP_2"
+  },
+  "phase1_execution_receipt": "configs/research/usdjpy_portfolio_loss_cluster_phase1_execution_receipt_v1.json",
+  "phase1_output_manifest": "configs/research/usdjpy_portfolio_loss_cluster_phase1_output_manifest_v1.json",
+  "phase1_period_access_receipt": "configs/research/usdjpy_portfolio_loss_cluster_phase1_period_access_receipt_v1.json",
+  "phase1_preregistration": "configs/research/usdjpy_portfolio_loss_cluster_phase1_prereg_v1.json",
+  "phase1_result": "configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json",
+  "phase1_result_report": "docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE1_RESULT_V1.md",
+  "parallel_or_closed_studies": [
+    {
+      "hypothesis_id": "USDJPY-HYP-028",
+      "family_id": "S_SHOCK_FAILURE_REGIME_DISCRIMINATION",
+      "status": "COMPLETE_NO_PORTABLE_CANDIDATE",
+      "selected_candidate_id": null,
+      "tested_candidate_ids": [
+        "RD_LOGIT_10F_V1",
+        "RD_TREE_D2_V1",
+        "RD_RANK6_V1"
+      ],
+      "candidate_registry": "configs/research/usdjpy_shock_failure_regime_discriminator_candidate_registry_v1.json",
+      "preregistration": "configs/research/usdjpy_shock_failure_regime_discriminator_prereg_v1.json",
+      "result": "configs/research/usdjpy_shock_failure_regime_discriminator_result_v1.json",
+      "result_report": "docs/research/USDJPY_SHOCK_FAILURE_REGIME_DISCRIMINATOR_RESULT_V1.md",
+      "authorization": "NONE_NO_CORE_NO_MT4_NO_EXTERNAL_GATE",
+      "2025_role": "CONSUMED_POSTMORTEM_COMPARISON_ONLY"
+    }
+  ],
+  "closed_families": [
+    "A_NONSHOCK_FALSE_BREAK_ACCEPTANCE",
+    "B_CONDITIONAL_PORTFOLIO_OVERLAP",
+    "C_STRUCTURAL_EXIT",
+    "D_EARLY_FAILURE_PERSISTENCE",
+    "E_STATE_ADAPTIVE_RECOVERY_EXIT",
+    "F_EVENT_CONFIRMATION_ADMISSION",
+    "G_STRUCTURAL_BREAKOUT_INVALIDATION",
+    "H_PERSISTENT_STRUCTURAL_INVALIDATION_WITHOUT_REACCEPTANCE",
+    "I_B02_SHORT_WEAK_4H_ALIGNMENT_ADMISSION",
+    "M_LOCAL_TECHNICAL_ENTRY_SEPARATOR",
+    "N_NATIVE_H4_H1_EMA_STATE_TRANSITION",
+    "O_PROFIT_ARMED_DIRECTIONAL_STATE_COLLAPSE",
+    "P_LIFECYCLE_PRICE_STRUCTURE_TRANSITIONS",
+    "Q_MTF_TECHNICAL_INCREMENTAL_STATE"
+  ],
+  "closed_hypothesis_catalogs": [
+    {
+      "hypothesis_id": "USDJPY-HYP-028",
+      "catalog": "S_SHOCK_FAILURE_REGIME_DISCRIMINATION_V1",
+      "decision": "NO_PORTABLE_CANDIDATE",
+      "scope": "The tested finite simple entry-time feature and model catalog only; this does not declare the broader Shock Failure family impossible."
+    }
+  ],
+  "research_memory": {
+    "atomic_ledger_update_required_after_test": true,
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v23.json",
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "period_policy": "configs/research/usdjpy_period_role_policy_v5.json",
+    "startup_read_receipt_required": true
+  },
+  "run_authorization": {
+    "2023_2024_phase2_confirmation": false,
+    "2025_H1": false,
+    "2025_H2": false,
+    "MT4_parity": false,
+    "candidate_signal_generation": false,
+    "live_orders": false,
+    "portfolio_replay": false,
+    "production_implementation": false,
+    "side_or_strategy_exception": false,
+    "threshold_or_session_definition_change": false,
+    "HYP028_core_contract": false,
+    "HYP028_mt4_economics": false,
+    "HYP028_external_gate": false
+  }
+}
