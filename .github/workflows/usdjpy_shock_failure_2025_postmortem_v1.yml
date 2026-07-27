@@ -22,7 +22,7 @@ concurrency:
 jobs:
   postmortem:
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 180
     env:
       PHASE2_RELEASE: usdjpy-csos-shock-failure-phase2-v1
       PHASE2_ASSET: usdjpy-csos-shock-failure-phase2-v1-30206226997-1.zip
@@ -77,7 +77,7 @@ jobs:
           set -euo pipefail
           root="$RUNNER_TEMP/usdjpy-shock-failure-2025-postmortem-v1"
           rm -rf "$root"
-          mkdir -p "$root"/{phase2-download,phase2,history,history2023,bars2024,raw2023,raw2024,raw2025,core-repair,core-artifact,out,release,readback}
+          mkdir -p "$root"/{phase2-download,phase2,history,history2023,bars2024,raw2025,core-repair,core-artifact,out,release,readback}
           echo "POSTMORTEM_ROOT=$root" >> "$GITHUB_ENV"
 
       - name: Download and verify Phase 2 authority
@@ -113,24 +113,22 @@ jobs:
           gh release download usdjpy-2024-derived-bars-v1 --repo "$GITHUB_REPOSITORY" --dir "$POSTMORTEM_ROOT/bars2024" --pattern 'USDJPY-2024-m15-derived-bars-v1.csv.gz'
           printf '%s  %s\n' 'd22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020' "$POSTMORTEM_ROOT/bars2024/USDJPY-2024-m15-derived-bars-v1.csv.gz" | sha256sum -c -
 
-      - name: Download and verify immutable 2023-2025 Raw Bid Ask Tick Releases
+      - name: Download and verify immutable 2025 Raw Bid Ask Tick Release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          for year in 2023 2024 2025; do
-            dir="$POSTMORTEM_ROOT/raw${year}"
-            gh release download "usdjpy-${year}-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" --dir "$dir" \
-              --pattern "usdjpy-${year}-??-raw-ticks-v1.tar.gz" \
-              --pattern "usdjpy-${year}-raw-ticks-v1.annual-manifest.json" \
-              --pattern 'SHA256SUMS'
-            test "$(find "$dir" -maxdepth 1 -name "usdjpy-${year}-??-raw-ticks-v1.tar.gz" | wc -l)" = 12
-            test -f "$dir/usdjpy-${year}-raw-ticks-v1.annual-manifest.json"
-            test -f "$dir/SHA256SUMS"
-            (cd "$dir" && grep -E "usdjpy-${year}-(..-raw-ticks-v1\\.tar\\.gz|raw-ticks-v1\\.annual-manifest\\.json)$" SHA256SUMS | sha256sum -c -)
-            jq -e '.accepted==true and .resolved_hours==.expected_hours and .tick_rows>0' "$dir/usdjpy-${year}-raw-ticks-v1.annual-manifest.json"
-          done
+          dir="$POSTMORTEM_ROOT/raw2025"
+          gh release download usdjpy-2025-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir "$dir" \
+            --pattern 'usdjpy-2025-??-raw-ticks-v1.tar.gz' \
+            --pattern 'usdjpy-2025-raw-ticks-v1.annual-manifest.json' \
+            --pattern 'SHA256SUMS'
+          test "$(find "$dir" -maxdepth 1 -name 'usdjpy-2025-??-raw-ticks-v1.tar.gz' | wc -l)" = 12
+          test -f "$dir/usdjpy-2025-raw-ticks-v1.annual-manifest.json"
+          test -f "$dir/SHA256SUMS"
+          (cd "$dir" && grep -E 'usdjpy-2025-(..-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
+          jq -e '.accepted==true and .resolved_hours==.expected_hours and .tick_rows>0' "$dir/usdjpy-2025-raw-ticks-v1.annual-manifest.json"
 
       - name: Download corrected P6 evidence and original MT4 logs
         shell: bash
@@ -162,8 +160,6 @@ jobs:
             --phase2-ledger "$POSTMORTEM_ROOT/phase2/phase2_output/candidate_trade_ledger.csv.gz" \
             --m15-2023 "$POSTMORTEM_ROOT/history2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" \
             --m15-2024 "$POSTMORTEM_ROOT/bars2024/USDJPY-2024-m15-derived-bars-v1.csv.gz" \
-            --raw-2023 "$POSTMORTEM_ROOT/raw2023" \
-            --raw-2024 "$POSTMORTEM_ROOT/raw2024" \
             --raw-2025 "$POSTMORTEM_ROOT/raw2025" \
             --core-artifact-root "$POSTMORTEM_ROOT/core-artifact" \
             --corrected-p6 "$POSTMORTEM_ROOT/core-repair/corrected_p6_result.json" \
