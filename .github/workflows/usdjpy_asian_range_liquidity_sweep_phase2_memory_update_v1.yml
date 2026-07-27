@@ -1,0 +1,85 @@
+name: USDJPY Asian Range Liquidity Sweep Phase 2 Memory Update v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_asian_range_liquidity_sweep_phase2_memory_update_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-memory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply atomic HYP-030 memory update
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('configs/research/usdjpy_research_memory_manifest_v1.json')
+          d=json.loads(p.read_text())
+          cp=d['canonical_pointers']
+          cp['current_candidate_registry']='configs/research/usdjpy_research_candidate_registry_v51.json'
+          cp['hypothesis_ledger_addendum']='configs/research/usdjpy_hypothesis_ledger_addendum_v25.json'
+          cp['hyp030_preregistration']='configs/research/usdjpy_asian_range_liquidity_sweep_phase2_prereg_v1.json'
+          cp['hyp030_candidate_registry']='configs/research/usdjpy_asian_range_liquidity_sweep_phase2_candidate_registry_v1.json'
+          cp['hyp030_period_access_receipt']='configs/research/usdjpy_asian_range_liquidity_sweep_phase2_period_access_receipt_v1.json'
+          cp['hyp030_result']='docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/final_decision.json'
+          cp['hyp030_result_report']='docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/human_report.md'
+          s=d['current_state_snapshot']
+          s['registry_status']='USDJPY_HYP027_REMAINS_ACTIVE_HYP028_AND_HYP030_CLOSED_HYP029_S3_BINDING_TRACK_PREREGISTERED'
+          s['next_action']='Continue HYP-027 and the separately governed HYP-029 one-shot sequence unchanged. HYP-028 and HYP-030 are closed with NO_PORTABLE_CANDIDATE. Any next CSOS family requires a new Hypothesis ID and outcome-free preregistration; Asian Range Sweep has no Core, MT4, 2025 or production authorization.'
+          d.setdefault('parallel_track_state',{})['USDJPY-HYP-030']={
+            'family':'S_ASIAN_RANGE_LIQUIDITY_SWEEP',
+            'candidate':None,
+            'tested_candidate':'A_EXACT_EXECUTABLE_12BAR',
+            'status':'COMPLETE_NO_PORTABLE_CANDIDATE',
+            'failed_gate':'portfolio_mdd_nonworse',
+            'core_authorized':False,
+            'mt4_authorized':False,
+            '2025H1_authorized':False,
+            '2025H2_authorized':False,
+            'production_authorized':False,
+            'does_not_change_HYP027_or_HYP029':True
+          }
+          required=[
+            ('configs/research/usdjpy_research_candidate_registry_v51.json','global registry including HYP-030 closure'),
+            ('configs/research/usdjpy_hypothesis_ledger_addendum_v25.json','append-only HYP-030 scientific memory'),
+            ('configs/research/usdjpy_asian_range_liquidity_sweep_phase2_candidate_registry_v1.json','HYP-030 tested-candidate closure'),
+            ('configs/research/usdjpy_asian_range_liquidity_sweep_phase2_period_access_receipt_v1.json','HYP-030 2025 firewall closure'),
+            ('docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/final_decision.json','binding HYP-030 result')
+          ]
+          rows=d['mandatory_startup_read_order']
+          existing={r['path'] for r in rows}
+          for path,reason in required:
+            if path not in existing:
+              rows.append({'ordinal':len(rows)+1,'path':path,'reason':reason})
+          for i,r in enumerate(rows,1): r['ordinal']=i
+          p.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\n')
+          for path,_ in required:
+            assert Path(path).exists(), path
+          json.loads(p.read_text())
+          PY
+          python tools/validate_usdjpy_research_memory_v1.py
+      - name: Commit atomic memory state to PR branch
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          git add configs/research/usdjpy_research_memory_manifest_v1.json
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research: make HYP-030 closure mandatory startup memory'
+          git pull --rebase origin ${{ github.event.pull_request.head.ref }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
