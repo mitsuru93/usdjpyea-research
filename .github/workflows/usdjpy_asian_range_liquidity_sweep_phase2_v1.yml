@@ -5,12 +5,14 @@ on:
     branches: [main]
     paths:
       - 'tools/usdjpy_asian_range_liquidity_sweep_phase2_payload_v1.py.gz.b64'
+      - 'tools/asian_range_phase2_payload_chunks/**'
       - '.github/workflows/usdjpy_asian_range_liquidity_sweep_phase2_v1.yml'
       - 'configs/research/usdjpy_asian_range_liquidity_sweep_phase2_prereg_v1.json'
   push:
     branches: [main]
     paths:
       - 'tools/usdjpy_asian_range_liquidity_sweep_phase2_payload_v1.py.gz.b64'
+      - 'tools/asian_range_phase2_payload_chunks/**'
       - '.github/workflows/usdjpy_asian_range_liquidity_sweep_phase2_v1.yml'
       - 'configs/research/usdjpy_asian_range_liquidity_sweep_phase2_prereg_v1.json'
       - 'docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/**'
@@ -36,7 +38,9 @@ jobs:
       - name: Materialize and verify frozen evaluator
         run: |
           set -euo pipefail
-          base64 -d tools/usdjpy_asian_range_liquidity_sweep_phase2_payload_v1.py.gz.b64 | gzip -d > /tmp/evaluate_asian.py
+          cat tools/asian_range_phase2_payload_chunks/part_*.txt > /tmp/evaluator.b64
+          test "$(sha256sum /tmp/evaluator.b64 | cut -d' ' -f1)" = '546b796bfe41fa175c50f75dfdf8dc0de84ea835c5bfb657ca2e90b4036d3c57'
+          base64 -d /tmp/evaluator.b64 | gzip -d > /tmp/evaluate_asian.py
           test "$(sha256sum /tmp/evaluate_asian.py | cut -d' ' -f1)" = '91bf81605075bf2ce30419f7f848bafc6a4e36d5d0f43bd0f6c1c8b6e1132b14'
           python -m py_compile /tmp/evaluate_asian.py
       - name: Install frozen dependencies
