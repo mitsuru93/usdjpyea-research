@@ -65,7 +65,11 @@ jobs:
           assert abs(p6['standalone_combined']['net_jpy']+1277)<1e-6
           inv=json.load(open('research_inputs/usdjpy/shock_failure/2025_postmortem_v1/research_release_inventory.json'))
           rel=[x for x in inv['releases'] if x['tag_name']=='usdjpy-2025-raw-bidask-ticks-v1']
-          assert len(rel)==1 and len(rel[0]['assets'])==37
+          assert len(rel)==1
+          names=[a['name'] for a in rel[0]['assets']]
+          assert len([n for n in names if n.endswith('.tar.gz') and '-2025-' in n])==12
+          assert len([n for n in names if n.endswith('.manifest.json') and '-2025-' in n and 'annual' not in n])==12
+          assert 'usdjpy-2025-raw-ticks-v1.annual-manifest.json' in names
           print('PASS_CORE_DERIVED_INPUT_CONTRACT')
           PY
 
