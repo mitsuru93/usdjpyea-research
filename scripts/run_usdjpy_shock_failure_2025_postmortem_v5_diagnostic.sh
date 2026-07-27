@@ -47,14 +47,20 @@ cp "$console" "$root/diagnostics/console.log"
 printf '%s\n' "$code" > "$root/diagnostics/exit_code.txt"
 if [[ "$code" -ne 0 ]]; then
   {
-    echo "run_id=$GITHUB_RUN_ID"
-    echo "exit_code=$code"
-    echo "target_branch=agent/shock-failure-2025-postmortem-v1"
-    echo "candidate_id=B_EXECUTABLE_T0_8BAR"
-    echo "scientific_definition_changed=false"
-    echo "source_snapshot_git_blob=0c24aa7372dad2b6e00ff9fcc5e8b876b11a176b"
-    echo "---- console tail ----"
+    echo "## Shock Failure postmortem technical failure"
+    echo
+    echo "- Run: \`$GITHUB_RUN_ID\`"
+    echo "- Exit code: \`$code\`"
+    echo "- Target branch: \`agent/shock-failure-2025-postmortem-v1\`"
+    echo "- Candidate: \`B_EXECUTABLE_T0_8BAR\`"
+    echo "- Scientific definition changed: \`false\`"
+    echo "- Source snapshot Git blob: \`0c24aa7372dad2b6e00ff9fcc5e8b876b11a176b\`"
+    echo
+    echo '```text'
     tail -n 200 "$console"
-  } > "$root/diagnostics/failure_summary.txt"
+    echo '```'
+  } > "$root/diagnostics/failure_summary.md"
+  gh pr comment 321 --repo "$GITHUB_REPOSITORY" --body-file "$root/diagnostics/failure_summary.md" || true
+  rm -rf "$root/raw" "$root/raw-download" "$root/phase2" "$root/phase2-download"
 fi
 exit "$code"
