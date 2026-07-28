@@ -1,0 +1,154 @@
+{
+  "schema_version": "usdjpy_previous_day_extreme_sweep_rejection_prereg_v1",
+  "status": "FROZEN_BEFORE_DEVELOPMENT_OUTCOMES",
+  "hypothesis_id": "USDJPY-HYP-034",
+  "family_id": "S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION",
+  "study_title": "Previous-Day Extreme Sweep Rejection Mechanism Study",
+  "independence_contract": {
+    "parallel_hypothesis_reserved": "USDJPY-HYP-033",
+    "parallel_study": "Asian Low Sweep Post-Sweep Rebound Mechanism Study",
+    "shared_event_ledger": false,
+    "shared_candidates": false,
+    "shared_features_or_thresholds": false,
+    "joint_selection": false,
+    "HYP030_reopened": false,
+    "HYP031_reopened": false,
+    "HYP032_combined": false
+  },
+  "primary_hypothesis": "A temporary source-native Bid sweep of the previous UTC trading-day High or Low that fails to obtain outside acceptance and is confirmed by a completed M15 close back inside the previous-day range has a short-horizon rejection edge opposite the sweep.",
+  "auxiliary_hypotheses": [
+    "Previous-Day Low Sweep Long and Previous-Day High Sweep Short may be structurally asymmetric.",
+    "Profitable rejection may be identified only by information fixed by the entry decision timestamp.",
+    "Outside acceptance is economically distinct from rejection and is more likely to continue away from the previous-day range.",
+    "The mechanism may contribute positively on B02/F05 negative days with low daily correlation.",
+    "Complementarity must survive concentration, cost and full-equity portfolio tests."
+  ],
+  "period_roles": {
+    "warmup_only": ["2019"],
+    "development": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "historical_validation_locked_until_freeze": ["2020", "2021", "2022"],
+    "external_validation_locked": ["2025H1", "2025H2"],
+    "2025H2_access_condition": "unchanged candidate passes every 2025H1 binding gate"
+  },
+  "previous_day_calendar_contract": {
+    "timezone": "UTC",
+    "trading_day_interval": "[00:00:00,24:00:00) UTC",
+    "day_rollover_timestamp": "00:00:00 UTC",
+    "dst": "none; all construction is UTC",
+    "eligible_trading_day": "weekday with source-native ticks and complete-day coverage under the completeness contract",
+    "previous_trading_day": "latest prior eligible trading day; Saturday/Sunday and verified no-tick market holidays are skipped",
+    "monday_rule": "normally Friday; otherwise latest prior complete eligible trading day",
+    "holiday_rule": "skip only when the source manifest proves no ticks for the entire UTC day and adjacent eligible days pass completeness",
+    "partial_day_rule": "do not use as a boundary source and do not bridge silently; block source authority",
+    "missing_tick_day_rule": "unexplained missing eligible weekday is a binding source-authority failure",
+    "boundary_price_definition": {
+      "previous_day_high": "maximum source-native Bid during the previous trading-day interval",
+      "previous_day_low": "minimum source-native Bid during the previous trading-day interval",
+      "sweep_cross": "Bid > previous_day_high for High sweep; Bid < previous_day_low for Low sweep",
+      "reclaim": "Bid returns strictly inside the boundary",
+      "ask_diagnostics": "Ask extremes and Bid/Ask spread are retained for audit but do not redefine Atlas-compatible event identity"
+    }
+  },
+  "source_authority": {
+    "primary": "Dukascopy BI5-derived source-native USDJPY Bid/Ask Tick immutable annual Releases",
+    "development_releases": ["usdjpy-2023-raw-bidask-ticks-v1", "usdjpy-2024-raw-bidask-ticks-v1"],
+    "historical_releases": "must be inventoried and frozen only after candidate freeze",
+    "external_releases": "2025 authority remains unopened until pre-2025 authorization",
+    "same_source_required_for": ["previous-day boundaries", "sweep", "reclaim", "entry", "exit", "spread", "chronology"],
+    "source_mismatch_silent_exclusion": false
+  },
+  "base_event_contract": {
+    "event_population": "first source-native Bid cross of either previous-day boundary for each current trading date and side",
+    "both_side_sweep": "retain separate side events and mark both_side_sweep=true; never silently suppress",
+    "same_day_repeated_sweep": "retain first cross as identity event; later crosses are path diagnostics and retest_count",
+    "atlas_compatible_rejection_signal": {
+      "m15_bar": "UTC-aligned completed M15 bar containing or following the first sweep",
+      "high_sweep_short": "bar Bid high > previous_day_high AND bar Bid close < previous_day_high",
+      "low_sweep_long": "bar Bid low < previous_day_low AND bar Bid close > previous_day_low",
+      "decision_time": "completed signal-bar close",
+      "entry": "first source-native tick timestamp >= decision_time; Long at Ask, Short at Bid",
+      "exit_boundary": "decision_time + 3 hours (12 completed M15 bars)",
+      "exit": "first source-native tick timestamp >= exit_boundary; Long at Bid, Short at Ask"
+    },
+    "active_position_suppression": "variant-local; no overlapping accepted position for the same candidate",
+    "same_day_same_side_suppression": true,
+    "fold_boundary": "event, entry and fixed exit must remain in the same half-year fold",
+    "unresolved_policy": "retain in mismatch ledger and apply binding integrity gate"
+  },
+  "event_identity_required_fields": [
+    "event_id", "previous_trading_date", "current_trading_date", "previous_day_high_bid", "previous_day_low_bid",
+    "sweep_side", "sweep_timestamp", "first_boundary_cross_timestamp", "reclaim_timestamp", "entry_decision_timestamp",
+    "first_executable_timestamp", "fixed_exit_timestamp", "source_sha", "fold", "timezone_contract"
+  ],
+  "monetary_contract": {
+    "source_currency": "JPY quote currency for USDJPY",
+    "account_currency": "JPY",
+    "reporting_currency": "JPY",
+    "canonical_initial_capital_jpy": 1000000,
+    "lot_size": 0.01,
+    "contract_size_usd_per_lot": 100000,
+    "jpy_per_price_unit_at_0_01_lot": 1000,
+    "jpy_per_pip_at_0_01_lot": 10,
+    "realized_pl": "side * (exit_price-entry_price) * 1000 JPY",
+    "floating_pl": "Long marked to Bid; Short marked to Ask; same 1000 JPY per price unit",
+    "commission_jpy": 0,
+    "swap_jpy": 0,
+    "currency_conversion": "none; USDJPY quote P/L is directly JPY",
+    "equity_unit": "JPY",
+    "dd_unit": "JPY",
+    "numerical_tolerance_jpy": 0.000001,
+    "floating_noise_normalization": "absolute values below tolerance normalized to zero",
+    "unresolved_action": "TECHNICAL_NO_RESULT_CURRENCY_CONTRACT_UNRESOLVED"
+  },
+  "mechanism_atlas": {
+    "boundary_geometry": ["previous_day_range_width", "current_day_open_location", "open_to_boundary_distance", "sweep_distance", "sweep_to_range_ratio", "maximum_overshoot", "outside_duration", "first_reclaim_distance", "reclaim_speed", "reclaim_retained_duration", "boundary_retest_count", "second_sweep", "opposite_boundary_reached"],
+    "timing": ["sweep_utc", "session", "minutes_to_london_open", "minutes_to_ny_open", "minutes_from_rollover", "previous_day_high_formation_time", "previous_day_low_formation_time", "boundary_age"],
+    "pre_sweep_ex_ante": ["completed_M15_return", "completed_H1_return", "completed_H4_return", "completed_bar_volatility", "tick_velocity", "spread", "current_day_range", "distance_from_daily_open", "previous_day_direction", "previous_day_range_percentile", "same_boundary_touch_count", "opposite_boundary_touch_flag", "recent_local_excursion", "recent_compression_expansion"],
+    "post_entry_diagnostics_only": ["MAE", "MFE", "time_to_MAE", "time_to_MFE", "return_5m", "return_15m", "return_30m", "return_60m", "return_120m", "return_180m", "previous_day_midpoint_reached", "opposite_boundary_reached", "outside_redeparture", "fixed_exit_pl", "tp_sl_ordering"]
+  },
+  "path_classification_diagnostic_only": ["immediate_rejection", "delayed_rejection", "shallow_reclaim", "sustained_range_reentry", "boundary_retest_then_rejection", "false_reclaim_then_continuation", "immediate_continuation", "outside_acceptance", "both_side_sweep", "unresolved_chronology"],
+  "feature_selection_contract": {
+    "entry_information_only": true,
+    "maximum_candidates": 3,
+    "maximum_primary_features_per_candidate": 2,
+    "maximum_thresholds_per_feature": 1,
+    "rule_shape": "monotonic",
+    "threshold_selection": ["preregistered coarse bins", "fold-consistent boundary", "leave-one-fold-out selection"],
+    "forbidden": ["future MAE/MFE", "future reclaim duration", "future midpoint arrival", "eventual outcome", "later-session state", "future day high/low", "2025 outcome", "post-entry lifecycle label", "outcome-defined cohort", "large grid search", "month/year/session exclusion", "side exclusion without source-native mechanism"]
+  },
+  "fixed_exit": {
+    "atlas_variant": "F_PREVIOUS_DAY_SWEEP",
+    "hold_bars": 12,
+    "hold_duration": "3 hours",
+    "exit_grid_search": false,
+    "sl_tp_optimization": false
+  },
+  "development_binding_gates": {
+    "integrity": {"source_authority": true, "duplicate_event": 0, "chronology_unresolved_max": 0, "lookahead_violation": 0, "currency_mismatch": 0, "event_replay_mismatch": 0},
+    "sample": {"resolved_events_min": 120, "affected_events_min": 60, "each_fold_sufficient": true, "extreme_year_month_session_concentration": false},
+    "economics": {"net_jpy_gt": 0, "profit_factor_min": 1.10, "positive_folds_min": 3, "minimum_fold_jpy_min": -1000, "positive_months_min": 16, "mdd_nonworse_than_unfiltered": true, "minimum_equity_nonworse_than_unfiltered": true},
+    "concentration": {"best_event_removed_net_gt": 0, "top3_removed_net_gt": 0, "top5_removed_net_gt": 0, "largest_positive_fold_share_max": 0.60, "largest_positive_session_share_max": 0.60, "largest_positive_month_share_max": 0.25},
+    "resampling": {"event_bootstrap_lower95_gt": 0, "date_session_bootstrap_lower95_gt": 0, "probability_nonpositive_max": 0.05},
+    "costs": {"observed_bidask_net_gt": 0, "spread_plus_0_5_pip_net_gt": 0, "spread_plus_1_0_pip_net_gt": 0, "spread_plus_2_0_pip_report": true, "entry_delay_5s_net_gt": 0, "entry_delay_10s_report": true, "adverse_slippage_report": true},
+    "portfolio": {"B02_F05_negative_day_contribution_gt": 0, "combined_net_above_baseline": true, "combined_realized_dd_nonworse": true, "combined_full_equity_dd_nonworse": true, "minimum_equity_nonworse": true, "incremental_margin_bounded": true, "peak_concurrency_bounded": true}
+  },
+  "historical_validation_contract": {
+    "authorized_only_after_candidate_freeze": true,
+    "scoring_period": "2020-01-01 through 2022-12-31 UTC",
+    "warmup": "2019",
+    "no_retuning": true,
+    "binding_failure_decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING"
+  },
+  "core_mt4_access_condition": "all 2020-2022 historical validation binding gates pass",
+  "external_2025_access_condition": "candidate freeze, historical validation, Core parity, MT4 native execution and full-equity parity all pass",
+  "stop_rule": ["SOURCE_AUTHORITY_FAILURE", "PREVIOUS_DAY_CALENDAR_CONTRACT_FAILURE", "CHRONOLOGY_FAILURE", "MONETARY_UNIT_FAILURE", "NO_PORTABLE_REJECTION_MECHANISM", "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR", "NO_DEVELOPMENT_CANDIDATE", "FAIL_HISTORICAL_VALIDATION_NO_RETUNING", "CORE_PARITY_FAILURE", "MT4_NATIVE_EXECUTION_FAILURE", "2025H1_FAILURE", "2025H2_FAILURE"],
+  "boundaries": {
+    "protected_2020_2022_access": false,
+    "protected_2025_access": false,
+    "core_change": false,
+    "mt4_execution": false,
+    "live_order": false,
+    "production_authorization": false,
+    "recurring_schedule_added": false
+  }
+}
