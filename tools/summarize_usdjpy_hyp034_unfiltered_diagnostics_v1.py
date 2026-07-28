@@ -68,7 +68,7 @@ def main() -> None:
 
     trades = pd.read_csv(args.path_metrics)
     for column in ("entry_decision_utc", "entry_utc", "exit_utc"):
-        trades[column] = pd.to_datetime(trades[column], utc=True)
+        trades[column] = pd.to_datetime(trades[column], utc=True, format="mixed")
     if len(trades) != scientific["unfiltered_candidate_metrics"]["event_count"]:
         raise ValueError("path ledger count differs from binding final result")
     if not trades.entry_utc.dt.year.isin([2023, 2024]).all() or not trades.exit_utc.dt.year.isin([2023, 2024]).all():
