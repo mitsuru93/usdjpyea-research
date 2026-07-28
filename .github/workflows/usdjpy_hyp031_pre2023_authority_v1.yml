@@ -1,0 +1,95 @@
+name: USDJPY HYP031 Pre-2023 Authority v1
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    outputs:
+      y2019: ${{ steps.check.outputs.y2019 }}
+      y2020: ${{ steps.check.outputs.y2020 }}
+      y2021: ${{ steps.check.outputs.y2021 }}
+      y2022: ${{ steps.check.outputs.y2022 }}
+    steps:
+      - name: Check immutable annual releases without opening strategy outcomes
+        id: check
+        shell: bash
+        run: |
+          set -euo pipefail
+          for y in 2019 2020 2021 2022; do
+            if gh release view "usdjpy-${y}-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              echo "y${y}=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "y${y}=true" >> "$GITHUB_OUTPUT"
+            fi
+          done
+
+  collect2019:
+    needs: inventory
+    if: needs.inventory.outputs.y2019 == 'true'
+    uses: ./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml
+    with:
+      year: 2019
+    secrets: inherit
+
+  collect2020:
+    needs: inventory
+    if: needs.inventory.outputs.y2020 == 'true'
+    uses: ./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml
+    with:
+      year: 2020
+    secrets: inherit
+
+  collect2021:
+    needs: inventory
+    if: needs.inventory.outputs.y2021 == 'true'
+    uses: ./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml
+    with:
+      year: 2021
+    secrets: inherit
+
+  collect2022:
+    needs: inventory
+    if: needs.inventory.outputs.y2022 == 'true'
+    uses: ./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml
+    with:
+      year: 2022
+    secrets: inherit
+
+  receipt:
+    needs: [inventory, collect2019, collect2020, collect2021, collect2022]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify authority inventory and publish receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=true
+          for y in 2019 2020 2021 2022; do
+            gh release view "usdjpy-${y}-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || ok=false
+          done
+          status=PRE2023_AUTHORITY_COMPLETE
+          if [ "$ok" != true ]; then status=DATA_AUTHORITY_BLOCKED_FOR_REGIME_PORTABILITY; fi
+          cat > receipt.md <<EOF
+          workflow: usdjpy_hyp031_pre2023_authority_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          head_sha: ${GITHUB_SHA}
+          hypothesis_id: USDJPY-HYP-031
+          status: ${status}
+          authority_years: 2019,2020,2021,2022
+          source: Dukascopy BI5 Bid/Ask raw ticks
+          strategy_outcomes_accessed: false
+          2025_accessed: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[hyp031-pre2023-authority] ${GITHUB_RUN_ID} ${status}" --body-file receipt.md
+          test "$ok" = true

@@ -1,0 +1,92 @@
+{
+  "HYP030_STYLE_RAW_NATIVE_BOTH": {
+    "B02_F05_negative_day_contribution_jpy": 17026.999999999985,
+    "account_scale": "0.01 lot normalized; JPY10 per pip",
+    "additive_daily_mdd_jpy": 43627.00000000011,
+    "additive_net_jpy": 56150.00000000005,
+    "additive_timestamp_aligned_closed_trade_mdd_jpy": 44322.0000000001,
+    "baseline_daily_mdd_jpy": 40487.0,
+    "baseline_net_jpy": 51627.0,
+    "baseline_timestamp_aligned_closed_trade_mdd_jpy": 40487.0,
+    "block_bootstrap_mdd_jpy": {
+      "median": 27688.999999999956,
+      "p05": 16899.99999999995,
+      "p95": 52138.850000000035,
+      "samples": 2000
+    },
+    "daily_mdd_delta_jpy": 3140.000000000109,
+    "measurement_resolution_jpy": 1.0
+  },
+  "LONG_ONLY_DIAGNOSTIC": {
+    "B02_F05_negative_day_contribution_jpy": 13477.000000000204,
+    "account_scale": "0.01 lot normalized; JPY10 per pip",
+    "additive_daily_mdd_jpy": 38041.999999999876,
+    "additive_net_jpy": 64803.000000000364,
+    "additive_timestamp_aligned_closed_trade_mdd_jpy": 38736.99999999988,
+    "baseline_daily_mdd_jpy": 40487.0,
+    "baseline_net_jpy": 51627.0,
+    "baseline_timestamp_aligned_closed_trade_mdd_jpy": 40487.0,
+    "block_bootstrap_mdd_jpy": {
+      "median": 26200.49999999995,
+      "p05": 16364.000000000073,
+      "p95": 49248.349999999795,
+      "samples": 2000
+    },
+    "daily_mdd_delta_jpy": -2445.0000000001237,
+    "measurement_resolution_jpy": 1.0
+  },
+  "R1_H4_SYMMETRIC_TRANSITION_BLOCK": {
+    "B02_F05_negative_day_contribution_jpy": 4574.000000000069,
+    "account_scale": "0.01 lot normalized; JPY10 per pip",
+    "additive_daily_mdd_jpy": 44427.99999999998,
+    "additive_net_jpy": 56468.00000000028,
+    "additive_timestamp_aligned_closed_trade_mdd_jpy": 44427.99999999996,
+    "baseline_daily_mdd_jpy": 40487.0,
+    "baseline_net_jpy": 51627.0,
+    "baseline_timestamp_aligned_closed_trade_mdd_jpy": 40487.0,
+    "block_bootstrap_mdd_jpy": {
+      "median": 28893.000000000102,
+      "p05": 17675.349999999995,
+      "p95": 55198.099999999766,
+      "samples": 2000
+    },
+    "daily_mdd_delta_jpy": 3940.999999999978,
+    "measurement_resolution_jpy": 1.0
+  },
+  "R2_D1_SYMMETRIC_TRANSITION_BLOCK": {
+    "B02_F05_negative_day_contribution_jpy": 4835.000000000178,
+    "account_scale": "0.01 lot normalized; JPY10 per pip",
+    "additive_daily_mdd_jpy": 44364.999999999985,
+    "additive_net_jpy": 52612.00000000029,
+    "additive_timestamp_aligned_closed_trade_mdd_jpy": 44364.99999999997,
+    "baseline_daily_mdd_jpy": 40487.0,
+    "baseline_net_jpy": 51627.0,
+    "baseline_timestamp_aligned_closed_trade_mdd_jpy": 40487.0,
+    "block_bootstrap_mdd_jpy": {
+      "median": 28947.000000000007,
+      "p05": 17625.7499999999,
+      "p95": 54724.5,
+      "samples": 2000
+    },
+    "daily_mdd_delta_jpy": 3877.9999999999854,
+    "measurement_resolution_jpy": 1.0
+  },
+  "SHORT_ONLY_DIAGNOSTIC": {
+    "B02_F05_negative_day_contribution_jpy": 3549.9999999997835,
+    "account_scale": "0.01 lot normalized; JPY10 per pip",
+    "additive_daily_mdd_jpy": 45936.00000000021,
+    "additive_net_jpy": 42973.999999999694,
+    "additive_timestamp_aligned_closed_trade_mdd_jpy": 46040.000000000226,
+    "baseline_daily_mdd_jpy": 40487.0,
+    "baseline_net_jpy": 51627.0,
+    "baseline_timestamp_aligned_closed_trade_mdd_jpy": 40487.0,
+    "block_bootstrap_mdd_jpy": {
+      "median": 29980.00000000008,
+      "p05": 18277.199999999975,
+      "p95": 57376.54999999991,
+      "samples": 2000
+    },
+    "daily_mdd_delta_jpy": 5449.000000000211,
+    "measurement_resolution_jpy": 1.0
+  }
+}

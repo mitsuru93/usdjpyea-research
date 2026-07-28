@@ -1,0 +1,221 @@
+name: USDJPY HYP031 Canonicalize v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp031_canonicalize_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+concurrency:
+  group: hyp031-canonicalize-v1
+  cancel-in-progress: false
+
+env:
+  SOURCE_RUN_ID: '30317593695'
+  SOURCE_ARTIFACT_NAME: 'usdjpy-asian-range-sweep-regime-development-v1-30317593695-1'
+  SOURCE_ARTIFACT_ID: '8672872755'
+  SOURCE_ARTIFACT_DIGEST: 'sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee'
+  RELEASE_TAG: 'usdjpy-asian-range-sweep-regime-portability-v1'
+  RELEASE_ASSET: 'usdjpy-asian-range-sweep-regime-portability-v1.zip'
+
+jobs:
+  canonicalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          fetch-depth: 0
+      - name: Stop if already canonicalized
+        id: guard
+        shell: bash
+        run: |
+          if test -f configs/research/usdjpy_asian_range_sweep_regime_release_receipt_v1.json; then
+            echo 'skip=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'skip=false' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Download successful binding artifact
+        if: steps.guard.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf downloaded
+          mkdir downloaded
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$SOURCE_ARTIFACT_NAME" --dir downloaded
+          test -f downloaded/regime_output/final_decision.json
+          (cd downloaded/regime_output && sha256sum -c PACKAGE_SHA256SUMS)
+          jq -e '.decision_class=="NO_PORTABLE_REGIME_RULE" and .selected_candidate_id==null and .HYP030_decision_changed==false and ."2025_accessed"==false and .pre2023_strategy_outcomes_accessed==false and .authorization.Core==false and .authorization.MT4==false and .authorization."2025"==false' downloaded/regime_output/final_decision.json
+      - name: Materialize canonical Research records
+        if: steps.guard.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import copy, csv, hashlib, json, pathlib, shutil, subprocess
+          root=pathlib.Path('.')
+          out=root/'downloaded/regime_output'
+          archive=root/'docs/research/artifact_archives/usdjpy_asian_range_sweep_regime_development_v1'
+          if archive.exists(): shutil.rmtree(archive)
+          shutil.copytree(out, archive)
+          decision=json.load(open(out/'final_decision.json'))
+          comparison=list(csv.DictReader(open(out/'candidate_comparison.csv')))
+          by_id={r['candidate_id']:r for r in comparison}
+          r1=by_id['R1_H4_SYMMETRIC_TRANSITION_BLOCK']
+          r2=by_id['R2_D1_SYMMETRIC_TRANSITION_BLOCK']
+          shutil.copy2(out/'final_decision.json', root/'configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json')
+          shutil.copy2(out/'development_candidate_freeze.json', root/'configs/research/usdjpy_asian_range_sweep_regime_development_freeze_v1.json')
+          candidate_registry={
+            'schema_version':'usdjpy_asian_range_sweep_regime_candidate_registry_v1',
+            'hypothesis_id':'USDJPY-HYP-031',
+            'family_id':'S_ASIAN_RANGE_SWEEP_REGIME_ROUTING',
+            'status':'COMPLETE_NO_PORTABLE_REGIME_RULE',
+            'selected_candidate_id':None,
+            'tested_candidate_ids':['R1_H4_SYMMETRIC_TRANSITION_BLOCK','R2_D1_SYMMETRIC_TRANSITION_BLOCK'],
+            'diagnostic_ids':['HYP030_STYLE_RAW_NATIVE_BOTH','LONG_ONLY_DIAGNOSTIC','SHORT_ONLY_DIAGNOSTIC'],
+            'binding_source':'Dukascopy BI5 native Bid/Ask signal and execution',
+            'decision_class':'NO_PORTABLE_REGIME_RULE',
+            'failed_gates':{
+              'R1_H4_SYMMETRIC_TRANSITION_BLOCK':r1['failed_gates'].split(';'),
+              'R2_D1_SYMMETRIC_TRANSITION_BLOCK':r2['failed_gates'].split(';')
+            },
+            'candidate_freeze':False,
+            'backward_validation_authorized':False,
+            'Core_authorized':False,
+            'MT4_authorized':False,
+            'external_2025_authorized':False,
+            '2025_accessed':False,
+            'HYP030_decision_changed':False,
+            'evidence_archive':'docs/research/artifact_archives/usdjpy_asian_range_sweep_regime_development_v1',
+            'source_run_id':30317593695,
+            'source_artifact_id':8672872755,
+            'source_artifact_digest':'sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee'
+          }
+          json.dump(candidate_registry,open(root/'configs/research/usdjpy_asian_range_sweep_regime_candidate_registry_v1.json','w'),indent=2,ensure_ascii=False); open(root/'configs/research/usdjpy_asian_range_sweep_regime_candidate_registry_v1.json','a').write('\n')
+          period_receipt={
+            'schema_version':'usdjpy_asian_range_sweep_regime_period_access_receipt_v1',
+            'hypothesis_id':'USDJPY-HYP-031',
+            'development_2023H1_2024H2':'ACCESSED_BINDING_RAW_NATIVE',
+            'pre2023_authority_acquisition':'STARTED_THEN_PAUSED_BEFORE_STRATEGY_OUTCOMES',
+            'pre2023_strategy_outcomes_accessed':False,
+            'backward_validation':'NOT_AUTHORIZED_NO_DEVELOPMENT_CANDIDATE',
+            '2025H1':'NOT_ACCESSED_NOT_AUTHORIZED',
+            '2025H2':'NOT_ACCESSED_NOT_AUTHORIZED',
+            'Core':'NOT_MODIFIED_NOT_AUTHORIZED',
+            'MT4':'NOT_RUN_NOT_AUTHORIZED',
+            'HYP030_decision_changed':False
+          }
+          json.dump(period_receipt,open(root/'configs/research/usdjpy_asian_range_sweep_regime_period_access_receipt_v1.json','w'),indent=2,ensure_ascii=False); open(root/'configs/research/usdjpy_asian_range_sweep_regime_period_access_receipt_v1.json','a').write('\n')
+          authority=[]
+          for year in [2019,2020,2021,2022]:
+            p=subprocess.run(['gh','release','view',f'usdjpy-{year}-raw-bidask-ticks-v1','--repo',subprocess.check_output(['git','config','--get','remote.origin.url'],text=True).strip().removeprefix('https://github.com/').removesuffix('.git')],capture_output=True,text=True)
+            authority.append({'year':year,'release_tag':f'usdjpy-{year}-raw-bidask-ticks-v1','release_exists':p.returncode==0,'strategy_outcomes_accessed':False})
+          inv={
+            'schema_version':'usdjpy_asian_range_sweep_regime_pre2023_authority_inventory_v1',
+            'hypothesis_id':'USDJPY-HYP-031',
+            'source':'Dukascopy BI5 public Bid/Ask ticks',
+            'timezone_contract':'UTC source; frozen Rakuten UTC+2/UTC+3 US-DST logical state buckets',
+            'years':authority,
+            'strategy_outcomes_accessed':False,
+            'backward_validation_authorized':False,
+            'reason':'No development candidate passed; pre-2023 strategy outcome must remain unopened.'
+          }
+          json.dump(inv,open(root/'configs/research/usdjpy_asian_range_sweep_regime_pre2023_authority_inventory_v1.json','w'),indent=2,ensure_ascii=False); open(root/'configs/research/usdjpy_asian_range_sweep_regime_pre2023_authority_inventory_v1.json','a').write('\n')
+          ledger={
+            'schema_version':'usdjpy_hypothesis_ledger_addendum_v27',
+            'status':'ACTIVE_APPEND_ONLY_DELTA',
+            'entry_mode':'DELTA_INHERIT_SUPERSEDES',
+            'base_ledger':'configs/research/usdjpy_hypothesis_ledger_v1.json',
+            'supersedes':'configs/research/usdjpy_hypothesis_ledger_addendum_v26.json',
+            'inherited_addendum':'configs/research/usdjpy_hypothesis_ledger_addendum_v26.json',
+            'entries':[{
+              'hypothesis_id':'USDJPY-HYP-031',
+              'family_ids':['S_ASIAN_RANGE_SWEEP_REGIME_ROUTING'],
+              'candidate_ids':['R1_H4_SYMMETRIC_TRANSITION_BLOCK','R2_D1_SYMMETRIC_TRANSITION_BLOCK'],
+              'status':'COMPLETE_NO_PORTABLE_REGIME_RULE',
+              'origin_analysis':'HYP-030 showed profitable Long and losing Short results, raising the independent question whether a completed-information symmetric trend state could route Asian Range Sweep direction portably without changing HYP-030.',
+              'causal_hypothesis':'Same-source native Asian Low Sweep Longs should contribute in stable Up states and Asian High Sweep Shorts should contribute in stable Down states, with Neutral and first-change Transition buckets blocked, across folds and transition windows.',
+              'tests':[{'period':'2023H1_2024H2','type':'source_native_directional_regime_development','run_id':30317593695,'result':decision}],
+              'decision':'NO_PORTABLE_REGIME_RULE. R1 is positive but fails source-native identity, minimum-fold and top-five-removal gates; R2 additionally fails directional symmetry because aligned Short/Down remains negative. No candidate freeze, backward validation, Core, MT4 or 2025 access is authorized.',
+              'falsified_or_unsupported_claims':['HYP-030 Long profitability is explained by Long-Up alignment.','A mirror-image completed H4 or D1 state converts both aligned sides into a stable portable strategy.','The selected finite regime rule survives fold and winner-concentration gates.'],
+              'retained_findings':['Short loss is concentrated in Up state and H4 Short-Down becomes positive.','Long profitability is stronger in Down than Up state, contradicting the proposed mirror mechanism.','Session interaction is material: London is weak while London-New York overlap is positive.','Native-source schedule differs from canonical schedule and contains hard ambiguous/unresolved events.'],
+              'prohibited_reuse':['Do not modify HYP-030.','Do not promote Long-only.','Do not retune H4/D1 spans or side thresholds from this outcome.','Do not open pre-2023 strategy outcomes or 2025 for this failed catalog.','Do not implement in Core or MT4.'],
+              'evidence_refs':[{'repository':'mitsuru93/usdjpyea-research','run_id':30317593695,'artifact_id':8672872755,'artifact_digest':'sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee'},{'path':'configs/research/usdjpy_asian_range_sweep_directional_regime_prereg_v1.json'},{'path':'docs/research/artifact_archives/usdjpy_asian_range_sweep_regime_development_v1/final_decision.json'}]
+            }]
+          }
+          json.dump(ledger,open(root/'configs/research/usdjpy_hypothesis_ledger_addendum_v27.json','w'),indent=2,ensure_ascii=False); open(root/'configs/research/usdjpy_hypothesis_ledger_addendum_v27.json','a').write('\n')
+          registry=json.load(open(root/'configs/research/usdjpy_research_candidate_registry_v52.json'))
+          registry['schema_version']='usdjpy_research_candidate_registry_v53'
+          registry['supersedes']='configs/research/usdjpy_research_candidate_registry_v52.json'
+          registry['status']='USDJPY_HYP027_REMAINS_ACTIVE_HYP028_HYP029_HYP030_HYP031_CLOSED'
+          registry['next_action']='Continue separately governed HYP-027 unchanged. HYP-031 is closed as NO_PORTABLE_REGIME_RULE; no backward validation, Core, MT4 or 2025 access is authorized. HYP-030 remains closed and may not be converted to Long-only.'
+          registry['parallel_or_closed_studies'].append({
+            'hypothesis_id':'USDJPY-HYP-031','family_id':'S_ASIAN_RANGE_SWEEP_REGIME_ROUTING','status':'COMPLETE_NO_PORTABLE_REGIME_RULE','selected_candidate_id':None,
+            'tested_candidate_ids':['R1_H4_SYMMETRIC_TRANSITION_BLOCK','R2_D1_SYMMETRIC_TRANSITION_BLOCK'],
+            'candidate_registry':'configs/research/usdjpy_asian_range_sweep_regime_candidate_registry_v1.json',
+            'preregistration':'configs/research/usdjpy_asian_range_sweep_directional_regime_prereg_v1.json',
+            'result':'configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json',
+            'result_report':'docs/research/USDJPY_ASIAN_RANGE_SWEEP_DIRECTIONAL_REGIME_PORTABILITY_RESULT_V1.md',
+            'period_access_receipt':'configs/research/usdjpy_asian_range_sweep_regime_period_access_receipt_v1.json',
+            'authorization':'NONE_NO_BACKWARD_VALIDATION_NO_CORE_NO_MT4_NO_EXTERNAL_GATE','2025_role':'NOT_ACCESSED_NOT_AUTHORIZED'
+          })
+          registry['closed_families'].append('S_ASIAN_RANGE_SWEEP_REGIME_ROUTING')
+          registry['closed_hypothesis_catalogs'].append({'hypothesis_id':'USDJPY-HYP-031','catalog':'S_ASIAN_RANGE_SWEEP_REGIME_ROUTING_V1','decision':'NO_PORTABLE_REGIME_RULE','scope':'The preregistered source-native H4 EMA6/24 and D1 EMA6/24 mirror permission catalog with Neutral/Transition block. Long-only remains diagnostic and is not authorized.'})
+          registry['research_memory']['hypothesis_ledger_addendum']='configs/research/usdjpy_hypothesis_ledger_addendum_v27.json'
+          registry['run_authorization'].update({'HYP031_backward_validation':False,'HYP031_core_contract':False,'HYP031_mt4_standalone':False,'HYP031_mt4_integrated':False,'HYP031_external_2025_gate':False,'HYP031_production':False,'HYP031_long_only_promotion':False})
+          json.dump(registry,open(root/'configs/research/usdjpy_research_candidate_registry_v53.json','w'),indent=2,ensure_ascii=False); open(root/'configs/research/usdjpy_research_candidate_registry_v53.json','a').write('\n')
+          report=f'''# USDJPY Asian Range Sweep Directional-Regime Portability Study\n\n## Decision\n\n**NO_PORTABLE_REGIME_RULE** (`USDJPY-HYP-031`, `S_ASIAN_RANGE_SWEEP_REGIME_ROUTING`). HYP-030 remains closed as `NO_PORTABLE_CANDIDATE`. No candidate freeze, backward-validation outcome access, Core implementation, MT4 run, or 2025 access is authorized.\n\n## Binding source-native population\n\nDukascopy BI5 Bid/Ask ticks generated Asian High/Low, M15 sweep side, first executable Entry and frozen 3-hour Exit from one source. The raw-native baseline produced 544 resolved trades, +JPY4,523, PF 1.0756, MDD JPY7,781. Long contributed +JPY13,176; Short contributed -JPY8,653.\n\nFresh native schedule identity versus the accepted canonical schedule was 504 common events, 41 canonical-only and 40 raw-only. The native build also found 16 bars sweeping both extremes and four unresolved executable chronologies. Therefore `source_native_signal_identity_complete` failed.\n\n## HYP-030 mismatch attribution\n\nAll 20 prior mismatch rows are preserved. Fourteen are close-back-inside failures, five are sweep/range-boundary failures and one canonical Short becomes an opposite raw-native Long. Those 20 canonical trades contributed approximately +JPY3,758 to HYP-030.\n\n## Side x regime findings\n\nH4 Long-Up: 147 trades, +JPY2,974, PF 1.2148. H4 Long-Down: 79 trades, +JPY8,383, PF 2.0224. H4 Short-Up: 180 trades, -JPY11,005, PF 0.4970. H4 Short-Down: 116 trades, +JPY1,867, PF 1.1246.\n\nD1 Long-Up: 161 trades, +JPY3,400, PF 1.2189. D1 Long-Down: 58 trades, +JPY6,598, PF 2.3446. D1 Short-Up: 206 trades, -JPY8,254, PF 0.6335. D1 Short-Down: 78 trades, -JPY2,415, PF 0.8190.\n\nShort loss is indeed concentrated in Up state, and H4 Short-Down improves to positive. However Long profit is materially stronger in Down than Up under both timeframes. The proposed mirror mechanism therefore does not explain HYP-030 Long profitability.\n\n## Candidate results\n\nR1 H4 symmetric: 263 trades, +JPY4,841, PF 1.1680, MDD JPY4,855, 3/4 positive folds and 17/24 positive months. It fails source identity, minimum fold (2023H1 -JPY4,586) and top-five-winner removal (-JPY760). Spread +1 pip remains +JPY2,211; +2 pips becomes -JPY419.\n\nR2 D1 symmetric: 239 trades, +JPY985, PF 1.0341, MDD JPY6,874, 3/4 positive folds and 15/24 positive months. Aligned Short-Down is -JPY2,415; side/regime dependency is 100%. Spread +0.5 pip is already -JPY210, +1 pip -JPY1,405, Entry delay +5 seconds -JPY257, and top-five removal -JPY4,185.\n\n## Transition and portfolio risk\n\nR1 has 136 transitions; worst five-business-day cluster net is -JPY2,704 and maximum cluster MDD JPY2,779. R2 has 14 transitions; worst ten-business-day cluster net is -JPY2,642 and maximum cluster MDD JPY3,250.\n\nB02/F05 negative-day contribution is positive for R1 (+JPY4,574) and R2 (+JPY4,835), but additive daily portfolio MDD rises from JPY40,487 to JPY44,428 for R1 and JPY44,365 for R2. These are reported separately from the preregistered bootstrap distributions and are not the sole rejection reason.\n\n## Authorization boundary\n\nBecause no development candidate passes every gate, pre-2023 strategy outcomes remain unopened; 2025H1/H2 remain untouched; Core and MT4 are unchanged.\n'''
+          (root/'docs/research/USDJPY_ASIAN_RANGE_SWEEP_DIRECTIONAL_REGIME_PORTABILITY_RESULT_V1.md').write_text(report)
+          PY
+          mkdir -p release_stage
+          cp -a downloaded/regime_output release_stage/
+          cp configs/research/usdjpy_asian_range_sweep_directional_regime_prereg_v1.json release_stage/
+          cp configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json release_stage/
+          cp configs/research/usdjpy_asian_range_sweep_regime_candidate_registry_v1.json release_stage/
+          cp docs/research/USDJPY_ASIAN_RANGE_SWEEP_DIRECTIONAL_REGIME_PORTABILITY_RESULT_V1.md release_stage/
+          (cd release_stage && find . -type f -printf '%P\0' | sort -z | xargs -0 sha256sum > RELEASE_SHA256SUMS)
+          (cd release_stage && zip -q -X -r "../$RELEASE_ASSET" .)
+          asset_sha=$(sha256sum "$RELEASE_ASSET" | awk '{print $1}')
+          jq -n \
+            --arg tag "$RELEASE_TAG" --arg asset "$RELEASE_ASSET" --arg sha "$asset_sha" \
+            --arg artifact_digest "$SOURCE_ARTIFACT_DIGEST" --argjson run_id "$SOURCE_RUN_ID" --argjson artifact_id "$SOURCE_ARTIFACT_ID" \
+            '{schema_version:"usdjpy_asian_range_sweep_regime_release_receipt_v1",hypothesis_id:"USDJPY-HYP-031",decision_class:"NO_PORTABLE_REGIME_RULE",source_run_id:$run_id,source_artifact_id:$artifact_id,source_artifact_digest:$artifact_digest,release_tag:$tag,release_asset:$asset,release_asset_sha256:$sha,HYP030_decision_changed:false,pre2023_strategy_outcomes_accessed:false,Core_modified:false,MT4_accessed:false,"2025_accessed":false}' \
+            > configs/research/usdjpy_asian_range_sweep_regime_release_receipt_v1.json
+          git add configs/research docs/research
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research: close HYP-031 with no portable regime rule'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          new_sha=$(git rev-parse HEAD)
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "$RELEASE_ASSET" --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$RELEASE_TAG" "$RELEASE_ASSET" --repo "$GITHUB_REPOSITORY" --target "$new_sha" --title 'USDJPY HYP-031 Asian Range Sweep Regime Portability v1' --notes 'Binding Research decision: NO_PORTABLE_REGIME_RULE. HYP-030 unchanged. No backward-validation outcome, Core, MT4 or 2025 authorization.'
+          fi
+          cat > receipt.md <<EOF
+          hypothesis_id: USDJPY-HYP-031
+          decision_class: NO_PORTABLE_REGIME_RULE
+          source_run_id: ${SOURCE_RUN_ID}
+          source_artifact_id: ${SOURCE_ARTIFACT_ID}
+          source_artifact_digest: ${SOURCE_ARTIFACT_DIGEST}
+          release_tag: ${RELEASE_TAG}
+          release_asset: ${RELEASE_ASSET}
+          release_asset_sha256: ${asset_sha}
+          canonical_commit: ${new_sha}
+          HYP030_decision_changed: false
+          pre2023_strategy_outcomes_accessed: false
+          Core_modified: false
+          MT4_accessed: false
+          2025_accessed: false
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title '[HYP-031] NO_PORTABLE_REGIME_RULE canonical receipt' --body-file receipt.md

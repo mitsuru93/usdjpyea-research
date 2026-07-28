@@ -1,0 +1,16 @@
+{
+  "schema_version": "usdjpy_asian_range_sweep_regime_release_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-031",
+  "decision_class": "NO_PORTABLE_REGIME_RULE",
+  "source_run_id": 30317593695,
+  "source_artifact_id": 8672872755,
+  "source_artifact_digest": "sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee",
+  "release_tag": "usdjpy-asian-range-sweep-regime-portability-v1",
+  "release_asset": "usdjpy-asian-range-sweep-regime-portability-v1.zip",
+  "release_asset_sha256": "eb84d8b37aa4d237ed997d8ba346612eb8ad20157803c2bbaf8c7ccad5c5d78b",
+  "HYP030_decision_changed": false,
+  "pre2023_strategy_outcomes_accessed": false,
+  "Core_modified": false,
+  "MT4_accessed": false,
+  "2025_accessed": false
+}

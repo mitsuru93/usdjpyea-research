@@ -1,0 +1,124 @@
+name: USDJPY HYP031 Finalize Memory v1
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: hyp031-finalize-memory-v1
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Synchronize memory and output manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root=Path('.'); cfg=root/'configs/research'; docs=root/'docs/research'
+          def load(p): return json.loads(Path(p).read_text(encoding='utf-8'))
+          def dump(p,o):
+              p=Path(p); p.parent.mkdir(parents=True,exist_ok=True)
+              p.write_text(json.dumps(o,indent=2,sort_keys=True,ensure_ascii=False)+'\n',encoding='utf-8')
+          def sha(p):
+              h=hashlib.sha256()
+              with Path(p).open('rb') as f:
+                  for c in iter(lambda:f.read(1048576),b''): h.update(c)
+              return h.hexdigest()
+
+          result_path=cfg/'usdjpy_asian_range_sweep_regime_development_result_v1.json'; result=load(result_path)
+          assert result['decision_class']=='NO_PORTABLE_REGIME_RULE' and result['selected_candidate_id'] is None
+          assert result['2025_accessed'] is False and result['pre2023_strategy_outcomes_accessed'] is False
+          assert result['authorization']=={'2025':False,'Core':False,'MT4':False,'backward_validation':False}
+
+          release_path=cfg/'usdjpy_asian_range_sweep_regime_release_receipt_v1.json'; release=load(release_path)
+          release.update({'canonical_receipt_issue':351,'release_readback':'PASS_RELEASE_CREATED_ASSET_SHA256_RECORDED',
+            'candidate_freeze_created':False,'backward_validation_authorized':False,'Core_authorized':False,
+            'MT4_authorized':False,'production_authorized':False,'live_orders_authorized':False})
+          dump(release_path,release)
+
+          memory_path=cfg/'usdjpy_research_memory_manifest_v1.json'; memory=load(memory_path); p=memory['canonical_pointers']
+          p['current_candidate_registry']='configs/research/usdjpy_research_candidate_registry_v53.json'
+          p['hypothesis_ledger_addendum']='configs/research/usdjpy_hypothesis_ledger_addendum_v27.json'
+          p.update({'hyp031_preregistration':'configs/research/usdjpy_asian_range_sweep_directional_regime_prereg_v1.json',
+            'hyp031_candidate_registry':'configs/research/usdjpy_asian_range_sweep_regime_candidate_registry_v1.json',
+            'hyp031_result':'configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json',
+            'hyp031_result_report':'docs/research/USDJPY_ASIAN_RANGE_SWEEP_DIRECTIONAL_REGIME_PORTABILITY_RESULT_V1.md',
+            'hyp031_period_access_receipt':'configs/research/usdjpy_asian_range_sweep_regime_period_access_receipt_v1.json',
+            'hyp031_pre2023_authority_inventory':'configs/research/usdjpy_asian_range_sweep_regime_pre2023_authority_inventory_v1.json',
+            'hyp031_technical_repair_receipt':'configs/research/usdjpy_asian_range_sweep_regime_technical_repair_receipt_v1.json',
+            'hyp031_failure_postmortem':'docs/research/USDJPY_HYP031_TECHNICAL_FAILURE_POSTMORTEM_V1.md',
+            'hyp031_release_receipt':'configs/research/usdjpy_asian_range_sweep_regime_release_receipt_v1.json',
+            'hyp031_output_manifest':'configs/research/usdjpy_asian_range_sweep_regime_output_manifest_v1.json'})
+          registry=load(cfg/'usdjpy_research_candidate_registry_v53.json'); snap=memory['current_state_snapshot']
+          snap['registry_status']=registry['status']; snap['next_action']=registry['next_action']
+          memory.setdefault('parallel_track_state',{})['USDJPY-HYP-031']={'family':'S_ASIAN_RANGE_SWEEP_REGIME_ROUTING','candidate':None,
+            'tested_candidates':['R1_H4_SYMMETRIC_TRANSITION_BLOCK','R2_D1_SYMMETRIC_TRANSITION_BLOCK'],
+            'status':'COMPLETE_NO_PORTABLE_REGIME_RULE','decision':'NO_PORTABLE_REGIME_RULE','development_run_id':30317593695,
+            'artifact_id':8672872755,'pre2023_authority_complete':False,'pre2023_strategy_outcomes_accessed':False,
+            'backward_validation_authorized':False,'core_authorized':False,'mt4_authorized':False,
+            '2025H1_accessed':False,'2025H1_authorized':False,'2025H2_accessed':False,'2025H2_authorized':False,
+            'production_authorized':False,'live_orders_authorized':False,'does_not_change_HYP027_or_HYP030':True}
+          order=memory['mandatory_startup_read_order']
+          for row in order:
+              if row['path']=='configs/research/usdjpy_research_candidate_registry_v52.json': row.update(path='configs/research/usdjpy_research_candidate_registry_v53.json',reason='global HYP-027 state plus HYP-028 through HYP-031 closures')
+              if row['path']=='configs/research/usdjpy_hypothesis_ledger_addendum_v26.json': row.update(path='configs/research/usdjpy_hypothesis_ledger_addendum_v27.json',reason='append-only HYP-026 through HYP-031 scientific memory')
+          existing={r['path'] for r in order}; n=max(r['ordinal'] for r in order)+1
+          for path,reason in [('configs/research/usdjpy_asian_range_sweep_regime_candidate_registry_v1.json','HYP-031 tested catalog closure'),
+            ('configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json','binding HYP-031 development result'),
+            ('docs/research/USDJPY_ASIAN_RANGE_SWEEP_DIRECTIONAL_REGIME_PORTABILITY_RESULT_V1.md','human HYP-031 result report'),
+            ('configs/research/usdjpy_asian_range_sweep_regime_period_access_receipt_v1.json','HYP-031 period firewall closure'),
+            ('configs/research/usdjpy_asian_range_sweep_regime_pre2023_authority_inventory_v1.json','HYP-031 pre-2023 authority inventory'),
+            ('configs/research/usdjpy_asian_range_sweep_regime_technical_repair_receipt_v1.json','HYP-031 technical repair authority'),
+            ('configs/research/usdjpy_asian_range_sweep_regime_release_receipt_v1.json','HYP-031 Release authority'),
+            ('configs/research/usdjpy_asian_range_sweep_regime_output_manifest_v1.json','HYP-031 output manifest')]:
+              if path not in existing: order.append({'ordinal':n,'path':path,'reason':reason}); n+=1
+          dump(memory_path,memory)
+
+          manifest_path=cfg/'usdjpy_asian_range_sweep_regime_output_manifest_v1.json'
+          files=[cfg/'usdjpy_asian_range_sweep_directional_regime_prereg_v1.json',cfg/'usdjpy_asian_range_sweep_regime_candidate_registry_v1.json',result_path,
+            cfg/'usdjpy_asian_range_sweep_regime_development_freeze_v1.json',cfg/'usdjpy_asian_range_sweep_regime_period_access_receipt_v1.json',
+            cfg/'usdjpy_asian_range_sweep_regime_pre2023_authority_inventory_v1.json',cfg/'usdjpy_asian_range_sweep_regime_technical_repair_receipt_v1.json',release_path,
+            cfg/'usdjpy_hypothesis_ledger_addendum_v27.json',cfg/'usdjpy_research_candidate_registry_v53.json',memory_path,
+            docs/'USDJPY_ASIAN_RANGE_SWEEP_DIRECTIONAL_REGIME_PORTABILITY_RESULT_V1.md',docs/'USDJPY_HYP031_TECHNICAL_FAILURE_POSTMORTEM_V1.md']
+          archive=docs/'artifact_archives/usdjpy_asian_range_sweep_regime_development_v1'; files+=sorted(x for x in archive.iterdir() if x.is_file())
+          dump(manifest_path,{'schema_version':'usdjpy_asian_range_sweep_regime_output_manifest_v1','hypothesis_id':'USDJPY-HYP-031',
+            'decision_class':'NO_PORTABLE_REGIME_RULE','scientific_run_id':30317593695,'artifact_id':8672872755,
+            'artifact_digest':'sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee',
+            'release_tag':'usdjpy-asian-range-sweep-regime-portability-v1','release_asset':'usdjpy-asian-range-sweep-regime-portability-v1.zip',
+            'release_asset_sha256':release['release_asset_sha256'],'files':[{'path':str(x),'sha256':sha(x),'bytes':x.stat().st_size} for x in files]})
+          PY
+          python tools/validate_usdjpy_research_memory_v1.py
+
+      - name: Commit memory synchronization and remove one-shot workflow
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/usdjpy_hyp031_finalize_memory_v1.yml
+          git add -A
+          git commit -m 'research: finalize HYP-031 memory synchronization'
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Record memory receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue comment 351 --repo "$GITHUB_REPOSITORY" --body "Memory synchronization commit: ${{ steps.commit.outputs.sha }}. Registry v53, ledger v27, period firewall, technical repair and output manifest validated."

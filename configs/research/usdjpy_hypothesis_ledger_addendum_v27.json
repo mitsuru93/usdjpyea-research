@@ -1,0 +1,362 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v27",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v26.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v26.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-031",
+      "family_ids": [
+        "S_ASIAN_RANGE_SWEEP_REGIME_ROUTING"
+      ],
+      "candidate_ids": [
+        "R1_H4_SYMMETRIC_TRANSITION_BLOCK",
+        "R2_D1_SYMMETRIC_TRANSITION_BLOCK"
+      ],
+      "status": "COMPLETE_NO_PORTABLE_REGIME_RULE",
+      "origin_analysis": "HYP-030 showed profitable Long and losing Short results, raising the independent question whether a completed-information symmetric trend state could route Asian Range Sweep direction portably without changing HYP-030.",
+      "causal_hypothesis": "Same-source native Asian Low Sweep Longs should contribute in stable Up states and Asian High Sweep Shorts should contribute in stable Down states, with Neutral and first-change Transition buckets blocked, across folds and transition windows.",
+      "tests": [
+        {
+          "period": "2023H1_2024H2",
+          "type": "source_native_directional_regime_development",
+          "run_id": 30317593695,
+          "result": {
+            "2025_accessed": false,
+            "HYP030_decision_changed": false,
+            "audits": {
+              "ambiguous_both_side": 16,
+              "canonical_events": 545,
+              "canonical_only": 41,
+              "chronology_unresolved": 4,
+              "common_intersection": 504,
+              "duplicate_state_rows": 0,
+              "future_bar_access": 0,
+              "hyp030_mismatch_pnl_contribution_jpy": 3757.999999999981,
+              "hyp030_mismatch_rows": 20,
+              "incomplete_h4_d1_used": 0,
+              "native_events": 544,
+              "raw_only": 40,
+              "side_disagreement": 0,
+              "source_mixed_state": 0,
+              "state_timestamp_mismatch": 0,
+              "timezone_mismatch": 0
+            },
+            "authorization": {
+              "2025": false,
+              "Core": false,
+              "MT4": false,
+              "backward_validation": false
+            },
+            "candidate_rows": [
+              {
+                "all_development_gates_passed": null,
+                "allowed": 544,
+                "average_trade_jpy": 8.314338235294215,
+                "avoided_loser_benefit_jpy": -0.0,
+                "blocked": 0,
+                "blocked_winner_damage_jpy": 0.0,
+                "candidate_id": "HYP030_STYLE_RAW_NATIVE_BOTH",
+                "down_contribution_jpy": 0.0,
+                "failed_gates": null,
+                "gross_loss_jpy": 59823.00000000015,
+                "gross_profit_jpy": 64346.000000000204,
+                "long_contribution_jpy": 13176.000000000357,
+                "max_regime_positive_net_share": 1.0,
+                "max_side_positive_net_share": 1.0,
+                "mdd_jpy": 7781.000000000149,
+                "median_trade_jpy": -6.000000000000227,
+                "minimum_fold_net_jpy": -409.99999999996817,
+                "net_jpy": 4523.000000000054,
+                "neutral_contribution_jpy": 0.0,
+                "pf": 1.0756063721311209,
+                "positive_folds": 3,
+                "positive_months": 16,
+                "recovery_factor": 0.5812877522169344,
+                "short_contribution_jpy": -8653.000000000304,
+                "total_trades": 544,
+                "trades": 544,
+                "transition_contribution_jpy": 0.0,
+                "up_contribution_jpy": 0.0,
+                "win_rate": 0.4834558823529412
+              },
+              {
+                "all_development_gates_passed": null,
+                "allowed": 239,
+                "average_trade_jpy": 55.129707112972206,
+                "avoided_loser_benefit_jpy": 37075.00000000013,
+                "blocked": 305,
+                "blocked_winner_damage_jpy": 28421.999999999825,
+                "candidate_id": "LONG_ONLY_DIAGNOSTIC",
+                "down_contribution_jpy": 0.0,
+                "failed_gates": null,
+                "gross_loss_jpy": 22748.000000000022,
+                "gross_profit_jpy": 35924.00000000038,
+                "long_contribution_jpy": 13176.000000000357,
+                "max_regime_positive_net_share": 1.0,
+                "max_side_positive_net_share": 1.0,
+                "mdd_jpy": 2916.0000000000528,
+                "median_trade_jpy": 28.999999999996362,
+                "minimum_fold_net_jpy": 1628.000000000128,
+                "net_jpy": 13176.000000000357,
+                "neutral_contribution_jpy": 0.0,
+                "pf": 1.5792157552312442,
+                "positive_folds": 4,
+                "positive_months": 21,
+                "recovery_factor": 4.518518518518559,
+                "short_contribution_jpy": 0.0,
+                "total_trades": 544,
+                "trades": 239,
+                "transition_contribution_jpy": 0.0,
+                "up_contribution_jpy": 0.0,
+                "win_rate": 0.5606694560669456
+              },
+              {
+                "all_development_gates_passed": null,
+                "allowed": 305,
+                "average_trade_jpy": -28.370491803279684,
+                "avoided_loser_benefit_jpy": 22748.000000000022,
+                "blocked": 239,
+                "blocked_winner_damage_jpy": 35924.00000000038,
+                "candidate_id": "SHORT_ONLY_DIAGNOSTIC",
+                "down_contribution_jpy": 0.0,
+                "failed_gates": null,
+                "gross_loss_jpy": 37075.00000000013,
+                "gross_profit_jpy": 28421.999999999825,
+                "long_contribution_jpy": 0.0,
+                "max_regime_positive_net_share": 1.0,
+                "max_side_positive_net_share": 1.0,
+                "mdd_jpy": 10640.000000000218,
+                "median_trade_jpy": -21.99999999999136,
+                "minimum_fold_net_jpy": -3933.000000000021,
+                "net_jpy": -8653.000000000304,
+                "neutral_contribution_jpy": 0.0,
+                "pf": 0.7666082265677606,
+                "positive_folds": 0,
+                "positive_months": 10,
+                "recovery_factor": -0.8132518796992599,
+                "short_contribution_jpy": -8653.000000000304,
+                "total_trades": 544,
+                "trades": 305,
+                "transition_contribution_jpy": 0.0,
+                "up_contribution_jpy": 0.0,
+                "win_rate": 0.42295081967213116
+              },
+              {
+                "all_development_gates_passed": false,
+                "allowed": 263,
+                "average_trade_jpy": 18.40684410646489,
+                "avoided_loser_benefit_jpy": 31001.000000000233,
+                "blocked": 281,
+                "blocked_winner_damage_jpy": 30683.000000000022,
+                "candidate_id": "R1_H4_SYMMETRIC_TRANSITION_BLOCK",
+                "down_contribution_jpy": 1866.9999999999618,
+                "failed_gates": "source_native_signal_identity_complete;minimum_fold_net;top5_winner_removal_positive",
+                "gross_loss_jpy": 28821.999999999916,
+                "gross_profit_jpy": 33663.00000000018,
+                "long_contribution_jpy": 2974.000000000302,
+                "max_regime_positive_net_share": 0.6143358810163478,
+                "max_side_positive_net_share": 0.6143358810163478,
+                "mdd_jpy": 4854.99999999996,
+                "median_trade_jpy": 6.000000000000227,
+                "minimum_fold_net_jpy": -4585.999999999956,
+                "net_jpy": 4841.0000000002665,
+                "neutral_contribution_jpy": 0.0,
+                "pf": 1.1679619734924807,
+                "positive_folds": 3,
+                "positive_months": 17,
+                "recovery_factor": 0.9971163748713299,
+                "short_contribution_jpy": 1866.9999999999618,
+                "total_trades": 544,
+                "trades": 263,
+                "transition_contribution_jpy": 0.0,
+                "up_contribution_jpy": 2974.000000000302,
+                "win_rate": 0.5095057034220533
+              },
+              {
+                "all_development_gates_passed": false,
+                "allowed": 239,
+                "average_trade_jpy": 4.121338912135132,
+                "avoided_loser_benefit_jpy": 30953.000000000087,
+                "blocked": 305,
+                "blocked_winner_damage_jpy": 34490.99999999985,
+                "candidate_id": "R2_D1_SYMMETRIC_TRANSITION_BLOCK",
+                "down_contribution_jpy": -2415.0000000000205,
+                "failed_gates": "source_native_signal_identity_complete;pf_at_least_1p05;minimum_fold_net;aligned_short_nonnegative;maximum_side_dependency;maximum_regime_dependency;spread_plus_1pip_nonnegative;entry_delay_5s_positive;top5_winner_removal_positive",
+                "gross_loss_jpy": 28870.000000000062,
+                "gross_profit_jpy": 29855.000000000357,
+                "long_contribution_jpy": 3400.0000000003183,
+                "max_regime_positive_net_share": 1.0,
+                "max_side_positive_net_share": 1.0,
+                "mdd_jpy": 6874.000000000109,
+                "median_trade_jpy": 10.99999999999568,
+                "minimum_fold_net_jpy": -3227.0000000000036,
+                "net_jpy": 985.0000000002965,
+                "neutral_contribution_jpy": 0.0,
+                "pf": 1.0341184620713644,
+                "positive_folds": 3,
+                "positive_months": 15,
+                "recovery_factor": 0.14329356997385523,
+                "short_contribution_jpy": -2415.0000000000205,
+                "total_trades": 544,
+                "trades": 239,
+                "transition_contribution_jpy": 0.0,
+                "up_contribution_jpy": 3400.0000000003183,
+                "win_rate": 0.5230125523012552
+              }
+            ],
+            "core_start_sha": "dbffc656a0793a2efd9bd54394223f1239de2afa",
+            "decision_class": "NO_PORTABLE_REGIME_RULE",
+            "family_id": "S_ASIAN_RANGE_SWEEP_REGIME_ROUTING",
+            "gate_matrices": {
+              "R1_H4_SYMMETRIC_TRANSITION_BLOCK": {
+                "B02_F05_negative_day_contribution_positive": true,
+                "aligned_long_nonnegative": true,
+                "aligned_short_nonnegative": true,
+                "combined_net_positive": true,
+                "entry_delay_15s_nonnegative": true,
+                "entry_delay_5s_positive": true,
+                "implementation_possible": true,
+                "maximum_regime_dependency": true,
+                "maximum_side_dependency": true,
+                "minimum_fold_net": false,
+                "one_bucket_state_delay_nonnegative": true,
+                "pf_at_least_1p05": true,
+                "positive_fold_breadth": true,
+                "positive_month_breadth": true,
+                "source_native_signal_identity_complete": false,
+                "spread_plus_1pip_nonnegative": true,
+                "state_deadband_0p1pip_nonnegative": true,
+                "top5_winner_removal_positive": false,
+                "transition_cluster_mdd_ceiling": true,
+                "transition_window_loss_floor": true
+              },
+              "R2_D1_SYMMETRIC_TRANSITION_BLOCK": {
+                "B02_F05_negative_day_contribution_positive": true,
+                "aligned_long_nonnegative": true,
+                "aligned_short_nonnegative": false,
+                "combined_net_positive": true,
+                "entry_delay_15s_nonnegative": true,
+                "entry_delay_5s_positive": false,
+                "implementation_possible": true,
+                "maximum_regime_dependency": false,
+                "maximum_side_dependency": false,
+                "minimum_fold_net": false,
+                "one_bucket_state_delay_nonnegative": true,
+                "pf_at_least_1p05": false,
+                "positive_fold_breadth": true,
+                "positive_month_breadth": true,
+                "source_native_signal_identity_complete": false,
+                "spread_plus_1pip_nonnegative": false,
+                "state_deadband_0p1pip_nonnegative": true,
+                "top5_winner_removal_positive": false,
+                "transition_cluster_mdd_ceiling": true,
+                "transition_window_loss_floor": true
+              }
+            },
+            "hypothesis_id": "USDJPY-HYP-031",
+            "pre2023_strategy_outcomes_accessed": false,
+            "research_start_sha": "832a26fe37503931d619cb5449e083acfe026b9c",
+            "run_id": "30317593695",
+            "schema_version": "usdjpy_asian_range_sweep_directional_regime_development_result_v1",
+            "selected_candidate_id": null,
+            "state_counts": [
+              {
+                "rows": 138,
+                "state": "Down",
+                "timeframe": "D1"
+              },
+              {
+                "rows": 23,
+                "state": "Neutral",
+                "timeframe": "D1"
+              },
+              {
+                "rows": 14,
+                "state": "Transition",
+                "timeframe": "D1"
+              },
+              {
+                "rows": 343,
+                "state": "Up",
+                "timeframe": "D1"
+              },
+              {
+                "rows": 1095,
+                "state": "Down",
+                "timeframe": "H4"
+              },
+              {
+                "rows": 23,
+                "state": "Neutral",
+                "timeframe": "H4"
+              },
+              {
+                "rows": 136,
+                "state": "Transition",
+                "timeframe": "H4"
+              },
+              {
+                "rows": 1861,
+                "state": "Up",
+                "timeframe": "H4"
+              }
+            ],
+            "status": "NO_PORTABLE_REGIME_RULE",
+            "transition_summaries": {
+              "R1_H4_SYMMETRIC_TRANSITION_BLOCK": {
+                "maximum_transition_10bd_cluster_mdd_jpy": 2778.999999999968,
+                "maximum_transition_5bd_cluster_mdd_jpy": 2778.999999999968,
+                "minimum_transition_10bd_cluster_net_jpy": -2207.999999999942,
+                "minimum_transition_5bd_cluster_net_jpy": -2703.999999999951,
+                "transition_count": 136
+              },
+              "R2_D1_SYMMETRIC_TRANSITION_BLOCK": {
+                "maximum_transition_10bd_cluster_mdd_jpy": 3250.000000000028,
+                "maximum_transition_5bd_cluster_mdd_jpy": 2019.0000000000055,
+                "minimum_transition_10bd_cluster_net_jpy": -2641.999999999996,
+                "minimum_transition_5bd_cluster_net_jpy": -1965.0000000000034,
+                "transition_count": 14
+              }
+            }
+          }
+        }
+      ],
+      "decision": "NO_PORTABLE_REGIME_RULE. R1 is positive but fails source-native identity, minimum-fold and top-five-removal gates; R2 additionally fails directional symmetry because aligned Short/Down remains negative. No candidate freeze, backward validation, Core, MT4 or 2025 access is authorized.",
+      "falsified_or_unsupported_claims": [
+        "HYP-030 Long profitability is explained by Long-Up alignment.",
+        "A mirror-image completed H4 or D1 state converts both aligned sides into a stable portable strategy.",
+        "The selected finite regime rule survives fold and winner-concentration gates."
+      ],
+      "retained_findings": [
+        "Short loss is concentrated in Up state and H4 Short-Down becomes positive.",
+        "Long profitability is stronger in Down than Up state, contradicting the proposed mirror mechanism.",
+        "Session interaction is material: London is weak while London-New York overlap is positive.",
+        "Native-source schedule differs from canonical schedule and contains hard ambiguous/unresolved events."
+      ],
+      "prohibited_reuse": [
+        "Do not modify HYP-030.",
+        "Do not promote Long-only.",
+        "Do not retune H4/D1 spans or side thresholds from this outcome.",
+        "Do not open pre-2023 strategy outcomes or 2025 for this failed catalog.",
+        "Do not implement in Core or MT4."
+      ],
+      "evidence_refs": [
+        {
+          "repository": "mitsuru93/usdjpyea-research",
+          "run_id": 30317593695,
+          "artifact_id": 8672872755,
+          "artifact_digest": "sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee"
+        },
+        {
+          "path": "configs/research/usdjpy_asian_range_sweep_directional_regime_prereg_v1.json"
+        },
+        {
+          "path": "docs/research/artifact_archives/usdjpy_asian_range_sweep_regime_development_v1/final_decision.json"
+        }
+      ]
+    }
+  ]
+}

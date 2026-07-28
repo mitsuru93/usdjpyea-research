@@ -1,0 +1,47 @@
+{
+  "schema_version": "usdjpy_asian_range_sweep_regime_candidate_registry_v1",
+  "hypothesis_id": "USDJPY-HYP-031",
+  "family_id": "S_ASIAN_RANGE_SWEEP_REGIME_ROUTING",
+  "status": "COMPLETE_NO_PORTABLE_REGIME_RULE",
+  "selected_candidate_id": null,
+  "tested_candidate_ids": [
+    "R1_H4_SYMMETRIC_TRANSITION_BLOCK",
+    "R2_D1_SYMMETRIC_TRANSITION_BLOCK"
+  ],
+  "diagnostic_ids": [
+    "HYP030_STYLE_RAW_NATIVE_BOTH",
+    "LONG_ONLY_DIAGNOSTIC",
+    "SHORT_ONLY_DIAGNOSTIC"
+  ],
+  "binding_source": "Dukascopy BI5 native Bid/Ask signal and execution",
+  "decision_class": "NO_PORTABLE_REGIME_RULE",
+  "failed_gates": {
+    "R1_H4_SYMMETRIC_TRANSITION_BLOCK": [
+      "source_native_signal_identity_complete",
+      "minimum_fold_net",
+      "top5_winner_removal_positive"
+    ],
+    "R2_D1_SYMMETRIC_TRANSITION_BLOCK": [
+      "source_native_signal_identity_complete",
+      "pf_at_least_1p05",
+      "minimum_fold_net",
+      "aligned_short_nonnegative",
+      "maximum_side_dependency",
+      "maximum_regime_dependency",
+      "spread_plus_1pip_nonnegative",
+      "entry_delay_5s_positive",
+      "top5_winner_removal_positive"
+    ]
+  },
+  "candidate_freeze": false,
+  "backward_validation_authorized": false,
+  "Core_authorized": false,
+  "MT4_authorized": false,
+  "external_2025_authorized": false,
+  "2025_accessed": false,
+  "HYP030_decision_changed": false,
+  "evidence_archive": "docs/research/artifact_archives/usdjpy_asian_range_sweep_regime_development_v1",
+  "source_run_id": 30317593695,
+  "source_artifact_id": 8672872755,
+  "source_artifact_digest": "sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee"
+}
