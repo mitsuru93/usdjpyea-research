@@ -1,0 +1,32 @@
+{
+  "HYP027_boundary": {
+    "closed": true,
+    "decision": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+    "modified": false
+  },
+  "active_family": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+  "active_hypothesis": "USDJPY-HYP-032",
+  "candidate_freeze": "configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json",
+  "candidate_ids": [
+    "C1_SHORT_SHARED_SESSION_LOSS_CAP_2"
+  ],
+  "current_candidate": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+  "development_decision": "PASS_DEVELOPMENT_FREEZE_C1",
+  "historical_decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+  "historical_result": "configs/research/usdjpy_hyp032_historical_validation_result_v1.json",
+  "next_action": "Scientific stop. Do not retune C1 or open Core/2025.",
+  "no_retuning": true,
+  "run_authorization": {
+    "2020_2022_candidate_validation_once": false,
+    "2025H1": false,
+    "2025H2": false,
+    "Core_implementation": false,
+    "MT4_candidate": false,
+    "live": false,
+    "production": false
+  },
+  "schema_version": "usdjpy_research_candidate_registry_v57",
+  "status": "USDJPY_HYP032_HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v56.json",
+  "technical_retry_of_run_id": 30360154724
+}

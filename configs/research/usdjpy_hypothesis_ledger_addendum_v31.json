@@ -1,0 +1,42 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "hypothesis_status_updates": [
+    {
+      "2025_accessed": false,
+      "Core_candidate_authorized": false,
+      "artifact_digest": "e3a48c9915579acc72a4a5cba04df2d3f94b98c9ba7c030cf530bf8326cbe713",
+      "artifact_id": "8688801817",
+      "artifact_upload_outcome": "success",
+      "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+      "decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+      "failed_gates": [
+        "realized_dd_reduction_positive",
+        "full_equity_dd_reduction_positive",
+        "positive_calendar_years_at_least_2of3",
+        "positive_halfyears_at_least_4of6",
+        "largest_positive_year_share_at_most_60pct",
+        "largest_positive_session_share_at_most_60pct",
+        "largest_positive_month_share_at_most_25pct",
+        "top3_events_removed_positive",
+        "date_session_bootstrap_lower_95_positive",
+        "date_session_bootstrap_probability_nonpositive_at_most_5pct"
+      ],
+      "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+      "historical_run_id": 30361067984,
+      "historical_run_sha": "a6324afdb0418b03126f524ec035ce0da94ef68a",
+      "hypothesis_id": "USDJPY-HYP-032",
+      "input_gzip_sha256": "d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670",
+      "live_authorized": false,
+      "prior_status": "DEVELOPMENT_FROZEN_C1_HISTORICAL_AUTHORITY_PENDING",
+      "production_authorized": false,
+      "status": "HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING",
+      "technical_retry_of_run_id": 30360154724
+    }
+  ],
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v30.json",
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v31",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v30.json"
+}
