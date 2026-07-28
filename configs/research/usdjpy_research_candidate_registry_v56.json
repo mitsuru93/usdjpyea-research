@@ -1,0 +1,29 @@
+{
+  "HYP027_boundary": {
+    "closed": true,
+    "decision": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+    "modified": false
+  },
+  "active_family": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+  "active_hypothesis": "USDJPY-HYP-032",
+  "candidate_freeze": "configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json",
+  "candidate_ids": [
+    "C1_SHORT_SHARED_SESSION_LOSS_CAP_2"
+  ],
+  "current_candidate": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+  "development_decision": "PASS_DEVELOPMENT_FREEZE_C1",
+  "next_action": "Inventory and canonically build 2019-2022 B02/F05 baseline authority without computing candidate outcomes; then authorize one-shot historical validation.",
+  "run_authorization": {
+    "2019_2022_baseline_authority_build": true,
+    "2020_2022_candidate_validation_once": false,
+    "2025H1": false,
+    "2025H2": false,
+    "Core_implementation": false,
+    "MT4_candidate": false,
+    "live": false,
+    "production": false
+  },
+  "schema_version": "usdjpy_research_candidate_registry_v56",
+  "status": "USDJPY_HYP032_DEVELOPMENT_FREEZE_C1_HISTORICAL_AUTHORITY_PENDING",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v55.json"
+}

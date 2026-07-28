@@ -1,0 +1,345 @@
+{
+  "HYP027_boundary_maintained": true,
+  "candidate_results": [
+    {
+      "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+      "concentration": {
+        "best_event_removed_net_jpy": 5827.0,
+        "largest_positive_fold_share": 0.42082459818308876,
+        "largest_positive_month_share": 0.17685444133706218,
+        "largest_positive_session_share": 0.5250873515024458,
+        "top3_events_removed_net_jpy": 3350.0
+      },
+      "date_session_bootstrap": {
+        "ci95_jpy": [
+          3622.0,
+          10330.224999999997
+        ],
+        "probability_nonpositive": 0.0,
+        "replicates": 10000,
+        "seed": 20260728
+      },
+      "economics": {
+        "M15_snapshot_dd_reduction_jpy": 3500.0,
+        "baseline_M15_snapshot_dd_jpy": 42660.0,
+        "baseline_net_jpy": 51627.0,
+        "baseline_pf": 1.1377131303215893,
+        "baseline_realized_dd_jpy": 40487.0,
+        "blocked_losers": 15,
+        "blocked_trades": 17,
+        "blocked_winners": 2,
+        "candidate_M15_snapshot_dd_jpy": 39160.0,
+        "candidate_net_jpy": 58782.0,
+        "candidate_pf": 1.1600708012798693,
+        "candidate_realized_dd_jpy": 36987.0,
+        "net_improvement_jpy": 7155.0,
+        "realized_dd_reduction_jpy": 3500.0,
+        "top20_winner_loss_jpy": 0.0,
+        "winner_retention": 0.998808951619521
+      },
+      "event_bootstrap": {
+        "ci95_jpy": [
+          3630.0,
+          10469.0
+        ],
+        "probability_nonpositive": 0.0,
+        "replicates": 10000,
+        "seed": 20260728
+      },
+      "failed_gates": [],
+      "folds": [
+        {
+          "M15_snapshot_dd_reduction_jpy": 1023.0,
+          "fold": "2023H1",
+          "net_improvement_jpy": 1023.0,
+          "realized_dd_reduction_jpy": 1023.0
+        },
+        {
+          "M15_snapshot_dd_reduction_jpy": 2477.0,
+          "fold": "2023H2",
+          "net_improvement_jpy": 2908.0,
+          "realized_dd_reduction_jpy": 2477.0
+        },
+        {
+          "M15_snapshot_dd_reduction_jpy": 213.0,
+          "fold": "2024H1",
+          "net_improvement_jpy": 213.0,
+          "realized_dd_reduction_jpy": 213.0
+        },
+        {
+          "M15_snapshot_dd_reduction_jpy": 0.0,
+          "fold": "2024H2",
+          "net_improvement_jpy": 3011.0,
+          "realized_dd_reduction_jpy": 0.0
+        }
+      ],
+      "gates": {
+        "DD_positive_folds_3of4": true,
+        "M15_dd_positive": true,
+        "affected_12": true,
+        "baseline_identity_complete": true,
+        "best_event_removed": true,
+        "blocked_losers_gt_winners": true,
+        "chronology_unresolved_zero": true,
+        "date_boot_lower": true,
+        "date_boot_probability": true,
+        "duplicate_zero": true,
+        "event_bootstrap": true,
+        "fold_share": true,
+        "lookahead_zero": true,
+        "min_fold_floor": true,
+        "month_share": true,
+        "native_mismatch_zero": true,
+        "net_positive": true,
+        "pf_not_below": true,
+        "positive_folds_3of4": true,
+        "realized_dd_positive": true,
+        "session_share": true,
+        "target_dd": true,
+        "target_net": true,
+        "top20_zero": true,
+        "top3_removed": true,
+        "winner_retention": true
+      },
+      "pass_all": true
+    },
+    {
+      "candidate_id": "C2_F05_SHORT_SHARED_SESSION_LOSS_CAP_2",
+      "concentration": {
+        "best_event_removed_net_jpy": 4109.0,
+        "largest_positive_fold_share": 0.4673953316042979,
+        "largest_positive_month_share": 0.22409596662030598,
+        "largest_positive_session_share": 0.6959985179696184,
+        "top3_events_removed_net_jpy": 1744.0
+      },
+      "date_session_bootstrap": {
+        "ci95_jpy": [
+          2817.0,
+          7871.0
+        ],
+        "probability_nonpositive": 0.0,
+        "replicates": 10000,
+        "seed": 20260728
+      },
+      "economics": {
+        "M15_snapshot_dd_reduction_jpy": 3654.0,
+        "baseline_M15_snapshot_dd_jpy": 42660.0,
+        "baseline_net_jpy": 51627.0,
+        "baseline_pf": 1.1377131303215893,
+        "baseline_realized_dd_jpy": 40487.0,
+        "blocked_losers": 11,
+        "blocked_trades": 12,
+        "blocked_winners": 1,
+        "candidate_M15_snapshot_dd_jpy": 39006.0,
+        "candidate_net_jpy": 57025.0,
+        "candidate_pf": 1.1544823588054267,
+        "candidate_realized_dd_jpy": 36833.0,
+        "net_improvement_jpy": 5398.0,
+        "realized_dd_reduction_jpy": 3654.0,
+        "top20_winner_loss_jpy": 0.0,
+        "winner_retention": 0.9991700174671465
+      },
+      "event_bootstrap": {
+        "ci95_jpy": [
+          2783.0,
+          7871.0
+        ],
+        "probability_nonpositive": 0.0,
+        "replicates": 10000,
+        "seed": 20260728
+      },
+      "failed_gates": [
+        "DD_positive_folds_3of4",
+        "session_share"
+      ],
+      "folds": [
+        {
+          "M15_snapshot_dd_reduction_jpy": 1177.0,
+          "fold": "2023H1",
+          "net_improvement_jpy": 1177.0,
+          "realized_dd_reduction_jpy": 1177.0
+        },
+        {
+          "M15_snapshot_dd_reduction_jpy": 2477.0,
+          "fold": "2023H2",
+          "net_improvement_jpy": 2523.0,
+          "realized_dd_reduction_jpy": 2477.0
+        },
+        {
+          "M15_snapshot_dd_reduction_jpy": 0.0,
+          "fold": "2024H1",
+          "net_improvement_jpy": 0.0,
+          "realized_dd_reduction_jpy": 0.0
+        },
+        {
+          "M15_snapshot_dd_reduction_jpy": 0.0,
+          "fold": "2024H2",
+          "net_improvement_jpy": 1698.0,
+          "realized_dd_reduction_jpy": 0.0
+        }
+      ],
+      "gates": {
+        "DD_positive_folds_3of4": false,
+        "M15_dd_positive": true,
+        "affected_12": true,
+        "baseline_identity_complete": true,
+        "best_event_removed": true,
+        "blocked_losers_gt_winners": true,
+        "chronology_unresolved_zero": true,
+        "date_boot_lower": true,
+        "date_boot_probability": true,
+        "duplicate_zero": true,
+        "event_bootstrap": true,
+        "fold_share": true,
+        "lookahead_zero": true,
+        "min_fold_floor": true,
+        "month_share": true,
+        "native_mismatch_zero": true,
+        "net_positive": true,
+        "pf_not_below": true,
+        "positive_folds_3of4": true,
+        "realized_dd_positive": true,
+        "session_share": false,
+        "target_dd": true,
+        "target_net": true,
+        "top20_zero": true,
+        "top3_removed": true,
+        "winner_retention": true
+      },
+      "pass_all": false
+    },
+    {
+      "candidate_id": "C3_F05_SHORT_OWN_LOSS_CAP_2",
+      "concentration": {
+        "best_event_removed_net_jpy": 1103.0,
+        "largest_positive_fold_share": 0.5162280701754386,
+        "largest_positive_month_share": 0.44684889901290814,
+        "largest_positive_session_share": 0.5614035087719298,
+        "top3_events_removed_net_jpy": 46.0
+      },
+      "date_session_bootstrap": {
+        "ci95_jpy": [
+          1383.0,
+          3177.0
+        ],
+        "probability_nonpositive": 0.0,
+        "replicates": 10000,
+        "seed": 20260728
+      },
+      "economics": {
+        "M15_snapshot_dd_reduction_jpy": 1177.0,
+        "baseline_M15_snapshot_dd_jpy": 42660.0,
+        "baseline_net_jpy": 51627.0,
+        "baseline_pf": 1.1377131303215893,
+        "baseline_realized_dd_jpy": 40487.0,
+        "blocked_losers": 5,
+        "blocked_trades": 6,
+        "blocked_winners": 1,
+        "candidate_M15_snapshot_dd_jpy": 41483.0,
+        "candidate_net_jpy": 53907.0,
+        "candidate_pf": 1.144812413029813,
+        "candidate_realized_dd_jpy": 39310.0,
+        "net_improvement_jpy": 2280.0,
+        "realized_dd_reduction_jpy": 1177.0,
+        "top20_winner_loss_jpy": 0.0,
+        "winner_retention": 0.9991700174671465
+      },
+      "event_bootstrap": {
+        "ci95_jpy": [
+          1383.0,
+          3177.0
+        ],
+        "probability_nonpositive": 0.0,
+        "replicates": 10000,
+        "seed": 20260728
+      },
+      "failed_gates": [
+        "DD_positive_folds_3of4",
+        "month_share",
+        "affected_12"
+      ],
+      "folds": [
+        {
+          "M15_snapshot_dd_reduction_jpy": 1177.0,
+          "fold": "2023H1",
+          "net_improvement_jpy": 1177.0,
+          "realized_dd_reduction_jpy": 1177.0
+        },
+        {
+          "M15_snapshot_dd_reduction_jpy": 0.0,
+          "fold": "2023H2",
+          "net_improvement_jpy": 46.0,
+          "realized_dd_reduction_jpy": 0.0
+        },
+        {
+          "M15_snapshot_dd_reduction_jpy": 0.0,
+          "fold": "2024H1",
+          "net_improvement_jpy": 0.0,
+          "realized_dd_reduction_jpy": 0.0
+        },
+        {
+          "M15_snapshot_dd_reduction_jpy": 0.0,
+          "fold": "2024H2",
+          "net_improvement_jpy": 1057.0,
+          "realized_dd_reduction_jpy": 0.0
+        }
+      ],
+      "gates": {
+        "DD_positive_folds_3of4": false,
+        "M15_dd_positive": true,
+        "affected_12": false,
+        "baseline_identity_complete": true,
+        "best_event_removed": true,
+        "blocked_losers_gt_winners": true,
+        "chronology_unresolved_zero": true,
+        "date_boot_lower": true,
+        "date_boot_probability": true,
+        "duplicate_zero": true,
+        "event_bootstrap": true,
+        "fold_share": true,
+        "lookahead_zero": true,
+        "min_fold_floor": true,
+        "month_share": false,
+        "native_mismatch_zero": true,
+        "net_positive": true,
+        "pf_not_below": true,
+        "positive_folds_3of4": true,
+        "realized_dd_positive": true,
+        "session_share": true,
+        "target_dd": true,
+        "target_net": true,
+        "top20_zero": true,
+        "top3_removed": true,
+        "winner_retention": true
+      },
+      "pass_all": false
+    }
+  ],
+  "chronology": {
+    "HYP027_same_timestamp_net_effect_jpy": 4853.0,
+    "classification_counts": {
+      "SAME_TICK_DETERMINISTIC_EA_ORDER": 21
+    },
+    "mismatch_rows": 21,
+    "native_authority": "single integrated B02/F05 EA OnTick: CloseMaturedOrders then EvaluateB02 then EvaluateF05",
+    "native_close_before_entry_rows": 21,
+    "separate_multi_EA_authority": "UNRESOLVED_AND_NOT_BINDING",
+    "unresolved_rows": 0
+  },
+  "core_sha": "dbffc656a0793a2efd9bd54394223f1239de2afa",
+  "decision": "PASS_DEVELOPMENT_FREEZE_C1",
+  "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "period_access": {
+    "2020_2022_outcomes": false,
+    "2023_2024": true,
+    "2025H1": false,
+    "2025H2": false,
+    "Core_new_execution": false
+  },
+  "research_sha": "575a5ce277b2ebcc9abe228fd21ea66adba7dc50",
+  "run_id": "30347005942",
+  "schema_version": "usdjpy_f05_short_loss_persistence_chronology_development_result_v1",
+  "selected_candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+  "study_id": "USDJPY-F05-SHORT-LOSS-PERSISTENCE-CHRONOLOGY-V1"
+}

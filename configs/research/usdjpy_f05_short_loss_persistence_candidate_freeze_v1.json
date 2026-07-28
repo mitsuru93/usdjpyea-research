@@ -1,0 +1,37 @@
+{
+  "baseline_identity": {
+    "ledger_sha256": "3c7210c247d2ac04a91bb18a25e6f09793ab06151deaef719733548fbb38d17d",
+    "trades": 1882
+  },
+  "blocked_trade_treatment": "never enters future state",
+  "breakeven": "not loss",
+  "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+  "close_recognition_method": "single integrated EA successful closes before Entry evaluation",
+  "core_target_sha": "dbffc656a0793a2efd9bd54394223f1239de2afa",
+  "evaluator_sha256": "b8a9d3b2ec50fde9d89ad54e148b70abe2c95c406c5dcc673b13bba663f8e839",
+  "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "loss_counter_scope": "accepted B02/F05 Long/Short realized losses in UTC session",
+  "loss_definition": "accepted canonical realized P/L including commission/swap < 0",
+  "lot": 0.01,
+  "no_retuning": true,
+  "research_start_sha": "1f9ce1eb5b1836664e00f9bbaa4d6904f0d39284",
+  "same_timestamp_order": "close before B02 Entry before F05 Entry",
+  "schema_version": "usdjpy_f05_short_loss_persistence_candidate_freeze_v1",
+  "session_buckets": {
+    "London": "07:00:00-12:59:59.999999",
+    "London_NY_overlap": "13:00:00-15:59:59.999999",
+    "New_York": "16:00:00-19:59:59.999999",
+    "Tokyo": "00:00:00-06:59:59.999999",
+    "session_transition": "20:00:00-23:59:59.999999"
+  },
+  "session_key": "UTC calendar date + session bucket",
+  "side_scope": "Short only",
+  "status": "FROZEN_BEFORE_2020_2022_OUTCOMES",
+  "strategy_scope": "B02 and F05",
+  "terminal_restart_restoration": "account-history rebuild with duplicate identity protection; insufficient history hard error",
+  "tester_live_parity_contract": "same integrated module",
+  "threshold": 2,
+  "unresolved_chronology_policy": "hard stop",
+  "winner_reset": false
+}

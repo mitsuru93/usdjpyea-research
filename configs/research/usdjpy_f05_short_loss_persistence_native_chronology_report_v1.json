@@ -1,0 +1,11 @@
+{
+  "HYP027_same_timestamp_net_effect_jpy": 4853.0,
+  "classification_counts": {
+    "SAME_TICK_DETERMINISTIC_EA_ORDER": 21
+  },
+  "mismatch_rows": 21,
+  "native_authority": "single integrated B02/F05 EA OnTick: CloseMaturedOrders then EvaluateB02 then EvaluateF05",
+  "native_close_before_entry_rows": 21,
+  "separate_multi_EA_authority": "UNRESOLVED_AND_NOT_BINDING",
+  "unresolved_rows": 0
+}

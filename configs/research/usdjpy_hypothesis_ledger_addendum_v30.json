@@ -1,0 +1,24 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "hypothesis_status_updates": [
+    {
+      "2020_2022_accessed": false,
+      "2025_accessed": false,
+      "artifact_digest": "ce29ea8fe762ebc704d58cd6e76685676bb68629cf1b84927470c06072a34da3",
+      "artifact_id": "8683319968",
+      "chronology_unresolved": 0,
+      "decision": "PASS_DEVELOPMENT_FREEZE_C1",
+      "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+      "hypothesis_id": "USDJPY-HYP-032",
+      "prior_status": "PREREGISTERED_DEVELOPMENT_PENDING",
+      "selected_candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+      "status": "DEVELOPMENT_FROZEN_C1_HISTORICAL_AUTHORITY_PENDING"
+    }
+  ],
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v29.json",
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v30",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v29.json"
+}
