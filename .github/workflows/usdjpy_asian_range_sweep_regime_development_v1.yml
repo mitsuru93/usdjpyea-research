@@ -101,8 +101,10 @@ jobs:
             --out-dir regime_output \
             --research-sha '832a26fe37503931d619cb5449e083acfe026b9c' \
             --core-sha 'dbffc656a0793a2efd9bd54394223f1239de2afa' \
-            --run-id "$GITHUB_RUN_ID" | tee regime_output/run.log
+            --run-id "$GITHUB_RUN_ID" | tee run.log
+          mv run.log regime_output/run.log
           jq -e '.hypothesis_id=="USDJPY-HYP-031" and .HYP030_decision_changed==false and ."2025_accessed"==false and .pre2023_strategy_outcomes_accessed==false and (.decision_class|type=="string") and (.audits|type=="object")' regime_output/final_decision.json
+          (cd regime_output && find . -maxdepth 1 -type f ! -name PACKAGE_SHA256SUMS -printf '%f\0' | sort -z | xargs -0 sha256sum > PACKAGE_SHA256SUMS)
           (cd regime_output && sha256sum -c PACKAGE_SHA256SUMS)
       - name: Package evidence
         shell: bash
@@ -113,22 +115,6 @@ jobs:
           (cd regime_output && find . -maxdepth 1 -type f ! -name PACKAGE_SHA256SUMS -printf '%f\0' | sort -z | xargs -0 sha256sum > PACKAGE_SHA256SUMS)
           (cd regime_output && sha256sum -c PACKAGE_SHA256SUMS)
           zip -q -X -r "usdjpy-asian-range-sweep-regime-development-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" regime_output
-      - name: Commit canonical development archive to branch
-        if: github.event_name == 'pull_request'
-        shell: bash
-        run: |
-          set -euo pipefail
-          archive=docs/research/artifact_archives/usdjpy_asian_range_sweep_regime_development_v1
-          rm -rf "$archive" && mkdir -p "$archive"
-          cp -a regime_output/. "$archive/"
-          cp regime_output/development_candidate_freeze.json configs/research/usdjpy_asian_range_sweep_regime_development_freeze_v1.json
-          cp regime_output/final_decision.json configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json
-          git add "$archive" configs/research/usdjpy_asian_range_sweep_regime_development_freeze_v1.json configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json tools/evaluate_usdjpy_asian_range_sweep_regime_v1.py
-          if git diff --cached --quiet; then exit 0; fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'research: archive HYP-031 development result'
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
       - name: Upload development artifact
         id: upload
         uses: actions/upload-artifact@v4
