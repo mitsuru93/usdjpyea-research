@@ -1,0 +1,40 @@
+{
+  "candidate_catalog_changed": false,
+  "classification": "TECHNICAL_PARTIAL_RESULT_EXPOSED",
+  "failed_job_id": 90142935760,
+  "failed_run_head_sha": "ed477f3edcc4aa36bc8d7a5388aa60e2e73cf4b0",
+  "failed_run_id": 30316460286,
+  "failure_location": {
+    "command": "jq -e postcondition on regime_output/final_decision.json",
+    "file": ".github/workflows/usdjpy_asian_range_sweep_regime_development_v1.yml",
+    "line_at_failed_sha": 107,
+    "terminal_condition": "The jq predicate returned false and exited with status 1 because audits.chronology_unresolved was 4 while the workflow asserted 0."
+  },
+  "failure_step": "Run source-native development study",
+  "hypothesis_id": "USDJPY-HYP-031",
+  "outcome_exposure": {
+    "decision_class": "NO_PORTABLE_REGIME_RULE",
+    "final_decision_existed": true,
+    "receipt_issue": 348,
+    "selected_candidate_id": null,
+    "strategy_outcome_exposed": true
+  },
+  "period_role_changed": false,
+  "population_or_signal_definition_changed": false,
+  "regime_formula_changed": false,
+  "repair_commit": "2ce710467fb44efbeb904064736c76ad36b01efb",
+  "repair_scope": [
+    "write stdout to a temporary run.log and move it after evaluator completion",
+    "regenerate PACKAGE_SHA256SUMS after run.log finalization",
+    "replace a workflow-level scientific-pass assertion with invariant/schema checks",
+    "move canonical archive publication to a separate result-preserving stage"
+  ],
+  "result_affecting_repair": false,
+  "schema_version": "usdjpy_hyp031_technical_repair_receipt_v1",
+  "scientific_definition_changed": false,
+  "scientific_evaluator_sha256": "652c55d408339cf6609896071fdddcb7c50241a874e163a4a6aede1731b6fc2c",
+  "successful_artifact_digest": "sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee",
+  "successful_artifact_id": 8672872755,
+  "successful_repair_run_id": 30317593695,
+  "threshold_or_gate_changed": false
+}
