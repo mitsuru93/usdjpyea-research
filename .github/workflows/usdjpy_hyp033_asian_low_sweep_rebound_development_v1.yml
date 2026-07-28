@@ -10,6 +10,7 @@ on:
       - 'tools/research_infra/**'
       - 'fixtures/hyp033_preflight/**'
       - '.github/workflows/usdjpy_hyp033_asian_low_sweep_rebound_development_v1.yml'
+      - '.github/workflows/reusable_research_execution_infra_v1.yml'
   workflow_dispatch:
 
 permissions:
@@ -23,7 +24,7 @@ concurrency:
 
 jobs:
   outcome-free-preflight:
-    uses: mitsuru93/usdjpyea-core/.github/workflows/reusable_research_execution_infra_v1.yml@f897b250b808207d960417b2306935dcb0655acf
+    uses: ./.github/workflows/reusable_research_execution_infra_v1.yml
     with:
       source_repository: mitsuru93/usdjpyea-research
       source_sha: ${{ github.event.pull_request.head.sha || github.sha }}
