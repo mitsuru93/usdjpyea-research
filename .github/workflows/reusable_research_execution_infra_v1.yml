@@ -1,0 +1,144 @@
+name: Reusable FX2 Research Execution Infrastructure v1
+
+on:
+  workflow_call:
+    inputs:
+      source_repository:
+        required: true
+        type: string
+      source_sha:
+        required: true
+        type: string
+      source_manifest_path:
+        required: true
+        type: string
+      evidence_input_path:
+        required: true
+        type: string
+      terminal_id:
+        required: true
+        type: string
+      runner_id:
+        required: true
+        type: string
+      evidence_classification:
+        required: false
+        type: string
+        default: non-scientific
+      release_fallback_allowed:
+        required: false
+        type: boolean
+        default: false
+    outputs:
+      archive_sha256:
+        value: ${{ jobs.infrastructure.outputs.archive_sha256 }}
+      evidence_storage_mode:
+        value: ${{ jobs.infrastructure.outputs.evidence_storage_mode }}
+      concurrency_key:
+        value: ${{ jobs.infrastructure.outputs.concurrency_key }}
+
+permissions:
+  contents: read
+
+env:
+  HARDENING_CORE_SHA: f897b250b808207d960417b2306935dcb0655acf
+
+jobs:
+  infrastructure:
+    runs-on: ubuntu-latest
+    outputs:
+      archive_sha256: ${{ steps.receipt.outputs.archive_sha256 }}
+      evidence_storage_mode: ${{ steps.storage.outputs.mode }}
+      concurrency_key: ${{ steps.key.outputs.value }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate exact immutable inputs
+        shell: bash
+        run: |
+          python - <<'PY'
+          import re
+          assert re.fullmatch(r'[0-9a-fA-F]{40}','${{ inputs.source_sha }}')
+          assert '${{ inputs.evidence_classification }}' in ('scientific','non-scientific')
+          PY
+      - name: Bootstrap Hardening v1 tools at exact caller SHA
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SOURCE_REPOSITORY: ${{ inputs.source_repository }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          MANIFEST_PATH: ${{ inputs.source_manifest_path }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/fx2infra /tmp/fx2preflight
+          mkdir -p /tmp/fx2infra /tmp/fx2preflight
+          python - <<'PY'
+          import base64,json,os,urllib.parse,urllib.request
+          repo=os.environ['SOURCE_REPOSITORY']; sha=os.environ['SOURCE_SHA']; token=os.environ['GITHUB_TOKEN']
+          headers={'Accept':'application/vnd.github+json','Authorization':f'Bearer {token}','X-GitHub-Api-Version':'2022-11-28','User-Agent':'fx2-local-reusable-v1'}
+          items=[('tools/research_infra/exact_sha_fetch.py','/tmp/fx2infra/exact_sha_fetch.py'),('tools/research_infra/fx2_infra.py','/tmp/fx2infra/fx2_infra.py'),(os.environ['MANIFEST_PATH'],'/tmp/fx2infra/source_manifest.json')]
+          for path,out in items:
+              url=f"https://api.github.com/repos/{repo}/contents/{urllib.parse.quote(path,safe='/')}?ref={sha}"
+              with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=60) as r: meta=json.load(r)
+              open(out,'wb').write(base64.b64decode(''.join(meta['content'].split())))
+          PY
+          python /tmp/fx2infra/exact_sha_fetch.py --repository '${{ inputs.source_repository }}' --sha '${{ inputs.source_sha }}' --manifest /tmp/fx2infra/source_manifest.json --work-root /tmp/fx2preflight
+      - name: Runner capability preflight
+        run: python /tmp/fx2infra/fx2_infra.py probe --json runner_capability.json --markdown runner_capability.md
+      - name: Generate terminal runner concurrency key
+        id: key
+        shell: bash
+        run: |
+          value=$(python /tmp/fx2infra/fx2_infra.py concurrency-key --repository '${{ inputs.source_repository }}' --runner '${{ inputs.runner_id }}' --terminal '${{ inputs.terminal_id }}')
+          echo "value=$value" >> "$GITHUB_OUTPUT"
+      - name: Build deterministic outcome-free evidence archive
+        run: >-
+          python /tmp/fx2infra/fx2_infra.py archive
+          --input '/tmp/fx2preflight/${{ inputs.evidence_input_path }}'
+          --output '${{ runner.temp }}/fx2-evidence.zip'
+          --source-sha '${{ inputs.source_sha }}'
+          --run-id '${{ github.run_id }}'
+          --classification '${{ inputs.evidence_classification }}'
+      - name: Cross-platform archive readback
+        run: python /tmp/fx2infra/fx2_infra.py readback --archive '${{ runner.temp }}/fx2-evidence.zip'
+      - name: Select evidence storage route
+        id: storage
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import importlib.util
+          s=importlib.util.spec_from_file_location('infra','/tmp/fx2infra/fx2_infra.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          r=m.storage_route(True,'${{ inputs.release_fallback_allowed }}'.lower()=='true',False,True)
+          print('mode='+r['mode'])
+          PY
+      - name: Generate outcome-free receipt
+        id: receipt
+        shell: bash
+        run: |
+          digest=$(sha256sum '${{ runner.temp }}/fx2-evidence.zip' | cut -d' ' -f1)
+          echo "archive_sha256=$digest" >> "$GITHUB_OUTPUT"
+          cat > evidence_receipt.json <<EOF
+          {
+            "schema_version": "fx2_evidence_receipt_v1",
+            "status": "TECHNICAL_PASS",
+            "hardening_core_sha": "${HARDENING_CORE_SHA}",
+            "source_sha": "${{ inputs.source_sha }}",
+            "workflow_run_id": "${{ github.run_id }}",
+            "evidence_storage_mode": "${{ steps.storage.outputs.mode }}",
+            "archive_sha256": "$digest",
+            "candidate_outcome_computed": false,
+            "protected_period_accessed": false,
+            "mt4_executed": false
+          }
+          EOF
+      - name: Upload small technical evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: fx2-research-infra-${{ github.run_id }}
+          path: |
+            runner_capability.json
+            runner_capability.md
+            evidence_receipt.json
+            ${{ runner.temp }}/fx2-evidence.zip
+          if-no-files-found: error
