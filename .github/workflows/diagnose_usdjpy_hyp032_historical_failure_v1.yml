@@ -1,0 +1,52 @@
+name: Diagnose USDJPY HYP-032 Historical Failure v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_hyp032_historical_failure_diagnostic_v1.json'
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract failed job log without rerun
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run view 30360154724 --repo "$GITHUB_REPOSITORY" --log-failed > failed.log
+          tail -n 240 failed.log > failed_tail.log
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('failed_tail.log').read_text(errors='replace')
+          markers=['Traceback','RuntimeError','AssertionError','TypeError','ValueError','KeyError','Process completed with exit code']
+          lines=text.splitlines()
+          hits=[line for line in lines if any(marker in line for marker in markers)]
+          Path('failure_summary.txt').write_text('\n'.join(hits[-40:])+'\n')
+          PY
+      - name: Publish technical failure receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > receipt.md <<EOF
+          hypothesis_id: USDJPY-HYP-032
+          stage: read-only failed-run diagnosis
+          source_run_id: 30360154724
+          scientific_result: false
+          marker_consumed: false
+          2025_accessed: false
+
+          \`\`\`text
+          $(cat failure_summary.txt)
+          \`\`\`
+
+          \`\`\`text
+          $(tail -n 80 failed_tail.log)
+          \`\`\`
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-032 historical technical failure] ${GITHUB_RUN_ID}" --body-file receipt.md
