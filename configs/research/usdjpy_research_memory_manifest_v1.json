@@ -34,6 +34,7 @@
     "hyp027_phase2_preregistration": "configs/research/usdjpy_portfolio_loss_cluster_phase2_prereg_v1.json",
     "hyp027_phase2_closure": "configs/research/usdjpy_portfolio_loss_cluster_phase2_closure_v1.json",
     "hyp027_phase2_result_report": "docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE2_RESULT_V1.md",
+    "hyp027_phase2_release_receipt": "configs/research/usdjpy_portfolio_loss_cluster_phase2_release_receipt_v1.json",
     "hyp028_result": "configs/research/usdjpy_shock_failure_regime_discriminator_result_v1.json",
     "hyp028_candidate_registry": "configs/research/usdjpy_shock_failure_regime_discriminator_candidate_registry_v1.json",
     "hyp029_result": "configs/research/usdjpy_market_state_router_2025h1_binding_result_v1.json",
@@ -117,7 +118,7 @@
     "technical_incomplete_runs": "record separately; never count as scientific results"
   },
   "maintenance": {
-    "CI_validator": "tools/validate_usdjpy_research_memory_v1.py",
+    "CI_validator": "tools/validate_usdjpy_research_memory_v2.py",
     "CI_workflow": ".github/workflows/validate_usdjpy_research_memory_v1.yml",
     "latest_registry_must_reference_this_manifest": true,
     "manifest_update_required_when_any_canonical_pointer_changes": true,
@@ -151,12 +152,12 @@
     "acceptable_location": "PR body, committed run manifest, result JSON, or explicit assistant work-start report",
     "minimum_fields": [
       "research_main_commit",
-      "files_read_with_paths_and_blob_or_sha",
-      "current_registry_schema_and_status",
+      "mandatory_files_read",
+      "current_registry_status",
       "current_exact_next_action",
       "relevant_hypothesis_ledger_ids",
-      "declared_lineage",
-      "periods_accessed_or_not_accessed"
+      "lineage_name",
+      "period_access_boundaries"
     ],
     "missing_receipt_action": "BLOCK_SCIENTIFIC_INTERPRETATION_AND_RELOAD_MEMORY"
   }
