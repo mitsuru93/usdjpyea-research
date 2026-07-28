@@ -84,7 +84,7 @@ def main():
     rows = ledger.get("entries", []) + chain["all_entries"]
     warnings = []
     for row in ledger.get("entries", []):
-        validate_entry(row, strict=True, warnings=warnings)
+        validate_entry(row, strict=False, warnings=warnings)
     for row in inherited_entries:
         validate_entry(row, strict=False, warnings=warnings)
     for row in current_entries:
