@@ -1,0 +1,127 @@
+{
+  "schema_version": "usdjpy_hyp033_asian_low_sweep_rebound_prereg_v1",
+  "hypothesis_id": "USDJPY-HYP-033",
+  "family_id": "S_ASIAN_LOW_SWEEP_REBOUND_MECHANISM",
+  "title": "Asian Low Sweep Post-Sweep Rebound Mechanism Study",
+  "status": "PREREGISTERED_OUTCOME_LOCKED",
+  "research_question": "Why does the source-native Asian Low Sweep Long rebound monetize while the symmetric Asian High Sweep Short does not, and can an entry-time observable mechanism produce one portable candidate without reopening HYP-030 or HYP-031?",
+  "starting_authorities": {
+    "research_main_sha": "a9b139e971bbaa8ed0ab64d0bef66b542eb78be5",
+    "core_main_sha": "f897b250b808207d960417b2306935dcb0655acf",
+    "hyp030_decision": "NO_PORTABLE_CANDIDATE",
+    "hyp031_decision": "NO_PORTABLE_REGIME_RULE",
+    "hyp032_decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING"
+  },
+  "fixed_boundaries": {
+    "hyp030_modified": false,
+    "hyp031_routing_retuned": false,
+    "hyp032_candidate_combined": false,
+    "b02_f05_modified": false,
+    "entry_exit_sl_tp_modified": false,
+    "live_orders": false
+  },
+  "period_roles": {
+    "2019": "indicator_state_warmup_only_if_later_authorized",
+    "2023H1_2024H2": "mechanism_attribution_ex_ante_observability_candidate_development_and_freeze",
+    "2020_2022": "sealed_until_single_candidate_freeze_then_one_time_historical_validation",
+    "2025H1": "sealed_until_all_pre2025_gates_then_one_time_external_validation",
+    "2025H2": "sealed_until_all_2025H1_binding_gates_pass"
+  },
+  "source_authority": {
+    "binding_source": "Dukascopy BI5 source-native Bid/Ask ticks",
+    "release_tags": ["usdjpy-2023-raw-bidask-ticks-v1", "usdjpy-2024-raw-bidask-ticks-v1"],
+    "asian_range_sweep_base_contract": "inherit HYP-030/HYP-031 fixed 00:00-07:00 UTC Asian range, completed M15 sweep and close-back-inside, first executable Bid/Ask tick at or after decision, fixed three-hour exit boundary",
+    "cross_day_exit_contract": "pending admitted event continues across subsequent source-native tick days until first executable tick at or after the fixed exit boundary",
+    "both_side_contract": "a completed bar that sweeps both Asian boundaries is retained as BOTH_SIDE_SWEEP_RESOLVED_NO_ADMISSION; it is not silently removed and does not create a directional trade",
+    "entry_missing_contract": "no tick at or after decision in the signal day is NO_EXECUTABLE_ENTRY and a source-authority binding failure",
+    "mismatch_rows_may_be_excluded": false
+  },
+  "monetary_unit_contract": {
+    "source_account_currency": "NOT_APPLICABLE_MARKET_DATA",
+    "mt4_transport_account_currency": "JPY_REQUIRED_IF_IMPLEMENTATION_AUTHORIZED",
+    "canonical_reporting_currency": "JPY",
+    "canonical_initial_capital_jpy": 100000.0,
+    "lot_size": 0.01,
+    "contract_size_units_per_lot": 100000,
+    "usd_units": 1000,
+    "pip_size": 0.01,
+    "jpy_per_pip": 10.0,
+    "realized_pl_currency": "JPY",
+    "floating_pl_currency": "JPY",
+    "commission_currency": "JPY",
+    "commission_jpy": 0.0,
+    "swap_currency": "JPY",
+    "swap_jpy": 0.0,
+    "conversion_timestamp": "NOT_REQUIRED_USDJPY_QUOTE_CURRENCY_IS_JPY",
+    "bid_ask_conversion_side": "Long exits at Bid; Short exits at Ask; Long entries at Ask; Short entries at Bid",
+    "equity_currency": "JPY",
+    "drawdown_currency": "JPY",
+    "margin_currency": "JPY_IF_MT4_AUTHORIZED",
+    "numerical_tolerance_jpy": 0.000001,
+    "floating_point_normalization": "absolute JPY residual <= 0.000001 is normalized to zero"
+  },
+  "mechanism_atlas": {
+    "diagnostic_horizons_minutes": [5, 15, 30, 60, 120, 180],
+    "candidate_exit_optimization_allowed": false,
+    "tick_velocity_formula": "count of source-native ticks in the 60 seconds ending at first sweep divided by 60",
+    "flow_proxy_claim": "tick arrival velocity only; no order-book or unobserved volume inference",
+    "required_path_fields": ["MAE", "MFE", "time_to_MAE", "time_to_MFE", "range_midpoint_reached", "opposite_boundary_reached", "range_outside_redeparture", "TP10_SL20_order"]
+  },
+  "ex_ante_feature_contract": {
+    "feature": "reclaim_speed_seconds",
+    "information_timestamp": "completed M15 decision time",
+    "source": "source-native Bid ticks within the completed signal bar",
+    "formula": "seconds from first boundary-crossing Bid tick to first Bid tick back inside the Asian range",
+    "missing_value_rule": "candidate ineligible",
+    "boundary_condition": "less than or equal to 60 seconds",
+    "future_information_allowed": false,
+    "lookahead_violations_required": 0,
+    "mt4_reproducible": true
+  },
+  "candidate_generation": {
+    "catalog_maximum": 3,
+    "thresholds_fixed_before_candidate_outcomes": true,
+    "large_grid_search": false,
+    "selection_rule": "among binding-pass candidates choose highest minimum half-year net, then highest PF, then lowest MDD, then lexicographic candidate ID",
+    "long_only_admission_requires_all_eight_conditions": true
+  },
+  "candidate_catalog": {
+    "C1_SYMMETRIC_FAST_RECLAIM": {
+      "side": "BOTH",
+      "rule": "reclaim_speed_seconds <= 60",
+      "features": ["reclaim_speed_seconds"],
+      "thresholds": [60]
+    },
+    "C2_SYMMETRIC_SHALLOW_FAST_RECLAIM": {
+      "side": "BOTH",
+      "rule": "reclaim_speed_seconds <= 60 AND sweep_distance_range_ratio <= 0.20",
+      "features": ["reclaim_speed_seconds", "sweep_distance_range_ratio"],
+      "thresholds": [60, 0.20]
+    },
+    "C3_LONG_FAST_RECLAIM": {
+      "side": "LONG_ONLY_CONDITIONAL",
+      "rule": "Asian Low Sweep Long AND reclaim_speed_seconds <= 60",
+      "features": ["side", "reclaim_speed_seconds"],
+      "thresholds": [60],
+      "catalog_admission": "only after all eight preregistered Long-only conditions are true"
+    }
+  },
+  "development_gates": {
+    "integrity": ["source_native_identity_complete", "unresolved_chronology_zero", "duplicate_event_zero", "lookahead_violation_zero", "monetary_unit_mismatch_zero", "research_replay_mismatch_zero"],
+    "sample": {"resolved_trades_minimum": 120, "minimum_events_per_fold": 20},
+    "economics": {"standalone_net_jpy_min_exclusive": 0, "pf_minimum": 1.10, "positive_halfyear_folds": 4, "positive_months_minimum": 16, "minimum_halfyear_net_jpy": -1000, "candidate_mdd_nonworse_than_unfiltered": true},
+    "concentration": {"best_event_removed_net_positive": true, "top5_winners_removed_net_positive": true, "largest_positive_month_share_max": 0.25, "largest_positive_session_share_max": 0.60, "largest_positive_fold_share_max": 0.60},
+    "resampling": {"event_bootstrap_lower95_positive": true, "date_session_bootstrap_lower95_positive": true, "probability_nonpositive_max": 0.05, "replicates": 5000, "seed": 33033},
+    "execution": {"spread_plus_0_5_pip_net_positive": true, "spread_plus_1_0_pip_net_positive": true, "spread_plus_2_0_pip_report": true, "entry_delay_5_seconds_net_positive": true, "entry_delay_10_seconds_report": true},
+    "portfolio": {"b02_f05_negative_day_contribution_positive": true, "additive_net_higher": true, "additive_realized_sequence_mdd_nonworse": true, "b02_f05_outcomes_unchanged": true}
+  },
+  "stop_rule": ["FAIL_SOURCE_AUTHORITY", "UNRESOLVED_CHRONOLOGY", "TECHNICAL_NO_RESULT_CURRENCY_CONTRACT_UNRESOLVED", "NO_STABLE_LONG_SHORT_MECHANISM", "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR", "NO_DEVELOPMENT_CANDIDATE", "FAIL_HISTORICAL_VALIDATION_NO_RETUNING", "RESEARCH_CORE_PARITY_FAILURE", "MT4_NATIVE_EXECUTION_FAILURE", "2025H1_FAILURE", "2025H2_FAILURE"],
+  "firewalls": {
+    "pre2023_candidate_outcomes_accessed_before_freeze": false,
+    "2025_accessed": false,
+    "candidate_retuning_after_freeze": false,
+    "gate_change_after_outcomes": false,
+    "month_or_year_exclusion": false,
+    "recurring_schedule": false
+  }
+}
