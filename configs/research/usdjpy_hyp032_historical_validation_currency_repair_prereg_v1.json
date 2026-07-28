@@ -1,0 +1,68 @@
+{
+  "schema_version": "usdjpy_hyp032_historical_validation_currency_repair_prereg_v1",
+  "status": "FROZEN_BEFORE_CORRECTED_OUTCOME_ACCESS",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+  "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+  "source_invalid_run_id": 30361067984,
+  "source_invalid_decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+  "source_failure_class": "TECHNICAL_CURRENCY_CONTRACT_MISMATCH",
+  "source_input": {
+    "path": "data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz",
+    "sha256": "d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670",
+    "bytes": 1600400,
+    "candidate_free": true,
+    "2025_accessed": false,
+    "field_warning": "Fields ending in _jpy contain raw MT4 transport-account amounts and must not be interpreted as JPY. Their names are retained only because the input bytes are immutable."
+  },
+  "currency_contract": {
+    "transport_account_expected": "USD",
+    "transport_initial_balance_range": [9000.0, 11000.0],
+    "canonical_reporting_currency": "JPY",
+    "canonical_initial_capital_jpy": 100000.0,
+    "usd_to_jpy_rule": "Positive USD asset multiplied by contemporaneous USDJPY Bid; negative USD liability multiplied by contemporaneous USDJPY Ask.",
+    "close_bid_ask_reconstruction": "Long close price is Bid and Ask=Bid+fixed spread; Short close price is Ask and Bid=Ask-fixed spread.",
+    "spread_points": 5,
+    "point_size": 0.001,
+    "realized_pl_authority": "Successive raw MT4 AccountBalance delta converted from inferred USD to JPY at the close event.",
+    "baseline_equity_authority": "Canonical JPY balance plus price-based MTM of all baseline open positions.",
+    "candidate_equity_authority": "Canonical JPY balance plus price-based MTM of candidate-accepted open positions only.",
+    "price_mtm_formula": "Long=(Bid-entry)*100000*lots; Short=(entry-Ask)*100000*lots.",
+    "full_equity_open_cost_uncertainty": "Bounded by maximum absolute close nonprice/conversion residual multiplied by maximum simultaneous baseline open-order count; the DD-reduction sign must be stable outside this bound."
+  },
+  "currency_inference_gate": {
+    "initial_balance_within_expected_usd_range": true,
+    "median_usd_model_abs_residual_at_most_jpy_model_10pct": true,
+    "median_usd_model_abs_residual_jpy_at_most": 5.0
+  },
+  "candidate_rule": {
+    "changed": false,
+    "threshold": 2,
+    "side": "SHORT_ONLY",
+    "strategies": ["B02", "F05"],
+    "state_key": "UTC_DATE_AND_SESSION",
+    "winner_reset": false,
+    "breakeven_is_loss": false,
+    "native_order": ["order_closed", "B02 order_opened", "F05 order_opened"]
+  },
+  "scientific_gates": {
+    "changed": false,
+    "source": "configs/research/usdjpy_hyp032_historical_validation_prereg_v1.json",
+    "bootstrap_seed": 20260728,
+    "bootstrap_replicates": 10000
+  },
+  "technical_outcome_classes": [
+    "TECHNICAL_NO_RESULT_CURRENCY_NORMALIZATION_UNRESOLVED",
+    "PASS_HISTORICAL_VALIDATION",
+    "FAIL_HISTORICAL_VALIDATION_NO_RETUNING"
+  ],
+  "candidate_rule_changed": false,
+  "scientific_gates_changed": false,
+  "bootstrap_changed": false,
+  "input_changed": false,
+  "retuning": false,
+  "2025_accessed": false,
+  "Core_candidate_implementation_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
