@@ -1,0 +1,38 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v28",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v27.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v27.json",
+  "entries": [],
+  "hypothesis_status_updates": [
+    {
+      "hypothesis_id": "USDJPY-HYP-027",
+      "family_id": "R_PORTFOLIO_LOSS_CLUSTER_CONTROL",
+      "prior_status": "PHASE1_COMPLETE_ONE_PHASE2_RESEARCH_CANDIDATE_NO_IMPLEMENTATION",
+      "phase2_status": "CLOSED",
+      "candidate_id": "SESSION_LOSS_CAP_2",
+      "decision": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+      "failed_binding_gates": [
+        "Long_delta_nonnegative",
+        "strategy_concentration_below_75pct",
+        "side_concentration_below_75pct"
+      ],
+      "evidence_refs": [
+        "configs/research/usdjpy_portfolio_loss_cluster_phase2_closure_v1.json",
+        "docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE2_RESULT_V1.md"
+      ],
+      "authorization": "NONE_NO_CORE_NO_MT4_NO_2025_NO_PRODUCTION",
+      "prohibited_reuse": [
+        "threshold retuning to 1 or 3",
+        "Long exclusion or Short-only promotion",
+        "strategy-specific threshold",
+        "session-specific threshold",
+        "month/fold exclusion",
+        "2025-informed repair",
+        "integration with S3 or Asian Range"
+      ]
+    }
+  ]
+}

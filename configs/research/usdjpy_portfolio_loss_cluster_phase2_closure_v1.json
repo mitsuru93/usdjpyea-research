@@ -1,0 +1,207 @@
+{
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase2_closure_v1",
+  "study_id": "USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE2-V1",
+  "hypothesis_id": "USDJPY-HYP-027",
+  "family": "R_PORTFOLIO_LOSS_CLUSTER_CONTROL",
+  "candidate_id": "SESSION_LOSS_CAP_2",
+  "status": "COMPLETE_RESEARCH_FAIL_CLOSED",
+  "decision": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+  "authority": {
+    "research_start_sha": "bb4a9dcedec8390585b4c4611c9316bb4febb34c",
+    "core_start_sha": "dbffc656a0793a2efd9bd54394223f1239de2afa",
+    "phase2_protocol_commit": "2e48531cbba7a64babdf48950104e19a0e5560a9",
+    "phase2_protocol_sha256": "dfdaf5fe5f230ac2fed5181c85b47148a1e706ab2345ae38f406dcf4f7fa22ca",
+    "pr_number": 355,
+    "pr_merge_sha": "85cef453098a7dcb0a8b86e7b58edafb9da021b5",
+    "workflow_run_id": 30331667249,
+    "workflow_head_sha": "dbd7c2d2330722fcc8f98ae83eaa69e7d65e4efe",
+    "artifact_id": 8677604809,
+    "artifact_digest": "sha256:192d3d8fa3967b8b36f1ab3cd238a39745fa92950aad7f6371a78371f54face6",
+    "release_tag": "usdjpy-portfolio-loss-cluster-phase2-v1",
+    "release_asset": "usdjpy-portfolio-loss-cluster-phase2-v1.zip",
+    "release_asset_sha256": "192d3d8fa3967b8b36f1ab3cd238a39745fa92950aad7f6371a78371f54face6",
+    "phase1_release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1-r1",
+    "phase1_release_asset_sha256": "32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada",
+    "canonical_trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "canonical_state_ledger_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda"
+  },
+  "phase1_exact_reproduction": {
+    "trade_rows": 1882,
+    "unique_trade_ids": 1882,
+    "B02": 429,
+    "F05": 1453,
+    "LONG": 1166,
+    "SHORT": 716,
+    "fold_counts": {"2023H1": 488, "2023H2": 472, "2024H1": 428, "2024H2": 494},
+    "blocked": 27,
+    "missing": 0,
+    "extra": 0,
+    "duplicate": 0,
+    "weight_mismatch": 0,
+    "reason_mismatch": 0,
+    "entry_timestamp_mismatch": 0,
+    "future_information_violations": 0
+  },
+  "state_machine": {
+    "session_timezone": "UTC",
+    "session_buckets": {
+      "Tokyo": "00:00:00-06:59:59.999999",
+      "London": "07:00:00-12:59:59.999999",
+      "London_NY_overlap": "13:00:00-15:59:59.999999",
+      "New_York": "16:00:00-19:59:59.999999",
+      "session_transition": "20:00:00-23:59:59.999999"
+    },
+    "session_key": "UTC calendar date + '|' + session bucket label",
+    "state_scope": "B02 and F05 common; Long and Short common",
+    "state_reset": "implicit new session_key; no carry across UTC session keys",
+    "winner_reset": false,
+    "loss_definition": "accepted trade canonical realized_pl_jpy < 0; zero is breakeven and is not a loss",
+    "commission_swap": "binding canonical realized_pl_jpy authority; no separate reinterpretation",
+    "close_update_order": "before each entry timestamp, apply accepted trades with close_utc <= entry_utc sorted by close_utc then trade_id",
+    "entry_order": "within same entry_utc, sort by strategy then trade_id",
+    "same_timestamp_rule": "eligible accepted closes are processed before entries",
+    "threshold": 2,
+    "admission_rule": "block when prior accepted realized loss count for entry_session_key is >= 2",
+    "blocked_trade_state_effect": "none; blocked trades are never inserted into accepted-open state and their future P/L is never counted",
+    "partial_close": "absent in canonical population; Phase 2 does not invent a partial-close rule",
+    "rejected_entry_effect": "none",
+    "future_information": "prohibited; information cutoff is entry decision timestamp"
+  },
+  "economics": {
+    "baseline": {
+      "net_jpy": 51627,
+      "gross_profit_jpy": 426515,
+      "gross_loss_jpy": 374888,
+      "profit_factor": 1.1377131303215893,
+      "realized_dd_jpy": 40487,
+      "M15_snapshot_dd_jpy": 42660
+    },
+    "candidate": {
+      "net_jpy": 57212,
+      "gross_profit_jpy": 423483,
+      "gross_loss_jpy": 366271,
+      "profit_factor": 1.1562012826568306,
+      "realized_dd_jpy": 36770,
+      "M15_snapshot_dd_jpy": 38943
+    },
+    "delta": {
+      "net_improvement_jpy": 5585,
+      "avoided_gross_loss_jpy": 8617,
+      "lost_gross_profit_jpy": 3032,
+      "realized_dd_reduction_jpy": 3717,
+      "M15_snapshot_dd_reduction_jpy": 3717,
+      "winner_retention": 0.9928912230519442,
+      "top20_winner_loss_jpy": 0
+    }
+  },
+  "fold_metrics": [
+    {"fold": "2023H1", "baseline_net_jpy": -26052, "candidate_net_jpy": -24576, "net_improvement_jpy": 1476, "blocked_trades": 4},
+    {"fold": "2023H2", "baseline_net_jpy": 16773, "candidate_net_jpy": 19445, "net_improvement_jpy": 2672, "blocked_trades": 9},
+    {"fold": "2024H1", "baseline_net_jpy": 22797, "candidate_net_jpy": 21890, "net_improvement_jpy": -907, "blocked_trades": 4},
+    {"fold": "2024H2", "baseline_net_jpy": 38109, "candidate_net_jpy": 40453, "net_improvement_jpy": 2344, "blocked_trades": 10}
+  ],
+  "strategy_metrics": [
+    {"strategy": "B02", "baseline_net_jpy": 12722, "candidate_net_jpy": 14033, "net_improvement_jpy": 1311, "blocked_trades": 7},
+    {"strategy": "F05", "baseline_net_jpy": 38905, "candidate_net_jpy": 43179, "net_improvement_jpy": 4274, "blocked_trades": 20}
+  ],
+  "side_metrics": [
+    {"side": "LONG", "baseline_net_jpy": 43329, "candidate_net_jpy": 41759, "net_improvement_jpy": -1570, "blocked_trades": 10},
+    {"side": "SHORT", "baseline_net_jpy": 8298, "candidate_net_jpy": 15453, "net_improvement_jpy": 7155, "blocked_trades": 17}
+  ],
+  "session_metrics": [
+    {"session": "Tokyo", "baseline_net_jpy": 1500, "candidate_net_jpy": 4372, "net_improvement_jpy": 2872, "blocked_trades": 15},
+    {"session": "London", "baseline_net_jpy": 37723, "candidate_net_jpy": 40018, "net_improvement_jpy": 2295, "blocked_trades": 10},
+    {"session": "London_NY_overlap", "baseline_net_jpy": 16118, "candidate_net_jpy": 16536, "net_improvement_jpy": 418, "blocked_trades": 2},
+    {"session": "New_York", "baseline_net_jpy": -3714, "candidate_net_jpy": -3714, "net_improvement_jpy": 0, "blocked_trades": 0}
+  ],
+  "month_breadth": {
+    "positive_effect_months": 9,
+    "negative_effect_months": 4,
+    "largest_positive_month_share": 0.20551411827384122
+  },
+  "resampling": {
+    "event_bootstrap": {
+      "replicates": 2000,
+      "resampling_unit": "portfolio_event_stratified_by_fold",
+      "observed_net_improvement_jpy": 5585,
+      "ci95_jpy": [-248.72499999999997, 12065.674999999996],
+      "probability_nonpositive": 0.035
+    },
+    "date_session_bootstrap": {
+      "replicates": 10000,
+      "seed": 20260728,
+      "resampling_unit": "entry_session_key_stratified_by_fold",
+      "affected_units": 18,
+      "observed_net_improvement_jpy": 5585,
+      "ci95_jpy": [396.975, 10806.299999999996],
+      "median_jpy": 5606,
+      "probability_nonpositive": 0.017
+    },
+    "best_event_removed_net_improvement_jpy": 4257,
+    "top3_affected_loss_events_removed_net_improvement_jpy": 1780
+  },
+  "concentration": {
+    "fold": {"largest_value": "2023H2", "largest_positive_effect_share": 0.41158348736906963},
+    "strategy": {"largest_value": "F05", "largest_positive_effect_share": 0.7652641002685765},
+    "side": {"largest_value": "SHORT", "largest_positive_effect_share": 1.0},
+    "session": {"largest_value": "Tokyo", "largest_positive_effect_share": 0.5142345568487019}
+  },
+  "sensitivity": {
+    "close_timestamp_minus_1s": {"blocked": 27, "decision_mismatch": 0},
+    "close_timestamp_plus_1s": {"blocked": 27, "decision_mismatch": 0},
+    "entry_before_same_timestamp_close": {"blocked": 6, "decision_mismatch": 21, "interpretation": "binding close-before-entry order"},
+    "input_shuffle_seed_1": {"blocked": 27, "decision_mismatch": 0},
+    "input_shuffle_seed_2": {"blocked": 27, "decision_mismatch": 0}
+  },
+  "failed_binding_gates": [
+    "Long_delta_nonnegative",
+    "strategy_concentration_below_75pct",
+    "side_concentration_below_75pct"
+  ],
+  "period_access": {
+    "research": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "MT4": false,
+    "2025H1": false,
+    "2025H2": false
+  },
+  "authorization": {
+    "candidate_freeze": false,
+    "Core_implementation": false,
+    "Research_Core_parity": false,
+    "MT4_2023_2024": false,
+    "2025H1": false,
+    "2025H2": false,
+    "production": false,
+    "live": false
+  },
+  "stop_rule_applied": true,
+  "large_evidence": {
+    "storage": "GitHub Actions artifact and immutable Release",
+    "artifact_files": [
+      "trade_decision_ledger.csv.gz",
+      "session_state_close_ledger.csv.gz",
+      "blocked_trade_ledger.csv",
+      "fold_metrics.csv",
+      "strategy_metrics.csv",
+      "side_metrics.csv",
+      "session_metrics.csv",
+      "month_metrics.csv",
+      "gate_matrix.json",
+      "sensitivity_report.csv",
+      "affected_event_concentration.csv",
+      "output_manifest.json",
+      "SHA256SUMS",
+      "PACKAGE_SHA256SUMS"
+    ]
+  },
+  "prohibited_reuse": [
+    "threshold retuning to 1 or 3",
+    "Long exclusion or Short-only promotion",
+    "strategy-specific threshold",
+    "session-specific threshold",
+    "month/fold exclusion",
+    "2025-informed repair",
+    "integration with S3 or Asian Range"
+  ],
+  "next_action": "No portable SESSION_LOSS_CAP candidate remains. HYP-027 is closed; do not retune from these outcomes."
+}

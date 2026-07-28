@@ -1,0 +1,18 @@
+{
+  "2025_access": false,
+  "MT4_access": false,
+  "completed_hypothesis": "USDJPY-HYP-027",
+  "failed_binding_gates": [
+    "Long_delta_nonnegative",
+    "strategy_concentration_below_75pct",
+    "side_concentration_below_75pct"
+  ],
+  "family_id": "R_PORTFOLIO_LOSS_CLUSTER_CONTROL",
+  "next_action": "No portable SESSION_LOSS_CAP candidate remains. Do not retune HYP-027 from these outcomes.",
+  "phase2_candidate": "SESSION_LOSS_CAP_2",
+  "phase2_decision": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+  "production_authorized": false,
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v13",
+  "status": "HYP027_PHASE2_FAILED_SIDE_BREADTH_CLOSED",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v12.json"
+}
