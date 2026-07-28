@@ -1,0 +1,47 @@
+name: Validate USDJPY HYP-027 Phase 2 Closure v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_portfolio_loss_cluster_phase2_closure_v1.json'
+      - 'configs/research/usdjpy_research_candidate_registry_v54.json'
+      - 'configs/research/usdjpy_research_memory_manifest_v1.json'
+      - 'configs/research/usdjpy_hypothesis_ledger_addendum_v28.json'
+      - 'configs/research/usdjpy_2023_2024_hypothesis_program_v13.json'
+      - 'docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE2_RESULT_V1.md'
+      - '.github/workflows/validate_usdjpy_hyp027_phase2_closure_v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-closure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate binding closure
+        run: |
+          set -euo pipefail
+          C=configs/research/usdjpy_portfolio_loss_cluster_phase2_closure_v1.json
+          jq -e '.study_id=="USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE2-V1" and .hypothesis_id=="USDJPY-HYP-027" and .candidate_id=="SESSION_LOSS_CAP_2" and .decision=="FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT"' "$C"
+          jq -e '.phase1_exact_reproduction.trade_rows==1882 and .phase1_exact_reproduction.unique_trade_ids==1882 and .phase1_exact_reproduction.blocked==27 and .phase1_exact_reproduction.missing==0 and .phase1_exact_reproduction.extra==0 and .phase1_exact_reproduction.duplicate==0 and .phase1_exact_reproduction.future_information_violations==0' "$C"
+          jq -e '.economics.delta.net_improvement_jpy==5585 and .economics.delta.realized_dd_reduction_jpy==3717 and .economics.delta.M15_snapshot_dd_reduction_jpy==3717 and .economics.delta.winner_retention>=0.99 and .economics.delta.top20_winner_loss_jpy==0' "$C"
+          jq -e '.side_metrics[] | select(.side=="LONG") | .net_improvement_jpy==-1570' "$C"
+          jq -e '.side_metrics[] | select(.side=="SHORT") | .net_improvement_jpy==7155' "$C"
+          jq -e '.concentration.strategy.largest_positive_effect_share>0.75 and .concentration.side.largest_positive_effect_share==1' "$C"
+          jq -e '.failed_binding_gates==["Long_delta_nonnegative","strategy_concentration_below_75pct","side_concentration_below_75pct"]' "$C"
+          jq -e '.authorization.candidate_freeze==false and .authorization.Core_implementation==false and .authorization.Research_Core_parity==false and .authorization.MT4_2023_2024==false and .authorization."2025H1"==false and .authorization."2025H2"==false and .authorization.production==false and .authorization.live==false' "$C"
+          jq -e '.authority.artifact_id==8677604809 and .authority.artifact_digest=="sha256:192d3d8fa3967b8b36f1ab3cd238a39745fa92950aad7f6371a78371f54face6"' "$C"
+      - name: Validate global registry and program
+        run: |
+          set -euo pipefail
+          jq -e '.status=="USDJPY_HYP027_CLOSED_NO_PORTABLE_SESSION_LOSS_CAP" and .active_hypothesis==null and .current_candidate==null and .phase2_confirmation.decision=="FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT" and .run_authorization.MT4_parity==false and .run_authorization."2025_H1"==false and .run_authorization.production_implementation==false' configs/research/usdjpy_research_candidate_registry_v54.json
+          jq -e '.status=="HYP027_PHASE2_FAILED_SIDE_BREADTH_CLOSED" and .phase2_decision=="FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT" and .MT4_access==false and ."2025_access"==false' configs/research/usdjpy_2023_2024_hypothesis_program_v13.json
+          jq -e '.hypothesis_status_updates[0].hypothesis_id=="USDJPY-HYP-027" and .hypothesis_status_updates[0].phase2_status=="CLOSED" and .hypothesis_status_updates[0].decision=="FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT"' configs/research/usdjpy_hypothesis_ledger_addendum_v28.json
+      - name: Validate research memory
+        run: |
+          set -euo pipefail
+          python tools/validate_usdjpy_research_memory_v1.py --root . --output /tmp/usdjpy_research_memory_validation_receipt.json
+          jq -e '.status=="PASS" and .registry_schema=="usdjpy_research_candidate_registry_v54" and .hypothesis_ledger_addendum=="configs/research/usdjpy_hypothesis_ledger_addendum_v28.json" and .current_open_research_question==null' /tmp/usdjpy_research_memory_validation_receipt.json
