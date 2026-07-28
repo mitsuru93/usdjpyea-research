@@ -1,0 +1,33 @@
+{
+  "schema_version": "usdjpy_hyp032_historical_validation_numerical_revision_v1",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+  "status": "APPLIED_DECISION_UNCHANGED",
+  "source_result": "configs/research/usdjpy_hyp032_historical_validation_result_v2.json",
+  "source_result_blob_sha": "411737f3e821bf7eee2c191dd667b552bd5c8eab",
+  "source_run_id": 30364472840,
+  "source_decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+  "problem": "The computed full-equity DD reduction was 8.731149137020111e-11 JPY, a floating-point cancellation residue, but the raw >0 comparison marked the positive-reduction gate true.",
+  "numerical_tolerance_jpy": 0.000001,
+  "corrections": {
+    "baseline_full_equity_drawdown_jpy": 41383.11751,
+    "candidate_full_equity_drawdown_jpy": 41383.11751,
+    "full_equity_dd_reduction_jpy": 0.0,
+    "full_equity_dd_reduction_positive": false,
+    "failed_gate_added": "full_equity_dd_reduction_positive"
+  },
+  "scientific_effect": {
+    "decision_before": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+    "decision_after": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+    "decision_changed": false,
+    "candidate_rule_changed": false,
+    "scientific_gate_definition_changed": false,
+    "bootstrap_changed": false,
+    "retuning": false
+  },
+  "replacement_result": "configs/research/usdjpy_hyp032_historical_validation_result_v2_1.json",
+  "2025_accessed": false,
+  "Core_candidate_implementation_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
