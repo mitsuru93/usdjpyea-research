@@ -10,6 +10,7 @@ on:
       - 'tools/usdjpy_hyp034_bi5_source_v1.py'
       - 'tools/usdjpy_hyp034_study_v1.py'
       - 'tools/usdjpy_hyp034_metrics_v1.py'
+      - 'tools/usdjpy_hyp034_sitecustomize_v1.py'
       - 'tools/vendor/fx2_infra_core_f897b250_v1.py'
   push:
     branches: [main]
@@ -20,6 +21,7 @@ on:
       - 'tools/usdjpy_hyp034_bi5_source_v1.py'
       - 'tools/usdjpy_hyp034_study_v1.py'
       - 'tools/usdjpy_hyp034_metrics_v1.py'
+      - 'tools/usdjpy_hyp034_sitecustomize_v1.py'
       - 'tools/vendor/fx2_infra_core_f897b250_v1.py'
   workflow_dispatch:
 
@@ -68,10 +70,11 @@ jobs:
           fetch_file 'tools/usdjpy_hyp034_bi5_source_v1.py' "$ROOT/src/usdjpy_hyp034_bi5_source_v1.py"
           fetch_file 'tools/usdjpy_hyp034_study_v1.py' "$ROOT/src/usdjpy_hyp034_study_v1.py"
           fetch_file 'tools/usdjpy_hyp034_metrics_v1.py' "$ROOT/src/usdjpy_hyp034_metrics_v1.py"
+          fetch_file 'tools/usdjpy_hyp034_sitecustomize_v1.py' "$ROOT/src/sitecustomize.py"
           fetch_file 'tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py' "$ROOT/src/build_baseline.py"
           fetch_file 'tools/vendor/fx2_infra_core_f897b250_v1.py' "$ROOT/infra/fx2_infra.py"
           python -m py_compile "$ROOT/src/"*.py "$ROOT/infra/fx2_infra.py"
-          required=("$ROOT/src/prereg.json" "$ROOT/src/evaluate.py" "$ROOT/src/usdjpy_hyp034_bi5_source_v1.py" "$ROOT/src/usdjpy_hyp034_study_v1.py" "$ROOT/src/usdjpy_hyp034_metrics_v1.py" "$ROOT/src/build_baseline.py" "$ROOT/infra/fx2_infra.py")
+          required=("$ROOT/src/prereg.json" "$ROOT/src/evaluate.py" "$ROOT/src/usdjpy_hyp034_bi5_source_v1.py" "$ROOT/src/usdjpy_hyp034_study_v1.py" "$ROOT/src/usdjpy_hyp034_metrics_v1.py" "$ROOT/src/sitecustomize.py" "$ROOT/src/build_baseline.py" "$ROOT/infra/fx2_infra.py")
           sha256sum "${required[@]}" > "$ROOT/evidence/selective_fetch_sha256sums.txt"
           wc -c "${required[@]}" > "$ROOT/evidence/selective_fetch_byte_counts.txt"
           find "$ROOT/src" "$ROOT/infra" -name '*.blob_sha' -type f -print -exec cat {} \; > "$ROOT/evidence/selective_fetch_blob_shas.txt"
@@ -86,14 +89,16 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
-          python - <<'PY' > "$ROOT/evidence/python_dependency_versions.json"
+          PYTHONPATH="$ROOT/src" python - <<'PY' > "$ROOT/evidence/python_dependency_versions.json"
           import json, platform, numpy, pandas
           print(json.dumps({
             'python': platform.python_version(),
             'numpy': numpy.__version__,
             'pandas': pandas.__version__,
+            'sitecustomize_loaded': json.JSONEncoder.default.__name__ == '_numpy_scalar_default',
           }, indent=2, sort_keys=True))
           PY
+          jq -e '.sitecustomize_loaded==true' "$ROOT/evidence/python_dependency_versions.json"
       - name: Runner capability probe and firewall
         shell: bash
         env:
@@ -149,7 +154,7 @@ jobs:
             --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" \
             --prereg "$ROOT/src/prereg.json" \
             --output "$ROOT/evidence/preflight" \
-            --preflight-only | tee "$ROOT/evidence/preflight.log"
+            --preflight-only 2>&1 | tee "$ROOT/evidence/preflight.log"
           jq -e '.status=="PASS_NO_OUTCOMES" and .candidate_outcome_computed==false and .protected_period_accessed==false' "$ROOT/evidence/preflight/preflight_receipt.json"
       - name: Execute frozen 2023 to 2024 development evaluator
         shell: bash
@@ -164,7 +169,7 @@ jobs:
             --raw-2024 "$ROOT/inputs/raw2024" \
             --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" \
             --prereg "$ROOT/src/prereg.json" \
-            --output "$ROOT/output" | tee "$ROOT/output/run.log"
+            --output "$ROOT/output" 2>&1 | tee "$ROOT/output/run.log"
           jq -e '.hypothesis_id=="USDJPY-HYP-034" and .protected_2020_2022_accessed==false and .protected_2025_accessed==false and .production_authorized==false and .live_authorized==false' "$ROOT/output/final_result.json"
           (cd "$ROOT/output" && sha256sum -c PACKAGE_SHA256SUMS)
           ! grep -R --line-number -E '2020-[0-9]{2}-[0-9]{2}|2021-[0-9]{2}-[0-9]{2}|2022-[0-9]{2}-[0-9]{2}|2025-[0-9]{2}-[0-9]{2}' "$ROOT/output"
