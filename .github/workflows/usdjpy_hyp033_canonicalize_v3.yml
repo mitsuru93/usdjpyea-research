@@ -1,0 +1,48 @@
+name: USDJPY HYP033 Canonicalize v3
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp033_canonicalize_v3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  canonicalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      GITHUB_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Canonicalize with corrected readback contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/contents/.github/workflows/usdjpy_hyp033_canonicalize_v1.yml?ref=$BRANCH" --jq .content | base64 -d > /tmp/v1.yml
+          awk '/^          H4sI/{print $1}' /tmp/v1.yml | base64 -d | gzip -dc > /tmp/canonicalize.py
+          curl --fail --location \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/8695153813/zip" \
+            --output /tmp/artifact.zip
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          p=Path('/tmp/canonicalize.py')
+          s=p.read_text()
+          pattern=r"def download_artifact\(\) -> bytes:\n.*?\n\ndef get_file"
+          replacement="def download_artifact() -> bytes:\n    return Path('/tmp/artifact.zip').read_bytes()\n\n\ndef get_file"
+          s,n=re.subn(pattern,replacement,s,flags=re.S)
+          if n!=1: raise SystemExit(f'download patch cardinality {n}')
+          s=s.replace("if not readback.get('passed', False):", "if readback.get('status') != 'PASS':")
+          s=s.replace("    '.github/workflows/usdjpy_hyp033_canonicalize_v1.yml',\n", "    '.github/workflows/usdjpy_hyp033_canonicalize_v1.yml',\n    '.github/workflows/usdjpy_hyp033_canonicalize_v2.yml',\n    '.github/workflows/usdjpy_hyp033_canonicalize_v3.yml',\n")
+          p.write_text(s)
+          PY
+          python /tmp/canonicalize.py
