@@ -25,5 +25,5 @@
   "evidence_repair_workflow": ".github/workflows/usdjpy_previous_day_extreme_sweep_development_v1.yml",
   "reopen_event_required": true,
   "canonical_status": "WIP_NOT_CANONICAL_UNTIL_REPAIR_READBACK",
-  "last_trigger_head_sha": "553c0e24830ba13815e9e01a1e3d0ad2ee1bd465"
+  "last_trigger_head_sha": "c2d1c5e51a09507098ffc6bb2ede76f13cc82edc"
 }
