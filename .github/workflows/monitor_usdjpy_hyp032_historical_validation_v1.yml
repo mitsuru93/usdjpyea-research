@@ -1,0 +1,37 @@
+name: Monitor USDJPY HYP-032 Historical Validation v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_hyp032_historical_validation_monitor_v1.json'
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read historical validation workflow runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run list --repo "$GITHUB_REPOSITORY" --workflow usdjpy_hyp032_historical_validation_v1.yml --branch main --event push --limit 10 --json databaseId,status,conclusion,headSha,createdAt,updatedAt,url > runs.json
+          jq -n --slurpfile runs runs.json '{hypothesis_id:"USDJPY-HYP-032",read_only:true,historical_validation_runs:$runs[0],"2025_accessed":false}' > monitor.json
+      - name: Publish monitor receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > receipt.md <<EOF
+          hypothesis_id: USDJPY-HYP-032
+          monitor_run_id: ${GITHUB_RUN_ID}
+          read_only: true
+
+          \`\`\`json
+          $(cat monitor.json)
+          \`\`\`
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-032 historical validation monitor] ${GITHUB_RUN_ID}" --body-file receipt.md
