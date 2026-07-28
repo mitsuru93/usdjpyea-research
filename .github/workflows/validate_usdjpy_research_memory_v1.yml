@@ -44,13 +44,30 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Validate canonical memory graph
+      - name: Run canonical memory validator
+        id: memory
+        continue-on-error: true
         run: |
+          set +e
+          mkdir -p validation
           python tools/validate_usdjpy_research_memory_v2.py \
             --root . \
-            --output validation/usdjpy_research_memory_validation_receipt_v2.json
-      - uses: actions/upload-artifact@v4
+            --output validation/usdjpy_research_memory_validation_receipt_v2.json \
+            > validation/usdjpy_research_memory_validator_v2.log 2>&1
+          rc=$?
+          echo "$rc" > validation/usdjpy_research_memory_validator_v2.rc
+          exit "$rc"
+      - name: Upload validator evidence
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: usdjpy-research-memory-validation-v2-${{ github.run_id }}-${{ github.run_attempt }}
-          path: validation/usdjpy_research_memory_validation_receipt_v2.json
+          path: validation
           if-no-files-found: error
+          retention-days: 30
+      - name: Require canonical memory PASS
+        if: always()
+        run: |
+          set -euo pipefail
+          test "$(cat validation/usdjpy_research_memory_validator_v2.rc)" = "0"
+          jq -e '.status=="PASS" and .registry_schema=="usdjpy_research_candidate_registry_v54" and .hypothesis_ledger_addendum=="configs/research/usdjpy_hypothesis_ledger_addendum_v28.json" and .current_open_research_question==null' validation/usdjpy_research_memory_validation_receipt_v2.json
