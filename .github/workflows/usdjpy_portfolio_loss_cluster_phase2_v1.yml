@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'tools/evaluate_usdjpy_portfolio_loss_cluster_phase2_v1.py'
+      - 'tools/canonicalize_usdjpy_portfolio_loss_cluster_phase2_v1.py'
       - 'tools/usdjpy_portfolio_loss_cluster_phase2_v1/**'
       - 'configs/research/usdjpy_portfolio_loss_cluster_phase2_prereg_v1.json'
       - 'configs/research/usdjpy_portfolio_loss_cluster_phase2_startup_receipt_v1.json'
@@ -42,7 +43,7 @@ jobs:
       - name: Compile and preflight frozen protocol
         run: |
           set -euo pipefail
-          python -m py_compile tools/evaluate_usdjpy_portfolio_loss_cluster_phase2_v1.py tools/usdjpy_portfolio_loss_cluster_phase2_v1/*.py
+          python -m py_compile tools/evaluate_usdjpy_portfolio_loss_cluster_phase2_v1.py tools/canonicalize_usdjpy_portfolio_loss_cluster_phase2_v1.py tools/usdjpy_portfolio_loss_cluster_phase2_v1/*.py
           rm -rf phase2_preflight
           python tools/evaluate_usdjpy_portfolio_loss_cluster_phase2_v1.py \
             --protocol configs/research/usdjpy_portfolio_loss_cluster_phase2_prereg_v1.json \
@@ -104,6 +105,32 @@ jobs:
             usdjpy-portfolio-loss-cluster-phase2-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
           retention-days: 90
           compression-level: 0
+      - name: Canonicalize closure state
+        if: github.event_name == 'push'
+        id: canonical
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          set -euo pipefail
+          python tools/canonicalize_usdjpy_portfolio_loss_cluster_phase2_v1.py \
+            --root . \
+            --result-dir phase2_output \
+            --run-id "$GITHUB_RUN_ID" \
+            --artifact-id "$ARTIFACT_ID" \
+            --artifact-digest "$ARTIFACT_DIGEST" \
+            --execution-sha "$GITHUB_SHA"
+          python tools/validate_usdjpy_research_memory_v1.py --root . --output phase2_output/research_memory_validation_receipt.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add configs/research docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE2_RESULT_V1.md
+          if git diff --cached --quiet; then
+            echo 'No canonical changes to commit.'
+          else
+            git commit -m 'research: canonicalize HYP-027 Phase 2 closure'
+            git push origin HEAD:main
+          fi
+          echo "canonical-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Publish immutable Release
         if: github.event_name == 'push'
         env:
@@ -117,7 +144,7 @@ jobs:
           else
             gh release create "$tag" "$asset" \
               --repo "$GITHUB_REPOSITORY" \
-              --target "$GITHUB_SHA" \
+              --target "${{ steps.canonical.outputs.canonical-sha }}" \
               --title 'USDJPY-HYP-027 SESSION_LOSS_CAP_2 Phase 2 Confirmation v1' \
               --notes 'Internal 2023H1-2024H2 confirmation. Decision FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT. No candidate freeze, Core, MT4, 2025, production, or live authorization.'
           fi
@@ -134,7 +161,8 @@ jobs:
           study_id: USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE2-V1
           candidate_id: SESSION_LOSS_CAP_2
           decision: FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT
-          head_sha: ${GITHUB_SHA}
+          execution_sha: ${GITHUB_SHA}
+          canonical_sha: ${{ steps.canonical.outputs.canonical-sha }}
           workflow_run_id: ${GITHUB_RUN_ID}
           workflow_run_attempt: ${GITHUB_RUN_ATTEMPT}
           artifact_id: ${ARTIFACT_ID}
@@ -155,5 +183,5 @@ jobs:
           run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
           EOF
           gh issue create --repo "$GITHUB_REPOSITORY" \
-            --title "[HYP-027 Phase 2 receipt] ${GITHUB_SHA}" \
+            --title "[HYP-027 Phase 2 receipt] ${{ steps.canonical.outputs.canonical-sha }}" \
             --body-file receipt.md
