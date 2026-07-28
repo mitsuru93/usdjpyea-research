@@ -1,0 +1,204 @@
+name: USDJPY HYP031 Pre-2023 Authority Fast v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp031_pre2023_authority_fast_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  build-year:
+    strategy:
+      fail-fast: false
+      matrix:
+        year: [2019, 2020, 2021, 2022]
+    concurrency:
+      group: usdjpy-${{ matrix.year }}-raw-ticks-max-parallel-v1
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      YEAR: ${{ matrix.year }}
+      SYMBOL: USDJPY
+      RELEASE_TAG: usdjpy-${{ matrix.year }}-raw-bidask-ticks-v1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Skip existing immutable annual Release
+        id: existing
+        shell: bash
+        run: |
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'skip=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'skip=false' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Download complete UTC year on one isolated runner
+        if: steps.existing.outputs.skip == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p raw out stage
+          python tools/download_dukascopy_raw_tick_day_v1.py \
+            --symbol "$SYMBOL" \
+            --start "${YEAR}-01-01T00" \
+            --end "$((YEAR + 1))-01-01T00" \
+            --output-root raw \
+            --manifest-out raw/download_manifest.jsonl \
+            --summary-out raw/year_summary.json \
+            --retries 4 \
+            --retry-passes 3 \
+            --request-timeout 45 \
+            --request-interval 0.02 \
+            --max-errors 0
+      - name: Validate and package twelve immutable months
+        if: steps.existing.outputs.skip == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import calendar, hashlib, json, os, pathlib, shutil
+          from datetime import datetime
+          year=int(os.environ['YEAR'])
+          raw=pathlib.Path('raw'); out=pathlib.Path('out'); stage=pathlib.Path('stage')
+          summary=json.load(open(raw/'year_summary.json'))
+          expected=(datetime(year+1,1,1)-datetime(year,1,1)).days*24
+          assert summary['expected_hours']==expected
+          assert summary['resolved_hours']==expected
+          assert summary['error_hours']==0
+          assert summary['negative_spread_rows']==0
+          final={}
+          for line in open(raw/'download_manifest.jsonl'):
+            if line.strip():
+              row=json.loads(line); final[row['hour_start_utc']]=row
+          assert len(final)==expected
+          def sha(path):
+            h=hashlib.sha256()
+            with open(path,'rb') as f:
+              for chunk in iter(lambda:f.read(1024*1024),b''): h.update(chunk)
+            return h.hexdigest()
+          annual_months=[]
+          for month in range(1,13):
+            key=f'{year}-{month:02d}'
+            rows=[r for k,r in sorted(final.items()) if k.startswith(key)]
+            expected_hours=calendar.monthrange(year,month)[1]*24
+            assert len(rows)==expected_hours
+            totals={
+              'expected_hours':expected_hours,
+              'resolved_hours':sum(r['status']!='error' for r in rows),
+              'downloaded_hours':sum(r['status']=='downloaded' for r in rows),
+              'missing_404_hours':sum(r['status']=='missing_404' for r in rows),
+              'no_tick_hours':sum(r['status']=='no_ticks' for r in rows),
+              'error_hours':sum(r['status']=='error' for r in rows),
+              'tick_rows':sum(int(r.get('rows',0)) for r in rows),
+              'negative_spread_rows':sum(int(r.get('negative_spread_rows',0)) for r in rows),
+              'source_bi5_bytes':sum(int(r.get('source_bi5_bytes',0)) for r in rows),
+              'decoded_csv_bytes':sum(int(r.get('decoded_csv_bytes',0)) for r in rows),
+            }
+            assert totals['resolved_hours']==expected_hours and totals['error_hours']==0 and totals['negative_spread_rows']==0
+            mstage=stage/key
+            mstage.mkdir(parents=True,exist_ok=True)
+            for kind in ['source_bi5','decoded_csv']:
+              src=raw/kind/'USDJPY'/str(year)/f'{month:02d}'
+              if src.exists():
+                dst=mstage/kind/'USDJPY'/str(year)/f'{month:02d}'
+                dst.parent.mkdir(parents=True,exist_ok=True)
+                shutil.copytree(src,dst,copy_function=os.link)
+            with open(mstage/'download_manifest.jsonl','w') as f:
+              for r in rows: f.write(json.dumps(r,sort_keys=True)+'\n')
+            month_manifest={
+              'schema_version':f'usdjpy_{year}_raw_tick_month_v1',
+              'symbol':'USDJPY','month':key,
+              'workflow_run_id':os.environ['GITHUB_RUN_ID'],
+              'workflow_run_attempt':os.environ['GITHUB_RUN_ATTEMPT'],
+              'source':'Dukascopy BI5 public Bid/Ask ticks',
+              'timezone':'UTC','totals':totals,'failures':[],'accepted':True
+            }
+            manifest_path=out/f'usdjpy-{key}-raw-ticks-v1.manifest.json'
+            manifest_path.write_text(json.dumps(month_manifest,indent=2,sort_keys=True)+'\n')
+            package=out/f'usdjpy-{key}-raw-ticks-v1.tar.gz'
+            os.system(f"tar -czf '{package}' -C '{mstage}' .")
+            assert package.exists()
+            sums=out/f'usdjpy-{key}-raw-ticks-v1.SHA256SUMS'
+            sums.write_text(f'{sha(package)}  {package.name}\n{sha(manifest_path)}  {manifest_path.name}\n')
+            annual_months.append({'month':key,'package':package.name,'package_sha256':sha(package),'package_bytes':package.stat().st_size,'manifest':manifest_path.name,'manifest_sha256':sha(manifest_path),'totals':totals})
+          annual={
+            'schema_version':f'usdjpy_{year}_raw_tick_annual_v1','symbol':'USDJPY',
+            'start_utc':f'{year}-01-01T00:00:00Z','end_utc':f'{year+1}-01-01T00:00:00Z',
+            'workflow_run_id':os.environ['GITHUB_RUN_ID'],'workflow_run_attempt':os.environ['GITHUB_RUN_ATTEMPT'],
+            'source':'Dukascopy BI5 public Bid/Ask ticks','timezone':'UTC',
+            'expected_hours':expected,'resolved_hours':expected,
+            'tick_rows':sum(m['totals']['tick_rows'] for m in annual_months),
+            'accepted':True,'months':annual_months,
+            'mt4_boundary':'Raw BI5 and decoded Bid/Ask ticks are preserved; FXT/HST or importer conversion is required before MT4 Strategy Tester use.'
+          }
+          annual_path=out/f'usdjpy-{year}-raw-ticks-v1.annual-manifest.json'
+          annual_path.write_text(json.dumps(annual,indent=2,sort_keys=True)+'\n')
+          with open(out/'SHA256SUMS','w') as f:
+            for path in sorted(out.iterdir()):
+              if path.is_file() and path.name!='SHA256SUMS': f.write(f'{sha(path)}  {path.name}\n')
+          PY
+          (cd out && sha256sum -c SHA256SUMS)
+      - name: Publish immutable annual Release
+        if: steps.existing.outputs.skip == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            --title "USDJPY ${YEAR} Raw Dukascopy Bid/Ask Ticks v1" \
+            --notes "${YEAR}-01-01 through $((YEAR + 1))-01-01 UTC. Same-source public Dukascopy BI5 Bid/Ask authority with deterministic decoded CSV.GZ, monthly SHA-256 manifests and annual manifest. No strategy outcome is computed."
+          gh release upload "$RELEASE_TAG" out/* --repo "$GITHUB_REPOSITORY"
+      - name: Verify published annual Release
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null
+      - name: Upload local authority receipt
+        if: steps.existing.outputs.skip == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-${{ matrix.year }}-raw-authority-fast-receipt-${{ github.run_id }}
+          path: |
+            out/usdjpy-${{ matrix.year }}-raw-ticks-v1.annual-manifest.json
+            out/SHA256SUMS
+          retention-days: 90
+
+  final-receipt:
+    needs: build-year
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all four Releases without opening strategy outcomes
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=true
+          for y in 2019 2020 2021 2022; do
+            gh release view "usdjpy-${y}-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || ok=false
+          done
+          status=PRE2023_AUTHORITY_COMPLETE
+          if [ "$ok" != true ]; then status=DATA_AUTHORITY_BLOCKED_FOR_REGIME_PORTABILITY; fi
+          cat > receipt.md <<EOF
+          workflow: usdjpy_hyp031_pre2023_authority_fast_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          hypothesis_id: USDJPY-HYP-031
+          status: ${status}
+          authority_years: 2019,2020,2021,2022
+          source: Dukascopy BI5 Bid/Ask raw ticks
+          strategy_outcomes_accessed: false
+          backward_validation_authorized: false
+          2025_accessed: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[hyp031-pre2023-authority-fast] ${GITHUB_RUN_ID} ${status}" --body-file receipt.md
+          test "$ok" = true
