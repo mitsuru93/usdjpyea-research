@@ -14,6 +14,10 @@ permissions:
   actions: read
   issues: write
 
+concurrency:
+  group: hyp031-development-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   development:
     runs-on: ubuntu-latest
@@ -34,7 +38,7 @@ jobs:
         run: |
           set -euo pipefail
           cat tools/asian_range_regime_payload_chunks/part_*.txt | tr -d '\n' | base64 -d | gzip -dc > tools/evaluate_usdjpy_asian_range_sweep_regime_v1.py
-          printf '%s  %s\n' 'abca6cad9f666c5002fbda5a244e862ff39c8ee0a488733fc8912b7ee7a9d890' tools/evaluate_usdjpy_asian_range_sweep_regime_v1.py | sha256sum -c -
+          printf '%s  %s\n' '652c55d408339cf6609896071fdddcb7c50241a874e163a4a6aede1731b6fc2c' tools/evaluate_usdjpy_asian_range_sweep_regime_v1.py | sha256sum -c -
           python -m py_compile tools/evaluate_usdjpy_asian_range_sweep_regime_v1.py
       - name: Enforce preregistration and 2025 firewall
         run: |
@@ -109,7 +113,7 @@ jobs:
         run: |
           set -euo pipefail
           cp tools/evaluate_usdjpy_asian_range_sweep_regime_v1.py regime_output/
-          printf '%s  %s\n' 'abca6cad9f666c5002fbda5a244e862ff39c8ee0a488733fc8912b7ee7a9d890' regime_output/evaluate_usdjpy_asian_range_sweep_regime_v1.py | sha256sum -c -
+          printf '%s  %s\n' '652c55d408339cf6609896071fdddcb7c50241a874e163a4a6aede1731b6fc2c' regime_output/evaluate_usdjpy_asian_range_sweep_regime_v1.py | sha256sum -c -
           (cd regime_output && find . -maxdepth 1 -type f ! -name PACKAGE_SHA256SUMS -printf '%f\0' | sort -z | xargs -0 sha256sum > PACKAGE_SHA256SUMS)
           (cd regime_output && sha256sum -c PACKAGE_SHA256SUMS)
           zip -q -X -r "usdjpy-asian-range-sweep-regime-development-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" regime_output
