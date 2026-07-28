@@ -1,4 +1,4 @@
-name: Validate USDJPY Research Memory v1
+name: Validate USDJPY Research Memory v2
 
 on:
   pull_request:
@@ -7,10 +7,12 @@ on:
       - README.md
       - configs/research/usdjpy_research_memory_manifest_v1.json
       - configs/research/usdjpy_hypothesis_ledger_v1.json
+      - configs/research/usdjpy_hypothesis_ledger_addendum_v*.json
       - configs/research/usdjpy_validation_operating_contract_v4.json
       - configs/research/usdjpy_research_candidate_registry_v*.json
       - docs/research/usdjpy_research_memory_system_v1.md
       - tools/validate_usdjpy_research_memory_v1.py
+      - tools/validate_usdjpy_research_memory_v2.py
       - .github/workflows/validate_usdjpy_research_memory_v1.yml
   push:
     branches: [main]
@@ -19,10 +21,12 @@ on:
       - README.md
       - configs/research/usdjpy_research_memory_manifest_v1.json
       - configs/research/usdjpy_hypothesis_ledger_v1.json
+      - configs/research/usdjpy_hypothesis_ledger_addendum_v*.json
       - configs/research/usdjpy_validation_operating_contract_v4.json
       - configs/research/usdjpy_research_candidate_registry_v*.json
       - docs/research/usdjpy_research_memory_system_v1.md
       - tools/validate_usdjpy_research_memory_v1.py
+      - tools/validate_usdjpy_research_memory_v2.py
       - .github/workflows/validate_usdjpy_research_memory_v1.yml
   workflow_dispatch:
 
@@ -35,16 +39,18 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          show-progress: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Validate canonical memory graph
         run: |
-          python tools/validate_usdjpy_research_memory_v1.py \
+          python tools/validate_usdjpy_research_memory_v2.py \
             --root . \
-            --output validation/usdjpy_research_memory_validation_receipt_v1.json
+            --output validation/usdjpy_research_memory_validation_receipt_v2.json
       - uses: actions/upload-artifact@v4
         with:
-          name: usdjpy-research-memory-validation-${{ github.run_id }}-${{ github.run_attempt }}
-          path: validation/usdjpy_research_memory_validation_receipt_v1.json
+          name: usdjpy-research-memory-validation-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          path: validation/usdjpy_research_memory_validation_receipt_v2.json
           if-no-files-found: error
