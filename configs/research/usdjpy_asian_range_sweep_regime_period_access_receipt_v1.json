@@ -1,0 +1,13 @@
+{
+  "schema_version": "usdjpy_asian_range_sweep_regime_period_access_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-031",
+  "development_2023H1_2024H2": "ACCESSED_BINDING_RAW_NATIVE",
+  "pre2023_authority_acquisition": "STARTED_THEN_PAUSED_BEFORE_STRATEGY_OUTCOMES",
+  "pre2023_strategy_outcomes_accessed": false,
+  "backward_validation": "NOT_AUTHORIZED_NO_DEVELOPMENT_CANDIDATE",
+  "2025H1": "NOT_ACCESSED_NOT_AUTHORIZED",
+  "2025H2": "NOT_ACCESSED_NOT_AUTHORIZED",
+  "Core": "NOT_MODIFIED_NOT_AUTHORIZED",
+  "MT4": "NOT_RUN_NOT_AUTHORIZED",
+  "HYP030_decision_changed": false
+}

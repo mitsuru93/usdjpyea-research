@@ -1,0 +1,35 @@
+{
+  "schema_version": "usdjpy_asian_range_sweep_regime_pre2023_authority_inventory_v1",
+  "hypothesis_id": "USDJPY-HYP-031",
+  "source": "Dukascopy BI5 public Bid/Ask ticks",
+  "timezone_contract": "UTC source; frozen Rakuten UTC+2/UTC+3 US-DST logical state buckets",
+  "years": [
+    {
+      "year": 2019,
+      "release_tag": "usdjpy-2019-raw-bidask-ticks-v1",
+      "release_exists": false,
+      "strategy_outcomes_accessed": false
+    },
+    {
+      "year": 2020,
+      "release_tag": "usdjpy-2020-raw-bidask-ticks-v1",
+      "release_exists": false,
+      "strategy_outcomes_accessed": false
+    },
+    {
+      "year": 2021,
+      "release_tag": "usdjpy-2021-raw-bidask-ticks-v1",
+      "release_exists": false,
+      "strategy_outcomes_accessed": false
+    },
+    {
+      "year": 2022,
+      "release_tag": "usdjpy-2022-raw-bidask-ticks-v1",
+      "release_exists": false,
+      "strategy_outcomes_accessed": false
+    }
+  ],
+  "strategy_outcomes_accessed": false,
+  "backward_validation_authorized": false,
+  "reason": "No development candidate passed; pre-2023 strategy outcome must remain unopened."
+}

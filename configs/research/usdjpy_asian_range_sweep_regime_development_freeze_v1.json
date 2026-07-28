@@ -1,0 +1,11 @@
+{
+  "2025_accessed": false,
+  "candidate_rule_change_allowed": false,
+  "development_result_sha256": "4c01e89186164002bac9dfeac59c8eb92a8c60ba8f17a63cd92e8516b2c72e3e",
+  "hypothesis_id": "USDJPY-HYP-031",
+  "pre2023_strategy_outcomes_accessed": false,
+  "prereg_sha256": "356885bc037532ec9a4c09144f9b607ac2db3e8f087c2ac9e9ce75e75672d77c",
+  "schema_version": "usdjpy_asian_range_sweep_directional_regime_development_freeze_v1",
+  "selected_candidate_id": null,
+  "status": "NO_PORTABLE_REGIME_RULE"
+}
