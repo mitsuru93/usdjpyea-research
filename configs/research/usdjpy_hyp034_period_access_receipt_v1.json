@@ -1,0 +1,33 @@
+{
+  "schema_version": "usdjpy_hyp034_period_access_receipt_v1",
+  "status": "CLOSED_WITHOUT_PROTECTED_PERIOD_ACCESS",
+  "hypothesis_id": "USDJPY-HYP-034",
+  "family_id": "S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION",
+  "development_periods_accessed": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "warmup_2019_accessed": false,
+  "historical_validation": {
+    "2019_warmup": "NOT_ACCESSED_NOT_AUTHORIZED",
+    "2020": "NOT_ACCESSED_NOT_AUTHORIZED",
+    "2021": "NOT_ACCESSED_NOT_AUTHORIZED",
+    "2022": "NOT_ACCESSED_NOT_AUTHORIZED"
+  },
+  "external_validation": {
+    "2025H1": "NOT_ACCESSED_NOT_AUTHORIZED",
+    "2025H2": "NOT_ACCESSED_NOT_AUTHORIZED"
+  },
+  "access_block_reason": "The source-native Development population failed Stop Rule 5: no portable rejection mechanism and no ex-ante discriminator. Candidate freeze was not created.",
+  "candidate_selected": false,
+  "candidate_freeze_created": false,
+  "Core_modified": false,
+  "MT4_accessed": false,
+  "parallel_HYP033_scientific_objects_accessed": false,
+  "B02_F05_logic_changed": false,
+  "side_or_session_exclusion": false,
+  "exit_retuned": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "scientific_run_id": 30375885665,
+  "scientific_artifact_id": 8695321156,
+  "scientific_artifact_digest": "sha256:4eefbcc77962dc9f72fa647b386088c18f9efa196b7f70be1e970ccf9ed8964b",
+  "binding_decision": "NO_PORTABLE_REJECTION_MECHANISM"
+}
