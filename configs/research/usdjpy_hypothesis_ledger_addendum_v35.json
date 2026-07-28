@@ -7,32 +7,43 @@
   "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v34.json",
   "entries": [
     {
-      "hypothesis_id": "USDJPY-HYP-034",
-      "family_id": "S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION",
-      "title": "Previous-Day Extreme Sweep Rejection Mechanism Study",
-      "status": "PREREGISTERED_SOURCE_AUTHORITY_PREFLIGHT",
-      "origin": "CSOS F_PREVIOUS_DAY_SWEEP diagnostic priority",
-      "atlas_reference": "F_PREVIOUS_DAY_SWEEP",
-      "prior_hypothesis_ids_reviewed": ["USDJPY-HYP-030", "USDJPY-HYP-031", "USDJPY-HYP-032"],
-      "parallel_boundary": {
-        "reserved_hypothesis": "USDJPY-HYP-033",
-        "study": "Asian Low Sweep Post-Sweep Rebound Mechanism Study",
-        "shared_scientific_objects": false
-      },
-      "novelty_statement": "This study uses previous UTC trading-day High/Low boundaries, complete trading-day calendar logic and source-native Bid/Ask event chronology. It does not reuse Asian Range boundaries, H4/D1 routing, session-loss state, C1/C2/C3, or any parallel-study result.",
-      "retained_findings_used": [
-        "CSOS separated Asian Range Sweep from Previous-Day Sweep.",
-        "HYP-030 failed portfolio MDD despite standalone positive economics, so all portfolio gates remain binding.",
-        "HYP-031 found no portable H4/D1 routing rule, so trend routing is not admitted.",
-        "HYP-032 failed historical validation with no retuning, so realized-loss state is excluded."
-      ],
-      "falsified_claims_not_repeated": ["Asian Range candidate rescue", "H4/D1 symmetric routing", "session-loss-cap combination"],
-      "development_periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
-      "protected_periods_unopened": ["2020", "2021", "2022", "2025H1", "2025H2"],
-      "preregistration": "configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json",
-      "source_manifest": "configs/research/usdjpy_previous_day_extreme_sweep_source_manifest_v1.json",
-      "exact_next_action": "Complete no-outcome source probe, freeze source-native parser and evaluator, then execute 2023-2024 mechanism development once."
+      "hypothesis_id": "USDJPY-HYP-033",
+      "family_id": "S_ASIAN_LOW_SWEEP_REBOUND_MECHANISM",
+      "title": "Asian Low Sweep Post-Sweep Rebound Mechanism Study",
+      "status": "COMPLETE_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "scientific_result": true,
+      "mechanism_path_asymmetry_confirmed": true,
+      "ex_ante_discriminator_confirmed": false,
+      "candidate_freeze": false,
+      "source_run_id": 30375772490,
+      "source_artifact_id": 8695153813,
+      "result": "configs/research/usdjpy_hyp033_final_result_v1.json",
+      "report": "docs/research/USDJPY_HYP033_ASIAN_LOW_SWEEP_REBOUND_MECHANISM_RESULT_V1.md",
+      "failed_binding_stage": "STOP_RULE_5_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "historical_2020_2022_accessed": false,
+      "core_mt4_accessed": false,
+      "2025_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false,
+      "no_retuning": true
     }
   ],
-  "hypothesis_status_updates": []
+  "hypothesis_status_updates": [
+    {
+      "hypothesis_id": "USDJPY-HYP-033",
+      "family_id": "S_ASIAN_LOW_SWEEP_REBOUND_MECHANISM",
+      "prior_status": "NEW_INDEPENDENT_MECHANISM_STUDY",
+      "status": "COMPLETE_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "source_run_id": 30375772490,
+      "source_result": "configs/research/usdjpy_hyp033_final_result_v1.json",
+      "candidate_freeze": false,
+      "Core_candidate_authorized": false,
+      "2025_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false,
+      "retuning": false
+    }
+  ]
 }
