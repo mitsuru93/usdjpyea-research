@@ -5,6 +5,7 @@
   "active_family": null,
   "active_hypothesis": null,
   "current_candidate": null,
+  "current_open_research_question": null,
   "candidate_ids": [],
   "development_decision": "NO_PORTABLE_REJECTION_MECHANISM",
   "scientific_result": true,
@@ -19,6 +20,11 @@
   "release_receipt": "configs/research/usdjpy_hyp034_release_receipt_v1.json",
   "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v36.json",
   "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v36.json"
+  },
   "unfiltered_result": {
     "source_native_events": 510,
     "trades": 432,
