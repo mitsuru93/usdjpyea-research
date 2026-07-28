@@ -42,6 +42,8 @@ def load_addendum_chain(root: Path, path: Path, seen: set[Path] | None = None):
     }
 
 def validate_entry(row, *, strict: bool, warnings: list[dict]):
+    if not row.get("hypothesis_id"):
+        raise RuntimeError("ledger entry missing hypothesis_id")
     missing = sorted(REQUIRED_ENTRY_FIELDS - set(row))
     if missing:
         if strict:
@@ -51,10 +53,13 @@ def validate_entry(row, *, strict: bool, warnings: list[dict]):
             "warning": "LEGACY_INHERITED_ENTRY_MISSING_CURRENT_SCHEMA_FIELDS",
             "missing_fields": missing,
         })
-    if not row.get("hypothesis_id"):
-        raise RuntimeError("ledger entry missing hypothesis_id")
     if not row.get("family_ids"):
-        raise RuntimeError(f"ledger entry missing family_ids: {row.get('hypothesis_id')}")
+        if strict:
+            raise RuntimeError(f"ledger entry missing family_ids: {row.get('hypothesis_id')}")
+        warnings.append({
+            "hypothesis_id": row.get("hypothesis_id"),
+            "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS",
+        })
 
 def main():
     ap = argparse.ArgumentParser()
