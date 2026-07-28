@@ -1,0 +1,18 @@
+{
+  "schema_version": "usdjpy_hyp034_source_probe_erratum_v1",
+  "status": "TECHNICAL_PASS_INVALIDATED_TIMESTAMP_PATH_PARSE",
+  "hypothesis_id": "USDJPY-HYP-034",
+  "source_run_id": 30372817838,
+  "source_artifact_id": 8693628771,
+  "source_artifact_digest": "sha256:e03532fe65506fbff6e44ae6a43248ac4765de261cc005610f7b27e3b04e5c25",
+  "detected_during_readback": true,
+  "defect": "The generic integer extractor read the digit 5 in the directory name source_bi5 as the hour after the first YYYY/MM/DD tuple. For example, member .../2023/01/01/23h_ticks.bi5 was reported as 05:00 rather than 23:00 UTC.",
+  "affected_fields": ["sample timestamp_utc", "member hour derivation"],
+  "unaffected_fields": ["Release checksums", "LZMA decompression", "20-byte record size", "Ask price", "Bid price", "Ask/Bid inversion audit", "record millisecond monotonicity"],
+  "candidate_outcome_computed": false,
+  "protected_period_accessed": false,
+  "scientific_result": false,
+  "authority_pass_usable": false,
+  "repair": "Anchor parsing to the terminal /YYYY/MM/DD/HHh_ticks.bi5 suffix and rerun the same no-outcome probe.",
+  "scientific_contract_changed": false
+}

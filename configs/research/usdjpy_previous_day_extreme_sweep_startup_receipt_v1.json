@@ -1,0 +1,49 @@
+{
+  "schema_version": "usdjpy_previous_day_extreme_sweep_startup_receipt_v1",
+  "status": "STARTUP_READ_AND_NOVELTY_GATE_PASS_SOURCE_PROBE_PENDING",
+  "research_main_commit": "a9b139e971bbaa8ed0ab64d0bef66b542eb78be5",
+  "core_main_commit": "f897b250b808207d960417b2306935dcb0655acf",
+  "branch": "research/hyp034-previous-day-extreme-sweep-rejection",
+  "base_is_current_at_branch_creation": true,
+  "mandatory_files_read_or_reconciled": [
+    "AGENTS.md",
+    "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "configs/research/usdjpy_research_candidate_registry_v60.json",
+    "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v34.json",
+    "configs/research/usdjpy_asian_range_liquidity_sweep_phase2_prereg_v1.json",
+    "docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/data_source_inventory.json",
+    "tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py at CSOS authority SHA 74c9dc6869c805e3ec3fe1db87e5744ef62729b6",
+    "mitsuru93/usdjpyea-core:docs/research_infrastructure/MIGRATION_GUIDE_V1.md",
+    "mitsuru93/usdjpyea-core:.github/workflows/reusable_research_execution_infra_v1.yml",
+    "MT4 tester automation handoff file /mnt/data/テスター自動化.txt"
+  ],
+  "canonical_pointer_drift_detected": {
+    "memory_manifest_registry_pointer": "v54",
+    "actual_latest_registry": "v60",
+    "memory_manifest_addendum_pointer": "v28",
+    "actual_latest_addendum": "v34",
+    "handling": "latest main binding files take precedence; manifest pointer repair will be included in atomic closure"
+  },
+  "current_registry_status": "USDJPY_HYP032_HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING_NUMERICALLY_NORMALIZED",
+  "current_exact_next_action_before_hyp034": "Scientific stop for HYP-032; do not retune C1 or open Core/2025.",
+  "relevant_hypothesis_ledger_ids": ["USDJPY-HYP-030", "USDJPY-HYP-031", "USDJPY-HYP-032", "USDJPY-HYP-034"],
+  "hypothesis_id_assignment": {
+    "HYP033": "reserved for parallel Asian Low Sweep study",
+    "HYP034": "assigned to this independent Previous-Day Extreme Sweep study after main, PR, branch and Issue search found no canonical HYP-034 use"
+  },
+  "lineage_name": "DUKASCOPY_BI5_SOURCE_NATIVE_BIDASK_PREVIOUS_UTC_TRADING_DAY_V1",
+  "period_access_boundaries": {
+    "2019": "warmup only and unopened",
+    "2023_2024": "source probe authorized; outcomes not yet authorized",
+    "2020_2022": "locked",
+    "2025H1": "locked",
+    "2025H2": "locked"
+  },
+  "scientific_outcomes_accessed": false,
+  "core_modified": false,
+  "mt4_executed": false,
+  "live_authorized": false,
+  "exact_next_action": "Open the preregistration PR and run the exact-SHA no-outcome source probe."
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": "usdjpy_previous_day_extreme_sweep_source_probe_v1",
+  "status": "TECHNICAL_SOURCE_PROBE_PASS",
+  "source_contract": "Dukascopy BI5 source-native Bid/Ask Tick",
+  "candidate_outcomes_computed": false,
+  "protected_period_accessed": false,
+  "workflow_run_id": 30372817838,
+  "artifact_id": 8693628771,
+  "artifact_digest": "sha256:e03532fe65506fbff6e44ae6a43248ac4765de261cc005610f7b27e3b04e5c25",
+  "research_head_sha": "d3fbf6d318f18a631b55ad9a52bd89b6b79dd5d4",
+  "core_infrastructure_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "format": "DUKASCOPY_BI5_LZMA_BIG_ENDIAN_20_BYTE",
+  "record_struct": ">3I2f",
+  "price_scale": 1000.0,
+  "timestamp_contract": "terminal member /YYYY/MM/DD/HHh_ticks.bi5 UTC hour plus record millisecond offset",
+  "bid_contract": "record bid integer divided by 1000",
+  "ask_contract": "record ask integer divided by 1000",
+  "sample_ask_bid_inversion_count": 0,
+  "sample_nonmonotonic_millisecond_count": 0,
+  "years": {
+    "2023": {
+      "sample_archive": "usdjpy-2023-01-raw-ticks-v1.tar.gz",
+      "sample_archive_sha256": "7ae415c0ead81635c6000fe6c3c2c0beff64fbdbadd06c2e2fa69380955240f3",
+      "first_nonempty_member": "2023-01-01/source_bi5/USDJPY/2023/01/01/23h_ticks.bi5",
+      "sample_records": 239
+    },
+    "2024": {
+      "sample_archive": "usdjpy-2024-01-raw-ticks-v1.tar.gz",
+      "sample_archive_sha256": "46eca97a4ca3a577200bffc2ec4f698dfc830d25f0c552510f33414f0b6971aa",
+      "first_nonempty_member": "2024-01-01/source_bi5/USDJPY/2024/01/01/22h_ticks.bi5",
+      "sample_records": 398
+    }
+  }
+}
