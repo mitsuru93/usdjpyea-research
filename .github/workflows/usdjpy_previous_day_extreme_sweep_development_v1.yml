@@ -169,7 +169,7 @@ jobs:
             --raw-2024 "$ROOT/inputs/raw2024" \
             --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" \
             --prereg "$ROOT/src/prereg.json" \
-            --output "$ROOT/output" 2>&1 | tee "$ROOT/output/run.log"
+            --output "$ROOT/output" 2>&1 | tee "$ROOT/evidence/development_run.log"
           jq -e '.hypothesis_id=="USDJPY-HYP-034" and .protected_2020_2022_accessed==false and .protected_2025_accessed==false and .production_authorized==false and .live_authorized==false' "$ROOT/output/final_result.json"
           (cd "$ROOT/output" && sha256sum -c PACKAGE_SHA256SUMS)
           ! grep -R --line-number -E '2020-[0-9]{2}-[0-9]{2}|2021-[0-9]{2}-[0-9]{2}|2022-[0-9]{2}-[0-9]{2}|2025-[0-9]{2}-[0-9]{2}' "$ROOT/output"
