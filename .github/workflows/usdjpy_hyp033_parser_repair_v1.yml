@@ -27,7 +27,7 @@ jobs:
               p=subprocess.run(['gh','api',*args],input=body,capture_output=True,check=True)
               return json.loads(p.stdout)
           def get(path):
-              m=api([f'repos/{repo}/contents/{path}','-f',f'ref={branch}'])
+              m=api(['--method','GET',f'repos/{repo}/contents/{path}','-f',f'ref={branch}'])
               return m,base64.b64decode(''.join(m['content'].split()))
           def put(path,data,sha,msg):
               b=json.dumps({'message':msg,'content':base64.b64encode(data).decode(),'sha':sha,'branch':branch}).encode()
