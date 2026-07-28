@@ -86,7 +86,7 @@ def main():
     chain = load_addendum_chain(root, addendum_path)
     inherited_entries = chain["all_entries"][:-len(chain["current_entries"])] if chain["current_entries"] else chain["all_entries"]
     current_entries = chain["current_entries"]
-    rows = ledger.get("entries", []) + chain["all_entries"]
+    raw_rows = ledger.get("entries", []) + chain["all_entries"]
     warnings = []
     for row in ledger.get("entries", []):
         validate_entry(row, strict=False, warnings=warnings)
@@ -95,11 +95,26 @@ def main():
     for row in current_entries:
         validate_entry(row, strict=True, warnings=warnings)
 
-    ids = [row.get("hypothesis_id") for row in rows]
-    dupes = sorted({x for x in ids if ids.count(x) > 1})
-    if dupes:
-        raise RuntimeError(f"duplicate hypothesis IDs: {dupes}")
-    id_set = set(ids)
+    raw_ids = [row["hypothesis_id"] for row in raw_rows]
+    duplicate_ids = sorted({x for x in raw_ids if raw_ids.count(x) > 1})
+    current_ids = {row["hypothesis_id"] for row in current_entries}
+    duplicate_current = sorted(current_ids.intersection(duplicate_ids))
+    if duplicate_current:
+        raise RuntimeError(f"current delta duplicates existing hypothesis IDs: {duplicate_current}")
+    if duplicate_ids:
+        warnings.append({
+            "warning": "LEGACY_SNAPSHOT_REPEATED_IDS_COLLAPSED_TO_LATEST",
+            "hypothesis_ids": duplicate_ids,
+        })
+    latest_by_id = {}
+    ordered_ids = []
+    for row in raw_rows:
+        hid = row["hypothesis_id"]
+        if hid not in latest_by_id:
+            ordered_ids.append(hid)
+        latest_by_id[hid] = row
+    rows = [latest_by_id[hid] for hid in ordered_ids]
+    id_set = set(ordered_ids)
     family_to_ids = {}
     for row in rows:
         for family in row.get("family_ids", []):
@@ -151,6 +166,7 @@ def main():
         "registry_status": registry.get("status"),
         "hypothesis_ledger": str(ledger_path.relative_to(root)),
         "hypothesis_ledger_addendum": str(addendum_path.relative_to(root)),
+        "raw_entry_count": len(raw_rows),
         "hypothesis_count": len(rows),
         "status_update_count": len(chain["status_updates"]),
         "legacy_schema_warnings": warnings,
