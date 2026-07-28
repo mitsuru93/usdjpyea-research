@@ -1,0 +1,200 @@
+name: USDJPY HYP-034 Development Evidence Repair v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp034_development_evidence_repair_v1.yml'
+      - 'configs/research/usdjpy_hyp034_development_technical_no_result_v3.json'
+      - 'tools/vendor/fx2_infra_core_f897b250_v1.py'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp034_development_evidence_repair_v1.yml'
+      - 'configs/research/usdjpy_hyp034_development_technical_no_result_v3.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+  issues: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Establish exact repair identities
+        id: identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/h34r"
+          rm -rf "$root"
+          mkdir -p "$root/source" "$root/repaired/scientific_output" "$root/repaired/technical_evidence" "$root/infra"
+          sha='${{ github.event.pull_request.head.sha || github.sha }}'
+          test "${#sha}" = 40
+          echo "root=$root" >> "$GITHUB_OUTPUT"
+          echo "research_sha=$sha" >> "$GITHUB_OUTPUT"
+      - name: Download exact scientific artifact and verify identity
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          digest=$(gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8695321156 --jq '.digest')
+          test "$digest" = 'sha256:4eefbcc77962dc9f72fa647b386088c18f9efa196b7f70be1e970ccf9ed8964b'
+          gh run download 30375885665 --repo "$GITHUB_REPOSITORY" --name usdjpy-hyp034-development-v1-30375885665-1 --dir "$ROOT/source"
+          test -f "$ROOT/source/output/final_result.json"
+          test -f "$ROOT/source/output/PACKAGE_SHA256SUMS"
+          test -f "$ROOT/source/evidence/development_run.log"
+          jq -e '
+            .hypothesis_id=="USDJPY-HYP-034" and
+            .family_id=="S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION" and
+            .decision=="NO_PORTABLE_REJECTION_MECHANISM" and
+            .source_native_event_count==510 and
+            .high_sweep_count==284 and
+            .low_sweep_count==226 and
+            .calendar_metadata.candidate_trade_count_after_active_suppression==432 and
+            ((.unfiltered_candidate_metrics.net_jpy-4450)|abs < 0.000001) and
+            ((.unfiltered_candidate_metrics.profit_factor-1.0888259012335741)|abs < 0.000000000001) and
+            .positive_folds==2 and
+            .candidate_catalog_size==0 and
+            .selected_candidate==null and
+            .historical_validation_authorized==false and
+            .core_mt4_authorized==false and
+            .external_2025_authorized==false and
+            .production_authorized==false and
+            .live_authorized==false and
+            .protected_2020_2022_accessed==false and
+            .protected_2025_accessed==false
+          ' "$ROOT/source/output/final_result.json"
+          (cd "$ROOT/source/output" && grep -v '  run.log$' PACKAGE_SHA256SUMS | sha256sum -c -)
+      - name: Rebuild immutable package without mutable log
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          cp -a "$ROOT/source/output/." "$ROOT/repaired/scientific_output/"
+          rm -f "$ROOT/repaired/scientific_output/run.log" "$ROOT/repaired/scientific_output/PACKAGE_MANIFEST.json" "$ROOT/repaired/scientific_output/PACKAGE_SHA256SUMS"
+          cp -a "$ROOT/source/evidence/." "$ROOT/repaired/technical_evidence/"
+          cp "$ROOT/source/output/run.log" "$ROOT/repaired/technical_evidence/evaluator_stdout.log"
+          cat > "$ROOT/repaired/technical_evidence/evidence_repair_receipt.json" <<'JSON'
+          {
+            "schema_version": "usdjpy_hyp034_development_evidence_repair_receipt_v1",
+            "status": "TECHNICAL_PACKAGE_REPAIR_SCIENTIFIC_RESULT_UNCHANGED",
+            "hypothesis_id": "USDJPY-HYP-034",
+            "family_id": "S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION",
+            "scientific_decision": "NO_PORTABLE_REJECTION_MECHANISM",
+            "source_run_id": 30375885665,
+            "source_job_id": 90331330687,
+            "source_artifact_id": 8695321156,
+            "source_artifact_digest": "sha256:4eefbcc77962dc9f72fa647b386088c18f9efa196b7f70be1e970ccf9ed8964b",
+            "source_head_sha": "b94d09c0dc057f6a811cf79664cff81adf0fc922",
+            "repair_scope": "Move mutable run.log outside the scientific package and recompute manifests; no evaluator, input, event, feature, threshold, gate, period, metric or decision changed.",
+            "protected_2020_2022_accessed": false,
+            "protected_2025_accessed": false,
+            "core_changed": false,
+            "mt4_executed": false,
+            "scientific_result_changed": false
+          }
+          JSON
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['ROOT'])/'repaired'/'scientific_output'
+          rows=[]
+          for p in sorted(root.iterdir()):
+              if p.is_file() and p.name not in {'PACKAGE_MANIFEST.json','PACKAGE_SHA256SUMS'}:
+                  rows.append({'path':p.name,'byte_size':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+          (root/'PACKAGE_MANIFEST.json').write_text(json.dumps({'file_count':len(rows),'files':rows},indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          sums=rows+[{'path':'PACKAGE_MANIFEST.json','sha256':hashlib.sha256((root/'PACKAGE_MANIFEST.json').read_bytes()).hexdigest()}]
+          (root/'PACKAGE_SHA256SUMS').write_text(''.join(f"{r['sha256']}  {r['path']}\n" for r in sums),encoding='utf-8')
+          PY
+          (cd "$ROOT/repaired/scientific_output" && sha256sum -c PACKAGE_SHA256SUMS)
+          ! find "$ROOT/repaired/scientific_output" -maxdepth 1 -name 'run.log' -o -name 'development_run.log'
+      - name: Fetch frozen Infrastructure v1 snapshot by exact SHA
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+          RESEARCH_SHA: ${{ steps.identity.outputs.research_sha }}
+        run: |
+          set -euo pipefail
+          payload=$(gh api -H 'Accept: application/vnd.github+json' "repos/${GITHUB_REPOSITORY}/contents/tools/vendor/fx2_infra_core_f897b250_v1.py?ref=${RESEARCH_SHA}")
+          printf '%s' "$payload" | jq -er '.content' | tr -d '\n' | base64 -d > "$ROOT/infra/fx2_infra.py"
+          test -s "$ROOT/infra/fx2_infra.py"
+          python -m py_compile "$ROOT/infra/fx2_infra.py"
+          grep -q 'ORIGIN_CORE_SHA = "f897b250b808207d960417b2306935dcb0655acf"' "$ROOT/infra/fx2_infra.py"
+      - name: Build deterministic archive and read back
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+          RESEARCH_SHA: ${{ steps.identity.outputs.research_sha }}
+        run: |
+          set -euo pipefail
+          python "$ROOT/infra/fx2_infra.py" archive --input "$ROOT/repaired" --output "$ROOT/usdjpy-hyp034-development-v1-r1.zip" --source-sha "$RESEARCH_SHA" --run-id "$GITHUB_RUN_ID" --classification scientific > "$ROOT/repaired/technical_evidence/archive_build_receipt.json"
+          python "$ROOT/infra/fx2_infra.py" readback --archive "$ROOT/usdjpy-hyp034-development-v1-r1.zip" > "$ROOT/repaired/technical_evidence/archive_readback.json"
+          jq -e '.status=="PASS"' "$ROOT/repaired/technical_evidence/archive_readback.json"
+          sha256sum "$ROOT/usdjpy-hyp034-development-v1-r1.zip" > "$ROOT/repaired/technical_evidence/archive_sha256.txt"
+      - name: Upload canonical repaired artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp034-development-v1-r1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ steps.identity.outputs.root }}/repaired
+            ${{ steps.identity.outputs.root }}/usdjpy-hyp034-development-v1-r1.zip
+          retention-days: 90
+          compression-level: 0
+          if-no-files-found: error
+      - name: Publish immutable Release on main
+        if: github.event_name == 'push' && github.ref_name == 'main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          tag='usdjpy-hyp034-previous-day-extreme-sweep-development-v1'
+          ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1
+          gh release create "$tag" "$ROOT/usdjpy-hyp034-development-v1-r1.zip" --target "$GITHUB_SHA" --title 'USDJPY HYP-034 Previous-Day Extreme Sweep Development v1' --notes 'Source-native Dukascopy BI5 Bid/Ask Development result. Decision: NO_PORTABLE_REJECTION_MECHANISM. 510 source-native sweep events; 432 executable rejection trades; net JPY 4,450; PF 1.0888259012; 2/4 positive folds; no ex-ante discriminator and no candidate freeze. 2020-2022, Core/MT4 and 2025 were not accessed. r1 repairs mutable-log packaging only; scientific result unchanged.' --repo "$GITHUB_REPOSITORY"
+      - name: Publish immutable receipt Issue on main
+        if: github.event_name == 'push' && github.ref_name == 'main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          cat > receipt.md <<EOF
+          workflow: usdjpy_hyp034_development_evidence_repair_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          head_sha: ${GITHUB_SHA}
+          hypothesis_id: USDJPY-HYP-034
+          family_id: S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION
+          decision: NO_PORTABLE_REJECTION_MECHANISM
+          source_scientific_run_id: 30375885665
+          source_artifact_id: 8695321156
+          source_artifact_digest: sha256:4eefbcc77962dc9f72fa647b386088c18f9efa196b7f70be1e970ccf9ed8964b
+          canonical_artifact_id: ${ARTIFACT_ID}
+          canonical_artifact_digest: ${ARTIFACT_DIGEST}
+          release_tag: usdjpy-hyp034-previous-day-extreme-sweep-development-v1
+          source_native_events: 510
+          executable_rejection_trades: 432
+          net_jpy: 4450
+          profit_factor: 1.0888259012335741
+          positive_folds: 2/4
+          selected_candidate: NONE
+          protected_2020_2022_accessed: false
+          protected_2025_accessed: false
+          Core_modified: false
+          MT4_accessed: false
+          production_authorized: false
+          live_authorized: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-034] ${GITHUB_RUN_ID} NO_PORTABLE_REJECTION_MECHANISM" --body-file receipt.md
