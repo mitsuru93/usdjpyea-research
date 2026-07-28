@@ -30,6 +30,10 @@
       "local_path": "tools/research_infra/exact_sha_fetch.py"
     },
     {
+      "repository_path": "tools/hyp033_diagnostic_sitecustomize.py",
+      "local_path": "tools/sitecustomize.py"
+    },
+    {
       "repository_path": "fixtures/hyp033_preflight/README.txt",
       "local_path": "fixtures/hyp033_preflight/README.txt"
     }
