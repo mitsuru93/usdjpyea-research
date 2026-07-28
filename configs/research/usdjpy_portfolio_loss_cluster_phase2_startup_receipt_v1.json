@@ -1,0 +1,17 @@
+{
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase2_startup_receipt_v1",
+  "study_id": "USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE2-V1",
+  "hypothesis_id": "USDJPY-HYP-027",
+  "candidate_id": "SESSION_LOSS_CAP_2",
+  "started_at_utc": "2026-07-28T05:03:13Z",
+  "research_main_sha": "bb4a9dcedec8390585b4c4611c9316bb4febb34c",
+  "core_main_sha": "dbffc656a0793a2efd9bd54394223f1239de2afa",
+  "phase1_authority_release": "usdjpy-portfolio-loss-cluster-phase1-v1-r1",
+  "phase1_authority_release_asset_sha256": "32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada",
+  "phase2_role": "INTERNAL_CONFIRMATION_AND_IMPLEMENTATION_CONTRACT_VALIDATION",
+  "candidate_change_authorized": false,
+  "MT4_authorized_at_start": false,
+  "2025H1_authorized_at_start": false,
+  "2025H2_authorized_at_start": false,
+  "production_authorized_at_start": false
+}
