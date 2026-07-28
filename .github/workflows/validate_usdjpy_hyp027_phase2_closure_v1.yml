@@ -10,6 +10,7 @@ on:
       - 'configs/research/usdjpy_hypothesis_ledger_addendum_v28.json'
       - 'configs/research/usdjpy_2023_2024_hypothesis_program_v13.json'
       - 'docs/research/USDJPY_PORTFOLIO_LOSS_CLUSTER_PHASE2_RESULT_V1.md'
+      - 'tools/validate_usdjpy_research_memory_v2.py'
       - '.github/workflows/validate_usdjpy_hyp027_phase2_closure_v1.yml'
 
 permissions:
@@ -42,29 +43,15 @@ jobs:
           jq -e '.status=="USDJPY_HYP027_CLOSED_NO_PORTABLE_SESSION_LOSS_CAP" and .active_hypothesis==null and .current_candidate==null and .phase2_confirmation.decision=="FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT" and .run_authorization.MT4_parity==false and .run_authorization."2025_H1"==false and .run_authorization.production_implementation==false' configs/research/usdjpy_research_candidate_registry_v54.json
           jq -e '.status=="HYP027_PHASE2_FAILED_SIDE_BREADTH_CLOSED" and .phase2_decision=="FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT" and .MT4_access==false and ."2025_access"==false' configs/research/usdjpy_2023_2024_hypothesis_program_v13.json
           jq -e '.hypothesis_status_updates[0].hypothesis_id=="USDJPY-HYP-027" and .hypothesis_status_updates[0].phase2_status=="CLOSED" and .hypothesis_status_updates[0].decision=="FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT"' configs/research/usdjpy_hypothesis_ledger_addendum_v28.json
-      - name: Run research-memory validator
-        id: memory
-        continue-on-error: true
-        run: |
-          set +e
-          python tools/validate_usdjpy_research_memory_v1.py --root . --output /tmp/usdjpy_research_memory_validation_receipt.json > /tmp/usdjpy_research_memory_validator.log 2>&1
-          rc=$?
-          echo "$rc" > /tmp/usdjpy_research_memory_validator.rc
-          exit "$rc"
-      - name: Upload research-memory diagnostic
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: hyp027-phase2-memory-validator-${{ github.run_id }}
-          path: |
-            /tmp/usdjpy_research_memory_validator.log
-            /tmp/usdjpy_research_memory_validator.rc
-            /tmp/usdjpy_research_memory_validation_receipt.json
-          if-no-files-found: warn
-          retention-days: 30
-      - name: Require research-memory PASS
-        if: always()
+      - name: Validate research memory v2
         run: |
           set -euo pipefail
-          test "$(cat /tmp/usdjpy_research_memory_validator.rc)" = "0"
-          jq -e '.status=="PASS" and .registry_schema=="usdjpy_research_candidate_registry_v54" and .hypothesis_ledger_addendum=="configs/research/usdjpy_hypothesis_ledger_addendum_v28.json" and .current_open_research_question==null' /tmp/usdjpy_research_memory_validation_receipt.json
+          python tools/validate_usdjpy_research_memory_v2.py --root . --output /tmp/usdjpy_research_memory_validation_receipt_v2.json
+          jq -e '.status=="PASS" and .registry_schema=="usdjpy_research_candidate_registry_v54" and .hypothesis_ledger_addendum=="configs/research/usdjpy_hypothesis_ledger_addendum_v28.json" and .current_open_research_question==null' /tmp/usdjpy_research_memory_validation_receipt_v2.json
+      - name: Upload research-memory receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: hyp027-phase2-memory-validator-v2-${{ github.run_id }}
+          path: /tmp/usdjpy_research_memory_validation_receipt_v2.json
+          if-no-files-found: error
+          retention-days: 30
