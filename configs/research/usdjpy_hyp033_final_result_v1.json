@@ -1,0 +1,206 @@
+{
+  "schema_version": "usdjpy_hyp033_final_result_v1",
+  "hypothesis_id": "USDJPY-HYP-033",
+  "family_id": "S_ASIAN_LOW_SWEEP_REBOUND_MECHANISM",
+  "title": "Asian Low Sweep Post-Sweep Rebound Mechanism Study",
+  "status": "CLOSED_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+  "decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+  "stop_rule": 5,
+  "research_start_sha": "a9b139e971bbaa8ed0ab64d0bef66b542eb78be5",
+  "core_start_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "binding_source_sha": "a4eae54d21216b059d39b84b5ade56b87d527fd6",
+  "binding_run_id": 30375772490,
+  "binding_artifact_id": 8695153813,
+  "binding_artifact_name": "usdjpy-hyp033-binding-development-v2-30375772490-1",
+  "binding_artifact_digest": "sha256:941d0da79889bd6e4357cc6cfb769c557f05f22c5b145c5423a0a95c3955b7c6",
+  "deterministic_archive_sha256": "e119f466dff6938b30425f1a05fa08a916a53599e256e8728eb7c3d23a2b3298",
+  "evaluator_sha256": "297945c2bfdd8880ef0a384c7aa482e9b92ef147b8178bf15170f830b3c5bcf0",
+  "receipt_issue": 385,
+  "source_authority": {
+    "authority": "Dukascopy BI5 source-native Bid/Ask ticks",
+    "resolved_events": 547,
+    "unresolved_events": 0,
+    "long_events": 241,
+    "short_events": 306,
+    "asian_low_sweep_detections_before_suppression": 888,
+    "asian_high_sweep_detections_before_suppression": 1131,
+    "both_side_sweep_events": 16,
+    "no_executable_entry_events": 0,
+    "duplicate_events": 0,
+    "timestamp_ordering_failures": 0,
+    "missing_tick_intervals_over_300_seconds": 80,
+    "spread_observations_over_5_pips": 299204,
+    "ask_below_bid": 0,
+    "source_population_classification": {
+      "ADMITTED": 547,
+      "ACTIVE_POSITION_SUPPRESSED": 919,
+      "SAME_DAY_SIDE_SUPPRESSED": 553,
+      "BOTH_SIDE_SWEEP_RESOLVED_NO_ADMISSION": 16
+    }
+  },
+  "mismatch_attribution": {
+    "common_events": 507,
+    "canonical_only_events": 38,
+    "raw_native_only_events": 40,
+    "side_mismatch": 0,
+    "entry_mismatch": 0,
+    "exit_mismatch": 5,
+    "pnl_mismatch": 5,
+    "classification": "Five retained common rows differ because the old canonical exit schedule and the source-native fixed-horizon chronology select different executable exit ticks around weekend, holiday, or 15-minute boundary cases. No row was silently removed."
+  },
+  "currency_contract": {
+    "canonical_reporting_currency": "JPY",
+    "canonical_initial_capital_jpy": 100000,
+    "lot_size": 0.01,
+    "contract_size_units_per_lot": 100000,
+    "usd_units": 1000,
+    "pip_size": 0.01,
+    "jpy_per_pip": 10,
+    "commission_jpy": 0,
+    "swap_jpy": 0,
+    "numerical_tolerance_jpy": 0.000001,
+    "currency_mismatch": 0
+  },
+  "mechanism": {
+    "long": {
+      "trades": 241,
+      "net_jpy": 13650,
+      "pf": 1.595524,
+      "mdd_jpy": 2916,
+      "win_rate": 0.560166,
+      "median_pl_jpy": 29,
+      "positive_folds": 4,
+      "positive_months": 21,
+      "minimum_fold_net_jpy": 2275,
+      "median_mae_pips": -15.1,
+      "median_mfe_pips": 18.5,
+      "median_time_to_mfe_seconds": 4488.856,
+      "median_reclaim_speed_seconds": 12.856,
+      "range_midpoint_reach_rate": 0.485477,
+      "opposite_boundary_reach_rate": 0.149378,
+      "range_outside_redeparture_rate": 0.771784
+    },
+    "short": {
+      "trades": 306,
+      "net_jpy": -8542,
+      "pf": 0.769602,
+      "mdd_jpy": 10529,
+      "win_rate": 0.424837,
+      "median_pl_jpy": -21.5,
+      "positive_folds": 0,
+      "positive_months": 10,
+      "minimum_fold_net_jpy": -3933,
+      "median_mae_pips": -16.7,
+      "median_mfe_pips": 13.9,
+      "median_time_to_mfe_seconds": 3644.9155,
+      "median_reclaim_speed_seconds": 17.7275,
+      "range_midpoint_reach_rate": 0.326797,
+      "opposite_boundary_reach_rate": 0.143791,
+      "range_outside_redeparture_rate": 0.862745
+    },
+    "path_conclusion": "Long has higher MFE, higher midpoint reach, lower adverse excursion, faster median reclaim, and lower range-outside redeparture than Short. The asymmetry is real and is not explained by simple H4 or D1 upward-trend exposure.",
+    "trend_exposure_diagnostic": {
+      "long_h4_down_net_jpy": 8383,
+      "long_h4_up_net_jpy": 3448,
+      "long_d1_down_net_jpy": 7245,
+      "long_d1_up_net_jpy": 3227,
+      "not_simple_h4_d1_exposure": true
+    }
+  },
+  "ex_ante_feature": {
+    "feature": "reclaim_speed_seconds",
+    "threshold_seconds": 60,
+    "information_time": "completed M15 decision time",
+    "lookahead_violations": 0,
+    "fast_long": {
+      "trades": 154,
+      "net_jpy": 8398,
+      "pf": 1.521356,
+      "mdd_jpy": 2961,
+      "positive_folds": 3,
+      "positive_months": 16,
+      "minimum_fold_net_jpy": -2059,
+      "fold_net_jpy": {
+        "2023H1": -2059,
+        "2023H2": 2430,
+        "2024H1": 3445,
+        "2024H2": 4582
+      },
+      "failed_binding_gates": [
+        "positive_folds_4of4",
+        "minimum_fold_net_floor",
+        "event_bootstrap_lower95_positive",
+        "date_session_bootstrap_lower95_positive",
+        "additive_portfolio_mdd_nonworse"
+      ]
+    },
+    "slow_long": {
+      "trades": 87,
+      "net_jpy": 5252,
+      "pf": 1.770879,
+      "mdd_jpy": 2300,
+      "positive_folds": 3,
+      "positive_months": 16,
+      "minimum_fold_net_jpy": -1130,
+      "fold_net_jpy": {
+        "2023H1": 4334,
+        "2023H2": 1114,
+        "2024H1": 934,
+        "2024H2": -1130
+      }
+    },
+    "conclusion": "The fixed fast-reclaim split does not isolate rebound quality: both fast and slow Long groups remain profitable, fail different folds, and the fast group fails confidence and portfolio-DD gates. It is therefore not a portable ex-ante discriminator."
+  },
+  "candidate_catalog": [
+    {
+      "candidate_id": "C1_SYMMETRIC_FAST_RECLAIM",
+      "rule": "reclaim_speed_seconds <= 60",
+      "trades": 342,
+      "net_jpy": 2845,
+      "pf": 1.075743,
+      "mdd_jpy": 4756,
+      "positive_folds": 2,
+      "positive_months": 13,
+      "spread_plus_1pip_net_jpy": -575,
+      "event_bootstrap_lower95_jpy": -8859.55,
+      "date_session_bootstrap_lower95_jpy": -9357.45,
+      "portfolio_mdd_delta_jpy": 3013,
+      "all_binding_gates_passed": false
+    },
+    {
+      "candidate_id": "C2_SYMMETRIC_SHALLOW_FAST_RECLAIM",
+      "rule": "reclaim_speed_seconds <= 60 and sweep_distance_range_ratio <= 0.20",
+      "trades": 314,
+      "net_jpy": -419,
+      "pf": 0.988132,
+      "mdd_jpy": 5253,
+      "positive_folds": 2,
+      "positive_months": 13,
+      "spread_plus_1pip_net_jpy": -3559,
+      "event_bootstrap_lower95_jpy": -11853.725,
+      "date_session_bootstrap_lower95_jpy": -11956.3,
+      "portfolio_mdd_delta_jpy": 3827,
+      "all_binding_gates_passed": false
+    }
+  ],
+  "conditional_long_only_candidate": {
+    "candidate_id": "C3_LONG_FAST_RECLAIM",
+    "admitted_to_catalog": false,
+    "reason": "The preregistered ex-ante discriminator and Development gates failed; Long-only admission conditions 4 and 8 were not met."
+  },
+  "selected_candidate": null,
+  "candidate_freeze": false,
+  "protected_stages": {
+    "2020_2022_historical_validation": "NOT_RUN_LOCKED_NO_FREEZE",
+    "core_implementation": "NOT_RUN_LOCKED_NO_FREEZE",
+    "mt4_validation": "NOT_RUN_LOCKED_NO_FREEZE",
+    "2025H1": "NOT_RUN_LOCKED_NO_FREEZE",
+    "2025H2": "NOT_RUN_LOCKED_NO_FREEZE"
+  },
+  "research_core_mismatch": "NOT_APPLICABLE_NOT_REACHED",
+  "mt4_mismatch": "NOT_APPLICABLE_NOT_REACHED",
+  "production_authorized": false,
+  "live_authorized": false,
+  "no_retuning": true,
+  "next_research_value": "The surviving scientific finding is a source-native path asymmetry: Long more often reaches the Asian-range midpoint and less often redeparts outside the range. Future work should study state variables that explain post-entry retention and midpoint continuation, not re-tune reclaim speed or revive Long-only adoption from this hypothesis."
+}
