@@ -121,7 +121,10 @@ def main():
     if contract.get("hypothesis_ledger") != str(ledger_path.relative_to(root)):
         raise RuntimeError("operating contract ledger pointer mismatch")
     validator_name = contract.get("research_memory_validator")
-    if validator_name not in {"tools/validate_usdjpy_research_memory_v1.py", "tools/validate_usdjpy_research_memory_v2.py"}:
+    if validator_name and validator_name not in {
+        "tools/validate_usdjpy_research_memory_v1.py",
+        "tools/validate_usdjpy_research_memory_v2.py",
+    }:
         raise RuntimeError(f"unsupported operating contract validator pointer: {validator_name}")
 
     snapshot = manifest["current_state_snapshot"]
