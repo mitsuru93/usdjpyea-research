@@ -1,0 +1,219 @@
+name: USDJPY HYP-034 Previous-Day Sweep Development v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_previous_day_extreme_sweep_development_v1.yml'
+      - 'configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json'
+      - 'tools/evaluate_usdjpy_previous_day_extreme_sweep_v1.py'
+      - 'tools/usdjpy_hyp034_bi5_source_v1.py'
+      - 'tools/usdjpy_hyp034_study_v1.py'
+      - 'tools/usdjpy_hyp034_metrics_v1.py'
+      - 'tools/vendor/fx2_infra_core_f897b250_v1.py'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_previous_day_extreme_sweep_development_v1.yml'
+      - 'configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json'
+      - 'tools/evaluate_usdjpy_previous_day_extreme_sweep_v1.py'
+      - 'tools/usdjpy_hyp034_bi5_source_v1.py'
+      - 'tools/usdjpy_hyp034_study_v1.py'
+      - 'tools/usdjpy_hyp034_metrics_v1.py'
+      - 'tools/vendor/fx2_infra_core_f897b250_v1.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  actions: read
+
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Establish short work root
+        id: identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/h34d"
+          rm -rf "$root"
+          mkdir -p "$root/src" "$root/infra" "$root/inputs/historical" "$root/inputs/2023" "$root/inputs/2024h1" "$root/inputs/2024h2" "$root/inputs/raw2023" "$root/inputs/raw2024" "$root/materialized" "$root/output" "$root/evidence"
+          sha='${{ github.event.pull_request.head.sha || github.sha }}'
+          test "${#sha}" = 40
+          echo "root=$root" >> "$GITHUB_OUTPUT"
+          echo "research_sha=$sha" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$sha" > "$root/evidence/research_head_sha.txt"
+          printf '%s\n' 'f897b250b808207d960417b2306935dcb0655acf' > "$root/evidence/core_infrastructure_sha.txt"
+      - name: Exact-SHA selective fetch
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+          RESEARCH_SHA: ${{ steps.identity.outputs.research_sha }}
+        run: |
+          set -euo pipefail
+          fetch_file() {
+            path="$1"; out="$2"
+            mkdir -p "$(dirname "$out")"
+            payload=$(gh api -H 'Accept: application/vnd.github+json' "repos/${GITHUB_REPOSITORY}/contents/${path}?ref=${RESEARCH_SHA}")
+            printf '%s' "$payload" | jq -er '.content' | tr -d '\n' | base64 -d > "$out"
+            printf '%s' "$payload" | jq -er '.sha' > "${out}.blob_sha"
+            test -s "$out"
+          }
+          fetch_file 'configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json' "$ROOT/src/prereg.json"
+          fetch_file 'tools/evaluate_usdjpy_previous_day_extreme_sweep_v1.py' "$ROOT/src/evaluate.py"
+          fetch_file 'tools/usdjpy_hyp034_bi5_source_v1.py' "$ROOT/src/usdjpy_hyp034_bi5_source_v1.py"
+          fetch_file 'tools/usdjpy_hyp034_study_v1.py' "$ROOT/src/usdjpy_hyp034_study_v1.py"
+          fetch_file 'tools/usdjpy_hyp034_metrics_v1.py' "$ROOT/src/usdjpy_hyp034_metrics_v1.py"
+          fetch_file 'tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py' "$ROOT/src/build_baseline.py"
+          fetch_file 'tools/vendor/fx2_infra_core_f897b250_v1.py' "$ROOT/infra/fx2_infra.py"
+          python -m py_compile "$ROOT/src/"*.py "$ROOT/infra/fx2_infra.py"
+          required=("$ROOT/src/prereg.json" "$ROOT/src/evaluate.py" "$ROOT/src/usdjpy_hyp034_bi5_source_v1.py" "$ROOT/src/usdjpy_hyp034_study_v1.py" "$ROOT/src/usdjpy_hyp034_metrics_v1.py" "$ROOT/src/build_baseline.py" "$ROOT/infra/fx2_infra.py")
+          sha256sum "${required[@]}" > "$ROOT/evidence/selective_fetch_sha256sums.txt"
+          wc -c "${required[@]}" > "$ROOT/evidence/selective_fetch_byte_counts.txt"
+          find "$ROOT/src" "$ROOT/infra" -name '*.blob_sha' -type f -print -exec cat {} \; > "$ROOT/evidence/selective_fetch_blob_shas.txt"
+      - name: Runner capability probe and firewall
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          python "$ROOT/infra/fx2_infra.py" probe --json "$ROOT/evidence/runner_capability.json" --markdown "$ROOT/evidence/runner_capability.md"
+          jq -e '.hypothesis_id=="USDJPY-HYP-034" and .family_id=="S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION" and .status=="FROZEN_BEFORE_DEVELOPMENT_OUTCOMES" and .boundaries.protected_2020_2022_access==false and .boundaries.protected_2025_access==false and .fixed_exit.hold_bars==12 and .monetary_contract.reporting_currency=="JPY"' "$ROOT/src/prereg.json"
+      - name: Download and materialize canonical B02 F05 baseline
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/historical" --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' --pattern 'EXPECTED_SHA256SUMS'
+          (cd "$ROOT/inputs/historical" && sha256sum -c EXPECTED_SHA256SUMS)
+          unzip -q "$ROOT/inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip" -d "$ROOT/inputs/2023"
+          unzip -q "$ROOT/inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip" -d "$ROOT/inputs/2024h1"
+          unzip -q "$ROOT/inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip" -d "$ROOT/inputs/2024h2"
+          python "$ROOT/src/build_baseline.py" \
+            --m15-2023 "$ROOT/inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" \
+            --m15-2024h1 "$ROOT/inputs/2024h1/m15_utc_2024h1.csv" \
+            --events-2024h1 "$ROOT/inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv" \
+            --events-2024h2 "$ROOT/inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv" \
+            --out-dir "$ROOT/materialized"
+          printf '%s  %s\n' '98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca' "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" | sha256sum -c -
+      - name: Download and verify all development BI5 authorities
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          gh release download usdjpy-2023-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/raw2023" --pattern 'usdjpy-2023-??-raw-ticks-v1.tar.gz' --pattern 'usdjpy-2023-raw-ticks-v1.annual-manifest.json' --pattern 'SHA256SUMS'
+          gh release download usdjpy-2024-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/raw2024" --pattern 'usdjpy-2024-??-raw-ticks-v1.tar.gz' --pattern 'usdjpy-2024-raw-ticks-v1.annual-manifest.json' --pattern 'SHA256SUMS'
+          (cd "$ROOT/inputs/raw2023" && grep -E 'usdjpy-2023-(..-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
+          (cd "$ROOT/inputs/raw2024" && grep -E 'usdjpy-2024-(..-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
+          test "$(find "$ROOT/inputs/raw2023" -name '*.tar.gz' -type f | wc -l)" = 12
+          test "$(find "$ROOT/inputs/raw2024" -name '*.tar.gz' -type f | wc -l)" = 12
+          find "$ROOT/inputs/raw2023" "$ROOT/inputs/raw2024" -maxdepth 1 -type f -printf '%f %s\n' | sort > "$ROOT/evidence/raw_release_inventory.txt"
+          ! grep -E '2020|2021|2022|2025' "$ROOT/evidence/raw_release_inventory.txt"
+      - name: No-outcome preflight
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+          PYTHONPATH: ${{ steps.identity.outputs.root }}/src
+        run: |
+          set -euo pipefail
+          python "$ROOT/src/evaluate.py" \
+            --raw-2023 "$ROOT/inputs/raw2023" \
+            --raw-2024 "$ROOT/inputs/raw2024" \
+            --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" \
+            --prereg "$ROOT/src/prereg.json" \
+            --output "$ROOT/evidence/preflight" \
+            --preflight-only | tee "$ROOT/evidence/preflight.log"
+          jq -e '.status=="PASS_NO_OUTCOMES" and .candidate_outcome_computed==false and .protected_period_accessed==false' "$ROOT/evidence/preflight/preflight_receipt.json"
+      - name: Execute frozen 2023 to 2024 development evaluator
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+          PYTHONPATH: ${{ steps.identity.outputs.root }}/src
+          PYTHONUNBUFFERED: '1'
+        run: |
+          set -euo pipefail
+          python "$ROOT/src/evaluate.py" \
+            --raw-2023 "$ROOT/inputs/raw2023" \
+            --raw-2024 "$ROOT/inputs/raw2024" \
+            --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" \
+            --prereg "$ROOT/src/prereg.json" \
+            --output "$ROOT/output" | tee "$ROOT/output/run.log"
+          jq -e '.hypothesis_id=="USDJPY-HYP-034" and .protected_2020_2022_accessed==false and .protected_2025_accessed==false and .production_authorized==false and .live_authorized==false' "$ROOT/output/final_result.json"
+          (cd "$ROOT/output" && sha256sum -c PACKAGE_SHA256SUMS)
+          ! grep -R --line-number -E '2020-[0-9]{2}-[0-9]{2}|2021-[0-9]{2}-[0-9]{2}|2022-[0-9]{2}-[0-9]{2}|2025-[0-9]{2}-[0-9]{2}' "$ROOT/output"
+      - name: Deterministic archive and readback
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          python "$ROOT/infra/fx2_infra.py" archive --input "$ROOT/output" --output "$ROOT/usdjpy-hyp034-development-v1.zip" --source-sha '${{ steps.identity.outputs.research_sha }}' --run-id "$GITHUB_RUN_ID" --classification scientific > "$ROOT/evidence/archive_build_receipt.json"
+          python "$ROOT/infra/fx2_infra.py" readback --archive "$ROOT/usdjpy-hyp034-development-v1.zip" > "$ROOT/evidence/archive_readback.json"
+          jq -e '.status=="PASS"' "$ROOT/evidence/archive_readback.json"
+          sha256sum "$ROOT/usdjpy-hyp034-development-v1.zip" > "$ROOT/evidence/archive_sha256.txt"
+      - name: Upload immutable evidence
+        if: always()
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp034-development-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ steps.identity.outputs.root }}/output
+            ${{ steps.identity.outputs.root }}/evidence
+            ${{ steps.identity.outputs.root }}/usdjpy-hyp034-development-v1.zip
+          retention-days: 90
+          compression-level: 0
+          if-no-files-found: error
+      - name: Publish immutable Release on main
+        if: success() && github.event_name == 'push' && github.ref_name == 'main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          tag='usdjpy-hyp034-previous-day-extreme-sweep-development-v1'
+          ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1
+          decision=$(jq -r '.decision' "$ROOT/output/final_result.json")
+          gh release create "$tag" "$ROOT/usdjpy-hyp034-development-v1.zip" --target "$GITHUB_SHA" --title 'USDJPY HYP-034 Previous-Day Extreme Sweep Development v1' --notes "Source-native Dukascopy BI5 Bid/Ask Previous-Day Extreme Sweep mechanism study. Decision: ${decision}. 2020-2022 and 2025 were not accessed. Core/MT4/production/live remain unauthorized." --repo "$GITHUB_REPOSITORY"
+      - name: Publish execution receipt Issue on main
+        if: always() && github.event_name == 'push' && github.ref_name == 'main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          decision=$(jq -r '.decision // "TECHNICAL_NO_RESULT_BEFORE_FINAL"' "$ROOT/output/final_result.json" 2>/dev/null || echo TECHNICAL_NO_RESULT_BEFORE_FINAL)
+          selected=$(jq -r '.selected_candidate // "NONE"' "$ROOT/output/final_result.json" 2>/dev/null || echo NONE)
+          cat > "$ROOT/evidence/receipt_issue.md" <<EOF
+          workflow: usdjpy_previous_day_extreme_sweep_development_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          head_sha: ${GITHUB_SHA}
+          hypothesis_id: USDJPY-HYP-034
+          family_id: S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION
+          decision: ${decision}
+          selected_candidate: ${selected}
+          artifact_id: ${ARTIFACT_ID}
+          artifact_digest: ${ARTIFACT_DIGEST}
+          release_tag: usdjpy-hyp034-previous-day-extreme-sweep-development-v1
+          periods: 2023H1,2023H2,2024H1,2024H2
+          protected_2020_2022_accessed: false
+          protected_2025_accessed: false
+          Core_modified: false
+          MT4_accessed: false
+          production_authorized: false
+          live_authorized: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-034] ${GITHUB_RUN_ID} ${decision}" --body-file "$ROOT/evidence/receipt_issue.md"
