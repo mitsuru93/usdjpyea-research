@@ -1,14 +1,20 @@
-# USDJPY-HYP-032 Historical Validation
+# USDJPY-HYP-032 Historical Validation v1 — INVALIDATED
 
-- Decision: `FAIL_HISTORICAL_VALIDATION_NO_RETUNING`
-- Candidate: `C1_SHORT_SHARED_SESSION_LOSS_CAP_2`
-- Baseline trades: `2782`; candidate trades: `2760`; blocked: `22`.
-- Net: baseline `¥275.92` / candidate `¥288.06` / delta `¥12.14`.
-- PF: baseline `1.089413` / candidate `1.094321`.
-- Realized DD reduction: `¥-0.00`.
-- Full-equity DD reduction: `¥-2,479.20`.
-- Winner retention: `99.412820%`; top-20 winner loss: `¥0.00`.
-- Positive years: `1/3`; positive half-years: `3/6`; minimum half-year delta: `¥-8.03`.
-- Bootstrap lower 95%: `¥-13.85`; P(non-positive): `18.080000%`.
-- Failed gates: `realized_dd_reduction_positive, full_equity_dd_reduction_positive, positive_calendar_years_at_least_2of3, positive_halfyears_at_least_4of6, largest_positive_year_share_at_most_60pct, largest_positive_session_share_at_most_60pct, largest_positive_month_share_at_most_25pct, top3_events_removed_positive, date_session_bootstrap_lower_95_positive, date_session_bootstrap_probability_nonpositive_at_most_5pct`.
-- 2025 was not accessed. No retuning is permitted.
+- Canonical status: `TECHNICAL_NO_RESULT_CURRENCY_CONTRACT_NOT_APPLIED`
+- Invalidated Run: `30361067984`
+- Invalidated decision: `FAIL_HISTORICAL_VALIDATION_NO_RETUNING`
+- Scientific result valid: `false`
+
+The MT4 transport account operated as a 10,000-unit USD account. The v1 baseline and candidate result treated raw `AccountBalance` and `AccountEquity` values as JPY. The candidate full-equity calculation also subtracted JPY position MTM from USD equity. Therefore every v1 amount labeled with `¥` and the resulting gate decision are invalid.
+
+The original bytes remain preserved at:
+
+`docs/research/artifact_archives/usdjpy_hyp032_historical_validation_v1/`
+
+The authoritative replacement is the preregistered currency-corrected v2 run. Until v2 produces a technically valid scientific result:
+
+- Core candidate implementation is not authorized.
+- MT4 candidate validation is not authorized.
+- 2025H1 and 2025H2 access is not authorized.
+- Production and live use are not authorized.
+- C1 and all scientific gates remain frozen; no retuning is permitted.

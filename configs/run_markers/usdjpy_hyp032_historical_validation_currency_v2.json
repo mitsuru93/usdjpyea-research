@@ -1,0 +1,21 @@
+{
+  "schema_version": "usdjpy_hyp032_historical_validation_currency_v2_marker",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+  "authorization": "ONE_SHOT_TECHNICAL_RERUN_AFTER_CURRENCY_INVALIDATION",
+  "source_invalid_run_id": 30361067984,
+  "source_invalid_decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+  "currency_repair_preregistration": "configs/research/usdjpy_hyp032_historical_validation_currency_repair_prereg_v1.json",
+  "input_gzip_sha256": "d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670",
+  "candidate_rule_changed": false,
+  "scientific_gates_changed": false,
+  "bootstrap_changed": false,
+  "input_changed": false,
+  "retuning": false,
+  "consumed": false,
+  "scientific_result": false,
+  "Core_candidate_implementation_authorized": false,
+  "2025_access_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v32",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v31.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v31.json",
+  "entries": [],
+  "hypothesis_status_updates": [
+    {
+      "hypothesis_id": "USDJPY-HYP-032",
+      "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+      "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+      "prior_status": "HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING",
+      "status": "HISTORICAL_VALIDATION_TECHNICAL_NO_RESULT_CURRENCY_REPAIR_PENDING",
+      "decision": "TECHNICAL_NO_RESULT_CURRENCY_CONTRACT_NOT_APPLIED",
+      "invalidated_run_id": 30361067984,
+      "invalidated_decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+      "invalidation_record": "configs/research/usdjpy_hyp032_historical_validation_currency_invalidation_v1.json",
+      "currency_repair_preregistration": "configs/research/usdjpy_hyp032_historical_validation_currency_repair_prereg_v1.json",
+      "candidate_rule_changed": false,
+      "scientific_gates_changed": false,
+      "retuning": false,
+      "Core_candidate_authorized": false,
+      "2025_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false
+    }
+  ]
+}
