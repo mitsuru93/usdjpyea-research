@@ -1,0 +1,38 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v61",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v60.json",
+  "status": "USDJPY_HYP033_CLOSED_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+  "active_family": null,
+  "active_hypothesis": null,
+  "current_candidate": null,
+  "candidate_ids": [],
+  "development_decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+  "scientific_result": true,
+  "source_run_id": 30375772490,
+  "source_artifact_id": 8695153813,
+  "source_artifact_digest": "sha256:941d0da79889bd6e4357cc6cfb769c557f05f22c5b145c5423a0a95c3955b7c6",
+  "result": "configs/research/usdjpy_hyp033_final_result_v1.json",
+  "report": "docs/research/USDJPY_HYP033_ASIAN_LOW_SWEEP_REBOUND_MECHANISM_RESULT_V1.md",
+  "period_access_receipt": "configs/research/usdjpy_hyp033_period_access_receipt_v1.json",
+  "output_manifest": "configs/research/usdjpy_hyp033_output_manifest_v1.json",
+  "release_receipt": "configs/research/usdjpy_hyp033_release_receipt_v1.json",
+  "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "closed_boundaries": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE_UNCHANGED",
+    "USDJPY-HYP-031": "NO_PORTABLE_REGIME_RULE_UNCHANGED",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING_UNCHANGED"
+  },
+  "run_authorization": {
+    "2020_2022_historical_validation": false,
+    "Core_implementation": false,
+    "MT4_candidate": false,
+    "2025H1": false,
+    "2025H2": false,
+    "production": false,
+    "live": false
+  },
+  "candidate_rule_changed": false,
+  "scientific_gate_definition_changed": false,
+  "no_retuning": true,
+  "next_action": "Scientific stop. Do not rescue Long-only, retune reclaim speed, open protected periods, or combine HYP-030/031/032. Any successor must be a distinct mechanism hypothesis."
+}

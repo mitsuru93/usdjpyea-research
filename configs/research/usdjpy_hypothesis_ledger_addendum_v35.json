@@ -1,0 +1,49 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v35",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v34.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v34.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-033",
+      "family_id": "S_ASIAN_LOW_SWEEP_REBOUND_MECHANISM",
+      "title": "Asian Low Sweep Post-Sweep Rebound Mechanism Study",
+      "status": "COMPLETE_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "scientific_result": true,
+      "mechanism_path_asymmetry_confirmed": true,
+      "ex_ante_discriminator_confirmed": false,
+      "candidate_freeze": false,
+      "source_run_id": 30375772490,
+      "source_artifact_id": 8695153813,
+      "result": "configs/research/usdjpy_hyp033_final_result_v1.json",
+      "report": "docs/research/USDJPY_HYP033_ASIAN_LOW_SWEEP_REBOUND_MECHANISM_RESULT_V1.md",
+      "failed_binding_stage": "STOP_RULE_5_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "historical_2020_2022_accessed": false,
+      "core_mt4_accessed": false,
+      "2025_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false,
+      "no_retuning": true
+    }
+  ],
+  "hypothesis_status_updates": [
+    {
+      "hypothesis_id": "USDJPY-HYP-033",
+      "family_id": "S_ASIAN_LOW_SWEEP_REBOUND_MECHANISM",
+      "prior_status": "NEW_INDEPENDENT_MECHANISM_STUDY",
+      "status": "COMPLETE_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "source_run_id": 30375772490,
+      "source_result": "configs/research/usdjpy_hyp033_final_result_v1.json",
+      "candidate_freeze": false,
+      "Core_candidate_authorized": false,
+      "2025_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false,
+      "retuning": false
+    }
+  ]
+}

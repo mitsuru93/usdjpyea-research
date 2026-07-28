@@ -1,0 +1,70 @@
+{
+  "files": [
+    {
+      "blob_sha": "8866cc0685b7c759fdfbf15be0221beeea325e68",
+      "byte_size": 13080,
+      "local_path": "payload/evaluator_v1.py.gz.b64",
+      "repository_path": "tools/hyp033_payload/evaluator_v1.py.gz.b64",
+      "sha256": "46eb4eba29f94fa80ab62dedcb9d3b2bc6311516205aa997e66fabca20a081e7"
+    },
+    {
+      "blob_sha": "f4ae6e49bd9cee3c458373ad63508e61b6a0e338",
+      "byte_size": 7721,
+      "local_path": "configs/research/usdjpy_hyp033_asian_low_sweep_rebound_prereg_v1.json",
+      "repository_path": "configs/research/usdjpy_hyp033_asian_low_sweep_rebound_prereg_v1.json",
+      "sha256": "3dbc0dbc8b4aca93db6bfec983a2e902d87d9c2017ac654cf37053bbae00b9be"
+    },
+    {
+      "blob_sha": "6529479d9fd2f52996bf080834c9495218ffd42f",
+      "byte_size": 46044,
+      "local_path": "authority/hyp031_evaluator.py",
+      "repository_path": "docs/research/artifact_archives/usdjpy_asian_range_sweep_regime_development_v1/evaluate_usdjpy_asian_range_sweep_regime_v1.py",
+      "sha256": "652c55d408339cf6609896071fdddcb7c50241a874e163a4a6aede1731b6fc2c"
+    },
+    {
+      "blob_sha": "d96202b0254f9f1b16921b481324ce8fb67578c4",
+      "byte_size": 476573,
+      "local_path": "authority/hyp030_executable_trade_ledger.csv",
+      "repository_path": "docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/executable_trade_ledger.csv",
+      "sha256": "3264c12912b91e2c5bf28be5df705a18efaa2d6a63e428e78235ce0225afbc3f"
+    },
+    {
+      "blob_sha": "06518eff9441720cada1795fe10288f7ed42e06f",
+      "byte_size": 12910,
+      "local_path": "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py",
+      "repository_path": "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py",
+      "sha256": "18b4077a255012e3fa0ef634502924da6288aa1a6544e9b79305a8a80ac11c58"
+    },
+    {
+      "blob_sha": "7ca496753e73000ad90e2757a3ddcb19626e272b",
+      "byte_size": 7081,
+      "local_path": "tools/research_infra/fx2_infra.py",
+      "repository_path": "tools/research_infra/fx2_infra.py",
+      "sha256": "913cc3ed51c1a611a4ccf2a760d56c09d627bd4420c83c2d7a6d9ecd5f6bb169"
+    },
+    {
+      "blob_sha": "974c9d845be1bb759d5cb357a4c2e160b61bc135",
+      "byte_size": 3641,
+      "local_path": "tools/research_infra/exact_sha_fetch.py",
+      "repository_path": "tools/research_infra/exact_sha_fetch.py",
+      "sha256": "932b31e7a1dc9c4894a9f5cf3c50586d05326098aeeaf1e0dcd620e734079337"
+    },
+    {
+      "blob_sha": "a48c0e46d18b805363fed6146d43cd96c5f36f49",
+      "byte_size": 960,
+      "local_path": "tools/sitecustomize.py",
+      "repository_path": "tools/hyp033_diagnostic_sitecustomize.py",
+      "sha256": "d6a423e142f1ffad0f8b97399f4d764e713e8a5a86d93dfa25ef2959fa8f2785"
+    },
+    {
+      "blob_sha": "57cdd6f76770de6cacc7ab37e47e5159d6be8a27",
+      "byte_size": 55,
+      "local_path": "fixtures/hyp033_preflight/README.txt",
+      "repository_path": "fixtures/hyp033_preflight/README.txt",
+      "sha256": "004c08ffa9caff12c35d711b3fd904c11a9d5f2f6ee9cfae04bd81cce1fc71bf"
+    }
+  ],
+  "repository": "mitsuru93/usdjpyea-research",
+  "schema_version": "fx2_fetched_source_manifest_v1",
+  "source_commit_sha": "a4eae54d21216b059d39b84b5ade56b87d527fd6"
+}

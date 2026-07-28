@@ -1,0 +1,35 @@
+# Runner Capability Report
+
+```json
+{
+  "active_mt4_processes": [],
+  "active_tester_lock": {
+    "exists": false,
+    "path": null
+  },
+  "disk_free_bytes": 93640200192,
+  "generated_utc": "2026-07-28T15:56:08Z",
+  "git_path": "/usr/bin/git",
+  "github_api_auth": true,
+  "mt4_executed": false,
+  "os": {
+    "name": "posix",
+    "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39"
+  },
+  "protected_period_accessed": false,
+  "python_version": "3.12.13",
+  "runner": {
+    "environment": "github-hosted",
+    "name": "GitHub Actions 1000010571"
+  },
+  "schema_version": "fx2_research_infra_v1",
+  "scientific_result_generated": false,
+  "sha256": true,
+  "temp": "/tmp",
+  "tool_paths": {
+    "metaeditor": null,
+    "terminal": null
+  },
+  "zip": true
+}
+```
