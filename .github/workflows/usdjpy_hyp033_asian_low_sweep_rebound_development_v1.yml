@@ -1,0 +1,218 @@
+name: USDJPY HYP033 Asian Low Sweep Rebound Development v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp033_asian_low_sweep_rebound_prereg_v1.json'
+      - 'configs/research/usdjpy_hyp033_source_manifest_v1.json'
+      - 'tools/hyp033_payload/**'
+      - 'tools/research_infra/**'
+      - 'fixtures/hyp033_preflight/**'
+      - '.github/workflows/usdjpy_hyp033_asian_low_sweep_rebound_development_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: hyp033-development-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  outcome-free-preflight:
+    uses: mitsuru93/usdjpyea-core/.github/workflows/reusable_research_execution_infra_v1.yml@f897b250b808207d960417b2306935dcb0655acf
+    with:
+      source_repository: mitsuru93/usdjpyea-research
+      source_sha: ${{ github.event.pull_request.head.sha || github.sha }}
+      source_manifest_path: configs/research/usdjpy_hyp033_source_manifest_v1.json
+      evidence_input_path: fixtures/hyp033_preflight
+      terminal_id: onamae-rakuten-mt4-terminal-01
+      runner_id: onamae-mt4-ui-01
+      evidence_classification: non-scientific
+      release_fallback_allowed: false
+
+  development:
+    needs: outcome-free-preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      RESEARCH_START_SHA: a9b139e971bbaa8ed0ab64d0bef66b542eb78be5
+      CORE_START_SHA: f897b250b808207d960417b2306935dcb0655acf
+      SHORT_ROOT: /tmp/fx2s
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Bootstrap exact-SHA selective fetch and capability probe
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/fx2boot "$SHORT_ROOT"
+          mkdir -p /tmp/fx2boot "$SHORT_ROOT"
+          python - <<'PY'
+          import base64,json,os,urllib.parse,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY']; sha=os.environ['SOURCE_SHA']; token=os.environ['GITHUB_TOKEN']
+          headers={'Accept':'application/vnd.github+json','Authorization':f'Bearer {token}','X-GitHub-Api-Version':'2022-11-28','User-Agent':'hyp033-bootstrap'}
+          for path,out in [
+            ('tools/research_infra/exact_sha_fetch.py','/tmp/fx2boot/exact_sha_fetch.py'),
+            ('tools/research_infra/fx2_infra.py','/tmp/fx2boot/fx2_infra.py'),
+            ('configs/research/usdjpy_hyp033_source_manifest_v1.json','/tmp/fx2boot/source_manifest.json')]:
+              url=f"https://api.github.com/repos/{repo}/contents/{urllib.parse.quote(path,safe='/')}?ref={sha}"
+              with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=60) as r: meta=json.load(r)
+              payload=base64.b64decode(''.join(meta['content'].split()))
+              open(out,'wb').write(payload)
+          PY
+          python /tmp/fx2boot/fx2_infra.py probe --json runner_capability.json --markdown runner_capability.md
+          python /tmp/fx2boot/exact_sha_fetch.py --repository "$GITHUB_REPOSITORY" --sha "$SOURCE_SHA" --manifest /tmp/fx2boot/source_manifest.json --work-root "$SHORT_ROOT"
+          test -f "$SHORT_ROOT/source_fetch_manifest.json"
+          test -f "$SHORT_ROOT/payload/evaluator_v1.py.gz.b64"
+          base64 -d "$SHORT_ROOT/payload/evaluator_v1.py.gz.b64" | gzip -dc > "$SHORT_ROOT/tools/evaluate_usdjpy_hyp033_asian_low_sweep_rebound_v1.py"
+          printf '%s  %s\n' 'daf3e22332c2c0dc70cef522756cc7b001f47b2223fe8834b46cda5e6ade6bcd' "$SHORT_ROOT/tools/evaluate_usdjpy_hyp033_asian_low_sweep_rebound_v1.py" | sha256sum -c -
+          python -m py_compile "$SHORT_ROOT/tools/evaluate_usdjpy_hyp033_asian_low_sweep_rebound_v1.py"
+
+      - name: Install frozen dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+
+      - name: Download and verify 2023-2024 source-native Bid Ask authority
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for year in 2023 2024; do
+            mkdir -p "$SHORT_ROOT/inputs/raw/$year"
+            gh release download "usdjpy-${year}-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" --dir "$SHORT_ROOT/inputs/raw/$year"
+            (cd "$SHORT_ROOT/inputs/raw/$year" && sha256sum -c SHA256SUMS)
+            test "$(find "$SHORT_ROOT/inputs/raw/$year" -name "usdjpy-${year}-??-raw-ticks-v1.tar.gz" | wc -l)" -eq 12
+            test "$(find "$SHORT_ROOT/inputs/raw/$year" -name "usdjpy-${year}-??-raw-ticks-v1.manifest.json" | wc -l)" -eq 12
+          done
+
+      - name: Materialize exact B02 F05 portfolio authority
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$SHORT_ROOT/inputs/historical" "$SHORT_ROOT/inputs/2023" "$SHORT_ROOT/inputs/2024h1" "$SHORT_ROOT/inputs/2024h2" "$SHORT_ROOT/materialized"
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir "$SHORT_ROOT/inputs/historical" \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' \
+            --pattern 'EXPECTED_SHA256SUMS'
+          (cd "$SHORT_ROOT/inputs/historical" && sha256sum -c EXPECTED_SHA256SUMS)
+          unzip -q "$SHORT_ROOT/inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip" -d "$SHORT_ROOT/inputs/2023"
+          unzip -q "$SHORT_ROOT/inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip" -d "$SHORT_ROOT/inputs/2024h1"
+          unzip -q "$SHORT_ROOT/inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip" -d "$SHORT_ROOT/inputs/2024h2"
+          python "$SHORT_ROOT/tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py" \
+            --m15-2023 "$SHORT_ROOT/inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" \
+            --m15-2024h1 "$SHORT_ROOT/inputs/2024h1/m15_utc_2024h1.csv" \
+            --events-2024h1 "$SHORT_ROOT/inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv" \
+            --events-2024h2 "$SHORT_ROOT/inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv" \
+            --out-dir "$SHORT_ROOT/materialized"
+          printf '%s  %s\n' '98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca' "$SHORT_ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" | sha256sum -c -
+
+      - name: Execute binding source-native mechanism study
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf hyp033_output && mkdir hyp033_output
+          python "$SHORT_ROOT/tools/evaluate_usdjpy_hyp033_asian_low_sweep_rebound_v1.py" \
+            --raw-root "$SHORT_ROOT/inputs/raw" \
+            --legacy-evaluator "$SHORT_ROOT/authority/hyp031_evaluator.py" \
+            --canonical-ledger "$SHORT_ROOT/authority/hyp030_executable_trade_ledger.csv" \
+            --baseline-trades "$SHORT_ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" \
+            --prereg "$SHORT_ROOT/configs/research/usdjpy_hyp033_asian_low_sweep_rebound_prereg_v1.json" \
+            --out-dir hyp033_output \
+            --research-sha "$RESEARCH_START_SHA" \
+            --core-sha "$CORE_START_SHA" \
+            --run-id "$GITHUB_RUN_ID" | tee hyp033_output/run.log
+          jq -e '.hypothesis_id=="USDJPY-HYP-033" and .family_id=="S_ASIAN_LOW_SWEEP_REBOUND_MECHANISM" and ."2020_2022_accessed"==false and ."2025_accessed"==false and .Core_modified==false and .MT4_accessed==false' hyp033_output/final_decision.json
+
+      - name: Emit technical-no-result when execution infrastructure failed
+        if: failure()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p hyp033_output
+          if test ! -f hyp033_output/final_decision.json; then
+            python /tmp/fx2boot/fx2_infra.py technical-no-result \
+              --stage development_execution \
+              --reason-code INFRASTRUCTURE_OR_INPUT_FAILURE \
+              --reason 'A technical step failed before a binding scientific decision was produced.' \
+              --repository "$GITHUB_REPOSITORY" \
+              --source-sha "$SOURCE_SHA" \
+              --run-id "$GITHUB_RUN_ID" \
+              --runner '${{ runner.name }}' \
+              --storage-mode LOCAL_RETAINED_PENDING_PUBLICATION \
+              --repair-boundary 'Repair infrastructure or exact input acquisition only; candidate, source, period, features, thresholds and gates remain frozen.' \
+              --output hyp033_output/technical_no_result_receipt.json
+            python - <<'PY'
+          import json
+          t=json.load(open('hyp033_output/technical_no_result_receipt.json'))
+          d={**t,'hypothesis_id':'USDJPY-HYP-033','family_id':'S_ASIAN_LOW_SWEEP_REBOUND_MECHANISM','2020_2022_accessed':False,'2025_accessed':False,'Core_modified':False,'MT4_accessed':False,'production_authorized':False,'live_authorized':False}
+          json.dump(d,open('hyp033_output/final_decision.json','w'),indent=2)
+          PY
+          fi
+
+      - name: Build deterministic POSIX evidence archive and read it back
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f hyp033_output/final_decision.json
+          cp runner_capability.json runner_capability.md hyp033_output/
+          test -f "$SHORT_ROOT/source_fetch_manifest.json" && cp "$SHORT_ROOT/source_fetch_manifest.json" hyp033_output/ || true
+          cp "$SHORT_ROOT/tools/evaluate_usdjpy_hyp033_asian_low_sweep_rebound_v1.py" hyp033_output/ 2>/dev/null || true
+          python /tmp/fx2boot/fx2_infra.py archive --input hyp033_output --output "usdjpy-hyp033-development-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" --source-sha "$SOURCE_SHA" --run-id "$GITHUB_RUN_ID" --classification scientific > archive_receipt.json
+          python /tmp/fx2boot/fx2_infra.py readback --archive "usdjpy-hyp033-development-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" > archive_readback.json
+          cp archive_receipt.json archive_readback.json hyp033_output/
+
+      - name: Upload development evidence
+        if: always()
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp033-development-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            hyp033_output
+            usdjpy-hyp033-development-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0
+          if-no-files-found: error
+
+      - name: Publish receipt issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        shell: bash
+        run: |
+          status=$(jq -r '.status // "TECHNICAL_NO_RESULT"' hyp033_output/final_decision.json 2>/dev/null || echo TECHNICAL_NO_RESULT)
+          selected=$(jq -r '.selected_candidate // "NONE"' hyp033_output/final_decision.json 2>/dev/null || echo NONE)
+          cat > receipt.md <<EOF
+          workflow: usdjpy_hyp033_asian_low_sweep_rebound_development_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          source_sha: ${SOURCE_SHA}
+          hypothesis_id: USDJPY-HYP-033
+          family_id: S_ASIAN_LOW_SWEEP_REBOUND_MECHANISM
+          status: ${status}
+          selected_candidate: ${selected}
+          artifact_id: ${ARTIFACT_ID}
+          artifact_digest: ${ARTIFACT_DIGEST}
+          2020_2022_accessed: false
+          2025_accessed: false
+          Core_modified: false
+          MT4_accessed: false
+          live_orders: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-033 development] ${GITHUB_RUN_ID} ${status}" --body-file receipt.md
