@@ -1,0 +1,50 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v62",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v61.json",
+  "status": "USDJPY_HYP034_CLOSED_NO_PORTABLE_REJECTION_MECHANISM",
+  "active_family": null,
+  "active_hypothesis": null,
+  "current_candidate": null,
+  "candidate_ids": [],
+  "development_decision": "NO_PORTABLE_REJECTION_MECHANISM",
+  "scientific_result": true,
+  "source_run_id": 30375885665,
+  "source_artifact_id": 8695321156,
+  "source_artifact_digest": "sha256:4eefbcc77962dc9f72fa647b386088c18f9efa196b7f70be1e970ccf9ed8964b",
+  "result": "configs/research/usdjpy_hyp034_final_result_v1.json",
+  "report": "docs/research/USDJPY_HYP034_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION_RESULT_V1.md",
+  "candidate_registry": "configs/research/usdjpy_hyp034_candidate_registry_v1.json",
+  "period_access_receipt": "configs/research/usdjpy_hyp034_period_access_receipt_v1.json",
+  "output_manifest": "configs/research/usdjpy_hyp034_output_manifest_v1.json",
+  "release_receipt": "configs/research/usdjpy_hyp034_release_receipt_v1.json",
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v36.json",
+  "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "unfiltered_result": {
+    "source_native_events": 510,
+    "trades": 432,
+    "net_jpy": 4450.0,
+    "profit_factor": 1.0888259012335741,
+    "positive_folds": 2,
+    "candidate_catalog_size": 0
+  },
+  "closed_boundaries": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE_UNCHANGED",
+    "USDJPY-HYP-031": "NO_PORTABLE_REGIME_RULE_UNCHANGED",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING_UNCHANGED",
+    "USDJPY-HYP-033": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR_UNCHANGED"
+  },
+  "run_authorization": {
+    "2020_2022_historical_validation": false,
+    "Core_implementation": false,
+    "MT4_candidate": false,
+    "2025H1": false,
+    "2025H2": false,
+    "production": false,
+    "live": false
+  },
+  "candidate_rule_changed": false,
+  "scientific_gate_definition_changed": false,
+  "parallel_study_shared_objects": false,
+  "no_retuning": true,
+  "next_action": "Scientific stop. Do not rescue one side, retune rejection thresholds or Exit, combine with Asian Range Sweep/HYP-032, or access 2020-2022/2025 for HYP-034."
+}
