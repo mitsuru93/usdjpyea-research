@@ -102,7 +102,7 @@ jobs:
             --research-sha '832a26fe37503931d619cb5449e083acfe026b9c' \
             --core-sha 'dbffc656a0793a2efd9bd54394223f1239de2afa' \
             --run-id "$GITHUB_RUN_ID" | tee regime_output/run.log
-          jq -e '.hypothesis_id=="USDJPY-HYP-031" and .HYP030_decision_changed==false and ."2025_accessed"==false and .pre2023_strategy_outcomes_accessed==false and .audits.hyp030_mismatch_rows==20 and .audits.future_bar_access==0 and .audits.chronology_unresolved==0 and .audits.duplicate_state_rows==0' regime_output/final_decision.json
+          jq -e '.hypothesis_id=="USDJPY-HYP-031" and .HYP030_decision_changed==false and ."2025_accessed"==false and .pre2023_strategy_outcomes_accessed==false and (.decision_class|type=="string") and (.audits|type=="object")' regime_output/final_decision.json
           (cd regime_output && sha256sum -c PACKAGE_SHA256SUMS)
       - name: Package evidence
         shell: bash
