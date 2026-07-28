@@ -1,0 +1,13 @@
+{
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase2_run_marker_v1",
+  "study_id": "USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE2-V1",
+  "hypothesis_id": "USDJPY-HYP-027",
+  "candidate_id": "SESSION_LOSS_CAP_2",
+  "protocol": "configs/research/usdjpy_portfolio_loss_cluster_phase2_prereg_v1.json",
+  "status": "AUTHORIZED_FOR_FROZEN_RESEARCH_CONFIRMATION_ONLY",
+  "created_at_utc": "2026-07-28T05:08:08Z",
+  "MT4_authorized": false,
+  "2025H1_authorized": false,
+  "2025H2_authorized": false,
+  "production_authorized": false
+}
