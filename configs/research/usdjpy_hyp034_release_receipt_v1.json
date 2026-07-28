@@ -1,0 +1,22 @@
+{
+  "schema_version": "usdjpy_hyp034_release_receipt_v1",
+  "status": "PENDING_POST_MERGE_EVIDENCE_REPAIR_AND_RELEASE_READBACK",
+  "hypothesis_id": "USDJPY-HYP-034",
+  "family_id": "S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION",
+  "scientific_decision": "NO_PORTABLE_REJECTION_MECHANISM",
+  "source_scientific_run_id": 30375885665,
+  "source_artifact_id": 8695321156,
+  "source_artifact_digest": "sha256:4eefbcc77962dc9f72fa647b386088c18f9efa196b7f70be1e970ccf9ed8964b",
+  "canonical_artifact_id": null,
+  "canonical_artifact_digest": null,
+  "release_tag": "usdjpy-hyp034-previous-day-extreme-sweep-development-v1",
+  "release_asset_sha256": null,
+  "byte_identical_readback": false,
+  "scientific_result_changed": false,
+  "protected_2020_2022_accessed": false,
+  "protected_2025_accessed": false,
+  "Core_modified": false,
+  "MT4_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
