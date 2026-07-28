@@ -1,0 +1,44 @@
+{
+  "feature": "reclaim_speed_seconds",
+  "information_timestamp": "decision_time; derived only from ticks between first sweep and completed M15 signal close",
+  "source": "Dukascopy BI5 Bid ticks",
+  "formula": "seconds from first boundary-crossing Bid tick to first Bid tick back inside the Asian range",
+  "missing_rule": "missing => candidate ineligible",
+  "boundary_condition": "<=60 seconds; threshold fixed before candidate outcomes as a coarse one-minute bin",
+  "mt4_reproducible": true,
+  "lookahead_violations": 0,
+  "fast_long_metrics": {
+    "trades": 154,
+    "net_jpy": 8398.000000000224,
+    "pf": 1.521355848025842,
+    "mdd_jpy": 2961.0000000000123,
+    "win_rate": 0.5454545454545454,
+    "median_jpy": 26.499999999998636,
+    "positive_folds": 3,
+    "positive_months": 16,
+    "minimum_fold_net_jpy": -2058.999999999941
+  },
+  "slow_long_metrics": {
+    "trades": 87,
+    "net_jpy": 5252.000000000124,
+    "pf": 1.7708792015265,
+    "mdd_jpy": 2300.000000000011,
+    "win_rate": 0.5862068965517241,
+    "median_jpy": 36.99999999997772,
+    "positive_folds": 3,
+    "positive_months": 16,
+    "minimum_fold_net_jpy": -1130.0000000000523
+  },
+  "fast_long_fold_nets": {
+    "2023H1": -2058.999999999941,
+    "2023H2": 2430.0000000000355,
+    "2024H1": 3445.000000000107,
+    "2024H2": 4582.000000000022
+  },
+  "slow_long_fold_nets": {
+    "2023H1": 4334.00000000006,
+    "2023H2": 1114.0000000000612,
+    "2024H1": 934.0000000000543,
+    "2024H2": -1130.0000000000523
+  }
+}

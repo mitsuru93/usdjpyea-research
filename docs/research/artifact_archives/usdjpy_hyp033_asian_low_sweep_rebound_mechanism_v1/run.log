@@ -1,0 +1,11 @@
+/tmp/fx2b/tools/evaluate.py:203: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  for (side,val),g in d.groupby(['side_label',dim],dropna=False):
+/tmp/fx2b/tools/evaluate.py:203: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  for (side,val),g in d.groupby(['side_label',dim],dropna=False):
+/tmp/fx2b/tools/evaluate.py:203: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  for (side,val),g in d.groupby(['side_label',dim],dropna=False):
+/tmp/fx2b/tools/evaluate.py:203: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  for (side,val),g in d.groupby(['side_label',dim],dropna=False):
+/tmp/fx2b/tools/evaluate.py:203: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  for (side,val),g in d.groupby(['side_label',dim],dropna=False):
+{"status": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR", "selected": null, "events": 547}

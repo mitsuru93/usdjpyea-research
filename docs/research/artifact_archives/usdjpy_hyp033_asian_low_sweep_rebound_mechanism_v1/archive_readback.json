@@ -1,0 +1,88 @@
+{
+  "status": "PASS",
+  "archive_sha256": "e119f466dff6938b30425f1a05fa08a916a53599e256e8728eb7c3d23a2b3298",
+  "manifest": {
+    "classification": "scientific",
+    "generated_utc": "1980-01-01T00:00:00Z",
+    "members": [
+      {
+        "byte_size": 40299,
+        "path": "candidate_catalog_result.json",
+        "sha256": "323faaa5da130a18fe8b81971698c359bfadb1624bda974305eee650f5e8e2d1"
+      },
+      {
+        "byte_size": 32155,
+        "path": "evaluate_usdjpy_hyp033_asian_low_sweep_rebound_v2.py",
+        "sha256": "297945c2bfdd8880ef0a384c7aa482e9b92ef147b8178bf15170f830b3c5bcf0"
+      },
+      {
+        "byte_size": 1493,
+        "path": "feature_ledger.json",
+        "sha256": "9e4af7a4781fb2c4a837a4d7fcac46cfd9eedb13e93c35d825ebd17b91f7c1f2"
+      },
+      {
+        "byte_size": 59712,
+        "path": "final_decision.json",
+        "sha256": "075105e6af6817507aec4faa94c2b85a8ab54532c93ea11bd9f26301f9c615c7"
+      },
+      {
+        "byte_size": 397,
+        "path": "human_report.md",
+        "sha256": "0de8e90cb9d1bb6f2e280f4e3c14c16147256e01d2c048fad2b1fb0f1215cb51"
+      },
+      {
+        "byte_size": 12660,
+        "path": "long_short_stratified_atlas.csv",
+        "sha256": "b729eb881cf407ec050350ddba7cdea3d285824ba2949a5b77dc6315f012484e"
+      },
+      {
+        "byte_size": 709171,
+        "path": "mechanism_atlas_event_ledger.csv",
+        "sha256": "38c568df469639bce21b17212f6348528a93017ecd6bc8d2b3325e7c390b8b42"
+      },
+      {
+        "byte_size": 13854,
+        "path": "mechanism_summary.json",
+        "sha256": "fc8b639a4754e9190874367e9b2c241c820d96c5dc0a6c22729ed7f66704945a"
+      },
+      {
+        "byte_size": 1005123,
+        "path": "mismatch_attribution_ledger.csv",
+        "sha256": "636440af3d8311c551188121097a61bd037521518f7d5180cef4ae34d98d7f3d"
+      },
+      {
+        "byte_size": 1758,
+        "path": "run.log",
+        "sha256": "13c24d4e425b0f8d81ed74f4a8bbaf3589557cc4f14d6b89952daf41937fa0fc"
+      },
+      {
+        "byte_size": 728,
+        "path": "runner_capability.json",
+        "sha256": "946e45663e5508b23d1555323aba6325ae0524542eef48b09efaac3d8a1aab12"
+      },
+      {
+        "byte_size": 769,
+        "path": "runner_capability.md",
+        "sha256": "3a0c020fab956cfa289c729c004682928ccf9d229b2ec3f90cc1c43e2b3da7c4"
+      },
+      {
+        "byte_size": 3196,
+        "path": "source_fetch_manifest.json",
+        "sha256": "ecb8fc68f1b25c99d0f6047b4ebf23bf0d8aa879f988f5e827e5478297ae2d95"
+      },
+      {
+        "byte_size": 615,
+        "path": "source_manifest.json",
+        "sha256": "a4f8827afa01dd2f89fa13efb145a12b31abf660838f5a821c6bd636a7484dcc"
+      },
+      {
+        "byte_size": 270441,
+        "path": "source_population_ledger.csv",
+        "sha256": "f7156c9910b24ffc58ba7ba5e60fa40d7f30e33c9f38effd18334f650aa16c58"
+      }
+    ],
+    "schema_version": "fx2_deterministic_evidence_zip_v1",
+    "source_commit_sha": "a4eae54d21216b059d39b84b5ade56b87d527fd6",
+    "workflow_run_id": "30375772490"
+  }
+}

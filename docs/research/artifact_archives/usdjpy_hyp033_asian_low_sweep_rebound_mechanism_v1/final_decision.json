@@ -1346,25 +1346,5 @@
   "live_authorized": false,
   "research_start_sha": "a9b139e971bbaa8ed0ab64d0bef66b542eb78be5",
   "core_start_sha": "f897b250b808207d960417b2306935dcb0655acf",
-  "run_id": "30375772490",
-  "canonicalization": {
-    "research_start_sha": "a9b139e971bbaa8ed0ab64d0bef66b542eb78be5",
-    "core_start_and_end_sha": "f897b250b808207d960417b2306935dcb0655acf",
-    "binding_source_sha": "a4eae54d21216b059d39b84b5ade56b87d527fd6",
-    "binding_run_id": 30375772490,
-    "artifact_id": 8695153813,
-    "artifact_digest": "sha256:941d0da79889bd6e4357cc6cfb769c557f05f22c5b145c5423a0a95c3955b7c6",
-    "deterministic_archive_sha256": "e119f466dff6938b30425f1a05fa08a916a53599e256e8728eb7c3d23a2b3298",
-    "release_tag": "usdjpy-hyp033-asian-low-sweep-rebound-mechanism-v1",
-    "research_pr": 377,
-    "binding_receipt_issue": 385,
-    "candidate_freeze_created": false,
-    "historical_2020_2022_accessed": false,
-    "core_mt4_accessed": false,
-    "2025h1_accessed": false,
-    "2025h2_accessed": false,
-    "production_authorized": false,
-    "live_authorized": false,
-    "no_retuning": true
-  }
+  "run_id": "30375772490"
 }

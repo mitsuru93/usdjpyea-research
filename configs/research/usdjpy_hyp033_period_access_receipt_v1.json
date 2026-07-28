@@ -1,0 +1,27 @@
+{
+  "schema_version": "usdjpy_hyp033_period_access_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-033",
+  "family_id": "S_ASIAN_LOW_SWEEP_REBOUND_MECHANISM",
+  "development_2023_2024_accessed": true,
+  "development_folds": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "warmup_2019_accessed": false,
+  "historical_2020_2022_accessed": false,
+  "historical_2020_2022_authorized": false,
+  "core_implementation_accessed": false,
+  "mt4_accessed": false,
+  "2025h1_accessed": false,
+  "2025h1_authorized": false,
+  "2025h2_accessed": false,
+  "2025h2_authorized": false,
+  "stop_rule": 5,
+  "stop_decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+  "candidate_freeze": false,
+  "no_retuning": true,
+  "source_run_id": 30375772490,
+  "source_artifact_id": 8695153813
+}

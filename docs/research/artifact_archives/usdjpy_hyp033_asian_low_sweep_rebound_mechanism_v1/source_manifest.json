@@ -1,0 +1,21 @@
+{
+  "resolved_events": 547,
+  "unresolved_events": 0,
+  "asian_low_sweep_events": 888,
+  "asian_high_sweep_events": 1131,
+  "both_side_sweep_events": 16,
+  "no_executable_entry_events": 0,
+  "duplicate_events": 0,
+  "timestamp_ordering": 0,
+  "missing_tick_intervals_over_300s": 80,
+  "spread_anomalies_over_5pips": 299204,
+  "ask_below_bid": 0,
+  "common_events": 507,
+  "canonical_only_events": 38,
+  "raw_native_only_events": 40,
+  "side_mismatch": 0,
+  "entry_mismatch": 0,
+  "exit_mismatch": 5,
+  "pnl_mismatch": 5,
+  "both_side_contract": "resolved structural class; no admission; retained in source ledger"
+}
