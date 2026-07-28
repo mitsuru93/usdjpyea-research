@@ -1,0 +1,15 @@
+{
+  "2025_accessed": false,
+  "artifact_digest": "ff318798b0ce5b3dbfdfa10bd572c56b52412b07e1eb1027d2541d47c93eb58b",
+  "artifact_id": "8690170456",
+  "artifact_upload_outcome": "success",
+  "decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "invalidated_run_id": 30361067984,
+  "live_authorized": false,
+  "production_authorized": false,
+  "run_id": 30364472840,
+  "run_sha": "755ce20aa89ce70b0a15875fcf5032767aa8135a",
+  "schema_version": "usdjpy_hyp032_historical_validation_currency_v2_receipt",
+  "scientific_result": true
+}

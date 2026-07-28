@@ -1,0 +1,15 @@
+{
+  "ci95_jpy": [
+    -1941.2406600000002,
+    3978.3504599999997
+  ],
+  "cluster_counts": {
+    "2020": 5,
+    "2021": 4,
+    "2022": 4
+  },
+  "method": "calendar-year-stratified UTC entry-date/session cluster bootstrap",
+  "probability_nonpositive": 0.2385,
+  "replicates": 10000,
+  "seed": 20260728
+}

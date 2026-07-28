@@ -1,0 +1,49 @@
+{
+  "decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+  "failed_gates": [
+    "realized_dd_reduction_positive",
+    "positive_calendar_years_at_least_2of3",
+    "positive_halfyears_at_least_4of6",
+    "largest_positive_year_share_at_most_60pct",
+    "largest_positive_session_share_at_most_60pct",
+    "largest_positive_month_share_at_most_25pct",
+    "top3_events_removed_positive",
+    "date_session_bootstrap_lower_95_positive",
+    "date_session_bootstrap_probability_nonpositive_at_most_5pct"
+  ],
+  "gates": {
+    "baseline_trade_identity_complete": true,
+    "best_event_removed_positive": true,
+    "candidate_pf_not_below_baseline": true,
+    "chronology_unresolved_zero": true,
+    "combined_net_improvement_positive": true,
+    "date_session_bootstrap_lower_95_positive": false,
+    "date_session_bootstrap_probability_nonpositive_at_most_5pct": false,
+    "duplicate_decision_zero": true,
+    "full_equity_dd_reduction_positive": true,
+    "largest_positive_month_share_at_most_25pct": false,
+    "largest_positive_session_share_at_most_60pct": false,
+    "largest_positive_year_share_at_most_60pct": false,
+    "lookahead_zero": true,
+    "minimum_halfyear_delta_floor": true,
+    "positive_calendar_years_at_least_2of3": false,
+    "positive_halfyears_at_least_4of6": false,
+    "realized_dd_reduction_positive": false,
+    "research_mt4_order_reproducible": true,
+    "top20_winner_loss_zero": true,
+    "top3_events_removed_positive": false,
+    "winner_retention_at_least_99pct": true
+  },
+  "scientific_result": true,
+  "technical_checks": {
+    "account_currency_inferred_usd": true,
+    "duplicate_decisions_zero": true,
+    "full_equity_sign_stable_under_open_cost_bound": true,
+    "input_identity": true,
+    "lookahead_zero": true,
+    "native_chronology_valid": true,
+    "source_candidate_free": true,
+    "trade_identity_complete": true
+  },
+  "technical_failures": []
+}

@@ -1,0 +1,16 @@
+{
+  "canonical_initial_capital_jpy": 100000.0,
+  "canonical_reporting_currency": "JPY",
+  "conversion_rule": "positive USD asset * USDJPY Bid; negative USD liability * USDJPY Ask",
+  "first_transport_account_balance": 10000.0,
+  "formula_vs_account_floating_abs_residual_p50_jpy": 0.1298400000788149,
+  "formula_vs_account_floating_abs_residual_p99_jpy": 1.373079999859442,
+  "full_equity_dd_reduction_sign_stable": true,
+  "full_equity_open_cost_uncertainty_bound_jpy": 7.3767999999999745,
+  "inferred_transport_account_currency": "USD",
+  "max_abs_close_nonprice_and_conversion_residual_jpy": 0.7376799999999974,
+  "maximum_baseline_open_orders": 10,
+  "median_abs_residual_after_usd_to_jpy_conversion": 0.28008000000000344,
+  "median_abs_residual_if_raw_were_jpy": 167.825,
+  "source_field_warning": "input v1 fields ending _jpy contain raw MT4 transport-account amounts and are not JPY"
+}

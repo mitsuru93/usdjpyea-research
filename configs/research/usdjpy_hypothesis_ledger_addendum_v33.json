@@ -1,0 +1,46 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "hypothesis_status_updates": [
+    {
+      "2025_accessed": false,
+      "Core_candidate_authorized": false,
+      "artifact_digest": "ff318798b0ce5b3dbfdfa10bd572c56b52412b07e1eb1027d2541d47c93eb58b",
+      "artifact_id": "8690170456",
+      "artifact_upload_outcome": "success",
+      "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+      "candidate_rule_changed": false,
+      "decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+      "failed_gates": [
+        "realized_dd_reduction_positive",
+        "positive_calendar_years_at_least_2of3",
+        "positive_halfyears_at_least_4of6",
+        "largest_positive_year_share_at_most_60pct",
+        "largest_positive_session_share_at_most_60pct",
+        "largest_positive_month_share_at_most_25pct",
+        "top3_events_removed_positive",
+        "date_session_bootstrap_lower_95_positive",
+        "date_session_bootstrap_probability_nonpositive_at_most_5pct"
+      ],
+      "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+      "historical_run_id": 30364472840,
+      "historical_run_sha": "755ce20aa89ce70b0a15875fcf5032767aa8135a",
+      "hypothesis_id": "USDJPY-HYP-032",
+      "input_gzip_sha256": "d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670",
+      "invalidates_run_id": 30361067984,
+      "live_authorized": false,
+      "prior_status": "HISTORICAL_VALIDATION_TECHNICAL_NO_RESULT_CURRENCY_REPAIR_PENDING",
+      "production_authorized": false,
+      "retuning": false,
+      "scientific_gates_changed": false,
+      "scientific_result": true,
+      "status": "HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING",
+      "technical_failures": []
+    }
+  ],
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v32.json",
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v33",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v32.json"
+}

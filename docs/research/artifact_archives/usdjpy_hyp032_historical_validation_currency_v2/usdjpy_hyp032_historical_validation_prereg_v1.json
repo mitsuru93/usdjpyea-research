@@ -1,0 +1,117 @@
+{
+  "schema_version": "usdjpy_hyp032_historical_validation_prereg_v1",
+  "status": "FROZEN_BEFORE_ONE_SHOT_2020_2022_CANDIDATE_OUTCOME",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+  "study_id": "USDJPY-F05-SHORT-LOSS-PERSISTENCE-CHRONOLOGY-V1",
+  "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+  "candidate_freeze_path": "configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json",
+  "candidate_freeze_git_blob_sha": "ecde0496fa7f3557d3291229133feb7cc9e19805",
+  "development_decision": "PASS_DEVELOPMENT_FREEZE_C1",
+  "development_release": "usdjpy-f05-short-loss-persistence-chronology-development-v1",
+  "evaluator_path": "tools/evaluate_usdjpy_hyp032_historical_validation_v1.py",
+  "evaluator_merge_commit": "d2521053bd20b92990a04d61d5574dec57d45e11",
+  "evaluator_sha256": "f685381a5d5f8c39712ee96ae322f5dc6fb74240f17308c82c91f59f52cb0102",
+  "input_path": "data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz",
+  "input_gzip_sha256": "d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670",
+  "input_gzip_bytes": 1600400,
+  "source_core_run_id": 30355284109,
+  "source_core_sha": "898d6c19f747dddaf93372e5fe26dc4c01dd3b86",
+  "source_core_release_tag": "usdjpy-hyp032-2019-2022-baseline-authority-v1",
+  "source_core_release_asset_sha256": "e6f06139e7b8d0120da8249441fc9457ef556f44fcc83c974190bbc9e9257165",
+  "baseline_contract": {
+    "scoring_trades": 2782,
+    "net_jpy": 275.92,
+    "profit_factor": 1.0894128474258808,
+    "realized_drawdown_jpy": 288.84,
+    "full_equity_drawdown_jpy": 294.06,
+    "minimum_equity_jpy": 9967.83,
+    "same_timestamp_close_entry_groups": 82,
+    "chronology_unresolved": 0,
+    "accounting_residual_jpy": 0.0
+  },
+  "period_contract": {
+    "warmup": "2019-01-01/2019-12-31",
+    "scoring": ["2020H1", "2020H2", "2021H1", "2021H2", "2022H1", "2022H2"],
+    "runoff": "2023-01-01/2023-01-09",
+    "2025H1_locked": true,
+    "2025H2_locked": true
+  },
+  "state_contract": {
+    "strategy_scope": ["B02", "F05"],
+    "side_scope": "Short only",
+    "loss_counter_scope": "accepted B02/F05 Long/Short realized losses in the same UTC session",
+    "threshold": 2,
+    "winner_reset": false,
+    "loss_definition": "accepted canonical realized P/L including commission/swap < 0",
+    "breakeven": "not loss",
+    "session_key": "UTC calendar date + session bucket",
+    "session_buckets": {
+      "Tokyo": "00:00:00-06:59:59.999999",
+      "London": "07:00:00-12:59:59.999999",
+      "London_NY_overlap": "13:00:00-15:59:59.999999",
+      "New_York": "16:00:00-19:59:59.999999",
+      "session_transition": "20:00:00-23:59:59.999999"
+    },
+    "chronology": "native audit_sequence; successful order_closed before B02 order_opened before F05 order_opened",
+    "blocked_trade_treatment": "never enters future state",
+    "realized_pl_authority": "successive MT4 AccountBalance delta at order_closed",
+    "full_equity_counterfactual": "baseline MT4 snapshot equity minus cumulative blocked realized P/L minus blocked-open mark-to-market at Bid/Ask with frozen 5-point spread",
+    "lot": 0.01,
+    "account_currency": "JPY",
+    "leverage": 25,
+    "spread_points": 5,
+    "model": 0
+  },
+  "historical_gate": {
+    "identity_chronology": {
+      "baseline_trade_identity_complete": true,
+      "chronology_unresolved": 0,
+      "Research_MT4_timestamp_order_reproducible": true,
+      "lookahead_violations": 0,
+      "duplicate_decisions": 0
+    },
+    "economics": {
+      "combined_net_improvement_jpy": "> 0",
+      "candidate_pf": ">= baseline PF",
+      "realized_dd_reduction_jpy": "> 0",
+      "full_equity_dd_reduction_jpy": "> 0",
+      "winner_retention": ">= 0.99",
+      "top20_winner_loss_jpy": "= 0"
+    },
+    "period_breadth": {
+      "positive_calendar_years": ">= 2/3",
+      "positive_halfyear_folds": ">= 4/6",
+      "minimum_halfyear_delta_jpy": ">= -1500"
+    },
+    "concentration": {
+      "largest_positive_year_share": "<= 0.60",
+      "largest_positive_session_share": "<= 0.60",
+      "largest_positive_month_share": "<= 0.25",
+      "best_event_removed_net_jpy": "> 0",
+      "top3_events_removed_net_jpy": "> 0"
+    },
+    "resampling": {
+      "unit": "UTC entry-date + entry-session aggregate delta",
+      "stratification": "calendar year 2020/2021/2022",
+      "sampling": "with replacement within each year preserving observed cluster count",
+      "seed": 20260728,
+      "replicates": 10000,
+      "lower_95_bound_jpy": "> 0",
+      "probability_nonpositive": "<= 0.05"
+    }
+  },
+  "decision_rule": {
+    "all_gates_pass": "PASS_HISTORICAL_VALIDATION",
+    "any_gate_fails": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+    "technical_failure_before_valid_result": "TECHNICAL_STOP_NO_SCIENTIFIC_RESULT"
+  },
+  "one_shot": true,
+  "no_retuning": true,
+  "candidate_change_after_outcome": false,
+  "return_to_2023_2024_after_outcome": false,
+  "Core_candidate_implementation_authorized_before_pass": false,
+  "2025_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
