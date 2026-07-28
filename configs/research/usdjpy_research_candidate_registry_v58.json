@@ -1,0 +1,38 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v58",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v57.json",
+  "status": "USDJPY_HYP032_HISTORICAL_VALIDATION_TECHNICAL_NO_RESULT_CURRENCY_REPAIR_PENDING",
+  "active_family": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+  "active_hypothesis": "USDJPY-HYP-032",
+  "current_candidate": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+  "candidate_ids": [
+    "C1_SHORT_SHARED_SESSION_LOSS_CAP_2"
+  ],
+  "development_decision": "PASS_DEVELOPMENT_FREEZE_C1",
+  "historical_decision": "TECHNICAL_NO_RESULT_CURRENCY_CONTRACT_NOT_APPLIED",
+  "invalidated_historical_run_id": 30361067984,
+  "invalidated_historical_decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+  "candidate_freeze": "configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json",
+  "historical_result": "configs/research/usdjpy_hyp032_historical_validation_result_v1.json",
+  "currency_invalidation": "configs/research/usdjpy_hyp032_historical_validation_currency_invalidation_v1.json",
+  "currency_repair_preregistration": "configs/research/usdjpy_hyp032_historical_validation_currency_repair_prereg_v1.json",
+  "replacement_result_pending": "configs/research/usdjpy_hyp032_historical_validation_result_v2.json",
+  "HYP027_boundary": {
+    "decision": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+    "closed": true,
+    "modified": false
+  },
+  "run_authorization": {
+    "2020_2022_currency_corrected_validation_once": true,
+    "Core_implementation": false,
+    "MT4_candidate": false,
+    "2025H1": false,
+    "2025H2": false,
+    "production": false,
+    "live": false
+  },
+  "candidate_rule_changed": false,
+  "scientific_gates_changed": false,
+  "no_retuning": true,
+  "next_action": "Execute the preregistered one-shot currency-corrected historical validation v2. Do not access Core candidate logic or 2025 before a valid PASS."
+}
