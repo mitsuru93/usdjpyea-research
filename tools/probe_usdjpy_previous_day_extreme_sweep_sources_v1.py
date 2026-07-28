@@ -17,6 +17,7 @@ from typing import Any
 
 BI5_RECORD = struct.Struct(">3I2f")
 USDJPY_PRICE_SCALE = 1000.0
+BI5_PATH = re.compile(r"(?:^|/)(20\d{2})/(\d{2})/(\d{2})/(\d{2})h_ticks\.bi5$")
 
 
 def sha256(path: Path) -> str:
@@ -28,12 +29,11 @@ def sha256(path: Path) -> str:
 
 
 def member_hour_utc(name: str) -> datetime:
-    values = [int(value) for value in re.findall(r"\d+", name)]
-    for index, value in enumerate(values):
-        if 2000 <= value <= 2100 and len(values) >= index + 4:
-            year, month, day, hour = values[index:index + 4]
-            return datetime(year, month, day, hour, tzinfo=timezone.utc)
-    raise ValueError(f"cannot derive BI5 hour from member path: {name}")
+    match = BI5_PATH.search(name)
+    if not match:
+        raise ValueError(f"cannot derive BI5 hour from terminal member suffix: {name}")
+    year, month, day, hour = (int(value) for value in match.groups())
+    return datetime(year, month, day, hour, tzinfo=timezone.utc)
 
 
 def inspect_bi5(files: list[tarfile.TarInfo], archive: tarfile.TarFile) -> dict[str, Any]:
@@ -81,6 +81,7 @@ def inspect_bi5(files: list[tarfile.TarInfo], archive: tarfile.TarFile) -> dict[
             "format": "DUKASCOPY_BI5_LZMA_BIG_ENDIAN_20_BYTE",
             "record_struct": ">3I2f",
             "price_scale": USDJPY_PRICE_SCALE,
+            "member_hour_regex": BI5_PATH.pattern,
             "first_nonempty_member": member.name,
             "first_nonempty_member_compressed_bytes": len(compressed),
             "first_nonempty_member_decoded_bytes": len(payload),
@@ -88,7 +89,7 @@ def inspect_bi5(files: list[tarfile.TarInfo], archive: tarfile.TarFile) -> dict[
             "sample_rows": sample_rows,
             "sample_ask_bid_inversion_count": inversion_count,
             "sample_nonmonotonic_millisecond_count": nonmonotonic_ms,
-            "timestamp_candidates": ["member UTC hour + record millisecond offset"],
+            "timestamp_candidates": ["terminal member /YYYY/MM/DD/HHh_ticks.bi5 UTC hour + record millisecond offset"],
             "bid_candidates": ["record bid int / 1000"],
             "ask_candidates": ["record ask int / 1000"],
             "required_columns_detected": bool(sample_rows and inversion_count == 0 and nonmonotonic_ms == 0),
