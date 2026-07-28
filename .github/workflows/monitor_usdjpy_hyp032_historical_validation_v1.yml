@@ -19,8 +19,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh run list --repo "$GITHUB_REPOSITORY" --workflow usdjpy_hyp032_historical_validation_v1.yml --branch main --event push --limit 10 --json databaseId,status,conclusion,headSha,createdAt,updatedAt,url > runs.json
-          jq -n --slurpfile runs runs.json '{hypothesis_id:"USDJPY-HYP-032",read_only:true,historical_validation_runs:$runs[0],"2025_accessed":false}' > monitor.json
+          gh run list --repo "$GITHUB_REPOSITORY" --workflow usdjpy_hyp032_historical_validation_v1.yml --branch main --event push --limit 10 --json databaseId,status,conclusion,headSha,createdAt,updatedAt,url > original_runs.json
+          gh run list --repo "$GITHUB_REPOSITORY" --workflow usdjpy_hyp032_historical_validation_retry_v1.yml --branch main --event push --limit 10 --json databaseId,status,conclusion,headSha,createdAt,updatedAt,url > retry_runs.json
+          jq -n --slurpfile original original_runs.json --slurpfile retry retry_runs.json '{hypothesis_id:"USDJPY-HYP-032",read_only:true,original_runs:$original[0],retry_runs:$retry[0],"2025_accessed":false}' > monitor.json
       - name: Publish monitor receipt
         env:
           GH_TOKEN: ${{ github.token }}
