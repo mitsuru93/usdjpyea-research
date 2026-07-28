@@ -1,0 +1,37 @@
+{
+  "2019_role": "WARMUP_AUTHORITY_ONLY",
+  "2019_strategy_outcomes_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "2025_external_gate_authorized": false,
+  "Core_accessed_or_modified": false,
+  "MT4_accessed": false,
+  "backward_validation_authorized": false,
+  "backward_validation_periods": [
+    "2020",
+    "2021",
+    "2022"
+  ],
+  "backward_validation_strategy_outcomes_accessed": false,
+  "binding_reason": "No R1/R2 candidate passed every development gate; candidate freeze was not created and all downstream gates remain locked.",
+  "development_periods_accessed": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "family_id": "S_ASIAN_RANGE_SWEEP_REGIME_ROUTING",
+  "hypothesis_id": "USDJPY-HYP-031",
+  "live_orders_authorized": false,
+  "pre2023_authority_attempt_runs": [
+    30315092496,
+    30314888829
+  ],
+  "pre2023_authority_receipt_issues": [
+    345,
+    347
+  ],
+  "pre2023_authority_state": "INCOMPLETE_DATA_AUTHORITY_NOT_SCIENTIFICALLY_REQUIRED_AFTER_NO_PORTABLE_REGIME_RULE",
+  "production_authorized": false,
+  "schema_version": "usdjpy_asian_range_sweep_regime_period_access_receipt_v1"
+}
