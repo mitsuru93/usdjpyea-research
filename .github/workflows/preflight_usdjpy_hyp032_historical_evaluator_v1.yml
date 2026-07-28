@@ -1,0 +1,29 @@
+name: Preflight USDJPY HYP-032 Historical Evaluator v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/evaluate_usdjpy_hyp032_historical_validation_v1.py'
+      - '.github/workflows/preflight_usdjpy_hyp032_historical_evaluator_v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and hash evaluator without protected outcome access
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/evaluate_usdjpy_hyp032_historical_validation_v1.py
+          actual=$(sha256sum tools/evaluate_usdjpy_hyp032_historical_validation_v1.py | cut -d' ' -f1)
+          test "$actual" = 'f685381a5d5f8c39712ee96ae322f5dc6fb74240f17308c82c91f59f52cb0102'
+          grep -F "IN_SHA='d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670'" tools/evaluate_usdjpy_hyp032_historical_validation_v1.py
+          grep -F "decision='PASS_HISTORICAL_VALIDATION' if not failed else 'FAIL_HISTORICAL_VALIDATION_NO_RETUNING'" tools/evaluate_usdjpy_hyp032_historical_validation_v1.py
+          echo 'PASS_EVALUATOR_FROZEN_NO_OUTCOME_ACCESS'
