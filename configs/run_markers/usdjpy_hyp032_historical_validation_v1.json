@@ -1,0 +1,16 @@
+{
+  "schema_version": "usdjpy_hyp032_historical_validation_run_marker_v1",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+  "authorization": "ONE_SHOT_HISTORICAL_VALIDATION",
+  "preregistration_path": "configs/research/usdjpy_hyp032_historical_validation_prereg_v1.json",
+  "preregistration_merge_commit": "f939b8603d66a28ccf1a41e66e20f0020b5b2b61",
+  "evaluator_sha256": "f685381a5d5f8c39712ee96ae322f5dc6fb74240f17308c82c91f59f52cb0102",
+  "input_gzip_sha256": "d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670",
+  "trigger_nonce": "20260728T215000+0900",
+  "consumed": false,
+  "no_retuning": true,
+  "2025_access_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
