@@ -20,5 +20,7 @@
   "retry_eligibility": true,
   "repair_boundary": "Move the mutable tee log to the technical evidence directory before evaluator startup. Do not change evaluator, data, event, candidate, feature, threshold, gate, period or scientific decision.",
   "scientific_contract_changed": false,
-  "scientific_result_changed": false
+  "scientific_result_changed": false,
+  "evidence_repair_requested": true,
+  "evidence_repair_workflow": ".github/workflows/usdjpy_previous_day_extreme_sweep_development_v1.yml"
 }
