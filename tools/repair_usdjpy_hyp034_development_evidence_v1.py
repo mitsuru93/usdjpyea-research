@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import shutil
+import sys
 from pathlib import Path
 
 SOURCE_RUN_ID = 30375885665
@@ -49,7 +50,7 @@ def verify_source(output: Path) -> dict:
     failed = [name for name, passed in checks.items() if not passed]
     if failed:
         raise RuntimeError(f"scientific identity mismatch: {failed}")
-    sums = []
+    verified = []
     for line in (output / "PACKAGE_SHA256SUMS").read_text(encoding="utf-8").splitlines():
         digest, name = line.split("  ", 1)
         if name == "run.log":
@@ -57,8 +58,8 @@ def verify_source(output: Path) -> dict:
         path = output / name
         if not path.is_file() or sha256(path) != digest:
             raise RuntimeError(f"source member mismatch: {name}")
-        sums.append(name)
-    return {"result": result, "verified_members_excluding_mutable_log": sums}
+        verified.append(name)
+    return {"result": result, "verified_members_excluding_mutable_log": verified}
 
 
 def load_infra(path: Path):
@@ -66,6 +67,7 @@ def load_infra(path: Path):
     if spec is None or spec.loader is None:
         raise RuntimeError("cannot load Infrastructure v1 snapshot")
     module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     if getattr(module, "ORIGIN_CORE_SHA", None) != "f897b250b808207d960417b2306935dcb0655acf":
         raise RuntimeError("Core Infrastructure origin mismatch")
