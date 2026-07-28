@@ -1,0 +1,145 @@
+{
+  "schema_version": "usdjpy_portfolio_loss_cluster_phase2_prereg_v1",
+  "study_id": "USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE2-V1",
+  "hypothesis_id": "USDJPY-HYP-027",
+  "family": "R_PORTFOLIO_LOSS_CLUSTER_CONTROL",
+  "candidate_id": "SESSION_LOSS_CAP_2",
+  "candidate_threshold": 2,
+  "status": "FROZEN_BEFORE_PHASE2_CONFIRMATION",
+  "role": "INTERNAL_CONFIRMATION_AND_IMPLEMENTATION_CONTRACT_VALIDATION",
+  "comparison_set": [
+    "UNCHANGED_B02_F05_BASELINE",
+    "SESSION_LOSS_CAP_2"
+  ],
+  "no_retuning": true,
+  "new_candidate_search": false,
+  "source_identity": {
+    "research_repository": "mitsuru93/usdjpyea-research",
+    "research_main_at_start": "bb4a9dcedec8390585b4c4611c9316bb4febb34c",
+    "core_repository": "mitsuru93/usdjpyea-core",
+    "core_main_at_start": "dbffc656a0793a2efd9bd54394223f1239de2afa",
+    "phase1_scientific_execution_sha": "dcb8837c68abce39fbf70411d356878d871741d4",
+    "phase1_candidate_rules_git_blob_sha": "b93088cde64de5e3e58259dbadb7c852ff010935",
+    "canonical_trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "canonical_state_ledger_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda"
+  },
+  "phase1_archive_authority": {
+    "release_tag": "usdjpy-portfolio-loss-cluster-phase1-v1-r1",
+    "release_asset": "usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip",
+    "release_asset_sha256": "32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada",
+    "actions_artifact_id": 8632740782,
+    "actions_artifact_digest": "sha256:22bda1a44494a57a9a236a9900e2ddf3da7900dfb7b4e6b8fa06b86a5df828c1",
+    "member_sha256": {
+      "concurrent_exposure_ledger.csv.gz": "3c7210c247d2ac04a91bb18a25e6f09793ab06151deaef719733548fbb38d17d",
+      "counterfactual_decision_audit.csv.gz": "ca73044ae2c3c13dc25fd2225319ae9ee390a09d4fa07c0061cf1c20b7ea88f7",
+      "fold_strategy_side_session_metrics.csv.gz": "547d571ea8aaf73e779d28e21aceb97fdd8f5d1b15037b02d15d6d08551a7762",
+      "result.json": "125db4e7634c654eedfc8ea1447b1f8f8799f014b485ce5cc064a24739a2e53a",
+      "robustness_report.json": "ceee49c7b6a724690cbc968f7de4020b7787024bf0ca59a4c451befa1575116a"
+    }
+  },
+  "research_period": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "canonical_population": {
+    "total": 1882,
+    "B02": 429,
+    "F05": 1453,
+    "Long": 1166,
+    "Short": 716,
+    "2023H1": 488,
+    "2023H2": 472,
+    "2024H1": 428,
+    "2024H2": 494,
+    "partial_trade_count": 0
+  },
+  "exact_state_machine_contract": {
+    "session_timezone": "UTC",
+    "session_buckets": {
+      "Tokyo": "00:00:00-06:59:59.999999",
+      "London": "07:00:00-12:59:59.999999",
+      "London_NY_overlap": "13:00:00-15:59:59.999999",
+      "New_York": "16:00:00-19:59:59.999999",
+      "session_transition": "20:00:00-23:59:59.999999"
+    },
+    "session_key": "UTC calendar date + '|' + session bucket label",
+    "state_scope": "B02 and F05 common; Long and Short common",
+    "state_reset": "implicit new session_key; no carry across UTC session keys",
+    "winner_reset": false,
+    "loss_definition": "accepted trade canonical realized_pl_jpy < 0 after candidate weight; zero is breakeven and is not a loss",
+    "commission_swap": "binding canonical realized_pl_jpy authority; no separate reinterpretation",
+    "close_update_order": "before each entry timestamp, apply accepted trades with close_utc <= entry_utc sorted by close_utc then trade_id",
+    "entry_order": "within same entry_utc, sort by strategy then trade_id",
+    "same_timestamp_rule": "eligible accepted closes are processed before entries",
+    "threshold": 2,
+    "admission_rule": "block when prior accepted realized loss count for entry_session_key is >= 2",
+    "blocked_trade_state_effect": "none; blocked trades are never inserted into accepted-open state and their future P/L is never counted",
+    "partial_close": "absent in canonical population; Phase 2 does not invent a partial-close rule",
+    "rejected_entry_effect": "none",
+    "future_information": "prohibited; information cutoff is entry decision timestamp"
+  },
+  "tolerances": {
+    "identity_mismatch": 0,
+    "blocked_identity_mismatch": 0,
+    "timestamp_mismatch": 0,
+    "future_information_violation": 0,
+    "JPY_integer_economics": 0,
+    "floating_point_absolute": 1e-09
+  },
+  "research_binding_gates": {
+    "identity": {
+      "canonical_trade_identity_complete": true,
+      "blocked_trade_identity_complete": true,
+      "chronology_unresolved": 0,
+      "lookahead": 0,
+      "duplicate_state": 0
+    },
+    "economics": {
+      "overall_net_improvement": ">0",
+      "candidate_pf": ">=baseline",
+      "realized_dd_reduction": ">0",
+      "M15_snapshot_dd_reduction": ">0",
+      "positive_net_folds": ">=3/4",
+      "DD_positive_folds": ">=3/4",
+      "winner_retention": ">=0.99",
+      "top20_winner_loss_jpy": 0
+    },
+    "resampling": {
+      "event_bootstrap_probability_nonpositive": "<=0.05",
+      "date_session_bootstrap": "P(non-positive)<=0.05 and lower 95% bound >0",
+      "best_event_exclusion_net": ">0",
+      "top3_affected_loss_event_exclusion_net": ">0",
+      "largest_positive_month_share": "<=0.25"
+    },
+    "breadth": {
+      "B02_delta": ">=0",
+      "F05_delta": ">=0",
+      "Long_delta": ">=0",
+      "Short_delta": ">=0",
+      "positive_months": ">negative_months",
+      "nonnegative_session_buckets": ">=3",
+      "largest_positive_effect_share_by_fold_strategy_side_session": "<=0.75"
+    }
+  },
+  "core_parity_gates": {
+    "authorized_only_after_research_pass": true,
+    "trade_population_mismatch": 0,
+    "state_mismatch": 0,
+    "blocked_population_mismatch": 0,
+    "order_path_mismatch": 0,
+    "economic_mismatch": 0
+  },
+  "period_firewall": {
+    "MT4_before_research_pass": false,
+    "2025H1_before_research_core_and_MT4_2023_2024_pass": false,
+    "2025H2_automatic_access": false,
+    "2025H2_conditional_continuation_preregistered": true,
+    "2025H2_condition": "2025H1 passes all binding gates and candidate net >0 and PF>=1.0",
+    "production_before_2025_binding_pass": false
+  },
+  "stop_rule": "Any failed Research binding gate ends the study without candidate freeze, Core implementation, MT4, 2025H1, 2025H2, production, or live authorization.",
+  "technical_no_result_rule": "Only repair deterministic technical execution without changing protocol, candidate, source authority, state semantics, or gates.",
+  "frozen_at_utc": "2026-07-28T05:03:13Z"
+}
