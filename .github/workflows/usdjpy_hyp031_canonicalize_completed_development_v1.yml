@@ -1,0 +1,207 @@
+name: USDJPY HYP031 Canonicalize Completed Development v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp031_canonicalize_completed_development_v1.yml'
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+concurrency:
+  group: hyp031-canonicalize-completed-development-v1
+  cancel-in-progress: false
+
+env:
+  SCIENTIFIC_RUN_ID: "30317593695"
+  SCIENTIFIC_ARTIFACT_ID: "8672872755"
+  SCIENTIFIC_ARTIFACT_NAME: "usdjpy-asian-range-sweep-regime-development-v1-30317593695-1"
+  SCIENTIFIC_ARTIFACT_DIGEST: "sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee"
+  RELEASE_TAG: "usdjpy-hyp031-asian-range-sweep-regime-routing-v1"
+  RELEASE_ASSET: "usdjpy-hyp031-asian-range-sweep-regime-routing-v1.zip"
+
+jobs:
+  canonicalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Download completed scientific artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SCIENTIFIC_ARTIFACT_NAME }}
+          path: downloaded
+          run-id: ${{ env.SCIENTIFIC_RUN_ID }}
+          github-token: ${{ github.token }}
+
+      - name: Verify artifact identity and package checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual=$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${SCIENTIFIC_ARTIFACT_ID}" --jq .digest)
+          test "$actual" = "$SCIENTIFIC_ARTIFACT_DIGEST"
+          test -d downloaded/regime_output
+          (cd downloaded/regime_output && sha256sum -c PACKAGE_SHA256SUMS)
+
+      - name: Build canonical closure without re-executing evaluator
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/canonicalize_usdjpy_hyp031_completed_result_v1.py \
+            --artifact-dir downloaded/regime_output \
+            --repo-root .
+          python -m py_compile tools/canonicalize_usdjpy_hyp031_completed_result_v1.py
+          jq -e '
+            .decision_class=="NO_PORTABLE_REGIME_RULE" and
+            .selected_candidate_id==null and
+            .authorization.backward_validation==false and
+            .authorization.Core==false and
+            .authorization.MT4==false and
+            .authorization."2025"==false
+          ' configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json
+
+          rm -rf release && mkdir release
+          cp -a docs/research/artifact_archives/usdjpy_asian_range_sweep_regime_development_v1 release/regime_output
+          cp configs/research/usdjpy_asian_range_sweep_regime_output_manifest_v1.json release/
+          cp configs/research/usdjpy_asian_range_sweep_regime_technical_repair_receipt_v1.json release/
+          cp configs/research/usdjpy_asian_range_sweep_regime_period_access_receipt_v1.json release/
+          cp docs/research/USDJPY_ASIAN_RANGE_SWEEP_REGIME_ROUTING_RESULT_V1.md release/
+          cp docs/research/USDJPY_HYP031_TECHNICAL_FAILURE_POSTMORTEM_V1.md release/
+          (cd release && find . -type f ! -name RELEASE_SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > RELEASE_SHA256SUMS)
+          (cd release && sha256sum -c RELEASE_SHA256SUMS)
+          (cd release && zip -q -X -r "../${RELEASE_ASSET}" .)
+          sha256sum "${RELEASE_ASSET}" > release_asset_sha256.txt
+
+      - name: Commit canonical scientific closure
+        id: canonical_commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add \
+            docs/research/artifact_archives/usdjpy_asian_range_sweep_regime_development_v1 \
+            configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json \
+            configs/research/usdjpy_asian_range_sweep_regime_development_closure_freeze_v1.json \
+            configs/research/usdjpy_asian_range_sweep_regime_output_manifest_v1.json \
+            configs/research/usdjpy_research_candidate_registry_v53.json \
+            configs/research/usdjpy_hypothesis_ledger_addendum_v27.json \
+            configs/research/usdjpy_research_memory_manifest_v1.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research: canonicalize HYP-031 no-portable-regime result'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish immutable Release and verify asset readback
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          asset_sha=$(cut -d' ' -f1 release_asset_sha256.txt)
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag
+          fi
+          gh release create "$RELEASE_TAG" "${RELEASE_ASSET}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "${{ steps.canonical_commit.outputs.sha }}" \
+            --title "USDJPY-HYP-031 Asian Range Sweep Regime Routing v1" \
+            --notes "Binding decision: NO_PORTABLE_REGIME_RULE. No candidate freeze, backward validation, Core/MT4 or 2025 authorization."
+          rm -rf readback && mkdir readback
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern "$RELEASE_ASSET" --dir readback
+          test "$(sha256sum "readback/${RELEASE_ASSET}" | cut -d' ' -f1)" = "$asset_sha"
+          echo "$asset_sha" > release_asset_digest.txt
+
+      - name: Commit Release readback receipt
+        id: receipt_commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          receipt = {
+              "schema_version": "usdjpy_asian_range_sweep_regime_release_receipt_v1",
+              "hypothesis_id": "USDJPY-HYP-031",
+              "decision": "NO_PORTABLE_REGIME_RULE",
+              "release_tag": "usdjpy-hyp031-asian-range-sweep-regime-routing-v1",
+              "release_asset": "usdjpy-hyp031-asian-range-sweep-regime-routing-v1.zip",
+              "release_asset_sha256": Path("release_asset_digest.txt").read_text().strip(),
+              "release_readback": "PASS_EXACT_SHA256",
+              "scientific_run_id": 30317593695,
+              "artifact_id": 8672872755,
+              "artifact_digest": "sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee",
+              "candidate_freeze_created": False,
+              "backward_validation_authorized": False,
+              "Core_authorized": False,
+              "MT4_authorized": False,
+              "2025_accessed": False,
+              "production_authorized": False,
+              "live_orders_authorized": False
+          }
+          Path("configs/research/usdjpy_asian_range_sweep_regime_release_receipt_v1.json").write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+          )
+          PY
+          git add configs/research/usdjpy_asian_range_sweep_regime_release_receipt_v1.json
+          git commit -m 'research: record HYP-031 Release readback receipt'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload canonicalization evidence
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp031-canonical-closure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            release
+            ${{ env.RELEASE_ASSET }}
+            release_asset_digest.txt
+            configs/research/usdjpy_asian_range_sweep_regime_release_receipt_v1.json
+          retention-days: 90
+          compression-level: 0
+
+      - name: Publish canonical closure receipt Issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > receipt.md <<EOF
+          hypothesis_id: USDJPY-HYP-031
+          family_id: S_ASIAN_RANGE_SWEEP_REGIME_ROUTING
+          decision: NO_PORTABLE_REGIME_RULE
+          failed_run_classification: TECHNICAL_PARTIAL_RESULT_EXPOSED
+          failed_run_id: 30316460286
+          scientific_run_id: 30317593695
+          scientific_artifact_id: 8672872755
+          scientific_artifact_digest: a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee
+          canonicalization_run_id: ${GITHUB_RUN_ID}
+          canonicalization_artifact_id: ${{ steps.upload.outputs.artifact-id }}
+          canonicalization_artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
+          canonical_head_sha: ${{ steps.receipt_commit.outputs.sha }}
+          release_tag: ${RELEASE_TAG}
+          release_asset: ${RELEASE_ASSET}
+          release_asset_sha256: $(cat release_asset_digest.txt)
+          release_readback: PASS_EXACT_SHA256
+          selected_candidate_id: NONE
+          candidate_freeze_created: false
+          backward_validation_authorized: false
+          pre2023_strategy_outcomes_accessed: false
+          Core_modified: false
+          MT4_accessed: false
+          2025_accessed: false
+          production_authorized: false
+          live_orders_authorized: false
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "[HYP-031 canonical closure] NO_PORTABLE_REGIME_RULE" \
+            --body-file receipt.md
