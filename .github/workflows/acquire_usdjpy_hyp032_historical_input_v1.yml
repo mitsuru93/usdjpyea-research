@@ -1,0 +1,145 @@
+name: Acquire USDJPY HYP-032 Historical Input v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/acquire_usdjpy_hyp032_historical_input_v1.yml'
+      - 'configs/run_markers/usdjpy_hyp032_historical_input_acquisition_v1.json'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_hyp032_historical_input_acquisition_v1.json'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  preflight:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate one-shot acquisition contract
+        run: |
+          python - <<'PY'
+          import json
+          m=json.load(open('configs/run_markers/usdjpy_hyp032_historical_input_acquisition_v1.json'))
+          assert m['hypothesis_id']=='USDJPY-HYP-032'
+          assert m['status']=='PENDING'
+          assert m['expected_gzip_sha256']=='d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670'
+          assert m['source_core_run_id']==30355284109
+          assert m['source_core_sha']=='898d6c19f747dddaf93372e5fe26dc4c01dd3b86'
+          assert m['candidate_outcomes_computed'] is False
+          assert m['2025_accessed'] is False
+          assert m['signed_url'].startswith('https://release-assets.githubusercontent.com/')
+          PY
+
+  acquire:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check acquisition status
+        id: status
+        run: |
+          status=$(jq -r '.status' configs/run_markers/usdjpy_hyp032_historical_input_acquisition_v1.json)
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+      - name: Download and verify candidate-free Core input
+        if: steps.status.outputs.status == 'PENDING'
+        run: |
+          set -euo pipefail
+          marker='configs/run_markers/usdjpy_hyp032_historical_input_acquisition_v1.json'
+          url=$(jq -r '.signed_url' "$marker")
+          expected=$(jq -r '.expected_gzip_sha256' "$marker")
+          mkdir -p data/usdjpy/hyp032
+          curl --fail --location --retry 3 --output data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz "$url"
+          actual=$(sha256sum data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz | cut -d' ' -f1)
+          test "$actual" = "$expected"
+          bytes=$(stat -c '%s' data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz)
+          test "$bytes" = '1600400'
+          python - <<'PY'
+          import gzip, json
+          from pathlib import Path
+          path=Path('data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz')
+          with gzip.open(path,'rt',encoding='utf-8') as handle:
+              header=json.loads(next(handle))
+          assert header['record_type']=='header'
+          assert header['hypothesis_id']=='USDJPY-HYP-032'
+          assert header['source_run_id']==30355284109
+          assert header['source_core_sha']=='898d6c19f747dddaf93372e5fe26dc4c01dd3b86'
+          assert header['source_release_asset_sha256']=='e6f06139e7b8d0120da8249441fc9457ef556f44fcc83c974190bbc9e9257165'
+          assert header['candidate_outcomes_computed'] is False
+          assert header['candidate_logic_present'] is False
+          assert header['2025_accessed'] is False
+          PY
+      - name: Commit byte-identified input and redact transfer URL
+        if: steps.status.outputs.status == 'PENDING'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          marker='configs/run_markers/usdjpy_hyp032_historical_input_acquisition_v1.json'
+          actual=$(sha256sum data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz | cut -d' ' -f1)
+          bytes=$(stat -c '%s' data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz)
+          python - "$marker" "$actual" "$bytes" "$GITHUB_RUN_ID" <<'PY'
+          import json,sys
+          from pathlib import Path
+          path=Path(sys.argv[1]); data=json.loads(path.read_text())
+          data['status']='ACQUIRED'
+          data['signed_url']='REDACTED_AFTER_SUCCESSFUL_ACQUISITION'
+          data['acquired_gzip_sha256']=sys.argv[2]
+          data['acquired_gzip_bytes']=int(sys.argv[3])
+          data['acquisition_run_id']=int(sys.argv[4])
+          path.write_text(json.dumps(data,indent=2,sort_keys=True)+'\n')
+          PY
+          cat > data/usdjpy/hyp032/historical_validation_input_receipt_v1.json <<EOF
+          {
+            "schema_version": "usdjpy_hyp032_historical_validation_input_receipt_v1",
+            "hypothesis_id": "USDJPY-HYP-032",
+            "source_core_run_id": 30355284109,
+            "source_core_sha": "898d6c19f747dddaf93372e5fe26dc4c01dd3b86",
+            "source_core_release_asset_sha256": "e6f06139e7b8d0120da8249441fc9457ef556f44fcc83c974190bbc9e9257165",
+            "source_export_run_id": 30356876359,
+            "source_transfer_run_id": 30357778691,
+            "gzip_sha256": "${actual}",
+            "gzip_bytes": ${bytes},
+            "acquisition_run_id": ${GITHUB_RUN_ID},
+            "candidate_outcomes_computed": false,
+            "candidate_logic_present": false,
+            "2025_accessed": false,
+            "scientific_result": false
+          }
+          EOF
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz data/usdjpy/hyp032/historical_validation_input_receipt_v1.json "$marker"
+          git commit -m 'evidence: acquire HYP-032 historical validation input'
+          git push origin HEAD:main
+      - name: Publish acquisition receipt
+        if: steps.status.outputs.status == 'PENDING'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > receipt.md <<EOF
+          hypothesis_id: USDJPY-HYP-032
+          stage: Research acquisition of candidate-free Core historical input
+          decision: PASS_INPUT_ACQUISITION
+          acquisition_run_id: ${GITHUB_RUN_ID}
+          gzip_sha256: d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670
+          gzip_bytes: 1600400
+          source_core_run_id: 30355284109
+          source_core_sha: 898d6c19f747dddaf93372e5fe26dc4c01dd3b86
+          source_export_run_id: 30356876359
+          source_transfer_run_id: 30357778691
+          candidate_outcomes_computed: false
+          candidate_logic_present: false
+          2025_accessed: false
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-032 historical input acquisition] ${GITHUB_RUN_ID}" --body-file receipt.md
+      - name: Already acquired
+        if: steps.status.outputs.status != 'PENDING'
+        run: echo 'Historical input already acquired; no action.'
