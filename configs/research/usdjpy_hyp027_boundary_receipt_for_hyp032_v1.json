@@ -1,0 +1,14 @@
+{
+  "schema_version": "usdjpy_hyp027_boundary_receipt_for_hyp032_v1",
+  "prior_hypothesis_id": "USDJPY-HYP-027",
+  "new_hypothesis_id": "USDJPY-HYP-032",
+  "prior_family": "R_PORTFOLIO_LOSS_CLUSTER_CONTROL",
+  "new_family": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+  "prior_decision": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+  "prior_decision_immutable": true,
+  "SESSION_LOSS_CAP_2_unchanged_and_closed": true,
+  "HYP027_Core_MT4_2025_authorization": false,
+  "HYP027_threshold_or_scope_change": false,
+  "new_study_is_independent_mechanism_attribution": true,
+  "evidence": "configs/research/usdjpy_portfolio_loss_cluster_phase2_closure_v1.json"
+}

@@ -1,0 +1,199 @@
+{
+  "schema_version": "usdjpy_f05_short_loss_persistence_chronology_prereg_v1",
+  "status": "FROZEN_BEFORE_2020_2022_CANDIDATE_OUTCOMES",
+  "created_utc": "2026-07-28T09:20:00Z",
+  "study_id": "USDJPY-F05-SHORT-LOSS-PERSISTENCE-CHRONOLOGY-V1",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+  "research_question": "Does an independent same-session realized-loss persistence mechanism exist in Short entries, especially F05 Short, and can it be implemented using Rakuten MT4 native chronology rather than artificial Research timestamp ordering?",
+  "source_identity": {
+    "research_main_at_start": "1f9ce1eb5b1836664e00f9bbaa4d6904f0d39284",
+    "core_main_at_start": "dbffc656a0793a2efd9bd54394223f1239de2afa",
+    "HYP027_closure": "configs/research/usdjpy_portfolio_loss_cluster_phase2_closure_v1.json",
+    "HYP027_decision": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+    "canonical_trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "canonical_state_ledger_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "phase1_release": "usdjpy-portfolio-loss-cluster-phase1-v1-r1",
+    "phase1_release_sha256": "32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada"
+  },
+  "HYP027_fixed_boundary": {
+    "decision_may_change": false,
+    "candidate_may_change": false,
+    "short_only_promotion_within_HYP027": false,
+    "Core_MT4_2025_access_under_HYP027": false,
+    "use_as_prior_evidence_only": true
+  },
+  "period_roles": {
+    "mechanism_attribution_and_candidate_selection_only": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "warmup_authority_not_scored": ["2019"],
+    "historical_validation_locked_until_candidate_freeze": ["2020H1", "2020H2", "2021H1", "2021H2", "2022H1", "2022H2"],
+    "forward_external_locked_until_all_preconditions": ["2025H1", "2025H2"]
+  },
+  "candidate_catalog": [
+    {
+      "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+      "entry_scope": ["B02 Short", "F05 Short"],
+      "loss_counter_scope": "accepted B02/F05 Long/Short realized losses in the same UTC session",
+      "threshold": 2,
+      "rule": "Block a new Short entry when the prior accepted realized loss count is at least 2; never block Long."
+    },
+    {
+      "candidate_id": "C2_F05_SHORT_SHARED_SESSION_LOSS_CAP_2",
+      "entry_scope": ["F05 Short"],
+      "loss_counter_scope": "accepted B02/F05 Long/Short realized losses in the same UTC session",
+      "threshold": 2,
+      "rule": "Block a new F05 Short entry when the prior accepted realized loss count is at least 2."
+    },
+    {
+      "candidate_id": "C3_F05_SHORT_OWN_LOSS_CAP_2",
+      "entry_scope": ["F05 Short"],
+      "loss_counter_scope": "accepted F05 Short realized losses in the same UTC session",
+      "threshold": 2,
+      "rule": "Block a new F05 Short entry when the prior accepted F05 Short realized loss count is at least 2."
+    }
+  ],
+  "noncandidate_diagnostics": [
+    "UNCHANGED_B02_F05_BASELINE",
+    "HYP027_SESSION_LOSS_CAP_2",
+    "LONG_ONLY_COUNTERPART",
+    "B02_SHORT_ONLY_COUNTERPART",
+    "THRESHOLD_1",
+    "THRESHOLD_3",
+    "WINNER_RESET",
+    "SESSION_SPECIFIC_VARIANT"
+  ],
+  "state_contract": {
+    "timezone": "UTC",
+    "session_buckets": {
+      "Tokyo": "00:00:00-06:59:59.999999",
+      "London": "07:00:00-12:59:59.999999",
+      "London_NY_overlap": "13:00:00-15:59:59.999999",
+      "New_York": "16:00:00-19:59:59.999999",
+      "session_transition": "20:00:00-23:59:59.999999"
+    },
+    "session_key": "UTC calendar date plus session bucket",
+    "winner_reset": false,
+    "session_boundary_reset": true,
+    "loss_definition": "accepted canonical realized P/L including commission and swap less than zero",
+    "breakeven": "not loss",
+    "blocked_trade_future_state_effect": "none",
+    "rejected_entry_future_state_effect": "none",
+    "partial_close": "no new partial-close rule",
+    "threshold": 2
+  },
+  "chronology_authority": {
+    "binding_architecture": "single integrated B02/F05 EA",
+    "binding_OnTick_order": ["CloseMaturedOrders", "EvaluateB02", "EvaluateF05"],
+    "same_timestamp_rule": "all due successful closes are recognized before B02 Entry evaluation and then F05 Entry evaluation",
+    "multiple_close_order": "all due closes before any new entry; order among closes cannot change a pure loss count after all closes are applied",
+    "separate_EA_cross_chart_order": "not binding and treated unresolved",
+    "account_history": "restart restoration must scan loaded account history and accepted trade identities; insufficient history is a hard error",
+    "trade_id_sort_as_live_authority": false,
+    "tester_live_parity_required": true
+  },
+  "chronology_stop_rule": [
+    "native order cannot be restored for the 21 same-timestamp rows",
+    "Research and integrated MT4 ordering cannot be made identical",
+    "tester and live logic differ",
+    "most candidate effect depends on unresolved chronology",
+    "trade-id sorting would be required in live operation",
+    "successful closes cannot be recognized before admission"
+  ],
+  "development_gate": {
+    "identity": {
+      "baseline_identity_complete": true,
+      "chronology_unresolved_allowed": 0,
+      "lookahead_violations_allowed": 0,
+      "duplicate_decisions_allowed": 0,
+      "native_chronology_mismatches_allowed": 0
+    },
+    "economics": {
+      "net_improvement_jpy": ">0",
+      "candidate_pf": ">=baseline",
+      "realized_dd_reduction_jpy": ">0",
+      "M15_dd_reduction_jpy": ">0",
+      "winner_retention": ">=0.99",
+      "top20_winner_loss_jpy": 0
+    },
+    "fold_breadth": {
+      "positive_net_folds": ">=3_of_4",
+      "DD_positive_folds": ">=3_of_4",
+      "minimum_fold_delta_jpy": ">=-1000"
+    },
+    "concentration": {
+      "best_event_removed_net_jpy": ">0",
+      "top3_events_removed_net_jpy": ">0",
+      "largest_positive_fold_share": "<=0.60",
+      "largest_positive_session_share": "<=0.60",
+      "largest_positive_month_share": "<=0.25",
+      "affected_trades": ">=12"
+    },
+    "resampling": {
+      "event_bootstrap_probability_nonpositive": "<=0.05",
+      "date_session_bootstrap_lower_95_jpy": ">0",
+      "date_session_bootstrap_probability_nonpositive": "<=0.05"
+    },
+    "mechanism": {
+      "target_short_net_improvement_jpy": ">0",
+      "target_short_dd_reduction_jpy": ">=0",
+      "unresolved_timestamp_only_dependence": false,
+      "blocked_losers_exceed_blocked_winners": true
+    }
+  },
+  "candidate_selection_rule": [
+    "maximum minimum-fold net delta",
+    "maximum date/session bootstrap lower 95 percent bound",
+    "lower concentration",
+    "rule simplicity C1 then C2 then C3"
+  ],
+  "candidate_freeze_condition": "exactly one selected candidate after every development gate; freeze must precede any 2020-2022 outcome access",
+  "historical_gate": {
+    "combined_net_improvement_jpy": ">0",
+    "candidate_pf": ">=baseline",
+    "realized_dd_reduction_jpy": ">0",
+    "full_equity_dd_reduction_jpy": ">0",
+    "winner_retention": ">=0.99",
+    "top20_winner_loss_jpy": 0,
+    "positive_calendar_years": ">=2_of_3",
+    "positive_half_year_folds": ">=4_of_6",
+    "minimum_half_year_delta_jpy": ">=-1500",
+    "largest_positive_year_share": "<=0.60",
+    "largest_positive_session_share": "<=0.60",
+    "largest_positive_month_share": "<=0.25",
+    "best_event_removed_positive": true,
+    "top3_events_removed_positive": true,
+    "date_session_bootstrap_lower_95_jpy": ">0",
+    "date_session_bootstrap_probability_nonpositive": "<=0.05"
+  },
+  "Core_gate": {
+    "authorization_condition": "development freeze and historical validation pass",
+    "entry_exit_sl_tp_lot_signal_changes": false,
+    "Research_Core_mismatch_allowed": 0,
+    "MT4_native_chronology_mismatch_allowed": 0,
+    "full_tick_equity_required": true,
+    "restart_restoration_required": true
+  },
+  "external_gate": {
+    "2025H1_one_shot": true,
+    "2025H2_condition": "only after every 2025H1 binding and production gate passes",
+    "no_retuning": true,
+    "technical_no_result_rule": true
+  },
+  "no_retuning_rule": true,
+  "stop_rule": "Stop at the first binding failure and do not open later protected periods.",
+  "hard_prohibitions": [
+    "change HYP027 decision or candidate",
+    "threshold search",
+    "session-specific threshold",
+    "winner reset",
+    "trend or volatility filter",
+    "Long condition",
+    "calendar or price filter",
+    "fold or month exclusion",
+    "candidate-favorable timestamp ordering",
+    "silent unresolved chronology exclusion",
+    "B02/F05 entry exit SL TP changes",
+    "2025-informed changes",
+    "production gate relaxation"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v29",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v28.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v28.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-032",
+      "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+      "study_id": "USDJPY-F05-SHORT-LOSS-PERSISTENCE-CHRONOLOGY-V1",
+      "status": "PREREGISTERED_DEVELOPMENT_PENDING",
+      "candidate_catalog": [
+        "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+        "C2_F05_SHORT_SHARED_SESSION_LOSS_CAP_2",
+        "C3_F05_SHORT_OWN_LOSS_CAP_2"
+      ],
+      "threshold": 2,
+      "predecessor_evidence": "USDJPY-HYP-027",
+      "predecessor_decision_may_change": false,
+      "protected_periods_locked": ["2020H1", "2020H2", "2021H1", "2021H2", "2022H1", "2022H2", "2025H1", "2025H2"],
+      "preregistration": "configs/research/usdjpy_f05_short_loss_persistence_chronology_prereg_v1.json"
+    }
+  ],
+  "hypothesis_status_updates": []
+}

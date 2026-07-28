@@ -1,0 +1,209 @@
+name: USDJPY HYP-032 F05 Short Loss Persistence Chronology v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/evaluate_usdjpy_f05_short_loss_persistence_chronology_v1.py'
+      - 'configs/research/usdjpy_f05_short_loss_persistence_chronology_prereg_v1.json'
+      - 'configs/research/usdjpy_f05_short_loss_persistence_chronology_startup_receipt_v1.json'
+      - 'configs/research/usdjpy_hyp027_boundary_receipt_for_hyp032_v1.json'
+      - 'configs/research/usdjpy_hypothesis_ledger_addendum_v29.json'
+      - 'configs/research/usdjpy_research_candidate_registry_v55.json'
+      - '.github/workflows/usdjpy_f05_short_loss_persistence_chronology_v1.yml'
+      - 'configs/run_markers/usdjpy_f05_short_loss_persistence_chronology_v1.json'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_f05_short_loss_persistence_chronology_v1.json'
+      - 'configs/research/usdjpy_f05_short_loss_persistence_chronology_prereg_v1.json'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  preflight:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install frozen dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+      - name: Validate preregistration without outcomes
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/evaluate_usdjpy_f05_short_loss_persistence_chronology_v1.py
+          rm -rf preflight_output
+          python tools/evaluate_usdjpy_f05_short_loss_persistence_chronology_v1.py \
+            --protocol configs/research/usdjpy_f05_short_loss_persistence_chronology_prereg_v1.json \
+            --out-dir preflight_output --preflight-only
+          jq -e '.status=="PASS_NO_OUTCOMES" and .hypothesis_id=="USDJPY-HYP-032" and .candidate_count==3 and .thresholds==[2] and ."2020_2022_accessed"==false and ."2025_accessed"==false' preflight_output/preflight_result.json
+          jq -e '.prior_decision=="FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT" and .prior_decision_immutable==true and .HYP027_threshold_or_scope_change==false' configs/research/usdjpy_hyp027_boundary_receipt_for_hyp032_v1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp032-prereg-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+          path: preflight_output
+          retention-days: 30
+          compression-level: 0
+
+  development:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install frozen dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+      - name: Enforce period firewall and fixed catalog
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/evaluate_usdjpy_f05_short_loss_persistence_chronology_v1.py tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py
+          python - <<'PY'
+          import json
+          p=json.load(open('configs/research/usdjpy_f05_short_loss_persistence_chronology_prereg_v1.json'))
+          assert p['status']=='FROZEN_BEFORE_2020_2022_CANDIDATE_OUTCOMES'
+          assert p['hypothesis_id']=='USDJPY-HYP-032'
+          assert [c['candidate_id'] for c in p['candidate_catalog']]==['C1_SHORT_SHARED_SESSION_LOSS_CAP_2','C2_F05_SHORT_SHARED_SESSION_LOSS_CAP_2','C3_F05_SHORT_OWN_LOSS_CAP_2']
+          assert all(c['threshold']==2 for c in p['candidate_catalog'])
+          assert p['period_roles']['historical_validation_locked_until_candidate_freeze']==['2020H1','2020H2','2021H1','2021H2','2022H1','2022H2']
+          assert p['period_roles']['forward_external_locked_until_all_preconditions']==['2025H1','2025H2']
+          PY
+      - name: Download exact HYP-027 Phase 1 and historical authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf inputs phase1_authority materialized development_output
+          mkdir -p inputs/historical inputs/2023 inputs/2024h1 inputs/2024h2 phase1_authority materialized development_output
+          gh release download usdjpy-portfolio-loss-cluster-phase1-v1-r1 --repo "$GITHUB_REPOSITORY" --dir inputs --pattern 'usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip'
+          echo '32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada  inputs/usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip' | sha256sum -c -
+          unzip -q inputs/usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip -d phase1_authority
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir inputs/historical \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip'
+          printf '%s  %s\n' \
+            '22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01' inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip \
+            'e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5' inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip \
+            '9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b' inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip > inputs/historical/SHA256SUMS
+          sha256sum -c inputs/historical/SHA256SUMS
+          unzip -q inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip -d inputs/2023
+          unzip -q inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip -d inputs/2024h1
+          unzip -q inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip -d inputs/2024h2
+      - name: Rebuild exact M15 state authority
+        run: |
+          set -euo pipefail
+          python tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv \
+            --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            --out-dir materialized
+          echo '2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda  materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz' | sha256sum -c -
+      - name: Execute fixed chronology and C1-C3 development study
+        run: |
+          set -euo pipefail
+          python tools/evaluate_usdjpy_f05_short_loss_persistence_chronology_v1.py \
+            --protocol configs/research/usdjpy_f05_short_loss_persistence_chronology_prereg_v1.json \
+            --phase1-dir phase1_authority/portfolio_loss_cluster_output \
+            --market-states materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz \
+            --out-dir development_output \
+            --research-sha "$GITHUB_SHA" \
+            --core-sha 'dbffc656a0793a2efd9bd54394223f1239de2afa' \
+            --run-id "$GITHUB_RUN_ID"
+          jq -e '.decision=="PASS_DEVELOPMENT_FREEZE_C1" and .selected_candidate_id=="C1_SHORT_SHARED_SESSION_LOSS_CAP_2" and .chronology.mismatch_rows==21 and .chronology.unresolved_rows==0 and .period_access."2020_2022_outcomes"==false and .period_access."2025H1"==false' development_output/result.json
+          jq -e '.candidate_results[0].pass_all==true and .candidate_results[1].pass_all==false and .candidate_results[2].pass_all==false' development_output/result.json
+      - name: Package evidence
+        run: |
+          set -euo pipefail
+          cp configs/research/usdjpy_f05_short_loss_persistence_chronology_prereg_v1.json development_output/
+          cp configs/research/usdjpy_f05_short_loss_persistence_chronology_startup_receipt_v1.json development_output/
+          cp configs/research/usdjpy_hyp027_boundary_receipt_for_hyp032_v1.json development_output/
+          find development_output -maxdepth 1 -type f ! -name PACKAGE_SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > development_output/PACKAGE_SHA256SUMS
+          zip -q -X -0 -r "usdjpy-f05-short-loss-persistence-chronology-development-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" development_output
+      - name: Upload evidence artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-f05-short-loss-persistence-chronology-development-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            development_output
+            usdjpy-f05-short-loss-persistence-chronology-development-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0
+      - name: Canonicalize development freeze
+        id: canonical
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          set -euo pipefail
+          mkdir -p docs/research/artifact_archives/usdjpy_f05_short_loss_persistence_chronology_development_v1
+          cp development_output/result.json configs/research/usdjpy_f05_short_loss_persistence_chronology_development_result_v1.json
+          cp development_output/candidate_freeze.json configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json
+          cp development_output/native_chronology_feasibility_report.json configs/research/usdjpy_f05_short_loss_persistence_native_chronology_report_v1.json
+          cp development_output/human_report.md docs/research/USDJPY_F05_SHORT_LOSS_PERSISTENCE_CHRONOLOGY_DEVELOPMENT_RESULT_V1.md
+          cp development_output/result.json development_output/candidate_freeze.json development_output/native_chronology_feasibility_report.json development_output/candidate_gate_matrix.json development_output/hyp027_27_trade_interaction_attribution.csv development_output/same_timestamp_21_trade_attribution.csv development_output/candidate_strategy_side_session_month_matrix.csv development_output/candidate_fold_metrics.csv development_output/output_manifest.json development_output/SHA256SUMS docs/research/artifact_archives/usdjpy_f05_short_loss_persistence_chronology_development_v1/
+          python - <<'PY'
+          import json,os
+          aid=os.environ['ARTIFACT_ID'];digest=os.environ['ARTIFACT_DIGEST']
+          ledger={"schema_version":"usdjpy_hypothesis_ledger_addendum_v30","status":"ACTIVE_APPEND_ONLY_DELTA","entry_mode":"DELTA_INHERIT_SUPERSEDES","base_ledger":"configs/research/usdjpy_hypothesis_ledger_v1.json","supersedes":"configs/research/usdjpy_hypothesis_ledger_addendum_v29.json","inherited_addendum":"configs/research/usdjpy_hypothesis_ledger_addendum_v29.json","entries":[],"hypothesis_status_updates":[{"hypothesis_id":"USDJPY-HYP-032","family_id":"R_SHORT_REALIZED_LOSS_PERSISTENCE","prior_status":"PREREGISTERED_DEVELOPMENT_PENDING","status":"DEVELOPMENT_FROZEN_C1_HISTORICAL_AUTHORITY_PENDING","decision":"PASS_DEVELOPMENT_FREEZE_C1","selected_candidate_id":"C1_SHORT_SHARED_SESSION_LOSS_CAP_2","chronology_unresolved":0,"2020_2022_accessed":False,"2025_accessed":False,"artifact_id":aid,"artifact_digest":digest}]}
+          registry={"schema_version":"usdjpy_research_candidate_registry_v56","supersedes":"configs/research/usdjpy_research_candidate_registry_v55.json","status":"USDJPY_HYP032_DEVELOPMENT_FREEZE_C1_HISTORICAL_AUTHORITY_PENDING","active_family":"R_SHORT_REALIZED_LOSS_PERSISTENCE","active_hypothesis":"USDJPY-HYP-032","current_candidate":"C1_SHORT_SHARED_SESSION_LOSS_CAP_2","candidate_ids":["C1_SHORT_SHARED_SESSION_LOSS_CAP_2"],"development_decision":"PASS_DEVELOPMENT_FREEZE_C1","candidate_freeze":"configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json","HYP027_boundary":{"decision":"FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT","closed":True,"modified":False},"run_authorization":{"2019_2022_baseline_authority_build":True,"2020_2022_candidate_validation_once":False,"Core_implementation":False,"MT4_candidate":False,"2025H1":False,"2025H2":False,"production":False,"live":False},"next_action":"Inventory and canonically build 2019-2022 B02/F05 baseline authority without computing candidate outcomes; then authorize one-shot historical validation."}
+          for path,obj in [('configs/research/usdjpy_hypothesis_ledger_addendum_v30.json',ledger),('configs/research/usdjpy_research_candidate_registry_v56.json',registry)]:open(path,'w').write(json.dumps(obj,indent=2,sort_keys=True)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add configs/research docs/research
+          git commit -m 'research: freeze HYP-032 C1 development candidate'
+          git push origin HEAD:main
+          echo "canonical-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Publish immutable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag='usdjpy-f05-short-loss-persistence-chronology-development-v1'
+          asset="usdjpy-f05-short-loss-persistence-chronology-development-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release already exists; preserving immutability."
+          else
+            gh release create "$tag" "$asset" --repo "$GITHUB_REPOSITORY" --target "${{ steps.canonical.outputs.canonical-sha }}" --title 'USDJPY-HYP-032 Development Freeze C1' --notes '2023H1-2024H2 mechanism attribution. Native chronology unresolved 0/21. C1 passed all development gates. 2020-2022 and 2025 were not accessed.'
+          fi
+      - name: Publish receipt Issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          cat > receipt.md <<EOF
+          hypothesis_id: USDJPY-HYP-032
+          study_id: USDJPY-F05-SHORT-LOSS-PERSISTENCE-CHRONOLOGY-V1
+          decision: PASS_DEVELOPMENT_FREEZE_C1
+          selected_candidate: C1_SHORT_SHARED_SESSION_LOSS_CAP_2
+          execution_sha: ${GITHUB_SHA}
+          canonical_sha: ${{ steps.canonical.outputs.canonical-sha }}
+          workflow_run_id: ${GITHUB_RUN_ID}
+          artifact_id: ${ARTIFACT_ID}
+          artifact_digest: ${ARTIFACT_DIGEST}
+          release_tag: usdjpy-f05-short-loss-persistence-chronology-development-v1
+          chronology_unresolved: 0
+          same_timestamp_rows: 21
+          2020_2022_accessed: false
+          2025_accessed: false
+          Core_authorized: false
+          production_authorized: false
+          live_authorized: false
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-032 development receipt] ${{ steps.canonical.outputs.canonical-sha }}" --body-file receipt.md

@@ -1,0 +1,32 @@
+{
+  "schema_version": "usdjpy_f05_short_loss_persistence_chronology_startup_receipt_v1",
+  "status": "STARTUP_READ_COMPLETE",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+  "research_main_sha": "1f9ce1eb5b1836664e00f9bbaa4d6904f0d39284",
+  "core_main_sha": "dbffc656a0793a2efd9bd54394223f1239de2afa",
+  "HYP027_decision": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+  "HYP027_blocked_trades": 27,
+  "HYP027_same_timestamp_mismatches": 21,
+  "next_unused_hypothesis_id": "USDJPY-HYP-032",
+  "historical_authority": {
+    "2023_2024_complete": true,
+    "2020_2022_B02_F05_baseline_canonical_release_found": false,
+    "2019_2022_terminal_history_inventory_required": true
+  },
+  "native_chronology": {
+    "integrated_EA_portable": true,
+    "integrated_OnTick_order": ["CloseMaturedOrders", "EvaluateB02", "EvaluateF05"],
+    "separate_multi_EA_global_order_portable": false,
+    "binding_architecture": "single integrated B02/F05 EA"
+  },
+  "additional_data_required": [
+    "2019-2022 terminal history inventory and checksums",
+    "2020-2022 baseline tester trade and chronology ledgers after development freeze"
+  ],
+  "period_access": {
+    "2020_2022_candidate_outcomes": false,
+    "2025H1": false,
+    "2025H2": false
+  }
+}
