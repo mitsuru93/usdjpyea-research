@@ -1,0 +1,129 @@
+name: USDJPY HYP-034 Previous-Day Sweep Source Probe v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_previous_day_extreme_sweep_source_probe_v1.yml'
+      - 'configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json'
+      - 'configs/research/usdjpy_previous_day_extreme_sweep_source_manifest_v1.json'
+      - 'tools/probe_usdjpy_previous_day_extreme_sweep_sources_v1.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  source-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Establish short work root and exact identities
+        id: identity
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/h34p"
+          rm -rf "$root"
+          mkdir -p "$root/src" "$root/core/tools/research_infra" "$root/raw2023" "$root/raw2024" "$root/evidence"
+          echo "root=$root" >> "$GITHUB_OUTPUT"
+          sha='${{ github.event.pull_request.head.sha || github.sha }}'
+          test "${#sha}" = 40
+          echo "research_sha=$sha" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$sha" > "$root/evidence/research_head_sha.txt"
+          printf '%s\n' 'f897b250b808207d960417b2306935dcb0655acf' > "$root/evidence/core_infrastructure_sha.txt"
+      - name: Exact-SHA selective fetch of study and infrastructure files
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+          RESEARCH_SHA: ${{ steps.identity.outputs.research_sha }}
+        run: |
+          set -euo pipefail
+          fetch_file() {
+            repo="$1"; sha="$2"; path="$3"; out="$4"
+            mkdir -p "$(dirname "$out")"
+            gh api -H 'Accept: application/vnd.github+json' "repos/${repo}/contents/${path}?ref=${sha}" --jq '.content' | tr -d '\n' | base64 -d > "$out"
+            test -s "$out"
+          }
+          fetch_file "$GITHUB_REPOSITORY" "$RESEARCH_SHA" 'configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json' "$ROOT/src/prereg.json"
+          fetch_file "$GITHUB_REPOSITORY" "$RESEARCH_SHA" 'configs/research/usdjpy_previous_day_extreme_sweep_source_manifest_v1.json' "$ROOT/src/source_manifest.json"
+          fetch_file "$GITHUB_REPOSITORY" "$RESEARCH_SHA" 'tools/probe_usdjpy_previous_day_extreme_sweep_sources_v1.py' "$ROOT/src/probe.py"
+          fetch_file 'mitsuru93/usdjpyea-core' 'f897b250b808207d960417b2306935dcb0655acf' 'tools/research_infra/fx2_infra.py' "$ROOT/core/tools/research_infra/fx2_infra.py"
+          python -m py_compile "$ROOT/src/probe.py" "$ROOT/core/tools/research_infra/fx2_infra.py"
+          sha256sum "$ROOT/src/"* "$ROOT/core/tools/research_infra/fx2_infra.py" > "$ROOT/evidence/selective_fetch_sha256sums.txt"
+      - name: Runner capability probe
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          python "$ROOT/core/tools/research_infra/fx2_infra.py" probe --json "$ROOT/evidence/runner_capability.json" --markdown "$ROOT/evidence/runner_capability.md"
+          python -V | tee "$ROOT/evidence/python_version.txt"
+          gh --version | head -1 | tee "$ROOT/evidence/gh_version.txt"
+          tar --version | head -1 | tee "$ROOT/evidence/tar_version.txt"
+      - name: Validate preregistration and protected-period firewall
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          root=os.environ['ROOT']
+          p=json.load(open(root+'/src/prereg.json'))
+          m=json.load(open(root+'/src/source_manifest.json'))
+          assert p['status']=='FROZEN_BEFORE_DEVELOPMENT_OUTCOMES'
+          assert p['hypothesis_id']=='USDJPY-HYP-034'
+          assert p['family_id']=='S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION'
+          assert p['fixed_exit']['hold_bars']==12
+          assert p['boundaries']['protected_2020_2022_access'] is False
+          assert p['boundaries']['protected_2025_access'] is False
+          assert m['whole_repository_checkout_required'] is False
+          assert m['exact_sha_selective_fetch_required'] is True
+          assert set(m['forbidden_assets'])=={'2020','2021','2022','2025'}
+          PY
+      - name: Download and verify one development month per year
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          gh release download usdjpy-2023-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/raw2023" --pattern 'usdjpy-2023-01-raw-ticks-v1.tar.gz' --pattern 'usdjpy-2023-raw-ticks-v1.annual-manifest.json' --pattern 'SHA256SUMS'
+          gh release download usdjpy-2024-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/raw2024" --pattern 'usdjpy-2024-01-raw-ticks-v1.tar.gz' --pattern 'usdjpy-2024-raw-ticks-v1.annual-manifest.json' --pattern 'SHA256SUMS'
+          (cd "$ROOT/raw2023" && grep -E 'usdjpy-2023-(01-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
+          (cd "$ROOT/raw2024" && grep -E 'usdjpy-2024-(01-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
+          find "$ROOT" -type f | sort > "$ROOT/evidence/downloaded_file_inventory.txt"
+          ! grep -E '/(2020|2021|2022|2025)' "$ROOT/evidence/downloaded_file_inventory.txt"
+      - name: Execute no-outcome source probe
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          python "$ROOT/src/probe.py" --raw-2023 "$ROOT/raw2023" --raw-2024 "$ROOT/raw2024" --output "$ROOT/evidence" | tee "$ROOT/evidence/source_probe.log"
+          jq -e '.status=="TECHNICAL_SOURCE_PROBE_PASS" and .candidate_outcomes_computed==false and .protected_period_accessed==false' "$ROOT/evidence/source_probe.json"
+      - name: Build deterministic POSIX archive and read back
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          python "$ROOT/core/tools/research_infra/fx2_infra.py" archive --input "$ROOT/evidence" --output "$ROOT/hyp034-source-probe.zip" --source-sha '${{ steps.identity.outputs.research_sha }}' --run-id "$GITHUB_RUN_ID" --classification non-scientific
+          python "$ROOT/core/tools/research_infra/fx2_infra.py" readback --archive "$ROOT/hyp034-source-probe.zip" | tee "$ROOT/evidence/archive_readback.log"
+          sha256sum "$ROOT/hyp034-source-probe.zip" | tee "$ROOT/evidence/archive_sha256.txt"
+      - name: Upload technical evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp034-source-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ steps.identity.outputs.root }}/evidence
+            ${{ steps.identity.outputs.root }}/hyp034-source-probe.zip
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
