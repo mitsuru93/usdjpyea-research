@@ -1,0 +1,155 @@
+name: Finalize USDJPY HYP-027 Phase 2 Release v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/finalize_usdjpy_hyp027_phase2_release_v1.yml'
+      - 'configs/run_markers/finalize_usdjpy_hyp027_phase2_release_v1.json'
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+jobs:
+  finalize-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TAG: usdjpy-portfolio-loss-cluster-phase2-v1
+      ASSET: usdjpy-portfolio-loss-cluster-phase2-v1.zip
+      ARTIFACT_ID: '8677604809'
+      ARTIFACT_DIGEST: '192d3d8fa3967b8b36f1ab3cd238a39745fa92950aad7f6371a78371f54face6'
+      DECISION: FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT
+      RECEIPT_TITLE: '[HYP-027 Phase 2 receipt] FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - name: Download and verify exact Actions artifact
+        run: |
+          set -euo pipefail
+          gh api -H 'Accept: application/vnd.github+json' \
+            "/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" \
+            > "${ASSET}"
+          echo "${ARTIFACT_DIGEST}  ${ASSET}" | sha256sum -c -
+          rm -rf artifact_read
+          mkdir artifact_read
+          unzip -q "${ASSET}" -d artifact_read
+          test -f artifact_read/phase2_output/result.json
+          jq -e '.decision=="FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT" and .phase1_exact_reproduction.trade_rows==1882 and .phase1_exact_reproduction.blocked==27 and .core_authorized==false and .MT4_authorized==false and ."2025H1_authorized"==false and ."2025H2_authorized"==false and .production_authorized==false' artifact_read/phase2_output/result.json
+      - name: Publish immutable Release if absent
+        id: release
+        run: |
+          set -euo pipefail
+          if gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            echo 'created=false' >> "$GITHUB_OUTPUT"
+          else
+            cat > release_notes.md <<'EOF'
+          USDJPY-HYP-027 / SESSION_LOSS_CAP_2 Phase 2 Confirmation.
+
+          Decision: FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT.
+          Exact Phase 1 identity: 1,882/1,882; blocked identity: 27/27; lookahead violations: 0.
+          Long delta: -JPY 1,570; Short delta: +JPY 7,155; F05 positive-effect concentration: 76.5264%; side concentration: Short 100%.
+          Binding stop applied: no candidate freeze, Core implementation, MT4, 2025H1/H2, production, or live authorization.
+
+          The Release asset is the byte-identical GitHub Actions artifact archive from Run 30331667249, artifact 8677604809.
+          EOF
+            gh release create "${TAG}" "${ASSET}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --target "${{ github.event.pull_request.base.sha }}" \
+              --title 'USDJPY-HYP-027 SESSION_LOSS_CAP_2 Phase 2 Confirmation v1' \
+              --notes-file release_notes.md
+            echo 'created=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Read back Release and verify byte identity
+        run: |
+          set -euo pipefail
+          rm -rf release_readback
+          mkdir release_readback
+          gh release download "${TAG}" --repo "${GITHUB_REPOSITORY}" --pattern "${ASSET}" --dir release_readback
+          echo "${ARTIFACT_DIGEST}  release_readback/${ASSET}" | sha256sum -c -
+          gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" --json tagName,targetCommitish,isDraft,isPrerelease,url > release_readback/release_metadata.json
+          jq -e '.tagName=="usdjpy-portfolio-loss-cluster-phase2-v1" and .isDraft==false and .isPrerelease==false' release_readback/release_metadata.json
+      - name: Create idempotent receipt Issue
+        id: issue
+        run: |
+          set -euo pipefail
+          existing="$(gh issue list --repo "${GITHUB_REPOSITORY}" --state all --limit 100 --json number,title --jq '.[] | select(.title==env.RECEIPT_TITLE) | .number' | head -n1)"
+          if test -n "$existing"; then
+            issue_number="$existing"
+          else
+            cat > receipt.md <<EOF
+          hypothesis_id: USDJPY-HYP-027
+          study_id: USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE2-V1
+          candidate_id: SESSION_LOSS_CAP_2
+          decision: ${DECISION}
+          research_start_sha: bb4a9dcedec8390585b4c4611c9316bb4febb34c
+          core_start_sha: dbffc656a0793a2efd9bd54394223f1239de2afa
+          canonical_main_sha: ${{ github.event.pull_request.base.sha }}
+          phase2_protocol_commit: 2e48531cbba7a64babdf48950104e19a0e5560a9
+          scientific_workflow_run_id: 30331667249
+          scientific_artifact_id: ${ARTIFACT_ID}
+          scientific_artifact_digest: sha256:${ARTIFACT_DIGEST}
+          release_tag: ${TAG}
+          release_asset: ${ASSET}
+          release_asset_sha256: ${ARTIFACT_DIGEST}
+          release_readback: PASS_BYTE_IDENTICAL
+          phase1_trade_identity: 1882/1882
+          blocked_identity: 27/27
+          future_information_violations: 0
+          Long_delta_jpy: -1570
+          Short_delta_jpy: 7155
+          F05_positive_effect_share: 0.7652641002685765
+          side_positive_effect_share: 1.0
+          candidate_freeze_created: false
+          Core_authorized: false
+          MT4_authorized: false
+          2025H1_authorized: false
+          2025H2_authorized: false
+          production_authorized: false
+          live_authorized: false
+          EOF
+            issue_url="$(gh issue create --repo "${GITHUB_REPOSITORY}" --title "${RECEIPT_TITLE}" --body-file receipt.md)"
+            issue_number="${issue_url##*/}"
+          fi
+          echo "issue-number=${issue_number}" >> "$GITHUB_OUTPUT"
+      - name: Emit finalizer receipt
+        run: |
+          set -euo pipefail
+          mkdir -p finalizer_receipt
+          cat > finalizer_receipt/usdjpy_portfolio_loss_cluster_phase2_release_receipt_v1.json <<EOF
+          {
+            "schema_version": "usdjpy_portfolio_loss_cluster_phase2_release_receipt_v1",
+            "hypothesis_id": "USDJPY-HYP-027",
+            "study_id": "USDJPY-PORTFOLIO-LOSS-CLUSTER-PHASE2-V1",
+            "candidate_id": "SESSION_LOSS_CAP_2",
+            "decision": "${DECISION}",
+            "canonical_main_sha": "${{ github.event.pull_request.base.sha }}",
+            "scientific_workflow_run_id": 30331667249,
+            "artifact_id": ${ARTIFACT_ID},
+            "artifact_digest": "sha256:${ARTIFACT_DIGEST}",
+            "release_tag": "${TAG}",
+            "release_asset": "${ASSET}",
+            "release_asset_sha256": "${ARTIFACT_DIGEST}",
+            "release_readback": "PASS_BYTE_IDENTICAL",
+            "receipt_issue_number": ${{ steps.issue.outputs.issue-number }},
+            "candidate_freeze_created": false,
+            "Core_authorized": false,
+            "MT4_authorized": false,
+            "2025H1_authorized": false,
+            "2025H2_authorized": false,
+            "production_authorized": false,
+            "live_authorized": false
+          }
+          EOF
+          sha256sum finalizer_receipt/usdjpy_portfolio_loss_cluster_phase2_release_receipt_v1.json > finalizer_receipt/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp027-phase2-release-receipt-${{ github.run_id }}
+          path: finalizer_receipt
+          if-no-files-found: error
+          retention-days: 90
