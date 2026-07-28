@@ -1,0 +1,126 @@
+name: USDJPY HYP033 Technical Diagnostic v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp033_technical_diagnostic_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hyp033-technical-diagnostic-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      SHORT_ROOT: /tmp/fx2d
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Exact-SHA selective source fetch
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/fx2boot "$SHORT_ROOT" diagnostic_output
+          mkdir -p /tmp/fx2boot "$SHORT_ROOT" diagnostic_output
+          python - <<'PY'
+          import base64,json,os,urllib.parse,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY']; sha=os.environ['SOURCE_SHA']; token=os.environ['GITHUB_TOKEN']
+          h={'Accept':'application/vnd.github+json','Authorization':f'Bearer {token}','X-GitHub-Api-Version':'2022-11-28','User-Agent':'hyp033-diagnostic'}
+          for path,out in [('tools/research_infra/exact_sha_fetch.py','/tmp/fx2boot/exact_sha_fetch.py'),('configs/research/usdjpy_hyp033_source_manifest_v1.json','/tmp/fx2boot/source_manifest.json')]:
+              url=f"https://api.github.com/repos/{repo}/contents/{urllib.parse.quote(path,safe='/')}?ref={sha}"
+              with urllib.request.urlopen(urllib.request.Request(url,headers=h),timeout=60) as r: meta=json.load(r)
+              open(out,'wb').write(base64.b64decode(''.join(meta['content'].split())))
+          PY
+          python /tmp/fx2boot/exact_sha_fetch.py --repository "$GITHUB_REPOSITORY" --sha "$SOURCE_SHA" --manifest /tmp/fx2boot/source_manifest.json --work-root "$SHORT_ROOT"
+          base64 -d "$SHORT_ROOT/payload/evaluator_v1.py.gz.b64" | gzip -dc > "$SHORT_ROOT/tools/evaluate.py"
+          printf '%s  %s\n' 'daf3e22332c2c0dc70cef522756cc7b001f47b2223fe8834b46cda5e6ade6bcd' "$SHORT_ROOT/tools/evaluate.py" | sha256sum -c -
+          python -m py_compile "$SHORT_ROOT/tools/evaluate.py"
+
+      - name: Install frozen dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+
+      - name: Download exact market and portfolio inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for year in 2023 2024; do
+            mkdir -p "$SHORT_ROOT/raw/$year"
+            gh release download "usdjpy-${year}-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" --dir "$SHORT_ROOT/raw/$year"
+            (cd "$SHORT_ROOT/raw/$year" && sha256sum -c SHA256SUMS)
+          done
+          mkdir -p "$SHORT_ROOT/historical" "$SHORT_ROOT/y2023" "$SHORT_ROOT/y2024h1" "$SHORT_ROOT/y2024h2" "$SHORT_ROOT/materialized"
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir "$SHORT_ROOT/historical" \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' \
+            --pattern 'EXPECTED_SHA256SUMS'
+          (cd "$SHORT_ROOT/historical" && sha256sum -c EXPECTED_SHA256SUMS)
+          unzip -q "$SHORT_ROOT/historical/usdjpy-2023-canonical-baseline-prep-v1.zip" -d "$SHORT_ROOT/y2023"
+          unzip -q "$SHORT_ROOT/historical/mt4-usdjpy-2024h1-event-audit-v1.zip" -d "$SHORT_ROOT/y2024h1"
+          unzip -q "$SHORT_ROOT/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip" -d "$SHORT_ROOT/y2024h2"
+          python "$SHORT_ROOT/tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py" \
+            --m15-2023 "$SHORT_ROOT/y2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" \
+            --m15-2024h1 "$SHORT_ROOT/y2024h1/m15_utc_2024h1.csv" \
+            --events-2024h1 "$SHORT_ROOT/y2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv" \
+            --events-2024h2 "$SHORT_ROOT/y2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv" \
+            --out-dir "$SHORT_ROOT/materialized"
+          printf '%s  %s\n' '98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca' "$SHORT_ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" | sha256sum -c -
+
+      - name: Reproduce evaluator exception with stderr evidence
+        id: reproduce
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python "$SHORT_ROOT/tools/evaluate.py" \
+            --raw-root "$SHORT_ROOT/raw" \
+            --legacy-evaluator "$SHORT_ROOT/authority/hyp031_evaluator.py" \
+            --canonical-ledger "$SHORT_ROOT/authority/hyp030_executable_trade_ledger.csv" \
+            --baseline-trades "$SHORT_ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" \
+            --prereg "$SHORT_ROOT/configs/research/usdjpy_hyp033_asian_low_sweep_rebound_prereg_v1.json" \
+            --out-dir diagnostic_output \
+            --research-sha a9b139e971bbaa8ed0ab64d0bef66b542eb78be5 \
+            --core-sha f897b250b808207d960417b2306935dcb0655acf \
+            --run-id "$GITHUB_RUN_ID" 2>&1 | tee diagnostic_output/diagnostic.log
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Write technical diagnostic receipt
+        if: always()
+        shell: bash
+        run: |
+          cat > diagnostic_output/diagnostic_receipt.json <<EOF
+          {
+            "schema_version": "usdjpy_hyp033_technical_diagnostic_v1",
+            "status": "TECHNICAL_DIAGNOSTIC_ONLY",
+            "source_sha": "${SOURCE_SHA}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "evaluator_sha256": "daf3e22332c2c0dc70cef522756cc7b001f47b2223fe8834b46cda5e6ade6bcd",
+            "evaluator_exit_code": "${{ steps.reproduce.outputs.exit_code }}",
+            "candidate_outcome_authoritative": false,
+            "protected_period_accessed": false,
+            "mt4_executed": false
+          }
+          EOF
+
+      - name: Upload diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp033-technical-diagnostic-${{ github.run_id }}
+          path: diagnostic_output
+          retention-days: 30
+          if-no-files-found: error
