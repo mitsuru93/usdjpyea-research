@@ -1,0 +1,12 @@
+{
+  "schema_version": "fx2_source_manifest_v1",
+  "required_files": [
+    {"repository_path": "tools/hyp033_payload/evaluator_v1.py.gz.b64", "local_path": "payload/evaluator_v1.py.gz.b64"},
+    {"repository_path": "configs/research/usdjpy_hyp033_asian_low_sweep_rebound_prereg_v1.json", "local_path": "configs/research/usdjpy_hyp033_asian_low_sweep_rebound_prereg_v1.json"},
+    {"repository_path": "docs/research/artifact_archives/usdjpy_asian_range_sweep_regime_development_v1/evaluate_usdjpy_asian_range_sweep_regime_v1.py", "local_path": "authority/hyp031_evaluator.py"},
+    {"repository_path": "docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/executable_trade_ledger.csv", "local_path": "authority/hyp030_executable_trade_ledger.csv"},
+    {"repository_path": "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py", "local_path": "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py"},
+    {"repository_path": "tools/research_infra/fx2_infra.py", "local_path": "tools/research_infra/fx2_infra.py"},
+    {"repository_path": "tools/research_infra/exact_sha_fetch.py", "local_path": "tools/research_infra/exact_sha_fetch.py"}
+  ]
+}
