@@ -1,0 +1,178 @@
+name: USDJPY HYP-032 Historical Validation Technical Retry v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/run_usdjpy_hyp032_historical_validation_v1.py'
+      - 'configs/research/usdjpy_hyp032_historical_validation_technical_revision_v1.json'
+      - '.github/workflows/usdjpy_hyp032_historical_validation_retry_v1.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_hyp032_historical_validation_retry_v1.json'
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: usdjpy-hyp032-historical-validation-one-shot
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate parser-only technical revision without outcome access
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/evaluate_usdjpy_hyp032_historical_validation_v1.py tools/run_usdjpy_hyp032_historical_validation_v1.py
+          test "$(sha256sum tools/evaluate_usdjpy_hyp032_historical_validation_v1.py | cut -d' ' -f1)" = 'f685381a5d5f8c39712ee96ae322f5dc6fb74240f17308c82c91f59f52cb0102'
+          test "$(sha256sum tools/run_usdjpy_hyp032_historical_validation_v1.py | cut -d' ' -f1)" = '561ccb84c70ddd4bfa8f2e54464275bb9679d36ebc5891d6277b3851c9c92c8f'
+          jq -e '.failure_class=="TECHNICAL_STOP_NO_SCIENTIFIC_RESULT" and .source_failed_run_id==30360154724 and .candidate_decisions_created==0 and .candidate_outcome_computed==false and .scientific_logic_changed==false and .candidate_rule_changed==false and .gate_changed==false and .bootstrap_changed==false and .input_changed==false and .retuning==false and .retry_authorized==true and ."2025_accessed"==false' configs/research/usdjpy_hyp032_historical_validation_technical_revision_v1.json
+          rm -rf retry_preflight
+          python tools/run_usdjpy_hyp032_historical_validation_v1.py \
+            --input data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz \
+            --freeze configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json \
+            --preregistration configs/research/usdjpy_hyp032_historical_validation_prereg_v1.json \
+            --out-dir retry_preflight --research-sha "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" --preflight-only
+          jq -e '.status=="PASS_NO_HISTORICAL_OUTCOME_ACCESS" and .candidate_outcome_computed==false and ."2025_accessed"==false' retry_preflight/preflight_result.json
+
+  historical-validation-retry:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce frozen retry authorization
+        run: |
+          set -euo pipefail
+          jq -e '.hypothesis_id=="USDJPY-HYP-032" and .candidate_id=="C1_SHORT_SHARED_SESSION_LOSS_CAP_2" and .authorization=="TECHNICAL_RETRY_AFTER_NO_SCIENTIFIC_RESULT" and .source_failed_run_id==30360154724 and .consumed==false and .no_retuning==true and ."2025_access_authorized"==false' configs/run_markers/usdjpy_hyp032_historical_validation_retry_v1.json
+          test "$(sha256sum tools/evaluate_usdjpy_hyp032_historical_validation_v1.py | cut -d' ' -f1)" = 'f685381a5d5f8c39712ee96ae322f5dc6fb74240f17308c82c91f59f52cb0102'
+          test "$(sha256sum tools/run_usdjpy_hyp032_historical_validation_v1.py | cut -d' ' -f1)" = '561ccb84c70ddd4bfa8f2e54464275bb9679d36ebc5891d6277b3851c9c92c8f'
+          test "$(sha256sum data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz | cut -d' ' -f1)" = 'd2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670'
+          jq -e '.candidate_decisions_created==0 and .candidate_outcome_computed==false and .scientific_logic_changed==false and .retuning==false and .retry_authorized==true and ."2025_accessed"==false' configs/research/usdjpy_hyp032_historical_validation_technical_revision_v1.json
+      - name: Execute unchanged frozen science through timestamp compatibility entrypoint
+        run: |
+          set -euo pipefail
+          rm -rf historical_output
+          python tools/run_usdjpy_hyp032_historical_validation_v1.py \
+            --input data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz \
+            --freeze configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json \
+            --preregistration configs/research/usdjpy_hyp032_historical_validation_prereg_v1.json \
+            --out-dir historical_output --research-sha "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID"
+          jq -e '(.decision=="PASS_HISTORICAL_VALIDATION" or .decision=="FAIL_HISTORICAL_VALIDATION_NO_RETUNING") and .candidate_outcome_computed==true and ."2025_accessed"==false and .no_retuning==true' historical_output/historical_validation_result.json
+          cat historical_output/human_report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Package immutable historical evidence
+        run: |
+          set -euo pipefail
+          cp configs/research/usdjpy_hyp032_historical_validation_prereg_v1.json historical_output/
+          cp configs/research/usdjpy_hyp032_historical_validation_technical_revision_v1.json historical_output/
+          cp configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json historical_output/
+          cp data/usdjpy/hyp032/historical_validation_input_receipt_v1.json historical_output/
+          cp tools/evaluate_usdjpy_hyp032_historical_validation_v1.py tools/run_usdjpy_hyp032_historical_validation_v1.py historical_output/
+          find historical_output -maxdepth 1 -type f ! -name PACKAGE_SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > historical_output/PACKAGE_SHA256SUMS
+          zip -q -X -0 -r "usdjpy-hyp032-historical-validation-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" historical_output
+          echo "EVIDENCE_ZIP=usdjpy-hyp032-historical-validation-v1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" >> "$GITHUB_ENV"
+      - name: Upload historical evidence artifact
+        id: upload
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp032-historical-validation-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            historical_output
+            usdjpy-hyp032-historical-validation-v1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0
+      - name: Canonicalize valid scientific decision
+        env:
+          ARTIFACT_ID_RAW: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST_RAW: ${{ steps.upload.outputs.artifact-digest }}
+          ARTIFACT_OUTCOME: ${{ steps.upload.outcome }}
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          decision=$(jq -r '.decision' historical_output/historical_validation_result.json)
+          mkdir -p docs/research/artifact_archives/usdjpy_hyp032_historical_validation_v1
+          cp historical_output/historical_validation_result.json configs/research/usdjpy_hyp032_historical_validation_result_v1.json
+          cp historical_output/human_report.md docs/research/USDJPY_HYP032_HISTORICAL_VALIDATION_RESULT_V1.md
+          cp historical_output/historical_validation_result.json historical_output/historical_gate_matrix.json historical_output/historical_bootstrap.json historical_output/historical_concentration.json historical_output/historical_winner_damage.json historical_output/historical_halfyear_metrics.csv historical_output/historical_blocked_trade_ledger.csv historical_output/historical_candidate_decision_ledger.csv historical_output/output_manifest.json historical_output/SHA256SUMS docs/research/artifact_archives/usdjpy_hyp032_historical_validation_v1/
+          python - "$decision" "${ARTIFACT_ID_RAW:-UNAVAILABLE_ACTIONS_ARTIFACT_STORAGE}" "${ARTIFACT_DIGEST_RAW:-UNAVAILABLE_ACTIONS_ARTIFACT_STORAGE}" "$ARTIFACT_OUTCOME" "$GITHUB_RUN_ID" "$GITHUB_SHA" <<'PY'
+          import json,sys
+          from pathlib import Path
+          decision,aid,digest,outcome,run_id,run_sha=sys.argv[1:];result=json.load(open('historical_output/historical_validation_result.json'));passed=decision=='PASS_HISTORICAL_VALIDATION'
+          ledger={'schema_version':'usdjpy_hypothesis_ledger_addendum_v31','status':'ACTIVE_APPEND_ONLY_DELTA','entry_mode':'DELTA_INHERIT_SUPERSEDES','base_ledger':'configs/research/usdjpy_hypothesis_ledger_v1.json','supersedes':'configs/research/usdjpy_hypothesis_ledger_addendum_v30.json','inherited_addendum':'configs/research/usdjpy_hypothesis_ledger_addendum_v30.json','entries':[],'hypothesis_status_updates':[{'hypothesis_id':'USDJPY-HYP-032','family_id':'R_SHORT_REALIZED_LOSS_PERSISTENCE','prior_status':'DEVELOPMENT_FROZEN_C1_HISTORICAL_AUTHORITY_PENDING','status':'HISTORICAL_VALIDATION_PASS_CORE_IMPLEMENTATION_AUTHORIZED' if passed else 'HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING','decision':decision,'candidate_id':'C1_SHORT_SHARED_SESSION_LOSS_CAP_2','historical_run_id':int(run_id),'historical_run_sha':run_sha,'technical_retry_of_run_id':30360154724,'input_gzip_sha256':'d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670','failed_gates':result['failed_gates'],'artifact_id':aid,'artifact_digest':digest,'artifact_upload_outcome':outcome,'2025_accessed':False,'Core_candidate_authorized':passed,'production_authorized':False,'live_authorized':False}]}
+          registry={'schema_version':'usdjpy_research_candidate_registry_v57','supersedes':'configs/research/usdjpy_research_candidate_registry_v56.json','status':'USDJPY_HYP032_HISTORICAL_VALIDATION_PASS_CORE_IMPLEMENTATION_AUTHORIZED' if passed else 'USDJPY_HYP032_HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING','active_family':'R_SHORT_REALIZED_LOSS_PERSISTENCE','active_hypothesis':'USDJPY-HYP-032','current_candidate':'C1_SHORT_SHARED_SESSION_LOSS_CAP_2','candidate_ids':['C1_SHORT_SHARED_SESSION_LOSS_CAP_2'],'development_decision':'PASS_DEVELOPMENT_FREEZE_C1','historical_decision':decision,'candidate_freeze':'configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json','historical_result':'configs/research/usdjpy_hyp032_historical_validation_result_v1.json','technical_retry_of_run_id':30360154724,'HYP027_boundary':{'decision':'FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT','closed':True,'modified':False},'run_authorization':{'2020_2022_candidate_validation_once':False,'Core_implementation':passed,'MT4_candidate':False,'2025H1':False,'2025H2':False,'production':False,'live':False},'no_retuning':True,'next_action':'Implement frozen C1 in Core and prove Research/Core/MT4 chronology parity.' if passed else 'Scientific stop. Do not retune C1 or open Core/2025.'}
+          retry=json.load(open('configs/run_markers/usdjpy_hyp032_historical_validation_retry_v1.json'));retry.update({'consumed':True,'consumed_run_id':int(run_id),'decision':decision,'2025_access_authorized':False})
+          original=json.load(open('configs/run_markers/usdjpy_hyp032_historical_validation_v1.json'));original.update({'technical_failed_run_id':30360154724,'technical_failure_class':'TECHNICAL_STOP_NO_SCIENTIFIC_RESULT','superseded_by_retry_marker':'configs/run_markers/usdjpy_hyp032_historical_validation_retry_v1.json','consumed':False,'scientific_result':False,'2025_access_authorized':False})
+          revision=json.load(open('configs/research/usdjpy_hyp032_historical_validation_technical_revision_v1.json'));revision.update({'retry_run_id':int(run_id),'retry_run_sha':run_sha,'retry_decision':decision,'retry_completed':True})
+          for path,obj in [('configs/research/usdjpy_hypothesis_ledger_addendum_v31.json',ledger),('configs/research/usdjpy_research_candidate_registry_v57.json',registry),('configs/run_markers/usdjpy_hyp032_historical_validation_retry_v1.json',retry),('configs/run_markers/usdjpy_hyp032_historical_validation_v1.json',original),('configs/research/usdjpy_hyp032_historical_validation_technical_revision_v1.json',revision)]:Path(path).write_text(json.dumps(obj,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add configs/research/usdjpy_hyp032_historical_validation_result_v1.json configs/research/usdjpy_hypothesis_ledger_addendum_v31.json configs/research/usdjpy_research_candidate_registry_v57.json configs/research/usdjpy_hyp032_historical_validation_technical_revision_v1.json configs/run_markers/usdjpy_hyp032_historical_validation_retry_v1.json configs/run_markers/usdjpy_hyp032_historical_validation_v1.json docs/research/USDJPY_HYP032_HISTORICAL_VALIDATION_RESULT_V1.md docs/research/artifact_archives/usdjpy_hyp032_historical_validation_v1
+          git commit -m "research: canonicalize HYP-032 ${decision}"
+          git push origin HEAD:main
+          echo "CANONICAL_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "DECISION=$decision" >> "$GITHUB_ENV"
+          echo "ARTIFACT_ID=${ARTIFACT_ID_RAW:-UNAVAILABLE_ACTIONS_ARTIFACT_STORAGE}" >> "$GITHUB_ENV"
+          echo "ARTIFACT_DIGEST=${ARTIFACT_DIGEST_RAW:-UNAVAILABLE_ACTIONS_ARTIFACT_STORAGE}" >> "$GITHUB_ENV"
+      - name: Publish immutable historical Release and byte-identical readback
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag='usdjpy-hyp032-historical-validation-v1';zipsha=$(sha256sum "$EVIDENCE_ZIP" | cut -d' ' -f1)
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then echo 'Release already exists; preserving immutability.'; else gh release create "$tag" "$EVIDENCE_ZIP#usdjpy-hyp032-historical-validation-v1.zip" --repo "$GITHUB_REPOSITORY" --target "$CANONICAL_SHA" --title 'USDJPY-HYP-032 Historical Validation v1' --notes "Frozen C1 one-shot 2020-2022 historical validation. Decision: $DECISION. Technical parser retry only; 2025 not accessed; no retuning."; fi
+          rm -rf release_readback && mkdir release_readback;gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern 'usdjpy-hyp032-historical-validation-v1.zip' --dir release_readback
+          test "$(sha256sum release_readback/usdjpy-hyp032-historical-validation-v1.zip | cut -d' ' -f1)" = "$zipsha";echo "RELEASE_ASSET_SHA256=$zipsha" >> "$GITHUB_ENV"
+      - name: Publish binding historical validation receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          result='historical_output/historical_validation_result.json';delta=$(jq -r '.economics.net_improvement_jpy' "$result");candidate_net=$(jq -r '.economics.candidate.net_jpy' "$result");candidate_pf=$(jq -r '.economics.candidate.profit_factor' "$result");rdd=$(jq -r '.economics.realized_dd_reduction_jpy' "$result");edd=$(jq -r '.economics.full_equity_dd_reduction_jpy' "$result");blocked=$(jq -r '.economics.blocked_trades' "$result");failed=$(jq -c '.failed_gates' "$result");coreauth=false;if [ "$DECISION" = 'PASS_HISTORICAL_VALIDATION' ];then coreauth=true;fi
+          cat > receipt.md <<EOF
+          hypothesis_id: USDJPY-HYP-032
+          stage: 2020-2022 one-shot historical validation
+          decision: ${DECISION}
+          candidate_id: C1_SHORT_SHARED_SESSION_LOSS_CAP_2
+          source_technical_no_result_run_id: 30360154724
+          scientific_run_id: ${GITHUB_RUN_ID}
+          scientific_run_sha: ${GITHUB_SHA}
+          canonical_sha: ${CANONICAL_SHA}
+          input_gzip_sha256: d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670
+          evaluator_sha256: f685381a5d5f8c39712ee96ae322f5dc6fb74240f17308c82c91f59f52cb0102
+          technical_entrypoint_sha256: 561ccb84c70ddd4bfa8f2e54464275bb9679d36ebc5891d6277b3851c9c92c8f
+          artifact_id: ${ARTIFACT_ID}
+          artifact_digest: ${ARTIFACT_DIGEST}
+          release_tag: usdjpy-hyp032-historical-validation-v1
+          release_asset_sha256: ${RELEASE_ASSET_SHA256}
+          release_readback: PASS_BYTE_IDENTICAL
+          blocked_trades: ${blocked}
+          net_improvement_jpy: ${delta}
+          candidate_net_jpy: ${candidate_net}
+          candidate_pf: ${candidate_pf}
+          realized_dd_reduction_jpy: ${rdd}
+          full_equity_dd_reduction_jpy: ${edd}
+          failed_gates: ${failed}
+          no_retuning: true
+          2025_accessed: false
+          Core_candidate_authorized: ${coreauth}
+          production_authorized: false
+          live_authorized: false
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-032 historical validation receipt] ${DECISION}" --body-file receipt.md
