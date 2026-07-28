@@ -1,0 +1,23 @@
+{
+  "schema_version": "fx2_technical_no_result_receipt_v1",
+  "status": "TECHNICAL_NO_RESULT",
+  "classification": "TECHNICAL_INCOMPLETE_NO_DATA_LOAD",
+  "hypothesis_id": "USDJPY-HYP-034",
+  "stage": "SOURCE_AUTHORITY_PROBE",
+  "reason_code": "SELECTIVE_FETCH_CHECKSUM_GLOB_INCLUDED_PYCACHE_DIRECTORY",
+  "human_readable_reason": "The exact-SHA Research and vendored Core snapshot fetch succeeded, and both Python sources compiled. The checksum command then expanded src/* and included the __pycache__ directory created by py_compile, causing sha256sum to stop before any source Release download.",
+  "workflow_run_id": 30372351362,
+  "job_id": 90319204827,
+  "research_head_sha": "feabb5b5c11075bef99c1e0da722a3559184ea66",
+  "core_source_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "candidate_outcome_computed": false,
+  "strategy_data_loaded": false,
+  "raw_tick_data_downloaded": false,
+  "protected_period_accessed": false,
+  "mt4_executed": false,
+  "scientific_result": false,
+  "retry_eligibility": true,
+  "repair_boundary": "Replace wildcard checksum and byte-count inputs with an explicit required-file list. Do not change any scientific contract, source period, candidate, feature, threshold or gate.",
+  "prevention_control": "All selective-fetch integrity commands enumerate regular required files explicitly; generated directories cannot enter the identity manifest.",
+  "scientific_contract_changed": false
+}
