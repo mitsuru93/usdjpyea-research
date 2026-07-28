@@ -1,0 +1,113 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v36",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v35.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v35.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-034",
+      "family_ids": ["S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION"],
+      "family_id": "S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION",
+      "title": "Previous-Day Extreme Sweep Rejection Mechanism Study",
+      "target_failure_mode": "Determine whether source-native previous-day High/Low sweeps followed by completed-M15 range re-entry create an independent, fold-portable rejection edge that complements B02/F05.",
+      "causal_hypothesis": "A temporary source-native Bid sweep of the previous trading-day extreme that cannot sustain outside acceptance and completes a range re-entry contains a short-horizon rejection edge observable before execution.",
+      "pre_result_predictions": [
+        "Previous-Day Low Sweep to Long and High Sweep to Short may be asymmetric.",
+        "Profitable rejection should be identifiable using only information available by the entry decision.",
+        "Outside acceptance should differ economically from sustained range re-entry.",
+        "Complementarity should not depend on a small number of dates, sessions or folds."
+      ],
+      "tests": [
+        "Dukascopy BI5 source-native Bid/Ask source and calendar authority audit",
+        "event identity, executable chronology and JPY monetary-unit audit",
+        "fixed 12-M15-bar / 3-hour rejection evaluation by side, fold, month and path class",
+        "leave-one-fold-out ex-ante feature portability analysis",
+        "concentration, bootstrap, spread/delay and B02/F05 portfolio diagnostics"
+      ],
+      "status": "COMPLETE_NO_PORTABLE_REJECTION_MECHANISM",
+      "decision": "NO_PORTABLE_REJECTION_MECHANISM",
+      "scientific_result": true,
+      "source_authority": "PASS",
+      "source_native_event_count": 510,
+      "high_sweep_count": 284,
+      "low_sweep_count": 226,
+      "executable_rejection_trades": 432,
+      "unfiltered_net_jpy": 4450.0,
+      "unfiltered_profit_factor": 1.0888259012335741,
+      "positive_folds": 2,
+      "portable_mechanism_confirmed": false,
+      "ex_ante_discriminator_confirmed": false,
+      "candidate_catalog_size": 0,
+      "candidate_freeze": false,
+      "failed_binding_stage": "STOP_RULE_5_NO_PORTABLE_REJECTION_MECHANISM",
+      "retained_findings": [
+        "Delayed rejection paths were strongly positive while false reclaim and outside acceptance paths were strongly negative.",
+        "Previous-Day Low Sweep to Long was stronger than High Sweep to Short but did not provide a fold-portable ex-ante side rule.",
+        "Source-native Bid/Ask event chronology, UTC previous-trading-day mapping and JPY monetary contract were fully resolved."
+      ],
+      "falsified_or_unsupported_claims": [
+        "The unfiltered previous-day sweep rejection population is portable across all four development folds.",
+        "Entry-time features can separate profitable rejection from future continuation with leave-one-fold-out portability.",
+        "Long-only adoption is justified without post-result side selection."
+      ],
+      "prohibited_reuse": [
+        "side-only rescue",
+        "threshold retuning",
+        "session or month exclusion",
+        "Exit optimization",
+        "combination with Asian Range Sweep or HYP-032 realized-loss state",
+        "2020-2022 or 2025 candidate rescue"
+      ],
+      "evidence_refs": {
+        "scientific_run_id": 30375885665,
+        "scientific_artifact_id": 8695321156,
+        "scientific_artifact_digest": "sha256:4eefbcc77962dc9f72fa647b386088c18f9efa196b7f70be1e970ccf9ed8964b",
+        "result": "configs/research/usdjpy_hyp034_final_result_v1.json",
+        "report": "docs/research/USDJPY_HYP034_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION_RESULT_V1.md",
+        "candidate_registry": "configs/research/usdjpy_hyp034_candidate_registry_v1.json",
+        "period_access_receipt": "configs/research/usdjpy_hyp034_period_access_receipt_v1.json",
+        "output_manifest": "configs/research/usdjpy_hyp034_output_manifest_v1.json",
+        "release_receipt": "configs/research/usdjpy_hyp034_release_receipt_v1.json"
+      },
+      "successor_questions": [
+        "What independently preregistered mechanism, not a threshold or side rescue of HYP-034, can observe rejection-versus-acceptance before entry?"
+      ],
+      "historical_2020_2022_accessed": false,
+      "core_mt4_accessed": false,
+      "2025_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false,
+      "parallel_HYP033_scientific_objects_accessed": false,
+      "no_retuning": true,
+      "exact_next_action": "Close HYP-034; do not create a candidate or access 2020-2022."
+    }
+  ],
+  "hypothesis_status_updates": [
+    {
+      "hypothesis_id": "USDJPY-HYP-034",
+      "phase2_status": "COMPLETE_NO_PORTABLE_REJECTION_MECHANISM",
+      "decision": "NO_PORTABLE_REJECTION_MECHANISM",
+      "evidence_refs": {
+        "scientific_run_id": 30375885665,
+        "scientific_artifact_id": 8695321156,
+        "result": "configs/research/usdjpy_hyp034_final_result_v1.json"
+      },
+      "authorization": {
+        "candidate_freeze": false,
+        "historical_2020_2022": false,
+        "Core": false,
+        "MT4": false,
+        "2025H1": false,
+        "2025H2": false,
+        "production": false,
+        "live": false
+      },
+      "family_id": "S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION",
+      "prior_status": "PREREGISTERED_SOURCE_AUTHORITY_PREFLIGHT",
+      "status": "COMPLETE_NO_PORTABLE_REJECTION_MECHANISM",
+      "retuning": false
+    }
+  ]
+}

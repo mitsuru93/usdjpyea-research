@@ -1,0 +1,36 @@
+{
+  "schema_version": "fx2_source_manifest_v1",
+  "hypothesis_id": "USDJPY-HYP-034",
+  "research_repository": "mitsuru93/usdjpyea-research",
+  "research_base_sha": "a9b139e971bbaa8ed0ab64d0bef66b542eb78be5",
+  "core_repository": "mitsuru93/usdjpyea-core",
+  "core_infrastructure_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "required_research_files": [
+    "AGENTS.md",
+    "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "configs/research/usdjpy_research_candidate_registry_v60.json",
+    "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v34.json",
+    "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "configs/research/usdjpy_period_role_policy_v5.json",
+    "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md",
+    "configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json",
+    "tools/probe_usdjpy_previous_day_extreme_sweep_sources_v1.py"
+  ],
+  "required_core_files": [
+    "docs/research_infrastructure/FX2_MT4_RESEARCH_EXECUTION_INFRASTRUCTURE_HARDENING_V1.md",
+    "docs/research_infrastructure/MIGRATION_GUIDE_V1.md",
+    "tools/research_infra/fx2_infra.py",
+    "tools/research_infra/exact_sha_fetch.py",
+    "tools/research_infra/terminal_lock.py"
+  ],
+  "development_release_assets": {
+    "usdjpy-2023-raw-bidask-ticks-v1": ["usdjpy-2023-??-raw-ticks-v1.tar.gz", "usdjpy-2023-raw-ticks-v1.annual-manifest.json", "SHA256SUMS"],
+    "usdjpy-2024-raw-bidask-ticks-v1": ["usdjpy-2024-??-raw-ticks-v1.tar.gz", "usdjpy-2024-raw-ticks-v1.annual-manifest.json", "SHA256SUMS"],
+    "usdjpy-csos-opportunity-atlas-v1-r1": ["usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip"],
+    "f05-failed-reclaim-historical-authorities-v1": ["usdjpy-2023-canonical-baseline-prep-v1.zip", "mt4-usdjpy-2024h1-event-audit-v1.zip", "mt4-usdjpy-f05-extatr-h2-validation-v1.zip", "EXPECTED_SHA256SUMS"]
+  },
+  "forbidden_assets": ["2020", "2021", "2022", "2025"],
+  "whole_repository_checkout_required": false,
+  "exact_sha_selective_fetch_required": true
+}

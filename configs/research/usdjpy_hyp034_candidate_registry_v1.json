@@ -1,0 +1,52 @@
+{
+  "schema_version": "usdjpy_hyp034_candidate_registry_v1",
+  "status": "COMPLETE_NO_PORTABLE_REJECTION_MECHANISM",
+  "hypothesis_id": "USDJPY-HYP-034",
+  "family_id": "S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION",
+  "atlas_reference": "F_PREVIOUS_DAY_SWEEP",
+  "source_native_event_count": 510,
+  "high_sweep_count": 284,
+  "low_sweep_count": 226,
+  "executable_rejection_trade_count": 432,
+  "unfiltered_result": {
+    "net_jpy": 4450.0,
+    "profit_factor": 1.0888259012335741,
+    "mdd_jpy": 8157.0,
+    "minimum_equity_jpy": 999436.0,
+    "positive_folds": 2,
+    "fold_net_jpy": {
+      "2023H1": 6397.0,
+      "2023H2": -9.0,
+      "2024H1": 377.0,
+      "2024H2": -2315.0
+    }
+  },
+  "portable_mechanism": false,
+  "ex_ante_discriminator": false,
+  "candidate_catalog_status": "EMPTY_AFTER_BINDING_STOP_RULE_5",
+  "candidate_ids": [],
+  "selected_candidate_id": null,
+  "candidate_freeze_created": false,
+  "failed_binding_stage": "STOP_RULE_5_NO_PORTABLE_REJECTION_MECHANISM",
+  "failed_findings": [
+    "unfiltered profit factor below 1.10",
+    "positive folds only 2 of 4",
+    "concentration and bootstrap evidence not portable",
+    "no leave-one-fold-out ex-ante discriminator"
+  ],
+  "side_rescue_prohibited": true,
+  "historical_validation_authorized": false,
+  "Core_authorized": false,
+  "MT4_authorized": false,
+  "2025H1_authorized": false,
+  "2025H2_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "result": "configs/research/usdjpy_hyp034_final_result_v1.json",
+  "report": "docs/research/USDJPY_HYP034_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION_RESULT_V1.md",
+  "source_scientific_run_id": 30375885665,
+  "source_artifact_id": 8695321156,
+  "source_artifact_digest": "sha256:4eefbcc77962dc9f72fa647b386088c18f9efa196b7f70be1e970ccf9ed8964b",
+  "no_retuning": true,
+  "next_action": "Close HYP-034 without candidate freeze or protected-period access."
+}

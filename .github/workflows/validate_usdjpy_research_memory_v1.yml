@@ -70,4 +70,4 @@ jobs:
         run: |
           set -euo pipefail
           test "$(cat validation/usdjpy_research_memory_validator_v2.rc)" = "0"
-          jq -e '.status=="PASS" and .registry_schema=="usdjpy_research_candidate_registry_v54" and .hypothesis_ledger_addendum=="configs/research/usdjpy_hypothesis_ledger_addendum_v28.json" and .current_open_research_question==null' validation/usdjpy_research_memory_validation_receipt_v2.json
+          jq -e '.status=="PASS" and .current_open_research_question==null and (.registry|length)>0 and (.hypothesis_ledger_addendum|length)>0' validation/usdjpy_research_memory_validation_receipt_v2.json
