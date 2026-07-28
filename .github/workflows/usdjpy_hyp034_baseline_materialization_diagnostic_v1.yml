@@ -1,0 +1,107 @@
+name: USDJPY HYP-034 Baseline Materialization Diagnostic v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp034_baseline_materialization_diagnostic_v1.yml'
+      - 'configs/research/usdjpy_hyp034_development_technical_no_result_v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Establish short root and exact SHA
+        id: identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/h34b"
+          rm -rf "$root"
+          mkdir -p "$root/src" "$root/inputs/historical" "$root/inputs/2023" "$root/inputs/2024h1" "$root/inputs/2024h2" "$root/materialized" "$root/evidence"
+          sha='${{ github.event.pull_request.head.sha || github.sha }}'
+          test "${#sha}" = 40
+          echo "root=$root" >> "$GITHUB_OUTPUT"
+          echo "research_sha=$sha" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$sha" > "$root/evidence/research_head_sha.txt"
+      - name: Exact-SHA selective fetch of canonical builder
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+          RESEARCH_SHA: ${{ steps.identity.outputs.research_sha }}
+        run: |
+          set -euo pipefail
+          payload=$(gh api -H 'Accept: application/vnd.github+json' "repos/${GITHUB_REPOSITORY}/contents/tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py?ref=${RESEARCH_SHA}")
+          printf '%s' "$payload" | jq -er '.content' | tr -d '\n' | base64 -d > "$ROOT/src/build_baseline.py"
+          printf '%s' "$payload" | jq -er '.sha' > "$ROOT/evidence/builder_blob_sha.txt"
+          python -m py_compile "$ROOT/src/build_baseline.py"
+          sha256sum "$ROOT/src/build_baseline.py" > "$ROOT/evidence/builder_sha256.txt"
+      - name: Download verify and inventory canonical authorities
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set -euo pipefail
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/historical" --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' --pattern 'EXPECTED_SHA256SUMS'
+          (cd "$ROOT/inputs/historical" && sha256sum -c EXPECTED_SHA256SUMS) | tee "$ROOT/evidence/release_checksum.log"
+          unzip -q "$ROOT/inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip" -d "$ROOT/inputs/2023"
+          unzip -q "$ROOT/inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip" -d "$ROOT/inputs/2024h1"
+          unzip -q "$ROOT/inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip" -d "$ROOT/inputs/2024h2"
+          find "$ROOT/inputs" -type f -printf '%p|%s\n' | sort > "$ROOT/evidence/extracted_file_inventory.txt"
+          find "$ROOT/inputs/2023" -type f -name '*2023*m15*' -o -name '*m15*2023*' | sort > "$ROOT/evidence/2023_m15_candidates.txt"
+          find "$ROOT/inputs/2024h1" -type f | sort > "$ROOT/evidence/2024h1_candidates.txt"
+          find "$ROOT/inputs/2024h2" -type f | sort > "$ROOT/evidence/2024h2_candidates.txt"
+      - name: Execute materializer with captured diagnostics
+        shell: bash
+        env:
+          ROOT: ${{ steps.identity.outputs.root }}
+        run: |
+          set +e
+          python "$ROOT/src/build_baseline.py" \
+            --m15-2023 "$ROOT/inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" \
+            --m15-2024h1 "$ROOT/inputs/2024h1/m15_utc_2024h1.csv" \
+            --events-2024h1 "$ROOT/inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv" \
+            --events-2024h2 "$ROOT/inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv" \
+            --out-dir "$ROOT/materialized" > "$ROOT/evidence/materializer.stdout.log" 2> "$ROOT/evidence/materializer.stderr.log"
+          rc=$?
+          printf '%s\n' "$rc" > "$ROOT/evidence/materializer_exit_code.txt"
+          find "$ROOT/materialized" -type f -printf '%p|%s\n' | sort > "$ROOT/evidence/materialized_inventory.txt"
+          if [ -f "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" ]; then
+            sha256sum "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" > "$ROOT/evidence/materialized_trade_ledger_sha256.txt"
+            wc -l "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" > "$ROOT/evidence/materialized_trade_ledger_lines.txt"
+          fi
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['ROOT'])
+          rc=int((root/'evidence/materializer_exit_code.txt').read_text().strip())
+          payload={
+            'schema_version':'usdjpy_hyp034_baseline_materialization_diagnostic_v1',
+            'status':'PASS' if rc==0 else 'TECHNICAL_NO_RESULT',
+            'exit_code':rc,
+            'candidate_outcome_computed':False,
+            'previous_day_event_constructed':False,
+            'raw_tick_data_downloaded':False,
+            'protected_period_accessed':False,
+            'mt4_executed':False,
+          }
+          (root/'evidence/diagnostic_result.json').write_text(json.dumps(payload,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+          exit 0
+      - name: Upload diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp034-baseline-diagnostic-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.identity.outputs.root }}/evidence
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
