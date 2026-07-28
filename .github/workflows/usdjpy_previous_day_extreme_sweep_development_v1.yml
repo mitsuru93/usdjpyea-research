@@ -108,6 +108,7 @@ jobs:
         run: |
           set -euo pipefail
           tag='usdjpy-hyp034-previous-day-extreme-sweep-development-v1'
+          receipt_path='configs/research/usdjpy_hyp034_release_receipt_v1.json'
           mkdir -p "$ROOT/release_readback"
           gh release download "$tag" --repo "$GITHUB_REPOSITORY" --dir "$ROOT/release_readback" --pattern 'usdjpy-hyp034-development-v1-r1.zip'
           cmp "$ROOT/usdjpy-hyp034-development-v1-r1.zip" "$ROOT/release_readback/usdjpy-hyp034-development-v1-r1.zip"
@@ -141,7 +142,8 @@ jobs:
           }
           EOF
           content=$(base64 -w0 "$ROOT/release_receipt.json")
-          gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/configs/research/usdjpy_hyp034_release_receipt_v1.json" -f message='evidence: record HYP-034 Release readback' -f content="$content" -f branch=main >/dev/null
+          current_sha=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${receipt_path}?ref=main" --jq '.sha')
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${receipt_path}" -f message='evidence: record HYP-034 Release readback' -f content="$content" -f sha="$current_sha" -f branch=main >/dev/null
       - name: Publish immutable receipt Issue on main
         if: github.event_name == 'push' && github.ref_name == 'main'
         shell: bash
