@@ -7,7 +7,9 @@ on:
       - '.github/workflows/usdjpy_previous_day_extreme_sweep_source_probe_v1.yml'
       - 'configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json'
       - 'configs/research/usdjpy_previous_day_extreme_sweep_source_manifest_v1.json'
+      - 'configs/research/usdjpy_hyp034_source_probe_technical_no_result_v1.json'
       - 'tools/probe_usdjpy_previous_day_extreme_sweep_sources_v1.py'
+      - 'tools/vendor/fx2_infra_core_f897b250_v1.py'
   workflow_dispatch:
 
 permissions:
@@ -28,14 +30,14 @@ jobs:
           set -euo pipefail
           root="${RUNNER_TEMP}/h34p"
           rm -rf "$root"
-          mkdir -p "$root/src" "$root/core/tools/research_infra" "$root/raw2023" "$root/raw2024" "$root/evidence"
+          mkdir -p "$root/src" "$root/infra" "$root/raw2023" "$root/raw2024" "$root/evidence"
           echo "root=$root" >> "$GITHUB_OUTPUT"
           sha='${{ github.event.pull_request.head.sha || github.sha }}'
           test "${#sha}" = 40
           echo "research_sha=$sha" >> "$GITHUB_OUTPUT"
           printf '%s\n' "$sha" > "$root/evidence/research_head_sha.txt"
           printf '%s\n' 'f897b250b808207d960417b2306935dcb0655acf' > "$root/evidence/core_infrastructure_sha.txt"
-      - name: Exact-SHA selective fetch of study and infrastructure files
+      - name: Exact-SHA selective fetch of study and frozen Core snapshot
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -46,22 +48,30 @@ jobs:
           fetch_file() {
             repo="$1"; sha="$2"; path="$3"; out="$4"
             mkdir -p "$(dirname "$out")"
-            gh api -H 'Accept: application/vnd.github+json' "repos/${repo}/contents/${path}?ref=${sha}" --jq '.content' | tr -d '\n' | base64 -d > "$out"
+            payload=$(gh api -H 'Accept: application/vnd.github+json' "repos/${repo}/contents/${path}?ref=${sha}")
+            printf '%s' "$payload" | jq -er '.content' | tr -d '\n' | base64 -d > "$out"
+            printf '%s' "$payload" | jq -er '.sha' > "${out}.blob_sha"
             test -s "$out"
           }
           fetch_file "$GITHUB_REPOSITORY" "$RESEARCH_SHA" 'configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json' "$ROOT/src/prereg.json"
           fetch_file "$GITHUB_REPOSITORY" "$RESEARCH_SHA" 'configs/research/usdjpy_previous_day_extreme_sweep_source_manifest_v1.json' "$ROOT/src/source_manifest.json"
+          fetch_file "$GITHUB_REPOSITORY" "$RESEARCH_SHA" 'configs/research/usdjpy_hyp034_source_probe_technical_no_result_v1.json' "$ROOT/src/prior_technical_no_result.json"
           fetch_file "$GITHUB_REPOSITORY" "$RESEARCH_SHA" 'tools/probe_usdjpy_previous_day_extreme_sweep_sources_v1.py' "$ROOT/src/probe.py"
-          fetch_file 'mitsuru93/usdjpyea-core' 'f897b250b808207d960417b2306935dcb0655acf' 'tools/research_infra/fx2_infra.py' "$ROOT/core/tools/research_infra/fx2_infra.py"
-          python -m py_compile "$ROOT/src/probe.py" "$ROOT/core/tools/research_infra/fx2_infra.py"
-          sha256sum "$ROOT/src/"* "$ROOT/core/tools/research_infra/fx2_infra.py" > "$ROOT/evidence/selective_fetch_sha256sums.txt"
+          fetch_file "$GITHUB_REPOSITORY" "$RESEARCH_SHA" 'tools/vendor/fx2_infra_core_f897b250_v1.py' "$ROOT/infra/fx2_infra.py"
+          python -m py_compile "$ROOT/src/probe.py" "$ROOT/infra/fx2_infra.py"
+          grep -q 'ORIGIN_CORE_SHA = "f897b250b808207d960417b2306935dcb0655acf"' "$ROOT/infra/fx2_infra.py"
+          grep -q 'ORIGIN_BLOB_SHA = "da4a05f3fb509a5944fda57d3982206eba894475"' "$ROOT/infra/fx2_infra.py"
+          sha256sum "$ROOT/src/"* "$ROOT/infra/fx2_infra.py" > "$ROOT/evidence/selective_fetch_sha256sums.txt"
+          wc -c "$ROOT/src/"* "$ROOT/infra/fx2_infra.py" > "$ROOT/evidence/selective_fetch_byte_counts.txt"
+          cp "$ROOT/src/"*.blob_sha "$ROOT/evidence/"
+          cp "$ROOT/infra/fx2_infra.py.blob_sha" "$ROOT/evidence/infra_blob_sha.txt"
       - name: Runner capability probe
         shell: bash
         env:
           ROOT: ${{ steps.identity.outputs.root }}
         run: |
           set -euo pipefail
-          python "$ROOT/core/tools/research_infra/fx2_infra.py" probe --json "$ROOT/evidence/runner_capability.json" --markdown "$ROOT/evidence/runner_capability.md"
+          python "$ROOT/infra/fx2_infra.py" probe --json "$ROOT/evidence/runner_capability.json" --markdown "$ROOT/evidence/runner_capability.md"
           python -V | tee "$ROOT/evidence/python_version.txt"
           gh --version | head -1 | tee "$ROOT/evidence/gh_version.txt"
           tar --version | head -1 | tee "$ROOT/evidence/tar_version.txt"
@@ -76,6 +86,7 @@ jobs:
           root=os.environ['ROOT']
           p=json.load(open(root+'/src/prereg.json'))
           m=json.load(open(root+'/src/source_manifest.json'))
+          t=json.load(open(root+'/src/prior_technical_no_result.json'))
           assert p['status']=='FROZEN_BEFORE_DEVELOPMENT_OUTCOMES'
           assert p['hypothesis_id']=='USDJPY-HYP-034'
           assert p['family_id']=='S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION'
@@ -85,6 +96,8 @@ jobs:
           assert m['whole_repository_checkout_required'] is False
           assert m['exact_sha_selective_fetch_required'] is True
           assert set(m['forbidden_assets'])=={'2020','2021','2022','2025'}
+          assert t['workflow_run_id']==30371880986 and t['scientific_result'] is False
+          assert t['retry_eligibility'] is True and t['scientific_contract_changed'] is False
           PY
       - name: Download and verify one development month per year
         shell: bash
@@ -113,8 +126,8 @@ jobs:
           ROOT: ${{ steps.identity.outputs.root }}
         run: |
           set -euo pipefail
-          python "$ROOT/core/tools/research_infra/fx2_infra.py" archive --input "$ROOT/evidence" --output "$ROOT/hyp034-source-probe.zip" --source-sha '${{ steps.identity.outputs.research_sha }}' --run-id "$GITHUB_RUN_ID" --classification non-scientific
-          python "$ROOT/core/tools/research_infra/fx2_infra.py" readback --archive "$ROOT/hyp034-source-probe.zip" | tee "$ROOT/evidence/archive_readback.log"
+          python "$ROOT/infra/fx2_infra.py" archive --input "$ROOT/evidence" --output "$ROOT/hyp034-source-probe.zip" --source-sha '${{ steps.identity.outputs.research_sha }}' --run-id "$GITHUB_RUN_ID" --classification non-scientific | tee "$ROOT/evidence/archive_build_receipt.json"
+          python "$ROOT/infra/fx2_infra.py" readback --archive "$ROOT/hyp034-source-probe.zip" | tee "$ROOT/evidence/archive_readback.json"
           sha256sum "$ROOT/hyp034-source-probe.zip" | tee "$ROOT/evidence/archive_sha256.txt"
       - name: Upload technical evidence
         if: always()
