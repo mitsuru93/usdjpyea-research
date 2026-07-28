@@ -60,14 +60,10 @@ jobs:
           set -euo pipefail
           for year in 2023 2024; do
             mkdir -p "inputs/raw/$year"
-            gh release download "usdjpy-${year}-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" --dir "inputs/raw/$year" \
-              --pattern "usdjpy-${year}-??-raw-ticks-v1.tar.gz" \
-              --pattern "usdjpy-${year}-??-raw-ticks-v1.manifest.json" \
-              --pattern "usdjpy-${year}-??-raw-ticks-v1.SHA256SUMS" \
-              --pattern "usdjpy-${year}-raw-ticks-v1.annual-manifest.json" \
-              --pattern 'SHA256SUMS'
+            gh release download "usdjpy-${year}-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" --dir "inputs/raw/$year"
             (cd "inputs/raw/$year" && sha256sum -c SHA256SUMS)
             test "$(find "inputs/raw/$year" -name "usdjpy-${year}-??-raw-ticks-v1.tar.gz" | wc -l)" -eq 12
+            test "$(find "inputs/raw/$year" -name "usdjpy-${year}-??-raw-ticks-v1.manifest.json" | wc -l)" -eq 12
           done
       - name: Download exact B02 F05 authorities
         env:
@@ -89,7 +85,7 @@ jobs:
             --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
             --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv \
             --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
-            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_validation_v1.csv \
             --out-dir materialized
           printf '%s  %s\n' '98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca' materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv | sha256sum -c -
       - name: Run source-native development study
