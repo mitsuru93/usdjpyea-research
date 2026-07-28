@@ -7,25 +7,18 @@ on:
       - '.github/workflows/hyp031_cancel_authority_for_development_v1.yml'
 
 permissions:
-  actions: write
   contents: read
 
 jobs:
-  cancel-authority-runs:
+  release-year-concurrency:
+    strategy:
+      fail-fast: false
+      matrix:
+        year: [2019, 2020, 2021, 2022]
+    concurrency:
+      group: usdjpy-${{ matrix.year }}-raw-ticks-max-parallel-v1
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel active HYP031 authority runs to free development capacity
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          for run_id in 30314888829 30315092496; do
-            status=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq '.status' 2>/dev/null || echo missing)
-            if [ "$status" = queued ] || [ "$status" = in_progress ]; then
-              gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/cancel"
-              echo "cancel requested: ${run_id}"
-            else
-              echo "not active: ${run_id} status=${status}"
-            fi
-          done
+      - name: Release annual authority runner capacity
+        run: echo "released USDJPY ${{ matrix.year }} authority concurrency for HYP-031 development"
