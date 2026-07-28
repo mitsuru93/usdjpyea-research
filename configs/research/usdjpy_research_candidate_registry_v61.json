@@ -1,0 +1,36 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v61",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v60.json",
+  "status": "USDJPY_HYP034_PREREGISTERED_SOURCE_AUTHORITY_PREFLIGHT",
+  "active_family": "S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION",
+  "active_hypothesis": "USDJPY-HYP-034",
+  "parallel_reserved_hypothesis": "USDJPY-HYP-033",
+  "current_candidate": null,
+  "candidate_ids": [],
+  "candidate_catalog_status": "LOCKED_UNTIL_MECHANISM_ATLAS_AND_EX_ANTE_DISCRIMINATOR",
+  "preregistration": "configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json",
+  "source_manifest": "configs/research/usdjpy_previous_day_extreme_sweep_source_manifest_v1.json",
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v35.json",
+  "development_periods_authorized": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "run_authorization": {
+    "technical_source_probe": true,
+    "source_native_2023_2024_mechanism_atlas": false,
+    "candidate_outcome_evaluation": false,
+    "2020_2022_historical_validation": false,
+    "Core_implementation": false,
+    "MT4_candidate": false,
+    "2025H1": false,
+    "2025H2": false,
+    "production": false,
+    "live": false
+  },
+  "boundaries": {
+    "HYP030_modified": false,
+    "HYP031_modified": false,
+    "HYP032_combined": false,
+    "parallel_study_shared_objects": false,
+    "protected_period_accessed": false,
+    "candidate_outcome_computed": false
+  },
+  "next_action": "Run the exact-SHA technical source probe. If and only if source columns, completeness and currency contracts resolve, commit the complete evaluator and authorize one 2023-2024 development execution."
+}
