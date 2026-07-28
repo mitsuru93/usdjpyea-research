@@ -1,21 +1,28 @@
 {
   "schema_version": "usdjpy_research_candidate_registry_v61",
   "supersedes": "configs/research/usdjpy_research_candidate_registry_v60.json",
-  "status": "USDJPY_HYP034_PREREGISTERED_SOURCE_AUTHORITY_PREFLIGHT",
-  "active_family": "S_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION",
-  "active_hypothesis": "USDJPY-HYP-034",
-  "parallel_reserved_hypothesis": "USDJPY-HYP-033",
+  "status": "USDJPY_HYP033_CLOSED_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+  "active_family": null,
+  "active_hypothesis": null,
   "current_candidate": null,
   "candidate_ids": [],
-  "candidate_catalog_status": "LOCKED_UNTIL_MECHANISM_ATLAS_AND_EX_ANTE_DISCRIMINATOR",
-  "preregistration": "configs/research/usdjpy_previous_day_extreme_sweep_rejection_prereg_v1.json",
-  "source_manifest": "configs/research/usdjpy_previous_day_extreme_sweep_source_manifest_v1.json",
-  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v35.json",
-  "development_periods_authorized": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "development_decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+  "scientific_result": true,
+  "source_run_id": 30375772490,
+  "source_artifact_id": 8695153813,
+  "source_artifact_digest": "sha256:941d0da79889bd6e4357cc6cfb769c557f05f22c5b145c5423a0a95c3955b7c6",
+  "result": "configs/research/usdjpy_hyp033_final_result_v1.json",
+  "report": "docs/research/USDJPY_HYP033_ASIAN_LOW_SWEEP_REBOUND_MECHANISM_RESULT_V1.md",
+  "period_access_receipt": "configs/research/usdjpy_hyp033_period_access_receipt_v1.json",
+  "output_manifest": "configs/research/usdjpy_hyp033_output_manifest_v1.json",
+  "release_receipt": "configs/research/usdjpy_hyp033_release_receipt_v1.json",
+  "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "closed_boundaries": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE_UNCHANGED",
+    "USDJPY-HYP-031": "NO_PORTABLE_REGIME_RULE_UNCHANGED",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING_UNCHANGED"
+  },
   "run_authorization": {
-    "technical_source_probe": true,
-    "source_native_2023_2024_mechanism_atlas": false,
-    "candidate_outcome_evaluation": false,
     "2020_2022_historical_validation": false,
     "Core_implementation": false,
     "MT4_candidate": false,
@@ -24,13 +31,8 @@
     "production": false,
     "live": false
   },
-  "boundaries": {
-    "HYP030_modified": false,
-    "HYP031_modified": false,
-    "HYP032_combined": false,
-    "parallel_study_shared_objects": false,
-    "protected_period_accessed": false,
-    "candidate_outcome_computed": false
-  },
-  "next_action": "Run the exact-SHA technical source probe. If and only if source columns, completeness and currency contracts resolve, commit the complete evaluator and authorize one 2023-2024 development execution."
+  "candidate_rule_changed": false,
+  "scientific_gate_definition_changed": false,
+  "no_retuning": true,
+  "next_action": "Scientific stop. Do not rescue Long-only, retune reclaim speed, open protected periods, or combine HYP-030/031/032. Any successor must be a distinct mechanism hypothesis."
 }
