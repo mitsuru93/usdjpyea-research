@@ -1,0 +1,8 @@
+{
+  "schema_version": "usdjpy_hyp032_input_download_diagnostic_v1",
+  "hypothesis_id": "USDJPY-HYP-032",
+  "trigger_nonce": "20260728T230000+0900",
+  "read_only": true,
+  "candidate_outcomes_accessed": false,
+  "2025_accessed": false
+}
