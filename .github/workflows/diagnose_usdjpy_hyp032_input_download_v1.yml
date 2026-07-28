@@ -1,0 +1,65 @@
+name: Diagnose USDJPY HYP-032 Input Download v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_hyp032_input_download_diagnostic_v1.json'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Diagnose signed download without candidate access
+        id: diag
+        run: |
+          set -u
+          marker='configs/run_markers/usdjpy_hyp032_historical_input_acquisition_v1.json'
+          url=$(jq -r '.signed_url' "$marker")
+          expected=$(jq -r '.expected_gzip_sha256' "$marker")
+          set +e
+          http=$(curl --silent --show-error --location --retry 1 --write-out '%{http_code}' --output /tmp/input.gz "$url" 2>/tmp/curl.err)
+          code=$?
+          set -e
+          bytes=0; actual='MISSING'; magic='MISSING'; gzip_ok=false
+          if test -f /tmp/input.gz; then
+            bytes=$(stat -c '%s' /tmp/input.gz)
+            actual=$(sha256sum /tmp/input.gz | cut -d' ' -f1)
+            magic=$(xxd -p -l 4 /tmp/input.gz)
+            if gzip -t /tmp/input.gz 2>/tmp/gzip.err; then gzip_ok=true; fi
+          fi
+          cat > diagnostic.json <<EOF
+          {
+            "hypothesis_id":"USDJPY-HYP-032",
+            "curl_exit_code":${code},
+            "http_status":"${http}",
+            "downloaded_bytes":${bytes},
+            "downloaded_sha256":"${actual}",
+            "expected_sha256":"${expected}",
+            "first_four_bytes_hex":"${magic}",
+            "gzip_test_pass":${gzip_ok},
+            "candidate_outcomes_accessed":false,
+            "2025_accessed":false
+          }
+          EOF
+          cat /tmp/curl.err || true
+          cat /tmp/gzip.err || true
+      - name: Publish diagnostic receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > receipt.md <<EOF
+          hypothesis_id: USDJPY-HYP-032
+          stage: signed input download diagnostic
+          read_only: true
+
+          \`\`\`json
+          $(cat diagnostic.json)
+          \`\`\`
+          EOF
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-032 input download diagnostic] ${GITHUB_RUN_ID}" --body-file receipt.md
