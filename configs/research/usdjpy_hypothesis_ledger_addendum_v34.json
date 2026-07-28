@@ -1,0 +1,35 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v34",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v33.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v33.json",
+  "entries": [],
+  "hypothesis_status_updates": [
+    {
+      "hypothesis_id": "USDJPY-HYP-032",
+      "family_id": "R_SHORT_REALIZED_LOSS_PERSISTENCE",
+      "candidate_id": "C1_SHORT_SHARED_SESSION_LOSS_CAP_2",
+      "prior_status": "HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING",
+      "status": "HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING_NUMERICALLY_NORMALIZED",
+      "decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+      "scientific_result": true,
+      "source_run_id": 30364472840,
+      "source_result": "configs/research/usdjpy_hyp032_historical_validation_result_v2.json",
+      "canonical_result": "configs/research/usdjpy_hyp032_historical_validation_result_v2_1.json",
+      "numerical_revision": "configs/research/usdjpy_hyp032_historical_validation_numerical_revision_v1.json",
+      "corrected_gate": "full_equity_dd_reduction_positive",
+      "corrected_value_jpy": 0.0,
+      "corrected_gate_pass": false,
+      "decision_changed": false,
+      "candidate_rule_changed": false,
+      "scientific_gate_definition_changed": false,
+      "retuning": false,
+      "Core_candidate_authorized": false,
+      "2025_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false
+    }
+  ]
+}
