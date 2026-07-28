@@ -1,0 +1,236 @@
+name: USDJPY HYP-032 Historical Validation Currency-Corrected v2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/evaluate_usdjpy_hyp032_historical_validation_currency_v2.py'
+      - 'configs/research/usdjpy_hyp032_historical_validation_currency_repair_prereg_v1.json'
+      - 'configs/research/usdjpy_hyp032_historical_validation_currency_invalidation_v1.json'
+      - 'configs/research/usdjpy_hyp032_historical_validation_result_v1.json'
+      - 'configs/research/usdjpy_hypothesis_ledger_addendum_v32.json'
+      - 'configs/research/usdjpy_research_candidate_registry_v58.json'
+      - 'configs/run_markers/usdjpy_hyp032_historical_validation_currency_v2.json'
+      - '.github/workflows/usdjpy_hyp032_historical_validation_currency_v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_hyp032_historical_validation_currency_v2.json'
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: usdjpy-hyp032-historical-validation-one-shot
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate invalidation and frozen currency repair without outcome access
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/evaluate_usdjpy_hyp032_historical_validation_currency_v2.py
+          jq -e '.status=="INVALIDATED_TECHNICAL_NO_RESULT" and .invalidated_run_id==30361067984 and .scientific_effect.scientific_result==false and .candidate_rule_changed==false and .scientific_gates_changed==false and .retuning==false and ."2025_accessed"==false' configs/research/usdjpy_hyp032_historical_validation_currency_invalidation_v1.json
+          jq -e '.status=="FROZEN_BEFORE_CORRECTED_OUTCOME_ACCESS" and .source_invalid_run_id==30361067984 and .candidate_rule_changed==false and .scientific_gates_changed==false and .bootstrap_changed==false and .input_changed==false and .retuning==false and ."2025_accessed"==false' configs/research/usdjpy_hyp032_historical_validation_currency_repair_prereg_v1.json
+          jq -e '.decision=="TECHNICAL_NO_RESULT_CURRENCY_CONTRACT_NOT_APPLIED" and .scientific_result==false and .valid_scientific_decision==false and .Core_candidate_implementation_authorized==false and ."2025_accessed"==false' configs/research/usdjpy_hyp032_historical_validation_result_v1.json
+          jq -e '.status=="USDJPY_HYP032_HISTORICAL_VALIDATION_TECHNICAL_NO_RESULT_CURRENCY_REPAIR_PENDING" and .run_authorization."2020_2022_currency_corrected_validation_once"==true and .run_authorization.Core_implementation==false and .run_authorization."2025H1"==false' configs/research/usdjpy_research_candidate_registry_v58.json
+          rm -rf currency_preflight
+          python tools/evaluate_usdjpy_hyp032_historical_validation_currency_v2.py \
+            --input data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz \
+            --freeze configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json \
+            --preregistration configs/research/usdjpy_hyp032_historical_validation_prereg_v1.json \
+            --currency-repair-preregistration configs/research/usdjpy_hyp032_historical_validation_currency_repair_prereg_v1.json \
+            --out-dir currency_preflight --research-sha "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" --preflight-only
+          jq -e '.status=="PASS_CURRENCY_REPAIR_PREFLIGHT_NO_CANDIDATE_OUTCOME_ACCESS" and .candidate_outcome_computed==false and .scientific_result==false and ."2025_accessed"==false' currency_preflight/preflight_result.json
+
+  historical-validation:
+    if: github.event_name == 'push' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce one-shot repair authorization and immutable input
+        run: |
+          set -euo pipefail
+          jq -e '.hypothesis_id=="USDJPY-HYP-032" and .candidate_id=="C1_SHORT_SHARED_SESSION_LOSS_CAP_2" and .authorization=="ONE_SHOT_TECHNICAL_RERUN_AFTER_CURRENCY_INVALIDATION" and .source_invalid_run_id==30361067984 and .candidate_rule_changed==false and .scientific_gates_changed==false and .retuning==false and .consumed==false and ."2025_access_authorized"==false' configs/run_markers/usdjpy_hyp032_historical_validation_currency_v2.json
+          test "$(sha256sum data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz | cut -d' ' -f1)" = 'd2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670'
+          python -m py_compile tools/evaluate_usdjpy_hyp032_historical_validation_currency_v2.py
+      - name: Execute frozen currency-corrected validation
+        run: |
+          set -euo pipefail
+          rm -rf historical_currency_v2_output
+          python tools/evaluate_usdjpy_hyp032_historical_validation_currency_v2.py \
+            --input data/usdjpy/hyp032/historical_validation_input_v1.jsonl.gz \
+            --freeze configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json \
+            --preregistration configs/research/usdjpy_hyp032_historical_validation_prereg_v1.json \
+            --currency-repair-preregistration configs/research/usdjpy_hyp032_historical_validation_currency_repair_prereg_v1.json \
+            --out-dir historical_currency_v2_output --research-sha "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID"
+          jq -e '(.decision=="PASS_HISTORICAL_VALIDATION" or .decision=="FAIL_HISTORICAL_VALIDATION_NO_RETUNING" or .decision=="TECHNICAL_NO_RESULT_CURRENCY_NORMALIZATION_UNRESOLVED") and .candidate_outcome_computed==true and ."2025_accessed"==false and .no_retuning==true' historical_currency_v2_output/historical_validation_result_v2.json
+          cat historical_currency_v2_output/human_report_v2.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Package corrected evidence
+        run: |
+          set -euo pipefail
+          cp configs/research/usdjpy_hyp032_historical_validation_prereg_v1.json historical_currency_v2_output/
+          cp configs/research/usdjpy_hyp032_historical_validation_currency_repair_prereg_v1.json historical_currency_v2_output/
+          cp configs/research/usdjpy_hyp032_historical_validation_currency_invalidation_v1.json historical_currency_v2_output/
+          cp configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json historical_currency_v2_output/
+          cp data/usdjpy/hyp032/historical_validation_input_receipt_v1.json historical_currency_v2_output/
+          cp tools/evaluate_usdjpy_hyp032_historical_validation_currency_v2.py historical_currency_v2_output/
+          find historical_currency_v2_output -maxdepth 1 -type f ! -name PACKAGE_SHA256SUMS_V2 -print0 | sort -z | xargs -0 sha256sum > historical_currency_v2_output/PACKAGE_SHA256SUMS_V2
+          zip -q -X -0 -r "usdjpy-hyp032-historical-validation-currency-v2-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" historical_currency_v2_output
+          echo "EVIDENCE_ZIP=usdjpy-hyp032-historical-validation-currency-v2-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" >> "$GITHUB_ENV"
+      - name: Upload corrected evidence artifact
+        id: upload
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp032-historical-validation-currency-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            historical_currency_v2_output
+            usdjpy-hyp032-historical-validation-currency-v2-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0
+      - name: Canonicalize corrected decision
+        env:
+          ARTIFACT_ID_RAW: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST_RAW: ${{ steps.upload.outputs.artifact-digest }}
+          ARTIFACT_OUTCOME: ${{ steps.upload.outcome }}
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          result='historical_currency_v2_output/historical_validation_result_v2.json'
+          decision=$(jq -r '.decision' "$result")
+          scientific=$(jq -r '.scientific_result' "$result")
+          mkdir -p docs/research/artifact_archives/usdjpy_hyp032_historical_validation_currency_v2
+          cp "$result" configs/research/usdjpy_hyp032_historical_validation_result_v2.json
+          cp historical_currency_v2_output/human_report_v2.md docs/research/USDJPY_HYP032_HISTORICAL_VALIDATION_RESULT_V2.md
+          cp historical_currency_v2_output/* docs/research/artifact_archives/usdjpy_hyp032_historical_validation_currency_v2/
+          python - "$decision" "$scientific" "${ARTIFACT_ID_RAW:-UNAVAILABLE_ACTIONS_ARTIFACT_STORAGE}" "${ARTIFACT_DIGEST_RAW:-UNAVAILABLE_ACTIONS_ARTIFACT_STORAGE}" "$ARTIFACT_OUTCOME" "$GITHUB_RUN_ID" "$GITHUB_SHA" <<'PY'
+          import json,sys
+          from pathlib import Path
+          decision,scientific_raw,artifact_id,artifact_digest,artifact_outcome,run_id,run_sha=sys.argv[1:]
+          scientific=scientific_raw.lower()=='true'
+          result=json.load(open('historical_currency_v2_output/historical_validation_result_v2.json'))
+          passed=scientific and decision=='PASS_HISTORICAL_VALIDATION'
+          failed=scientific and decision=='FAIL_HISTORICAL_VALIDATION_NO_RETUNING'
+          if passed:
+              status='HISTORICAL_VALIDATION_PASS_CORE_IMPLEMENTATION_AUTHORIZED'
+              registry_status='USDJPY_HYP032_HISTORICAL_VALIDATION_PASS_CORE_IMPLEMENTATION_AUTHORIZED'
+              next_action='Implement frozen C1 in Core and prove Research/Core/MT4 chronology parity.'
+          elif failed:
+              status='HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING'
+              registry_status='USDJPY_HYP032_HISTORICAL_VALIDATION_FAILED_CLOSED_NO_RETUNING'
+              next_action='Scientific stop. Do not retune C1 or open Core/2025.'
+          else:
+              status='HISTORICAL_VALIDATION_CURRENCY_REPAIR_TECHNICAL_NO_RESULT'
+              registry_status='USDJPY_HYP032_HISTORICAL_VALIDATION_CURRENCY_REPAIR_TECHNICAL_NO_RESULT'
+              next_action='Resolve only the recorded currency-normalization technical failures; do not retune or access 2025.'
+          ledger={
+            'schema_version':'usdjpy_hypothesis_ledger_addendum_v33','status':'ACTIVE_APPEND_ONLY_DELTA','entry_mode':'DELTA_INHERIT_SUPERSEDES',
+            'base_ledger':'configs/research/usdjpy_hypothesis_ledger_v1.json','supersedes':'configs/research/usdjpy_hypothesis_ledger_addendum_v32.json','inherited_addendum':'configs/research/usdjpy_hypothesis_ledger_addendum_v32.json','entries':[],
+            'hypothesis_status_updates':[{
+              'hypothesis_id':'USDJPY-HYP-032','family_id':'R_SHORT_REALIZED_LOSS_PERSISTENCE','candidate_id':'C1_SHORT_SHARED_SESSION_LOSS_CAP_2',
+              'prior_status':'HISTORICAL_VALIDATION_TECHNICAL_NO_RESULT_CURRENCY_REPAIR_PENDING','status':status,'decision':decision,'scientific_result':scientific,
+              'historical_run_id':int(run_id),'historical_run_sha':run_sha,'invalidates_run_id':30361067984,
+              'input_gzip_sha256':'d2b9a2845a1793d614fb4be193963c29ee2f958733c49d7d1b656184c7d18670',
+              'failed_gates':result['failed_gates'],'technical_failures':result['technical_failures'],'artifact_id':artifact_id,'artifact_digest':artifact_digest,'artifact_upload_outcome':artifact_outcome,
+              'candidate_rule_changed':False,'scientific_gates_changed':False,'retuning':False,'2025_accessed':False,'Core_candidate_authorized':passed,'production_authorized':False,'live_authorized':False
+            }]
+          }
+          registry={
+            'schema_version':'usdjpy_research_candidate_registry_v59','supersedes':'configs/research/usdjpy_research_candidate_registry_v58.json','status':registry_status,
+            'active_family':'R_SHORT_REALIZED_LOSS_PERSISTENCE','active_hypothesis':'USDJPY-HYP-032','current_candidate':'C1_SHORT_SHARED_SESSION_LOSS_CAP_2','candidate_ids':['C1_SHORT_SHARED_SESSION_LOSS_CAP_2'],
+            'development_decision':'PASS_DEVELOPMENT_FREEZE_C1','historical_decision':decision,'historical_scientific_result':scientific,
+            'candidate_freeze':'configs/research/usdjpy_f05_short_loss_persistence_candidate_freeze_v1.json','historical_result':'configs/research/usdjpy_hyp032_historical_validation_result_v2.json',
+            'currency_invalidation':'configs/research/usdjpy_hyp032_historical_validation_currency_invalidation_v1.json','invalidated_historical_run_id':30361067984,
+            'HYP027_boundary':{'decision':'FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT','closed':True,'modified':False},
+            'run_authorization':{'2020_2022_currency_corrected_validation_once':False,'Core_implementation':passed,'MT4_candidate':False,'2025H1':False,'2025H2':False,'production':False,'live':False},
+            'candidate_rule_changed':False,'scientific_gates_changed':False,'no_retuning':True,'next_action':next_action
+          }
+          marker=json.load(open('configs/run_markers/usdjpy_hyp032_historical_validation_currency_v2.json'))
+          marker.update({'consumed':True,'consumed_run_id':int(run_id),'consumed_run_sha':run_sha,'decision':decision,'scientific_result':scientific,'Core_candidate_implementation_authorized':passed,'2025_access_authorized':False})
+          invalidation=json.load(open('configs/research/usdjpy_hyp032_historical_validation_currency_invalidation_v1.json'))
+          invalidation.update({'replacement_run_id':int(run_id),'replacement_run_sha':run_sha,'replacement_decision':decision,'replacement_scientific_result':scientific,'replacement_result':'configs/research/usdjpy_hyp032_historical_validation_result_v2.json'})
+          receipt={
+            'schema_version':'usdjpy_hyp032_historical_validation_currency_v2_receipt','hypothesis_id':'USDJPY-HYP-032','run_id':int(run_id),'run_sha':run_sha,'decision':decision,'scientific_result':scientific,
+            'invalidated_run_id':30361067984,'artifact_id':artifact_id,'artifact_digest':artifact_digest,'artifact_upload_outcome':artifact_outcome,'2025_accessed':False,'production_authorized':False,'live_authorized':False
+          }
+          for path,obj in [
+            ('configs/research/usdjpy_hypothesis_ledger_addendum_v33.json',ledger),
+            ('configs/research/usdjpy_research_candidate_registry_v59.json',registry),
+            ('configs/run_markers/usdjpy_hyp032_historical_validation_currency_v2.json',marker),
+            ('configs/research/usdjpy_hyp032_historical_validation_currency_invalidation_v1.json',invalidation),
+            ('configs/research/usdjpy_hyp032_historical_validation_currency_v2_receipt.json',receipt),
+          ]:
+              Path(path).write_text(json.dumps(obj,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add configs/research/usdjpy_hyp032_historical_validation_result_v2.json configs/research/usdjpy_hypothesis_ledger_addendum_v33.json configs/research/usdjpy_research_candidate_registry_v59.json configs/research/usdjpy_hyp032_historical_validation_currency_invalidation_v1.json configs/research/usdjpy_hyp032_historical_validation_currency_v2_receipt.json configs/run_markers/usdjpy_hyp032_historical_validation_currency_v2.json docs/research/USDJPY_HYP032_HISTORICAL_VALIDATION_RESULT_V2.md docs/research/artifact_archives/usdjpy_hyp032_historical_validation_currency_v2
+          git commit -m "research: canonicalize HYP-032 currency-corrected ${decision}"
+          git push origin HEAD:main
+          echo "CANONICAL_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "DECISION=$decision" >> "$GITHUB_ENV"
+          echo "SCIENTIFIC_RESULT=$scientific" >> "$GITHUB_ENV"
+          echo "ARTIFACT_ID=${ARTIFACT_ID_RAW:-UNAVAILABLE_ACTIONS_ARTIFACT_STORAGE}" >> "$GITHUB_ENV"
+          echo "ARTIFACT_DIGEST=${ARTIFACT_DIGEST_RAW:-UNAVAILABLE_ACTIONS_ARTIFACT_STORAGE}" >> "$GITHUB_ENV"
+      - name: Publish immutable corrected Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag='usdjpy-hyp032-historical-validation-currency-v2'
+          zipsha=$(sha256sum "$EVIDENCE_ZIP" | cut -d' ' -f1)
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Release already exists; preserving immutability.'
+          else
+            gh release create "$tag" "$EVIDENCE_ZIP" --repo "$GITHUB_REPOSITORY" --target "$CANONICAL_SHA" --title 'USDJPY-HYP-032 Historical Validation Currency-Corrected v2' --notes "Decision: $DECISION. Scientific result: $SCIENTIFIC_RESULT. Invalidates Run 30361067984. Evidence ZIP SHA256: $zipsha. 2025 not accessed."
+          fi
+      - name: Publish corrected validation receipt Issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          result='historical_currency_v2_output/historical_validation_result_v2.json'
+          net=$(jq -r '.economics.net_improvement_jpy' "$result")
+          rdd=$(jq -r '.economics.realized_dd_reduction_jpy' "$result")
+          edd=$(jq -r '.economics.full_equity_dd_reduction_jpy' "$result")
+          technical=$(jq -c '.technical_failures' "$result")
+          failed=$(jq -c '.failed_gates' "$result")
+          body=$(cat <<EOF
+          hypothesis_id: USDJPY-HYP-032
+          stage: historical validation currency-corrected v2
+          run_id: $GITHUB_RUN_ID
+          run_sha: $GITHUB_SHA
+          canonical_sha: $CANONICAL_SHA
+          invalidated_run_id: 30361067984
+          decision: $DECISION
+          scientific_result: $SCIENTIFIC_RESULT
+          net_improvement_jpy: $net
+          realized_dd_reduction_jpy: $rdd
+          full_equity_dd_reduction_jpy: $edd
+          technical_failures: $technical
+          failed_gates: $failed
+          artifact_id: $ARTIFACT_ID
+          artifact_digest: $ARTIFACT_DIGEST
+          release: usdjpy-hyp032-historical-validation-currency-v2
+          2025_accessed: false
+          production_authorized: false
+          live_authorized: false
+          EOF
+          )
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-032 currency-corrected historical receipt] $DECISION" --body "$body"
