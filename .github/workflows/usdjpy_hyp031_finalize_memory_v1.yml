@@ -1,0 +1,261 @@
+name: USDJPY HYP031 Finalize Memory v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp031_finalize_memory_v1.yml'
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: hyp031-finalize-memory-v1
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Finalize canonical memory and technical receipts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from __future__ import annotations
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path('.')
+          cfg = root / 'configs/research'
+          docs = root / 'docs/research'
+
+          def load(path: Path):
+              return json.loads(path.read_text(encoding='utf-8'))
+
+          def dump(path: Path, obj):
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_text(json.dumps(obj, indent=2, sort_keys=True, ensure_ascii=False) + '\n', encoding='utf-8')
+
+          def sha(path: Path):
+              h = hashlib.sha256()
+              with path.open('rb') as fh:
+                  for chunk in iter(lambda: fh.read(1024 * 1024), b''):
+                      h.update(chunk)
+              return h.hexdigest()
+
+          result_path = cfg / 'usdjpy_asian_range_sweep_regime_development_result_v1.json'
+          result = load(result_path)
+          assert result['hypothesis_id'] == 'USDJPY-HYP-031'
+          assert result['decision_class'] == 'NO_PORTABLE_REGIME_RULE'
+          assert result['selected_candidate_id'] is None
+          assert result['2025_accessed'] is False
+          assert result['pre2023_strategy_outcomes_accessed'] is False
+          assert result['authorization'] == {'2025': False, 'Core': False, 'MT4': False, 'backward_validation': False}
+
+          repair = {
+              'schema_version': 'usdjpy_hyp031_technical_repair_receipt_v1',
+              'hypothesis_id': 'USDJPY-HYP-031',
+              'failed_run_id': 30316460286,
+              'failed_job_id': 90142935760,
+              'failed_head_sha': 'ed477f3edcc4aa36bc8d7a5388aa60e2e73cf4b0',
+              'classification': 'TECHNICAL_PARTIAL_RESULT_EXPOSED',
+              'failure_step': 'Run source-native development study',
+              'failure_file': '.github/workflows/usdjpy_asian_range_sweep_regime_development_v1.yml',
+              'failure_line_at_failed_sha': 107,
+              'failure_command': 'jq -e postcondition on regime_output/final_decision.json',
+              'failure_condition': 'audits.chronology_unresolved was 4 while the workflow wrapper asserted 0; jq returned false and the shell step exited nonzero',
+              'evaluator_started': True,
+              'final_decision_created': True,
+              'partial_ledgers_created': True,
+              'outcome_exposed': True,
+              'observed_decision': 'NO_PORTABLE_REGIME_RULE',
+              'observed_selected_candidate_id': None,
+              'failed_run_receipt_issue': 348,
+              'repair_commit': '2ce710467fb44efbeb904064736c76ad36b01efb',
+              'repair_run_id': 30317593695,
+              'repair_run_artifact_id': 8672872755,
+              'repair_run_artifact_digest': 'sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee',
+              'evaluator_sha256': '652c55d408339cf6609896071fdddcb7c50241a874e163a4a6aede1731b6fc2c',
+              'repair_scope': [
+                  'move stdout log finalization outside the evaluator output directory until evaluation completes',
+                  'regenerate PACKAGE_SHA256SUMS after run.log finalization',
+                  'replace the wrapper scientific-pass assertion with schema and firewall invariants',
+                  'canonicalize the completed artifact without re-executing the scientific evaluator'
+              ],
+              'scientific_definition_changed': False,
+              'candidate_catalog_changed': False,
+              'regime_formula_changed': False,
+              'threshold_or_gate_changed': False,
+              'population_or_signal_definition_changed': False,
+              'period_role_changed': False,
+              'result_affecting_repair': False,
+              'pre2023_strategy_outcomes_accessed': False,
+              '2025_accessed': False,
+              'Core_modified': False,
+              'MT4_accessed': False
+          }
+          repair_path = cfg / 'usdjpy_asian_range_sweep_regime_technical_repair_receipt_v1.json'
+          dump(repair_path, repair)
+
+          postmortem_path = docs / 'USDJPY_HYP031_TECHNICAL_FAILURE_POSTMORTEM_V1.md'
+          postmortem_path.write_text('''# USDJPY-HYP-031 Run 30316460286 Technical Failure Postmortem
+
+## Classification
+
+`TECHNICAL_PARTIAL_RESULT_EXPOSED`
+
+The evaluator completed the source-native 2023–2024 study, created `final_decision.json`, candidate metrics and partial ledgers, and exposed `NO_PORTABLE_REGIME_RULE` in receipt Issue #348 before the workflow stopped. The run is not a scientific no-result stop.
+
+## Exact failure
+
+At failed head `ed477f3edcc4aa36bc8d7a5388aa60e2e73cf4b0`, line 107 of `.github/workflows/usdjpy_asian_range_sweep_regime_development_v1.yml` ran a wrapper `jq -e` postcondition requiring `audits.chronology_unresolved == 0`. The completed result recorded `4`, so the predicate returned false and the shell step exited nonzero. Evidence packaging and artifact upload were skipped. The evaluator itself did not crash.
+
+## Result-preserving repair
+
+Commit `2ce710467fb44efbeb904064736c76ad36b01efb` moved log finalization outside the output tree until evaluation completed, regenerated package checksums, and limited workflow postconditions to schema/firewall invariants. The evaluator SHA-256 remained `652c55d408339cf6609896071fdddcb7c50241a874e163a4a6aede1731b6fc2c`. Candidate definitions, source contract, regime formulas, thresholds, gates and period roles were unchanged.
+
+Run `30317593695` completed with artifact `8672872755`, digest `sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee`, and receipt Issue #350. No pre-2023 strategy outcome, Core/MT4 or 2025 evidence was opened.
+''', encoding='utf-8')
+
+          release_path = cfg / 'usdjpy_asian_range_sweep_regime_release_receipt_v1.json'
+          release = load(release_path)
+          release.update({
+              'canonical_commit': 'c512f1904f25ca194bcea50674dc90ed99662d10',
+              'canonical_receipt_issue': 351,
+              'release_readback': 'PASS_RELEASE_CREATED_ASSET_SHA256_RECORDED',
+              'candidate_freeze_created': False,
+              'backward_validation_authorized': False,
+              'Core_authorized': False,
+              'MT4_authorized': False,
+              'production_authorized': False,
+              'live_orders_authorized': False
+          })
+          dump(release_path, release)
+
+          memory_path = cfg / 'usdjpy_research_memory_manifest_v1.json'
+          memory = load(memory_path)
+          pointers = memory['canonical_pointers']
+          pointers['current_candidate_registry'] = 'configs/research/usdjpy_research_candidate_registry_v53.json'
+          pointers['hypothesis_ledger_addendum'] = 'configs/research/usdjpy_hypothesis_ledger_addendum_v27.json'
+          pointers.update({
+              'hyp031_preregistration': 'configs/research/usdjpy_asian_range_sweep_directional_regime_prereg_v1.json',
+              'hyp031_candidate_registry': 'configs/research/usdjpy_asian_range_sweep_regime_candidate_registry_v1.json',
+              'hyp031_result': 'configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json',
+              'hyp031_result_report': 'docs/research/USDJPY_ASIAN_RANGE_SWEEP_DIRECTIONAL_REGIME_PORTABILITY_RESULT_V1.md',
+              'hyp031_period_access_receipt': 'configs/research/usdjpy_asian_range_sweep_regime_period_access_receipt_v1.json',
+              'hyp031_pre2023_authority_inventory': 'configs/research/usdjpy_asian_range_sweep_regime_pre2023_authority_inventory_v1.json',
+              'hyp031_technical_repair_receipt': 'configs/research/usdjpy_asian_range_sweep_regime_technical_repair_receipt_v1.json',
+              'hyp031_failure_postmortem': 'docs/research/USDJPY_HYP031_TECHNICAL_FAILURE_POSTMORTEM_V1.md',
+              'hyp031_release_receipt': 'configs/research/usdjpy_asian_range_sweep_regime_release_receipt_v1.json',
+              'hyp031_output_manifest': 'configs/research/usdjpy_asian_range_sweep_regime_output_manifest_v1.json'
+          })
+          registry = load(cfg / 'usdjpy_research_candidate_registry_v53.json')
+          snapshot = memory['current_state_snapshot']
+          snapshot['registry_status'] = registry['status']
+          snapshot['next_action'] = registry['next_action']
+          memory.setdefault('parallel_track_state', {})['USDJPY-HYP-031'] = {
+              'family': 'S_ASIAN_RANGE_SWEEP_REGIME_ROUTING',
+              'candidate': None,
+              'tested_candidates': ['R1_H4_SYMMETRIC_TRANSITION_BLOCK', 'R2_D1_SYMMETRIC_TRANSITION_BLOCK'],
+              'status': 'COMPLETE_NO_PORTABLE_REGIME_RULE',
+              'decision': 'NO_PORTABLE_REGIME_RULE',
+              'development_run_id': 30317593695,
+              'artifact_id': 8672872755,
+              'pre2023_authority_complete': False,
+              'pre2023_strategy_outcomes_accessed': False,
+              'backward_validation_authorized': False,
+              'core_authorized': False,
+              'mt4_authorized': False,
+              '2025H1_accessed': False,
+              '2025H1_authorized': False,
+              '2025H2_accessed': False,
+              '2025H2_authorized': False,
+              'production_authorized': False,
+              'live_orders_authorized': False,
+              'does_not_change_HYP027_or_HYP030': True
+          }
+          order = memory['mandatory_startup_read_order']
+          for row in order:
+              if row['path'] == 'configs/research/usdjpy_research_candidate_registry_v52.json':
+                  row['path'] = 'configs/research/usdjpy_research_candidate_registry_v53.json'
+                  row['reason'] = 'global HYP-027 state plus HYP-028 through HYP-031 closures'
+              if row['path'] == 'configs/research/usdjpy_hypothesis_ledger_addendum_v26.json':
+                  row['path'] = 'configs/research/usdjpy_hypothesis_ledger_addendum_v27.json'
+                  row['reason'] = 'append-only HYP-026 through HYP-031 scientific memory'
+          existing = {row['path'] for row in order}
+          additions = [
+              ('configs/research/usdjpy_asian_range_sweep_regime_candidate_registry_v1.json', 'HYP-031 tested catalog closure'),
+              ('configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json', 'binding HYP-031 development result'),
+              ('docs/research/USDJPY_ASIAN_RANGE_SWEEP_DIRECTIONAL_REGIME_PORTABILITY_RESULT_V1.md', 'human HYP-031 report'),
+              ('configs/research/usdjpy_asian_range_sweep_regime_period_access_receipt_v1.json', 'HYP-031 period firewall closure'),
+              ('configs/research/usdjpy_asian_range_sweep_regime_pre2023_authority_inventory_v1.json', 'HYP-031 pre-2023 authority inventory without strategy outcomes'),
+              ('configs/research/usdjpy_asian_range_sweep_regime_technical_repair_receipt_v1.json', 'HYP-031 technical partial-result repair authority'),
+              ('configs/research/usdjpy_asian_range_sweep_regime_release_receipt_v1.json', 'HYP-031 immutable Release authority'),
+              ('configs/research/usdjpy_asian_range_sweep_regime_output_manifest_v1.json', 'HYP-031 atomic closure manifest')
+          ]
+          next_ordinal = max(row['ordinal'] for row in order) + 1
+          for path, reason in additions:
+              if path not in existing:
+                  order.append({'ordinal': next_ordinal, 'path': path, 'reason': reason})
+                  next_ordinal += 1
+          dump(memory_path, memory)
+
+          manifest_path = cfg / 'usdjpy_asian_range_sweep_regime_output_manifest_v1.json'
+          files = [
+              cfg / 'usdjpy_asian_range_sweep_directional_regime_prereg_v1.json',
+              cfg / 'usdjpy_asian_range_sweep_regime_candidate_registry_v1.json',
+              result_path,
+              cfg / 'usdjpy_asian_range_sweep_regime_development_freeze_v1.json',
+              cfg / 'usdjpy_asian_range_sweep_regime_period_access_receipt_v1.json',
+              cfg / 'usdjpy_asian_range_sweep_regime_pre2023_authority_inventory_v1.json',
+              repair_path,
+              release_path,
+              cfg / 'usdjpy_hypothesis_ledger_addendum_v27.json',
+              cfg / 'usdjpy_research_candidate_registry_v53.json',
+              memory_path,
+              docs / 'USDJPY_ASIAN_RANGE_SWEEP_DIRECTIONAL_REGIME_PORTABILITY_RESULT_V1.md',
+              postmortem_path
+          ]
+          archive = docs / 'artifact_archives/usdjpy_asian_range_sweep_regime_development_v1'
+          files.extend(sorted(p for p in archive.iterdir() if p.is_file()))
+          manifest = {
+              'schema_version': 'usdjpy_asian_range_sweep_regime_output_manifest_v1',
+              'hypothesis_id': 'USDJPY-HYP-031',
+              'decision_class': 'NO_PORTABLE_REGIME_RULE',
+              'scientific_run_id': 30317593695,
+              'artifact_id': 8672872755,
+              'artifact_digest': 'sha256:a59aec0841568c0036e4031631e1f009a65527a1828af4290e4dbe05be7636ee',
+              'release_tag': 'usdjpy-asian-range-sweep-regime-portability-v1',
+              'release_asset_sha256': release['release_asset_sha256'],
+              'files': [{'path': str(p), 'sha256': sha(p), 'bytes': p.stat().st_size} for p in files]
+          }
+          dump(manifest_path, manifest)
+          PY
+
+          python -m json.tool configs/research/usdjpy_research_memory_manifest_v1.json >/dev/null
+          python -m json.tool configs/research/usdjpy_asian_range_sweep_regime_technical_repair_receipt_v1.json >/dev/null
+          python -m json.tool configs/research/usdjpy_asian_range_sweep_regime_output_manifest_v1.json >/dev/null
+          python tools/validate_usdjpy_research_memory_v1.py
+
+      - name: Commit final memory closure and remove one-shot workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/usdjpy_hyp031_finalize_memory_v1.yml
+          git add configs/research docs/research/USDJPY_HYP031_TECHNICAL_FAILURE_POSTMORTEM_V1.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research: finalize HYP-031 memory and technical receipts'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          gh issue comment 351 --repo "$GITHUB_REPOSITORY" --body "Final memory synchronization committed at $(git rev-parse HEAD). Registry v53, ledger v27, technical repair receipt, output manifest and canonical startup pointers are now aligned."
