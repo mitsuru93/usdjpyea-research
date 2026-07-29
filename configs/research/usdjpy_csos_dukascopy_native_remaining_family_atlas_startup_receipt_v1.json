@@ -10,6 +10,7 @@
   "hypothesis_id_consumed": false,
   "active_hypothesis_registry_overwrite": false,
   "branch": "agent/csos-dukascopy-native-remaining-family-atlas-v1",
+  "workflow_promoted_from_inventory_to_full_atlas": true,
   "period_role_correction": {
     "received_before_new_family_outcome_calculation": true,
     "candidate_outcomes_seen_before_correction": false,
