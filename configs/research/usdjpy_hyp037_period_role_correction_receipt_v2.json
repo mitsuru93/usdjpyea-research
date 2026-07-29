@@ -1,0 +1,51 @@
+{
+  "schema_version": "usdjpy_hyp037_period_role_correction_receipt_v2",
+  "hypothesis_id": "USDJPY-HYP-037",
+  "family_id": "S_SHORT_PULLBACK_CONTINUATION_PORTABILITY",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR",
+  "decision": "PROTOCOL_CORRECTION_PERIOD_ROLE_BEFORE_EXTERNAL_VALIDATION",
+  "correction_timestamp_utc": "2026-07-29T06:06:00Z",
+  "research_main_at_correction": "1841ed3fba757a9a44496faeb9a6c7e014efa9d6",
+  "core_main_at_correction": "f897b250b808207d960417b2306935dcb0655acf",
+  "supersedes_period_role_only": "configs/research/usdjpy_short_pullback_continuation_portability_prereg_v1.json",
+  "preserves_v1_result": "configs/research/usdjpy_hyp037_final_result_v1.json",
+  "scientific_outcome_not_rewritten": true,
+  "candidate_unchanged": true,
+  "hypothesis_unchanged": true,
+  "new_hypothesis_id_reserved": false,
+  "hyp036_decision_unchanged": true,
+  "period_role_error": {
+    "incorrect_role": "2020-2022 was treated as first binding historical confirmation and a prerequisite for candidate freeze, Core/MT4 and 2025 access.",
+    "correct_role": {
+      "2020_2022": "NONBINDING_ANALYSIS_PERIOD",
+      "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+      "2025": "SOLE_BINDING_UNSEEN_EXTERNAL_VALIDATION_PERIOD"
+    }
+  },
+  "2020_2022_binding_confirmation_removed": true,
+  "2020_2022_outcomes_accessed_before_correction": false,
+  "2020_2022_tick_acquisition_started_by_hyp037_v2": false,
+  "existing_pre2023_artifacts_preserved_as_common_data_infrastructure": true,
+  "2025_external_gate_restored": true,
+  "2025_outcomes_accessed_before_correction": false,
+  "candidate_contract": {
+    "direction": "SHORT_ONLY",
+    "source": "Dukascopy BI5 Bid/Ask Tick",
+    "timeframe": "M15 reconstructed from source-native ticks",
+    "ema_fast": 20,
+    "ema_slow": 96,
+    "atr_period": 20,
+    "trend_strength_threshold": -1.0,
+    "pullback_tolerance_atr": 0.25,
+    "entry": "first source-native Bid at or after next observed M15 boundary",
+    "exit": "first source-native Ask at or after 16 observed M15 bars",
+    "same_variant_suppression": "HYP-036 identical",
+    "lot": 0.01,
+    "reporting_currency": "JPY",
+    "stop_loss": null,
+    "take_profit": null
+  },
+  "no_retuning": true,
+  "production_authorized": false,
+  "live_authorized": false
+}
