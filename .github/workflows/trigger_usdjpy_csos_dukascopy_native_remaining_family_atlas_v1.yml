@@ -26,6 +26,7 @@ jobs:
           repo="$GITHUB_REPOSITORY"
           workflow=usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml
           issue=403
+          legacy_run=30428550983
           receipt=configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json
 
           if gh api "repos/${repo}/contents/${receipt}" >/dev/null 2>&1; then
@@ -34,25 +35,26 @@ jobs:
           fi
 
           runs=$(gh run list --repo "$repo" --workflow "$workflow" --limit 30 --json databaseId,status,conclusion,event,headSha,createdAt,url)
-          active=$(printf '%s' "$runs" | jq -c '[.[] | select(.status=="queued" or .status=="in_progress")] | sort_by(.createdAt) | last // empty')
+          active=$(printf '%s' "$runs" | jq -c --argjson legacy "$legacy_run" '[.[] | select(.databaseId != $legacy and (.status=="queued" or .status=="in_progress"))] | sort_by(.createdAt) | last // empty')
           if [ -n "$active" ]; then
             run_id=$(printf '%s' "$active" | jq -r .databaseId)
             status=$(printf '%s' "$active" | jq -r .status)
+            event=$(printf '%s' "$active" | jq -r .event)
             url=$(printf '%s' "$active" | jq -r .url)
-            gh issue comment "$issue" --repo "$repo" --body "Atlas diagnostic: existing Run ${run_id} is ${status}; duplicate dispatch suppressed. ${url}"
+            gh issue comment "$issue" --repo "$repo" --body "Atlas diagnostic: existing non-legacy Run ${run_id} is ${status} (${event}); duplicate dispatch suppressed. ${url}"
             exit 0
           fi
 
           gh workflow run "$workflow" --repo "$repo" --ref main
           sleep 3
-          dispatched=$(gh run list --repo "$repo" --workflow "$workflow" --limit 10 --json databaseId,status,event,headSha,createdAt,url | jq -c '[.[] | select(.event=="workflow_dispatch")] | sort_by(.createdAt) | last // empty')
+          dispatched=$(gh run list --repo "$repo" --workflow "$workflow" --limit 10 --json databaseId,status,event,headSha,createdAt,url | jq -c --argjson legacy "$legacy_run" '[.[] | select(.databaseId != $legacy and .event=="workflow_dispatch")] | sort_by(.createdAt) | last // empty')
           if [ -n "$dispatched" ]; then
             run_id=$(printf '%s' "$dispatched" | jq -r .databaseId)
             status=$(printf '%s' "$dispatched" | jq -r .status)
             url=$(printf '%s' "$dispatched" | jq -r .url)
             gh issue comment "$issue" --repo "$repo" --body "Atlas diagnostic: dispatched Run ${run_id}; current status ${status}. ${url}"
           else
-            gh issue comment "$issue" --repo "$repo" --body "Atlas diagnostic: workflow_dispatch request accepted, but Run ID was not yet visible in immediate readback."
+            gh issue comment "$issue" --repo "$repo" --body "Atlas diagnostic: workflow_dispatch request accepted, but non-legacy Run ID was not yet visible in immediate readback."
           fi
 
           if [ "${{ github.event_name }}" = issues ]; then
