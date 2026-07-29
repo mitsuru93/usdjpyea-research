@@ -2,13 +2,20 @@ name: Trigger USDJPY CSOS Remaining-Family Atlas v1
 on:
   issues:
     types: [opened, reopened]
+  workflow_run:
+    workflows:
+      - USDJPY CSOS Dukascopy-Native Remaining-Family Atlas Inventory v1
+      - USDJPY CSOS Dukascopy-Native Remaining-Family Atlas v1
+    types: [completed]
 permissions:
   actions: write
   issues: write
   contents: read
 jobs:
   dispatch:
-    if: github.event.issue.title == 'TRIGGER_USDJPY_CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_V1'
+    if: >-
+      (github.event_name == 'issues' && github.event.issue.title == 'TRIGGER_USDJPY_CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_V1') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.id == 30428550983 && github.event.workflow_run.run_attempt == 2)
     runs-on: ubuntu-latest
     steps:
       - name: Dispatch the registered Atlas workflow once
@@ -17,4 +24,6 @@ jobs:
         run: |
           set -euo pipefail
           gh workflow run usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml --repo "$GITHUB_REPOSITORY" --ref main
-          gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --reason completed
+          if [ "${{ github.event_name }}" = issues ]; then
+            gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --reason completed
+          fi
