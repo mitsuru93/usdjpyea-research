@@ -1,0 +1,57 @@
+{
+  "schema_version": "usdjpy_hyp041_integration_handoff_v1",
+  "status": "READY_FOR_EXISTING_COMMON_PORTFOLIO_INTEGRATION",
+  "hypothesis_id": "USDJPY-HYP-041",
+  "formal_decision": "FAIL_F05_V2_PORTABLE_RECOVERY",
+  "F05_dimension_disposition": "F05_BASELINE_UNCHANGED",
+  "selected_F05_v2_candidate": null,
+  "admissible_F05_variants": [
+    {
+      "variant_id": "F05_BASELINE_UNCHANGED",
+      "source": "canonical B02/F05 baseline",
+      "2023_2024_F05_net_jpy": 39151,
+      "2025H1_F05_net_jpy": -13844,
+      "authorized_for_combination_replay": true
+    }
+  ],
+  "non_admissible_diagnostics": [
+    {
+      "candidate_id": "C1_CHRONOLOGY_LOSS_PERMISSION",
+      "reason": "NO_2025H1_IMPROVEMENT"
+    },
+    {
+      "candidate_id": "C2_MARKET_STATE_COMPRESSION",
+      "reason": "ZERO_HISTORICAL_F05_RETENTION",
+      "diagnostic_2025H1_portfolio_net_jpy": -6786
+    },
+    {
+      "candidate_id": "C3_CONTINUATION_GIVEBACK_LIFECYCLE",
+      "reason": "HISTORICAL_RETENTION_15_4_PERCENT_AND_2025H1_DELTA_ONLY_JPY215",
+      "diagnostic_2025H1_portfolio_net_jpy": -20593
+    }
+  ],
+  "residual_loss_context": {
+    "baseline_2025H1_portfolio_net_jpy": -20808,
+    "baseline_2025H1_B02_net_jpy": -6964,
+    "baseline_2025H1_F05_net_jpy": -13844,
+    "best_non_admissible_numerical_portfolio_net_jpy": -6786,
+    "amount_needed_from_other_admissible_components_to_reach_zero_jpy": 20808
+  },
+  "required_integration_comparisons": [
+    "baseline B02 + F05_BASELINE_UNCHANGED",
+    "baseline B02 + F05_BASELINE_UNCHANGED + any admissible HYP-039 result",
+    "baseline B02 + F05_BASELINE_UNCHANGED + any admissible HYP-040 result",
+    "HYP-042 C3 reserve B02 + F05_BASELINE_UNCHANGED + available admissible third-strategy results"
+  ],
+  "prohibitions": [
+    "Do not import C1, C2 or C3 as an admissible F05 v2 candidate",
+    "Do not reopen or retune HYP-041 from 2025H1 outcomes",
+    "Do not change HYP-039 or HYP-040 candidate rules",
+    "Do not substitute 2025H2 as a new validation period"
+  ],
+  "evidence": {
+    "final_result": "configs/research/usdjpy_hyp041_final_result_v1.json",
+    "core_merge_sha": "4c82040c62d90cec4dfbeeb68d48123fead1de62",
+    "scientific_run_id": 30463671158
+  }
+}
