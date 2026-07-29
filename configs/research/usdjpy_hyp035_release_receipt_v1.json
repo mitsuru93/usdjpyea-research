@@ -1,0 +1,22 @@
+{
+  "schema_version": "usdjpy_hyp035_release_receipt_v1",
+  "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+  "hypothesis_id": "USDJPY-HYP-035",
+  "family_id": "S_PULLBACK_CONTINUATION_PORTABILITY",
+  "candidate_id": "A_EXACT_EXECUTABLE_16BAR",
+  "decision": "FAIL_ATLAS_IDENTITY",
+  "failed_binding_stage": "EVENT_IDENTITY",
+  "workflow_run_id": 30412379878,
+  "head_sha": "6018fc6eb39913e9f47906eff1cd0b4b52559efe",
+  "artifact_id": 8708979504,
+  "artifact_digest": "9bc9e3dede7efb0caeaf6f82bd77c7c9194b9ea22821cd51ec9e248c7973b96c",
+  "release_tag": "usdjpy-hyp035-pullback-continuation-development-v1",
+  "release_asset_sha256": "8518be6788cde8b7ac5db9e2c0ab3daec8e33d2e8bab432049a48ba69fbe98d7",
+  "byte_identical_readback": true,
+  "historical_2020_2022_accessed": false,
+  "protected_2025_accessed": false,
+  "core_modified": false,
+  "mt4_executed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
