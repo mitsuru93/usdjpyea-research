@@ -1,0 +1,86 @@
+{
+  "C1_ENTRY_TIME_ADMISSION": {
+    "full_exact": {
+      "entry_delay_15s_net_jpy": 16536.999999999753,
+      "observed_net_jpy": 16611.999999999978,
+      "slippage_0_5_each_net_jpy": 13731.999999999978,
+      "spread_plus_1_net_jpy": 13731.999999999978
+    },
+    "oof": {
+      "entry_delay_15s_net_jpy": 11199.999999999649,
+      "observed_net_jpy": 10684.999999999762,
+      "slippage_0_5_each_net_jpy": 7904.999999999762,
+      "spread_plus_1_net_jpy": 7904.999999999762
+    }
+  },
+  "C2_30_MIN_FAILURE_EXIT": {
+    "full_exact": {
+      "entry_delay_15s_net_jpy": 13677.999999999625,
+      "observed_net_jpy": 13744.999999999622,
+      "slippage_0_5_each_net_jpy": 8744.99999999962,
+      "spread_plus_1_net_jpy": 8744.99999999962
+    },
+    "oof": {
+      "entry_delay_15s_net_jpy": 13677.999999999625,
+      "observed_net_jpy": 13744.999999999622,
+      "slippage_0_5_each_net_jpy": 8744.99999999962,
+      "spread_plus_1_net_jpy": 8744.99999999962
+    }
+  },
+  "C3_60_MIN_NO_PROGRESS_EXIT": {
+    "full_exact": {
+      "entry_delay_15s_net_jpy": 12837.99999999954,
+      "observed_net_jpy": 12904.999999999533,
+      "slippage_0_5_each_net_jpy": 7904.9999999995325,
+      "spread_plus_1_net_jpy": 7904.9999999995325
+    },
+    "oof": {
+      "entry_delay_15s_net_jpy": 12837.99999999954,
+      "observed_net_jpy": 12904.999999999533,
+      "slippage_0_5_each_net_jpy": 7904.9999999995325,
+      "spread_plus_1_net_jpy": 7904.9999999995325
+    }
+  },
+  "C4_CONTINUATION_ALIVE_STATE_MACHINE": {
+    "full_exact": {
+      "entry_delay_15s_net_jpy": 8197.999999999582,
+      "observed_net_jpy": 8264.999999999574,
+      "slippage_0_5_each_net_jpy": 3264.9999999995753,
+      "spread_plus_1_net_jpy": 3264.9999999995753
+    },
+    "oof": {
+      "entry_delay_15s_net_jpy": 3724.999999999513,
+      "observed_net_jpy": 3791.9999999995025,
+      "slippage_0_5_each_net_jpy": -1208.0000000004961,
+      "spread_plus_1_net_jpy": -1208.0000000004961
+    }
+  },
+  "C5_PORTFOLIO_LOSS_DECOUPLING": {
+    "full_exact": {
+      "entry_delay_15s_net_jpy": 1335.9999999998427,
+      "observed_net_jpy": 1626.9999999996403,
+      "slippage_0_5_each_net_jpy": -133.00000000036016,
+      "spread_plus_1_net_jpy": -133.00000000036016
+    },
+    "oof": {
+      "entry_delay_15s_net_jpy": 1335.9999999998427,
+      "observed_net_jpy": 1626.9999999996403,
+      "slippage_0_5_each_net_jpy": -133.00000000036016,
+      "spread_plus_1_net_jpy": -133.00000000036016
+    }
+  },
+  "C6_BEST_ADMISSIBLE_COMBINED": {
+    "full_exact": {
+      "entry_delay_15s_net_jpy": 4284.999999999642,
+      "observed_net_jpy": 4109.999999999731,
+      "slippage_0_5_each_net_jpy": 1409.9999999997303,
+      "spread_plus_1_net_jpy": 1409.9999999997303
+    },
+    "oof": {
+      "entry_delay_15s_net_jpy": 4037.9999999997544,
+      "observed_net_jpy": 3910.9999999998454,
+      "slippage_0_5_each_net_jpy": 1170.9999999998454,
+      "spread_plus_1_net_jpy": 1170.9999999998454
+    }
+  }
+}

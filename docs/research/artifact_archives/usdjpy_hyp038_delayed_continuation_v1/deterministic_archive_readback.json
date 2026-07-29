@@ -1,0 +1,130 @@
+{
+  "status": "PASS",
+  "archive_sha256": "0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8",
+  "manifest": {
+    "classification": "scientific",
+    "generated_utc": "1980-01-01T00:00:00Z",
+    "members": [
+      {
+        "byte_size": 2079,
+        "path": "PACKAGE_SHA256SUMS",
+        "sha256": "375676db8f9cb580dd587b2e44e838d0c84614a8bdd457694e629f6a1cfccd2e"
+      },
+      {
+        "byte_size": 3674,
+        "path": "artifact_manifest.json",
+        "sha256": "96165449dc4969540e0b9f5d2f1a3a28eeeb917c7665fdecaab21373e7d80a03"
+      },
+      {
+        "byte_size": 3964,
+        "path": "candidate_comparison.csv",
+        "sha256": "c76fb468102b6786829e1b17033c0ebe87c991ed6674f5fa699c0824dbda47ac"
+      },
+      {
+        "byte_size": 29787,
+        "path": "candidate_gate_matrix.csv",
+        "sha256": "988d2ffb8c4231ea408b1012df843354f49aca94a3102f491df2e2e303740220"
+      },
+      {
+        "byte_size": 550,
+        "path": "candidate_registry.json",
+        "sha256": "a390178b85e2fcb4854f1d4a139277b6b364c8700ab8b63f6c551b1c35e9d160"
+      },
+      {
+        "byte_size": 752583,
+        "path": "checkpoint_feature_catalog.csv",
+        "sha256": "c4361d95f6e3a608ec85e483fd43d8b79c51f7f09d5f0c120b190d7ce1e784f3"
+      },
+      {
+        "byte_size": 11996,
+        "path": "concentration_bootstrap_diagnostics.json",
+        "sha256": "9123c98bdd07f336b9385968489bfa6c7eecd97d569239e744e75da571fecadc"
+      },
+      {
+        "byte_size": 2955,
+        "path": "execution_robustness.json",
+        "sha256": "f8014f809ea9c4b420a8d1c9ddda2f063efb346587acd175d1c10691b5e74b0c"
+      },
+      {
+        "byte_size": 144677,
+        "path": "final_result.json",
+        "sha256": "8e49ca25326c40eeeb13e95fd47e9cf17c7ba8f7183eacaeec9d4f17a4ef01e7"
+      },
+      {
+        "byte_size": 2063,
+        "path": "finite_candidate_catalog.csv",
+        "sha256": "04791f9606aa0cd701bc56806bfe02e08cde67abc86f3fbbb88d68553e034644"
+      },
+      {
+        "byte_size": 988,
+        "path": "human_report.md",
+        "sha256": "cf1c067eb8f8d8983c80a584f40f5d71cbd7649ba7b8fb122df8a1723db698b8"
+      },
+      {
+        "byte_size": 1629991,
+        "path": "lifecycle_transition_ledger.csv.gz",
+        "sha256": "69adbbcf124957602018b1bc34ab99735b0b1698016508031d20c39982c9bcfd"
+      },
+      {
+        "byte_size": 37031,
+        "path": "oof_fold_assignments.csv",
+        "sha256": "eb94319670a3966142e6399a4c71d487892f49e2fec8c9225195321cf87d0a1b"
+      },
+      {
+        "byte_size": 17558,
+        "path": "oof_selection_ledger.csv",
+        "sha256": "216ae5b04287c8ab2851578ece696a4b2735f44c85a6852b0c9f06e628060e43"
+      },
+      {
+        "byte_size": 378,
+        "path": "period_access_receipt.json",
+        "sha256": "ce4c3ea3f9b94ade591ad4011d4666a5aa2029784b8816d1944a568518029e78"
+      },
+      {
+        "byte_size": 24657,
+        "path": "portfolio_loss_decoupling_audit.json",
+        "sha256": "96598cbc9e589f6069cc0e3ad2121f1cf0e76bfad27bd611337419ec9bda5d34"
+      },
+      {
+        "byte_size": 405,
+        "path": "preflight_receipt.json",
+        "sha256": "46cf2ecfb738e4cd2dcb4c4020d3cde3740964ee1b9f791ef8008b4c8bf649ff"
+      },
+      {
+        "byte_size": 3083,
+        "path": "right_tail_preservation_audit.csv",
+        "sha256": "4ca5da253bd251fd5a5811e62d5c4f293a0d54ed41ee619e4e1a5c6e32bc4d5d"
+      },
+      {
+        "byte_size": 9626,
+        "path": "right_tail_preservation_audit.json",
+        "sha256": "77992e5014ed303649260b2189396d66943ede17feed9dd80f4191ea79b20bab"
+      },
+      {
+        "byte_size": 2648523,
+        "path": "selected_full_equity_replay.csv",
+        "sha256": "b2bc339c01445c9f576af4d8b4a98b9b36748b1abe61851b90845c93041d0d51"
+      },
+      {
+        "byte_size": 114076,
+        "path": "selected_right_tail_event_audit.csv",
+        "sha256": "0b2aafb58f219ba75c3a58f32659f867260404d1260ca0254200a9e0911901fa"
+      },
+      {
+        "byte_size": 7791,
+        "path": "source_manifest_runtime.json",
+        "sha256": "31b24cfed7b1e694d0b9ec7459063cf83d998ed03e0b8ce273b1cafc0a911aaf"
+      },
+      {
+        "byte_size": 132,
+        "path": "source_native_tick_audit.json",
+        "sha256": "a7b148929b1f3bee19197e8b7070bbde2d0db74afedd33f245c736957c388f8b"
+      }
+    ],
+    "origin_blob_sha": "da4a05f3fb509a5944fda57d3982206eba894475",
+    "origin_core_sha": "f897b250b808207d960417b2306935dcb0655acf",
+    "schema_version": "fx2_deterministic_evidence_zip_v1",
+    "source_commit_sha": "14a449baa1b13060ff71e75adaa3353ff95b1be1",
+    "workflow_run_id": "30437473624"
+  }
+}

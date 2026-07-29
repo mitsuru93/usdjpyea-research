@@ -1,0 +1,4 @@
+candidate,status,net_jpy,pf,positive_folds,positive_months,spread_plus_1_net_jpy,top5_winner_retention,b02_daily_corr,f05_daily_corr,negative_baseline_day_contribution_jpy,combined_realized_dd_jpy,combined_full_equity_dd_jpy,worst_5d_jpy,worst_20d_jpy,worst_month_jpy,implementation_complexity,source_portability,mt4_readiness,external_gate
+HYP038_C5_COEXPOSURE_SKIP_OOF,MECHANISM_ONLY,1626.9999999996398,1.0705795592573149,3,12,-133.00000000036016,0.1741468459152014,0.01219299845570842,-0.02270852396834776,1423.9999999999493,35930.00000000023,38103.00000000023,-11701.000000000015,-18257.000000000036,-15940.000000000015,one portfolio co-exposure admission condition,Dukascopy research only; freeze denied,LOCKED,NOT_OPENED
+REMAINING_ATLAS_TRACK_A,NONE,,,,,,,,,,,,,,,,,LOCKED,NOT_OPENED
+REMAINING_ATLAS_TRACK_B,NONE,,,,,,,,,,,,,,,,,LOCKED,NOT_OPENED

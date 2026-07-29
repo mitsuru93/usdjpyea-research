@@ -1,0 +1,43 @@
+{
+  "2020_2022_accessed": false,
+  "2025_accessed": false,
+  "bid_ask": "Short entry Bid, exit Ask, checkpoints first actual tick at or after target",
+  "candidate_outcomes_accessed": false,
+  "currency": "JPY; 0.01 lot contract; 10 JPY/pip",
+  "hypothesis_id": "USDJPY-HYP-038",
+  "inputs": [
+    {
+      "artifact_digest": "sha256:046f56e519fd8e047dd54c98962c7e7ad24bcbc9d159445cb9a3fb227fa8a2d4",
+      "artifact_id": 8714601229,
+      "expected_rows": 500,
+      "name": "HYP037 Short reference ledger",
+      "run_id": 30428356407
+    },
+    {
+      "artifact_digest": "sha256:ef2dc9458f4f15dbcab20172ddad611d8342dec9784d80a4428c2a5bd1bf8ad4",
+      "artifact_id": 8712825068,
+      "expected_short_rows": 500,
+      "name": "HYP037 mechanism feature ledger",
+      "run_id": 30423475688
+    },
+    {
+      "name": "B02/F05 canonical authority",
+      "release": "f05-failed-reclaim-historical-authorities-v1",
+      "trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca"
+    },
+    {
+      "monthly_archives": 12,
+      "name": "Dukascopy raw Bid/Ask Tick 2023",
+      "release": "usdjpy-2023-raw-bidask-ticks-v1"
+    },
+    {
+      "monthly_archives": 12,
+      "name": "Dukascopy raw Bid/Ask Tick 2024",
+      "release": "usdjpy-2024-raw-bidask-ticks-v1"
+    }
+  ],
+  "lineage_merge": "portfolio only by UTC chronology and JPY P/L; populations not called identical",
+  "schema_version": "usdjpy_hyp038_source_manifest_v1",
+  "status": "FROZEN_BEFORE_OUTCOME",
+  "timezone": "UTC"
+}

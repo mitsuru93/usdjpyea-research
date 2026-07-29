@@ -1,0 +1,41 @@
+{
+  "candidate_outcomes_accessed": false,
+  "checkpoints_minutes": [
+    15,
+    30,
+    60,
+    90,
+    120
+  ],
+  "entry_time": [
+    "separation_atr_ratio",
+    "ema20_slope_4bar_pips_directional",
+    "first_executable_spread_pips",
+    "baseline_open_count_at_entry",
+    "baseline_recent_24h_loss_count",
+    "baseline_full_equity_dd_at_entry_jpy"
+  ],
+  "hypothesis_id": "USDJPY-HYP-038",
+  "in_trade": [
+    "current_pl_pips",
+    "realized_favorable_excursion_pips",
+    "realized_adverse_excursion_pips",
+    "new_low_formed",
+    "ema20_adverse_recross",
+    "tick_velocity_last5_per_second",
+    "directional_close_location",
+    "volatility_expansion_atr",
+    "realized_range_pips"
+  ],
+  "max_tree_depth": 2,
+  "model": "deterministic rules only",
+  "prohibited": [
+    "future_mfe",
+    "future_mae",
+    "final_pl_label",
+    "final_winner_loser_label",
+    "post_checkpoint_ticks"
+  ],
+  "schema_version": "usdjpy_hyp038_feature_catalog_v1",
+  "status": "FROZEN_BEFORE_OUTCOME"
+}

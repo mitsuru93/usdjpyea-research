@@ -1,0 +1,613 @@
+{
+  "2025_accessed": false,
+  "atlas_mechanism_research_only": {
+    "daily_correlation_to_B02": -0.0030127345557391947,
+    "daily_correlation_to_F05": -0.021153217518735938,
+    "designation": "MECHANISM_RESEARCH_ONLY",
+    "direct_candidate_failure": "At least one fixed shortlist gate failed; the current variant is not authorized for adoption.",
+    "entry_time_distinct_hypothesis": "Test whether balance persistence and standardized excursion magnitude identify reversion capacity at entry time.",
+    "family_id": "B",
+    "negative_baseline_day_contribution_jpy": 1486.0000000000464,
+    "overlap_with_hyp028_033_034": false,
+    "post_event_15m_separation_pips": 1.2499999999988631,
+    "post_event_60m_separation_pips": 12.44999999999834,
+    "variant_id": "B_BALANCE_MEAN_REVERSION"
+  },
+  "candidate_freeze": false,
+  "comparison_interpretation": "No Remaining-Family Track A or Track B candidate exists. HYP-038 also has no deployable candidate. B_BALANCE_MEAN_REVERSION remains mechanism-research-only and is not a candidate.",
+  "hyp037_reference": {
+    "concentration": {
+      "best_event_removed_net_jpy": 15056.999999999462,
+      "largest_positive_fold_share": 0.3875219186605579,
+      "largest_positive_month_share": 0.23344284327634174,
+      "largest_positive_session_share": 0.42445839696816806,
+      "top3_removed_net_jpy": 11145.999999999462,
+      "top5_removed_net_jpy": 8008.999999999489,
+      "top_decile_winner_count": 25,
+      "top_decile_winners_removed_net_jpy": -11216.000000000535
+    },
+    "execution": {
+      "entry_delay_15s_net_jpy": 17611.999999999483,
+      "observed_net_jpy": 17678.999999999476,
+      "slippage_0_5_each_net_jpy": 12678.999999999472,
+      "spread_plus_1_net_jpy": 12678.999999999472
+    },
+    "failed_gates": [
+      {
+        "gate": "worst_5_business_day_nonworse",
+        "stage": "PORTFOLIO",
+        "threshold": -11585.0,
+        "value": -12053.000000000018
+      },
+      {
+        "gate": "negative_baseline_day_contribution_nonnegative",
+        "stage": "PORTFOLIO",
+        "threshold": 0,
+        "value": -13331.000000000244
+      },
+      {
+        "gate": "avoided_loss_gt_sacrificed_profit",
+        "stage": "RIGHT_TAIL",
+        "threshold": 0,
+        "value": 0.0
+      }
+    ],
+    "hard_pass": false,
+    "portfolio": {
+      "baseline_dd_candidate_contribution_jpy": 13344.999999999422,
+      "baseline_full_equity_dd_jpy": 42660.0,
+      "baseline_minimum_full_equity_jpy": 959118.0,
+      "baseline_minimum_realized_equity_jpy": 959513.0,
+      "baseline_net_jpy": 51627.0,
+      "baseline_peak_concurrency": 9,
+      "baseline_realized_dd_jpy": 40487.0,
+      "baseline_recovery_grid_points": 6134,
+      "baseline_worst_1_business_day_jpy": -6930.0,
+      "baseline_worst_20_business_day_jpy": -16588.0,
+      "baseline_worst_5_business_day_jpy": -11585.0,
+      "baseline_worst_calendar_month_jpy": -12395.0,
+      "candidate_net_jpy": 17678.999999999476,
+      "candidate_peak_concurrency": 1,
+      "chronology_mismatch": 0,
+      "combined_full_equity_dd_jpy": 36511.00000000023,
+      "combined_minimum_full_equity_jpy": 965266.9999999998,
+      "combined_minimum_realized_equity_jpy": 965661.9999999998,
+      "combined_net_jpy": 69305.99999999948,
+      "combined_peak_concurrency": 10,
+      "combined_realized_dd_jpy": 35420.00000000023,
+      "combined_recovery_grid_points": 2350,
+      "combined_worst_1_business_day_jpy": -6930.0,
+      "combined_worst_20_business_day_jpy": -15675.00000000001,
+      "combined_worst_5_business_day_jpy": -12053.000000000018,
+      "combined_worst_calendar_month_jpy": -12096.000000000078,
+      "currency_mismatch": 0,
+      "daily_correlation_to_B02": 0.21101508105653993,
+      "daily_correlation_to_F05": 0.34575380762401214,
+      "full_equity_grid_points": 31671,
+      "incremental_margin_jpy_max": 6453.96,
+      "minimum_margin_level_percent": 1737.8420385560282,
+      "negative_baseline_day_candidate_contribution_jpy": -13331.000000000244,
+      "opposite_direction_concurrency_count": 64,
+      "realized_loss_cluster_overlap_count": 155,
+      "same_direction_concurrency_count": 921,
+      "same_hour_overlap_count": 44,
+      "same_session_overlap_count": 423,
+      "weekly_correlation_to_B02": 0.029150832934640027,
+      "weekly_correlation_to_F05": 0.409464854951075
+    },
+    "right_tail": {
+      "avoided_loss_jpy": 0.0,
+      "deleted_or_early_reference_losers": 0,
+      "deleted_or_early_reference_winners": 0,
+      "loss_rejection_ratio": 0.0,
+      "net_benefit_jpy": 0.0,
+      "overall_profit_retention_ratio": 0.9999999999999989,
+      "reference_top25_preserved_count": 25,
+      "reference_top25_preserved_rate": 1.0,
+      "right_tail_pass": false,
+      "sacrificed_profit_jpy": 0.0,
+      "top5_winner_pl_retention": 0.9999999999999987,
+      "top_decile_gross_profit_retention": 1.0000000000000004,
+      "winner_mean_mfe_arrival_minutes": 205.1881172789116,
+      "winner_mean_reference_hold_minutes": 298.7757861904762
+    },
+    "standalone": {
+      "admitted_trades": 500,
+      "expected_shortfall_5pct_jpy": -835.400000000003,
+      "fold_results": {
+        "2023H1": {
+          "count": 125,
+          "sum": 4861.999999999782
+        },
+        "2023H2": {
+          "count": 135,
+          "sum": 4693.999999999932
+        },
+        "2024H1": {
+          "count": 97,
+          "sum": 1271.999999999963
+        },
+        "2024H2": {
+          "count": 143,
+          "sum": 6850.9999999998
+        }
+      },
+      "longest_losing_streak": 7,
+      "mdd_jpy": 6312.000000000116,
+      "median_pl_jpy": -4.0000000000048885,
+      "minimum_equity_jpy": 999914.0,
+      "minimum_fold_net_jpy": 1271.999999999963,
+      "month_results": {
+        "2023-01": {
+          "count": 19,
+          "sum": 3195.999999999927
+        },
+        "2023-02": {
+          "count": 17,
+          "sum": -1886.000000000024
+        },
+        "2023-03": {
+          "count": 31,
+          "sum": 2533.999999999935
+        },
+        "2023-04": {
+          "count": 24,
+          "sum": 1121.0000000000377
+        },
+        "2023-05": {
+          "count": 20,
+          "sum": 1142.999999999887
+        },
+        "2023-06": {
+          "count": 14,
+          "sum": -1245.999999999981
+        },
+        "2023-07": {
+          "count": 33,
+          "sum": 3169.0000000000964
+        },
+        "2023-08": {
+          "count": 19,
+          "sum": -522.9999999999961
+        },
+        "2023-09": {
+          "count": 12,
+          "sum": -832.0000000000505
+        },
+        "2023-10": {
+          "count": 18,
+          "sum": -316.00000000005934
+        },
+        "2023-11": {
+          "count": 29,
+          "sum": -109.99999999998522
+        },
+        "2023-12": {
+          "count": 24,
+          "sum": 3305.9999999999263
+        },
+        "2024-01": {
+          "count": 18,
+          "sum": -665.0000000000489
+        },
+        "2024-02": {
+          "count": 21,
+          "sum": -953.9999999999793
+        },
+        "2024-03": {
+          "count": 21,
+          "sum": 2028.00000000002
+        },
+        "2024-04": {
+          "count": 10,
+          "sum": -960.9999999999843
+        },
+        "2024-05": {
+          "count": 17,
+          "sum": 1121.9999999999857
+        },
+        "2024-06": {
+          "count": 10,
+          "sum": 701.9999999999698
+        },
+        "2024-07": {
+          "count": 32,
+          "sum": 6253.000000000014
+        },
+        "2024-08": {
+          "count": 24,
+          "sum": 1783.999999999935
+        },
+        "2024-09": {
+          "count": 30,
+          "sum": 298.99999999992133
+        },
+        "2024-10": {
+          "count": 15,
+          "sum": -573.0000000000359
+        },
+        "2024-11": {
+          "count": 31,
+          "sum": 129.0000000000191
+        },
+        "2024-12": {
+          "count": 11,
+          "sum": -1041.0000000000537
+        }
+      },
+      "net_jpy": 17678.999999999476,
+      "p90_jpy": 537.8999999999794,
+      "p95_jpy": 738.3999999999983,
+      "p99_jpy": 1425.2800000000107,
+      "payoff_skewness": 0.8899557711926007,
+      "positive_folds": 4,
+      "positive_months": 13,
+      "profit_factor": 1.272769351827556,
+      "recovery_event_count": 4,
+      "reference_population": 500,
+      "session_results": {
+        "LONDON": {
+          "count": 99,
+          "sum": 1917.999999999921
+        },
+        "LONDON_NY_OVERLAP": {
+          "count": 81,
+          "sum": 6169.999999999874
+        },
+        "NEW_YORK": {
+          "count": 86,
+          "sum": 186.99999999978445
+        },
+        "TOKYO": {
+          "count": 143,
+          "sum": 7504.000000000019
+        },
+        "TRANSITION": {
+          "count": 91,
+          "sum": 1899.999999999878
+        }
+      },
+      "tail_ratio": 1.2078187617567842,
+      "upper_tail_mean_jpy": 904.68,
+      "win_rate": 0.49
+    },
+    "variant_id": "C0_HYP037_REFERENCE"
+  },
+  "hyp038_decision": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+  "hyp038_selected_oof": {
+    "concentration": {
+      "best_event_removed_net_jpy": -57.000000000357204,
+      "largest_positive_fold_share": 0.7221772015127031,
+      "largest_positive_month_share": 0.2705940675865554,
+      "largest_positive_session_share": 0.6843385214007803,
+      "top3_removed_net_jpy": -2466.000000000349,
+      "top5_removed_net_jpy": -4330.000000000353,
+      "top_decile_winner_count": 9,
+      "top_decile_winners_removed_net_jpy": -7231.0000000003365
+    },
+    "execution": {
+      "entry_delay_15s_net_jpy": 1335.9999999998427,
+      "observed_net_jpy": 1626.9999999996403,
+      "slippage_0_5_each_net_jpy": -133.00000000036016,
+      "spread_plus_1_net_jpy": -133.00000000036016
+    },
+    "failed_gates": [
+      {
+        "gate": "pf_ge_1_10",
+        "stage": "STANDALONE",
+        "threshold": 1.1,
+        "value": 1.0705795592573149
+      },
+      {
+        "gate": "minimum_fold_net",
+        "stage": "STANDALONE",
+        "threshold": -1500,
+        "value": -5777.0000000001
+      },
+      {
+        "gate": "top5_removed_net_positive",
+        "stage": "CONCENTRATION",
+        "threshold": 0,
+        "value": -4330.000000000353
+      },
+      {
+        "gate": "spread_plus_1_net_positive",
+        "stage": "EXECUTION",
+        "threshold": 0,
+        "value": -133.00000000036016
+      },
+      {
+        "gate": "slippage_0_5_each_net_positive",
+        "stage": "EXECUTION",
+        "threshold": 0,
+        "value": -133.00000000036016
+      },
+      {
+        "gate": "worst_5_business_day_nonworse",
+        "stage": "PORTFOLIO",
+        "threshold": -11585.0,
+        "value": -11701.000000000015
+      },
+      {
+        "gate": "worst_20_business_day_nonworse",
+        "stage": "PORTFOLIO",
+        "threshold": -16588.0,
+        "value": -18257.000000000036
+      },
+      {
+        "gate": "worst_month_nonworse",
+        "stage": "PORTFOLIO",
+        "threshold": -12395.0,
+        "value": -15940.000000000015
+      },
+      {
+        "gate": "top5_winner_retention",
+        "stage": "RIGHT_TAIL",
+        "threshold": 0.9,
+        "value": 0.1741468459152014
+      },
+      {
+        "gate": "top_decile_profit_retention",
+        "stage": "RIGHT_TAIL",
+        "threshold": 0.8,
+        "value": 0.23197785083924466
+      },
+      {
+        "gate": "avoided_loss_gt_sacrificed_profit",
+        "stage": "RIGHT_TAIL",
+        "threshold": 0,
+        "value": -16052.000000000364
+      },
+      {
+        "gate": "top25_majority_preserved",
+        "stage": "RIGHT_TAIL",
+        "threshold": 13,
+        "value": 6
+      }
+    ],
+    "hard_pass": false,
+    "portfolio": {
+      "baseline_dd_candidate_contribution_jpy": 1626.9999999996444,
+      "baseline_full_equity_dd_jpy": 42660.0,
+      "baseline_minimum_full_equity_jpy": 959118.0,
+      "baseline_minimum_realized_equity_jpy": 959513.0,
+      "baseline_net_jpy": 51627.0,
+      "baseline_peak_concurrency": 9,
+      "baseline_realized_dd_jpy": 40487.0,
+      "baseline_recovery_grid_points": 6134,
+      "baseline_worst_1_business_day_jpy": -6930.0,
+      "baseline_worst_20_business_day_jpy": -16588.0,
+      "baseline_worst_5_business_day_jpy": -11585.0,
+      "baseline_worst_calendar_month_jpy": -12395.0,
+      "candidate_net_jpy": 1626.9999999996403,
+      "candidate_peak_concurrency": 1,
+      "chronology_mismatch": 0,
+      "combined_full_equity_dd_jpy": 38103.00000000023,
+      "combined_minimum_full_equity_jpy": 963674.9999999998,
+      "combined_minimum_realized_equity_jpy": 964069.9999999998,
+      "combined_net_jpy": 53253.99999999964,
+      "combined_peak_concurrency": 9,
+      "combined_realized_dd_jpy": 35930.00000000023,
+      "combined_recovery_grid_points": 3307,
+      "combined_worst_1_business_day_jpy": -6930.0,
+      "combined_worst_20_business_day_jpy": -18257.000000000036,
+      "combined_worst_5_business_day_jpy": -11701.000000000015,
+      "combined_worst_calendar_month_jpy": -15940.000000000015,
+      "currency_mismatch": 0,
+      "daily_correlation_to_B02": 0.01219299845570842,
+      "daily_correlation_to_F05": -0.02270852396834776,
+      "full_equity_grid_points": 31671,
+      "incremental_margin_jpy_max": 6453.96,
+      "minimum_margin_level_percent": 1902.3216995558296,
+      "negative_baseline_day_candidate_contribution_jpy": 1423.9999999999493,
+      "opposite_direction_concurrency_count": 18,
+      "realized_loss_cluster_overlap_count": 76,
+      "same_direction_concurrency_count": 92,
+      "same_hour_overlap_count": 9,
+      "same_session_overlap_count": 58,
+      "weekly_correlation_to_B02": -0.0875562805641575,
+      "weekly_correlation_to_F05": -0.02834016556815302
+    },
+    "right_tail": {
+      "avoided_loss_jpy": 41760.99999999975,
+      "deleted_or_early_reference_losers": 161,
+      "deleted_or_early_reference_winners": 163,
+      "loss_rejection_ratio": 0.6443306126857228,
+      "net_benefit_jpy": -16052.000000000364,
+      "overall_profit_retention_ratio": 0.29916840420889157,
+      "reference_top25_preserved_count": 6,
+      "reference_top25_preserved_rate": 0.24,
+      "right_tail_pass": false,
+      "sacrificed_profit_jpy": 57813.00000000012,
+      "top5_winner_pl_retention": 0.1741468459152014,
+      "top_decile_gross_profit_retention": 0.23197785083924466,
+      "winner_mean_mfe_arrival_minutes": 205.1881172789116,
+      "winner_mean_reference_hold_minutes": 298.7757861904762
+    },
+    "standalone": {
+      "admitted_trades": 176,
+      "expected_shortfall_5pct_jpy": -997.77777777778,
+      "fold_results": {
+        "2023H1": {
+          "count": 125,
+          "sum": 1029.9999999999159
+        },
+        "2023H2": {
+          "count": 135,
+          "sum": 5346.999999999866
+        },
+        "2024H1": {
+          "count": 97,
+          "sum": 1026.9999999999584
+        },
+        "2024H2": {
+          "count": 143,
+          "sum": -5777.0000000001
+        }
+      },
+      "longest_losing_streak": 6,
+      "mdd_jpy": 8221.000000000116,
+      "median_pl_jpy": -13.00000000000523,
+      "minimum_equity_jpy": 999884.0,
+      "minimum_fold_net_jpy": -5777.0000000001,
+      "month_results": {
+        "2023-01": {
+          "count": 19,
+          "sum": 957.9999999999984
+        },
+        "2023-02": {
+          "count": 17,
+          "sum": -504.0000000000191
+        },
+        "2023-03": {
+          "count": 31,
+          "sum": 1941.999999999922
+        },
+        "2023-04": {
+          "count": 24,
+          "sum": 42.999999999977945
+        },
+        "2023-05": {
+          "count": 20,
+          "sum": -706.9999999999936
+        },
+        "2023-06": {
+          "count": 14,
+          "sum": -701.9999999999698
+        },
+        "2023-07": {
+          "count": 33,
+          "sum": 3275.0000000000055
+        },
+        "2023-08": {
+          "count": 19,
+          "sum": 382.99999999998136
+        },
+        "2023-09": {
+          "count": 12,
+          "sum": -458.00000000002683
+        },
+        "2023-10": {
+          "count": 18,
+          "sum": 478.9999999999566
+        },
+        "2023-11": {
+          "count": 29,
+          "sum": 1336.999999999989
+        },
+        "2023-12": {
+          "count": 24,
+          "sum": 330.99999999996044
+        },
+        "2024-01": {
+          "count": 18,
+          "sum": 592.9999999999893
+        },
+        "2024-02": {
+          "count": 21,
+          "sum": -319.0000000000168
+        },
+        "2024-03": {
+          "count": 21,
+          "sum": 1019.9999999999818
+        },
+        "2024-04": {
+          "count": 10,
+          "sum": -462.99999999996544
+        },
+        "2024-05": {
+          "count": 17,
+          "sum": 324.99999999998863
+        },
+        "2024-06": {
+          "count": 10,
+          "sum": -129.0000000000191
+        },
+        "2024-07": {
+          "count": 32,
+          "sum": 1416.9999999999732
+        },
+        "2024-08": {
+          "count": 24,
+          "sum": -2162.0000000000914
+        },
+        "2024-09": {
+          "count": 30,
+          "sum": -3545.000000000016
+        },
+        "2024-10": {
+          "count": 15,
+          "sum": -1.0000000000047748
+        },
+        "2024-11": {
+          "count": 31,
+          "sum": -1157.9999999999586
+        },
+        "2024-12": {
+          "count": 11,
+          "sum": -328.00000000000296
+        }
+      },
+      "net_jpy": 1626.9999999996398,
+      "p90_jpy": 456.99999999999363,
+      "p95_jpy": 670.0000000000089,
+      "p99_jpy": 1182.2499999999964,
+      "payoff_skewness": -0.24137262358423908,
+      "positive_folds": 3,
+      "positive_months": 12,
+      "profit_factor": 1.0705795592573149,
+      "recovery_event_count": 1,
+      "reference_population": 500,
+      "session_results": {
+        "LONDON": {
+          "count": 99,
+          "sum": 1297.999999999945
+        },
+        "LONDON_NY_OVERLAP": {
+          "count": 81,
+          "sum": -300.0000000000398
+        },
+        "NEW_YORK": {
+          "count": 86,
+          "sum": -1333.0000000000837
+        },
+        "TOKYO": {
+          "count": 143,
+          "sum": 2813.9999999999077
+        },
+        "TRANSITION": {
+          "count": 91,
+          "sum": -852.0000000000891
+        }
+      },
+      "tail_ratio": 1.057616416732468,
+      "upper_tail_mean_jpy": 766.7222222222184,
+      "win_rate": 0.4659090909090909
+    },
+    "variant_id": "OOF_CROSSFIT"
+  },
+  "live_authorized": false,
+  "production_authorized": false,
+  "remaining_family_atlas_decision": "ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY",
+  "remaining_family_shortlist_count": 0,
+  "remaining_family_track_a": null,
+  "remaining_family_track_b": null,
+  "schema_version": "usdjpy_hyp038_atlas_comparison_v1",
+  "third_strategy_rank": [
+    {
+      "classification": "OPEN_SLOT",
+      "item": "NO_DEPLOYABLE_THIRD_STRATEGY_CANDIDATE",
+      "rank": 1
+    },
+    {
+      "classification": "MECHANISM_RESEARCH_ONLY_NOT_SHORTLISTED",
+      "item": "B_BALANCE_MEAN_REVERSION",
+      "rank": 2
+    },
+    {
+      "classification": "MECHANISM_CONFIRMED_NOT_DEPLOYABLE",
+      "item": "HYP038_SHORT_PULLBACK_DELAYED_CONTINUATION",
+      "rank": 3
+    }
+  ]
+}

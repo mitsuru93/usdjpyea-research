@@ -1,0 +1,11 @@
+{
+  "2020_2022_accessed": false,
+  "2020_2022_role": "NONBINDING_ANALYSIS_NOT_USED",
+  "2023_2024_research_accessed": true,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "candidate_freeze_authorized": false,
+  "hypothesis_id": "USDJPY-HYP-038",
+  "next_protected_period_action": "NONE_RESEARCH_CLOSED",
+  "schema_version": "usdjpy_hyp038_period_access_receipt_v1"
+}

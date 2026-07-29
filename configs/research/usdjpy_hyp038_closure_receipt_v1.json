@@ -1,0 +1,23 @@
+{
+  "schema_version": "usdjpy_hyp038_closure_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-038",
+  "decision": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+  "research_start_sha": "d6288d4699c5acd57f6adc60bc8f36ab7c122098",
+  "research_execution_sha": "14a449baa1b13060ff71e75adaa3353ff95b1be1",
+  "core_start_end_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "run_id": 30437473624,
+  "artifact_id": 8718213549,
+  "artifact_digest": "sha256:549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c",
+  "deterministic_archive_sha256": "0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8",
+  "atlas_run_id": 30435884192,
+  "atlas_artifact_id": 8717709149,
+  "atlas_artifact_zip_sha256": "69fda87cdb5eef9a0fef641f8927918bb1a1fca6a5e9eabf72e34558afeeaa72",
+  "candidate_freeze": false,
+  "core_modified": false,
+  "mt4_executed": false,
+  "2020_2022_accessed": false,
+  "2025_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "technical_failure": false
+}
