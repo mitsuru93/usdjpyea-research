@@ -1,0 +1,124 @@
+name: Canonicalize USDJPY CSOS Remaining-Family Atlas v1
+on:
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+  pull-requests: write
+  issues: write
+jobs:
+  canonicalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Materialize exact artifact and open canonical closure PR
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          repo="$GITHUB_REPOSITORY"
+          run_id=30435884192
+          artifact_id=8717709149
+          artifact_name=usdjpy-csos-dukascopy-native-remaining-family-atlas-v1-30435884192-1
+          artifact_digest=sha256:69fda87cdb5eef9a0fef641f8927918bb1a1fca6a5e9eabf72e34558afeeaa72
+          archive_name=usdjpy-csos-dukascopy-native-remaining-family-atlas-v1.zip
+          archive_sha=4fa85d2fef179b82e15abe6cd7e9bb4d7af47ecd200659f183b4d8be7e5dd607
+          release_tag=usdjpy-csos-dukascopy-native-remaining-family-atlas-v1
+          branch=agent/canonicalize-csos-remaining-family-atlas-v1-final
+          root="${RUNNER_TEMP}/atlas-canonical"; rm -rf "$root"; mkdir -p "$root"/{artifact,out}
+          fail_receipt() {
+            rc=$?
+            gh issue comment 403 --repo "$repo" --body "Atlas canonicalization FAILED at shell line ${BASH_LINENO[0]} with exit code ${rc}." || true
+            exit "$rc"
+          }
+          trap fail_receipt ERR
+          gh issue comment 403 --repo "$repo" --body "Atlas canonicalization started from scientific Run ${run_id}, Artifact ${artifact_id}."
+
+          gh run download "$run_id" --repo "$repo" --name "$artifact_name" --dir "$root/artifact"
+          test -s "$root/artifact/$archive_name"
+          printf '%s  %s\n' "$archive_sha" "$root/artifact/$archive_name" | sha256sum -c -
+          unzip -q "$root/artifact/$archive_name" -d "$root/out"
+          (cd "$root/out" && sha256sum -c PACKAGE_SHA256SUMS)
+          jq -e '.decision=="ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY" and .evaluated_family_count==8 and .evaluated_variant_count==12 and .source_authority.archive_count==24 and .source_authority.tick_count==84428370 and .source_authority.m15_bar_count==49894 and .analysis_2020_2022_accessed==false and .analysis_2020_2022_confirmation_credit==false and .external_validation_2025_accessed==false and .candidate_freeze==false and .core_modified==false and .mt4_executed==false and .production_authorized==false and .live_authorized==false' "$root/out/final_result.json"
+          jq -e '.shortlist_count==0 and .track_a==null and .track_b==null and .mechanism_research_only.variant_id=="B_BALANCE_MEAN_REVERSION" and .candidate_freeze==false and .core_mt4_authorized==false and ."2025_external_validation_authorized_in_this_atlas"==false' "$root/out/shortlist_decision.json"
+          jq -e '.status=="PASS_BYTE_IDENTICAL_RELEASE_READBACK" and .scientific_run_id==30435884192 and .artifact_id==8717709149 and .release_asset_sha256=="4fa85d2fef179b82e15abe6cd7e9bb4d7af47ecd200659f183b4d8be7e5dd607" and .analysis_2020_2022_accessed==false and .external_validation_2025_accessed==false' <(gh api "repos/${repo}/contents/configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json?ref=main" --jq .content | tr -d '\n' | base64 -d)
+
+          gh repo clone "$repo" "$root/repo" -- --depth 1 --branch main
+          cd "$root/repo"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -b "$branch"
+
+          cp "$root/out/final_result.json" configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_final_result_v1.json
+          cp "$root/out/shortlist_decision.json" configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_shortlist_decision_v1.json
+          cp "$root/out/period_access_receipt.json" configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_period_access_receipt_v1.json
+          cp "$root/out/artifact_manifest.json" configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_artifact_manifest_v1.json
+          cp "$root/out/source_inventory.json" configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_source_inventory_v1.json
+          cp "$root/out/research_program_update.json" configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_research_program_update_v1.json
+          cp "$root/out/research_memory_update.json" configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_research_memory_v1.json
+          cp "$root/out/human_report.md" docs/research/USDJPY_CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_RESULT_V1.md
+
+          archive_dir=docs/research/artifact_archives/usdjpy_csos_dukascopy_native_remaining_family_atlas_v1
+          mkdir -p "$archive_dir"
+          for file in PACKAGE_SHA256SUMS artifact_manifest.json family_comparison.csv variant_comparison.csv track_a_independent_alpha_ranking.csv track_b_complementarity_ranking.csv variant_gate_matrix.csv mechanism_diagnostics.csv execution_robustness.csv family_bootstrap.csv variant_bootstrap.csv old_new_atlas_identity_summary.csv; do
+            cp "$root/out/$file" "$archive_dir/$file"
+          done
+
+          jq -n \
+            --slurpfile result configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_final_result_v1.json \
+            --slurpfile shortlist configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_shortlist_decision_v1.json \
+            --slurpfile period configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_period_access_receipt_v1.json \
+            --slurpfile release configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json \
+            --arg artifact_digest "$artifact_digest" \
+            --arg archive_sha "$archive_sha" \
+            --arg release_tag "$release_tag" \
+            '{schema_version:"usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1",status:"COMPLETE",program_id:"USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",decision:$result[0].decision,atlas_period:"2023-2024",evaluated_family_count:$result[0].evaluated_family_count,evaluated_variant_count:$result[0].evaluated_variant_count,shortlist_count:$shortlist[0].shortlist_count,track_a:$shortlist[0].track_a,track_b:$shortlist[0].track_b,mechanism_research_only:$shortlist[0].mechanism_research_only,period_access:$period[0],scientific_run_id:30435884192,artifact_id:8717709149,artifact_digest:$artifact_digest,deterministic_archive_sha256:$archive_sha,release_tag:$release_tag,release_receipt:$release[0],pointers:{preregistration:"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_prereg_v1.json",period_role_clarification:"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_period_role_clarification_v1.json",technical_revision_receipt:"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_technical_revision_receipt_v1.json",final_result:"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_final_result_v1.json",shortlist_decision:"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_shortlist_decision_v1.json",period_access_receipt:"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_period_access_receipt_v1.json",artifact_manifest:"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_artifact_manifest_v1.json",source_inventory:"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_source_inventory_v1.json",research_memory:"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_research_memory_v1.json",human_report:"docs/research/USDJPY_CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_RESULT_V1.md",artifact_archive:"docs/research/artifact_archives/usdjpy_csos_dukascopy_native_remaining_family_atlas_v1",release_receipt:"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json"},authorization:{candidate_freeze:false,core_mt4:false,external_validation_2025:false,production:false,live:false}}' > configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1.json
+
+          jq '
+            .canonical_pointers.period_policy = "configs/research/usdjpy_period_role_policy_v6.json"
+            | .canonical_pointers.csos_remaining_family_atlas_program_index = "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1.json"
+            | .canonical_pointers.csos_remaining_family_atlas_result = "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_final_result_v1.json"
+            | .canonical_pointers.csos_remaining_family_atlas_shortlist = "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_shortlist_decision_v1.json"
+            | .canonical_pointers.csos_remaining_family_atlas_period_access = "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_period_access_receipt_v1.json"
+            | .canonical_pointers.csos_remaining_family_atlas_report = "docs/research/USDJPY_CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_RESULT_V1.md"
+            | .canonical_pointers.csos_remaining_family_atlas_release_receipt = "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json"
+            | .current_state_snapshot.next_action = "No remaining-family variant passed Track A or Track B. Do not freeze a candidate or access 2025. If separately authorized, preregister an independent mechanism study for B_BALANCE_MEAN_REVERSION using 2020-2024 for analysis/candidate construction and freeze before 2025."
+            | .cross_family_program_state = ((.cross_family_program_state // {}) + {"USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1": {"status":"COMPLETE_MECHANISM_RESEARCH_ONLY","decision":"ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY","shortlist_count":0,"track_a":null,"track_b":null,"mechanism_research_only":"B_BALANCE_MEAN_REVERSION","atlas_period":"2023-2024","analysis_2020_2022_accessed":false,"analysis_2020_2022_confirmation_credit":false,"external_validation_2025_accessed":false,"candidate_freeze":false,"core_mt4_authorized":false,"production_authorized":false,"live_authorized":false}})
+            | if any(.mandatory_startup_read_order[]; .path == "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1.json") then . else .mandatory_startup_read_order += [
+                {"ordinal":12,"path":"configs/research/usdjpy_period_role_policy_v6.json","reason":"corrected EA-wide period roles: 2020-2022 analysis, 2023-2024 research/candidate construction, 2025 sole binding external validation"},
+                {"ordinal":13,"path":"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1.json","reason":"canonical cross-family Atlas result and evidence pointers"},
+                {"ordinal":14,"path":"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_final_result_v1.json","reason":"binding 2023-2024 common-source Atlas decision"},
+                {"ordinal":15,"path":"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_shortlist_decision_v1.json","reason":"Track A/Track B no-shortlist and mechanism-only designation"},
+                {"ordinal":16,"path":"docs/research/USDJPY_CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_RESULT_V1.md","reason":"human-readable interpretation and period firewall"}
+              ] end
+          ' configs/research/usdjpy_research_memory_manifest_v1.json > "$root/memory.json"
+          mv "$root/memory.json" configs/research/usdjpy_research_memory_manifest_v1.json
+
+          jq -e '.canonical_pointers.period_policy=="configs/research/usdjpy_period_role_policy_v6.json" and .cross_family_program_state."USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1".shortlist_count==0 and .cross_family_program_state."USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1".analysis_2020_2022_accessed==false and .cross_family_program_state."USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1".external_validation_2025_accessed==false' configs/research/usdjpy_research_memory_manifest_v1.json
+          python -m json.tool configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1.json >/dev/null
+          python -m json.tool configs/research/usdjpy_research_memory_manifest_v1.json >/dev/null
+          if [ -f tools/validate_usdjpy_research_memory_v2.py ]; then python tools/validate_usdjpy_research_memory_v2.py; fi
+
+          git add configs/research docs/research
+          git commit -m 'research: canonicalize remaining-family Atlas result'
+          git push origin "$branch"
+          body=$(printf '%s\n' \
+            '## Binding decision' \
+            '' \
+            '`ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY`.' \
+            '' \
+            '- Track A eligible: none' \
+            '- Track B eligible: none' \
+            '- Shortlist count: 0' \
+            '- Mechanism research only: `B_BALANCE_MEAN_REVERSION`' \
+            '- Scientific Run: `30435884192`' \
+            '- Artifact: `8717709149`' \
+            '- Artifact digest: `sha256:69fda87cdb5eef9a0fef641f8927918bb1a1fca6a5e9eabf72e34558afeeaa72`' \
+            '- Deterministic/Release SHA256: `4fa85d2fef179b82e15abe6cd7e9bb4d7af47ecd200659f183b4d8be7e5dd607`' \
+            '' \
+            '2020-2022 is analysis-only and was not accessed or credited as confirmation. 2025 is the sole unseen binding external-validation period and was not accessed. No candidate freeze, Core/MT4, production or live authorization.' \
+            '' \
+            'This PR commits exact artifact-derived result/report/ranking/period/program/memory records. No scientific recalculation or retuning.')
+          pr_url=$(gh pr create --repo "$repo" --head "$branch" --base main --title 'research: close Dukascopy-native remaining-family Atlas v1' --body "$body")
+          gh issue comment 403 --repo "$repo" --body "Atlas canonicalization PR opened: ${pr_url}"
