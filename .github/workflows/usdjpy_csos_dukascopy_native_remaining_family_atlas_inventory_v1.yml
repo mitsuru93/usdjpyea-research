@@ -7,6 +7,9 @@ on:
       - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_prereg_v1.json'
       - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_source_manifest_v1.json'
       - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_startup_receipt_v1.json'
+      - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_period_role_clarification_v1.json'
+      - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_contract_catalog_v1.json'
+      - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_prior_study_audit_v1.json'
       - 'tools/inventory_usdjpy_csos_dukascopy_native_remaining_family_atlas_v1.py'
   workflow_dispatch:
 permissions:
@@ -30,15 +33,20 @@ jobs:
           fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_prereg_v1.json "$root/src/prereg.json"
           fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_source_manifest_v1.json "$root/src/source_manifest.json"
           fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_startup_receipt_v1.json "$root/src/startup_receipt.json"
+          fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_period_role_clarification_v1.json "$root/src/period_role_clarification.json"
+          fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_contract_catalog_v1.json "$root/src/family_contract_catalog.json"
+          fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_prior_study_audit_v1.json "$root/evidence/prior_study_search.json"
           fetch tools/inventory_usdjpy_csos_dukascopy_native_remaining_family_atlas_v1.py "$root/src/inventory.py"
           fetch tools/usdjpy_hyp034_bi5_source_v1.py "$root/src/usdjpy_hyp034_bi5_source_v1.py"
           fetch tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py "$root/src/build_baseline.py"
           fetch tools/vendor/fx2_infra_core_f897b250_v1.py "$root/infra/fx2_infra.py"
           python -m py_compile "$root/src/"*.py "$root/infra/fx2_infra.py"
           python "$root/infra/fx2_infra.py" probe --json "$root/evidence/runner_capability.json" --markdown "$root/evidence/runner_capability.md"
-          jq -e '.program_id=="USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1" and .status=="FROZEN_BEFORE_DUKASCOPY_NATIVE_OUTCOMES" and .monetary_contract.reporting_currency=="JPY" and .candidate_freeze_authorized==false and .core_or_mt4_authorized==false' "$root/src/prereg.json"
-          jq -e '.whole_repository_checkout_required==false and .exact_sha_selective_fetch_required==true and (.forbidden_assets|sort)==["2019","2020","2021","2022","2025"]' "$root/src/source_manifest.json"
-          jq -e '.status=="PASS_CANONICAL_STARTUP_AND_PROGRAM_FIREWALL" and .hypothesis_id_consumed==false and .protected_2020_2022_accessed==false and .protected_2025_accessed==false' "$root/src/startup_receipt.json"
+          jq -e '.program_id=="USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1" and .status=="FROZEN_BEFORE_DUKASCOPY_NATIVE_OUTCOMES" and .monetary_contract.reporting_currency=="JPY" and .period_role_clarification.received_before_new_family_outcome_calculation==true and .period_roles."2020_2022".ea_research_role=="ANALYSIS_PERIOD" and .period_roles."2020_2022".confirmation_credit==false and .period_roles."2025".ea_research_role=="UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD" and .candidate_freeze_authorized==false and .core_or_mt4_authorized==false' "$root/src/prereg.json"
+          jq -e '.whole_repository_checkout_required==false and .exact_sha_selective_fetch_required==true and .binding_tick_years==[2023,2024] and ."2020_2022_confirmation_credit"==false and ."2025_external_validation_role"==true' "$root/src/source_manifest.json"
+          jq -e '.status=="PASS_CANONICAL_STARTUP_AND_PROGRAM_FIREWALL" and .hypothesis_id_consumed==false and .period_role_correction.received_before_new_family_outcome_calculation==true and .analysis_2020_2022_accessed==false and .external_validation_2025_accessed==false' "$root/src/startup_receipt.json"
+          jq -e '.status=="PASS_PROTOCOL_CLARIFICATION_BEFORE_NEW_FAMILY_OUTCOMES" and .candidate_outcomes_accessed_before_correction==false and .family_contract_changed==false and .ranking_metric_changed==false and .shortlist_gate_changed==false and .source_authority_changed==false' "$root/src/period_role_clarification.json"
+          jq -e '.status=="FROZEN_BEFORE_DUKASCOPY_NATIVE_OUTCOMES" and (.variants|length)==12 and (.explicit_exclusions|sort)==["D_SHOCK_FAILURE","F_ASIAN_RANGE_SWEEP","F_PREVIOUS_DAY_SWEEP","J_PULLBACK_CONTINUATION"]' "$root/src/family_contract_catalog.json"
           echo "root=$root" >>"$GITHUB_OUTPUT"; echo "sha=$sha" >>"$GITHUB_OUTPUT"; printf '%s\n' "$sha" >"$root/evidence/research_head_sha.txt"
       - uses: actions/setup-python@v5
         with:
@@ -68,25 +76,16 @@ jobs:
           done
           find "$ROOT/inputs/raw2023" "$ROOT/inputs/raw2024" -maxdepth 1 -type f -printf '%f %s\n'|sort >"$ROOT/evidence/raw_release_inventory.txt"
           ! grep -E '2019|2020|2021|2022|2025' "$ROOT/evidence/raw_release_inventory.txt"
-      - name: Audit prior-study duplication and inventory the source
+      - name: Inventory the common-source population
         shell: bash
         env:
-          GH_TOKEN: '${{ github.token }}'
           ROOT: '${{ steps.init.outputs.root }}'
           PYTHONPATH: '${{ steps.init.outputs.root }}/src'
         run: |
           set -euo pipefail
-          tokens=(A_FALSE_BREAKOUT_REVERSAL B_BALANCE_MEAN_REVERSION C_SHOCK_CONTINUATION E_TOKYO_LONDON E_LONDON_NY E_NY_TOKYO G_TREND_EXHAUSTION H_COMPRESSION_BREAKOUT I_FAILED_TREND_CONTINUATION K_LONDON_OPENING_RANGE_BREAKOUT K_ROUND_NUMBER_REJECTION K_DAILY_TIME_SERIES_MOMENTUM)
-          printf '{"schema_version":"usdjpy_remaining_family_prior_study_search_v1","queries":[' >"$ROOT/evidence/prior_study_search.json"
-          first=1
-          for token in "${tokens[@]}"; do
-            result=$(gh api -X GET search/code -f q="${token} repo:${GITHUB_REPOSITORY}" -f per_page=100 2>/dev/null || printf '{"total_count":0,"items":[]}')
-            [ $first -eq 1 ] || printf ',' >>"$ROOT/evidence/prior_study_search.json"; first=0
-            jq -c --arg token "$token" '{token:$token,total_count:(.total_count//0),paths:[.items[]?.path]}' <<<"$result" >>"$ROOT/evidence/prior_study_search.json"
-          done
-          printf '],"binding_closed_exclusions":{"D_SHOCK_FAILURE":"complete","F_LIQUIDITY_SWEEP":"HYP-030/031/033/034","J_PULLBACK_CONTINUATION":"HYP-035/036 and parallel successor"}}\n' >>"$ROOT/evidence/prior_study_search.json"
           python "$ROOT/src/inventory.py" --atlas-zip "$ROOT/inputs/atlas/usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip" --atlas-unpacked "$ROOT/inputs/atlas/unpacked" --raw-2023 "$ROOT/inputs/raw2023" --raw-2024 "$ROOT/inputs/raw2024" --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" --prior-study-search "$ROOT/evidence/prior_study_search.json" --out-dir "$ROOT/output" 2>&1|tee "$ROOT/evidence/inventory.log"
           jq -e '.status=="PASS_SOURCE_AND_OLD_ATLAS_INVENTORY" and .source.archive_count==24 and .source.ask_bid_inversion_count==0 and .source.nonmonotonic_timestamp_count==0 and .protected_2020_2022_accessed==false and .protected_2025_accessed==false and .candidate_outcomes_computed==false' "$ROOT/output/inventory_result.json"
+          jq -e '.source.tick_count==84428370 and .source.m15_bar_count==49894' "$ROOT/output/inventory_result.json"
           python "$ROOT/infra/fx2_infra.py" archive --input "$ROOT/output" --output "$ROOT/usdjpy-csos-dukascopy-native-remaining-family-atlas-inventory-v1.zip" --source-sha '${{ steps.init.outputs.sha }}' --run-id "$GITHUB_RUN_ID" --classification technical >"$ROOT/evidence/archive_build.json"
           python "$ROOT/infra/fx2_infra.py" readback --archive "$ROOT/usdjpy-csos-dukascopy-native-remaining-family-atlas-inventory-v1.zip" >"$ROOT/evidence/archive_readback.json"
           jq -e '.status=="PASS"' "$ROOT/evidence/archive_readback.json"
