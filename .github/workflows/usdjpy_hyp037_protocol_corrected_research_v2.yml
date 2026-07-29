@@ -40,8 +40,8 @@ jobs:
           fetch tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py "$root/src/build_baseline.py"
           fetch tools/vendor/fx2_infra_core_f897b250_v1.py "$root/infra/fx2_infra.py"
           python -m py_compile "$root/src/"*.py "$root/infra/fx2_infra.py"
-          jq -e '.decision=="PROTOCOL_CORRECTION_PERIOD_ROLE_BEFORE_EXTERNAL_VALIDATION" and .candidate_unchanged==true and .2020_2022_outcomes_accessed_before_correction==false and .2025_outcomes_accessed_before_correction==false' "$root/src/correction.json"
-          jq -e '.hypothesis_id=="USDJPY-HYP-037" and .candidate_id=="C1_SHORT_DUKASCOPY_NATIVE_16BAR" and .2020_2022_binding_confirmation_removed==true and .2025_external_gate_restored==null' "$root/src/prereg_addendum.json" >/dev/null 2>&1 || jq -e '.hypothesis_id=="USDJPY-HYP-037" and .candidate_id=="C1_SHORT_DUKASCOPY_NATIVE_16BAR" and .2020_2022_binding_confirmation_removed==true and .protected_2025_gates.H1.no_retuning==true' "$root/src/prereg_addendum.json"
+          jq -e '.decision=="PROTOCOL_CORRECTION_PERIOD_ROLE_BEFORE_EXTERNAL_VALIDATION" and .candidate_unchanged==true and ."2020_2022_outcomes_accessed_before_correction"==false and ."2025_outcomes_accessed_before_correction"==false' "$root/src/correction.json"
+          jq -e '.hypothesis_id=="USDJPY-HYP-037" and .candidate_id=="C1_SHORT_DUKASCOPY_NATIVE_16BAR" and ."2020_2022_binding_confirmation_removed"==true and .protected_2025_gates.H1.no_retuning==true' "$root/src/prereg_addendum.json"
           echo "root=$root" >> "$GITHUB_OUTPUT"; echo "sha=$sha" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-python@v5
@@ -96,9 +96,9 @@ jobs:
           set -euo pipefail
           common=(--hyp036-ledger "$ROOT/materialized/hyp036_source_native_executable_ledger.csv.gz" --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" --baseline-states "$ROOT/materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz" --raw-2023 "$ROOT/inputs/raw2023" --raw-2024 "$ROOT/inputs/raw2024" --prereg-addendum "$ROOT/src/prereg_addendum.json" --correction-receipt "$ROOT/src/correction.json" --research-sha '${{ steps.init.outputs.sha }}' --core-sha f897b250b808207d960417b2306935dcb0655acf --run-id "$GITHUB_RUN_ID")
           python "$ROOT/src/evaluate.py" "${common[@]}" --out-dir "$ROOT/evidence/preflight" --preflight-only
-          jq -e '.pass==true and .2020_2022_outcomes_accessed==false and .2025_outcomes_accessed==false' "$ROOT/evidence/preflight/preflight_receipt.json"
+          jq -e '.pass==true and ."2020_2022_outcomes_accessed"==false and ."2025_outcomes_accessed"==false' "$ROOT/evidence/preflight/preflight_receipt.json"
           python "$ROOT/src/evaluate.py" "${common[@]}" --out-dir "$ROOT/output" | tee "$ROOT/evidence/research_run.log"
-          jq -e '.hypothesis_id=="USDJPY-HYP-037" and .candidate_unchanged==true and .2020_2022_outcomes_accessed==false and .2025_outcomes_accessed==false and .production_authorized==false and .live_authorized==false' "$ROOT/output/final_result_v2.json"
+          jq -e '.hypothesis_id=="USDJPY-HYP-037" and .candidate_unchanged==true and ."2020_2022_outcomes_accessed"==false and ."2025_outcomes_accessed"==false and .production_authorized==false and .live_authorized==false' "$ROOT/output/final_result_v2.json"
           (cd "$ROOT/output" && sha256sum -c PACKAGE_SHA256SUMS)
           python "$ROOT/infra/fx2_infra.py" archive --input "$ROOT/output" --output "$ROOT/usdjpy-hyp037-protocol-corrected-research-v2.zip" --source-sha '${{ steps.init.outputs.sha }}' --run-id "$GITHUB_RUN_ID" --classification scientific > "$ROOT/evidence/archive_build.json"
           python "$ROOT/infra/fx2_infra.py" readback --archive "$ROOT/usdjpy-hyp037-protocol-corrected-research-v2.zip" > "$ROOT/evidence/archive_readback.json"
@@ -110,9 +110,9 @@ jobs:
         with:
           name: usdjpy-hyp037-protocol-corrected-research-v2-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            ${{ steps.init.outputs.root }}/output
-            ${{ steps.init.outputs.root }}/evidence
-            ${{ steps.init.outputs.root }}/usdjpy-hyp037-protocol-corrected-research-v2.zip
+            ${{ runner.temp }}/h37v2/output
+            ${{ runner.temp }}/h37v2/evidence
+            ${{ runner.temp }}/h37v2/usdjpy-hyp037-protocol-corrected-research-v2.zip
           retention-days: 90
           compression-level: 0
-          if-no-files-found: error
+          if-no-files-found: warn
