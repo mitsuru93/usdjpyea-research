@@ -1,0 +1,16 @@
+{
+  "schema_version": "usdjpy_hyp036_candidate_registry_v1",
+  "hypothesis_id": "USDJPY-HYP-036",
+  "family_id": "S_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE",
+  "candidate_ids": ["A_DUKASCOPY_NATIVE_16BAR"],
+  "selected_candidate": null,
+  "candidate_freeze": false,
+  "decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE",
+  "failed_binding_stage": "DEVELOPMENT_STANDALONE",
+  "historical_2020_2022_authorized": false,
+  "core_mt4_authorized": false,
+  "2025_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "no_retuning": true
+}
