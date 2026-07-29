@@ -29,8 +29,20 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           import base64, hashlib, io, pathlib, zipfile
-          parts=sorted(pathlib.Path('tools/staging').glob('usdjpy_hyp038_prereg_payload_v1.part*'))
-          assert [p.name for p in parts] == [f'usdjpy_hyp038_prereg_payload_v1.part{i:02d}' for i in range(4)]
+          names=[
+              'usdjpy_hyp038_prereg_payload_v1.part00',
+              'usdjpy_hyp038_prereg_payload_v1.part01a',
+              'usdjpy_hyp038_prereg_payload_v1.part01b',
+              'usdjpy_hyp038_prereg_payload_v1.part01c',
+              'usdjpy_hyp038_prereg_payload_v1.part01d',
+              'usdjpy_hyp038_prereg_payload_v1.part02',
+              'usdjpy_hyp038_prereg_payload_v1.part03a',
+              'usdjpy_hyp038_prereg_payload_v1.part03b',
+              'usdjpy_hyp038_prereg_payload_v1.part03c',
+              'usdjpy_hyp038_prereg_payload_v1.part03d',
+          ]
+          parts=[pathlib.Path('tools/staging')/name for name in names]
+          assert all(p.is_file() for p in parts)
           encoded=''.join(p.read_text(encoding='ascii') for p in parts)
           raw=base64.b64decode(encoded)
           expected='c4576470271cee697a9640a93a9f4a34d9454751f4e21e03da5635e0bc287680'
@@ -50,9 +62,9 @@ jobs:
             'tools/evaluate_usdjpy_hyp038_delayed_continuation_v1.py',
           }
           with zipfile.ZipFile(io.BytesIO(raw)) as z:
-              names=set(z.namelist())
-              assert names==allowed, (names-allowed, allowed-names)
-              for name in sorted(names):
+              members=set(z.namelist())
+              assert members==allowed, (members-allowed, allowed-members)
+              for name in sorted(members):
                   p=pathlib.PurePosixPath(name)
                   assert not p.is_absolute() and '..' not in p.parts
                   target=pathlib.Path(*p.parts); target.parent.mkdir(parents=True,exist_ok=True)
