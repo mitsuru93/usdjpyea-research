@@ -1,0 +1,20 @@
+[
+  {
+    "candidate_id": "C1_BREAKOUT_ACCEPTANCE_30M",
+    "ci95_jpy": [-29189.24999999957, -1554.924999999535],
+    "probability_nonpositive": 0.9858,
+    "replicates": 5000
+  },
+  {
+    "candidate_id": "C2_FALSE_BREAK_RANGE_REENTRY",
+    "ci95_jpy": [-27388.049999999395, 12686.025000000665],
+    "probability_nonpositive": 0.7646,
+    "replicates": 5000
+  },
+  {
+    "candidate_id": "C3_PROFIT_TO_NONPROFIT_GIVEBACK",
+    "ci95_jpy": [-24030.224999999304, 20518.05000000039],
+    "probability_nonpositive": 0.549,
+    "replicates": 5000
+  }
+]

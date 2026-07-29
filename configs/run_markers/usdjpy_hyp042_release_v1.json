@@ -1,0 +1,8 @@
+{
+  "schema_version": "usdjpy_hyp042_release_marker_v1",
+  "hypothesis_id": "USDJPY-HYP-042",
+  "decision": "B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE",
+  "release_tag": "usdjpy-hyp042-b02-recovery-v1",
+  "one_shot": true,
+  "parallel_studies_modified": false
+}

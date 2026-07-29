@@ -1,0 +1,139 @@
+{
+  "adopted_candidate_id": null,
+  "candidate_results": [
+    {
+      "2024_delta_jpy": -18378.99999999992,
+      "2025H1_delta_jpy": 2401.000000000143,
+      "2025H1_net_jpy": -4562.999999999856,
+      "adoption_findings": {
+        "2024_damage_not_material": false,
+        "2025H1_improves": true,
+        "historical_net_remains_positive": false,
+        "historical_net_retention_at_least_85pct": false,
+        "modified_trade_share_at_most_40pct": false,
+        "positive_delta_folds_at_least_3": false,
+        "winner_retention_at_least_80pct": false
+      },
+      "candidate_id": "C1_BREAKOUT_ACCEPTANCE_30M",
+      "development_baseline_net_jpy": 12722.0,
+      "development_delta_jpy": -15237.999999999573,
+      "development_net_jpy": -2515.9999999995725,
+      "folds": [
+        {"delta": 4063.000000000183, "fold": "2023H1", "net": -10317.999999999818},
+        {"delta": -921.9999999998358, "fold": "2023H2", "net": 1000.0000000001644},
+        {"delta": -5849.00000000004, "fold": "2024H1", "net": 3704.99999999996},
+        {"delta": -12529.999999999878, "fold": "2024H2", "net": 3097.0000000001223}
+      ],
+      "historical_net_retention": -0.19776764659641322,
+      "modified_trade_share": 0.5058275058275058,
+      "portable": false,
+      "positive_delta_folds": 1,
+      "top20_winner_damage_jpy": 12018.999999999998,
+      "winner_retention": 0.5690116791048095
+    },
+    {
+      "2024_delta_jpy": -18181.999999999727,
+      "2025H1_delta_jpy": 7842.000000000235,
+      "2025H1_net_jpy": 878.0000000002333,
+      "adoption_findings": {
+        "2024_damage_not_material": false,
+        "2025H1_improves": true,
+        "historical_net_remains_positive": true,
+        "historical_net_retention_at_least_85pct": false,
+        "modified_trade_share_at_most_40pct": false,
+        "positive_delta_folds_at_least_3": false,
+        "winner_retention_at_least_80pct": false
+      },
+      "candidate_id": "C2_FALSE_BREAK_RANGE_REENTRY",
+      "development_baseline_net_jpy": 12722.0,
+      "development_delta_jpy": -7596.9999999992415,
+      "development_net_jpy": 5125.0000000007585,
+      "folds": [
+        {"delta": 7550.000000000228, "fold": "2023H1", "net": -6830.999999999773},
+        {"delta": 3035.0000000002583, "fold": "2023H2", "net": 4957.000000000258},
+        {"delta": -7251.999999999919, "fold": "2024H1", "net": 2302.000000000081},
+        {"delta": -10929.999999999807, "fold": "2024H2", "net": 4697.000000000193}
+      ],
+      "historical_net_retention": 0.40284546454965875,
+      "modified_trade_share": 0.7855477855477856,
+      "portable": false,
+      "positive_delta_folds": 2,
+      "top20_winner_damage_jpy": 17399.00000000002,
+      "winner_retention": 0.4289246862296861
+    },
+    {
+      "2024_delta_jpy": -10962.999999999844,
+      "2025H1_delta_jpy": 9285.000000000284,
+      "2025H1_net_jpy": 2321.000000000283,
+      "adoption_findings": {
+        "2024_damage_not_material": false,
+        "2025H1_improves": true,
+        "historical_net_remains_positive": true,
+        "historical_net_retention_at_least_85pct": true,
+        "modified_trade_share_at_most_40pct": false,
+        "positive_delta_folds_at_least_3": false,
+        "winner_retention_at_least_80pct": false
+      },
+      "candidate_id": "C3_PROFIT_TO_NONPROFIT_GIVEBACK",
+      "development_baseline_net_jpy": 12722.0,
+      "development_delta_jpy": -1502.999999999498,
+      "development_net_jpy": 11219.000000000502,
+      "folds": [
+        {"delta": 8627.000000000187, "fold": "2023H1", "net": -5753.999999999813},
+        {"delta": 833.0000000001564, "fold": "2023H2", "net": 2755.0000000001564},
+        {"delta": -5500.999999999944, "fold": "2024H1", "net": 4053.000000000056},
+        {"delta": -5461.999999999899, "fold": "2024H2", "net": 10165.0000000001}
+      ],
+      "historical_net_retention": 0.881858198396518,
+      "modified_trade_share": 0.7319347319347319,
+      "portable": false,
+      "positive_delta_folds": 2,
+      "top20_winner_damage_jpy": 10547.000000000015,
+      "winner_retention": 0.47055317862003326
+    }
+  ],
+  "core_mt4_required": false,
+  "data_limitations": {
+    "2023_source_has_M1_but_not_used_for_cross-period_binding": true,
+    "2024H2_2025H1_exact_intrabar_tick_path": "not_present_in_consumed_baseline_artifacts",
+    "ATR": "M15 open-to-open absolute-move volatility proxy reported; exact high-low ATR not common across all consumed periods",
+    "binding_path_resolution": "first executable M15 boundary",
+    "exact_5s_15s_1m_5m_all_period_common_schema": false,
+    "second_level_delay": "not assertable; next-M15-boundary delay and exit-cost stress reported"
+  },
+  "decision": "B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE",
+  "decision_basis": {
+    "B02_share_of_2025H1_portfolio_loss": 0.3346789696270665,
+    "baseline_development_B02_net_jpy": 12722.0,
+    "best_2025_B02_net_jpy": 2321.0,
+    "best_2025_candidate": "C3_PROFIT_TO_NONPROFIT_GIVEBACK",
+    "best_2025_portfolio_net_jpy": -11523.0,
+    "best_candidate_2024_delta_jpy": -10963.0,
+    "best_candidate_development_net_jpy": 11219.0,
+    "best_candidate_modified_trade_share": 0.7319347319347319,
+    "best_candidate_winner_retention": 0.47055317862003326,
+    "interpretation": "The strongest 2025 repair is an overbroad lifecycle replacement, not a narrow portable B02 v2 improvement. B02-only repair still leaves the baseline portfolio materially negative."
+  },
+  "failure_bucket_summary": [
+    {"bucket":"IMMEDIATE_FALSE_BREAKOUT","trades":18,"net_jpy":-9652.0,"gross_loss_jpy":9652.0,"loss_contribution_share":0.2869032756673206,"development_loss_contribution_share":0.3018224491228774,"loss_share_difference_percentage_points":-1.4919173455556822,"long_trades":8,"short_trades":10,"F05_overlap_trades":9},
+    {"bucket":"SLOW_ACCEPTANCE_FAILURE","trades":20,"net_jpy":-17521.0,"gross_loss_jpy":17521.0,"loss_contribution_share":0.5208073241781107,"development_loss_contribution_share":0.49082757444759834,"loss_share_difference_percentage_points":2.997974973051237,"long_trades":10,"short_trades":10,"F05_overlap_trades":7},
+    {"bucket":"TEMPORARY_PROFIT_GIVEBACK","trades":14,"net_jpy":-5744.0,"gross_loss_jpy":5744.0,"loss_contribution_share":0.17073895725581117,"development_loss_contribution_share":0.1821145224220419,"loss_share_difference_percentage_points":-1.1375565166230728,"long_trades":2,"short_trades":12,"F05_overlap_trades":6},
+    {"bucket":"TREND_EXHAUSTION_ENTRY","trades":0,"net_jpy":0.0,"gross_loss_jpy":0.0,"loss_contribution_share":0.0,"development_loss_contribution_share":0.0,"loss_share_difference_percentage_points":0.0,"long_trades":0,"short_trades":0,"F05_overlap_trades":0},
+    {"bucket":"EXIT_HORIZON_MISMATCH","trades":4,"net_jpy":-725.0,"gross_loss_jpy":725.0,"loss_contribution_share":0.021550442898757505,"development_loss_contribution_share":0.025235454007482373,"loss_share_difference_percentage_points":-0.36850111087248677,"long_trades":2,"short_trades":2,"F05_overlap_trades":1},
+    {"bucket":"SESSION_VOLATILITY_MISMATCH","trades":0,"net_jpy":0.0,"gross_loss_jpy":0.0,"loss_contribution_share":0.0,"development_loss_contribution_share":0.0,"loss_share_difference_percentage_points":0.0,"long_trades":0,"short_trades":0,"F05_overlap_trades":0},
+    {"bucket":"OVERLAP_CHRONOLOGY","trades":0,"net_jpy":0.0,"gross_loss_jpy":0.0,"loss_contribution_share":0.0,"development_loss_contribution_share":0.0,"loss_share_difference_percentage_points":0.0,"long_trades":0,"short_trades":0,"F05_overlap_trades":0},
+    {"bucket":"OTHER","trades":49,"net_jpy":26678.0,"gross_loss_jpy":0.0,"loss_contribution_share":0.0,"development_loss_contribution_share":0.0,"loss_share_difference_percentage_points":0.0,"long_trades":23,"short_trades":26,"F05_overlap_trades":14}
+  ],
+  "hypothesis_id": "USDJPY-HYP-042",
+  "identity": {
+    "2023": {"B02_net_jpy": -12459.0, "B02_trades": 230, "F05_net_jpy": 3180.0, "F05_trades": 730, "net_jpy": -9279.0, "trades": 960},
+    "2024H1": {"B02_net_jpy": 9554.0, "B02_trades": 97, "F05_net_jpy": 13243.0, "F05_trades": 331, "net_jpy": 22797.0, "trades": 428},
+    "2024H2": {"B02_net_jpy": 15627.0, "B02_trades": 102, "F05_net_jpy": 22482.0, "F05_trades": 392, "net_jpy": 38109.0, "trades": 494},
+    "2025H1": {"B02_net_jpy": -6964.0, "B02_trades": 105, "F05_net_jpy": -13844.0, "F05_trades": 358, "net_jpy": -20808.0, "trades": 463}
+  },
+  "live_authorized": false,
+  "parallel_studies_modified": false,
+  "period_roles": {"2020_2022":"OPTIONAL_NOT_USED","2023_2024":"RESEARCH_AND_CANDIDATE_CONSTRUCTION","2025H1":"VALIDATION_PERIOD","2025H2":"NOT_USED"},
+  "production_authorized": false,
+  "schema_version": "usdjpy_hyp042_result_v1"
+}

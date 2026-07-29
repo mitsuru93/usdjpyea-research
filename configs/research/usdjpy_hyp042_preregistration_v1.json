@@ -1,0 +1,105 @@
+{
+  "schema_version": "usdjpy_hyp042_preregistration_v1",
+  "hypothesis_id": "USDJPY-HYP-042",
+  "title": "B02 2025H1 Breakout Failure Recovery Study",
+  "family_id": "B02_V2_BREAKOUT_ACCEPTANCE_AND_LIFECYCLE_RECOVERY",
+  "status": "FROZEN_BEFORE_HYP042_CANDIDATE_OUTCOME_COMPUTATION",
+  "purpose": "Preserve the profitable 2023-2024 B02 architecture, decompose the known 2025H1 B02 loss, and change B02 only if a finite portable recovery rule improves EA-wide economics without material historical winner damage.",
+  "period_roles": {
+    "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_NOT_A_GATE",
+    "2023H1_2024H2": "RESEARCH_AND_CANDIDATE_CONSTRUCTION",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_AUTOMATICALLY_USED"
+  },
+  "outcome_visibility": {
+    "2025H1_baseline_known": true,
+    "2025H1_candidate_outcomes_computed_before_freeze": false,
+    "unseen_validation_claim": false,
+    "period_role_independent_of_visibility": true
+  },
+  "baseline_contract": {
+    "strategy": "B02",
+    "signal": "completed M15 close outside 00:00-07:00 UTC same-day session range during 07:00-12:59 UTC",
+    "entry": "first executable Tick at next M15 boundary; Long Ask, Short Bid",
+    "exit": "first executable Tick after 48 M15 bars; Long Bid, Short Ask",
+    "same_day_same_side_claim": true,
+    "lot": 0.01,
+    "accounting_currency": "JPY",
+    "tester_spread_points": 5,
+    "pip_value_jpy_0_01_lot": 10
+  },
+  "failure_decomposition": {
+    "required_buckets": [
+      "IMMEDIATE_FALSE_BREAKOUT",
+      "SLOW_ACCEPTANCE_FAILURE",
+      "TEMPORARY_PROFIT_GIVEBACK",
+      "TREND_EXHAUSTION_ENTRY",
+      "EXIT_HORIZON_MISMATCH",
+      "SESSION_VOLATILITY_MISMATCH",
+      "OVERLAP_CHRONOLOGY",
+      "OTHER"
+    ],
+    "common_observation_contract": "first executable M15-boundary Bid; Short executable Ask equals Bid plus frozen five-point spread",
+    "intrabar_5s_15s_1m_5m_policy": "report only where source-native observations exist; otherwise mark unavailable rather than infer exact Tick outcomes",
+    "priority_order": "mutually exclusive first-match classification using immediate failure, slow failure, giveback, exhaustion, horizon, session/volatility, overlap, other"
+  },
+  "candidate_catalog": [
+    {
+      "candidate_id": "C1_BREAKOUT_ACCEPTANCE_30M",
+      "family": "BREAKOUT_ACCEPTANCE_PERMISSION",
+      "observation_window_minutes": 30,
+      "rule": "At the first executable boundary Tick 30 minutes after Entry, close if executable gross pips are not positive; otherwise retain the original 48-bar lifecycle.",
+      "parameters": "single frozen window; no threshold grid; no side/session exception"
+    },
+    {
+      "candidate_id": "C2_FALSE_BREAK_RANGE_REENTRY",
+      "family": "FALSE_BREAK_STRUCTURAL_INVALIDATION",
+      "rule": "From the first completed M15 boundary after Entry, close on the first executable Tick at which Long Bid is at or below the frozen session high, or Short Ask is at or above the frozen session low.",
+      "parameters": "Entry-time range boundary only; no fixed SL, ATR multiplier, side/session exception or month filter"
+    },
+    {
+      "candidate_id": "C3_PROFIT_TO_NONPROFIT_GIVEBACK",
+      "family": "GIVEBACK_LIFECYCLE_EXIT",
+      "rule": "After at least one completed M15 boundary has positive executable gross pips, close at the first later completed M15 boundary whose executable gross pips are non-positive.",
+      "parameters": "online state only; no future peak, trailing grid, target-specific exit, side/session exception or month filter"
+    }
+  ],
+  "combined_candidate_authorized": false,
+  "research_evaluation": {
+    "folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+    "primary_priority": [
+      "EA-wide net and PF effect",
+      "B02 historical net preservation",
+      "winner and top-winner retention",
+      "fold and monthly breadth",
+      "realized and full-equity DD",
+      "cost/delay robustness",
+      "concentration/bootstrap",
+      "F05 economic invariance",
+      "margin/concurrency"
+    ],
+    "automatic_single_gate_failure": false,
+    "maximum_adopted_candidates": 1
+  },
+  "decision_enum": [
+    "PASS_B02_V2_2025H1_RECOVERY",
+    "PASS_B02_V2_PARTIAL_RECOVERY",
+    "B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE",
+    "FAIL_B02_V2_PORTABLE_RECOVERY",
+    "TECHNICAL_NO_RESULT"
+  ],
+  "core_mt4_policy": "Implement only an adopted candidate; require zero Research/Core and Core/MT4 mismatch, JPY accounting, standalone and F05-integrated tester, full-equity and margin evidence.",
+  "prohibited": [
+    "unbounded parameter search",
+    "post-hoc side/session/month exclusion",
+    "fixed SL optimization",
+    "ATR multiplier grid",
+    "profit threshold grid",
+    "trailing stop grid",
+    "future peak use",
+    "2025H2 substitution",
+    "modification of HYP039 HYP040 HYP041 or portfolio integration branches/statuses"
+  ],
+  "production_authorized": false,
+  "live_authorized": false
+}

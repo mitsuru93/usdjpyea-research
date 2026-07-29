@@ -1,0 +1,53 @@
+{
+  "baseline_2025H1": {
+    "B02_gross_pips": -696.4,
+    "B02_realized_pl_jpy": -6964.0,
+    "B02_trades": 105,
+    "F05_gross_pips": -1384.4,
+    "F05_realized_pl_jpy": -13844.0,
+    "F05_trades": 358,
+    "identity_complete": true,
+    "pips_to_jpy_multiplier": 10.0,
+    "portfolio_gross_pips": -2080.8,
+    "portfolio_realized_pl_jpy": -20808.0,
+    "portfolio_trades": 463
+  },
+  "chronology": {
+    "B02_candidate_counterfactual_preserves_signal_generation": true,
+    "F05_economics_unchanged": true,
+    "single_integrated_EA_order": [
+      "candidate-specific F05 failed-reclaim tick state update",
+      "on new M15: close matured orders",
+      "evaluate B02",
+      "evaluate F05",
+      "portfolio snapshot"
+    ]
+  },
+  "core_exact_2025_risk": {
+    "final_balance_jpy": 79192.0,
+    "initial_balance_jpy": 100000.0,
+    "maximum_equity_drawdown_jpy": 42737.0,
+    "maximum_open_lots": 0.08,
+    "maximum_open_orders": 8,
+    "minimum_equity_jpy": 57328.0,
+    "minimum_free_margin_jpy": 22611.58,
+    "minimum_margin_level_percent": 156.0535,
+    "source": "Core Run 30180390705 artifact 8625412799 risk_summary",
+    "stopout_breached": false
+  },
+  "execution": {
+    "actual_slippage_separately_logged": false,
+    "margin_or_stopout_failure": false,
+    "runtime_errors": 0,
+    "slippage_limit_points": 30,
+    "spread_pips": 0.5,
+    "tester_spread_points": 5
+  },
+  "path_parity": {
+    "binding_resolution": "first executable M15 boundary",
+    "exact_5s_15s_1m_5m_cross_period_parity": false,
+    "no_exact_intrabar_claim_made": true,
+    "reason": "2024H2 and 2025H1 consumed baseline artifacts do not preserve a common exact intrabar Tick path"
+  },
+  "schema_version": "usdjpy_hyp042_chronology_currency_parity_receipt_v1"
+}

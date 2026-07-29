@@ -1,0 +1,39 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "adopted_candidate_id": null,
+      "candidate_ids": [
+        "C1_BREAKOUT_ACCEPTANCE_30M",
+        "C2_FALSE_BREAK_RANGE_REENTRY",
+        "C3_PROFIT_TO_NONPROFIT_GIVEBACK"
+      ],
+      "decision": "B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE",
+      "evidence_refs": [
+        "configs/research/usdjpy_hyp042_preregistration_v1.json",
+        "configs/research/usdjpy_hyp042_result_v1.json",
+        "docs/research/USDJPY_HYP042_B02_2025H1_RECOVERY_RESULT_V1.md"
+      ],
+      "family_ids": ["B02_V2_BREAKOUT_ACCEPTANCE_AND_LIFECYCLE_RECOVERY"],
+      "hypothesis_id": "USDJPY-HYP-042",
+      "live_authorized": false,
+      "parallel_studies_modified": false,
+      "period_roles": {
+        "2020_2022": "OPTIONAL_REFERENCE_NOT_USED",
+        "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION",
+        "2025H1": "VALIDATION_PERIOD",
+        "2025H2": "NOT_USED"
+      },
+      "production_authorized": false,
+      "status": "CLOSED_NO_CHANGE",
+      "title": "B02 2025H1 Breakout Failure Recovery Study"
+    }
+  ],
+  "observed_latest_main_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v43.json",
+  "parallel_id_reservations": [
+    "USDJPY-HYP-041 reserved for F05 v2",
+    "USDJPY-HYP-042 used here"
+  ],
+  "schema_version": "usdjpy_hypothesis_ledger_parallel_addendum_hyp042_v1",
+  "status": "CLOSED_PARALLEL_APPEND_ONLY_DELTA_NON_SUPERSEDING"
+}
