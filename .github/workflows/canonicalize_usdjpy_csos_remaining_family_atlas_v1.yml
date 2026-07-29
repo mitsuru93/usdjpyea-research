@@ -83,8 +83,7 @@ jobs:
             | .canonical_pointers.csos_remaining_family_atlas_period_access = "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_period_access_receipt_v1.json"
             | .canonical_pointers.csos_remaining_family_atlas_report = "docs/research/USDJPY_CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_RESULT_V1.md"
             | .canonical_pointers.csos_remaining_family_atlas_release_receipt = "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json"
-            | .current_state_snapshot.next_action = "No remaining-family variant passed Track A or Track B. Do not freeze a candidate or access 2025. If separately authorized, preregister an independent mechanism study for B_BALANCE_MEAN_REVERSION using 2020-2024 for analysis/candidate construction and freeze before 2025."
-            | .cross_family_program_state = ((.cross_family_program_state // {}) + {"USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1": {"status":"COMPLETE_MECHANISM_RESEARCH_ONLY","decision":"ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY","shortlist_count":0,"track_a":null,"track_b":null,"mechanism_research_only":"B_BALANCE_MEAN_REVERSION","atlas_period":"2023-2024","analysis_2020_2022_accessed":false,"analysis_2020_2022_confirmation_credit":false,"external_validation_2025_accessed":false,"candidate_freeze":false,"core_mt4_authorized":false,"production_authorized":false,"live_authorized":false}})
+            | .cross_family_program_state = ((.cross_family_program_state // {}) + {"USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1": {"status":"COMPLETE_MECHANISM_RESEARCH_ONLY","decision":"ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY","shortlist_count":0,"track_a":null,"track_b":null,"mechanism_research_only":"B_BALANCE_MEAN_REVERSION","atlas_period":"2023-2024","analysis_2020_2022_accessed":false,"analysis_2020_2022_confirmation_credit":false,"external_validation_2025_accessed":false,"candidate_freeze":false,"core_mt4_authorized":false,"production_authorized":false,"live_authorized":false,"next_action":"No remaining-family variant passed Track A or Track B. Do not freeze a candidate or access 2025. If separately authorized, preregister an independent mechanism study for B_BALANCE_MEAN_REVERSION using 2020-2024 for analysis/candidate construction and freeze before 2025."}})
             | if any(.mandatory_startup_read_order[]; .path == "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1.json") then . else .mandatory_startup_read_order += [
                 {"ordinal":12,"path":"configs/research/usdjpy_period_role_policy_v6.json","reason":"corrected EA-wide period roles: 2020-2022 analysis, 2023-2024 research/candidate construction, 2025 sole binding external validation"},
                 {"ordinal":13,"path":"configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1.json","reason":"canonical cross-family Atlas result and evidence pointers"},
@@ -98,7 +97,10 @@ jobs:
           jq -e '.canonical_pointers.period_policy=="configs/research/usdjpy_period_role_policy_v6.json" and .cross_family_program_state."USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1".shortlist_count==0 and .cross_family_program_state."USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1".analysis_2020_2022_accessed==false and .cross_family_program_state."USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1".external_validation_2025_accessed==false' configs/research/usdjpy_research_memory_manifest_v1.json
           python -m json.tool configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1.json >/dev/null
           python -m json.tool configs/research/usdjpy_research_memory_manifest_v1.json >/dev/null
-          if [ -f tools/validate_usdjpy_research_memory_v2.py ]; then python tools/validate_usdjpy_research_memory_v2.py; fi
+          if [ -f tools/validate_usdjpy_research_memory_v2.py ]; then
+            python tools/validate_usdjpy_research_memory_v2.py --root . --output "$root/memory_validation.json"
+            jq -e '.status=="PASS"' "$root/memory_validation.json"
+          fi
 
           git add configs/research docs/research
           git commit -m 'research: canonicalize remaining-family Atlas result'
