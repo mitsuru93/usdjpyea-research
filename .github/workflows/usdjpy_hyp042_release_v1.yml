@@ -1,0 +1,117 @@
+name: USDJPY HYP-042 B02 Recovery Closure v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp042_*.json'
+      - 'configs/research/usdjpy_hypothesis_ledger_parallel_addendum_hyp042_v1.json'
+      - 'docs/research/USDJPY_HYP042_B02_2025H1_RECOVERY_RESULT_V1.md'
+      - 'docs/research/artifact_archives/usdjpy_hyp042_b02_recovery_v1/**'
+      - '.github/workflows/usdjpy_hyp042_release_v1.yml'
+      - 'configs/run_markers/usdjpy_hyp042_release_v1.json'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_hyp042_release_v1.json'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  preflight:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate frozen boundary and closure evidence
+        run: |
+          set -euo pipefail
+          jq -e '.hypothesis_id=="USDJPY-HYP-042" and .status=="FROZEN_BEFORE_HYP042_CANDIDATE_OUTCOME_COMPUTATION" and (.candidate_catalog|length)==3 and .period_roles."2025H1"=="VALIDATION_PERIOD"' configs/research/usdjpy_hyp042_preregistration_v1.json
+          jq -e '.hypothesis_id=="USDJPY-HYP-042" and .decision=="B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE" and .adopted_candidate_id==null and .core_mt4_required==false and .parallel_studies_modified==false' configs/research/usdjpy_hyp042_result_v1.json
+          jq -e '.baseline_B02_unchanged==true and .core_pr_created==false and .mt4_candidate_implemented==false' configs/research/usdjpy_hyp042_core_mt4_nonimplementation_receipt_v1.json
+          jq -e '.baseline_2025H1.identity_complete==true and .baseline_2025H1.B02_realized_pl_jpy==-6964 and .baseline_2025H1.portfolio_realized_pl_jpy==-20808' configs/research/usdjpy_hyp042_chronology_currency_parity_receipt_v1.json
+          jq -e '.status=="CLOSED_PARALLEL_APPEND_ONLY_DELTA_NON_SUPERSEDING" and .entries[0].hypothesis_id=="USDJPY-HYP-042" and .entries[0].decision=="B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE"' configs/research/usdjpy_hypothesis_ledger_parallel_addendum_hyp042_v1.json
+          test -s docs/research/USDJPY_HYP042_B02_2025H1_RECOVERY_RESULT_V1.md
+          test -s docs/research/artifact_archives/usdjpy_hyp042_b02_recovery_v1/artifact_manifest.json
+
+  release:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify immutable closure evidence
+        run: |
+          set -euo pipefail
+          jq -e '.decision=="B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE" and .adopted_candidate_id==null and .core_mt4_required==false' configs/research/usdjpy_hyp042_result_v1.json
+          jq -e '.files|length>=10' docs/research/artifact_archives/usdjpy_hyp042_b02_recovery_v1/artifact_manifest.json
+      - name: Build deterministic evidence package
+        run: |
+          set -euo pipefail
+          rm -rf release_payload
+          mkdir -p release_payload
+          cp configs/research/usdjpy_hyp042_startup_receipt_v1.json release_payload/
+          cp configs/research/usdjpy_hyp042_preregistration_v1.json release_payload/
+          cp configs/research/usdjpy_hyp042_result_v1.json release_payload/
+          cp configs/research/usdjpy_hyp042_candidate_gate_matrix_v1.json release_payload/
+          cp configs/research/usdjpy_hyp042_chronology_currency_parity_receipt_v1.json release_payload/
+          cp configs/research/usdjpy_hyp042_source_authority_receipt_v1.json release_payload/
+          cp configs/research/usdjpy_hyp042_core_mt4_nonimplementation_receipt_v1.json release_payload/
+          cp configs/research/usdjpy_hypothesis_ledger_parallel_addendum_hyp042_v1.json release_payload/
+          cp docs/research/USDJPY_HYP042_B02_2025H1_RECOVERY_RESULT_V1.md release_payload/
+          cp -r docs/research/artifact_archives/usdjpy_hyp042_b02_recovery_v1 release_payload/artifact_archive
+          find release_payload -type f -print0 | sort -z | xargs -0 sha256sum > release_payload/PACKAGE_SHA256SUMS
+          zip -q -X -9 -r usdjpy-hyp042-b02-recovery-v1.zip release_payload
+          sha256sum usdjpy-hyp042-b02-recovery-v1.zip > usdjpy-hyp042-b02-recovery-v1.zip.sha256
+      - name: Upload workflow evidence
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp042-b02-recovery-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            release_payload
+            usdjpy-hyp042-b02-recovery-v1.zip
+            usdjpy-hyp042-b02-recovery-v1.zip.sha256
+          retention-days: 90
+          compression-level: 0
+      - name: Publish immutable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG='usdjpy-hyp042-b02-recovery-v1'
+          test "$(gh release view "$TAG" --json tagName --jq .tagName 2>/dev/null || true)" = "$TAG" || \
+            gh release create "$TAG" usdjpy-hyp042-b02-recovery-v1.zip usdjpy-hyp042-b02-recovery-v1.zip.sha256 \
+              --target "$GITHUB_SHA" \
+              --title 'USDJPY-HYP-042 B02 2025H1 Recovery v1' \
+              --notes 'Final decision: B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE. Baseline B02 remains unchanged; no Core/MT4 candidate was authorized. 2025H1 remains the validation period. HYP-039, HYP-040, HYP-041 and portfolio-integration work were not modified.'
+      - name: Create one receipt Issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          set -euo pipefail
+          TITLE='HYP-042 B02 recovery immutable receipt'
+          EXISTING="$(gh issue list --state all --search "$TITLE in:title" --json number --jq '.[0].number // empty')"
+          if [ -z "$EXISTING" ]; then
+            ZIP_SHA="$(cut -d' ' -f1 usdjpy-hyp042-b02-recovery-v1.zip.sha256)"
+            cat > receipt.md <<EOF
+          Decision: \`B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE\`
+
+          - Research SHA: \`$GITHUB_SHA\`
+          - Run: \`$GITHUB_RUN_ID\` attempt \`$GITHUB_RUN_ATTEMPT\`
+          - Actions artifact: \`$ARTIFACT_ID\`
+          - Artifact digest: \`$ARTIFACT_DIGEST\`
+          - Release: \`usdjpy-hyp042-b02-recovery-v1\`
+          - Release ZIP SHA-256: \`$ZIP_SHA\`
+          - Adopted candidate: none
+          - Core/MT4 implementation: not authorized and not performed
+          - Baseline B02: unchanged
+          - 2020–2022 accessed: false
+          - 2025H2 accessed: false
+          - Parallel HYP-039/HYP-040/HYP-041 modified: false
+          EOF
+            gh issue create --title "$TITLE" --body-file receipt.md
+          fi
