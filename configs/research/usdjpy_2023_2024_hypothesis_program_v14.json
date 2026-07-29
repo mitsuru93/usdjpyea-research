@@ -1,0 +1,16 @@
+{
+  "2020_2022_candidate_outcomes_accessed": false,
+  "2025_access": false,
+  "MT4_access": false,
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR",
+  "completed_hypothesis": "USDJPY-HYP-037",
+  "decision": "TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED",
+  "family_id": "S_SHORT_PULLBACK_CONTINUATION_PORTABILITY",
+  "next_action": "Complete and checksum immutable Dukascopy BI5 Bid/Ask monthly archives for 2020-2022, then rerun the unchanged HYP-037 preregistration. Do not change candidate, gate, source lineage, periods, or lot.",
+  "production_authorized": false,
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v14",
+  "scientific_result": false,
+  "status": "HYP037_TECHNICAL_NO_RESULT_SOURCE_AUTHORITY_REPAIR_ONLY",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v13.json",
+  "technical_no_result": true
+}
