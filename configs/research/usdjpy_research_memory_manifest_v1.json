@@ -1,7 +1,14 @@
 {
   "atomic_update_rule": {
     "notion_sync": "after merge update Current State and active task properties and body, fetch both back, and require GitHub agreement",
-    "same_research_change_required_after_every_completed_test": ["result JSON", "human report", "candidate registry", "hypothesis ledger", "period access state", "next action"],
+    "same_research_change_required_after_every_completed_test": [
+      "result JSON",
+      "human report",
+      "candidate registry",
+      "hypothesis ledger",
+      "period access state",
+      "next action"
+    ],
     "technical_incomplete_runs": "record separately; never count as scientific results"
   },
   "canonical_pointers": {
@@ -41,8 +48,14 @@
     "hypothesis_program": "configs/research/usdjpy_2023_2024_hypothesis_program_v14.json",
     "known_2025h1_inventory": "configs/research/usdjpy_2025h1_result_inventory_v1.json",
     "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
-    "period_policy": "configs/research/usdjpy_period_role_policy_v5.json",
-    "recurrence_prevention": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md"
+    "period_policy": "configs/research/usdjpy_period_role_policy_v6.json",
+    "recurrence_prevention": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md",
+    "csos_remaining_family_atlas_program_index": "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1.json",
+    "csos_remaining_family_atlas_result": "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_final_result_v1.json",
+    "csos_remaining_family_atlas_shortlist": "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_shortlist_decision_v1.json",
+    "csos_remaining_family_atlas_period_access": "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_period_access_receipt_v1.json",
+    "csos_remaining_family_atlas_report": "docs/research/USDJPY_CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_RESULT_V1.md",
+    "csos_remaining_family_atlas_release_receipt": "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json"
   },
   "current_state_snapshot": {
     "2025_H1_authorized": false,
@@ -62,7 +75,16 @@
     "registry_status": "USDJPY_HYP037_COMPLETE_FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING"
   },
   "duplicate_research_guard": {
-    "block_conditions": ["same mechanism with threshold changes only", "closed exact candidate relabeled", "prior failed gate omitted", "2025 outcome used to choose mechanism or threshold", "HYP035 Pullback Continuation rescued by source substitution after identity outcome", "HYP036 rewritten as Short-only inside HYP-036", "HYP037 reopened by relaxing concentration/bootstrap/loss-cluster gates", "HYP037 v1 evidence deleted or rewritten instead of superseding period role only"],
+    "block_conditions": [
+      "same mechanism with threshold changes only",
+      "closed exact candidate relabeled",
+      "prior failed gate omitted",
+      "2025 outcome used to choose mechanism or threshold",
+      "HYP035 Pullback Continuation rescued by source substitution after identity outcome",
+      "HYP036 rewritten as Short-only inside HYP-036",
+      "HYP037 reopened by relaxing concentration/bootstrap/loss-cluster gates",
+      "HYP037 v1 evidence deleted or rewritten instead of superseding period role only"
+    ],
     "required_before_new_hypothesis": true,
     "required_comparison_set": "all ledger entries with overlapping target failure, action, strategy, features, period or algebraically equivalent payoff"
   },
@@ -89,36 +111,181 @@
     "manifest_update_required_when_any_canonical_pointer_changes": true
   },
   "mandatory_startup_read_order": [
-    {"ordinal": 1, "path": "AGENTS.md", "reason": "repository-wide AI operating rules"},
-    {"ordinal": 2, "path": "configs/research/usdjpy_research_memory_manifest_v1.json", "reason": "canonical pointers and startup gate through HYP-037 v2 closure"},
-    {"ordinal": 3, "path": "configs/research/usdjpy_research_candidate_registry_v66.json", "reason": "global state after HYP-037 protocol-corrected scientific closure"},
-    {"ordinal": 4, "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md", "reason": "mandatory execution safeguards"},
-    {"ordinal": 5, "path": "configs/research/usdjpy_validation_operating_contract_v4.json", "reason": "lifecycle controls"},
-    {"ordinal": 6, "path": "configs/research/usdjpy_period_role_policy_v5.json", "reason": "period roles"},
-    {"ordinal": 7, "path": "configs/research/usdjpy_hypothesis_ledger_v1.json", "reason": "base causal memory"},
-    {"ordinal": 8, "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v40.json", "reason": "append-only scientific memory through HYP-037 v2 closure"},
-    {"ordinal": 9, "path": "configs/research/usdjpy_hyp037_period_role_correction_receipt_v2.json", "reason": "period-role correction before protected-period access"},
-    {"ordinal": 10, "path": "configs/research/usdjpy_hyp037_final_result_v2.json", "reason": "HYP-037 protocol-corrected binding Research result"},
-    {"ordinal": 11, "path": "docs/research/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md", "reason": "HYP-037 human-readable interpretation"}
+    {
+      "ordinal": 1,
+      "path": "AGENTS.md",
+      "reason": "repository-wide AI operating rules"
+    },
+    {
+      "ordinal": 2,
+      "path": "configs/research/usdjpy_research_memory_manifest_v1.json",
+      "reason": "canonical pointers and startup gate through HYP-037 v2 closure"
+    },
+    {
+      "ordinal": 3,
+      "path": "configs/research/usdjpy_research_candidate_registry_v66.json",
+      "reason": "global state after HYP-037 protocol-corrected scientific closure"
+    },
+    {
+      "ordinal": 4,
+      "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md",
+      "reason": "mandatory execution safeguards"
+    },
+    {
+      "ordinal": 5,
+      "path": "configs/research/usdjpy_validation_operating_contract_v4.json",
+      "reason": "lifecycle controls"
+    },
+    {
+      "ordinal": 6,
+      "path": "configs/research/usdjpy_period_role_policy_v5.json",
+      "reason": "period roles"
+    },
+    {
+      "ordinal": 7,
+      "path": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+      "reason": "base causal memory"
+    },
+    {
+      "ordinal": 8,
+      "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v40.json",
+      "reason": "append-only scientific memory through HYP-037 v2 closure"
+    },
+    {
+      "ordinal": 9,
+      "path": "configs/research/usdjpy_hyp037_period_role_correction_receipt_v2.json",
+      "reason": "period-role correction before protected-period access"
+    },
+    {
+      "ordinal": 10,
+      "path": "configs/research/usdjpy_hyp037_final_result_v2.json",
+      "reason": "HYP-037 protocol-corrected binding Research result"
+    },
+    {
+      "ordinal": 11,
+      "path": "docs/research/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md",
+      "reason": "HYP-037 human-readable interpretation"
+    },
+    {
+      "ordinal": 12,
+      "path": "configs/research/usdjpy_period_role_policy_v6.json",
+      "reason": "corrected EA-wide period roles: 2020-2022 analysis, 2023-2024 research/candidate construction, 2025 sole binding external validation"
+    },
+    {
+      "ordinal": 13,
+      "path": "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_program_index_v1.json",
+      "reason": "canonical cross-family Atlas result and evidence pointers"
+    },
+    {
+      "ordinal": 14,
+      "path": "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_final_result_v1.json",
+      "reason": "binding 2023-2024 common-source Atlas decision"
+    },
+    {
+      "ordinal": 15,
+      "path": "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_shortlist_decision_v1.json",
+      "reason": "Track A/Track B no-shortlist and mechanism-only designation"
+    },
+    {
+      "ordinal": 16,
+      "path": "docs/research/USDJPY_CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_RESULT_V1.md",
+      "reason": "human-readable interpretation and period firewall"
+    }
   ],
   "parallel_track_state": {
-    "USDJPY-HYP-030": {"decision": "NO_PORTABLE_CANDIDATE", "production_authorized": false, "status": "COMPLETE_NO_PORTABLE_CANDIDATE"},
-    "USDJPY-HYP-031": {"decision": "NO_PORTABLE_REGIME_RULE", "production_authorized": false, "status": "COMPLETE_NO_PORTABLE_REGIME_RULE"},
-    "USDJPY-HYP-032": {"decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING", "production_authorized": false, "status": "COMPLETE_FAIL_HISTORICAL_VALIDATION_NO_RETUNING"},
-    "USDJPY-HYP-033": {"decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR", "production_authorized": false, "status": "COMPLETE_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR"},
-    "USDJPY-HYP-034": {"decision": "NO_PORTABLE_REJECTION_MECHANISM", "production_authorized": false, "status": "COMPLETE_NO_PORTABLE_REJECTION_MECHANISM"},
-    "USDJPY-HYP-035": {"decision": "FAIL_ATLAS_IDENTITY", "production_authorized": false, "status": "COMPLETE_FAIL_ATLAS_IDENTITY"},
-    "USDJPY-HYP-036": {"decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE", "production_authorized": false, "status": "COMPLETE_NO_PORTABLE_EXECUTABLE_CANDIDATE"},
-    "USDJPY-HYP-037": {"2020_2022_candidate_outcomes_accessed": false, "2025_accessed": false, "candidate_freeze": false, "decision": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING", "live_authorized": false, "production_authorized": false, "status": "COMPLETE_FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING"}
+    "USDJPY-HYP-030": {
+      "decision": "NO_PORTABLE_CANDIDATE",
+      "production_authorized": false,
+      "status": "COMPLETE_NO_PORTABLE_CANDIDATE"
+    },
+    "USDJPY-HYP-031": {
+      "decision": "NO_PORTABLE_REGIME_RULE",
+      "production_authorized": false,
+      "status": "COMPLETE_NO_PORTABLE_REGIME_RULE"
+    },
+    "USDJPY-HYP-032": {
+      "decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+      "production_authorized": false,
+      "status": "COMPLETE_FAIL_HISTORICAL_VALIDATION_NO_RETUNING"
+    },
+    "USDJPY-HYP-033": {
+      "decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+      "production_authorized": false,
+      "status": "COMPLETE_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR"
+    },
+    "USDJPY-HYP-034": {
+      "decision": "NO_PORTABLE_REJECTION_MECHANISM",
+      "production_authorized": false,
+      "status": "COMPLETE_NO_PORTABLE_REJECTION_MECHANISM"
+    },
+    "USDJPY-HYP-035": {
+      "decision": "FAIL_ATLAS_IDENTITY",
+      "production_authorized": false,
+      "status": "COMPLETE_FAIL_ATLAS_IDENTITY"
+    },
+    "USDJPY-HYP-036": {
+      "decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE",
+      "production_authorized": false,
+      "status": "COMPLETE_NO_PORTABLE_EXECUTABLE_CANDIDATE"
+    },
+    "USDJPY-HYP-037": {
+      "2020_2022_candidate_outcomes_accessed": false,
+      "2025_accessed": false,
+      "candidate_freeze": false,
+      "decision": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+      "live_authorized": false,
+      "production_authorized": false,
+      "status": "COMPLETE_FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING"
+    }
   },
   "purpose": "Make prior hypotheses, failed gates, evidence identities, current authorization, safeguards and exact next action mandatory inputs.",
   "schema_version": "usdjpy_research_memory_manifest_v1",
   "scope": "USDJPY research across mitsuru93/usdjpyea-research and mitsuru93/usdjpyea-core",
-  "source_precedence": ["binding result JSON and exact receipt", "verified GitHub Release receipt and Actions artifact identity", "preregistration and frozen policy", "human-readable report", "candidate registry and hypothesis-ledger summary", "conversation summary or memory"],
+  "source_precedence": [
+    "binding result JSON and exact receipt",
+    "verified GitHub Release receipt and Actions artifact identity",
+    "preregistration and frozen policy",
+    "human-readable report",
+    "candidate registry and hypothesis-ledger summary",
+    "conversation summary or memory"
+  ],
   "startup_read_receipt_required": {
     "acceptable_location": "PR body, committed run manifest, result JSON, or explicit assistant work-start report",
-    "minimum_fields": ["manifest SHA or path", "registry SHA or path", "ledger/addendum SHA or path", "active hypothesis and candidate", "closed-boundary acknowledgement", "period authorization acknowledgement"],
-    "required_before": ["mechanism diagnosis", "new hypothesis proposal", "finite family preregistration", "candidate outcome evaluation", "MT4 workflow design", "period-access decision"]
+    "minimum_fields": [
+      "manifest SHA or path",
+      "registry SHA or path",
+      "ledger/addendum SHA or path",
+      "active hypothesis and candidate",
+      "closed-boundary acknowledgement",
+      "period authorization acknowledgement"
+    ],
+    "required_before": [
+      "mechanism diagnosis",
+      "new hypothesis proposal",
+      "finite family preregistration",
+      "candidate outcome evaluation",
+      "MT4 workflow design",
+      "period-access decision"
+    ]
   },
-  "status": "ACTIVE_CANONICAL_STARTUP_GATE"
+  "status": "ACTIVE_CANONICAL_STARTUP_GATE",
+  "cross_family_program_state": {
+    "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1": {
+      "status": "COMPLETE_MECHANISM_RESEARCH_ONLY",
+      "decision": "ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY",
+      "shortlist_count": 0,
+      "track_a": null,
+      "track_b": null,
+      "mechanism_research_only": "B_BALANCE_MEAN_REVERSION",
+      "atlas_period": "2023-2024",
+      "analysis_2020_2022_accessed": false,
+      "analysis_2020_2022_confirmation_credit": false,
+      "external_validation_2025_accessed": false,
+      "candidate_freeze": false,
+      "core_mt4_authorized": false,
+      "production_authorized": false,
+      "live_authorized": false,
+      "next_action": "No remaining-family variant passed Track A or Track B. Do not freeze a candidate or access 2025. If separately authorized, preregister an independent mechanism study for B_BALANCE_MEAN_REVERSION using 2020-2024 for analysis/candidate construction and freeze before 2025."
+    }
+  }
 }

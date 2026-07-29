@@ -1,0 +1,208 @@
+{
+  "analysis_2020_2022_accessed": false,
+  "candidate_freeze": false,
+  "core_mt4_authorized": false,
+  "decision": "ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY",
+  "external_validation_2025_accessed": false,
+  "files": [
+    {
+      "bytes": 9847,
+      "path": "contract_catalog.json",
+      "sha256": "03611390a1af1d2ff91604b8d48a94d40258f966e5d3b986ac87e119d5b03521"
+    },
+    {
+      "bytes": 596,
+      "path": "currency_contract_audit.json",
+      "sha256": "f437e6c47c7c9dbbf9a429f61da29d9fcc94493d03b1737c33c46a6a409f8d76"
+    },
+    {
+      "bytes": 363,
+      "path": "executable_integrity_audit.json",
+      "sha256": "859e4bd446be609d9ce8d4ab94559861087397f7df81600601c5d1993b0abc8b"
+    },
+    {
+      "bytes": 2529,
+      "path": "execution_robustness.csv",
+      "sha256": "b64e1d7f488f42f0c602dc057e0b77041157099f04e78823d6860caf6ba70b52"
+    },
+    {
+      "bytes": 1931,
+      "path": "family_bootstrap.csv",
+      "sha256": "e55966e6707d03f6d95606dec1911271ed796256c11510fbe924d25ce27b1c8e"
+    },
+    {
+      "bytes": 18855,
+      "path": "family_comparison.csv",
+      "sha256": "3d07e3a7c7b5d96928a2bb809b6e3713f9034050ddc18d68eae301fb6583ce3e"
+    },
+    {
+      "bytes": 912263,
+      "path": "family_nonoverlap_executable_ledger.csv.gz",
+      "sha256": "6763a6211230fd7ed5bf6c15433f0a5491716de2426d058824abc60926e973ab"
+    },
+    {
+      "bytes": 6833,
+      "path": "family_portfolio_diagnostics.csv",
+      "sha256": "41854be4e5185aa86ef6cbaa92b03fbe87158b7ee94abca2e26aff950bbdbaee"
+    },
+    {
+      "bytes": 12953,
+      "path": "final_result.json",
+      "sha256": "70f74f15c2c9493d8464169af0bae3e85e9274f1a49832c8cf717568fb871f4e"
+    },
+    {
+      "bytes": 9887,
+      "path": "fold_metrics.csv",
+      "sha256": "761075f69c61104caa777a3203861ed0cc55d8951e55dcb575d8f0d65270e7be"
+    },
+    {
+      "bytes": 5791,
+      "path": "human_report.md",
+      "sha256": "d4924b2f86de6c232ebd016cb880ce52daafdd10bc7aeabdee78914ef5afc08f"
+    },
+    {
+      "bytes": 128589,
+      "path": "loss_cluster_and_overlap_diagnostics.csv.gz",
+      "sha256": "cdfb33881e00dcfa5e438e9aeb417f06fa7b36dadc0163c247646d27e3976e8b"
+    },
+    {
+      "bytes": 4998,
+      "path": "mechanism_diagnostics.csv",
+      "sha256": "a0891ca39320ab0f81e78f1aa60794f0097ddace6ba1f1909041f0aa09091124"
+    },
+    {
+      "bytes": 57482,
+      "path": "month_metrics.csv",
+      "sha256": "5751f16d95087dfd30737afa86d2ee5fa257d98b17bfa25b34b98699552604ef"
+    },
+    {
+      "bytes": 1558,
+      "path": "old_new_atlas_identity_summary.csv",
+      "sha256": "3c25c389553d03d450f1c4579b982a5f61281b805b8b91e05e6ba07e030f385f"
+    },
+    {
+      "bytes": 111876,
+      "path": "old_new_atlas_mismatch_ledger.csv.gz",
+      "sha256": "663c9a5a6d699d7a2422c1d7a14dc263106343a44f84bd4709aefac653c692f2"
+    },
+    {
+      "bytes": 514,
+      "path": "period_access_receipt.json",
+      "sha256": "ae305dde8be65c7f8fb301dfc6c24a46654560400bb30b84adb95e217616c9b7"
+    },
+    {
+      "bytes": 2418,
+      "path": "period_role_clarification.json",
+      "sha256": "1ea4cef27d79ceaa5781a49757d950512bac51a8c6223d41760e578c14a9f96f"
+    },
+    {
+      "bytes": 9980,
+      "path": "portfolio_diagnostics.csv",
+      "sha256": "9ad09525d68d25270e4c29431127c7de509e3e074b1b48d7b57b6bfbc1a1fcc0"
+    },
+    {
+      "bytes": 6938,
+      "path": "prereg.json",
+      "sha256": "dbd530987608cc70e1904eed098f4663af5ffa7f75860005a63f694a2501f348"
+    },
+    {
+      "bytes": 2298,
+      "path": "prior_study_audit.json",
+      "sha256": "50ed26568c38763cedd92b0f16ad36ef50f7d5a4c16bc9d85ea01cc352a12387"
+    },
+    {
+      "bytes": 187483,
+      "path": "raw_signal_audit.csv.gz",
+      "sha256": "4bcdb0c51675731af6299f811cde815a58ba510ab71b0c79b3b948f671c5737b"
+    },
+    {
+      "bytes": 2017,
+      "path": "research_memory_update.json",
+      "sha256": "4aa0eb3f04cda7c3f62d62e807562f1d235c182c988ded421eae81ee8e413981"
+    },
+    {
+      "bytes": 1775,
+      "path": "research_program_update.json",
+      "sha256": "305acd1d8ae074bf976463cfdfee15f7c76b15e5fadd6c67faaa84b7b8598e66"
+    },
+    {
+      "bytes": 8680,
+      "path": "session_metrics.csv",
+      "sha256": "b3b7fa807b92996008c554071b70f8dae998f79b7140c39e8a96314c903c3d98"
+    },
+    {
+      "bytes": 1330,
+      "path": "shortlist_decision.json",
+      "sha256": "bb04a5af36c645201dd6c8d9a6ae3da59a46112412b63f0aeffc3476c4a276db"
+    },
+    {
+      "bytes": 5025,
+      "path": "side_metrics.csv",
+      "sha256": "aea8c3bf23038331fca4a9e98a2033b2d27aa25402917e2c8420b4cdcff675f9"
+    },
+    {
+      "bytes": 7214,
+      "path": "source_inventory.json",
+      "sha256": "f26ed86cfbd25bcc22d77cd5af45e5b58af74246d0c49cc95516e4d2f020cabb"
+    },
+    {
+      "bytes": 3249,
+      "path": "source_manifest.json",
+      "sha256": "b74e12acc08aa6253bcbd7165be2563c03b316a645eb0f125a5d60969be34672"
+    },
+    {
+      "bytes": 267567,
+      "path": "source_native_event_ledger.csv.gz",
+      "sha256": "dd49bb50f5fd1765bdd55e5acfaf226a9c21cf3782cecdb2ac51258c7dcfc1aa"
+    },
+    {
+      "bytes": 960322,
+      "path": "source_native_executable_ledger.csv.gz",
+      "sha256": "011d133ef2267e1a23072aa7589f954f7b55b37ba57dfcbfefb2d35d94b91ecd"
+    },
+    {
+      "bytes": 83459,
+      "path": "source_tick_day_audit.csv.gz",
+      "sha256": "aa7d4fee4b91da20f695ef9741ced33087b22ac2033e148141871621b5f62323"
+    },
+    {
+      "bytes": 1212,
+      "path": "suppression_metrics.csv",
+      "sha256": "22a3e1ec8fc4f5145d61fbae6995b0f78bd08eb2f8772ca5f91112615774635b"
+    },
+    {
+      "bytes": 33541,
+      "path": "track_a_independent_alpha_ranking.csv",
+      "sha256": "16540b026fe027f1af1121e51de1276279173f78bbea561456458e3623428546"
+    },
+    {
+      "bytes": 33541,
+      "path": "track_b_complementarity_ranking.csv",
+      "sha256": "3d9dd1ff88f5cfd14470f4a7731eab8708a6f20c787279e937de8b15cc8ecf01"
+    },
+    {
+      "bytes": 2999,
+      "path": "variant_bootstrap.csv",
+      "sha256": "e2e3977add54884450621f0463baf0242e4309dc02c7928c5d1376a199e6d91f"
+    },
+    {
+      "bytes": 33501,
+      "path": "variant_comparison.csv",
+      "sha256": "5677bd6b83fe554799c1fa17dc28e9f1a06aa25b4370b52979a28adce200c813"
+    },
+    {
+      "bytes": 1553,
+      "path": "variant_concentration.csv",
+      "sha256": "54ee73fb2ec8632c9496ea78921f642ccca8feae491358fddeefd0e79b4965fc"
+    },
+    {
+      "bytes": 22594,
+      "path": "variant_gate_matrix.csv",
+      "sha256": "c7124f9940f04a15f8563b349ef9c8980294aa9fb48fa00da6e631f39c663b35"
+    }
+  ],
+  "live_authorized": false,
+  "production_authorized": false,
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "schema_version": "usdjpy_csos_dukascopy_native_remaining_family_atlas_artifact_manifest_v1"
+}
