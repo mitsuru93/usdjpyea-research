@@ -1,0 +1,101 @@
+name: Publish USDJPY CSOS Remaining-Family Atlas Release v1
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_publication_request_v1.json'
+permissions:
+  actions: read
+  contents: write
+  issues: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish exact scientific archive and record readback
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          repo="$GITHUB_REPOSITORY"
+          run_id=30435884192
+          artifact_id=8717709149
+          artifact_name=usdjpy-csos-dukascopy-native-remaining-family-atlas-v1-30435884192-1
+          artifact_digest=sha256:69fda87cdb5eef9a0fef641f8927918bb1a1fca6a5e9eabf72e34558afeeaa72
+          archive_name=usdjpy-csos-dukascopy-native-remaining-family-atlas-v1.zip
+          archive_sha=4fa85d2fef179b82e15abe6cd7e9bb4d7af47ecd200659f183b4d8be7e5dd607
+          tag=usdjpy-csos-dukascopy-native-remaining-family-atlas-v1
+          receipt_path=configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json
+          root="${RUNNER_TEMP}/atlas-publish"; rm -rf "$root"; mkdir -p "$root"/{artifact,unpacked,readback}
+
+          if gh api "repos/${repo}/contents/${receipt_path}?ref=main" >/dev/null 2>&1; then
+            gh issue comment 403 --repo "$repo" --body "Atlas publication: canonical Release receipt already exists; duplicate publication suppressed."
+            exit 0
+          fi
+
+          gh run download "$run_id" --repo "$repo" --name "$artifact_name" --dir "$root/artifact"
+          test -s "$root/artifact/$archive_name"
+          printf '%s  %s\n' "$archive_sha" "$root/artifact/$archive_name" | sha256sum -c -
+          unzip -q "$root/artifact/$archive_name" -d "$root/unpacked"
+          (cd "$root/unpacked" && sha256sum -c PACKAGE_SHA256SUMS)
+          decision=$(jq -r .decision "$root/unpacked/final_result.json")
+          track_a=$(jq -r '.shortlist.track_a.variant_id // "NONE"' "$root/unpacked/final_result.json")
+          track_b=$(jq -r '.shortlist.track_b.variant_id // "NONE"' "$root/unpacked/final_result.json")
+          mechanism=$(jq -r '.shortlist.mechanism_research_only.variant_id // "NONE"' "$root/unpacked/final_result.json")
+          jq -e '.analysis_2020_2022_accessed==false and .analysis_2020_2022_confirmation_credit==false and .external_validation_2025_accessed==false and .candidate_freeze==false and .core_modified==false and .mt4_executed==false and .production_authorized==false and .live_authorized==false' "$root/unpacked/final_result.json"
+
+          if gh release view "$tag" --repo "$repo" >/dev/null 2>&1; then
+            gh release download "$tag" --repo "$repo" --dir "$root/readback" --pattern "$archive_name"
+          else
+            notes=$(cat <<EOF
+Decision: ${decision}
+Track A: ${track_a}
+Track B: ${track_b}
+Mechanism research only: ${mechanism}
+
+Atlas period: 2023-2024. 2020-2022 is analysis-only and was not accessed or credited as confirmation. 2025 is the sole unseen binding external-validation period and was not accessed. Shortlist is research prioritization only. No candidate freeze, Core/MT4, production or live authorization.
+EOF
+)
+            gh release create "$tag" "$root/artifact/$archive_name" --repo "$repo" --target 61249e52e9acb567eb24298f95ea6c7afd520be4 --title 'USDJPY CSOS Dukascopy-Native Remaining-Family Atlas v1' --notes "$notes"
+            gh release download "$tag" --repo "$repo" --dir "$root/readback" --pattern "$archive_name"
+          fi
+          cmp "$root/artifact/$archive_name" "$root/readback/$archive_name"
+          readback_sha=$(sha256sum "$root/readback/$archive_name" | cut -d' ' -f1)
+          test "$readback_sha" = "$archive_sha"
+
+          jq -n \
+            --arg status PASS_BYTE_IDENTICAL_RELEASE_READBACK \
+            --arg program USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1 \
+            --arg decision "$decision" \
+            --arg head 61249e52e9acb567eb24298f95ea6c7afd520be4 \
+            --arg tag "$tag" \
+            --arg artifact_digest "$artifact_digest" \
+            --arg asset_sha "$archive_sha" \
+            --arg track_a "$track_a" \
+            --arg track_b "$track_b" \
+            --arg mechanism "$mechanism" \
+            --argjson run "$run_id" \
+            --argjson artifact_id "$artifact_id" \
+            '{schema_version:"usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1",status:$status,program_id:$program,decision:$decision,scientific_run_id:$run,research_execution_sha:$head,artifact_id:$artifact_id,artifact_digest:$artifact_digest,release_tag:$tag,release_asset_sha256:$asset_sha,byte_identical_readback:true,track_a:$track_a,track_b:$track_b,mechanism_research_only:$mechanism,atlas_period:"2023-2024",analysis_2020_2022_role:"ANALYSIS_PERIOD",analysis_2020_2022_accessed:false,analysis_2020_2022_confirmation_credit:false,external_validation_2025_role:"UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD",external_validation_2025_accessed:false,shortlist_research_prioritization_only:true,candidate_freeze:false,core_mt4_authorized:false,production_authorized:false,live_authorized:false}' > "$root/release_receipt.json"
+          content=$(base64 -w0 "$root/release_receipt.json")
+          gh api --method PUT "repos/${repo}/contents/${receipt_path}" -f message='research: record remaining-family Atlas immutable Release readback' -f content="$content" -f branch=main >/dev/null
+
+          body=$(cat <<EOF
+Program: USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1
+Scientific Run: ${run_id}
+Artifact: ${artifact_id}
+Artifact digest: ${artifact_digest}
+Release: ${tag}
+Release asset SHA256: ${archive_sha}
+Decision: ${decision}
+Track A: ${track_a}
+Track B: ${track_b}
+Mechanism research only: ${mechanism}
+
+2020-2022 is analysis-only and was not accessed or credited as confirmation. 2025 is the sole unseen binding external-validation period and was not accessed. Shortlist is research prioritization only. No candidate freeze, Core/MT4, production or live authorization.
+EOF
+)
+          gh issue create --repo "$repo" --title "Receipt: CSOS Remaining-Family Atlas v1 — ${decision}" --body "$body"
+          gh issue comment 403 --repo "$repo" --body "Atlas publication PASS: Release ${tag}; byte-identical SHA256 ${archive_sha}; receipt committed to main."
