@@ -1,0 +1,69 @@
+name: Materialize USDJPY HYP-038 Preregistration v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/materialize_usdjpy_hyp038_prereg_v1.yml'
+      - 'tools/staging/usdjpy_hyp038_prereg_payload_v1.b64'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: materialize-usdjpy-hyp038-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Verify and materialize frozen package
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, io, pathlib, zipfile
+          payload=pathlib.Path('tools/staging/usdjpy_hyp038_prereg_payload_v1.b64')
+          raw=base64.b64decode(payload.read_text(encoding='ascii'))
+          expected='c4576470271cee697a9640a93a9f4a34d9454751f4e21e03da5635e0bc287680'
+          assert hashlib.sha256(raw).hexdigest()==expected
+          allowed={
+            '.github/workflows/usdjpy_hyp038_delayed_continuation_research_v1.yml',
+            'configs/research/usdjpy_hyp038_preregistration_v1.json',
+            'configs/research/usdjpy_hyp038_startup_receipt_v1.json',
+            'configs/research/usdjpy_hyp038_duplicate_research_audit_v1.json',
+            'configs/research/usdjpy_hyp038_source_manifest_v1.json',
+            'configs/research/usdjpy_hyp038_feature_catalog_v1.json',
+            'configs/research/usdjpy_hyp038_finite_candidate_catalog_v1.json',
+            'configs/research/usdjpy_research_candidate_registry_v67.json',
+            'configs/research/usdjpy_hypothesis_ledger_addendum_v41.json',
+            'configs/research/usdjpy_research_memory_manifest_v1.json',
+            'docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_PREREGISTRATION_V1.md',
+            'tools/evaluate_usdjpy_hyp038_delayed_continuation_v1.py',
+          }
+          with zipfile.ZipFile(io.BytesIO(raw)) as z:
+              names=set(z.namelist())
+              assert names==allowed, (names-allowed, allowed-names)
+              for name in sorted(names):
+                  p=pathlib.PurePosixPath(name)
+                  assert not p.is_absolute() and '..' not in p.parts
+                  target=pathlib.Path(*p.parts); target.parent.mkdir(parents=True,exist_ok=True)
+                  target.write_bytes(z.read(name))
+          evaluator=pathlib.Path('tools/evaluate_usdjpy_hyp038_delayed_continuation_v1.py')
+          assert hashlib.sha256(evaluator.read_bytes()).hexdigest()=='66da172e403ff6b53bbf5e84b492d0abdae553c3703c2b794ae3190c647e6af3'
+          PY
+          python -m py_compile tools/evaluate_usdjpy_hyp038_delayed_continuation_v1.py
+          python -m json.tool configs/research/usdjpy_hyp038_preregistration_v1.json >/dev/null
+          python -m json.tool configs/research/usdjpy_research_memory_manifest_v1.json >/dev/null
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .github/workflows/usdjpy_hyp038_delayed_continuation_research_v1.yml configs/research/usdjpy_hyp038_*_v1.json configs/research/usdjpy_research_candidate_registry_v67.json configs/research/usdjpy_hypothesis_ledger_addendum_v41.json configs/research/usdjpy_research_memory_manifest_v1.json docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_PREREGISTRATION_V1.md tools/evaluate_usdjpy_hyp038_delayed_continuation_v1.py
+          git diff --cached --quiet && exit 0
+          git commit -m 'research: preregister HYP-038 delayed continuation study'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
