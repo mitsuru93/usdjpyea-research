@@ -19,18 +19,17 @@ jobs:
         run: |
           set -Eeuo pipefail
           repo="$GITHUB_REPOSITORY"
-          workflow=usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml
+          workflow=usdjpy_csos_dukascopy_native_remaining_family_atlas_execution_v2.yml
           issue=403
-          legacy_run=30428550983
           receipt=configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json
           fail_receipt() {
             rc=$?
-            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: dispatcher failed at shell line ${BASH_LINENO[0]} with exit code ${rc}." || true
+            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: execution-v2 dispatcher failed at shell line ${BASH_LINENO[0]} with exit code ${rc}." || true
             exit "$rc"
           }
           trap fail_receipt ERR
 
-          gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: REST dispatcher started for PR #${{ github.event.pull_request.number }} at head ${{ github.event.pull_request.head.sha }}."
+          gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: Execution v2 REST dispatcher started for PR #${{ github.event.pull_request.number }} at head ${{ github.event.pull_request.head.sha }}."
 
           if gh api "repos/${repo}/contents/${receipt}" >/dev/null 2>&1; then
             gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: immutable Release receipt already exists; no duplicate dispatch performed."
@@ -38,13 +37,13 @@ jobs:
           fi
 
           runs=$(gh api "repos/${repo}/actions/workflows/${workflow}/runs?per_page=30")
-          active=$(printf '%s' "$runs" | jq -c --argjson legacy "$legacy_run" '[.workflow_runs[] | select(.id != $legacy and (.status=="queued" or .status=="in_progress"))] | sort_by(.created_at) | last // empty')
+          active=$(printf '%s' "$runs" | jq -c '[.workflow_runs[] | select(.status=="queued" or .status=="in_progress")] | sort_by(.created_at) | last // empty')
           if [ -n "$active" ]; then
             run_id=$(printf '%s' "$active" | jq -r .id)
             status=$(printf '%s' "$active" | jq -r .status)
             event=$(printf '%s' "$active" | jq -r .event)
             url=$(printf '%s' "$active" | jq -r .html_url)
-            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: existing non-legacy Run ${run_id} is ${status} (${event}); duplicate dispatch suppressed. ${url}"
+            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: existing Execution v2 Run ${run_id} is ${status} (${event}); duplicate dispatch suppressed. ${url}"
             exit 0
           fi
 
@@ -52,18 +51,18 @@ jobs:
           dispatch_output=$(gh api --method POST "repos/${repo}/actions/workflows/${workflow}/dispatches" -f ref=main 2>&1) || dispatch_rc=$?
           if [ "$dispatch_rc" -ne 0 ]; then
             compact=$(printf '%s' "$dispatch_output" | tr '\n' ' ' | cut -c1-1200)
-            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: dispatch POST failed with exit code ${dispatch_rc}. API response: ${compact}"
+            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: Execution v2 dispatch POST failed with exit code ${dispatch_rc}. API response: ${compact}"
             exit "$dispatch_rc"
           fi
 
           sleep 4
           runs=$(gh api "repos/${repo}/actions/workflows/${workflow}/runs?per_page=10")
-          dispatched=$(printf '%s' "$runs" | jq -c --argjson legacy "$legacy_run" '[.workflow_runs[] | select(.id != $legacy and .event=="workflow_dispatch")] | sort_by(.created_at) | last // empty')
+          dispatched=$(printf '%s' "$runs" | jq -c '[.workflow_runs[] | select(.event=="workflow_dispatch")] | sort_by(.created_at) | last // empty')
           if [ -n "$dispatched" ]; then
             run_id=$(printf '%s' "$dispatched" | jq -r .id)
             status=$(printf '%s' "$dispatched" | jq -r .status)
             url=$(printf '%s' "$dispatched" | jq -r .html_url)
-            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: dispatched Run ${run_id}; current status ${status}. ${url}"
+            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: dispatched Execution v2 Run ${run_id}; current status ${status}. ${url}"
           else
-            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: REST workflow_dispatch accepted, but non-legacy Run ID was not visible in immediate readback."
+            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: Execution v2 dispatch accepted, but Run ID was not visible in immediate readback."
           fi
