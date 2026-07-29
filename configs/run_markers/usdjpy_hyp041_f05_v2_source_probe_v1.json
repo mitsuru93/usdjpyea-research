@@ -1,0 +1,24 @@
+{
+  "schema_version": "usdjpy_hyp041_f05_v2_source_probe_marker_v1",
+  "status": "AUTHORIZED_NO_CANDIDATE_OUTCOME",
+  "hypothesis_id": "USDJPY-HYP-041",
+  "branch": "research/usdjpy-hyp041-f05-v2-v1",
+  "expected_research_base": "4a6cb16768bbacc0c9bbeabfd5817bb26318c81a",
+  "allowed_actions": [
+    "download checksum-identified immutable Research and Core Release assets",
+    "extract files",
+    "inventory path size hash schema row count and event classes",
+    "commit source inventory and human report to the same branch"
+  ],
+  "forbidden_actions": [
+    "compute candidate economics",
+    "freeze candidate rules",
+    "modify HYP-039 or HYP-040",
+    "access 2025H2",
+    "place live orders"
+  ],
+  "candidate_outcomes_authorized": false,
+  "2025H2_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
