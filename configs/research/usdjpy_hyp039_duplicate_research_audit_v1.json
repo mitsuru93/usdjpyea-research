@@ -1,0 +1,31 @@
+{
+  "schema_version": "usdjpy_hyp039_duplicate_research_audit_v1",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "duplicate_hypothesis": false,
+  "related_closed_research": [
+    {
+      "hypothesis_id": "USDJPY-HYP-037",
+      "relationship": "exact unchanged Short-only rule source; binding FAIL remains unchanged",
+      "reopened": false,
+      "decision_changed": false
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-038",
+      "relationship": "mechanism successor only; no filter, lifecycle rule or combined rule reused",
+      "reopened": false,
+      "decision_changed": false
+    }
+  ],
+  "new_question": "Does the unchanged Short Pullback rule recover the fixed 2025H1 B02/F05 portfolio under Core/MT4/Rakuten execution qualification?",
+  "prohibited_reuse": [
+    "C5_COEXPOSURE_SKIP",
+    "B02/F05 co-exposure exclusion",
+    "negative baseline-day filter",
+    "portfolio drawdown permission",
+    "loss-cluster permission",
+    "entry-time admission filter",
+    "30/60/90 minute early exit",
+    "HYP-038 combined rule"
+  ],
+  "status": "PASS_INDEPENDENT_DEPLOYMENT_QUALIFICATION"
+}

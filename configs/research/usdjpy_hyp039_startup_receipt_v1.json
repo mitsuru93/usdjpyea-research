@@ -1,0 +1,25 @@
+{
+  "schema_version": "usdjpy_hyp039_startup_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "title": "Unchanged Short Pullback 2025H1 Portfolio Recovery Qualification",
+  "family_id": "S_SHORT_PULLBACK_UNCHANGED_2025H1_RECOVERY",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "research_start_sha": "6faab70b13eff77e5f417a5a0d5fb15a0dd52902",
+  "core_start_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "latest_ledger": "configs/research/usdjpy_hypothesis_ledger_addendum_v41.json",
+  "latest_registry": "configs/research/usdjpy_research_candidate_registry_v67.json",
+  "id_audit": {
+    "highest_existing_hypothesis_id": "USDJPY-HYP-038",
+    "USDJPY-HYP-039_found_in_research_prs_or_issues_before_start": false,
+    "USDJPY-HYP-039_found_in_core_prs_or_issues_before_start": false,
+    "id_status": "NEXT_UNUSED_ID_CONFIRMED"
+  },
+  "closed_decisions_preserved": {
+    "USDJPY-HYP-037": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+    "USDJPY-HYP-038": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE"
+  },
+  "objective": "Qualify the unchanged HYP-037 Short-only rule as a new deployment candidate and measure actual recovery of the 2025H1 B02/F05 portfolio baseline of JPY -20808.",
+  "production_authorized": false,
+  "live_authorized": false,
+  "created_at_utc": "2026-07-29T11:35:00Z"
+}

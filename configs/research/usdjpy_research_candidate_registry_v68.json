@@ -1,0 +1,38 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v68",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v67.json",
+  "status": "USDJPY_HYP039_ACTIVE_FROZEN_PRE_2025H1_QUALIFICATION",
+  "active_hypothesis": "USDJPY-HYP-039",
+  "active_family": "S_SHORT_PULLBACK_UNCHANGED_2025H1_RECOVERY",
+  "current_candidate": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "candidate_ids": ["C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED"],
+  "candidate_registry": "configs/research/usdjpy_hyp039_candidate_contract_v1.json",
+  "candidate_rule_changed": false,
+  "development_decision": "FROZEN_FOR_CORE_MT4_AND_2025H1_RECOVERY_QUALIFICATION",
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v42.json",
+  "period_access_receipt": "configs/research/usdjpy_hyp039_period_access_receipt_v1.json",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_ONLY_NOT_REQUIRED",
+    "2023_2024": "PORTABILITY_AND_PARITY_NO_RETUNING",
+    "2025H1": "CANDIDATE_SPECIFIC_EXTERNAL_EVALUATION",
+    "2025H2": "RESERVED_FINAL_INTEGRATED_GATE"
+  },
+  "closed_boundaries": {
+    "USDJPY-HYP-037": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+    "USDJPY-HYP-038": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE"
+  },
+  "run_authorization": {
+    "2020_2022_analysis": false,
+    "2020_2022_binding_confirmation": false,
+    "Core_implementation": true,
+    "MT4_candidate": true,
+    "2025H1": "CONDITIONAL_AFTER_PRE_2025_SEQUENCE",
+    "2025H2": false,
+    "production": false,
+    "live": false
+  },
+  "HYP038_filter_reuse": false,
+  "scientific_gate_definition_changed_after_outcome": false,
+  "technical_no_result": false,
+  "next_action": "Complete Core implementation, zero-mismatch Research/Core parity, MT4 compile and Rakuten 2023-2024 portability before opening the frozen 2025H1 Short Pullback outcome."
+}

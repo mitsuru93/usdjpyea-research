@@ -1,0 +1,36 @@
+{
+  "schema_version": "usdjpy_hyp039_period_access_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_ONLY_NOT_REQUIRED",
+    "2023_2024": "RESEARCH_CORE_MT4_RAKUTEN_PORTABILITY_NO_RETUNING",
+    "2025H1": "CANDIDATE_SPECIFIC_EXTERNAL_EVALUATION_THEN_DEVELOPMENT_DIAGNOSTIC",
+    "2025H2": "RESERVED_FOR_FINAL_B02V2_F05V2_THIRD_STRATEGY_INTEGRATED_EXTERNAL_GATE"
+  },
+  "pre_2025H1_required_sequence": [
+    "exact candidate freeze",
+    "Research contract",
+    "Core implementation",
+    "Research/Core zero-mismatch parity",
+    "MT4 compile",
+    "Rakuten 2023-2024 portability"
+  ],
+  "access_state_at_receipt": {
+    "2020_2022_accessed_for_HYP039": false,
+    "2023_2024_HYP037_evidence_known": true,
+    "2025H1_short_pullback_outcome_accessed": false,
+    "2025H2_accessed": false
+  },
+  "tester_policy": {
+    "external_evaluation_run": "first run after exact version freeze; eligible as external evaluation",
+    "development_or_diagnostic_run": "allowed after outcome access; not eligible as unseen validation for a changed version",
+    "tester_information_ban": false,
+    "every_run_receipt_fields": [
+      "candidate_version",
+      "outcome_access_before_run",
+      "classification",
+      "used_for_retuning"
+    ]
+  },
+  "status": "FROZEN_BEFORE_2025H1_ACCESS"
+}
