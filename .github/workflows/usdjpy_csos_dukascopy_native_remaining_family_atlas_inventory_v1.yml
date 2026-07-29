@@ -1,0 +1,104 @@
+name: USDJPY CSOS Dukascopy-Native Remaining-Family Atlas Inventory v1
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml'
+      - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_prereg_v1.json'
+      - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_source_manifest_v1.json'
+      - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_startup_receipt_v1.json'
+      - 'tools/inventory_usdjpy_csos_dukascopy_native_remaining_family_atlas_v1.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Exact-SHA selective fetch and capability probe
+        id: init
+        shell: bash
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/cda1"; rm -rf "$root"; mkdir -p "$root"/{src,infra,inputs/{atlas,historical,2023,2024h1,2024h2,raw2023,raw2024},materialized,output,evidence}
+          sha='${{ github.event.pull_request.head.sha || github.sha }}'; test "${#sha}" = 40
+          fetch(){ p="$1"; o="$2"; mkdir -p "$(dirname "$o")"; j=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${p}?ref=${sha}"); printf %s "$j"|jq -er .content|tr -d '\n'|base64 -d >"$o"; printf %s "$j"|jq -er .sha >"$o.blob_sha"; test -s "$o"; }
+          fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_prereg_v1.json "$root/src/prereg.json"
+          fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_source_manifest_v1.json "$root/src/source_manifest.json"
+          fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_startup_receipt_v1.json "$root/src/startup_receipt.json"
+          fetch tools/inventory_usdjpy_csos_dukascopy_native_remaining_family_atlas_v1.py "$root/src/inventory.py"
+          fetch tools/usdjpy_hyp034_bi5_source_v1.py "$root/src/usdjpy_hyp034_bi5_source_v1.py"
+          fetch tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py "$root/src/build_baseline.py"
+          fetch tools/vendor/fx2_infra_core_f897b250_v1.py "$root/infra/fx2_infra.py"
+          python -m py_compile "$root/src/"*.py "$root/infra/fx2_infra.py"
+          python "$root/infra/fx2_infra.py" probe --json "$root/evidence/runner_capability.json" --markdown "$root/evidence/runner_capability.md"
+          jq -e '.program_id=="USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1" and .status=="FROZEN_BEFORE_DUKASCOPY_NATIVE_OUTCOMES" and .monetary_contract.reporting_currency=="JPY" and .candidate_freeze_authorized==false and .core_or_mt4_authorized==false' "$root/src/prereg.json"
+          jq -e '.whole_repository_checkout_required==false and .exact_sha_selective_fetch_required==true and (.forbidden_assets|sort)==["2019","2020","2021","2022","2025"]' "$root/src/source_manifest.json"
+          jq -e '.status=="PASS_CANONICAL_STARTUP_AND_PROGRAM_FIREWALL" and .hypothesis_id_consumed==false and .protected_2020_2022_accessed==false and .protected_2025_accessed==false' "$root/src/startup_receipt.json"
+          echo "root=$root" >>"$GITHUB_OUTPUT"; echo "sha=$sha" >>"$GITHUB_OUTPUT"; printf '%s\n' "$sha" >"$root/evidence/research_head_sha.txt"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install frozen runtime and materialize immutable authorities
+        shell: bash
+        env:
+          GH_TOKEN: '${{ github.token }}'
+          ROOT: '${{ steps.init.outputs.root }}'
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+          gh release download usdjpy-csos-opportunity-atlas-v1-r1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/atlas" --pattern 'usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip'
+          printf '%s  %s\n' f5feef1a1eb06cfdc284d3642c7050b05da3fc6fa31f67a4205c7faf3e72a72f "$ROOT/inputs/atlas/usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip"|sha256sum -c -
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/historical" --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' --pattern EXPECTED_SHA256SUMS
+          (cd "$ROOT/inputs/historical" && sha256sum -c EXPECTED_SHA256SUMS)
+          unzip -q "$ROOT/inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip" -d "$ROOT/inputs/2023"
+          unzip -q "$ROOT/inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip" -d "$ROOT/inputs/2024h1"
+          unzip -q "$ROOT/inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip" -d "$ROOT/inputs/2024h2"
+          python "$ROOT/src/build_baseline.py" --m15-2023 "$ROOT/inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" --m15-2024h1 "$ROOT/inputs/2024h1/m15_utc_2024h1.csv" --events-2024h1 "$ROOT/inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv" --events-2024h2 "$ROOT/inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv" --out-dir "$ROOT/materialized" >"$ROOT/evidence/baseline.log"
+          printf '%s  %s\n' 98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv"|sha256sum -c -
+          for y in 2023 2024; do
+            d="$ROOT/inputs/raw$y"
+            gh release download "usdjpy-$y-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" --dir "$d" --pattern "usdjpy-$y-??-raw-ticks-v1.tar.gz" --pattern "usdjpy-$y-raw-ticks-v1.annual-manifest.json" --pattern SHA256SUMS
+            (cd "$d" && grep -E "usdjpy-$y-(..-raw-ticks-v1\\.tar\\.gz|raw-ticks-v1\\.annual-manifest\\.json)$" SHA256SUMS|sha256sum -c -)
+            test "$(find "$d" -name '*.tar.gz'|wc -l)" = 12
+          done
+          find "$ROOT/inputs/raw2023" "$ROOT/inputs/raw2024" -maxdepth 1 -type f -printf '%f %s\n'|sort >"$ROOT/evidence/raw_release_inventory.txt"
+          ! grep -E '2019|2020|2021|2022|2025' "$ROOT/evidence/raw_release_inventory.txt"
+      - name: Audit prior-study duplication and inventory the source
+        shell: bash
+        env:
+          GH_TOKEN: '${{ github.token }}'
+          ROOT: '${{ steps.init.outputs.root }}'
+          PYTHONPATH: '${{ steps.init.outputs.root }}/src'
+        run: |
+          set -euo pipefail
+          tokens=(A_FALSE_BREAKOUT_REVERSAL B_BALANCE_MEAN_REVERSION C_SHOCK_CONTINUATION E_TOKYO_LONDON E_LONDON_NY E_NY_TOKYO G_TREND_EXHAUSTION H_COMPRESSION_BREAKOUT I_FAILED_TREND_CONTINUATION K_LONDON_OPENING_RANGE_BREAKOUT K_ROUND_NUMBER_REJECTION K_DAILY_TIME_SERIES_MOMENTUM)
+          printf '{"schema_version":"usdjpy_remaining_family_prior_study_search_v1","queries":[' >"$ROOT/evidence/prior_study_search.json"
+          first=1
+          for token in "${tokens[@]}"; do
+            result=$(gh api -X GET search/code -f q="${token} repo:${GITHUB_REPOSITORY}" -f per_page=100 2>/dev/null || printf '{"total_count":0,"items":[]}')
+            [ $first -eq 1 ] || printf ',' >>"$ROOT/evidence/prior_study_search.json"; first=0
+            jq -c --arg token "$token" '{token:$token,total_count:(.total_count//0),paths:[.items[]?.path]}' <<<"$result" >>"$ROOT/evidence/prior_study_search.json"
+          done
+          printf '],"binding_closed_exclusions":{"D_SHOCK_FAILURE":"complete","F_LIQUIDITY_SWEEP":"HYP-030/031/033/034","J_PULLBACK_CONTINUATION":"HYP-035/036 and parallel successor"}}\n' >>"$ROOT/evidence/prior_study_search.json"
+          python "$ROOT/src/inventory.py" --atlas-zip "$ROOT/inputs/atlas/usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip" --atlas-unpacked "$ROOT/inputs/atlas/unpacked" --raw-2023 "$ROOT/inputs/raw2023" --raw-2024 "$ROOT/inputs/raw2024" --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" --prior-study-search "$ROOT/evidence/prior_study_search.json" --out-dir "$ROOT/output" 2>&1|tee "$ROOT/evidence/inventory.log"
+          jq -e '.status=="PASS_SOURCE_AND_OLD_ATLAS_INVENTORY" and .source.archive_count==24 and .source.ask_bid_inversion_count==0 and .source.nonmonotonic_timestamp_count==0 and .protected_2020_2022_accessed==false and .protected_2025_accessed==false and .candidate_outcomes_computed==false' "$ROOT/output/inventory_result.json"
+          python "$ROOT/infra/fx2_infra.py" archive --input "$ROOT/output" --output "$ROOT/usdjpy-csos-dukascopy-native-remaining-family-atlas-inventory-v1.zip" --source-sha '${{ steps.init.outputs.sha }}' --run-id "$GITHUB_RUN_ID" --classification technical >"$ROOT/evidence/archive_build.json"
+          python "$ROOT/infra/fx2_infra.py" readback --archive "$ROOT/usdjpy-csos-dukascopy-native-remaining-family-atlas-inventory-v1.zip" >"$ROOT/evidence/archive_readback.json"
+          jq -e '.status=="PASS"' "$ROOT/evidence/archive_readback.json"
+      - name: Upload source inventory evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-csos-dukascopy-native-remaining-family-atlas-inventory-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ steps.init.outputs.root }}/output
+            ${{ steps.init.outputs.root }}/evidence
+            ${{ steps.init.outputs.root }}/usdjpy-csos-dukascopy-native-remaining-family-atlas-inventory-v1.zip
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
