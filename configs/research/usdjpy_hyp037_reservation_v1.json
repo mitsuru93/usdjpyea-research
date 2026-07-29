@@ -1,0 +1,26 @@
+{
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR",
+  "conflict_checks": {
+    "branches": 0,
+    "issues": 0,
+    "latest_registry_active_hypothesis": null,
+    "pull_requests": 0
+  },
+  "core_start_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "family_id": "S_SHORT_PULLBACK_CONTINUATION_PORTABILITY",
+  "hypothesis_id": "USDJPY-HYP-037",
+  "live_authorized": false,
+  "predecessor_boundary": {
+    "decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE",
+    "hypothesis_id": "USDJPY-HYP-036",
+    "short_only_rewrite": false,
+    "unchanged": true
+  },
+  "production_authorized": false,
+  "research_start_sha": "af8ba0ab225e096938bc496472c2af846c6ab9e4",
+  "reserved_before_2020_2022_candidate_outcomes": true,
+  "reserved_before_2025_candidate_outcomes": true,
+  "schema_version": "usdjpy_hyp037_reservation_v1",
+  "status": "RESERVED_ON_PR_BRANCH_BEFORE_OUTCOME_ACCESS",
+  "title": "Short Pullback Continuation Directional Asymmetry and Historical Portability Study"
+}
