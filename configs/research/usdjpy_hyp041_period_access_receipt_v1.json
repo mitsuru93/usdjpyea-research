@@ -1,0 +1,51 @@
+{
+  "schema_version": "usdjpy_hyp041_period_access_receipt_v1",
+  "status": "FROZEN_BEFORE_FAILURE_DECOMPOSITION_AND_CANDIDATE_OUTCOMES",
+  "hypothesis_id": "USDJPY-HYP-041",
+  "period_roles": {
+    "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_OR_AUXILIARY_ANALYSIS_NOT_A_BINDING_GATE",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_AUTOMATICALLY_USED_OR_SUBSTITUTED"
+  },
+  "known_2025H1_baseline": {
+    "outcome_visibility": "KNOWN_BEFORE_STUDY_START",
+    "portfolio_net_jpy": -20808,
+    "portfolio_pf": 0.8294076655052265,
+    "B02_net_jpy": -6964,
+    "F05_net_jpy": -13844,
+    "maximum_tick_equity_drawdown_jpy": 42737
+  },
+  "allowed_use_of_2025H1": [
+    "failure-cause confirmation",
+    "finite evidence-based architecture design",
+    "candidate-version validation comparison",
+    "residual-loss decomposition"
+  ],
+  "forbidden_use_of_2025H1": [
+    "unbounded parameter search",
+    "grid search until a profitable result appears",
+    "post-hoc month side session or weekday exclusion",
+    "outcome-following exception addition",
+    "reclassification as analysis research candidate-construction or development period"
+  ],
+  "version_evidence_required": [
+    "change_reason",
+    "evidence_referenced",
+    "2023_2024_result",
+    "2025H1_result",
+    "outcome_visibility",
+    "rerun_count"
+  ],
+  "outcome_visibility": {
+    "failure_decomposition": "KNOWN_BASELINE_DIAGNOSTIC",
+    "C1": "NOT_YET_CONSTRUCTED",
+    "C2": "NOT_YET_CONSTRUCTED",
+    "C3": "NOT_YET_CONSTRUCTED",
+    "combined": "NOT_AUTHORIZED_UNLESS_COMPLEMENTARITY_IS_PREDEFINED",
+    "candidate_specific_2025H1_rerun_count": 0
+  },
+  "period_role_independent_of_access_count": true,
+  "production_authorized": false,
+  "live_authorized": false
+}
