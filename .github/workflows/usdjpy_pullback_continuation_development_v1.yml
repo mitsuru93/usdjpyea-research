@@ -1,204 +1,69 @@
 name: USDJPY HYP-035 Pullback Continuation Development v1
-
 on:
   pull_request:
     branches: [main]
-    paths:
-      - '.github/workflows/usdjpy_pullback_continuation_development_v1.yml'
-      - 'configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json'
-      - 'configs/research/usdjpy_pullback_continuation_source_manifest_v1.json'
-      - 'configs/research/usdjpy_hyp035_startup_receipt_v1.json'
-      - 'configs/research/usdjpy_hyp035_hypothesis_reservation_v1.json'
-      - 'tools/evaluate_usdjpy_pullback_continuation_v1.py'
-      - 'tools/usdjpy_hyp034_bi5_source_v1.py'
-      - 'tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py'
-      - 'tools/vendor/fx2_infra_core_f897b250_v1.py'
+    paths: ['.github/workflows/usdjpy_pullback_continuation_development_v1.yml','configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json','configs/research/usdjpy_pullback_continuation_source_manifest_v1.json','configs/research/usdjpy_hyp035_startup_receipt_v1.json','configs/research/usdjpy_hyp035_hypothesis_reservation_v1.json','tools/evaluate_usdjpy_pullback_continuation_v1.py']
   push:
     branches: [main]
-    paths:
-      - '.github/workflows/usdjpy_pullback_continuation_development_v1.yml'
-      - 'configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json'
-      - 'configs/research/usdjpy_pullback_continuation_source_manifest_v1.json'
-      - 'configs/research/usdjpy_hyp035_startup_receipt_v1.json'
-      - 'configs/research/usdjpy_hyp035_hypothesis_reservation_v1.json'
-      - 'tools/evaluate_usdjpy_pullback_continuation_v1.py'
+    paths: ['.github/workflows/usdjpy_pullback_continuation_development_v1.yml','configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json','configs/research/usdjpy_pullback_continuation_source_manifest_v1.json','configs/research/usdjpy_hyp035_startup_receipt_v1.json','configs/research/usdjpy_hyp035_hypothesis_reservation_v1.json','tools/evaluate_usdjpy_pullback_continuation_v1.py']
   workflow_dispatch:
-
-permissions:
-  contents: write
-  issues: write
-  actions: read
-
+permissions: {contents: write, issues: write, actions: read}
 jobs:
   development:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
-      - name: Establish short work root and exact identity
-        id: identity
+      - name: Exact-SHA selective fetch and Infrastructure v1 probe
+        id: init
         shell: bash
+        env: {GH_TOKEN: '${{ github.token }}'}
         run: |
           set -euo pipefail
-          root="${RUNNER_TEMP}/h35d"
-          rm -rf "$root"
-          mkdir -p "$root/src" "$root/infra" "$root/inputs/atlas" "$root/inputs/historical" "$root/inputs/2023" "$root/inputs/2024h1" "$root/inputs/2024h2" "$root/inputs/raw2023" "$root/inputs/raw2024" "$root/materialized" "$root/output" "$root/evidence"
-          sha='${{ github.event.pull_request.head.sha || github.sha }}'
-          test "${#sha}" = 40
-          echo "root=$root" >> "$GITHUB_OUTPUT"
-          echo "research_sha=$sha" >> "$GITHUB_OUTPUT"
-          printf '%s\n' "$sha" > "$root/evidence/research_head_sha.txt"
-          printf '%s\n' 'f897b250b808207d960417b2306935dcb0655acf' > "$root/evidence/core_infrastructure_sha.txt"
-      - name: Exact-SHA selective fetch
+          root="${RUNNER_TEMP}/h35d"; rm -rf "$root"; mkdir -p "$root"/{src,infra,inputs/{atlas,historical,2023,2024h1,2024h2,raw2023,raw2024},materialized,output,evidence}
+          sha='${{ github.event.pull_request.head.sha || github.sha }}'; test "${#sha}" = 40
+          fetch(){ p="$1"; o="$2"; mkdir -p "$(dirname "$o")"; j=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${p}?ref=${sha}"); printf %s "$j"|jq -er .content|tr -d '\n'|base64 -d >"$o"; printf %s "$j"|jq -er .sha >"$o.blob_sha"; test -s "$o"; }
+          fetch configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json "$root/src/prereg.json"
+          fetch configs/research/usdjpy_pullback_continuation_source_manifest_v1.json "$root/src/source_manifest.json"
+          fetch tools/evaluate_usdjpy_pullback_continuation_v1.py "$root/src/evaluate.py"
+          fetch tools/usdjpy_hyp034_bi5_source_v1.py "$root/src/usdjpy_hyp034_bi5_source_v1.py"
+          fetch tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py "$root/src/build_baseline.py"
+          fetch tools/vendor/fx2_infra_core_f897b250_v1.py "$root/infra/fx2_infra.py"
+          python -m py_compile "$root/src/"*.py "$root/infra/fx2_infra.py"
+          python "$root/infra/fx2_infra.py" probe --json "$root/evidence/runner_capability.json" --markdown "$root/evidence/runner_capability.md"
+          jq -e '.hypothesis_id=="USDJPY-HYP-035" and .candidate_id=="A_EXACT_EXECUTABLE_16BAR" and .status=="FROZEN_BEFORE_DEVELOPMENT_OUTCOMES" and .fixed_atlas_contract.hold_bars==16 and .monetary_contract.reporting_currency=="JPY" and .protected_boundaries.historical_2020_2022_access_before_freeze==false and .protected_boundaries.protected_2025_access==false and .no_retuning==true' "$root/src/prereg.json"
+          jq -e '.whole_repository_checkout_required==false and .exact_sha_selective_fetch_required==true and (.forbidden_assets|sort)==["2019","2020","2021","2022","2025"]' "$root/src/source_manifest.json"
+          echo "root=$root" >>"$GITHUB_OUTPUT"; echo "sha=$sha" >>"$GITHUB_OUTPUT"; printf '%s\n' "$sha" >"$root/evidence/research_head_sha.txt"
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Install frozen runtime and verify all authorities
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ROOT: ${{ steps.identity.outputs.root }}
-          RESEARCH_SHA: ${{ steps.identity.outputs.research_sha }}
-        run: |
-          set -euo pipefail
-          fetch_file() {
-            path="$1"; out="$2"
-            mkdir -p "$(dirname "$out")"
-            payload=$(gh api -H 'Accept: application/vnd.github+json' "repos/${GITHUB_REPOSITORY}/contents/${path}?ref=${RESEARCH_SHA}")
-            printf '%s' "$payload" | jq -er '.content' | tr -d '\n' | base64 -d > "$out"
-            printf '%s' "$payload" | jq -er '.sha' > "${out}.blob_sha"
-            test -s "$out"
-          }
-          fetch_file 'configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json' "$ROOT/src/prereg.json"
-          fetch_file 'configs/research/usdjpy_pullback_continuation_source_manifest_v1.json' "$ROOT/src/source_manifest.json"
-          fetch_file 'tools/evaluate_usdjpy_pullback_continuation_v1.py' "$ROOT/src/evaluate.py"
-          fetch_file 'tools/usdjpy_hyp034_bi5_source_v1.py' "$ROOT/src/usdjpy_hyp034_bi5_source_v1.py"
-          fetch_file 'tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py' "$ROOT/src/build_baseline.py"
-          fetch_file 'tools/vendor/fx2_infra_core_f897b250_v1.py' "$ROOT/infra/fx2_infra.py"
-          python -m py_compile "$ROOT/src/"*.py "$ROOT/infra/fx2_infra.py"
-          required=("$ROOT/src/prereg.json" "$ROOT/src/source_manifest.json" "$ROOT/src/evaluate.py" "$ROOT/src/usdjpy_hyp034_bi5_source_v1.py" "$ROOT/src/build_baseline.py" "$ROOT/infra/fx2_infra.py")
-          sha256sum "${required[@]}" > "$ROOT/evidence/selective_fetch_sha256sums.txt"
-          wc -c "${required[@]}" > "$ROOT/evidence/selective_fetch_byte_counts.txt"
-          find "$ROOT/src" "$ROOT/infra" -name '*.blob_sha' -type f -print -exec cat {} \; > "$ROOT/evidence/selective_fetch_blob_shas.txt"
-      - name: Set up frozen Python runtime
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install frozen scientific dependencies
-        shell: bash
-        env:
-          ROOT: ${{ steps.identity.outputs.root }}
+        env: {GH_TOKEN: '${{ github.token }}', ROOT: '${{ steps.init.outputs.root }}'}
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
-          python - <<'PY' > "$ROOT/evidence/python_dependency_versions.json"
-          import json,platform,numpy,pandas
-          print(json.dumps({'python':platform.python_version(),'numpy':numpy.__version__,'pandas':pandas.__version__},indent=2,sort_keys=True))
-          PY
-      - name: Runner capability probe and period firewall
-        shell: bash
-        env:
-          ROOT: ${{ steps.identity.outputs.root }}
-        run: |
-          set -euo pipefail
-          python "$ROOT/infra/fx2_infra.py" probe --json "$ROOT/evidence/runner_capability.json" --markdown "$ROOT/evidence/runner_capability.md"
-          jq -e '.hypothesis_id=="USDJPY-HYP-035" and .family_id=="S_PULLBACK_CONTINUATION_PORTABILITY" and .candidate_id=="A_EXACT_EXECUTABLE_16BAR" and .status=="FROZEN_BEFORE_DEVELOPMENT_OUTCOMES" and .fixed_atlas_contract.hold_bars==16 and .monetary_contract.reporting_currency=="JPY" and .protected_boundaries.historical_2020_2022_access_before_freeze==false and .protected_boundaries.protected_2025_access==false and .no_retuning==true' "$ROOT/src/prereg.json"
-          jq -e '.whole_repository_checkout_required==false and .exact_sha_selective_fetch_required==true and (.forbidden_assets|sort)==["2019","2020","2021","2022","2025"]' "$ROOT/src/source_manifest.json"
-      - name: Download and verify immutable Atlas authority
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ROOT: ${{ steps.identity.outputs.root }}
-        run: |
-          set -euo pipefail
           gh release download usdjpy-csos-opportunity-atlas-v1-r1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/atlas" --pattern 'usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip'
-          printf '%s  %s\n' 'f5feef1a1eb06cfdc284d3642c7050b05da3fc6fa31f67a4205c7faf3e72a72f' "$ROOT/inputs/atlas/usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip" | sha256sum -c -
+          printf '%s  %s\n' f5feef1a1eb06cfdc284d3642c7050b05da3fc6fa31f67a4205c7faf3e72a72f "$ROOT/inputs/atlas/usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip"|sha256sum -c -
           unzip -q "$ROOT/inputs/atlas/usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip" -d "$ROOT/inputs/atlas/unpacked"
-          test -f "$ROOT/inputs/atlas/unpacked/csos_output/strategy_opportunity_atlas.csv.gz"
-          (cd "$ROOT/inputs/atlas/unpacked/csos_output" && sha256sum -c PACKAGE_SHA256SUMS)
-      - name: Download and materialize canonical B02 F05 baseline
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ROOT: ${{ steps.identity.outputs.root }}
-        run: |
-          set -euo pipefail
-          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/historical" --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' --pattern 'EXPECTED_SHA256SUMS'
+          (cd "$ROOT/inputs/atlas/unpacked" && sha256sum -c csos_output/PACKAGE_SHA256SUMS)
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/historical" --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' --pattern EXPECTED_SHA256SUMS
           (cd "$ROOT/inputs/historical" && sha256sum -c EXPECTED_SHA256SUMS)
-          unzip -q "$ROOT/inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip" -d "$ROOT/inputs/2023"
-          unzip -q "$ROOT/inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip" -d "$ROOT/inputs/2024h1"
-          unzip -q "$ROOT/inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip" -d "$ROOT/inputs/2024h2"
-          python "$ROOT/src/build_baseline.py" \
-            --m15-2023 "$ROOT/inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" \
-            --m15-2024h1 "$ROOT/inputs/2024h1/m15_utc_2024h1.csv" \
-            --events-2024h1 "$ROOT/inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv" \
-            --events-2024h2 "$ROOT/inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv" \
-            --out-dir "$ROOT/materialized" 2>&1 | tee "$ROOT/evidence/baseline_materialization.log"
-          printf '%s  %s\n' '98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca' "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" | sha256sum -c -
-      - name: Download and verify 2023 to 2024 BI5 authorities only
+          unzip -q "$ROOT/inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip" -d "$ROOT/inputs/2023"; unzip -q "$ROOT/inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip" -d "$ROOT/inputs/2024h1"; unzip -q "$ROOT/inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip" -d "$ROOT/inputs/2024h2"
+          python "$ROOT/src/build_baseline.py" --m15-2023 "$ROOT/inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz" --m15-2024h1 "$ROOT/inputs/2024h1/m15_utc_2024h1.csv" --events-2024h1 "$ROOT/inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv" --events-2024h2 "$ROOT/inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv" --out-dir "$ROOT/materialized" >"$ROOT/evidence/baseline.log"
+          printf '%s  %s\n' 98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv"|sha256sum -c -
+          for y in 2023 2024; do d="$ROOT/inputs/raw$y"; gh release download "usdjpy-$y-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" --dir "$d" --pattern "usdjpy-$y-??-raw-ticks-v1.tar.gz" --pattern "usdjpy-$y-raw-ticks-v1.annual-manifest.json" --pattern SHA256SUMS; (cd "$d" && grep -E "usdjpy-$y-(..-raw-ticks-v1\\.tar\\.gz|raw-ticks-v1\\.annual-manifest\\.json)$" SHA256SUMS|sha256sum -c -); test "$(find "$d" -name '*.tar.gz'|wc -l)" = 12; done
+          find "$ROOT/inputs/raw2023" "$ROOT/inputs/raw2024" -maxdepth 1 -type f -printf '%f %s\n'|sort >"$ROOT/evidence/raw_release_inventory.txt"; ! grep -E '2019|2020|2021|2022|2025' "$ROOT/evidence/raw_release_inventory.txt"
+      - name: Preflight and execute frozen Development candidate
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ROOT: ${{ steps.identity.outputs.root }}
+        env: {ROOT: '${{ steps.init.outputs.root }}', PYTHONPATH: '${{ steps.init.outputs.root }}/src', PYTHONUNBUFFERED: '1'}
         run: |
           set -euo pipefail
-          gh release download usdjpy-2023-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/raw2023" --pattern 'usdjpy-2023-??-raw-ticks-v1.tar.gz' --pattern 'usdjpy-2023-raw-ticks-v1.annual-manifest.json' --pattern 'SHA256SUMS'
-          gh release download usdjpy-2024-raw-bidask-ticks-v1 --repo "$GITHUB_REPOSITORY" --dir "$ROOT/inputs/raw2024" --pattern 'usdjpy-2024-??-raw-ticks-v1.tar.gz' --pattern 'usdjpy-2024-raw-ticks-v1.annual-manifest.json' --pattern 'SHA256SUMS'
-          (cd "$ROOT/inputs/raw2023" && grep -E 'usdjpy-2023-(..-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
-          (cd "$ROOT/inputs/raw2024" && grep -E 'usdjpy-2024-(..-raw-ticks-v1\.tar\.gz|raw-ticks-v1\.annual-manifest\.json)$' SHA256SUMS | sha256sum -c -)
-          test "$(find "$ROOT/inputs/raw2023" -name '*.tar.gz' -type f | wc -l)" = 12
-          test "$(find "$ROOT/inputs/raw2024" -name '*.tar.gz' -type f | wc -l)" = 12
-          find "$ROOT/inputs/raw2023" "$ROOT/inputs/raw2024" -maxdepth 1 -type f -printf '%f %s\n' | sort > "$ROOT/evidence/raw_release_inventory.txt"
-          ! grep -E '2019|2020|2021|2022|2025' "$ROOT/evidence/raw_release_inventory.txt"
-      - name: No-outcome preflight
-        shell: bash
-        env:
-          ROOT: ${{ steps.identity.outputs.root }}
-          PYTHONPATH: ${{ steps.identity.outputs.root }}/src
-        run: |
-          set -euo pipefail
-          python "$ROOT/src/evaluate.py" \
-            --raw-2023 "$ROOT/inputs/raw2023" \
-            --raw-2024 "$ROOT/inputs/raw2024" \
-            --atlas-ledger "$ROOT/inputs/atlas/unpacked/csos_output/strategy_opportunity_atlas.csv.gz" \
-            --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" \
-            --baseline-states "$ROOT/materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz" \
-            --prereg "$ROOT/src/prereg.json" \
-            --source-manifest "$ROOT/src/source_manifest.json" \
-            --out-dir "$ROOT/evidence/preflight" \
-            --research-sha "${{ steps.identity.outputs.research_sha }}" \
-            --core-sha 'f897b250b808207d960417b2306935dcb0655acf' \
-            --run-id "$GITHUB_RUN_ID" \
-            --preflight-only 2>&1 | tee "$ROOT/evidence/preflight.log"
-          jq -e '.status=="PASS_NO_SOURCE_NATIVE_OUTCOMES" and .pass==true and .candidate_outcome_computed==false and .protected_2020_2022_accessed==false and .protected_2025_accessed==false' "$ROOT/evidence/preflight/preflight_receipt.json"
-      - name: Execute frozen source-native Development evaluator
-        shell: bash
-        env:
-          ROOT: ${{ steps.identity.outputs.root }}
-          PYTHONPATH: ${{ steps.identity.outputs.root }}/src
-          PYTHONUNBUFFERED: '1'
-        run: |
-          set -euo pipefail
-          python "$ROOT/src/evaluate.py" \
-            --raw-2023 "$ROOT/inputs/raw2023" \
-            --raw-2024 "$ROOT/inputs/raw2024" \
-            --atlas-ledger "$ROOT/inputs/atlas/unpacked/csos_output/strategy_opportunity_atlas.csv.gz" \
-            --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" \
-            --baseline-states "$ROOT/materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz" \
-            --prereg "$ROOT/src/prereg.json" \
-            --source-manifest "$ROOT/src/source_manifest.json" \
-            --out-dir "$ROOT/output" \
-            --research-sha "${{ steps.identity.outputs.research_sha }}" \
-            --core-sha 'f897b250b808207d960417b2306935dcb0655acf' \
-            --run-id "$GITHUB_RUN_ID" 2>&1 | tee "$ROOT/evidence/development_run.log"
-          jq -e '.hypothesis_id=="USDJPY-HYP-035" and .family_id=="S_PULLBACK_CONTINUATION_PORTABILITY" and .candidate_id=="A_EXACT_EXECUTABLE_16BAR" and .historical_2020_2022_accessed==false and .protected_2025_accessed==false and .core_modified==false and .mt4_executed==false and .production_authorized==false and .live_authorized==false and .no_retuning==true' "$ROOT/output/final_result.json"
-          (cd "$ROOT/output" && sha256sum -c PACKAGE_SHA256SUMS)
-          ! grep -R --line-number -E '2019-[0-9]{2}-[0-9]{2}|2020-[0-9]{2}-[0-9]{2}|2021-[0-9]{2}-[0-9]{2}|2022-[0-9]{2}-[0-9]{2}|2025-[0-9]{2}-[0-9]{2}' "$ROOT/output"
-      - name: Deterministic POSIX archive and cross-platform readback
-        shell: bash
-        env:
-          ROOT: ${{ steps.identity.outputs.root }}
-        run: |
-          set -euo pipefail
-          python "$ROOT/infra/fx2_infra.py" archive --input "$ROOT/output" --output "$ROOT/usdjpy-hyp035-pullback-continuation-development-v1.zip" --source-sha '${{ steps.identity.outputs.research_sha }}' --run-id "$GITHUB_RUN_ID" --classification scientific > "$ROOT/evidence/archive_build_receipt.json"
-          python "$ROOT/infra/fx2_infra.py" readback --archive "$ROOT/usdjpy-hyp035-pullback-continuation-development-v1.zip" > "$ROOT/evidence/archive_readback.json"
-          jq -e '.status=="PASS"' "$ROOT/evidence/archive_readback.json"
-          sha256sum "$ROOT/usdjpy-hyp035-pullback-continuation-development-v1.zip" > "$ROOT/evidence/archive_sha256.txt"
+          common=(--raw-2023 "$ROOT/inputs/raw2023" --raw-2024 "$ROOT/inputs/raw2024" --atlas-ledger "$ROOT/inputs/atlas/unpacked/csos_output/strategy_opportunity_atlas.csv.gz" --baseline-trades "$ROOT/materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv" --baseline-states "$ROOT/materialized/usdjpy_b02_f05_entry_exit_state_ledger_v2.csv.gz" --prereg "$ROOT/src/prereg.json" --source-manifest "$ROOT/src/source_manifest.json" --research-sha '${{ steps.init.outputs.sha }}' --core-sha f897b250b808207d960417b2306935dcb0655acf --run-id "$GITHUB_RUN_ID")
+          python "$ROOT/src/evaluate.py" "${common[@]}" --out-dir "$ROOT/evidence/preflight" --preflight-only >"$ROOT/evidence/preflight.log"; jq -e '.pass==true and .candidate_outcome_computed==false' "$ROOT/evidence/preflight/preflight_receipt.json"
+          python "$ROOT/src/evaluate.py" "${common[@]}" --out-dir "$ROOT/output" 2>&1|tee "$ROOT/evidence/development_run.log"
+          jq -e '.hypothesis_id=="USDJPY-HYP-035" and .historical_2020_2022_accessed==false and .protected_2025_accessed==false and .core_modified==false and .mt4_executed==false and .production_authorized==false and .live_authorized==false' "$ROOT/output/final_result.json"
+          (cd "$ROOT/output" && sha256sum -c PACKAGE_SHA256SUMS); ! grep -R -E '2019-[0-9]{2}-[0-9]{2}|2020-[0-9]{2}-[0-9]{2}|2021-[0-9]{2}-[0-9]{2}|2022-[0-9]{2}-[0-9]{2}|2025-[0-9]{2}-[0-9]{2}' "$ROOT/output"
+          python "$ROOT/infra/fx2_infra.py" archive --input "$ROOT/output" --output "$ROOT/usdjpy-hyp035-pullback-continuation-development-v1.zip" --source-sha '${{ steps.init.outputs.sha }}' --run-id "$GITHUB_RUN_ID" --classification scientific >"$ROOT/evidence/archive_build.json"
+          python "$ROOT/infra/fx2_infra.py" readback --archive "$ROOT/usdjpy-hyp035-pullback-continuation-development-v1.zip" >"$ROOT/evidence/archive_readback.json"; jq -e .status==\"PASS\" "$ROOT/evidence/archive_readback.json"
       - name: Upload immutable evidence
         if: always()
         id: upload
@@ -206,110 +71,22 @@ jobs:
         with:
           name: usdjpy-hyp035-pullback-continuation-development-v1-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            ${{ steps.identity.outputs.root }}/output
-            ${{ steps.identity.outputs.root }}/evidence
-            ${{ steps.identity.outputs.root }}/usdjpy-hyp035-pullback-continuation-development-v1.zip
+            ${{ steps.init.outputs.root }}/output
+            ${{ steps.init.outputs.root }}/evidence
+            ${{ steps.init.outputs.root }}/usdjpy-hyp035-pullback-continuation-development-v1.zip
           retention-days: 90
           compression-level: 0
           if-no-files-found: error
-      - name: Publish immutable Release and byte-identical readback on main
+      - name: Publish Release, readback, receipt and Issue on main
         if: success() && github.event_name == 'push' && github.ref_name == 'main'
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ROOT: ${{ steps.identity.outputs.root }}
+        env: {GH_TOKEN: '${{ github.token }}', ROOT: '${{ steps.init.outputs.root }}', ARTIFACT_ID: '${{ steps.upload.outputs.artifact-id }}', ARTIFACT_DIGEST: '${{ steps.upload.outputs.artifact-digest }}'}
         run: |
           set -euo pipefail
-          tag='usdjpy-hyp035-pullback-continuation-development-v1'
-          ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1
-          decision=$(jq -r '.decision' "$ROOT/output/final_result.json")
-          stage=$(jq -r '.failed_binding_stage' "$ROOT/output/final_result.json")
-          trades=$(jq -r '.source_native_trades' "$ROOT/output/final_result.json")
-          net=$(jq -r '.standalone.net_jpy // "not_executed"' "$ROOT/output/final_result.json")
-          pf=$(jq -r '.standalone.profit_factor // "not_executed"' "$ROOT/output/final_result.json")
-          gh release create "$tag" "$ROOT/usdjpy-hyp035-pullback-continuation-development-v1.zip" --target "$GITHUB_SHA" --title 'USDJPY HYP-035 Pullback Continuation Development v1' --notes "Frozen source-native Dukascopy BI5 Bid/Ask Pullback Continuation Development result. Decision: ${decision}; first binding stop: ${stage}; source-native trades: ${trades}; net JPY: ${net}; PF: ${pf}. 2020-2022, Core/MT4 and 2025 were not accessed unless explicitly authorized by the immutable result. Production/live remain unauthorized." --repo "$GITHUB_REPOSITORY"
-          mkdir -p "$ROOT/release_readback"
-          gh release download "$tag" --repo "$GITHUB_REPOSITORY" --dir "$ROOT/release_readback" --pattern 'usdjpy-hyp035-pullback-continuation-development-v1.zip'
-          cmp "$ROOT/usdjpy-hyp035-pullback-continuation-development-v1.zip" "$ROOT/release_readback/usdjpy-hyp035-pullback-continuation-development-v1.zip"
-          sha256sum "$ROOT/release_readback/usdjpy-hyp035-pullback-continuation-development-v1.zip" > "$ROOT/evidence/release_readback_sha256.txt"
-      - name: Commit Release readback receipt on main
-        if: success() && github.event_name == 'push' && github.ref_name == 'main'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ROOT: ${{ steps.identity.outputs.root }}
-          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
-          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
-        run: |
-          set -euo pipefail
-          receipt='configs/research/usdjpy_hyp035_release_receipt_v1.json'
-          decision=$(jq -r '.decision' "$ROOT/output/final_result.json")
-          stage=$(jq -r '.failed_binding_stage' "$ROOT/output/final_result.json")
-          asset_sha=$(sha256sum "$ROOT/release_readback/usdjpy-hyp035-pullback-continuation-development-v1.zip" | cut -d' ' -f1)
-          cat > "$ROOT/release_receipt.json" <<EOF
-          {
-            "schema_version": "usdjpy_hyp035_release_receipt_v1",
-            "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
-            "hypothesis_id": "USDJPY-HYP-035",
-            "family_id": "S_PULLBACK_CONTINUATION_PORTABILITY",
-            "candidate_id": "A_EXACT_EXECUTABLE_16BAR",
-            "decision": "${decision}",
-            "failed_binding_stage": "${stage}",
-            "workflow_run_id": ${GITHUB_RUN_ID},
-            "workflow_run_attempt": ${GITHUB_RUN_ATTEMPT},
-            "head_sha": "${GITHUB_SHA}",
-            "artifact_id": ${ARTIFACT_ID},
-            "artifact_digest": "${ARTIFACT_DIGEST}",
-            "release_tag": "usdjpy-hyp035-pullback-continuation-development-v1",
-            "release_asset": "usdjpy-hyp035-pullback-continuation-development-v1.zip",
-            "release_asset_sha256": "${asset_sha}",
-            "byte_identical_readback": true,
-            "historical_2020_2022_accessed": false,
-            "protected_2025_accessed": false,
-            "core_modified": false,
-            "mt4_executed": false,
-            "production_authorized": false,
-            "live_authorized": false
-          }
-          EOF
-          content=$(base64 -w0 "$ROOT/release_receipt.json")
-          gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${receipt}" -f message='evidence: record HYP-035 Release readback' -f content="$content" -f branch=main >/dev/null
-      - name: Publish immutable receipt Issue on main
-        if: always() && github.event_name == 'push' && github.ref_name == 'main'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ROOT: ${{ steps.identity.outputs.root }}
-          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
-          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
-        run: |
-          decision=$(jq -r '.decision // "TECHNICAL_NO_RESULT_BEFORE_FINAL"' "$ROOT/output/final_result.json" 2>/dev/null || echo TECHNICAL_NO_RESULT_BEFORE_FINAL)
-          stage=$(jq -r '.failed_binding_stage // "UNKNOWN"' "$ROOT/output/final_result.json" 2>/dev/null || echo UNKNOWN)
-          trades=$(jq -r '.source_native_trades // 0' "$ROOT/output/final_result.json" 2>/dev/null || echo 0)
-          net=$(jq -r '.standalone.net_jpy // "not_executed"' "$ROOT/output/final_result.json" 2>/dev/null || echo not_executed)
-          pf=$(jq -r '.standalone.profit_factor // "not_executed"' "$ROOT/output/final_result.json" 2>/dev/null || echo not_executed)
-          cat > "$ROOT/evidence/receipt_issue.md" <<EOF
-          workflow: usdjpy_pullback_continuation_development_v1.yml
-          run_id: ${GITHUB_RUN_ID}
-          run_attempt: ${GITHUB_RUN_ATTEMPT}
-          head_sha: ${GITHUB_SHA}
-          hypothesis_id: USDJPY-HYP-035
-          family_id: S_PULLBACK_CONTINUATION_PORTABILITY
-          candidate_id: A_EXACT_EXECUTABLE_16BAR
-          decision: ${decision}
-          failed_binding_stage: ${stage}
-          source_native_trades: ${trades}
-          net_jpy: ${net}
-          profit_factor: ${pf}
-          artifact_id: ${ARTIFACT_ID}
-          artifact_digest: ${ARTIFACT_DIGEST}
-          release_tag: usdjpy-hyp035-pullback-continuation-development-v1
-          protected_2020_2022_accessed: false
-          protected_2025_accessed: false
-          Core_modified: false
-          MT4_accessed: false
-          production_authorized: false
-          live_authorized: false
-          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-          EOF
-          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-035] ${GITHUB_RUN_ID} ${decision}" --body-file "$ROOT/evidence/receipt_issue.md"
+          tag=usdjpy-hyp035-pullback-continuation-development-v1; ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1
+          decision=$(jq -r .decision "$ROOT/output/final_result.json"); stage=$(jq -r .failed_binding_stage "$ROOT/output/final_result.json"); trades=$(jq -r .source_native_trades "$ROOT/output/final_result.json"); net=$(jq -r '.standalone.net_jpy//"not_executed"' "$ROOT/output/final_result.json"); pf=$(jq -r '.standalone.profit_factor//"not_executed"' "$ROOT/output/final_result.json")
+          gh release create "$tag" "$ROOT/usdjpy-hyp035-pullback-continuation-development-v1.zip" --target "$GITHUB_SHA" --title 'USDJPY HYP-035 Pullback Continuation Development v1' --notes "Decision ${decision}; stop ${stage}; trades ${trades}; net JPY ${net}; PF ${pf}. No 2020-2022, Core/MT4 or 2025 access; no production/live authorization." --repo "$GITHUB_REPOSITORY"
+          mkdir "$ROOT/readback"; gh release download "$tag" --repo "$GITHUB_REPOSITORY" --dir "$ROOT/readback" --pattern 'usdjpy-hyp035-pullback-continuation-development-v1.zip'; cmp "$ROOT/usdjpy-hyp035-pullback-continuation-development-v1.zip" "$ROOT/readback/usdjpy-hyp035-pullback-continuation-development-v1.zip"; asset_sha=$(sha256sum "$ROOT/readback/usdjpy-hyp035-pullback-continuation-development-v1.zip"|cut -d' ' -f1)
+          jq -n --arg d "$decision" --arg s "$stage" --arg hs "$GITHUB_SHA" --arg ad "$ARTIFACT_DIGEST" --arg as "$asset_sha" --argjson run "$GITHUB_RUN_ID" --argjson aid "$ARTIFACT_ID" '{schema_version:"usdjpy_hyp035_release_receipt_v1",status:"PASS_BYTE_IDENTICAL_RELEASE_READBACK",hypothesis_id:"USDJPY-HYP-035",family_id:"S_PULLBACK_CONTINUATION_PORTABILITY",candidate_id:"A_EXACT_EXECUTABLE_16BAR",decision:$d,failed_binding_stage:$s,workflow_run_id:$run,head_sha:$hs,artifact_id:$aid,artifact_digest:$ad,release_tag:"usdjpy-hyp035-pullback-continuation-development-v1",release_asset_sha256:$as,byte_identical_readback:true,historical_2020_2022_accessed:false,protected_2025_accessed:false,core_modified:false,mt4_executed:false,production_authorized:false,live_authorized:false}' >"$ROOT/receipt.json"
+          content=$(base64 -w0 "$ROOT/receipt.json"); gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/configs/research/usdjpy_hyp035_release_receipt_v1.json" -f message='evidence: record HYP-035 Release readback' -f content="$content" -f branch=main >/dev/null
+          printf 'workflow: usdjpy_pullback_continuation_development_v1.yml\nrun_id: %s\nhead_sha: %s\nhypothesis_id: USDJPY-HYP-035\ndecision: %s\nfailed_binding_stage: %s\nartifact_id: %s\nartifact_digest: %s\nrelease_tag: %s\nprotected_2020_2022_accessed: false\nprotected_2025_accessed: false\nproduction_authorized: false\nlive_authorized: false\n' "$GITHUB_RUN_ID" "$GITHUB_SHA" "$decision" "$stage" "$ARTIFACT_ID" "$ARTIFACT_DIGEST" "$tag" >"$ROOT/issue.md"; gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP-035] ${GITHUB_RUN_ID} ${decision}" --body-file "$ROOT/issue.md"
