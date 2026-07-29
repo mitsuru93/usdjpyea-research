@@ -1,0 +1,11 @@
+{
+  "archive_bytes": 28581,
+  "archive_name": "usdjpy-ea-integration-001-v1.zip",
+  "archive_sha256": "776e237d82681a6a9b89473f51f34d37d63000325d217ecf5947f7bcddce4dd7",
+  "candidate_rules_changed": false,
+  "release_tag": "usdjpy-ea-integration-001-v1",
+  "repository": "mitsuru93/usdjpyea-research",
+  "schema_version": "usdjpy_ea_integration_001_release_receipt_v1",
+  "status": "READY_FOR_MAIN_MERGE_RELEASE",
+  "work_id": "USDJPY-EA-INTEGRATION-001"
+}
