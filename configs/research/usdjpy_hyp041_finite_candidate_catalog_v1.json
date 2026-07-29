@@ -1,0 +1,80 @@
+{
+  "2025H1_candidate_outcomes_visible_at_freeze": false,
+  "2025H2_accessed": false,
+  "candidate_limit": {"combined": 1, "single": 3, "total": 4},
+  "candidate_outcomes_computed_at_freeze": false,
+  "candidates": [
+    {
+      "applies_to": "Long and Short symmetrically",
+      "axis": "C1",
+      "candidate_id": "C1_CHRONOLOGY_LOSS_PERMISSION",
+      "entry_permission": "deny a subsequent F05 entry only when an accepted F05 loss of the same side has already realized in the same UTC date-and-session",
+      "exact_HYP027_threshold_reused": false,
+      "expiry": "end of the entry session",
+      "information_time": "accepted F05 realized closes processed before entries at identical timestamp",
+      "name": "Chronology-aware Same-Side Session Loss Permission",
+      "parameter_search": false,
+      "restoration": "automatic at UTC session or date boundary",
+      "session_specific_thresholds": false
+    },
+    {
+      "H4_D1_grid": false,
+      "axis": "C2",
+      "candidate_id": "C2_MARKET_STATE_COMPRESSION",
+      "entry_permission": "deny F05 Entry only when both conditions hold",
+      "exact_S3_reused": false,
+      "expiry": "no persistent state",
+      "information_time": "completed M15 H4 and D1 bars available at Entry",
+      "name": "Dual-Condition Misalignment plus Extension Compression",
+      "parameter_search": false,
+      "restoration": "re-evaluate at every later F05 signal",
+      "state_definition": "market_state=MISALIGNED and extension_atr>=1.50"
+    },
+    {
+      "axis": "C3",
+      "candidate_id": "C3_CONTINUATION_GIVEBACK_LIFECYCLE",
+      "continuation_failure": "at first M15 observation close when current_pips<0 and MFE<0.25*Entry_ATR",
+      "entry_permission": "unchanged",
+      "fixed_SL_grid": false,
+      "fixed_TP_grid": false,
+      "future_information": false,
+      "giveback": "at any M15 observation close when MFE>=1.00*Entry_ATR and current_pips<=0.25*Entry_ATR",
+      "hold_time_grid": false,
+      "information_time": "observed Tick path summarized at completed M15 lifecycle observations and Entry-time ATR",
+      "name": "Entry-ATR Continuation Failure and Giveback Lifecycle",
+      "parameter_search": false
+    }
+  ],
+  "combined_candidate": {
+    "affected_trade_overlap_share": 0.0,
+    "authorization_rule": "authorized only if both C1 and C3 preserve positive 2023-2024 net, each retains at least 80 percent of baseline historical net, and affected-trade overlap is at most 25 percent; authorization uses 2023-2024 outcomes only before combined 2025H1 evaluation",
+    "authorized_from_2023_2024_only": false,
+    "candidate_id": "C4_C1_PLUS_C3"
+  },
+  "evidence_snapshot": {
+    "2025H1_F05_net_jpy": -13844,
+    "entry_immediately_adverse_loss_jpy": 0,
+    "market_state_misfit_loss_jpy": -81504,
+    "same_session_loss_jpy": 0,
+    "temporary_profit_then_loss_jpy": 0
+  },
+  "failure_decomposition_status": "PASS_FAILURE_DECOMPOSITION_COMPLETE_NO_CANDIDATE_OUTCOME",
+  "family_id": "F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE",
+  "hypothesis_id": "USDJPY-HYP-041",
+  "live_authorized": false,
+  "production_authorized": false,
+  "reporting_integrity": {
+    "Q1_Q2_grouping": "entry_quarter",
+    "candidate_rule_changed": false,
+    "corrected_before_candidate_execution": true
+  },
+  "schema_version": "usdjpy_hyp041_finite_candidate_catalog_v1_1",
+  "side_mapping_integrity": {
+    "C1_requires_numeric_side": [-1, 1],
+    "candidate_rule_changed": false,
+    "fallback_mapping": {"LONG": 1, "SHORT": -1},
+    "schema_defect_detected_before_candidate_execution": true,
+    "technical_invalid_prior_replay_count": 0
+  },
+  "status": "FROZEN_AFTER_FAILURE_DECOMPOSITION_BEFORE_VALID_CANDIDATE_OUTCOMES"
+}
