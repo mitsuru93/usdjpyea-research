@@ -1,0 +1,55 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v44",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v43.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v43.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-041",
+      "title": "F05 2025H1 Loss Recovery and Portable Architecture Study",
+      "family_ids": ["F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE"],
+      "candidate_ids": [],
+      "status": "ACTIVE_FAILURE_DECOMPOSITION_PENDING_NO_CANDIDATE_FROZEN",
+      "decision": null,
+      "lineage": "Independent F05 v2 architecture study using mechanism evidence from closed HYP-027 HYP-029 and HYP-032 without reopening combining or changing their decisions.",
+      "target_failure_mode": "F05 contributed JPY13844 of the JPY20808 B02-plus-F05 loss in the known 2025H1 validation period.",
+      "authorization": {
+        "failure_decomposition": true,
+        "finite_candidate_construction": true,
+        "2023_2024_research": true,
+        "Core": "ONLY_AFTER_MAXIMUM_ONE_CANDIDATE_SELECTION",
+        "MT4": "ONLY_AFTER_MAXIMUM_ONE_CANDIDATE_SELECTION",
+        "2025H1": "VALIDATION_PERIOD_WITH_VERSION_VISIBILITY_AND_RERUN_ACCOUNTING",
+        "2025H2": "NOT_AUTOMATICALLY_USED_OR_SUBSTITUTED",
+        "production": false,
+        "live": false
+      },
+      "period_roles": {
+        "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_OR_AUXILIARY_ANALYSIS_NOT_BINDING",
+        "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+        "2025H1": "VALIDATION_PERIOD",
+        "period_role_independent_of_outcome_visibility": true
+      },
+      "period_access": {
+        "2020_2022": false,
+        "2023_2024_prior_mechanism_evidence": true,
+        "2025H1_known_baseline": true,
+        "2025H1_HYP041_candidate_versions": false,
+        "2025H2": false
+      },
+      "evidence_refs": {
+        "startup_receipt": "configs/research/usdjpy_hyp041_startup_receipt_v1.json",
+        "period_access_receipt": "configs/research/usdjpy_hyp041_period_access_receipt_v1.json",
+        "preregistration": "configs/research/usdjpy_hyp041_preregistration_v1.json"
+      },
+      "parallel_study_isolation": {
+        "USDJPY-HYP-039": "UNCHANGED_INHERITED_ACTIVE_STUDY",
+        "USDJPY-HYP-040": "UNCHANGED_INHERITED_ACTIVE_STUDY"
+      },
+      "next_action": "Inventory exact 2023-2024 and 2025H1 F05 authorities, build the common-schema failure decomposition, then freeze a maximum-three single-candidate catalog before candidate outcomes."
+    }
+  ],
+  "hypothesis_status_updates": []
+}
