@@ -1,0 +1,49 @@
+{
+  "schema_version": "usdjpy_csos_dukascopy_native_remaining_family_atlas_period_role_clarification_v1",
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "status": "PASS_PROTOCOL_CLARIFICATION_BEFORE_NEW_FAMILY_OUTCOMES",
+  "supersedes_conflicting_text": "2020-2022 as confirmatory or historical validation period",
+  "correction_received_before_new_family_outcome_calculation": true,
+  "candidate_outcomes_accessed_before_correction": false,
+  "inventory_stage_only_before_correction": true,
+  "source_inventory_run_before_correction": 30427097072,
+  "source_inventory_run_scientific_outcomes_computed": false,
+  "period_roles": {
+    "2020_2022": {
+      "role": "ANALYSIS_PERIOD",
+      "atlas_access": "NOT_REQUIRED_NOT_ACCESSED",
+      "reason": "Atlas scope is fixed to common-source 2023-2024 ranking.",
+      "future_use": [
+        "mechanism analysis",
+        "regime comparison",
+        "candidate design",
+        "feature evaluation",
+        "failure-mode analysis",
+        "robustness analysis",
+        "period-dependence analysis"
+      ],
+      "confirmation_credit": false,
+      "external_validation_credit": false,
+      "mandatory_gate_before_2025": false
+    },
+    "2023_2024": {
+      "role": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+      "atlas_role": "COMMON_SOURCE_DISCOVERY_AND_RANKING"
+    },
+    "2025": {
+      "role": "UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD",
+      "atlas_access": "PROHIBITED_NOT_ACCESSED",
+      "ranking_use": false,
+      "shortlist_change_after_outcome": false
+    }
+  },
+  "family_contract_changed": false,
+  "ranking_metric_changed": false,
+  "shortlist_gate_changed": false,
+  "cost_assumption_changed": false,
+  "source_authority_changed": false,
+  "candidate_freeze_authorized": false,
+  "core_mt4_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

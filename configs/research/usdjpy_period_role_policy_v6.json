@@ -1,0 +1,73 @@
+{
+  "schema_version": "usdjpy_period_role_policy_v6",
+  "status": "ACTIVE_AFTER_MERGE",
+  "supersedes": "configs/research/usdjpy_period_role_policy_v5.json",
+  "correction_source": "User-directed period-role clarification received before CSOS remaining-family Atlas candidate outcomes.",
+  "authorizing_direction": "2020-2022 is analysis; 2023-2024 is research and candidate construction; 2025 is the only binding unseen external validation period.",
+  "period_roles": {
+    "2020_2022": {
+      "role": "ANALYSIS_PERIOD",
+      "permitted_uses": [
+        "mechanism understanding",
+        "regime comparison",
+        "candidate design and revision",
+        "feature evaluation",
+        "failure-mode analysis",
+        "robustness analysis",
+        "period-dependence analysis"
+      ],
+      "candidate_design_from_outcomes_allowed": true,
+      "confirmation_credit": false,
+      "external_validation_credit": false,
+      "binding_gate_before_2025": false,
+      "prohibited_labels": [
+        "protected confirmation period",
+        "held-out historical validation period",
+        "first binding confirmation period",
+        "shortlist candidate pass/fail period",
+        "mandatory validation before 2025"
+      ]
+    },
+    "2023_2024": {
+      "role": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+      "folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+      "uses": [
+        "mechanism research",
+        "candidate construction",
+        "cross-family discovery",
+        "source-native ranking",
+        "falsification",
+        "robustness analysis"
+      ],
+      "candidate_must_be_frozen_before_2025": true
+    },
+    "2025": {
+      "role": "UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD",
+      "candidate_specific_access_before_freeze": false,
+      "ranking_or_threshold_selection": false,
+      "post_outcome_retuning": false,
+      "post_outcome_side_exclusion": false,
+      "post_outcome_session_exclusion": false,
+      "post_outcome_hold_change": false,
+      "post_outcome_entry_exit_change": false,
+      "post_outcome_variant_change": false,
+      "binding_external_validation_credit": true
+    }
+  },
+  "research_sequence": [
+    "Use 2020-2022 for analysis when useful.",
+    "Use 2023-2024 for primary research and candidate construction.",
+    "Freeze the exact candidate and complete Research/Core/MT4 parity without candidate-specific 2025 outcomes.",
+    "Use 2025 once as the binding unseen external validation period.",
+    "Do not repair or retune from 2025 outcomes."
+  ],
+  "atlas_specific_rule": {
+    "CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_V1_period": "2023-2024",
+    "2020_2022_required": false,
+    "2020_2022_accessed": false,
+    "2020_2022_not_accessed_reason": "Atlas scope is fixed to common-source 2023-2024 ranking.",
+    "2025_accessed": false,
+    "shortlist_credit": "RESEARCH_PRIORITIZATION_ONLY"
+  },
+  "live_order_authorized": false
+}

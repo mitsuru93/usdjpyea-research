@@ -1,0 +1,162 @@
+{
+  "schema_version": "usdjpy_csos_dukascopy_native_remaining_family_atlas_prereg_v1",
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "program_type": "CROSS_FAMILY_DISCOVERY_PROGRAM",
+  "status": "FROZEN_BEFORE_DUKASCOPY_NATIVE_OUTCOMES",
+  "research_start_sha": "1841ed3fba757a9a44496faeb9a6c7e014efa9d6",
+  "core_reference_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "purpose": "Reconstruct and rerank remaining CSOS families under one Dukascopy BI5 Bid/Ask Tick authority for independent alpha and portfolio complementarity.",
+  "not_candidate_confirmation": true,
+  "period_role_clarification": {
+    "received_before_new_family_outcome_calculation": true,
+    "candidate_outcomes_seen_before_correction": false,
+    "family_contract_changed": false,
+    "ranking_gate_changed": false,
+    "source_changed": false,
+    "2020_2022_confirmation_designation_withdrawn": true,
+    "2025_external_validation_role_preserved": true
+  },
+  "period_roles": {
+    "2020_2022": {
+      "ea_research_role": "ANALYSIS_PERIOD",
+      "atlas_access": "NOT_REQUIRED_NOT_ACCESSED",
+      "atlas_scope_reason": "Atlas scope is fixed to common-source 2023-2024 ranking.",
+      "future_permitted_uses": [
+        "mechanism analysis",
+        "candidate development",
+        "feature evaluation",
+        "failure analysis",
+        "robustness analysis",
+        "period-dependence analysis"
+      ],
+      "confirmation_credit": false,
+      "external_validation_credit": false,
+      "binding_gate_for_2025": false
+    },
+    "2023_2024": {
+      "ea_research_role": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+      "atlas_role": "SOURCE_NATIVE_DISCOVERY_AND_RANKING",
+      "folds": ["2023H1", "2023H2", "2024H1", "2024H2"]
+    },
+    "2025": {
+      "ea_research_role": "UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD",
+      "atlas_access": "PROHIBITED_NOT_ACCESSED",
+      "atlas_ranking_credit": false,
+      "shortlist_can_be_changed_by_2025": false
+    }
+  },
+  "parallel_firewall": {
+    "separate_from": "Short Pullback Continuation Directional Asymmetry and Historical Portability Study",
+    "pullback_family_re_evaluated": false,
+    "hyp036_or_successor_outcomes_used": false,
+    "shared_branch_or_outputs": false
+  },
+  "discovery_period": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "warmup_only_period": "2019_IF_REQUIRED_BY_FROZEN_CONTRACT",
+  "binding_source": "Dukascopy BI5 source-native Bid/Ask Tick",
+  "bar_contract": {
+    "timeframe": "M15",
+    "timezone": "UTC",
+    "price": "Bid OHLC reconstructed from the same Tick source",
+    "observed_bar": "A bar exists only when at least one source Tick is observed in its UTC 15-minute bucket",
+    "duplicates": "stable source order retained and audited",
+    "nonmonotonic": "must be zero after deterministic stable chronology",
+    "ask_below_bid": "must be zero",
+    "missing_intervals": "not forward-filled; family missing-data rules apply",
+    "fold_crossing": "suppressed",
+    "tail": "suppressed when fixed exit cannot be executed"
+  },
+  "execution_contract": {
+    "long_entry": "first executable Ask at or after frozen entry boundary",
+    "short_entry": "first executable Bid at or after frozen entry boundary",
+    "long_exit": "first executable Bid at or after frozen exit boundary",
+    "short_exit": "first executable Ask at or after frozen exit boundary",
+    "mid_or_bid_only_binding_pl": false
+  },
+  "monetary_contract": {
+    "lot": 0.01,
+    "contract_size_units_per_lot": 100000,
+    "position_units": 1000,
+    "pip_size_jpy_per_usd": 0.01,
+    "pip_value_jpy": 10.0,
+    "reporting_currency": "JPY",
+    "initial_capital_jpy": 1000000.0,
+    "realized_pl_unit": "JPY",
+    "floating_pl_unit": "JPY",
+    "spread_unit": "pip",
+    "commission_jpy_round_trip": 0.0,
+    "swap_jpy": 0.0,
+    "dd_unit": "JPY",
+    "minimum_equity_unit": "JPY",
+    "numerical_tolerance_jpy": 0.000001,
+    "floating_point_normalization": "absolute values below tolerance normalized to zero"
+  },
+  "included_families": {
+    "A_FALSE_BREAKOUT_REVERSAL": null,
+    "B_BALANCE_MEAN_REVERSION": null,
+    "C_SHOCK_CONTINUATION": null,
+    "E_SESSION_TRANSITION": ["E_TOKYO_LONDON", "E_LONDON_NY", "E_NY_TOKYO"],
+    "G_TREND_EXHAUSTION": null,
+    "H_COMPRESSION_BREAKOUT": null,
+    "I_FAILED_TREND_CONTINUATION": null,
+    "K_LITERATURE_PRACTICE_LED": ["K_LONDON_OPENING_RANGE_BREAKOUT", "K_ROUND_NUMBER_REJECTION", "K_DAILY_TIME_SERIES_MOMENTUM"]
+  },
+  "excluded_families": {
+    "D_SHOCK_FAILURE": "binding independent study and postmortem complete",
+    "F_LIQUIDITY_SWEEP": "HYP-030, HYP-031, HYP-033 and HYP-034 complete",
+    "J_PULLBACK_CONTINUATION": "HYP-035, HYP-036 and parallel successor study"
+  },
+  "translation_rule": "Each old CSOS frozen variant is translated exactly once. Unspecified or non-executable rules are not guessed or tuned and receive NOT_EXECUTABLE_UNDER_COMMON_SOURCE_CONTRACT.",
+  "optimization_prohibited": true,
+  "side_or_session_exclusion_prohibited": true,
+  "old_atlas_is_comparator_only": true,
+  "ranking_tracks": ["INDEPENDENT_ALPHA", "COMPLEMENTARITY_MECHANISM"],
+  "shortlist_limits": {
+    "track_a": 1,
+    "track_b": 1,
+    "same_family_multiple_variants": false,
+    "mechanism_research_only": 1
+  },
+  "shortlist_gates": {
+    "independent_alpha": {
+      "min_trades": 120,
+      "net_jpy_gt": 0,
+      "pf_gte": 1.10,
+      "positive_folds_gte": 3,
+      "minimum_fold_jpy_gte": -1000,
+      "positive_months_gte": 16,
+      "best_event_removed_net_gt": 0,
+      "top5_removed_net_gt": 0,
+      "event_bootstrap_p_non_positive_lte": 0.10,
+      "spread_plus_1pip_net_gt": 0,
+      "entry_delay_5s_net_gt": 0,
+      "additive_portfolio_net_improves": true,
+      "combined_realized_dd_non_worse": true,
+      "worst_20_business_day_non_worse": true
+    },
+    "complementarity": {
+      "standalone_net_jpy_gt": 0,
+      "pf_gte": 1.00,
+      "positive_folds_gte": 3,
+      "negative_baseline_day_contribution_gt": 0,
+      "additive_net_improves": true,
+      "combined_realized_dd_improves": true,
+      "minimum_equity_improves": true,
+      "worst_5_business_day_non_worse": true,
+      "worst_20_business_day_non_worse": true,
+      "top5_removed_net_gt": 0,
+      "spread_plus_1pip_net_gt": 0
+    }
+  },
+  "shortlist_meaning": "Research prioritization only; not candidate approval, historical validation, Core/MT4 authorization, 2025 authorization, production or live authorization.",
+  "shortlist_followup_period_design": {
+    "2020_2022": "analysis and candidate design are permitted; no confirmation or external-validation credit",
+    "2023_2024": "main research and candidate construction",
+    "2025": "only binding unseen external validation after candidate freeze and Core/MT4 parity"
+  },
+  "candidate_freeze_authorized": false,
+  "core_or_mt4_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "recurring_monitor_authorized": false
+}

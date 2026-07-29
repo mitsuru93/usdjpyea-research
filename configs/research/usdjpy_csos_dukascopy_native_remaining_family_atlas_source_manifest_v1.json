@@ -1,0 +1,63 @@
+{
+  "schema_version": "fx2_source_manifest_v1",
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "research_repository": "mitsuru93/usdjpyea-research",
+  "research_base_sha": "1841ed3fba757a9a44496faeb9a6c7e014efa9d6",
+  "core_repository": "mitsuru93/usdjpyea-core",
+  "core_infrastructure_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "required_research_files": [
+    "AGENTS.md",
+    "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "configs/research/usdjpy_research_candidate_registry_v64.json",
+    "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v38.json",
+    "configs/research/usdjpy_2023_2024_hypothesis_program_v13.json",
+    "configs/research/usdjpy_period_role_policy_v6.json",
+    "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_prereg_v1.json",
+    "configs/research/usdjpy_csos_dukascopy_native_remaining_family_contract_catalog_v1.json",
+    "configs/research/usdjpy_csos_dukascopy_native_remaining_family_prior_study_audit_v1.json",
+    "tools/usdjpy_hyp034_bi5_source_v1.py",
+    "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py",
+    "tools/vendor/fx2_infra_core_f897b250_v1.py"
+  ],
+  "release_assets": {
+    "usdjpy-2023-raw-bidask-ticks-v1": [
+      "usdjpy-2023-??-raw-ticks-v1.tar.gz",
+      "usdjpy-2023-raw-ticks-v1.annual-manifest.json",
+      "SHA256SUMS"
+    ],
+    "usdjpy-2024-raw-bidask-ticks-v1": [
+      "usdjpy-2024-??-raw-ticks-v1.tar.gz",
+      "usdjpy-2024-raw-ticks-v1.annual-manifest.json",
+      "SHA256SUMS"
+    ],
+    "usdjpy-csos-opportunity-atlas-v1-r1": [
+      "usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip"
+    ],
+    "f05-failed-reclaim-historical-authorities-v1": [
+      "usdjpy-2023-canonical-baseline-prep-v1.zip",
+      "mt4-usdjpy-2024h1-event-audit-v1.zip",
+      "mt4-usdjpy-f05-extatr-h2-validation-v1.zip",
+      "EXPECTED_SHA256SUMS"
+    ]
+  },
+  "atlas_release_asset_sha256": "f5feef1a1eb06cfdc284d3642c7050b05da3fc6fa31f67a4205c7faf3e72a72f",
+  "canonical_baseline_trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+  "binding_tick_years": [2023, 2024],
+  "scope_excluded_years": {
+    "2019": "Not required because all frozen variants warm up within the 2023 source population.",
+    "2020": "EA-wide analysis period; not required and not accessed because this Atlas is fixed to common-source 2023-2024 ranking.",
+    "2021": "EA-wide analysis period; not required and not accessed because this Atlas is fixed to common-source 2023-2024 ranking.",
+    "2022": "EA-wide analysis period; not required and not accessed because this Atlas is fixed to common-source 2023-2024 ranking.",
+    "2025": "Unseen binding external validation period; prohibited from Atlas ranking and not accessed."
+  },
+  "2020_2022_confirmation_credit": false,
+  "2020_2022_external_validation_credit": false,
+  "2025_external_validation_role": true,
+  "whole_repository_checkout_required": false,
+  "exact_sha_selective_fetch_required": true,
+  "github_hosted_runner_only": true,
+  "mt4_terminal_required": false,
+  "technical_failure_is_scientific_failure": false
+}
