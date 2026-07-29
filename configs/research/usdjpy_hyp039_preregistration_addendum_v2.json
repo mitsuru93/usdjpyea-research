@@ -1,0 +1,49 @@
+{
+  "schema_version": "usdjpy_hyp039_preregistration_addendum_v2",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "status": "FROZEN_BEFORE_2025H1_OUTCOME_ACCESS_WITH_SUPPRESSION_LINEAGE_CLARIFIED",
+  "supersedes_candidate_contract_only": "configs/research/usdjpy_hyp039_candidate_contract_v1.json",
+  "candidate_contract": "configs/research/usdjpy_hyp039_candidate_contract_v2.json",
+  "suppression_lineage_receipt": "configs/research/usdjpy_hyp039_suppression_lineage_receipt_v2.json",
+  "scientific_outcome_not_rewritten": true,
+  "candidate_trade_rule_unchanged": true,
+  "implementation_clarification": "Reproduce HYP-036 shared Long/Short variant occupancy before selecting accepted Short trades. Long occupancy is state-only and must never place an order or contribute P/L.",
+  "required_Core_parity": {
+    "research_short_rows": 500,
+    "core_short_rows": 500,
+    "common_rows": 500,
+    "research_only": 0,
+    "core_only": 0,
+    "row_field_mismatch": 0,
+    "chronology_mismatch": 0,
+    "currency_mismatch": 0,
+    "shadow_long_orders": 0
+  },
+  "pre_2025H1_sequence": [
+    "merge suppression-lineage clarification",
+    "implement shared-side occupancy and Short-only order permission in Core",
+    "prove 500/500 zero-mismatch Research/Core parity",
+    "compile MT4",
+    "prove Rakuten 2023-2024 portability",
+    "open 2025H1 validation-period outcome"
+  ],
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD"
+  },
+  "outcome_visibility": {
+    "candidate_version": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+    "state_before_first_2025H1_run": "UNSEEN_AT_FIRST_VALIDATION",
+    "2025H1_short_pullback_outcome_accessed": false,
+    "candidate_modified_after_result": false,
+    "unseen_validation_claim": true
+  },
+  "HYP037_decision_changed": false,
+  "HYP038_decision_changed": false,
+  "HYP038_filter_reuse": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
