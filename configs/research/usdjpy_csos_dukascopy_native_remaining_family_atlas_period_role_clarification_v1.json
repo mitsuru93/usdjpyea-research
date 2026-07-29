@@ -18,7 +18,8 @@
     "period_role_changed": false,
     "candidate_outcomes_accessed": false,
     "analysis_2020_2022_accessed": false,
-    "external_validation_2025_accessed": false
+    "external_validation_2025_accessed": false,
+    "pull_request_event_requested": true
   },
   "period_roles": {
     "2020_2022": {
