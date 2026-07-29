@@ -1,0 +1,17 @@
+{
+  "period_access": {
+    "2020_2022": false,
+    "2023_2024": true,
+    "2025H1": true,
+    "2025H2": false
+  },
+  "schema_version": "usdjpy_hyp042_source_authority_receipt_v1",
+  "sources": [
+    {"artifact_id":8559483151,"bytes":268124,"name":"2023_trade_ledger","path":"baseline/usdjpy_2023_canonical_baseline_expected_trade_ledger_v1.csv","sha256":"33d08d580d584f533bc5f9dda510184fb86c668608f76f8e9b7c014924c5f1b8"},
+    {"artifact_id":8559483151,"bytes":521794,"name":"2023_M15","path":"normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz","sha256":"4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78"},
+    {"artifact_id":8479048161,"bytes":2847159,"name":"2024H1_audit","path":"tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv","sha256":"9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a"},
+    {"artifact_id":8512432416,"bytes":2988922,"name":"2024H2_audit","path":"h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv","sha256":"a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd"},
+    {"artifact_id":8625412799,"bytes":2939245,"name":"2025H1_Core_baseline","path":"baseline/fx2_f05_failed_reclaim_2025h1_baseline_v2.csv","sha256":"b364ce086eadc2aa32626c16eae9f9217d1984b9c5c97b8a7d5f68c6158b1943"},
+    {"artifact_id":8632649725,"bytes":111111,"name":"2023_2024_phase1_canonical_ledger","path":"portfolio_loss_cluster_output/concurrent_exposure_ledger.csv.gz","sha256":"3c7210c247d2ac04a91bb18a25e6f09793ab06151deaef719733548fbb38d17d"}
+  ]
+}
