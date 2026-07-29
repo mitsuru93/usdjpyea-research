@@ -15,35 +15,29 @@
     "base_operating_contract": "configs/research/usdjpy_validation_operating_contract_v3.json",
     "operating_contract": "configs/research/usdjpy_validation_operating_contract_v4.json",
     "period_policy": "configs/research/usdjpy_period_role_policy_v5.json",
-    "current_candidate_registry": "configs/research/usdjpy_research_candidate_registry_v63.json",
+    "current_candidate_registry": "configs/research/usdjpy_research_candidate_registry_v64.json",
     "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
-    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v37.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v38.json",
     "hypothesis_program": "configs/research/usdjpy_2023_2024_hypothesis_program_v13.json",
     "known_2025h1_inventory": "configs/research/usdjpy_2025h1_result_inventory_v1.json",
     "recurrence_prevention": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md",
-    "hyp025_result": "configs/research/usdjpy_b02_f05_lifecycle_abc_result_v1.json",
-    "hyp026_result": "configs/research/usdjpy_b02_f05_mtf_technical_incremental_audit_closure_v1.json",
-    "hyp027_phase1_result": "configs/research/usdjpy_portfolio_loss_cluster_phase1_result_v1.json",
-    "hyp027_phase2_closure": "configs/research/usdjpy_portfolio_loss_cluster_phase2_closure_v1.json",
-    "hyp028_result": "configs/research/usdjpy_shock_failure_regime_discriminator_result_v1.json",
-    "hyp029_result": "configs/research/usdjpy_market_state_router_2025h1_binding_result_v1.json",
     "hyp030_result": "docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1/final_decision.json",
     "hyp031_result": "configs/research/usdjpy_asian_range_sweep_regime_development_result_v1.json",
     "hyp032_result": "configs/research/usdjpy_hyp032_historical_validation_result_v2_1.json",
     "hyp033_result": "configs/research/usdjpy_hyp033_final_result_v1.json",
-    "hyp033_result_report": "docs/research/USDJPY_HYP033_ASIAN_LOW_SWEEP_REBOUND_MECHANISM_RESULT_V1.md",
     "hyp034_result": "configs/research/usdjpy_hyp034_final_result_v1.json",
-    "hyp034_result_report": "docs/research/USDJPY_HYP034_PREVIOUS_DAY_EXTREME_SWEEP_REJECTION_RESULT_V1.md",
-    "hyp035_preregistration": "configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json",
-    "hyp035_source_manifest": "configs/research/usdjpy_pullback_continuation_source_manifest_v1.json",
     "hyp035_result": "configs/research/usdjpy_hyp035_final_result_v1.json",
     "hyp035_result_report": "docs/research/USDJPY_HYP035_PULLBACK_CONTINUATION_PORTABILITY_RESULT_V1.md",
-    "hyp035_candidate_registry": "configs/research/usdjpy_hyp035_candidate_registry_v1.json",
-    "hyp035_period_access_receipt": "configs/research/usdjpy_hyp035_period_access_receipt_v1.json",
-    "hyp035_output_manifest": "configs/research/usdjpy_hyp035_output_manifest_v1.json"
+    "hyp036_preregistration": "configs/research/usdjpy_pullback_continuation_dukas_native_prereg_v1.json",
+    "hyp036_source_manifest": "configs/research/usdjpy_pullback_continuation_dukas_native_source_manifest_v1.json",
+    "hyp036_result": "configs/research/usdjpy_hyp036_final_result_v1.json",
+    "hyp036_result_report": "docs/research/USDJPY_HYP036_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE_RESULT_V1.md",
+    "hyp036_candidate_registry": "configs/research/usdjpy_hyp036_candidate_registry_v1.json",
+    "hyp036_period_access_receipt": "configs/research/usdjpy_hyp036_period_access_receipt_v1.json",
+    "hyp036_output_manifest": "configs/research/usdjpy_hyp036_output_manifest_v1.json"
   },
   "current_state_snapshot": {
-    "registry_status": "USDJPY_HYP035_CLOSED_FAIL_ATLAS_IDENTITY",
+    "registry_status": "USDJPY_HYP036_CLOSED_NO_PORTABLE_EXECUTABLE_CANDIDATE",
     "active_family": null,
     "active_hypothesis": null,
     "current_candidate": null,
@@ -56,44 +50,23 @@
     "2025_H2_authorized": false,
     "production_authorized": false,
     "live_authorized": false,
-    "next_action": "Scientific stop. Do not rescue HYP-035 with side/session selection, EMA or hold-time retuning, B02/F05 state, Sweep features, lot reduction, or protected-period outcomes. A successor requires a new source-native single-venue hypothesis."
+    "next_action": "Scientific stop. Do not rescue HYP-036 with Short-only selection, session or period exclusion, EMA/ATR/hold retuning, B02/F05 state, lot reduction, or protected-period outcomes. Select the next independent mechanism outside this closed candidate."
   },
   "parallel_track_state": {
-    "USDJPY-HYP-030": {
-      "status": "COMPLETE_NO_PORTABLE_CANDIDATE",
-      "decision": "NO_PORTABLE_CANDIDATE",
-      "production_authorized": false
-    },
-    "USDJPY-HYP-031": {
-      "status": "COMPLETE_NO_PORTABLE_REGIME_RULE",
-      "decision": "NO_PORTABLE_REGIME_RULE",
-      "production_authorized": false
-    },
-    "USDJPY-HYP-032": {
-      "status": "COMPLETE_FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
-      "decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
-      "production_authorized": false
-    },
-    "USDJPY-HYP-033": {
-      "status": "COMPLETE_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
-      "decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
-      "candidate_freeze": false,
-      "production_authorized": false
-    },
-    "USDJPY-HYP-034": {
-      "status": "COMPLETE_NO_PORTABLE_REJECTION_MECHANISM",
-      "decision": "NO_PORTABLE_REJECTION_MECHANISM",
-      "candidate_freeze": false,
-      "production_authorized": false
-    },
-    "USDJPY-HYP-035": {
-      "status": "COMPLETE_FAIL_ATLAS_IDENTITY",
-      "decision": "FAIL_ATLAS_IDENTITY",
-      "atlas_opportunities": 1333,
-      "raw_native_opportunities": 1332,
-      "common_exact_events": 1179,
-      "exact_event_identity_match_rate": 0.8844711177794449,
-      "material_contradiction_rate": 0.20175438596491227,
+    "USDJPY-HYP-030": {"status": "COMPLETE_NO_PORTABLE_CANDIDATE", "decision": "NO_PORTABLE_CANDIDATE", "production_authorized": false},
+    "USDJPY-HYP-031": {"status": "COMPLETE_NO_PORTABLE_REGIME_RULE", "decision": "NO_PORTABLE_REGIME_RULE", "production_authorized": false},
+    "USDJPY-HYP-032": {"status": "COMPLETE_FAIL_HISTORICAL_VALIDATION_NO_RETUNING", "decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING", "production_authorized": false},
+    "USDJPY-HYP-033": {"status": "COMPLETE_NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR", "decision": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR", "candidate_freeze": false, "production_authorized": false},
+    "USDJPY-HYP-034": {"status": "COMPLETE_NO_PORTABLE_REJECTION_MECHANISM", "decision": "NO_PORTABLE_REJECTION_MECHANISM", "candidate_freeze": false, "production_authorized": false},
+    "USDJPY-HYP-035": {"status": "COMPLETE_FAIL_ATLAS_IDENTITY", "decision": "FAIL_ATLAS_IDENTITY", "candidate_freeze": false, "production_authorized": false},
+    "USDJPY-HYP-036": {
+      "status": "COMPLETE_NO_PORTABLE_EXECUTABLE_CANDIDATE",
+      "decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE",
+      "source_native_trades": 1332,
+      "net_jpy": 17005,
+      "profit_factor": 1.1095393613800422,
+      "positive_folds": 3,
+      "positive_months": 13,
       "candidate_freeze": false,
       "historical_validation_authorized": false,
       "core_authorized": false,
@@ -105,12 +78,13 @@
   },
   "lineage_rules": {
     "user_directed_2024_source_freeze": true,
-    "2023_must_be_transformed_to_historical_2024_contract_for_current_cross_year_work": true,
     "historical_2024_2025_lineage_must_not_be_silently_rewritten": true,
     "cross_lineage_trade_counts_or_pl_must_not_be_combined": true,
     "HST_bars_must_not_be_called_tick_data": true,
     "HYP035_2023_Rakuten_Atlas_events_must_not_be_called_Dukascopy_source_native": true,
-    "HYP035_2024_exact_identity_does_not_rescue_2023_identity_failure": true
+    "HYP035_must_not_be_reopened_by_source_substitution": true,
+    "HYP036_event_and_execution_lineage_is_Dukascopy_only": true,
+    "HYP036_pooled_profit_does_not_override_failed_fold_and_month_portability": true
   },
   "duplicate_research_guard": {
     "required_before_new_hypothesis": true,
@@ -120,8 +94,8 @@
       "closed exact candidate relabeled",
       "prior failed gate omitted",
       "2025 outcome used to choose mechanism or threshold",
-      "blind claim when payoff is derivable",
-      "HYP035 Pullback Continuation rescued by source substitution after identity outcome"
+      "HYP035 Pullback Continuation rescued by source substitution after identity outcome",
+      "HYP036 rescued by Short-only, session-only, period-only, EMA/ATR or hold-time selection"
     ]
   },
   "atomic_update_rule": {
@@ -145,33 +119,19 @@
   },
   "mandatory_startup_read_order": [
     {"ordinal": 1, "path": "AGENTS.md", "reason": "repository-wide AI operating rules"},
-    {"ordinal": 2, "path": "configs/research/usdjpy_research_memory_manifest_v1.json", "reason": "canonical pointers and startup gate through HYP-035 closure"},
-    {"ordinal": 3, "path": "configs/research/usdjpy_research_candidate_registry_v63.json", "reason": "global state after HYP-035 closure"},
+    {"ordinal": 2, "path": "configs/research/usdjpy_research_memory_manifest_v1.json", "reason": "canonical pointers and startup gate through HYP-036 closure"},
+    {"ordinal": 3, "path": "configs/research/usdjpy_research_candidate_registry_v64.json", "reason": "global state after HYP-036 closure"},
     {"ordinal": 4, "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md", "reason": "mandatory execution safeguards"},
     {"ordinal": 5, "path": "configs/research/usdjpy_validation_operating_contract_v4.json", "reason": "lifecycle controls"},
     {"ordinal": 6, "path": "configs/research/usdjpy_period_role_policy_v5.json", "reason": "period roles"},
     {"ordinal": 7, "path": "configs/research/usdjpy_hypothesis_ledger_v1.json", "reason": "base causal memory"},
-    {"ordinal": 8, "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v37.json", "reason": "append-only scientific memory through HYP-035 closure"},
-    {"ordinal": 9, "path": "configs/research/usdjpy_hyp035_final_result_v1.json", "reason": "HYP-035 binding source-identity closure"},
-    {"ordinal": 10, "path": "docs/research/USDJPY_HYP035_PULLBACK_CONTINUATION_PORTABILITY_RESULT_V1.md", "reason": "HYP-035 human-readable interpretation"}
+    {"ordinal": 8, "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v38.json", "reason": "append-only scientific memory through HYP-036 closure"},
+    {"ordinal": 9, "path": "configs/research/usdjpy_hyp036_final_result_v1.json", "reason": "HYP-036 binding Dukascopy-native closure"},
+    {"ordinal": 10, "path": "docs/research/USDJPY_HYP036_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE_RESULT_V1.md", "reason": "HYP-036 human-readable interpretation"}
   ],
   "startup_read_receipt_required": {
-    "required_before": [
-      "mechanism diagnosis",
-      "new hypothesis proposal",
-      "finite family preregistration",
-      "candidate outcome evaluation",
-      "MT4 workflow design",
-      "period-access decision"
-    ],
+    "required_before": ["mechanism diagnosis", "new hypothesis proposal", "finite family preregistration", "candidate outcome evaluation", "MT4 workflow design", "period-access decision"],
     "acceptable_location": "PR body, committed run manifest, result JSON, or explicit assistant work-start report",
-    "minimum_fields": [
-      "manifest SHA or path",
-      "registry SHA or path",
-      "ledger/addendum SHA or path",
-      "active hypothesis and candidate",
-      "closed-boundary acknowledgement",
-      "period authorization acknowledgement"
-    ]
+    "minimum_fields": ["manifest SHA or path", "registry SHA or path", "ledger/addendum SHA or path", "active hypothesis and candidate", "closed-boundary acknowledgement", "period authorization acknowledgement"]
   }
 }

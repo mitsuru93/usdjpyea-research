@@ -1,0 +1,50 @@
+name: USDJPY HYP-036 Release v1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp036_final_result_v1.json'
+      - 'docs/research/USDJPY_HYP036_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE_RESULT_V1.md'
+      - '.github/workflows/usdjpy_hyp036_release_v1.yml'
+permissions:
+  contents: write
+  issues: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch and verify binding scientific artifact
+        id: verify
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/h36-release"; rm -rf "$root"; mkdir -p "$root"/{artifact,readback}
+          gh api -H 'Accept: application/vnd.github+json' "/repos/${GITHUB_REPOSITORY}/actions/artifacts/8709903106/zip" > "$root/artifact.zip"
+          printf '%s  %s\n' 2cf0578322a9ad650ff5fe4ea60d9332624009b9f6bc1744450eb6c0ffc1afd8 "$root/artifact.zip" | sha256sum -c -
+          unzip -q "$root/artifact.zip" -d "$root/artifact"
+          archive="$root/artifact/usdjpy-hyp036-dukas-native-development-v1.zip"
+          printf '%s  %s\n' f3a69cb60d5e39a72d2d000af54d03a563954df3a74c84db49e3c8c24086f30b "$archive" | sha256sum -c -
+          jq -e '.hypothesis_id=="USDJPY-HYP-036" and .decision=="NO_PORTABLE_EXECUTABLE_CANDIDATE" and .failed_binding_stage=="DEVELOPMENT_STANDALONE" and .source_native_trades==1332 and .historical_2020_2022_accessed==false and .protected_2025_accessed==false' "$root/artifact/output/final_result.json"
+          echo "root=$root" >> "$GITHUB_OUTPUT"; echo "archive=$archive" >> "$GITHUB_OUTPUT"
+      - name: Publish Release, byte-identical readback, receipt and Issue
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.verify.outputs.root }}
+          ARCHIVE: ${{ steps.verify.outputs.archive }}
+        run: |
+          set -euo pipefail
+          tag=usdjpy-hyp036-dukas-native-development-v1
+          ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1
+          gh release create "$tag" "$ARCHIVE" --target "$GITHUB_SHA" --title 'USDJPY HYP-036 Dukascopy-Native Development v1' --notes 'Decision NO_PORTABLE_EXECUTABLE_CANDIDATE at DEVELOPMENT_STANDALONE. 1,332 trades, +JPY 17,005, PF 1.109539, 3/4 positive folds, 13/24 positive months. No 2020-2022, Core/MT4, 2025, production or live authorization.' --repo "$GITHUB_REPOSITORY"
+          gh release download "$tag" --repo "$GITHUB_REPOSITORY" --dir "$ROOT/readback" --pattern 'usdjpy-hyp036-dukas-native-development-v1.zip'
+          cmp "$ARCHIVE" "$ROOT/readback/usdjpy-hyp036-dukas-native-development-v1.zip"
+          asset_sha=$(sha256sum "$ROOT/readback/usdjpy-hyp036-dukas-native-development-v1.zip" | cut -d' ' -f1)
+          test "$asset_sha" = f3a69cb60d5e39a72d2d000af54d03a563954df3a74c84db49e3c8c24086f30b
+          jq -n --arg hs "$GITHUB_SHA" --arg as "$asset_sha" --argjson rr "$GITHUB_RUN_ID" '{schema_version:"usdjpy_hyp036_release_receipt_v1",status:"PASS_BYTE_IDENTICAL_RELEASE_READBACK",hypothesis_id:"USDJPY-HYP-036",family_id:"S_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE",candidate_id:"A_DUKASCOPY_NATIVE_16BAR",decision:"NO_PORTABLE_EXECUTABLE_CANDIDATE",failed_binding_stage:"DEVELOPMENT_STANDALONE",scientific_run_id:30414664817,scientific_artifact_id:8709903106,scientific_artifact_digest:"sha256:2cf0578322a9ad650ff5fe4ea60d9332624009b9f6bc1744450eb6c0ffc1afd8",release_workflow_run_id:$rr,head_sha:$hs,release_tag:"usdjpy-hyp036-dukas-native-development-v1",release_asset_sha256:$as,byte_identical_readback:true,historical_2020_2022_accessed:false,protected_2025_accessed:false,core_modified:false,mt4_executed:false,production_authorized:false,live_authorized:false}' > "$ROOT/receipt.json"
+          content=$(base64 -w0 "$ROOT/receipt.json")
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/configs/research/usdjpy_hyp036_release_receipt_v1.json" -f message='evidence: record HYP-036 Release readback' -f content="$content" -f branch=main >/dev/null
+          gh issue create --repo "$GITHUB_REPOSITORY" --title '[HYP-036] 30414664817 NO_PORTABLE_EXECUTABLE_CANDIDATE' --body "Scientific Run: 30414664817\nArtifact: 8709903106\nDecision: NO_PORTABLE_EXECUTABLE_CANDIDATE\nFailed stage: DEVELOPMENT_STANDALONE\nRelease: ${tag}\nRelease asset SHA256: ${asset_sha}\n2020-2022 accessed: false\n2025 accessed: false\nProduction/live authorized: false"

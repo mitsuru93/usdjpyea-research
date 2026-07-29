@@ -1,0 +1,10 @@
+{
+  "schema_version": "usdjpy_hyp036_period_access_receipt_v1",
+  "development_2023_2024_accessed": true,
+  "historical_2020_2022_accessed": false,
+  "protected_2025h1_accessed": false,
+  "protected_2025h2_accessed": false,
+  "core_modified": false,
+  "mt4_executed": false,
+  "reason": "Stopped at preregistered DEVELOPMENT_STANDALONE portability gate"
+}

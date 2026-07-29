@@ -1,0 +1,16 @@
+{
+  "decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE",
+  "files": [
+    {"bytes": 565, "path": "configs/research/usdjpy_hyp036_candidate_registry_v1.json", "sha256": "7e3a7e9d2bdc5a0765f0a2aac9d7fe592a221dd481262645462bfe94a671e643"},
+    {"bytes": 4813, "path": "configs/research/usdjpy_hyp036_final_result_v1.json", "sha256": "81846ef34ef30f891a75e2b96db10219ad505e4f0e054628a56ecb3afd39bcdc"},
+    {"bytes": 356, "path": "configs/research/usdjpy_hyp036_period_access_receipt_v1.json", "sha256": "7ccdb43e604f29dbcf65fb5487a8c71f72ea859e57e774b032b4ff360eddca2a"},
+    {"bytes": 3445, "path": "docs/research/USDJPY_HYP036_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE_RESULT_V1.md", "sha256": "94227f1f35a6dd63a5ddcb968392aa34f682b739823bb141f54e3309db186e1e"}
+  ],
+  "hypothesis_id": "USDJPY-HYP-036",
+  "protected_2020_2022_accessed": false,
+  "protected_2025_accessed": false,
+  "schema_version": "usdjpy_hyp036_output_manifest_v1",
+  "scientific_artifact_digest": "sha256:2cf0578322a9ad650ff5fe4ea60d9332624009b9f6bc1744450eb6c0ffc1afd8",
+  "scientific_artifact_id": 8709903106,
+  "scientific_run_id": 30414664817
+}

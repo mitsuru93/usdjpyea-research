@@ -1,0 +1,236 @@
+{
+  "schema_version": "usdjpy_pullback_continuation_dukas_native_prereg_v1",
+  "status": "FROZEN_BEFORE_DEVELOPMENT_OUTCOMES",
+  "hypothesis_id": "USDJPY-HYP-036",
+  "family_id": "S_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE",
+  "candidate_id": "A_DUKASCOPY_NATIVE_16BAR",
+  "title": "Pullback Continuation Dukascopy-Native Independent Alpha and Portfolio Portability Study",
+  "research_question": "Does the fixed Pullback Continuation mechanism, defined and executed entirely on Dukascopy BI5 Bid/Ask Tick data, provide portable independent alpha and improve the fixed-lot B02/F05 portfolio without changing B02/F05 outcomes?",
+  "starting_authority": {
+    "research_main_sha": "05b71c947f4f04910d691518c1dbd7ed62141701",
+    "core_main_sha": "f897b250b808207d960417b2306935dcb0655acf",
+    "predecessor_hypothesis": "USDJPY-HYP-035",
+    "predecessor_decision": "FAIL_ATLAS_IDENTITY",
+    "predecessor_release_tag": "usdjpy-hyp035-pullback-continuation-development-v1",
+    "predecessor_binding_run_id": 30412379878,
+    "predecessor_artifact_id": 8708979504,
+    "predecessor_role": "mechanism provenance only; no Atlas identity gate and no outcome reuse"
+  },
+  "fixed_source_native_contract": {
+    "source": "Dukascopy BI5 Bid/Ask Tick",
+    "development_period": [
+      "2023-01-01T00:00:00Z",
+      "2025-01-01T00:00:00Z"
+    ],
+    "timeframe": "M15 reconstructed from source-native Bid ticks",
+    "timezone": "UTC",
+    "pip_size": 0.01,
+    "ema_fast_period": 20,
+    "ema_slow_period": 96,
+    "ema_method": "pandas ewm(span=N, adjust=False) on source-native M15 Bid close",
+    "atr_period": 20,
+    "atr_method": "rolling mean of true range in pips",
+    "trend_strength": "ts=(EMA20-EMA96)/(ATR20*0.01); completed prior observed bar ts >= +1 for Long or <= -1 for Short",
+    "pullback_tolerance": "0.25*ATR20*0.01",
+    "long_signal": "prior-bar ts>=1 and current low<=EMA20+tolerance and current close>EMA20 and current close>current open",
+    "short_signal": "prior-bar ts<=-1 and current high>=EMA20-tolerance and current close<EMA20 and current close<current open",
+    "decision_boundary": "completion of source-native signal M15 bar",
+    "entry": "first source-native tick at or after next observed M15 boundary",
+    "long_entry_price": "Ask",
+    "short_entry_price": "Bid",
+    "exit": "first source-native tick at or after 16 observed M15 bars after entry",
+    "long_exit_price": "Bid",
+    "short_exit_price": "Ask",
+    "hold_bars": 16,
+    "warmup": "first 100 combined 2023-2024 observed M15 rows excluded",
+    "same_variant_active_suppression": "reject signal index i when i<=prior accepted i+17; accepted candidate remains active through exit row",
+    "same_bar_duplicate_suppression": "drop duplicate (bar index, side)",
+    "fold_crossing_prohibited": true,
+    "missing_bar_semantics": "observed-row chronology; missing intervals audited and not synthesized",
+    "stop": null,
+    "take_profit": null,
+    "side_exclusion": false,
+    "session_exclusion": false,
+    "month_or_year_exclusion": false,
+    "additional_feature": false,
+    "threshold_change": false,
+    "hold_change": false,
+    "atlas_identity_gate": false
+  },
+  "period_roles": {
+    "development": [
+      "2023H1",
+      "2023H2",
+      "2024H1",
+      "2024H2"
+    ],
+    "historical_validation_locked_until_freeze": [
+      "2020",
+      "2021",
+      "2022"
+    ],
+    "external_gate_locked": [
+      "2025H1",
+      "2025H2"
+    ]
+  },
+  "source_contract": {
+    "price_scale": 1000,
+    "tick_order": "UTC member path then source record order; equal timestamps preserve stable source order",
+    "duplicate_tick_resolution": "deterministic stable source order; counted and reported",
+    "m15_boundary": "UTC quarter-hour",
+    "entry_exit_search": "numpy searchsorted left / first tick timestamp >= boundary",
+    "unresolved_chronology_tolerance": 0,
+    "expected_development_archive_count": 24,
+    "expected_development_m15_bar_count_min": 49000,
+    "expected_development_m15_bar_count_max": 50100
+  },
+  "monetary_contract": {
+    "source_account_currency": "JPY",
+    "reporting_currency": "JPY",
+    "initial_capital_jpy": 1000000,
+    "lot_size": 0.01,
+    "contract_size_base_currency": 1000,
+    "pip_value_jpy": 10,
+    "realized_pl_currency": "JPY",
+    "floating_pl_currency": "JPY",
+    "commission_jpy": 0,
+    "swap_jpy": 0,
+    "conversion": "none for USDJPY quote-currency P/L at fixed 0.01 lot",
+    "equity_currency": "JPY",
+    "drawdown_currency": "JPY",
+    "margin_currency": "JPY",
+    "numerical_tolerance_jpy": 1e-06,
+    "floating_point_noise_normalization_jpy": 1e-06,
+    "assumed_leverage": 25,
+    "margin_formula": "abs(contract_size_base_currency*entry_price_jpy_per_usd)/assumed_leverage per 0.01-lot position"
+  },
+  "session_contract_utc": {
+    "TOKYO": "00:00-06:59",
+    "LONDON": "07:00-11:59",
+    "LONDON_NY_OVERLAP": "12:00-15:59",
+    "NEW_YORK": "16:00-20:59",
+    "TRANSITION": "21:00-23:59"
+  },
+  "development_gates": {
+    "source_authority": {
+      "archive_count": 24,
+      "ask_bid_inversion_count": 0,
+      "nonmonotonic_timestamp_count": 0,
+      "duplicate_bar_count": 0,
+      "m15_bar_count_min": 49000,
+      "m15_bar_count_max": 50100
+    },
+    "integrity": {
+      "unresolved_chronology": 0,
+      "duplicate_event": 0,
+      "lookahead_violation": 0,
+      "monetary_unit_mismatch": 0,
+      "replay_mismatch": 0
+    },
+    "sample": {
+      "resolved_trades_min": 1000,
+      "each_fold_trades_min": 200,
+      "long_trades_min": 200,
+      "short_trades_min": 200,
+      "fold_crossing_trades": 0
+    },
+    "standalone": {
+      "net_jpy_gt": 0,
+      "profit_factor_min": 1.1,
+      "positive_folds": 4,
+      "minimum_fold_net_jpy_min": 0,
+      "positive_months_min": 16,
+      "mdd_jpy_max": 15758.75,
+      "minimum_equity_jpy_min": 984241.25
+    },
+    "concentration": {
+      "best_event_excluded_net_jpy_gt": 0,
+      "top3_events_excluded_net_jpy_gt": 0,
+      "top5_events_excluded_net_jpy_gt": 0,
+      "top_decile_winners_excluded_net_jpy_gt": 0,
+      "largest_positive_fold_share_max": 0.5,
+      "largest_positive_month_share_max": 0.2,
+      "largest_positive_session_share_max": 0.6
+    },
+    "resampling": {
+      "bootstrap_reps": 5000,
+      "seed": 36036,
+      "event_lower_95_jpy_gt": 0,
+      "date_lower_95_jpy_gt": 0,
+      "session_block_lower_95_jpy_gt": 0,
+      "nonpositive_probability_max": 0.05
+    },
+    "execution_robustness": {
+      "observed_bid_ask_net_jpy_gt": 0,
+      "spread_plus_0_5_pip_net_jpy_gt": 0,
+      "spread_plus_1_0_pip_net_jpy_gt": 0,
+      "spread_plus_2_0_pip_report_only": true,
+      "entry_delay_5s_net_jpy_gt": 0,
+      "entry_delay_15s_net_jpy_gt": 0,
+      "adverse_slippage_0_5_pip_per_execution_net_jpy_gt": 0,
+      "severe_case_report_only": true
+    },
+    "portfolio": {
+      "additive_net_gt_baseline": true,
+      "realized_dd_nonworse": true,
+      "full_equity_dd_nonworse": true,
+      "minimum_equity_nonworse": true,
+      "worst_5_business_day_loss_cluster_nonworse": true,
+      "worst_20_business_day_loss_cluster_nonworse": true,
+      "peak_concurrency_max": 5,
+      "incremental_margin_jpy_max": 50000,
+      "margin_level_percent_min": 500,
+      "baseline_trade_outcomes_unchanged": true
+    }
+  },
+  "full_equity_contract": {
+    "baseline_authority": "canonical B02/F05 entry-exit state ledger v2",
+    "candidate_marks": "source-native M15 Bid open for Long liquidation and Ask open for Short liquidation",
+    "observation_grid": "canonical baseline M15 observation timestamps",
+    "realized_transition": "trade P/L moves from floating to realized at close/exit timestamp",
+    "comparison": "same ¥1,000,000 initial capital and fixed 0.01-lot per strategy"
+  },
+  "stress_semantics": {
+    "spread_stress": "subtract additional stated pips once per completed round trip after observed Bid/Ask execution",
+    "entry_delay": "first executable tick at or after original entry boundary plus delay; frozen exit boundary unchanged",
+    "adverse_slippage": "0.5 pip adverse on each execution, 1.0 pip total per trade",
+    "severe_case": "observed Bid/Ask plus 2.0 pip spread stress, 15-second entry delay and 0.5 pip adverse slippage per execution"
+  },
+  "bootstrap_contract": {
+    "event": "sample resolved events with replacement at original event count",
+    "date": "sample UTC entry-date P/L blocks with replacement at original date count",
+    "session_block": "sample (UTC entry date, preregistered session) P/L blocks with replacement",
+    "lower_95_quantile": 0.025
+  },
+  "stop_order": [
+    "FAIL_SOURCE_AUTHORITY",
+    "TECHNICAL_NO_RESULT_EXECUTABLE_CHRONOLOGY",
+    "TECHNICAL_NO_RESULT_CURRENCY_CONTRACT_UNRESOLVED",
+    "NO_PORTABLE_EXECUTABLE_CANDIDATE_STANDALONE",
+    "NO_PORTABLE_EXECUTABLE_CANDIDATE_CONCENTRATION",
+    "NO_PORTABLE_EXECUTABLE_CANDIDATE_RESAMPLING",
+    "NO_PORTABLE_EXECUTABLE_CANDIDATE_EXECUTION_ROBUSTNESS",
+    "FAIL_PORTFOLIO_RISK_GATE",
+    "PASS_DEVELOPMENT_DUKASCOPY_NATIVE_CANDIDATE"
+  ],
+  "protected_boundaries": {
+    "hyp035_reopened": false,
+    "atlas_event_population_reused": false,
+    "atlas_identity_gate": false,
+    "sweep_family_combination": false,
+    "hyp033_or_hyp034_features": false,
+    "b02_f05_logic_change": false,
+    "parameter_grid": false,
+    "threshold_optimization": false,
+    "hold_optimization": false,
+    "side_or_session_rescue": false,
+    "outcome_defined_filter": false,
+    "historical_2020_2022_access_before_freeze": false,
+    "protected_2025_access": false,
+    "production_authorized": false,
+    "live_authorized": false,
+    "recurring_monitor": false
+  },
+  "no_retuning": true
+}
