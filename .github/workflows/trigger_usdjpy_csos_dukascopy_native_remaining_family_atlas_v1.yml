@@ -15,15 +15,46 @@ jobs:
   dispatch:
     if: >-
       (github.event_name == 'issues' && github.event.issue.title == 'TRIGGER_USDJPY_CSOS_DUKASCOPY_NATIVE_REMAINING_FAMILY_ATLAS_V1') ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.id == 30428550983 && github.event.workflow_run.run_attempt == 2)
+      (github.event_name == 'workflow_run' && github.event.workflow_run.id == 30428550983 && github.event.workflow_run.run_attempt >= 3)
     runs-on: ubuntu-latest
     steps:
-      - name: Dispatch the registered Atlas workflow once
+      - name: Diagnose or dispatch the registered Atlas workflow once
         env:
           GH_TOKEN: '${{ github.token }}'
         run: |
           set -euo pipefail
-          gh workflow run usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml --repo "$GITHUB_REPOSITORY" --ref main
+          repo="$GITHUB_REPOSITORY"
+          workflow=usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml
+          issue=403
+          receipt=configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json
+
+          if gh api "repos/${repo}/contents/${receipt}" >/dev/null 2>&1; then
+            gh issue comment "$issue" --repo "$repo" --body "Atlas diagnostic: immutable Release receipt already exists on main; no duplicate dispatch performed. Trigger source: ${GITHUB_EVENT_NAME}."
+            exit 0
+          fi
+
+          runs=$(gh run list --repo "$repo" --workflow "$workflow" --limit 30 --json databaseId,status,conclusion,event,headSha,createdAt,url)
+          active=$(printf '%s' "$runs" | jq -c '[.[] | select(.status=="queued" or .status=="in_progress")] | sort_by(.createdAt) | last // empty')
+          if [ -n "$active" ]; then
+            run_id=$(printf '%s' "$active" | jq -r .databaseId)
+            status=$(printf '%s' "$active" | jq -r .status)
+            url=$(printf '%s' "$active" | jq -r .url)
+            gh issue comment "$issue" --repo "$repo" --body "Atlas diagnostic: existing Run ${run_id} is ${status}; duplicate dispatch suppressed. ${url}"
+            exit 0
+          fi
+
+          gh workflow run "$workflow" --repo "$repo" --ref main
+          sleep 3
+          dispatched=$(gh run list --repo "$repo" --workflow "$workflow" --limit 10 --json databaseId,status,event,headSha,createdAt,url | jq -c '[.[] | select(.event=="workflow_dispatch")] | sort_by(.createdAt) | last // empty')
+          if [ -n "$dispatched" ]; then
+            run_id=$(printf '%s' "$dispatched" | jq -r .databaseId)
+            status=$(printf '%s' "$dispatched" | jq -r .status)
+            url=$(printf '%s' "$dispatched" | jq -r .url)
+            gh issue comment "$issue" --repo "$repo" --body "Atlas diagnostic: dispatched Run ${run_id}; current status ${status}. ${url}"
+          else
+            gh issue comment "$issue" --repo "$repo" --body "Atlas diagnostic: workflow_dispatch request accepted, but Run ID was not yet visible in immediate readback."
+          fi
+
           if [ "${{ github.event_name }}" = issues ]; then
-            gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --reason completed
+            gh issue close "${{ github.event.issue.number }}" --repo "$repo" --reason completed
           fi
