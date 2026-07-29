@@ -1,0 +1,38 @@
+{
+  "analysis_2020_2022_role": "ANALYSIS_PERIOD_NOT_ACCESSED_IN_ATLAS",
+  "atlas_period": "2023-2024",
+  "candidate_freeze": false,
+  "decision": "ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY",
+  "external_validation_2025_role": "UNSEEN_BINDING_EXTERNAL_VALIDATION_NOT_ACCESSED",
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "shortlist": {
+    "2025_external_validation_authorized_in_this_atlas": false,
+    "analysis_2020_2022_authorized_for_future_independent_research": true,
+    "analysis_2020_2022_confirmation_credit": false,
+    "candidate_freeze": false,
+    "core_mt4_authorized": false,
+    "decision": "ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY",
+    "live_authorized": false,
+    "mechanism_research_only": {
+      "daily_correlation_to_B02": -0.0030127345557391947,
+      "daily_correlation_to_F05": -0.021153217518735938,
+      "designation": "MECHANISM_RESEARCH_ONLY",
+      "direct_candidate_failure": "At least one fixed shortlist gate failed; the current variant is not authorized for adoption.",
+      "entry_time_distinct_hypothesis": "Test whether balance persistence and standardized excursion magnitude identify reversion capacity at entry time.",
+      "family_id": "B",
+      "negative_baseline_day_contribution_jpy": 1486.0000000000464,
+      "overlap_with_hyp028_033_034": false,
+      "post_event_15m_separation_pips": 1.2499999999988631,
+      "post_event_60m_separation_pips": 12.44999999999834,
+      "variant_id": "B_BALANCE_MEAN_REVERSION"
+    },
+    "production_authorized": false,
+    "same_family_multiple_variants": false,
+    "shortlist_count": 0,
+    "shortlist_meaning": "Research prioritization only",
+    "track_a": null,
+    "track_b": null,
+    "unique_shortlisted_variants": []
+  },
+  "status": "COMPLETE"
+}

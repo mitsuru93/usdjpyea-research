@@ -1,0 +1,302 @@
+{
+  "analysis_2020_2022_accessed": false,
+  "analysis_2020_2022_confirmation_credit": false,
+  "candidate_freeze": false,
+  "core_modified": false,
+  "core_reference_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "decision": "ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY",
+  "evaluated_family_count": 8,
+  "evaluated_variant_count": 12,
+  "excluded_duplicate_family_count": 3,
+  "excluded_families": [
+    {
+      "duplication_status": "EXCLUDED_COMPLETE",
+      "family": "D_SHOCK_FAILURE",
+      "reason": "Independent Shock Failure study and postmortem are complete.",
+      "source_authority": "HYP-028 and immutable Shock Failure evidence"
+    },
+    {
+      "duplication_status": "EXCLUDED_COMPLETE",
+      "family": "F_LIQUIDITY_SWEEP",
+      "reason": "Asian and previous-day sweep lineages are closed.",
+      "source_authority": "HYP-030, HYP-031, HYP-033 and HYP-034"
+    },
+    {
+      "duplication_status": "EXCLUDED_ACTIVE_OR_COMPLETE",
+      "family": "J_PULLBACK_CONTINUATION",
+      "reason": "Dukascopy-native Pullback is closed and its directional successor is separate.",
+      "source_authority": "HYP-035, HYP-036 and the parallel Short Pullback successor"
+    }
+  ],
+  "external_validation_2025_accessed": false,
+  "family_contract_changed_after_period_clarification": false,
+  "full_equity_reason": "Canonical B02/F05 state ledger is M15 Bid-open path evidence from mixed historical lineages and does not provide common-source intrabar executable Bid/Ask equity at every Dukascopy Tick timestamp; combining it with Tick-level candidate floating P/L would not be exact.",
+  "full_equity_status": "NOT_AVAILABLE",
+  "live_authorized": false,
+  "mt4_executed": false,
+  "old_atlas_target_events": 6454,
+  "period_roles": {
+    "2020_2022": {
+      "atlas_access": "NOT_REQUIRED_NOT_ACCESSED",
+      "atlas_scope_reason": "Atlas scope is fixed to common-source 2023-2024 ranking.",
+      "binding_gate_for_2025": false,
+      "confirmation_credit": false,
+      "ea_research_role": "ANALYSIS_PERIOD",
+      "external_validation_credit": false,
+      "future_permitted_uses": [
+        "mechanism analysis",
+        "candidate development",
+        "feature evaluation",
+        "failure analysis",
+        "robustness analysis",
+        "period-dependence analysis"
+      ]
+    },
+    "2023_2024": {
+      "atlas_role": "SOURCE_NATIVE_DISCOVERY_AND_RANKING",
+      "ea_research_role": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+      "folds": [
+        "2023H1",
+        "2023H2",
+        "2024H1",
+        "2024H2"
+      ]
+    },
+    "2025": {
+      "atlas_access": "PROHIBITED_NOT_ACCESSED",
+      "atlas_ranking_credit": false,
+      "ea_research_role": "UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD",
+      "shortlist_can_be_changed_by_2025": false
+    }
+  },
+  "production_authorized": false,
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "ranking_gate_changed_after_period_clarification": false,
+  "recurring_monitor_created": false,
+  "research_execution_sha": "61249e52e9acb567eb24298f95ea6c7afd520be4",
+  "research_start_sha": "1841ed3fba757a9a44496faeb9a6c7e014efa9d6",
+  "run_id": "30435884192",
+  "schema_version": "usdjpy_csos_dukascopy_native_remaining_family_atlas_final_result_v1",
+  "shortlist": {
+    "2025_external_validation_authorized_in_this_atlas": false,
+    "analysis_2020_2022_authorized_for_future_independent_research": true,
+    "analysis_2020_2022_confirmation_credit": false,
+    "candidate_freeze": false,
+    "core_mt4_authorized": false,
+    "decision": "ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY",
+    "live_authorized": false,
+    "mechanism_research_only": {
+      "daily_correlation_to_B02": -0.0030127345557391947,
+      "daily_correlation_to_F05": -0.021153217518735938,
+      "designation": "MECHANISM_RESEARCH_ONLY",
+      "direct_candidate_failure": "At least one fixed shortlist gate failed; the current variant is not authorized for adoption.",
+      "entry_time_distinct_hypothesis": "Test whether balance persistence and standardized excursion magnitude identify reversion capacity at entry time.",
+      "family_id": "B",
+      "negative_baseline_day_contribution_jpy": 1486.0000000000464,
+      "overlap_with_hyp028_033_034": false,
+      "post_event_15m_separation_pips": 1.2499999999988631,
+      "post_event_60m_separation_pips": 12.44999999999834,
+      "variant_id": "B_BALANCE_MEAN_REVERSION"
+    },
+    "production_authorized": false,
+    "same_family_multiple_variants": false,
+    "shortlist_count": 0,
+    "shortlist_meaning": "Research prioritization only",
+    "track_a": null,
+    "track_b": null,
+    "unique_shortlisted_variants": []
+  },
+  "source_authority": {
+    "archive_count": 24,
+    "archives": [
+      {
+        "byte_size": 62685196,
+        "name": "usdjpy-2023-01-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-01-raw-ticks-v1.tar.gz",
+        "sha256": "7ae415c0ead81635c6000fe6c3c2c0beff64fbdbadd06c2e2fa69380955240f3"
+      },
+      {
+        "byte_size": 53189140,
+        "name": "usdjpy-2023-02-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-02-raw-ticks-v1.tar.gz",
+        "sha256": "4e2af4ec7f37d644dc4f45fb60a5b6d339d32338a08f50e9169d1a56ee84001e"
+      },
+      {
+        "byte_size": 72733119,
+        "name": "usdjpy-2023-03-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-03-raw-ticks-v1.tar.gz",
+        "sha256": "196269bcff1e5175bbcd7fb2ad0a6fe7def6dfa75929477c613342f2840c67b7"
+      },
+      {
+        "byte_size": 44081578,
+        "name": "usdjpy-2023-04-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-04-raw-ticks-v1.tar.gz",
+        "sha256": "df61c3f4e8f562272250e5959c2741f17435efbc79b3b66eb0873c9e9b4a8719"
+      },
+      {
+        "byte_size": 49614512,
+        "name": "usdjpy-2023-05-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-05-raw-ticks-v1.tar.gz",
+        "sha256": "a2c62754a30fd6979029c393c62b868d52be62a288c8ee4623093c42dc8cc116"
+      },
+      {
+        "byte_size": 42055587,
+        "name": "usdjpy-2023-06-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-06-raw-ticks-v1.tar.gz",
+        "sha256": "9bb7fc63336004586e4a10705b22dac901d99d585d886697339c395a872675fc"
+      },
+      {
+        "byte_size": 42507994,
+        "name": "usdjpy-2023-07-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-07-raw-ticks-v1.tar.gz",
+        "sha256": "7e0b20be800620b39fb7bf0f10e4d329df26cb3fd03bcf633dca213f5faecf24"
+      },
+      {
+        "byte_size": 44882924,
+        "name": "usdjpy-2023-08-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-08-raw-ticks-v1.tar.gz",
+        "sha256": "609e66552fb0fb2fd29f2af70fe892075a84d7721d239276c615387a87439eb2"
+      },
+      {
+        "byte_size": 32602778,
+        "name": "usdjpy-2023-09-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-09-raw-ticks-v1.tar.gz",
+        "sha256": "bf65fa3cf8817930e1e2622562c20233efa84c2a0b3711c0a62cfbe1ea417778"
+      },
+      {
+        "byte_size": 31096112,
+        "name": "usdjpy-2023-10-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-10-raw-ticks-v1.tar.gz",
+        "sha256": "7198e94c192343cccde85afbb8b05e18218a4a5d130ced3fe8c01b3982ae46e1"
+      },
+      {
+        "byte_size": 33020242,
+        "name": "usdjpy-2023-11-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-11-raw-ticks-v1.tar.gz",
+        "sha256": "f2baf0b2c4af2c1759b752c96f3ba8819e49d7527d650d794dc381a15b300e7b"
+      },
+      {
+        "byte_size": 51910051,
+        "name": "usdjpy-2023-12-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2023/usdjpy-2023-12-raw-ticks-v1.tar.gz",
+        "sha256": "608b51589d7dc6b7f1042ec1f5a8c122882694849091c7ced5045ca5e8f0595b"
+      },
+      {
+        "byte_size": 49791370,
+        "name": "usdjpy-2024-01-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-01-raw-ticks-v1.tar.gz",
+        "sha256": "46eca97a4ca3a577200bffc2ec4f698dfc830d25f0c552510f33414f0b6971aa"
+      },
+      {
+        "byte_size": 41527678,
+        "name": "usdjpy-2024-02-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-02-raw-ticks-v1.tar.gz",
+        "sha256": "7aec2c9498504c7895bd716daa381e7d150a2ee9b85f6c09c3b9f807cdec5f55"
+      },
+      {
+        "byte_size": 35979157,
+        "name": "usdjpy-2024-03-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-03-raw-ticks-v1.tar.gz",
+        "sha256": "8df1c1723025bc3d0a058e1d8c5797d5232bc40a63ac9b8f8f838e6295998dcd"
+      },
+      {
+        "byte_size": 31534630,
+        "name": "usdjpy-2024-04-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-04-raw-ticks-v1.tar.gz",
+        "sha256": "c927f48a0e886ba0099fc215d3a35321a6ba2f8902744bbfdbe9c5b409c2778f"
+      },
+      {
+        "byte_size": 29446668,
+        "name": "usdjpy-2024-05-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-05-raw-ticks-v1.tar.gz",
+        "sha256": "d000758e97dd4acdd4cdd379563634a4cceb44a70147fa7c3e3c03015e7487e7"
+      },
+      {
+        "byte_size": 29227452,
+        "name": "usdjpy-2024-06-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-06-raw-ticks-v1.tar.gz",
+        "sha256": "4c3cf4e64836a2308b1524b113fe9b59765fee0fa6accbf27116708e7332833b"
+      },
+      {
+        "byte_size": 44861519,
+        "name": "usdjpy-2024-07-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-07-raw-ticks-v1.tar.gz",
+        "sha256": "2fe3beb7d506ecb58600c1ddd2a9ab2dff7ea7a6b9e5a16b59a32fc130837bde"
+      },
+      {
+        "byte_size": 65497573,
+        "name": "usdjpy-2024-08-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-08-raw-ticks-v1.tar.gz",
+        "sha256": "93c1363488000d2f5a2f795c5937b97aaa68a760d6b3a6912df64dd463a45d7f"
+      },
+      {
+        "byte_size": 59441446,
+        "name": "usdjpy-2024-09-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-09-raw-ticks-v1.tar.gz",
+        "sha256": "c06ffc1a151da5b5fe3b29be8d6a1c0199218510e7d833b326004e3e219d96d2"
+      },
+      {
+        "byte_size": 46677269,
+        "name": "usdjpy-2024-10-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-10-raw-ticks-v1.tar.gz",
+        "sha256": "f6d8ec55d96cce0f15eb4e99ab753439e2af33d66f9e25b6e2010d2b84d9fd76"
+      },
+      {
+        "byte_size": 58494113,
+        "name": "usdjpy-2024-11-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-11-raw-ticks-v1.tar.gz",
+        "sha256": "1493c570509921104c5e441af2f49af64dac011d05497fd4852b1381d9760bbc"
+      },
+      {
+        "byte_size": 46162713,
+        "name": "usdjpy-2024-12-raw-ticks-v1.tar.gz",
+        "path": "/home/runner/work/_temp/csa1/inputs/raw2024/usdjpy-2024-12-raw-ticks-v1.tar.gz",
+        "sha256": "82ca954155ad6a3f94272cda3a14551d639bc54247713f812d990eb20f066e44"
+      }
+    ],
+    "ask_bid_inversion_count": 0,
+    "day_rows": 731,
+    "duplicate_bar_count": 0,
+    "duplicate_timestamp_count": 0,
+    "m15_bar_count": 49894,
+    "max_bar_gap_minutes": 4335.0,
+    "missing_interval_count_gt_15m": 108,
+    "nonmonotonic_timestamp_count": 0,
+    "pass": false,
+    "stable_duplicate_order": true,
+    "tick_count": 84428370,
+    "unresolved_chronology": 0
+  },
+  "source_changed_after_period_clarification": false,
+  "status": "ATLAS_COMPLETE_RESEARCH_PRIORITIZATION_ONLY",
+  "total_executable_trades": 6503,
+  "total_raw_signals": 14374,
+  "track_a_ranks": {
+    "A_FALSE_BREAKOUT_REVERSAL": 11,
+    "B_BALANCE_MEAN_REVERSION": 9,
+    "C_SHOCK_CONTINUATION": 2,
+    "E_LONDON_NY": 5,
+    "E_NY_TOKYO": 12,
+    "E_TOKYO_LONDON": 1,
+    "G_TREND_EXHAUSTION": 6,
+    "H_COMPRESSION_BREAKOUT": 7,
+    "I_FAILED_TREND_CONTINUATION": 8,
+    "K_DAILY_TIME_SERIES_MOMENTUM": 4,
+    "K_LONDON_OPENING_RANGE_BREAKOUT": 3,
+    "K_ROUND_NUMBER_REJECTION": 10
+  },
+  "track_b_ranks": {
+    "A_FALSE_BREAKOUT_REVERSAL": 9,
+    "B_BALANCE_MEAN_REVERSION": 10,
+    "C_SHOCK_CONTINUATION": 3,
+    "E_LONDON_NY": 7,
+    "E_NY_TOKYO": 11,
+    "E_TOKYO_LONDON": 1,
+    "G_TREND_EXHAUSTION": 2,
+    "H_COMPRESSION_BREAKOUT": 8,
+    "I_FAILED_TREND_CONTINUATION": 6,
+    "K_DAILY_TIME_SERIES_MOMENTUM": 4,
+    "K_LONDON_OPENING_RANGE_BREAKOUT": 5,
+    "K_ROUND_NUMBER_REJECTION": 12
+  }
+}

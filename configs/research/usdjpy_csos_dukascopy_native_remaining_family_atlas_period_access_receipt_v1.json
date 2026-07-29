@@ -1,0 +1,11 @@
+{
+  "analysis_2020_2022_accessed": false,
+  "analysis_2020_2022_confirmation_credit": false,
+  "analysis_2020_2022_external_validation_credit": false,
+  "analysis_2020_2022_not_accessed_reason": "Atlas scope is fixed to common-source 2023-2024 ranking.",
+  "analysis_2020_2022_role": "ANALYSIS_PERIOD",
+  "atlas_period": "2023-2024",
+  "external_validation_2025_accessed": false,
+  "external_validation_2025_role": "UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD",
+  "shortlist_is_research_prioritization_only": true
+}
