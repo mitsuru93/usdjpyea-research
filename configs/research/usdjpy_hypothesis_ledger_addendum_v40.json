@@ -12,6 +12,15 @@
       "family_id": "S_SHORT_PULLBACK_CONTINUATION_PORTABILITY",
       "candidate_ids": ["C1_SHORT_DUKASCOPY_NATIVE_16BAR"],
       "title": "Short Pullback Continuation Directional Asymmetry and Historical Portability Study — period-role corrected continuation",
+      "target_failure_mode": ["right-tail winner concentration", "non-positive resampling lower bounds", "short-horizon portfolio loss-cluster worsening", "period-role protocol drift"],
+      "causal_hypothesis": "Downtrend pullback continuation has a directionally asymmetric delayed right-tail payoff in the 2023-2024 Research period, but it is eligible for freeze only if the edge is sufficiently diffuse, resampling-stable, execution-robust and portfolio-risk non-worse before any 2025 access.",
+      "pre_result_predictions": [
+        "Short-only net remains positive with PF at least 1.10 and all four half-year folds positive.",
+        "Net remains positive after best, top-3, top-5 and top winner-decile removal.",
+        "Event, date and session-block bootstrap lower 95 percent bounds are positive with P(non-positive) at most 5 percent.",
+        "Observed Bid/Ask edge remains positive after fixed spread, delay and slippage stress.",
+        "Adding the candidate improves net without worsening realized DD, full-equity DD, minimum equity, 5-day, 20-day or monthly loss clusters."
+      ],
       "protocol_revision": {
         "decision": "PROTOCOL_CORRECTION_PERIOD_ROLE_BEFORE_EXTERNAL_VALIDATION",
         "v1_preserved": true,
@@ -66,6 +75,12 @@
         "Adding Short Pullback improved net, realized DD, full-equity DD, minimum equity, worst 20-day loss and worst month.",
         "The edge depended materially on the strongest winner decile and did not produce positive bootstrap lower bounds.",
         "The worst 5-business-day portfolio cluster worsened."
+      ],
+      "falsified_or_unsupported_claims": [
+        "The Short edge is sufficiently diffuse to remain profitable after removing the strongest winner decile.",
+        "The expected net has a positive lower 95 percent bound under event, date or session-block resampling.",
+        "The candidate improves every preregistered portfolio loss-cluster metric.",
+        "The fixed candidate qualifies for freeze, Core/MT4 implementation or 2025 external validation."
       ],
       "prohibited_reuse": [
         "Do not reopen HYP-037 by relaxing concentration or bootstrap gates.",
