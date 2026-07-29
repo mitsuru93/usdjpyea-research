@@ -126,6 +126,7 @@ Under the fixed no-retuning protocol, HYP-037 closes at the Research candidate g
 
 - Research start SHA: `1841ed3fba757a9a44496faeb9a6c7e014efa9d6`
 - Research execution SHA: `498296a4e147a5fa958fb45f467342d7039a75f8`
+- Canonical merge SHA: `d6dfbc768c2bbf7fdc482543798cb2d8dfe45f4f`
 - Core start/end SHA: `f897b250b808207d960417b2306935dcb0655acf`
 - Run: `30428356407`
 - Artifact: `8714601229`
