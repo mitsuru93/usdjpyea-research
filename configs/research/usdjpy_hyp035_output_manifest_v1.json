@@ -1,0 +1,37 @@
+{
+  "schema_version": "usdjpy_hyp035_output_manifest_v1",
+  "status": "COMPLETE_IMMUTABLE_ARTIFACT_ARCHIVED",
+  "hypothesis_id": "USDJPY-HYP-035",
+  "decision": "FAIL_ATLAS_IDENTITY",
+  "scientific_run_id": 30411335631,
+  "scientific_artifact_id": 8708610330,
+  "scientific_artifact_name": "usdjpy-hyp035-pullback-continuation-development-v1-30411335631-1",
+  "scientific_artifact_digest": "sha256:1dc1018a6b9c10743b367bf698bcaa97bd4b27a4838eb5eeadbf8d2f011a3c5d",
+  "artifact_archive": "usdjpy-hyp035-pullback-continuation-development-v1.zip",
+  "expected_release_tag": "usdjpy-hyp035-pullback-continuation-development-v1",
+  "binding_files": {
+    "preregistration": "configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json",
+    "source_manifest": "configs/research/usdjpy_pullback_continuation_source_manifest_v1.json",
+    "result": "configs/research/usdjpy_hyp035_final_result_v1.json",
+    "report": "docs/research/USDJPY_HYP035_PULLBACK_CONTINUATION_PORTABILITY_RESULT_V1.md",
+    "candidate_registry": "configs/research/usdjpy_hyp035_candidate_registry_v1.json",
+    "period_access_receipt": "configs/research/usdjpy_hyp035_period_access_receipt_v1.json"
+  },
+  "artifact_payload_sha256": {
+    "final_result.json": "1ef8f480f576dfbc029e82bd81b795414e1e34d19a75d2e143440966a7a93979",
+    "atlas_identity_result.json": "ea346d3e19a776af0ca38c47e85f9524097893cb5b525422ed6583f11629c642",
+    "atlas_raw_native_mismatch_ledger.csv.gz": "11afe9b3098ff246b867c374fd8ebd1013027267c656d4761046fb034efa4de5",
+    "candidate_gate_matrix.csv": "da4c3bcfe24bf4ea753302b8e4a6a8791820dec3b0bde30bfb92e2cbc2ca083b",
+    "source_inventory.json": "7428ea2fedd58e96f81915d4ec4c2983568a1439909e8aa509a71324fd1117c9",
+    "source_tick_day_audit.csv.gz": "aa7d4fee4b91da20f695ef9741ced33087b22ac2033e148141871621b5f62323",
+    "currency_audit.json": "ffdf36cc920adf899c4772b9c2126a8184274a53ec4adfc257f012e113f7670c",
+    "period_access_receipt.json": "eb42541e0f4601559edfe2304d0c665f85cb561e49cb631481a57072604cf60c"
+  },
+  "effective_evaluator_sha256": "63fad89036e20269c47a1ed5e7c98e0abc2fddf5408a5b01f3dc1e9702a0c273",
+  "protected_2020_2022_accessed": false,
+  "protected_2025_accessed": false,
+  "core_modified": false,
+  "mt4_executed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

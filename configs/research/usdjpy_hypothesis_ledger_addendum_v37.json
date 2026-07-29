@@ -1,0 +1,116 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v37",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v36.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v36.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-035",
+      "family_ids": ["S_PULLBACK_CONTINUATION_PORTABILITY"],
+      "family_id": "S_PULLBACK_CONTINUATION_PORTABILITY",
+      "title": "Pullback Continuation Independent Alpha and Portfolio Portability Study",
+      "target_failure_mode": "Determine whether the fixed CSOS J_PULLBACK_CONTINUATION opportunity family can be translated to one source-native executable candidate with stable event identity before standalone, concentration, portfolio, historical, Core/MT4 or 2025 gates.",
+      "causal_hypothesis": "A strong EMA-separated USDJPY trend that retraces to EMA20 and completes a directional confirmation bar contains a 16-M15-bar continuation edge that survives executable Bid/Ask translation and improves fixed-lot B02/F05 portfolio risk even without strict hedge behavior.",
+      "pre_result_predictions": [
+        "The fixed Atlas event set should reproduce at least 95% on the binding Dukascopy Tick source.",
+        "Any source mismatch should be fully attributable without selective event exclusion.",
+        "If identity passes, Long and Short should remain jointly eligible and all downstream economics should be evaluated without retuning.",
+        "Portfolio benefit may coexist with positive daily correlation but must pass realized and full-equity risk gates."
+      ],
+      "tests": [
+        "Exact CSOS Atlas contract and 1,333-event reproduction",
+        "2023-2024 Dukascopy BI5 Bid/Ask source inventory and M15 reconstruction audit",
+        "Atlas-versus-source-native event identity and mismatch attribution",
+        "First-binding-failure stop before executable economics and protected periods"
+      ],
+      "status": "COMPLETE_FAIL_ATLAS_IDENTITY",
+      "decision": "FAIL_ATLAS_IDENTITY",
+      "scientific_result": true,
+      "source_authority": "PASS",
+      "atlas_opportunities": 1333,
+      "raw_native_opportunities": 1332,
+      "common_exact_events": 1179,
+      "exact_event_identity_match_rate": 0.8844711177794449,
+      "material_contradiction_rate": 0.20175438596491227,
+      "atlas_only_events": 150,
+      "raw_only_events": 149,
+      "side_mismatches": 0,
+      "entry_exit_boundary_mismatches": 4,
+      "bid_open_pl_mismatches": 444,
+      "candidate_catalog_size": 1,
+      "candidate_freeze": false,
+      "failed_binding_stage": "EVENT_IDENTITY",
+      "retained_findings": [
+        "The Atlas evaluator and 1,333-event diagnostic result were reproduced exactly before binding source translation.",
+        "2024 Atlas identity was exact at 669/669 events on the aligned public Bid/Ask-derived lineage.",
+        "All 299 signal-set mismatches occurred in 2023, where the Atlas used Rakuten M15 while the binding study source was Dukascopy BI5 Tick.",
+        "Cross-venue OHLC differences recursively altered EMA20, EMA96, ATR20 and same-variant active suppression chronology."
+      ],
+      "falsified_or_unsupported_claims": [
+        "The fixed J_PULLBACK_CONTINUATION Atlas event population is source-native portable across 2023-2024.",
+        "The 2023 Rakuten M15 opportunity population can be treated as equivalent to Dukascopy Tick reconstruction.",
+        "The candidate may proceed to executable economics, candidate freeze, historical validation, Core/MT4 or 2025."
+      ],
+      "prohibited_reuse": [
+        "side-only or session-only rescue",
+        "EMA or ATR threshold retuning",
+        "hold-time, Exit, SL or TP optimization",
+        "B02/F05 state filtering",
+        "combination with Sweep, HYP-033 or HYP-034 features",
+        "lot-size rescue after a fixed-lot gate",
+        "2020-2022 or 2025 outcome access for HYP-035 rescue",
+        "selective removal of Atlas-only or raw-native-only events"
+      ],
+      "evidence_refs": {
+        "scientific_pr": 394,
+        "scientific_run_id": 30411335631,
+        "scientific_artifact_id": 8708610330,
+        "scientific_artifact_digest": "sha256:1dc1018a6b9c10743b367bf698bcaa97bd4b27a4838eb5eeadbf8d2f011a3c5d",
+        "result": "configs/research/usdjpy_hyp035_final_result_v1.json",
+        "report": "docs/research/USDJPY_HYP035_PULLBACK_CONTINUATION_PORTABILITY_RESULT_V1.md",
+        "candidate_registry": "configs/research/usdjpy_hyp035_candidate_registry_v1.json",
+        "period_access_receipt": "configs/research/usdjpy_hyp035_period_access_receipt_v1.json",
+        "output_manifest": "configs/research/usdjpy_hyp035_output_manifest_v1.json",
+        "release_receipt": "configs/research/usdjpy_hyp035_release_receipt_v1.json"
+      },
+      "successor_questions": [
+        "Can a newly preregistered pullback-continuation family discovered entirely on one source-native venue establish independent alpha without reusing HYP-035 outcome-defined exclusions?"
+      ],
+      "historical_2020_2022_accessed": false,
+      "core_mt4_accessed": false,
+      "2025_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false,
+      "no_retuning": true,
+      "exact_next_action": "Close HYP-035 at Atlas identity. Do not rescue the fixed candidate; any successor must be a new single-venue source-native hypothesis."
+    }
+  ],
+  "hypothesis_status_updates": [
+    {
+      "hypothesis_id": "USDJPY-HYP-035",
+      "phase2_status": "COMPLETE_FAIL_ATLAS_IDENTITY",
+      "decision": "FAIL_ATLAS_IDENTITY",
+      "evidence_refs": {
+        "scientific_run_id": 30411335631,
+        "scientific_artifact_id": 8708610330,
+        "result": "configs/research/usdjpy_hyp035_final_result_v1.json"
+      },
+      "authorization": {
+        "candidate_freeze": false,
+        "historical_2020_2022": false,
+        "Core": false,
+        "MT4": false,
+        "2025H1": false,
+        "2025H2": false,
+        "production": false,
+        "live": false
+      },
+      "family_id": "S_PULLBACK_CONTINUATION_PORTABILITY",
+      "prior_status": "PREREGISTERED_SOURCE_AUTHORITY_PREFLIGHT",
+      "status": "COMPLETE_FAIL_ATLAS_IDENTITY",
+      "retuning": false
+    }
+  ]
+}

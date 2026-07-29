@@ -1,0 +1,61 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v63",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v62.json",
+  "status": "USDJPY_HYP035_CLOSED_FAIL_ATLAS_IDENTITY",
+  "active_family": null,
+  "active_hypothesis": null,
+  "current_candidate": null,
+  "current_open_research_question": null,
+  "candidate_ids": [],
+  "development_decision": "FAIL_ATLAS_IDENTITY",
+  "scientific_result": true,
+  "source_run_id": 30411335631,
+  "source_artifact_id": 8708610330,
+  "source_artifact_digest": "sha256:1dc1018a6b9c10743b367bf698bcaa97bd4b27a4838eb5eeadbf8d2f011a3c5d",
+  "result": "configs/research/usdjpy_hyp035_final_result_v1.json",
+  "report": "docs/research/USDJPY_HYP035_PULLBACK_CONTINUATION_PORTABILITY_RESULT_V1.md",
+  "candidate_registry": "configs/research/usdjpy_hyp035_candidate_registry_v1.json",
+  "period_access_receipt": "configs/research/usdjpy_hyp035_period_access_receipt_v1.json",
+  "output_manifest": "configs/research/usdjpy_hyp035_output_manifest_v1.json",
+  "release_receipt": "configs/research/usdjpy_hyp035_release_receipt_v1.json",
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v37.json",
+  "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v37.json"
+  },
+  "identity_result": {
+    "atlas_opportunities": 1333,
+    "raw_native_opportunities": 1332,
+    "common_exact_events": 1179,
+    "exact_event_identity_match_rate": 0.8844711177794449,
+    "material_contradiction_rate": 0.20175438596491227,
+    "atlas_only_events": 150,
+    "raw_only_events": 149,
+    "2023_source_lineage_failure": true,
+    "2024_exact_identity": true,
+    "candidate_freeze": false
+  },
+  "closed_boundaries": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE_UNCHANGED",
+    "USDJPY-HYP-031": "NO_PORTABLE_REGIME_RULE_UNCHANGED",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING_UNCHANGED",
+    "USDJPY-HYP-033": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR_UNCHANGED",
+    "USDJPY-HYP-034": "NO_PORTABLE_REJECTION_MECHANISM_UNCHANGED",
+    "USDJPY-HYP-035": "FAIL_ATLAS_IDENTITY"
+  },
+  "run_authorization": {
+    "2020_2022_historical_validation": false,
+    "Core_implementation": false,
+    "MT4_candidate": false,
+    "2025H1": false,
+    "2025H2": false,
+    "production": false,
+    "live": false
+  },
+  "candidate_rule_changed": false,
+  "scientific_gate_definition_changed": false,
+  "no_retuning": true,
+  "next_action": "Scientific stop. Do not rescue HYP-035 with side/session selection, EMA or hold-time retuning, B02/F05 state, Sweep features, lot reduction, or protected-period outcomes. A successor requires a new source-native single-venue hypothesis."
+}

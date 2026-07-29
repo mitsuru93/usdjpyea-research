@@ -1,0 +1,19 @@
+{
+  "schema_version": "usdjpy_hyp035_period_access_receipt_v1",
+  "status": "PASS_PERIOD_FIREWALL_AT_FAIL_ATLAS_IDENTITY",
+  "hypothesis_id": "USDJPY-HYP-035",
+  "development_2023_2024_accessed": true,
+  "warmup_2019_accessed": false,
+  "historical_2020_2022_accessed": false,
+  "historical_2020_2022_authorized": false,
+  "2025h1_accessed": false,
+  "2025h1_authorized": false,
+  "2025h2_accessed": false,
+  "2025h2_authorized": false,
+  "core_accessed": false,
+  "mt4_accessed": false,
+  "stop_reason": "FAIL_ATLAS_IDENTITY at EVENT_IDENTITY",
+  "candidate_freeze": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

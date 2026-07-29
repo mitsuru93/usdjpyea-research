@@ -1,0 +1,17 @@
+{
+  "schema_version": "usdjpy_hyp035_hypothesis_reservation_v1",
+  "status": "RESERVED_BY_PR_BEFORE_OUTCOMES",
+  "hypothesis_id": "USDJPY-HYP-035",
+  "family_id": "S_PULLBACK_CONTINUATION_PORTABILITY",
+  "candidate_id": "A_EXACT_EXECUTABLE_16BAR",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_addendum_v36.json",
+  "base_registry": "configs/research/usdjpy_research_candidate_registry_v62.json",
+  "reservation_scope": "single frozen CSOS J_PULLBACK_CONTINUATION executable candidate",
+  "development_outcome_computed": false,
+  "historical_2020_2022_accessed": false,
+  "protected_2025_accessed": false,
+  "core_modified": false,
+  "mt4_executed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

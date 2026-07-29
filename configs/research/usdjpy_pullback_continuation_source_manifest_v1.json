@@ -1,0 +1,44 @@
+{
+  "schema_version": "fx2_source_manifest_v1",
+  "hypothesis_id": "USDJPY-HYP-035",
+  "family_id": "S_PULLBACK_CONTINUATION_PORTABILITY",
+  "research_repository": "mitsuru93/usdjpyea-research",
+  "research_base_sha": "b7711c554b3ab21331537911cfb5a7d423d19cc3",
+  "core_repository": "mitsuru93/usdjpyea-core",
+  "core_infrastructure_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "required_research_files": [
+    "configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json",
+    "configs/research/usdjpy_pullback_continuation_source_manifest_v1.json",
+    "tools/evaluate_usdjpy_pullback_continuation_v1.py",
+    "tools/usdjpy_hyp034_bi5_source_v1.py",
+    "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py",
+    "tools/vendor/fx2_infra_core_f897b250_v1.py"
+  ],
+  "development_release_assets": {
+    "usdjpy-2023-raw-bidask-ticks-v1": [
+      "usdjpy-2023-??-raw-ticks-v1.tar.gz",
+      "usdjpy-2023-raw-ticks-v1.annual-manifest.json",
+      "SHA256SUMS"
+    ],
+    "usdjpy-2024-raw-bidask-ticks-v1": [
+      "usdjpy-2024-??-raw-ticks-v1.tar.gz",
+      "usdjpy-2024-raw-ticks-v1.annual-manifest.json",
+      "SHA256SUMS"
+    ],
+    "usdjpy-csos-opportunity-atlas-v1-r1": [
+      "usdjpy-csos-opportunity-atlas-v1-r1-30202535070-1.zip"
+    ],
+    "f05-failed-reclaim-historical-authorities-v1": [
+      "usdjpy-2023-canonical-baseline-prep-v1.zip",
+      "mt4-usdjpy-2024h1-event-audit-v1.zip",
+      "mt4-usdjpy-f05-extatr-h2-validation-v1.zip",
+      "EXPECTED_SHA256SUMS"
+    ]
+  },
+  "atlas_release_asset_sha256": "f5feef1a1eb06cfdc284d3642c7050b05da3fc6fa31f67a4205c7faf3e72a72f",
+  "canonical_baseline_trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+  "forbidden_assets": ["2019", "2020", "2021", "2022", "2025"],
+  "whole_repository_checkout_required": false,
+  "exact_sha_selective_fetch_required": true,
+  "technical_failure_is_scientific_failure": false
+}

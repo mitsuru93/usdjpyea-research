@@ -1,0 +1,37 @@
+{
+  "schema_version": "usdjpy_hyp035_startup_receipt_v1",
+  "status": "PASS_STARTUP_AUTHORITY_AND_ID_RESERVATION",
+  "hypothesis_id": "USDJPY-HYP-035",
+  "family_id": "S_PULLBACK_CONTINUATION_PORTABILITY",
+  "candidate_id": "A_EXACT_EXECUTABLE_16BAR",
+  "research_start_sha": "b7711c554b3ab21331537911cfb5a7d423d19cc3",
+  "core_start_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "latest_ledger": "configs/research/usdjpy_hypothesis_ledger_addendum_v36.json",
+  "latest_registry": "configs/research/usdjpy_research_candidate_registry_v62.json",
+  "active_hypothesis_before_reservation": null,
+  "active_candidate_before_reservation": null,
+  "hyp035_pr_search_matches": 0,
+  "hyp035_issue_search_matches": 0,
+  "hyp035_branch_search_matches": 0,
+  "hyp035_ledger_matches": 0,
+  "id_available": true,
+  "atlas_authority": {
+    "pr": 295,
+    "run_id": 30202535070,
+    "artifact_id": 8632092013,
+    "release": "usdjpy-csos-opportunity-atlas-v1-r1"
+  },
+  "closed_boundaries_preserved": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE",
+    "USDJPY-HYP-031": "NO_PORTABLE_REGIME_RULE",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+    "USDJPY-HYP-033": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+    "USDJPY-HYP-034": "NO_PORTABLE_REJECTION_MECHANISM"
+  },
+  "protected_2020_2022_accessed": false,
+  "protected_2025_accessed": false,
+  "core_modified": false,
+  "mt4_executed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
