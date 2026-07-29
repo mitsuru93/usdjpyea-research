@@ -30,6 +30,10 @@
     "2025": "SOLE_BINDING_EXTERNAL_VALIDATION"
   },
   "protocol_correction_receipt": "configs/research/usdjpy_hyp037_period_role_correction_receipt_v2.json",
+  "receipt_issue_number": 416,
+  "release_readback_receipt": "configs/research/usdjpy_hyp038_release_readback_receipt_v1.json",
+  "release_receipt": "configs/research/usdjpy_hyp038_release_receipt_v1.json",
+  "release_tag": "usdjpy-hyp038-delayed-continuation-v1",
   "remaining_family_atlas_decision": "ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY",
   "report": "docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md",
   "research_memory": {
