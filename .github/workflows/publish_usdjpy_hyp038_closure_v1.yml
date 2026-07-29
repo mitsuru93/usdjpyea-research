@@ -1,0 +1,140 @@
+name: Publish USDJPY HYP-038 Closure v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp038_final_result_v1.json'
+      - 'configs/research/usdjpy_hyp038_closure_receipt_v1.json'
+
+permissions:
+  contents: write
+  issues: write
+  actions: read
+
+concurrency:
+  group: publish-usdjpy-hyp038-closure-v1
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify source artifact and publish immutable Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/hyp038-publish"
+          rm -rf "$root" && mkdir -p "$root"/{h38,readback}
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/8718213549/zip" > "$root/h38.zip"
+          printf '%s  %s\n' 549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c "$root/h38.zip" | sha256sum -c -
+          unzip -q "$root/h38.zip" -d "$root/h38"
+          (cd "$root/h38/output" && sha256sum -c PACKAGE_SHA256SUMS)
+          printf '%s  %s\n' 0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8 "$root/h38/usdjpy-hyp038-delayed-continuation-research-v1.zip" | sha256sum -c -
+          jq -e '.decision=="MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE" and .candidate_freeze_authorized==false and .period_access."2025H1"==false' "$root/h38/output/final_result.json"
+
+          tag='usdjpy-hyp038-delayed-continuation-v1'
+          if ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            cat > "$root/release_notes.md" <<'EOF'
+          # USDJPY-HYP-038 immutable scientific closure
+
+          Decision: `MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE`.
+
+          HYP-037 remains closed as `FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING`.
+          No candidate was frozen. Core/MT4 and 2025 were not opened. Production and live authorization remain false.
+
+          Source authority: Run `30437473624`, Artifact `8718213549`.
+          EOF
+            gh release create "$tag" \
+              "$root/h38/usdjpy-hyp038-delayed-continuation-research-v1.zip#Deterministic HYP-038 archive" \
+              "$root/h38/output/final_result.json#Binding final result" \
+              "$root/h38/output/human_report.md#Human-readable report" \
+              --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --title 'USDJPY-HYP-038 Delayed Continuation Closure v1' \
+              --notes-file "$root/release_notes.md"
+          fi
+
+          gh release download "$tag" --repo "$GITHUB_REPOSITORY" --dir "$root/readback" --pattern 'usdjpy-hyp038-delayed-continuation-research-v1.zip' --pattern 'final_result.json' --pattern 'human_report.md'
+          printf '%s  %s\n' 0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8 "$root/readback/usdjpy-hyp038-delayed-continuation-research-v1.zip" | sha256sum -c -
+          cmp "$root/h38/output/final_result.json" "$root/readback/final_result.json"
+          cmp "$root/h38/output/human_report.md" "$root/readback/human_report.md"
+
+          title='USDJPY-HYP-038 immutable Release receipt'
+          issue=$(gh issue list --repo "$GITHUB_REPOSITORY" --state all --search "${title} in:title" --json number,title --jq '.[] | select(.title=="USDJPY-HYP-038 immutable Release receipt") | .number' | head -1)
+          if [ -z "$issue" ]; then
+            body=$(cat <<EOF
+          Scientific decision: \`MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE\`
+
+          - Research Run: \`30437473624\`
+          - Actions Artifact: \`8718213549\`
+          - Actions artifact ZIP SHA-256: \`549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c\`
+          - Deterministic archive SHA-256: \`0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8\`
+          - Release tag: \`${tag}\`
+          - Candidate freeze: false
+          - Core/MT4: not authorized, not executed
+          - 2025 accessed: false
+          - Production/live authorization: false
+
+          HYP-037 decision remains unchanged.
+          EOF
+          )
+            issue_url=$(gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body")
+            issue=${issue_url##*/}
+          fi
+
+          release_url=$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json url --jq .url)
+          merge_sha="$GITHUB_SHA"
+          cat > configs/research/usdjpy_hyp038_release_receipt_v1.json <<EOF
+          {
+            "schema_version": "usdjpy_hyp038_release_receipt_v1",
+            "hypothesis_id": "USDJPY-HYP-038",
+            "decision": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+            "merge_sha": "${merge_sha}",
+            "run_id": 30437473624,
+            "artifact_id": 8718213549,
+            "artifact_zip_sha256": "549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c",
+            "release_tag": "${tag}",
+            "release_url": "${release_url}",
+            "deterministic_archive_asset": "usdjpy-hyp038-delayed-continuation-research-v1.zip",
+            "deterministic_archive_sha256": "0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8",
+            "binding_result_byte_identical": true,
+            "human_report_byte_identical": true,
+            "receipt_issue_number": ${issue},
+            "candidate_freeze": false,
+            "core_mt4_executed": false,
+            "2025_accessed": false,
+            "production_authorized": false,
+            "live_authorized": false
+          }
+          EOF
+          cat > configs/research/usdjpy_hyp038_release_readback_receipt_v1.json <<EOF
+          {
+            "schema_version": "usdjpy_hyp038_release_readback_receipt_v1",
+            "release_tag": "${tag}",
+            "archive_sha256_expected": "0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8",
+            "archive_sha256_readback": "0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8",
+            "archive_byte_identical": true,
+            "binding_result_byte_identical": true,
+            "human_report_byte_identical": true,
+            "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+          }
+          EOF
+          python -m json.tool configs/research/usdjpy_hyp038_release_receipt_v1.json >/dev/null
+          python -m json.tool configs/research/usdjpy_hyp038_release_readback_receipt_v1.json >/dev/null
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git fetch origin main
+          git checkout main
+          git pull --ff-only origin main
+          git add configs/research/usdjpy_hyp038_release_receipt_v1.json configs/research/usdjpy_hyp038_release_readback_receipt_v1.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'research: record HYP-038 immutable Release receipt'
+          git push origin main
