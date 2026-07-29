@@ -48,10 +48,8 @@ jobs:
             exit 0
           fi
 
-          set +e
-          dispatch_output=$(gh api --method POST "repos/${repo}/actions/workflows/${workflow}/dispatches" -f ref=main 2>&1)
-          dispatch_rc=$?
-          set -e
+          dispatch_rc=0
+          dispatch_output=$(gh api --method POST "repos/${repo}/actions/workflows/${workflow}/dispatches" -f ref=main 2>&1) || dispatch_rc=$?
           if [ "$dispatch_rc" -ne 0 ]; then
             compact=$(printf '%s' "$dispatch_output" | tr '\n' ' ' | cut -c1-1200)
             gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: dispatch POST failed with exit code ${dispatch_rc}. API response: ${compact}"
