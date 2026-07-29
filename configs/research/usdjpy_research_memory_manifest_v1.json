@@ -1,14 +1,7 @@
 {
   "atomic_update_rule": {
     "notion_sync": "after merge update Current State and active task properties and body, fetch both back, and require GitHub agreement",
-    "same_research_change_required_after_every_completed_test": [
-      "result JSON",
-      "human report",
-      "candidate registry",
-      "hypothesis ledger",
-      "period access state",
-      "next action"
-    ],
+    "same_research_change_required_after_every_completed_test": ["result JSON", "human report", "candidate registry", "hypothesis ledger", "period access state", "next action"],
     "technical_incomplete_runs": "record separately; never count as scientific results"
   },
   "canonical_pointers": {
@@ -56,7 +49,7 @@
     "candidate_outcome_evaluation_authorized": false,
     "candidate_signal_generation_authorized": false,
     "current_candidate": null,
-    "current_open_research_question": "Complete exact same-source 2020-2022 Dukascopy authority, then rerun unchanged HYP-037.",
+    "current_open_research_question": null,
     "historical_2020_2022_authorized": false,
     "historical_source_repair_authorized": true,
     "live_authorized": false,
@@ -65,15 +58,7 @@
     "registry_status": "USDJPY_HYP037_TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED"
   },
   "duplicate_research_guard": {
-    "block_conditions": [
-      "same mechanism with threshold changes only",
-      "closed exact candidate relabeled",
-      "prior failed gate omitted",
-      "2025 outcome used to choose mechanism or threshold",
-      "HYP035 Pullback Continuation rescued by source substitution after identity outcome",
-      "HYP036 rewritten as Short-only inside HYP-036",
-      "HYP037 candidate or gate changed during source-authority repair"
-    ],
+    "block_conditions": ["same mechanism with threshold changes only", "closed exact candidate relabeled", "prior failed gate omitted", "2025 outcome used to choose mechanism or threshold", "HYP035 Pullback Continuation rescued by source substitution after identity outcome", "HYP036 rewritten as Short-only inside HYP-036", "HYP037 candidate or gate changed during source-authority repair"],
     "required_before_new_hypothesis": true,
     "required_comparison_set": "all ledger entries with overlapping target failure, action, strategy, features, period or algebraically equivalent payoff"
   },
@@ -115,45 +100,16 @@
     "USDJPY-HYP-034": {"decision": "NO_PORTABLE_REJECTION_MECHANISM", "production_authorized": false, "status": "COMPLETE_NO_PORTABLE_REJECTION_MECHANISM"},
     "USDJPY-HYP-035": {"decision": "FAIL_ATLAS_IDENTITY", "production_authorized": false, "status": "COMPLETE_FAIL_ATLAS_IDENTITY"},
     "USDJPY-HYP-036": {"decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE", "production_authorized": false, "status": "COMPLETE_NO_PORTABLE_EXECUTABLE_CANDIDATE"},
-    "USDJPY-HYP-037": {
-      "2020_2022_candidate_outcomes_accessed": false,
-      "2025_accessed": false,
-      "candidate_freeze": false,
-      "decision": "TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED",
-      "live_authorized": false,
-      "production_authorized": false,
-      "status": "COMPLETE_TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED"
-    }
+    "USDJPY-HYP-037": {"2020_2022_candidate_outcomes_accessed": false, "2025_accessed": false, "candidate_freeze": false, "decision": "TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED", "live_authorized": false, "production_authorized": false, "status": "COMPLETE_TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED"}
   },
   "purpose": "Make prior hypotheses, failed gates, evidence identities, current authorization, safeguards and exact next action mandatory inputs.",
   "schema_version": "usdjpy_research_memory_manifest_v1",
   "scope": "USDJPY research across mitsuru93/usdjpyea-research and mitsuru93/usdjpyea-core",
-  "source_precedence": [
-    "binding result JSON and exact receipt",
-    "verified GitHub Release receipt and Actions artifact identity",
-    "preregistration and frozen policy",
-    "human-readable report",
-    "candidate registry and hypothesis-ledger summary",
-    "conversation summary or memory"
-  ],
+  "source_precedence": ["binding result JSON and exact receipt", "verified GitHub Release receipt and Actions artifact identity", "preregistration and frozen policy", "human-readable report", "candidate registry and hypothesis-ledger summary", "conversation summary or memory"],
   "startup_read_receipt_required": {
     "acceptable_location": "PR body, committed run manifest, result JSON, or explicit assistant work-start report",
-    "minimum_fields": [
-      "manifest SHA or path",
-      "registry SHA or path",
-      "ledger/addendum SHA or path",
-      "active hypothesis and candidate",
-      "closed-boundary acknowledgement",
-      "period authorization acknowledgement"
-    ],
-    "required_before": [
-      "mechanism diagnosis",
-      "new hypothesis proposal",
-      "finite family preregistration",
-      "candidate outcome evaluation",
-      "MT4 workflow design",
-      "period-access decision"
-    ]
+    "minimum_fields": ["manifest SHA or path", "registry SHA or path", "ledger/addendum SHA or path", "active hypothesis and candidate", "closed-boundary acknowledgement", "period authorization acknowledgement"],
+    "required_before": ["mechanism diagnosis", "new hypothesis proposal", "finite family preregistration", "candidate outcome evaluation", "MT4 workflow design", "period-access decision"]
   },
   "status": "ACTIVE_CANONICAL_STARTUP_GATE"
 }
