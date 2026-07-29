@@ -1,0 +1,153 @@
+{
+  "schema_version": "usdjpy_hyp037_corrected_preregistration_addendum_v2",
+  "hypothesis_id": "USDJPY-HYP-037",
+  "family_id": "S_SHORT_PULLBACK_CONTINUATION_PORTABILITY",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR",
+  "status": "FROZEN_BEFORE_NEW_RESEARCH_GATE_AND_2025_OUTCOMES",
+  "supersedes_period_role_only": "configs/research/usdjpy_short_pullback_continuation_portability_prereg_v1.json",
+  "scientific_outcome_not_rewritten": true,
+  "candidate_unchanged": true,
+  "no_retuning": true,
+  "period_roles": {
+    "2020_2022": "NONBINDING_ANALYSIS_ONLY_NOT_REQUIRED",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION",
+    "2025H1": "SOLE_FIRST_BINDING_UNSEEN_EXTERNAL_GATE",
+    "2025H2": "BINDING_ONLY_AFTER_UNCHANGED_2025H1_PASS"
+  },
+  "fixed_candidate_contract": {
+    "direction": "SHORT_ONLY",
+    "source": "Dukascopy BI5 Bid/Ask Tick",
+    "timeframe": "M15 reconstructed from source-native Bid ticks",
+    "ema_fast_period": 20,
+    "ema_slow_period": 96,
+    "atr_period": 20,
+    "atr_method": "rolling mean of true range in pips",
+    "ema_method": "pandas ewm(span=N, adjust=False)",
+    "trend_strength": "prior observed bar (EMA20-EMA96)/(ATR20*0.01) <= -1",
+    "pullback_tolerance": "0.25*ATR20*0.01",
+    "short_signal": "prior ts<=-1 and current High>=EMA20-tolerance and current Close<EMA20 and current Close<current Open",
+    "entry": "first source-native executable Bid at or after next observed M15 boundary",
+    "exit": "first source-native executable Ask at or after 16 observed M15 bars",
+    "same_variant_active_suppression": "reject i when i<=prior accepted i+17",
+    "fold_crossing_prohibited": true,
+    "warmup_rows": 100,
+    "lot_size": 0.01,
+    "pip_size": 0.01,
+    "pip_value_jpy": 10,
+    "reporting_currency": "JPY",
+    "stop_loss": null,
+    "take_profit": null
+  },
+  "research_2023_2024_gates": {
+    "integrity": {
+      "source_authority_pass": true,
+      "unresolved_chronology": 0,
+      "duplicate_event": 0,
+      "lookahead_violation": 0,
+      "currency_mismatch": 0,
+      "replay_mismatch": 0,
+      "candidate_identity_complete": true
+    },
+    "sample": {
+      "short_trades_min": 400,
+      "each_fold_trades_min": 75,
+      "largest_session_trade_share_max": 0.4
+    },
+    "standalone": {
+      "net_jpy_gt": 0,
+      "profit_factor_min": 1.1,
+      "positive_folds_min": 4,
+      "minimum_fold_net_jpy_min": 0,
+      "positive_months_min": 13,
+      "realized_mdd_jpy_max": 15758.75,
+      "minimum_equity_jpy_min": 984241.25,
+      "initial_capital_jpy": 1000000
+    },
+    "concentration": {
+      "best_event_removed_net_jpy_gt": 0,
+      "top3_removed_net_jpy_gt": 0,
+      "top5_removed_net_jpy_gt": 0,
+      "top_decile_winners_removed_net_jpy_gt": 0,
+      "largest_positive_fold_share_max": 0.5,
+      "largest_positive_month_share_max": 0.25,
+      "largest_positive_session_share_max": 0.6
+    },
+    "resampling": {
+      "replicates": 10000,
+      "seed": 37037,
+      "event_lower_95_jpy_gt": 0,
+      "date_lower_95_jpy_gt": 0,
+      "session_block_lower_95_jpy_gt": 0,
+      "p_nonpositive_max": 0.05
+    },
+    "execution_robustness": {
+      "observed_bid_ask_net_jpy_gt": 0,
+      "spread_plus_0_5_pip_net_jpy_gt": 0,
+      "spread_plus_1_0_pip_net_jpy_gt": 0,
+      "spread_plus_2_0_pip_report_only": true,
+      "entry_delay_5s_net_jpy_gt": 0,
+      "entry_delay_15s_net_jpy_gt": 0,
+      "adverse_slippage_0_5_pip_each_execution_net_jpy_gt": 0
+    },
+    "portfolio": {
+      "additive_net_gt_baseline": true,
+      "realized_dd_nonworse": true,
+      "full_equity_dd_nonworse": true,
+      "minimum_equity_nonworse": true,
+      "worst_5_business_day_nonworse": true,
+      "worst_20_business_day_nonworse": true,
+      "worst_calendar_month_nonworse": true,
+      "candidate_peak_concurrency_max": 1,
+      "combined_peak_concurrency_max_rule": "baseline_peak_plus_1",
+      "incremental_margin_jpy_max": 50000,
+      "margin_level_percent_min": 500,
+      "chronology_mismatch": 0,
+      "currency_mismatch": 0,
+      "baseline_trade_outcomes_unchanged": true
+    },
+    "first_failure_decision": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING"
+  },
+  "candidate_freeze": {
+    "authorized_only_if_all_2023_2024_binding_gates_pass": true,
+    "2025_must_remain_unaccessed": true
+  },
+  "protected_2025_gates": {
+    "H1": {
+      "net_jpy_gt": 0,
+      "profit_factor_min": 1.05,
+      "Q1_net_jpy_min": 0,
+      "Q2_net_jpy_min": 0,
+      "positive_months_min": 4,
+      "minimum_month_net_jpy_min": -1500,
+      "best_2_dates_removed_net_jpy_gt": 0,
+      "spread_plus_1_pip_net_jpy_gt": 0,
+      "entry_delay_5s_net_jpy_gt": 0,
+      "portfolio_additive_net_gt_baseline": true,
+      "portfolio_realized_dd_nonworse": true,
+      "portfolio_full_equity_dd_nonworse": true,
+      "portfolio_minimum_equity_nonworse": true,
+      "worst_5_business_day_nonworse": true,
+      "worst_20_business_day_nonworse": true,
+      "worst_month_nonworse": true,
+      "concurrency_margin_pass": true,
+      "research_core_mt4_mismatch": 0,
+      "currency_mismatch": 0,
+      "chronology_mismatch": 0,
+      "no_retuning": true,
+      "no_side_session_period_exclusion": true,
+      "failure_decision": "FAIL_2025H1_EXTERNAL_GATE_NO_RETUNING"
+    },
+    "H2": {
+      "same_candidate_only": true,
+      "same_numeric_gates_as_H1": true,
+      "authorized_only_after_all_H1_gates_pass": true,
+      "failure_decision": "FAIL_2025H2_EXTERNAL_GATE_NO_RETUNING"
+    }
+  },
+  "2020_2022_binding_confirmation_removed": true,
+  "2020_2022_tick_completion_not_required_for_2025": true,
+  "2020_2022_outcomes_accessed": false,
+  "2025_outcomes_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
