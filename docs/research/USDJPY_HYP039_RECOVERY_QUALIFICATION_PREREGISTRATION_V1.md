@@ -31,14 +31,27 @@ No HYP-038 filter or lifecycle rule is permitted.
 
 The machine-readable authority is `configs/research/usdjpy_hyp039_candidate_contract_v1.json`.
 
-## Period firewall
+## Period role and outcome visibility
 
-- 2020–2022: analysis only; not required.
-- 2023–2024: Research/Core/MT4 and Rakuten portability; no retuning.
-- 2025H1: candidate-specific external evaluation after freeze, parity, compile and Rakuten portability.
-- 2025H2: reserved for the final B02 v2 + F05 v2 + third-strategy integrated gate.
+Period role is fixed independently from outcome visibility:
 
-After the first 2025H1 outcome is opened, further 2025H1 runs may be development or diagnostic runs, but no changed version may describe 2025H1 as unseen validation.
+- 2020–2022: `ANALYSIS_PERIOD`
+- 2023–2024: `RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD`
+- 2025H1: `VALIDATION_PERIOD`
+
+2025H1 never becomes an analysis, research or development period because an outcome was observed or a tester was rerun.
+
+For candidate version `C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED`, the first 2025H1 Short Pullback run is recorded as `UNSEEN_AT_FIRST_VALIDATION` because the exact rule was fixed before candidate-specific 2025H1 outcome access.
+
+Later runs remain 2025H1 validation-period evidence and use one of the following candidate-version visibility labels:
+
+- `PREVIOUSLY_OBSERVED_VALIDATION_PERIOD`
+- `MODIFIED_AFTER_VALIDATION_RESULT`
+- `UNCHANGED_REVALIDATION`
+
+Permitted descriptions include `2025H1 validation-period rerun`, `2025H1 validation-period diagnostic comparison`, `2025H1 post-result revalidation`, and `2025H1 POST-MODIFICATION REVALIDATION`.
+
+A changed candidate may not claim unseen validation, but its 2025H1 validation result remains valid evidence for the final EA decision. 2025H2 is not an automatic replacement for 2025H1; any later use is controlled by the EA-wide period policy and actual access history.
 
 ## Binding decision
 
