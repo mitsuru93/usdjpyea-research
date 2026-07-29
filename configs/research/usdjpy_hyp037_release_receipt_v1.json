@@ -1,12 +1,13 @@
 {
-  "candidate_outcomes_2020_2022_accessed": false,
-  "decision": "TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED",
-  "deterministic_archive_sha256": "aca8758a39805c4e56122460013b3a9bf3446a3f06f1d8b322041760f292bc0a",
-  "protected_2025_accessed": false,
-  "release_tag": "usdjpy-hyp037-short-pullback-source-no-result-v1",
   "schema_version": "usdjpy_hyp037_release_receipt_v1",
-  "source_artifact_digest": "sha256:ef2dc9458f4f15dbcab20172ddad611d8342dec9784d80a4428c2a5bd1bf8ad4",
-  "source_artifact_id": 8712825068,
+  "status": "PASS_IMMUTABLE_RELEASE_READBACK",
+  "release_tag": "usdjpy-hyp037-short-pullback-source-no-result-v1",
+  "main_sha": "a8523b0cd26193ae222c80be9e7419c04683762c",
   "source_run_id": 30423475688,
-  "status": "PENDING_IMMUTABLE_RELEASE_READBACK_AFTER_MERGE"
+  "source_artifact_id": 8712825068,
+  "source_artifact_digest": "sha256:ef2dc9458f4f15dbcab20172ddad611d8342dec9784d80a4428c2a5bd1bf8ad4",
+  "deterministic_archive_sha256": "aca8758a39805c4e56122460013b3a9bf3446a3f06f1d8b322041760f292bc0a",
+  "decision": "TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED",
+  "candidate_outcomes_2020_2022_accessed": false,
+  "protected_2025_accessed": false
 }
