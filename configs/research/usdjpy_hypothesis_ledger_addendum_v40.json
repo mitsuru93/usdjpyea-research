@@ -1,0 +1,94 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v40",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v39.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v39.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-037",
+      "family_ids": ["S_SHORT_PULLBACK_CONTINUATION_PORTABILITY"],
+      "family_id": "S_SHORT_PULLBACK_CONTINUATION_PORTABILITY",
+      "candidate_ids": ["C1_SHORT_DUKASCOPY_NATIVE_16BAR"],
+      "title": "Short Pullback Continuation Directional Asymmetry and Historical Portability Study — period-role corrected continuation",
+      "protocol_revision": {
+        "decision": "PROTOCOL_CORRECTION_PERIOD_ROLE_BEFORE_EXTERNAL_VALIDATION",
+        "v1_preserved": true,
+        "supersedes_period_role_only": true,
+        "scientific_outcome_not_rewritten": true,
+        "candidate_unchanged": true,
+        "2020_2022_binding_confirmation_removed": true,
+        "2020_2022_outcomes_accessed": false,
+        "2025_external_gate_restored": true,
+        "2025_outcomes_accessed": false
+      },
+      "tests": [
+        {
+          "type": "binding_research_candidate_gate",
+          "period": "2023-2024",
+          "run_id": 30428356407,
+          "artifact_id": 8714601229,
+          "result": {
+            "short_trades": 500,
+            "net_jpy": 17679,
+            "profit_factor": 1.2727693518275656,
+            "positive_folds": 4,
+            "positive_months": 13,
+            "mdd_jpy": 6312,
+            "top_decile_winners_removed_net_jpy": -11216,
+            "event_bootstrap_lower_95_jpy": -1221.875,
+            "date_bootstrap_lower_95_jpy": -1349.025,
+            "session_block_bootstrap_lower_95_jpy": -1281.05,
+            "spread_plus_1_pip_net_jpy": 12679,
+            "entry_delay_15s_net_jpy": 17612,
+            "combined_realized_dd_jpy": 35420,
+            "combined_full_equity_dd_jpy": 36511,
+            "combined_worst_5_business_day_jpy": -12053
+          }
+        }
+      ],
+      "status": "COMPLETE_FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+      "decision": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+      "scientific_result": true,
+      "technical_no_result": false,
+      "failed_binding_stage": "CONCENTRATION",
+      "failed_binding_gates": [
+        "top_decile_removed_positive",
+        "event_lower_95_positive",
+        "date_lower_95_positive",
+        "session_block_lower_95_positive",
+        "worst_5_business_day_nonworse"
+      ],
+      "retained_findings": [
+        "Short-only Pullback Continuation was positive in all four 2023-2024 half-year folds with PF 1.2728.",
+        "The edge remained positive under +2 pip spread, +15 second Entry delay and 0.5 pip adverse slippage per execution.",
+        "Adding Short Pullback improved net, realized DD, full-equity DD, minimum equity, worst 20-day loss and worst month.",
+        "The edge depended materially on the strongest winner decile and did not produce positive bootstrap lower bounds.",
+        "The worst 5-business-day portfolio cluster worsened."
+      ],
+      "prohibited_reuse": [
+        "Do not reopen HYP-037 by relaxing concentration or bootstrap gates.",
+        "Do not remove winner events, sessions, months, 2024H2 or any side-defined subgroup.",
+        "Do not access 2025 for C1 because candidate freeze was not authorized.",
+        "Do not retune EMA, ATR, threshold, tolerance, hold, Entry, Exit or lot.",
+        "Do not reinterpret the v1 technical-no-result as the final scientific decision; preserve both records with v2 superseding period role only."
+      ],
+      "evidence_refs": {
+        "pr": 401,
+        "run_id": 30428356407,
+        "artifact_id": 8714601229,
+        "artifact_digest": "sha256:046f56e519fd8e047dd54c98962c7e7ad24bcbc9d159445cb9a3fb227fa8a2d4",
+        "deterministic_archive_sha256": "2353f2f3b08f3b686a6244ce661ab043d7b488a41ca9f1d5e0f1cebaba6c44fd",
+        "result": "configs/research/usdjpy_hyp037_final_result_v2.json",
+        "report": "docs/research/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md",
+        "candidate_registry": "configs/research/usdjpy_hyp037_candidate_registry_v2.json",
+        "period_access_receipt": "configs/research/usdjpy_hyp037_period_access_receipt_v2.json"
+      },
+      "successor_questions": [
+        "Which independently defined mechanism can complement B02/F05 without relying on rare right-tail winners or worsening short-horizon loss clusters?"
+      ],
+      "decision_note": "Protocol corrected before protected-period access. HYP-037 closed at the first 2023-2024 Research binding failure. Core, MT4 and 2025 were not reached."
+    }
+  ]
+}
