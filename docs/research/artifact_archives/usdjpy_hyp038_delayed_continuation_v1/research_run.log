@@ -1,0 +1,9 @@
+{
+  "decision": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+  "selected_candidate_family": "C5_PORTFOLIO_LOSS_DECOUPLING",
+  "selected_exact_variant": "C5_COEXPOSURE_SKIP",
+  "candidate_freeze_authorized": false,
+  "selected_oof_net_jpy": 1626.9999999996398,
+  "selected_oof_pf": 1.0705795592573149,
+  "2025_accessed": false
+}

@@ -1,0 +1,63 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "authorization": {
+        "2023_2024_research": false,
+        "2025H1": false,
+        "2025H2": false,
+        "Core": false,
+        "MT4": false,
+        "candidate_freeze": false,
+        "live": false,
+        "production": false
+      },
+      "decision": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+      "evidence_refs": {
+        "artifact_archive": "docs/research/artifact_archives/usdjpy_hyp038_delayed_continuation_v1",
+        "artifact_id": 8718213549,
+        "final_result": "configs/research/usdjpy_hyp038_final_result_v1.json",
+        "preregistration": "configs/research/usdjpy_hyp038_preregistration_v1.json",
+        "report": "docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md",
+        "run_id": 30437473624
+      },
+      "failed_gates": [
+        "OOF PF 1.07058 < 1.10",
+        "2024H2 net -JPY5777 < -JPY1500",
+        "spread +1 pip and 0.5 pip each-side slippage net -JPY133",
+        "worst 5-day, 20-day and month worsened",
+        "top-5 winner retention 17.4%",
+        "top-decile profit retention 23.2%",
+        "sacrificed profit JPY57813 exceeded avoided loss JPY41761",
+        "top-25 preserved 6/25"
+      ],
+      "hypothesis_id": "USDJPY-HYP-038",
+      "lineage": "Independent successor to closed HYP-037; HYP-037 decision remains unchanged.",
+      "next_action": "Do not retune HYP-038, freeze C5, implement Core/MT4, or access 2025. Preserve delayed right-tail continuation as mechanism evidence. The third-strategy slot remains open; the next eligible independent research direction is a separately preregistered B_BALANCE_MEAN_REVERSION entry-time hypothesis, while 2025H2 remains reserved for the integrated B02 v2 + F05 v2 + third-strategy gate.",
+      "period_access": {
+        "2020_2022": false,
+        "2023_2024_candidate_outcomes": true,
+        "2025": false
+      },
+      "phase2_status": "COMPLETE_RESEARCH_DECISION_NO_CANDIDATE_FREEZE",
+      "prohibited_reuse": [
+        "Do not change HYP-037 decision.",
+        "Do not retune HYP-038 C5 or lifecycle thresholds under HYP-038.",
+        "Do not freeze or implement any HYP-038 variant.",
+        "Do not use 2025 for HYP-038."
+      ],
+      "retained_findings": [
+        "Delayed right-tail continuation remains confirmed in the unchanged HYP-037 reference.",
+        "C5 co-exposure skip made negative-baseline-day contribution positive but destroyed the right tail and failed OOF economics.",
+        "No finite entry/lifecycle/portfolio rule passed all hard gates."
+      ],
+      "title": "Short Pullback Delayed Right-Tail Continuation and Portfolio Loss-Decoupling Study"
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "hypothesis_status_updates": [],
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v40.json",
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v41",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v40.json"
+}

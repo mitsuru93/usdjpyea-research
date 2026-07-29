@@ -1,0 +1,124 @@
+{
+  "2020_2022_accessed": false,
+  "2025_accessed": false,
+  "atlas_comparison": "Use canonical Remaining-Family Atlas result if complete; otherwise record deferred without inferring result.",
+  "candidate_catalog": {
+    "maximum_nonreference_candidates": 6,
+    "path": "configs/research/usdjpy_hyp038_finite_candidate_catalog_v1.json",
+    "reference_not_freezable": true
+  },
+  "candidate_outcomes_accessed": false,
+  "central_hypothesis": "Short Pullback profit is delayed right-tail continuation; observable entry/lifecycle/portfolio state may preserve the tail while rejecting failure and concurrent B02/F05 loss.",
+  "confidence_diagnostics": [
+    "top winner decile removal",
+    "bootstrap lower95 and P(nonpositive)",
+    "positive months",
+    "fold/month/session concentration",
+    "tail ratio",
+    "skewness",
+    "expected shortfall",
+    "recovery",
+    "losing streak"
+  ],
+  "cross_fitting": {
+    "OOF_concatenation_required": true,
+    "evaluation": "held-out fold",
+    "full_period_only_selection_prohibited": true,
+    "method": "leave-one-half-year-out",
+    "training": "remaining three folds"
+  },
+  "evaluator_sha256": "66da172e403ff6b53bbf5e84b492d0abdae553c3703c2b794ae3190c647e6af3",
+  "family_id": "S_SHORT_PULLBACK_DELAYED_CONTINUATION_LOSS_DECOUPLING",
+  "feature_catalog": "configs/research/usdjpy_hyp038_feature_catalog_v1.json",
+  "folds": [
+    "2023H1",
+    "2023H2",
+    "2024H1",
+    "2024H2"
+  ],
+  "hard_viability_gates": {
+    "execution": [
+      "spread+1 pip net>0",
+      "entry delay+15s net>0",
+      "0.5 pip adverse slippage each side net>0"
+    ],
+    "implementation_deferred_until_research_freeze": [
+      "Research/Core row mismatch 0",
+      "Core/MT4 contract mismatch 0"
+    ],
+    "integrity": [
+      "source integrity PASS",
+      "lookahead 0",
+      "chronology mismatch 0",
+      "currency mismatch 0",
+      "duplicate/unresolved 0"
+    ],
+    "portfolio": [
+      "combined net>baseline",
+      "realized DD non-worse",
+      "full-equity DD non-worse",
+      "minimum equity non-worse",
+      "worst 5d non-worse",
+      "worst 20d non-worse",
+      "worst month non-worse",
+      "negative baseline-day contribution>=0",
+      "margin/concurrency PASS"
+    ],
+    "right_tail": [
+      "top5 P/L retention>=90%",
+      "top-decile gross-profit retention>=80%",
+      "avoided loss>sacrificed profit",
+      "top25 majority preserved"
+    ],
+    "standalone": [
+      "net>0",
+      "PF>=1.10",
+      "positive folds>=3/4",
+      "minimum fold>=-1500 JPY",
+      "top5 winners removed net>0"
+    ]
+  },
+  "hypothesis_id": "USDJPY-HYP-038",
+  "live_authorized": false,
+  "no_retuning": true,
+  "period_roles": {
+    "2020_2022": "NONBINDING_ANALYSIS_NOT_REQUIRED",
+    "2023_2024": "RESEARCH_CANDIDATE_CONSTRUCTION_WITH_LOFO_CROSSFIT",
+    "2025": "UNSEEN_EXTERNAL_VALIDATION_LOCKED"
+  },
+  "post_research_sequence": "Only a Research OOF+full exact hard-pass may freeze one exact candidate for Core/MT4. 2025 remains locked until parity and Rakuten 2023-2024 portability pass.",
+  "production_authorized": false,
+  "ranking": [
+    "hard pass",
+    "negative baseline day contribution",
+    "combined full-equity DD",
+    "worst 5d",
+    "combined net",
+    "standalone PF",
+    "simplicity",
+    "portability"
+  ],
+  "relationship_to_hyp037": {
+    "C0_reference_only": true,
+    "binding_decision_unchanged": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+    "retune_hyp037": false,
+    "type": "independent_successor"
+  },
+  "research_decisions": [
+    "PASS_SHORT_PULLBACK_DELAYED_CONTINUATION_CANDIDATE",
+    "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+    "NO_PORTABLE_DELAYED_CONTINUATION_CANDIDATE"
+  ],
+  "right_tail_prohibitions": [
+    "fixed small TP",
+    "shallow trailing stop",
+    "future MFE/MAE/label leakage"
+  ],
+  "schema_version": "usdjpy_hyp038_preregistration_v1",
+  "status": "PREREGISTERED_BEFORE_OUTCOME",
+  "title": "Short Pullback Delayed Right-Tail Continuation and Portfolio Loss-Decoupling Study",
+  "tracks": {
+    "A": "entry-time admission only",
+    "B": "time-causal in-trade lifecycle management"
+  }
+}

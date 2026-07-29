@@ -1,0 +1,60 @@
+{
+  "active_family": null,
+  "active_hypothesis": null,
+  "candidate_ids": [],
+  "candidate_registry": "configs/research/usdjpy_hyp038_candidate_registry_v1.json",
+  "candidate_rule_changed": false,
+  "closed_boundaries": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE_UNCHANGED",
+    "USDJPY-HYP-031": "NO_PORTABLE_REGIME_RULE_UNCHANGED",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING_UNCHANGED",
+    "USDJPY-HYP-033": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR_UNCHANGED",
+    "USDJPY-HYP-034": "NO_PORTABLE_REJECTION_MECHANISM_UNCHANGED",
+    "USDJPY-HYP-035": "FAIL_ATLAS_IDENTITY_UNCHANGED",
+    "USDJPY-HYP-036": "NO_PORTABLE_EXECUTABLE_CANDIDATE_UNCHANGED",
+    "USDJPY-HYP-037": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+    "USDJPY-HYP-038": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE"
+  },
+  "current_candidate": null,
+  "current_open_research_question": null,
+  "development_decision": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v41.json",
+  "next_action": "Do not retune HYP-038, freeze C5, implement Core/MT4, or access 2025. Preserve delayed right-tail continuation as mechanism evidence. The third-strategy slot remains open; the next eligible independent research direction is a separately preregistered B_BALANCE_MEAN_REVERSION entry-time hypothesis, while 2025H2 remains reserved for the integrated B02 v2 + F05 v2 + third-strategy gate.",
+  "no_retuning": true,
+  "output_manifest": "configs/research/usdjpy_hyp038_output_manifest_v1.json",
+  "period_access_receipt": "configs/research/usdjpy_hyp038_period_access_receipt_v1.json",
+  "period_roles": {
+    "2020_2022": "NONBINDING_ANALYSIS",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION",
+    "2025": "SOLE_BINDING_EXTERNAL_VALIDATION"
+  },
+  "protocol_correction_receipt": "configs/research/usdjpy_hyp037_period_role_correction_receipt_v2.json",
+  "report": "docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md",
+  "research_memory": {
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v41.json",
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json"
+  },
+  "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "result": "configs/research/usdjpy_hyp038_final_result_v1.json",
+  "run_authorization": {
+    "2020_2022_analysis": false,
+    "2020_2022_binding_confirmation": false,
+    "2025H1": false,
+    "2025H2": false,
+    "Core_implementation": false,
+    "MT4_candidate": false,
+    "live": false,
+    "production": false
+  },
+  "schema_version": "usdjpy_research_candidate_registry_v67",
+  "scientific_gate_definition_changed_after_outcome": false,
+  "scientific_result": true,
+  "source_artifact_digest": "sha256:549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c",
+  "source_artifact_id": 8718213549,
+  "source_run_id": 30437473624,
+  "status": "USDJPY_HYP038_COMPLETE_MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v66.json",
+  "technical_no_result": false,
+  "technical_revision_receipt": "configs/research/usdjpy_hyp037_technical_revision_receipt_v2.json"
+}

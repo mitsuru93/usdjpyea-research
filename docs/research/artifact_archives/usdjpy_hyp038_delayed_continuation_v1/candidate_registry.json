@@ -1,0 +1,14 @@
+{
+  "2025H1_authorized": false,
+  "2025H2_authorized": false,
+  "candidate_freeze_authorized": false,
+  "core_mt4_authorized": false,
+  "decision": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+  "family_id": "S_SHORT_PULLBACK_DELAYED_CONTINUATION_LOSS_DECOUPLING",
+  "hypothesis_id": "USDJPY-HYP-038",
+  "live_authorized": false,
+  "production_authorized": false,
+  "schema_version": "usdjpy_hyp038_candidate_registry_v1",
+  "selected_candidate_family": "C5_PORTFOLIO_LOSS_DECOUPLING",
+  "selected_exact_variant": "C5_COEXPOSURE_SKIP"
+}
