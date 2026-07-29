@@ -1,0 +1,99 @@
+{
+  "schema_version": "usdjpy_hyp039_preregistration_v1",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "title": "Unchanged Short Pullback 2025H1 Portfolio Recovery Qualification",
+  "family_id": "S_SHORT_PULLBACK_UNCHANGED_2025H1_RECOVERY",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "candidate_contract": "configs/research/usdjpy_hyp039_candidate_contract_v1.json",
+  "period_access_receipt": "configs/research/usdjpy_hyp039_period_access_receipt_v1.json",
+  "baseline_2025H1_authority": {
+    "trades": 463,
+    "net_jpy": -20808,
+    "profit_factor": 0.829,
+    "maximum_tick_equity_dd_jpy": 42737,
+    "B02_net_jpy": -6964,
+    "F05_net_jpy": -13844
+  },
+  "sequence": [
+    "Research candidate freeze",
+    "Core shared implementation",
+    "Research/Core row-level parity",
+    "MT4 compile",
+    "Rakuten 2023-2024 portability",
+    "2025H1 Short Pullback standalone external evaluation",
+    "2025H1 B02/F05/Short Pullback integrated portfolio replay",
+    "concentration, margin and residual-loss diagnostics",
+    "immutable evidence and final decision"
+  ],
+  "rakuten_2023_2024_stop_condition": "Stop before 2025H1 only for algorithm/information-time/contract failure or clearly negative Rakuten-native expectation; source-native population differences alone are not automatic failure.",
+  "binding_decision_target": "B02 + F05 + Short Pullback",
+  "decisions": {
+    "A": {
+      "decision": "PASS_SHORT_PULLBACK_2025H1_PORTFOLIO_RECOVERY",
+      "conditions": [
+        "standalone net > 0",
+        "standalone PF > 1",
+        "combined net > 0",
+        "combined PF > 1",
+        "combined full-equity DD <= baseline",
+        "combined minimum equity >= baseline",
+        "chronology mismatch = 0",
+        "currency mismatch = 0",
+        "Research/Core mismatch = 0",
+        "margin pass"
+      ]
+    },
+    "B": {
+      "decision": "PASS_SHORT_PULLBACK_PORTABILITY_PARTIAL_2025H1_RECOVERY",
+      "conditions": [
+        "standalone net > 0",
+        "standalone PF > 1",
+        "combined net improves versus baseline",
+        "combined net <= 0 or at least one portfolio condition fails"
+      ]
+    },
+    "C": {
+      "decision": "FAIL_SHORT_PULLBACK_2025H1_PORTABILITY",
+      "conditions": [
+        "standalone net <= 0 or standalone PF <= 1",
+        "combined portfolio not improved or DD materially worsened",
+        "or source/Core/MT4 contract failure"
+      ]
+    },
+    "D": {
+      "decision": "FAIL_CORE_MT4_PORTABILITY",
+      "conditions": [
+        "zero-mismatch parity cannot be achieved",
+        "MT4 compile or chronology/currency contract cannot be repaired before outcome access",
+        "or Rakuten 2023-2024 is clearly negative under the exact rule"
+      ]
+    }
+  },
+  "concentration_policy": {
+    "required": [
+      "top 1/3/5 winner removal",
+      "top winner decile removal",
+      "bootstrap",
+      "fold/month/session concentration",
+      "payoff skewness",
+      "tail ratio",
+      "expected shortfall",
+      "losing streak"
+    ],
+    "automatic_failure_from_concentration_only": false
+  },
+  "prohibitions": [
+    "change HYP-037 decision",
+    "change HYP-038 decision",
+    "reuse HYP-038 filters",
+    "change Short Pullback entry, exit, hold, side, thresholds or sessions",
+    "change B02/F05 entry or exit",
+    "retune the same candidate version after 2025H1 access",
+    "hide 2025H1 outcomes",
+    "consume 2025H2",
+    "authorize production or live trading",
+    "add recurring monitor"
+  ],
+  "status": "FROZEN_BEFORE_2025H1_OUTCOME_ACCESS",
+  "created_at_utc": "2026-07-29T11:40:00Z"
+}
