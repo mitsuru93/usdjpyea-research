@@ -1,11 +1,12 @@
 {
   "schema_version": "usdjpy_hyp039_period_access_receipt_v1",
   "hypothesis_id": "USDJPY-HYP-039",
+  "period_role_correction": "PERIOD_ROLE_AND_OUTCOME_VISIBILITY_SEPARATED_BEFORE_FIRST_2025H1_SHORT_PULLBACK_ACCESS",
   "period_roles": {
-    "2020_2022": "ANALYSIS_ONLY_NOT_REQUIRED",
-    "2023_2024": "RESEARCH_CORE_MT4_RAKUTEN_PORTABILITY_NO_RETUNING",
-    "2025H1": "CANDIDATE_SPECIFIC_EXTERNAL_EVALUATION_THEN_DEVELOPMENT_DIAGNOSTIC",
-    "2025H2": "RESERVED_FOR_FINAL_B02V2_F05V2_THIRD_STRATEGY_INTEGRATED_EXTERNAL_GATE"
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "EA_WIDE_POLICY_AND_ACCESS_HISTORY_CONTROLLED_ADDITIONAL_VALIDATION_PERIOD_NOT_AUTOMATIC_REPLACEMENT_FOR_2025H1"
   },
   "pre_2025H1_required_sequence": [
     "exact candidate freeze",
@@ -21,16 +22,42 @@
     "2025H1_short_pullback_outcome_accessed": false,
     "2025H2_accessed": false
   },
+  "outcome_visibility": {
+    "candidate_version": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+    "state_before_first_2025H1_candidate_run": "UNSEEN_AT_FIRST_VALIDATION",
+    "first_access_timestamp": null,
+    "candidate_version_at_first_access": null,
+    "subsequent_rerun_count": 0,
+    "candidate_modified_after_result": false,
+    "unseen_validation_claim": true,
+    "validation_period_result_valid": null,
+    "used_for_final_EA_decision": null
+  },
   "tester_policy": {
-    "external_evaluation_run": "first run after exact version freeze; eligible as external evaluation",
-    "development_or_diagnostic_run": "allowed after outcome access; not eligible as unseen validation for a changed version",
+    "first_frozen_candidate_run": "2025H1 validation-period run with UNSEEN_AT_FIRST_VALIDATION visibility when prerequisites pass",
+    "unchanged_rerun": "2025H1 validation-period rerun or post-result revalidation; period role remains VALIDATION_PERIOD",
+    "modified_candidate_run": "2025H1 POST-MODIFICATION REVALIDATION with outcome visibility MODIFIED_AFTER_VALIDATION_RESULT or PREVIOUSLY_OBSERVED_VALIDATION_PERIOD",
     "tester_information_ban": false,
+    "period_role_changes_after_outcome_access": false,
     "every_run_receipt_fields": [
       "candidate_version",
-      "outcome_access_before_run",
-      "classification",
-      "used_for_retuning"
+      "period_role",
+      "outcome_visibility",
+      "first_access_timestamp",
+      "candidate_version_at_first_access",
+      "subsequent_rerun_count",
+      "candidate_modified_after_result",
+      "unseen_validation_claim",
+      "validation_period_result_valid",
+      "used_for_final_EA_decision"
     ]
   },
-  "status": "FROZEN_BEFORE_2025H1_ACCESS"
+  "prohibited_classifications": [
+    "2025H1_ANALYSIS_PERIOD",
+    "2025H1_RESEARCH_PERIOD",
+    "2025H1_DEVELOPMENT_PERIOD",
+    "INVALIDATE_2025H1_BECAUSE_OUTCOME_WAS_PREVIOUSLY_OBSERVED",
+    "AUTOMATICALLY_TRANSFER_VALIDATION_ROLE_TO_2025H2"
+  ],
+  "status": "FROZEN_BEFORE_FIRST_2025H1_SHORT_PULLBACK_VALIDATION_ACCESS"
 }
