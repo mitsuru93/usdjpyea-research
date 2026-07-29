@@ -1,0 +1,19 @@
+{
+  "schema_version": "usdjpy_csos_dukascopy_native_remaining_family_atlas_dispatch_receipt_v1",
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "purpose": "One-shot main-push dispatch of the already frozen 2023-2024 Atlas workflow.",
+  "scientific_contract_changed": false,
+  "family_contract_changed": false,
+  "ranking_metric_changed": false,
+  "shortlist_gate_changed": false,
+  "source_authority_changed": false,
+  "cost_assumption_changed": false,
+  "period_role_changed": false,
+  "analysis_2020_2022_accessed": false,
+  "analysis_2020_2022_confirmation_credit": false,
+  "external_validation_2025_accessed": false,
+  "candidate_freeze_authorized": false,
+  "core_mt4_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
