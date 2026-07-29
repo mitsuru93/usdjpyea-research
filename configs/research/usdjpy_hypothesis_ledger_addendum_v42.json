@@ -1,0 +1,45 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-039",
+      "title": "Unchanged Short Pullback 2025H1 Portfolio Recovery Qualification",
+      "family_ids": ["S_SHORT_PULLBACK_UNCHANGED_2025H1_RECOVERY"],
+      "candidate_ids": ["C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED"],
+      "status": "ACTIVE_FROZEN_PRE_2025H1_QUALIFICATION",
+      "decision": null,
+      "lineage": "Independent deployment qualification of the exact unchanged HYP-037 Short-only contract. HYP-037 and HYP-038 remain closed and unchanged.",
+      "target_failure_mode": "The 2025H1 B02/F05 portfolio lost JPY 20808; test whether unchanged Short Pullback restores positive portfolio expectancy without worsening full-equity risk or violating execution/margin integrity.",
+      "authorization": {
+        "candidate_freeze": true,
+        "2023_2024_research": true,
+        "Core": true,
+        "MT4": true,
+        "2025H1": "ONLY_AFTER_FREEZE_PARITY_COMPILE_AND_RAKUTEN_PORTABILITY",
+        "2025H2": false,
+        "production": false,
+        "live": false
+      },
+      "period_access": {
+        "2020_2022": false,
+        "2023_2024_candidate_outcomes": true,
+        "2025H1_short_pullback_outcomes": false,
+        "2025H2": false
+      },
+      "evidence_refs": {
+        "startup_receipt": "configs/research/usdjpy_hyp039_startup_receipt_v1.json",
+        "duplicate_audit": "configs/research/usdjpy_hyp039_duplicate_research_audit_v1.json",
+        "candidate_contract": "configs/research/usdjpy_hyp039_candidate_contract_v1.json",
+        "period_access_receipt": "configs/research/usdjpy_hyp039_period_access_receipt_v1.json",
+        "preregistration": "configs/research/usdjpy_hyp039_preregistration_v1.json"
+      },
+      "next_action": "Implement the frozen contract in Core, prove zero-mismatch parity and Rakuten 2023-2024 portability, then open the 2025H1 candidate-specific external outcome exactly once for version C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED."
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "hypothesis_status_updates": [],
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v41.json",
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v42",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v41.json"
+}
