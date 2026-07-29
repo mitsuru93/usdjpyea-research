@@ -1,7 +1,7 @@
 name: Trigger USDJPY CSOS Remaining-Family Atlas v1
 on:
   issues:
-    types: [opened]
+    types: [opened, reopened]
 permissions:
   actions: write
   issues: write
