@@ -15,6 +15,8 @@
     "configs/research/usdjpy_period_role_policy_v5.json",
     "configs/research/usdjpy_validation_operating_contract_v4.json",
     "configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_prereg_v1.json",
+    "configs/research/usdjpy_csos_dukascopy_native_remaining_family_contract_catalog_v1.json",
+    "configs/research/usdjpy_csos_dukascopy_native_remaining_family_prior_study_audit_v1.json",
     "tools/usdjpy_hyp034_bi5_source_v1.py",
     "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py",
     "tools/vendor/fx2_infra_core_f897b250_v1.py"
@@ -43,7 +45,16 @@
   "atlas_release_asset_sha256": "f5feef1a1eb06cfdc284d3642c7050b05da3fc6fa31f67a4205c7faf3e72a72f",
   "canonical_baseline_trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
   "binding_tick_years": [2023, 2024],
-  "forbidden_assets": ["2019", "2020", "2021", "2022", "2025"],
+  "scope_excluded_years": {
+    "2019": "Not required because all frozen variants warm up within the 2023 source population.",
+    "2020": "EA-wide analysis period; not required and not accessed because this Atlas is fixed to common-source 2023-2024 ranking.",
+    "2021": "EA-wide analysis period; not required and not accessed because this Atlas is fixed to common-source 2023-2024 ranking.",
+    "2022": "EA-wide analysis period; not required and not accessed because this Atlas is fixed to common-source 2023-2024 ranking.",
+    "2025": "Unseen binding external validation period; prohibited from Atlas ranking and not accessed."
+  },
+  "2020_2022_confirmation_credit": false,
+  "2020_2022_external_validation_credit": false,
+  "2025_external_validation_role": true,
   "whole_repository_checkout_required": false,
   "exact_sha_selective_fetch_required": true,
   "github_hosted_runner_only": true,
