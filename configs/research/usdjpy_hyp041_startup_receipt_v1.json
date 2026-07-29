@@ -1,0 +1,40 @@
+{
+  "schema_version": "usdjpy_hyp041_startup_receipt_v1",
+  "generated_utc": "2026-07-29T13:20:00Z",
+  "hypothesis_id": "USDJPY-HYP-041",
+  "title": "F05 2025H1 Loss Recovery and Portable Architecture Study",
+  "family_id": "F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE",
+  "research_main_at_start": "4a6cb16768bbacc0c9bbeabfd5817bb26318c81a",
+  "core_main_observed_at_start": "f897b250b808207d960417b2306935dcb0655acf",
+  "hypothesis_id_audit": {
+    "USDJPY-HYP-039": "USED_ACTIVE_PARALLEL_SHORT_PULLBACK_QUALIFICATION",
+    "USDJPY-HYP-040": "USED_ACTIVE_PARALLEL_ASIAN_RANGE_SWEEP_QUALIFICATION",
+    "USDJPY-HYP-041": "UNUSED_AT_START_AND_RESERVED_BY_THIS_RECEIPT"
+  },
+  "prior_decisions_immutable": {
+    "USDJPY-HYP-027": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+    "USDJPY-HYP-029": "FAIL_2025H1_BINDING",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING"
+  },
+  "parallel_study_isolation": {
+    "USDJPY-HYP-039": "NO_BRANCH_CANDIDATE_CORE_PR_ISSUE_RELEASE_OR_NOTION_STATUS_CHANGE",
+    "USDJPY-HYP-040": "NO_BRANCH_CANDIDATE_CORE_PR_ISSUE_RELEASE_OR_NOTION_STATUS_CHANGE",
+    "common_portfolio_integration_branch": "NOT_USED",
+    "unmerged_parallel_code_dependency": false
+  },
+  "baseline_2025H1_authority": {
+    "source": "configs/research/usdjpy_market_state_router_2025h1_binding_result_v1.json",
+    "trades": 463,
+    "portfolio_net_jpy": -20808,
+    "portfolio_pf": 0.8294076655052265,
+    "B02_net_jpy": -6964,
+    "F05_net_jpy": -13844,
+    "maximum_tick_equity_drawdown_jpy": 42737,
+    "minimum_equity_jpy": 57328
+  },
+  "candidate_outcomes_computed_by_receipt": false,
+  "2025H1_candidate_version_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
