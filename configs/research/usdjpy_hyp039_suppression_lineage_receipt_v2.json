@@ -1,0 +1,46 @@
+{
+  "schema_version": "usdjpy_hyp039_suppression_lineage_receipt_v2",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "status": "PASS_PRE_2025H1_SUPPRESSION_LINEAGE_CLARIFICATION",
+  "authority": {
+    "HYP036_workflow_run_id": 30414664817,
+    "HYP036_artifact_id": 8709903106,
+    "HYP036_executable_population": 1332,
+    "HYP036_long_population": 832,
+    "HYP036_short_population": 500,
+    "HYP037_workflow_run_id": 30428356407,
+    "HYP037_artifact_id": 8714601229,
+    "HYP037_short_population": 500
+  },
+  "finding": "HYP-037 obtained its 500 Short rows by applying the inherited HYP-036 same-variant active suppression to the chronological union of Long and Short raw signals, then selecting the accepted Short rows. Long accepted events occupy the variant but never become HYP-039 orders.",
+  "decisive_example": {
+    "accepted_long_signal_utc": "2024-10-31T02:45:00Z",
+    "accepted_long_signal_index": 45750,
+    "active_through_signal_index": 45767,
+    "suppressed_short_raw_signal_utc": "2024-10-31T06:30:00Z",
+    "accepted_short_signal_utc": "2024-10-31T09:30:00Z",
+    "accepted_short_signal_index": 45777
+  },
+  "Core_diagnostic": {
+    "run_id": 30457575366,
+    "research_rows": 500,
+    "core_rows_before_clarification": 500,
+    "common_rows": 499,
+    "research_only": ["2024-10-31T09:30:00Z|-1"],
+    "core_only": ["2024-10-31T06:30:00Z|-1"],
+    "common_row_field_mismatch": 0,
+    "chronology_mismatch": 0,
+    "currency_mismatch": 0,
+    "numeric_formula_mismatch": false
+  },
+  "candidate_rule_changed": false,
+  "trading_direction_changed": false,
+  "long_orders_authorized": false,
+  "HYP038_filter_reuse": false,
+  "2025H1_period_role": "VALIDATION_PERIOD",
+  "2025H1_short_pullback_outcome_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
