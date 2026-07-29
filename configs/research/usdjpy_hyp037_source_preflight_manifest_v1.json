@@ -1,0 +1,41 @@
+{
+  "hypothesis_id": "USDJPY-HYP-037",
+  "inputs": {
+    "historical_portfolio_authority": {
+      "artifact_id": 8690170456,
+      "digest": "sha256:ff318798b0ce5b3dbfdfa10bd572c56b52412b07e1eb1027d2541d47c93eb58b",
+      "run_id": 30364472840
+    },
+    "hyp036_scientific_artifact": {
+      "artifact_id": 8709903106,
+      "digest": "sha256:2cf0578322a9ad650ff5fe4ea60d9332624009b9f6bc1744450eb6c0ffc1afd8",
+      "run_id": 30414664817
+    },
+    "pre2023_authority_attempt": {
+      "known_partial_artifact_id": 8675274277,
+      "known_partial_month": "2020-12",
+      "run_id": 30318515957
+    },
+    "raw_2023_release": "usdjpy-2023-raw-bidask-ticks-v1",
+    "raw_2024_release": "usdjpy-2024-raw-bidask-ticks-v1"
+  },
+  "no_candidate_outcome_construction_before_source_pass": true,
+  "outcome_permission": {
+    "2020_2022_candidate_outcomes": false,
+    "2023_2024_discovery_ledger": true,
+    "2025": false
+  },
+  "required_outputs": [
+    "mechanism_attribution.json",
+    "mechanism_feature_comparison.csv",
+    "source_inventory.json",
+    "currency_contract.json",
+    "period_access_receipt.json",
+    "gate_matrix.csv",
+    "final_result.json",
+    "human_report.md",
+    "output_manifest.json"
+  ],
+  "schema_version": "usdjpy_hyp037_source_preflight_manifest_v1",
+  "status": "FROZEN_BEFORE_PREFLIGHT"
+}

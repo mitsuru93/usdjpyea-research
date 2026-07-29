@@ -1,0 +1,161 @@
+{
+  "authorization": {
+    "2025H1": false,
+    "2025H2": false,
+    "Core": false,
+    "MT4": false,
+    "candidate_freeze": false,
+    "historical_candidate_outcomes": false,
+    "live": false,
+    "production": false
+  },
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR",
+  "candidate_rule_changed": false,
+  "core_end_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "core_start_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "currency_contract": {
+    "candidate_outcomes_2020_2022_accessed": false,
+    "canonical_reporting_currency": "JPY",
+    "commission_jpy": 0,
+    "contract_size_base_currency": 1000,
+    "conversion": "none for USDJPY quote P/L",
+    "historical_outcome_application": "NOT_REACHED_SOURCE_AUTHORITY_UNRESOLVED",
+    "initial_capital_jpy": 1000000,
+    "lot_size": 0.01,
+    "monetary_contract_resolved": true,
+    "pip_value_jpy": 10,
+    "schema_version": "usdjpy_hyp037_currency_contract_v1",
+    "source_artifact_id": 8712825068,
+    "source_run_id": 30423475688,
+    "status": "PASS_PREREGISTERED_JPY_CONTRACT_NOT_YET_APPLIED_TO_HISTORICAL_OUTCOMES",
+    "swap_jpy": 0
+  },
+  "decision": "TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED",
+  "deterministic_archive_sha256": "aca8758a39805c4e56122460013b3a9bf3446a3f06f1d8b322041760f292bc0a",
+  "discovery_2023_2024": {
+    "confirmation_credit": false,
+    "long_net_jpy": -674,
+    "long_profit_factor": 0.992546556376344,
+    "long_trades": 832,
+    "short_net_jpy": 17679,
+    "short_profit_factor": 1.272769351827556,
+    "short_trades": 500
+  },
+  "exact_next_action": "Complete and checksum immutable Dukascopy BI5 Bid/Ask monthly archives for 2020-2022, then rerun the unchanged HYP-037 preregistration. Do not change candidate, gate, source lineage, periods, or lot.",
+  "failed_binding_stage": "HISTORICAL_SOURCE_AUTHORITY",
+  "family_id": "S_SHORT_PULLBACK_CONTINUATION_PORTABILITY",
+  "gate_changed": false,
+  "historical_2020_2022": {
+    "bootstrap": null,
+    "candidate_outcomes_accessed": false,
+    "concentration": null,
+    "execution_robustness": null,
+    "halfyear_results": null,
+    "month_results": null,
+    "net_jpy": null,
+    "profit_factor": null,
+    "session_results": null,
+    "trades": null,
+    "year_results": null
+  },
+  "hyp036_decision_changed": false,
+  "hypothesis_id": "USDJPY-HYP-037",
+  "mechanism_attribution_summary": {
+    "interpretation": "Entry geometry is broadly similar. Short shows steeper slow-trend slope, slightly deeper retracement, substantially larger favorable tail, worse MAE, and positive late-horizon mean returns. This remains discovery evidence.",
+    "short_vs_long": {
+      "confirmation_body_atr_mean": [0.652119, 0.625185],
+      "confirmation_range_atr_mean": [1.175909, 1.159987],
+      "ema20_ema96_separation_pips_mean": [34.668879, 26.258835],
+      "ema96_slope_4bar_directional_pips_mean": [3.329022, 2.547498],
+      "mae_pips_mean": [-28.0916, -23.732332],
+      "mfe_pips_mean": [33.7626, 21.427644],
+      "pullback_depth_atr_mean": [0.371958, 0.36886],
+      "pullback_duration_bars_mean": [3.012, 3.016827],
+      "retracement_ratio_mean": [0.416417, 0.372581],
+      "return_120m_pips_mean": [2.5876, 0.647115],
+      "return_240m_pips_mean": [3.847, -0.362019],
+      "separation_atr_ratio_mean": [2.619176, 2.848593]
+    }
+  },
+  "not_reached": [
+    "historical standalone confirmation",
+    "historical portfolio risk gate",
+    "candidate freeze",
+    "Core implementation",
+    "MT4 parity",
+    "2025H1",
+    "2025H2"
+  ],
+  "portfolio_diagnostics_2023_2024": {
+    "b02_correlation": 0.339621,
+    "baseline_net_jpy": 51627,
+    "baseline_realized_dd_jpy": 40487,
+    "binding_credit": false,
+    "combined_net_jpy": 68632,
+    "combined_realized_dd_jpy": 34339,
+    "f05_correlation": 0.446174,
+    "negative_baseline_day_contribution_jpy": -39986,
+    "worst_20_business_day_baseline_jpy": -16588,
+    "worst_20_business_day_combined_jpy": -18137,
+    "worst_5_business_day_baseline_jpy": -11585,
+    "worst_5_business_day_combined_jpy": -12103
+  },
+  "research_end_sha": "RECORDED_BY_RELEASE_RECEIPT_AFTER_SQUASH_MERGE",
+  "research_start_sha": "af8ba0ab225e096938bc496472c2af846c6ab9e4",
+  "retuning": false,
+  "schema_version": "usdjpy_hyp037_final_result_v1",
+  "scientific_failure": false,
+  "source_artifact_digest": "sha256:ef2dc9458f4f15dbcab20172ddad611d8342dec9784d80a4428c2a5bd1bf8ad4",
+  "source_artifact_id": 8712825068,
+  "source_authority": {
+    "authority_pass": false,
+    "candidate_outcomes_2020_2022_accessed": false,
+    "historical_portfolio_authority": {
+      "available": true,
+      "baseline_full_equity_drawdown_jpy": 41383.11751,
+      "baseline_minimum_equity_jpy": 96417.96183,
+      "baseline_net_jpy": 29019.63497,
+      "baseline_realized_drawdown_jpy": 40634.40134,
+      "canonical_result": "configs/research/usdjpy_hyp032_historical_validation_result_v2_1.json",
+      "currency_contract": {
+        "canonical_initial_capital_jpy": 100000.0,
+        "canonical_reporting_currency": "JPY",
+        "transport_account_currency": "USD"
+      },
+      "limitation": "B02/F05 portfolio authority does not reproduce Pullback signal or source-native Bid/Ask execution.",
+      "source_run_id": 30364472840
+    },
+    "known_partial_evidence": {
+      "accepted": false,
+      "artifact_id": 8675274277,
+      "expected_days": 31,
+      "expected_hours": 744,
+      "failures": [
+        "missing day packet: 2020-12-01",
+        "missing day packet: 2020-12-02",
+        "missing day packet: 2020-12-03",
+        "missing day packet: 2020-12-04",
+        "missing day packet: 2020-12-05"
+      ],
+      "month": "2020-12",
+      "present_days": 0,
+      "resolved_hours": 0
+    },
+    "prior_acquisition_run_id": 30318515957,
+    "schema_version": "usdjpy_hyp037_source_inventory_v1",
+    "scientific_limitation": "No complete immutable 36-month Dukascopy BI5 authority is available. Alternative MT4/HST or venue data cannot satisfy same-source signal/execution identity.",
+    "source_artifact_digest": "sha256:ef2dc9458f4f15dbcab20172ddad611d8342dec9784d80a4428c2a5bd1bf8ad4",
+    "source_artifact_id": 8712825068,
+    "source_required": "Dukascopy BI5 Bid/Ask Tick",
+    "source_run_id": 30423475688,
+    "years": [
+      {"candidate_outcomes_accessed": false, "complete_months_verified": 0, "release_exists": false, "required_release_tag": "usdjpy-2020-raw-bidask-ticks-v1", "year": 2020},
+      {"candidate_outcomes_accessed": false, "complete_months_verified": 0, "release_exists": true, "required_release_tag": "usdjpy-2021-raw-bidask-ticks-v1", "year": 2021},
+      {"candidate_outcomes_accessed": false, "complete_months_verified": 0, "release_exists": false, "required_release_tag": "usdjpy-2022-raw-bidask-ticks-v1", "year": 2022}
+    ]
+  },
+  "source_head_sha": "f8cc0cc9c952acc319b97ffdd9bb30b9c1b18c50",
+  "source_run_id": 30423475688,
+  "status": "COMPLETE_TECHNICAL_NO_RESULT",
+  "technical_no_result": true
+}

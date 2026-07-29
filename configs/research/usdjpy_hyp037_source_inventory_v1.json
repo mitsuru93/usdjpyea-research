@@ -1,0 +1,65 @@
+{
+  "authority_pass": false,
+  "candidate_outcomes_2020_2022_accessed": false,
+  "historical_portfolio_authority": {
+    "available": true,
+    "baseline_full_equity_drawdown_jpy": 41383.11751,
+    "baseline_minimum_equity_jpy": 96417.96183,
+    "baseline_net_jpy": 29019.63497,
+    "baseline_realized_drawdown_jpy": 40634.40134,
+    "canonical_result": "configs/research/usdjpy_hyp032_historical_validation_result_v2_1.json",
+    "currency_contract": {
+      "canonical_initial_capital_jpy": 100000.0,
+      "canonical_reporting_currency": "JPY",
+      "transport_account_currency": "USD"
+    },
+    "limitation": "B02/F05 portfolio authority does not reproduce Pullback signal or source-native Bid/Ask execution.",
+    "source_run_id": 30364472840
+  },
+  "known_partial_evidence": {
+    "accepted": false,
+    "artifact_id": 8675274277,
+    "expected_days": 31,
+    "expected_hours": 744,
+    "failures": [
+      "missing day packet: 2020-12-01",
+      "missing day packet: 2020-12-02",
+      "missing day packet: 2020-12-03",
+      "missing day packet: 2020-12-04",
+      "missing day packet: 2020-12-05"
+    ],
+    "month": "2020-12",
+    "present_days": 0,
+    "resolved_hours": 0
+  },
+  "prior_acquisition_run_id": 30318515957,
+  "schema_version": "usdjpy_hyp037_source_inventory_v1",
+  "scientific_limitation": "No complete immutable 36-month Dukascopy BI5 authority is available. Alternative MT4/HST or venue data cannot satisfy same-source signal/execution identity.",
+  "source_artifact_digest": "sha256:ef2dc9458f4f15dbcab20172ddad611d8342dec9784d80a4428c2a5bd1bf8ad4",
+  "source_artifact_id": 8712825068,
+  "source_required": "Dukascopy BI5 Bid/Ask Tick",
+  "source_run_id": 30423475688,
+  "years": [
+    {
+      "candidate_outcomes_accessed": false,
+      "complete_months_verified": 0,
+      "release_exists": false,
+      "required_release_tag": "usdjpy-2020-raw-bidask-ticks-v1",
+      "year": 2020
+    },
+    {
+      "candidate_outcomes_accessed": false,
+      "complete_months_verified": 0,
+      "release_exists": true,
+      "required_release_tag": "usdjpy-2021-raw-bidask-ticks-v1",
+      "year": 2021
+    },
+    {
+      "candidate_outcomes_accessed": false,
+      "complete_months_verified": 0,
+      "release_exists": false,
+      "required_release_tag": "usdjpy-2022-raw-bidask-ticks-v1",
+      "year": 2022
+    }
+  ]
+}

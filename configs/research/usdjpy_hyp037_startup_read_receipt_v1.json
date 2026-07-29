@@ -1,0 +1,40 @@
+{
+  "base_is_current": true,
+  "core_main_commit": "f897b250b808207d960417b2306935dcb0655acf",
+  "current_exact_next_action": "Select a new independent mechanism outside closed HYP-036.",
+  "current_registry_status": "USDJPY_HYP036_CLOSED_NO_PORTABLE_EXECUTABLE_CANDIDATE",
+  "lineage_name": "Dukascopy BI5 Bid/Ask source-native Pullback Continuation",
+  "mandatory_files_read": [
+    "AGENTS.md",
+    "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "configs/research/usdjpy_research_candidate_registry_v64.json",
+    "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md",
+    "configs/research/usdjpy_validation_operating_contract_v4.json",
+    "configs/research/usdjpy_period_role_policy_v5.json",
+    "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v38.json",
+    "configs/research/usdjpy_hyp036_final_result_v1.json",
+    "docs/research/USDJPY_HYP036_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE_RESULT_V1.md",
+    "configs/research/usdjpy_2023_2024_hypothesis_program_v13.json"
+  ],
+  "novelty_disclosure": {
+    "development_outcome_derived": true,
+    "new_falsifiable_information": "Whether the discovery-derived Short asymmetry reproduces in previously unused 2020-2022 and then 2025 under no retuning.",
+    "not_hyp036_rescue": "HYP-036 decision, candidate, gates, and ledger remain unchanged; 2023-2024 Short results are discovery evidence only.",
+    "overlap": "Same fixed HYP-036 mechanics and execution, with direction prospectively fixed to Short for a new unseen-period confirmation question."
+  },
+  "period_access_boundaries": {
+    "2020_2022": "SOURCE_METADATA_ONLY_UNTIL_FIXED_PROTOCOL",
+    "2023_2024": "DISCOVERY_MECHANISM_ATTRIBUTION_ONLY",
+    "2025": "LOCKED"
+  },
+  "recurring_monitor": false,
+  "relevant_hypothesis_ledger_ids": [
+    "USDJPY-HYP-035",
+    "USDJPY-HYP-036"
+  ],
+  "research_main_commit": "af8ba0ab225e096938bc496472c2af846c6ab9e4",
+  "schema_version": "usdjpy_hyp037_startup_read_receipt_v1",
+  "status": "PASS_CANONICAL_STARTUP_READ",
+  "write_plan": "One Research PR: committed preregistration/evaluator/workflow, one source/mechanism preflight run, then atomic closure or advancement package. Connector file writes are sequential because connector tree batching is unavailable."
+}

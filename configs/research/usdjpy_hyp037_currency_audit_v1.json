@@ -1,0 +1,17 @@
+{
+  "candidate_outcomes_2020_2022_accessed": false,
+  "canonical_reporting_currency": "JPY",
+  "commission_jpy": 0,
+  "contract_size_base_currency": 1000,
+  "conversion": "none for USDJPY quote P/L",
+  "historical_outcome_application": "NOT_REACHED_SOURCE_AUTHORITY_UNRESOLVED",
+  "initial_capital_jpy": 1000000,
+  "lot_size": 0.01,
+  "monetary_contract_resolved": true,
+  "pip_value_jpy": 10,
+  "schema_version": "usdjpy_hyp037_currency_contract_v1",
+  "source_artifact_id": 8712825068,
+  "source_run_id": 30423475688,
+  "status": "PASS_PREREGISTERED_JPY_CONTRACT_NOT_YET_APPLIED_TO_HISTORICAL_OUTCOMES",
+  "swap_jpy": 0
+}

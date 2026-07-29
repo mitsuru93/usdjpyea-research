@@ -1,0 +1,16 @@
+{
+  "2020_2022_candidate_outcomes": "NOT_ACCESSED_SOURCE_AUTHORITY_UNRESOLVED",
+  "2020_2022_source_metadata": "ACCESSED",
+  "2023_2024": "ACCESSED_DISCOVERY_MECHANISM_ONLY",
+  "2025H1": "NOT_ACCESSED",
+  "2025H2": "NOT_ACCESSED",
+  "Core": "NOT_MODIFIED",
+  "MT4": "NOT_RUN",
+  "hypothesis_id": "USDJPY-HYP-037",
+  "live_authorized": false,
+  "production_authorized": false,
+  "schema_version": "usdjpy_hyp037_period_access_receipt_v1",
+  "source_artifact_id": 8712825068,
+  "source_head_sha": "f8cc0cc9c952acc319b97ffdd9bb30b9c1b18c50",
+  "source_run_id": 30423475688
+}
