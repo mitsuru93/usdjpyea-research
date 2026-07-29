@@ -3,7 +3,9 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'configs/research/usdjpy_hyp037_*'
+      - 'configs/research/usdjpy_hyp037_reservation_v1.json'
+      - 'configs/research/usdjpy_hyp037_startup_read_receipt_v1.json'
+      - 'configs/research/usdjpy_hyp037_source_preflight_manifest_v1.json'
       - 'configs/research/usdjpy_short_pullback_continuation_portability_prereg_v1.json'
       - 'tools/evaluate_usdjpy_hyp037_mechanism_and_source_preflight_v1.py'
       - '.github/workflows/usdjpy_hyp037_mechanism_source_preflight_v1.yml'
