@@ -59,15 +59,13 @@ jobs:
           if gh release view "$tag" --repo "$repo" >/dev/null 2>&1; then
             gh release download "$tag" --repo "$repo" --dir "$root/readback" --pattern "$archive_name"
           else
-            notes=$(cat <<EOF
-Decision: ${decision}
-Track A: ${track_a}
-Track B: ${track_b}
-Mechanism research only: ${mechanism}
-
-Atlas period: 2023-2024. 2020-2022 is analysis-only and was not accessed or credited as confirmation. 2025 is the sole unseen binding external-validation period and was not accessed. Shortlist is research prioritization only. No candidate freeze, Core/MT4, production or live authorization.
-EOF
-)
+            notes=$(printf '%s\n' \
+              "Decision: ${decision}" \
+              "Track A: ${track_a}" \
+              "Track B: ${track_b}" \
+              "Mechanism research only: ${mechanism}" \
+              "" \
+              "Atlas period: 2023-2024. 2020-2022 is analysis-only and was not accessed or credited as confirmation. 2025 is the sole unseen binding external-validation period and was not accessed. Shortlist is research prioritization only. No candidate freeze, Core/MT4, production or live authorization.")
             gh release create "$tag" "$root/artifact/$archive_name" --repo "$repo" --target 61249e52e9acb567eb24298f95ea6c7afd520be4 --title 'USDJPY CSOS Dukascopy-Native Remaining-Family Atlas v1' --notes "$notes"
             gh release download "$tag" --repo "$repo" --dir "$root/readback" --pattern "$archive_name"
           fi
@@ -92,20 +90,18 @@ EOF
           content=$(base64 -w0 "$root/release_receipt.json")
           gh api --method PUT "repos/${repo}/contents/${receipt_path}" -f message='research: record remaining-family Atlas immutable Release readback' -f content="$content" -f branch=main >/dev/null
 
-          body=$(cat <<EOF
-Program: USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1
-Scientific Run: ${run_id}
-Artifact: ${artifact_id}
-Artifact digest: ${artifact_digest}
-Release: ${tag}
-Release asset SHA256: ${archive_sha}
-Decision: ${decision}
-Track A: ${track_a}
-Track B: ${track_b}
-Mechanism research only: ${mechanism}
-
-2020-2022 is analysis-only and was not accessed or credited as confirmation. 2025 is the sole unseen binding external-validation period and was not accessed. Shortlist is research prioritization only. No candidate freeze, Core/MT4, production or live authorization.
-EOF
-)
+          body=$(printf '%s\n' \
+            "Program: USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1" \
+            "Scientific Run: ${run_id}" \
+            "Artifact: ${artifact_id}" \
+            "Artifact digest: ${artifact_digest}" \
+            "Release: ${tag}" \
+            "Release asset SHA256: ${archive_sha}" \
+            "Decision: ${decision}" \
+            "Track A: ${track_a}" \
+            "Track B: ${track_b}" \
+            "Mechanism research only: ${mechanism}" \
+            "" \
+            "2020-2022 is analysis-only and was not accessed or credited as confirmation. 2025 is the sole unseen binding external-validation period and was not accessed. Shortlist is research prioritization only. No candidate freeze, Core/MT4, production or live authorization.")
           gh issue create --repo "$repo" --title "Receipt: CSOS Remaining-Family Atlas v1 — ${decision}" --body "$body"
           gh issue comment 403 --repo "$repo" --body "Atlas publication PASS: Release ${tag}; byte-identical SHA256 ${archive_sha}; receipt committed to main."
