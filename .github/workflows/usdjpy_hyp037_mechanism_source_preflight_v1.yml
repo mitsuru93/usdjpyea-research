@@ -1,0 +1,116 @@
+name: USDJPY HYP-037 Mechanism and Historical Source Preflight v1
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp037_*'
+      - 'configs/research/usdjpy_short_pullback_continuation_portability_prereg_v1.json'
+      - 'tools/evaluate_usdjpy_hyp037_mechanism_and_source_preflight_v1.py'
+      - '.github/workflows/usdjpy_hyp037_mechanism_source_preflight_v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Exact-SHA selective fetch and preflight
+        id: init
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/h37"; rm -rf "$root"; mkdir -p "$root"/{src,raw2023,raw2024,h36,h32,partial,out,evidence}
+          sha='${{ github.event.pull_request.head.sha || github.sha }}'; test "${#sha}" = 40
+          fetch(){ p="$1"; o="$2"; mkdir -p "$(dirname "$o")"; gh api "repos/${GITHUB_REPOSITORY}/contents/${p}?ref=${sha}" --jq .content | tr -d '\n' | base64 -d > "$o"; test -s "$o"; }
+          fetch configs/research/usdjpy_short_pullback_continuation_portability_prereg_v1.json "$root/src/prereg.json"
+          fetch configs/research/usdjpy_hyp037_source_preflight_manifest_v1.json "$root/src/source_manifest.json"
+          fetch tools/evaluate_usdjpy_hyp037_mechanism_and_source_preflight_v1.py "$root/src/evaluate.py"
+          fetch tools/evaluate_usdjpy_pullback_continuation_v1.py "$root/src/hyp035.py"
+          fetch tools/usdjpy_hyp034_bi5_source_v1.py "$root/src/usdjpy_hyp034_bi5_source_v1.py"
+          python -m py_compile "$root/src/"*.py
+          python "$root/src/evaluate.py" --preflight-only --out-dir "$root/evidence/preflight"
+          jq -e '.status=="PASS_NO_OUTCOME_ACCESS" and .candidate_outcomes_2020_2022_accessed==false' "$root/evidence/preflight/preflight_receipt.json"
+          jq -e '.hypothesis_id=="USDJPY-HYP-037" and .fixed_candidate_contract.direction=="SHORT_ONLY" and .no_retuning==true and .historical_candidate_outcomes_accessed==false' "$root/src/prereg.json"
+          echo "root=$root" >> "$GITHUB_OUTPUT"; echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Install frozen runtime and materialize discovery authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.init.outputs.root }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+          gh api -H 'Accept: application/vnd.github+json' /repos/${GITHUB_REPOSITORY}/actions/artifacts/8709903106/zip > "$ROOT/h36.zip"
+          printf '%s  %s\n' 2cf0578322a9ad650ff5fe4ea60d9332624009b9f6bc1744450eb6c0ffc1afd8 "$ROOT/h36.zip" | sha256sum -c -
+          unzip -q "$ROOT/h36.zip" -d "$ROOT/h36"
+          test -f "$ROOT/h36/output/source_native_executable_ledger.csv.gz"
+          for y in 2023 2024; do
+            d="$ROOT/raw${y}"; gh release download "usdjpy-${y}-raw-bidask-ticks-v1" --repo "$GITHUB_REPOSITORY" --dir "$d" --pattern "usdjpy-${y}-??-raw-ticks-v1.tar.gz" --pattern SHA256SUMS
+            (cd "$d" && grep -E "usdjpy-${y}-..-raw-ticks-v1\\.tar\\.gz$" SHA256SUMS | sha256sum -c -)
+            test "$(find "$d" -maxdepth 1 -name '*.tar.gz' | wc -l)" = 12
+          done
+      - name: Inventory protected historical authorities without candidate outcomes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ROOT: ${{ steps.init.outputs.root }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' > "$ROOT/evidence/release_status.json"
+          import json, os, subprocess
+          repo=os.environ['GITHUB_REPOSITORY']; print(json.dumps({str(y):subprocess.run(['gh','release','view',f'usdjpy-{y}-raw-bidask-ticks-v1','--repo',repo],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0 for y in [2020,2021,2022]},sort_keys=True))
+          PY
+          gh api -H 'Accept: application/vnd.github+json' /repos/${GITHUB_REPOSITORY}/actions/artifacts/8675274277/zip > "$ROOT/partial.zip"
+          unzip -q "$ROOT/partial.zip" -d "$ROOT/partial"
+          test -f "$ROOT/partial/usdjpy-2020-12-raw-ticks-v1.manifest.json"
+          gh api -H 'Accept: application/vnd.github+json' /repos/${GITHUB_REPOSITORY}/actions/artifacts/8690170456/zip > "$ROOT/h32.zip"
+          printf '%s  %s\n' ff318798b0ce5b3dbfdfa10bd572c56b52412b07e1eb1027d2541d47c93eb58b "$ROOT/h32.zip" | sha256sum -c -
+          unzip -q "$ROOT/h32.zip" -d "$ROOT/h32"
+          test -f "$ROOT/h32/historical_currency_v2_output/historical_validation_result_v2.json"
+      - name: Run mechanism attribution and first binding source gate
+        env:
+          ROOT: ${{ steps.init.outputs.root }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$ROOT/src"
+          python evaluate.py \
+            --raw-2023 "$ROOT/raw2023" --raw-2024 "$ROOT/raw2024" \
+            --ledger "$ROOT/h36/output/source_native_executable_ledger.csv.gz" \
+            --partial-manifest "$ROOT/partial/usdjpy-2020-12-raw-ticks-v1.manifest.json" \
+            --historical-portfolio-result "$ROOT/h32/historical_currency_v2_output/historical_validation_result_v2.json" \
+            --release-status-json "$ROOT/evidence/release_status.json" --out-dir "$ROOT/out"
+          jq -e '.decision=="TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED" and .historical_2020_2022.candidate_outcomes_accessed==false and .authorization.Core==false and .authorization."2025H1"==false' "$ROOT/out/final_result.json"
+          jq -e '.status=="COMPLETE_DISCOVERY_ONLY_NOT_CANDIDATE_SELECTION" and .candidate_changed==false' "$ROOT/out/mechanism_attribution.json"
+          (cd "$ROOT/out" && sha256sum * > PACKAGE_SHA256SUMS)
+      - name: Build deterministic evidence archive and upload
+        env:
+          ROOT: ${{ steps.init.outputs.root }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, pathlib, zipfile, hashlib, json
+          root=pathlib.Path(os.environ['ROOT']); out=root/'out'; z=root/'usdjpy-hyp037-source-authority-no-result-v1.zip'
+          with zipfile.ZipFile(z,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as f:
+            for p in sorted(out.iterdir()):
+              if p.is_file():
+                info=zipfile.ZipInfo('output/'+p.name,date_time=(1980,1,1,0,0,0)); info.compress_type=zipfile.ZIP_DEFLATED; info.external_attr=0o644<<16; f.writestr(info,p.read_bytes())
+          h=hashlib.sha256(z.read_bytes()).hexdigest(); (root/'archive_receipt.json').write_text(json.dumps({'archive':z.name,'sha256':h,'decision':'TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED','candidate_outcomes_2020_2022_accessed':False,'protected_2025_accessed':False},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp037-source-authority-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ steps.init.outputs.root }}/out
+            ${{ steps.init.outputs.root }}/usdjpy-hyp037-source-authority-no-result-v1.zip
+            ${{ steps.init.outputs.root }}/archive_receipt.json
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
