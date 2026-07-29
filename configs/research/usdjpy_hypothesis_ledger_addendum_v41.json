@@ -1,0 +1,70 @@
+{
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "entries": [
+    {
+      "authorization": {
+        "2023_2024_research": true,
+        "2025H1": false,
+        "2025H2": false,
+        "Core": false,
+        "MT4": false,
+        "candidate_freeze": false,
+        "live": false,
+        "production": false
+      },
+      "decision": "PENDING_2023_2024_OOF_RESEARCH",
+      "evidence_refs": {
+        "candidate_catalog": "configs/research/usdjpy_hyp038_finite_candidate_catalog_v1.json",
+        "duplicate_audit": "configs/research/usdjpy_hyp038_duplicate_research_audit_v1.json",
+        "feature_catalog": "configs/research/usdjpy_hyp038_feature_catalog_v1.json",
+        "preregistration": "configs/research/usdjpy_hyp038_preregistration_v1.json",
+        "source_manifest": "configs/research/usdjpy_hyp038_source_manifest_v1.json",
+        "startup_receipt": "configs/research/usdjpy_hyp038_startup_receipt_v1.json"
+      },
+      "falsifiable_predictions": [
+        "top5 winner retention>=90%",
+        "top-decile gross-profit retention>=80%",
+        "avoided loss>sacrificed profit",
+        "negative baseline-day contribution>=0",
+        "worst 5-day non-worse"
+      ],
+      "falsified_claims_not_repeated": [
+        "HYP-037 exact C1 is deployable",
+        "top-decile winner concentration is harmless",
+        "bootstrap lower 95 percent is positive"
+      ],
+      "hypothesis_id": "USDJPY-HYP-038",
+      "lineage": "Independent successor to closed HYP-037; same 500 Short reference only, new time-causal actions and portfolio-state information.",
+      "next_action": "Run the exact committed HYP-038 finite evaluator on 2023-2024 only.",
+      "period_access": {
+        "2020_2022": false,
+        "2023_2024_candidate_outcomes": false,
+        "2025": false
+      },
+      "phase2_status": "PREREGISTERED_OUTCOME_NOT_ACCESSED",
+      "prior_hypothesis_ids": [
+        "USDJPY-HYP-035",
+        "USDJPY-HYP-036",
+        "USDJPY-HYP-037"
+      ],
+      "prohibited_reuse": [
+        "Do not change HYP-037 decision",
+        "Do not re-freeze HYP-037 C1",
+        "Do not use future MFE/MAE/P&L labels",
+        "Do not open 2025 before exact freeze and Core/MT4 parity"
+      ],
+      "retained_findings": [
+        "Delayed 120-240m Short right-tail continuation",
+        "positive 4/4 folds and execution stress",
+        "negative baseline-day contribution and worst-5-day are unresolved operational weaknesses"
+      ],
+      "title": "Short Pullback Delayed Right-Tail Continuation and Portfolio Loss-Decoupling Study"
+    }
+  ],
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "hypothesis_status_updates": [],
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v40.json",
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v41",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v40.json"
+}

@@ -1,0 +1,68 @@
+{
+  "2025_accessed": false,
+  "active_family": "S_SHORT_PULLBACK_DELAYED_CONTINUATION_LOSS_DECOUPLING",
+  "active_hypothesis": "USDJPY-HYP-038",
+  "candidate_ids": [
+    "C1_ENTRY_TIME_ADMISSION",
+    "C2_30_MIN_FAILURE_EXIT",
+    "C3_60_MIN_NO_PROGRESS_EXIT",
+    "C4_CONTINUATION_ALIVE_STATE_MACHINE",
+    "C5_PORTFOLIO_LOSS_DECOUPLING",
+    "C6_BEST_ADMISSIBLE_COMBINED"
+  ],
+  "candidate_outcomes_accessed": false,
+  "candidate_rule_changed": false,
+  "closed_boundaries": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE_UNCHANGED",
+    "USDJPY-HYP-031": "NO_PORTABLE_REGIME_RULE_UNCHANGED",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING_UNCHANGED",
+    "USDJPY-HYP-033": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR_UNCHANGED",
+    "USDJPY-HYP-034": "NO_PORTABLE_REJECTION_MECHANISM_UNCHANGED",
+    "USDJPY-HYP-035": "FAIL_ATLAS_IDENTITY_UNCHANGED",
+    "USDJPY-HYP-036": "NO_PORTABLE_EXECUTABLE_CANDIDATE_UNCHANGED",
+    "USDJPY-HYP-037": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING_UNCHANGED"
+  },
+  "current_candidate": null,
+  "current_open_research_question": "Can time-causal entry/lifecycle/portfolio rules preserve delayed Short Pullback right-tail winners while eliminating B02/F05 concurrent loss?",
+  "development_decision": "PREREGISTERED_OUTCOME_NOT_ACCESSED",
+  "duplicate_research_audit": "configs/research/usdjpy_hyp038_duplicate_research_audit_v1.json",
+  "evaluator": "tools/evaluate_usdjpy_hyp038_delayed_continuation_v1.py",
+  "feature_catalog": "configs/research/usdjpy_hyp038_feature_catalog_v1.json",
+  "finite_candidate_catalog": "configs/research/usdjpy_hyp038_finite_candidate_catalog_v1.json",
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v41.json",
+  "live_authorized": false,
+  "next_action": "Execute the committed finite HYP-038 evaluator once on 2023-2024 authorities. If no OOF+full exact hard-pass exists, close without Core/MT4 or 2025 access; otherwise freeze one exact rule and proceed to Core/MT4 parity.",
+  "no_retuning": true,
+  "parallel_track_state": {
+    "comparison_required_after_canonical_completion": true,
+    "remaining_family_atlas": "OPEN_NOT_CANONICAL_PR_407"
+  },
+  "period_roles": {
+    "2020_2022": "NONBINDING_ANALYSIS_NOT_USED",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_WITH_LOFO_CROSSFIT",
+    "2025": "SOLE_BINDING_EXTERNAL_VALIDATION_LOCKED"
+  },
+  "preregistration": "configs/research/usdjpy_hyp038_preregistration_v1.json",
+  "production_authorized": false,
+  "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "run_authorization": {
+    "2020_2022_analysis": false,
+    "2023_2024_candidate_outcome_evaluation": true,
+    "2023_2024_candidate_signal_generation": true,
+    "2025H1": false,
+    "2025H2": false,
+    "Core_implementation": false,
+    "MT4_candidate": false,
+    "live": false,
+    "production": false
+  },
+  "schema_version": "usdjpy_research_candidate_registry_v67",
+  "scientific_gate_definition_changed_after_outcome": false,
+  "scientific_result": false,
+  "source_manifest": "configs/research/usdjpy_hyp038_source_manifest_v1.json",
+  "startup_receipt": "configs/research/usdjpy_hyp038_startup_receipt_v1.json",
+  "status": "USDJPY_HYP038_PREREGISTERED_2023_2024_RESEARCH_AUTHORIZED",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v66.json",
+  "technical_no_result": false,
+  "workflow": ".github/workflows/usdjpy_hyp038_delayed_continuation_research_v1.yml"
+}

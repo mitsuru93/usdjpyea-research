@@ -1,0 +1,133 @@
+{
+  "2025_accessed": false,
+  "base_is_current": true,
+  "candidate_outcomes_accessed": false,
+  "closed_boundary_acknowledgement": {
+    "USDJPY-HYP-037": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING_UNCHANGED"
+  },
+  "core_main_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "current_exact_next_action": "Preserve HYP-037 mechanism evidence; open only a separately preregistered independent mechanism.",
+  "current_registry_status": "USDJPY_HYP037_COMPLETE_FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+  "evaluator_sha256": "66da172e403ff6b53bbf5e84b492d0abdae553c3703c2b794ae3190c647e6af3",
+  "hypothesis_id": "USDJPY-HYP-038",
+  "hypothesis_id_search": {
+    "commits": 0,
+    "issues": 0,
+    "pull_requests": 0,
+    "unused": true
+  },
+  "lineage": "Dukascopy BI5 Bid/Ask Tick candidate + canonical Rakuten B02/F05 portfolio authority merged only by UTC and JPY",
+  "live_authorized": false,
+  "mandatory_files_read": [
+    {
+      "blob_sha": "2d4ad69524f375149399a4842bdf404529a1d47d",
+      "path": "AGENTS.md"
+    },
+    {
+      "blob_sha": "b0995991dfa3db21141a31d6d14a6ab474d6f882",
+      "path": "configs/research/usdjpy_research_memory_manifest_v1.json"
+    },
+    {
+      "blob_sha": "33cd053a65033c3c4373ec94538c7e419034d309",
+      "path": "configs/research/usdjpy_research_candidate_registry_v66.json"
+    },
+    {
+      "blob_sha": "70da18f85439e1f5ff5b7a8813cf2a8dff597e3a",
+      "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md"
+    },
+    {
+      "blob_sha": "ee221e451c086dc51ec36ec7a642607d2335a816",
+      "path": "configs/research/usdjpy_validation_operating_contract_v4.json"
+    },
+    {
+      "blob_sha": "a0f6d2aec3ed15aaec96df4b40babc351f43b3cd",
+      "path": "configs/research/usdjpy_period_role_policy_v5.json"
+    },
+    {
+      "blob_sha": "30abd94e669164a333b2418e78a13aa54d8dcac5",
+      "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v40.json"
+    },
+    {
+      "path": "configs/research/usdjpy_hyp037_final_result_v2.json"
+    },
+    {
+      "blob_sha": "aa1f84a703023762e008eb5ba5f7a557705da994",
+      "path": "configs/research/usdjpy_hyp037_mechanism_attribution_v1.json"
+    },
+    {
+      "blob_sha": "9e88c6ae20f68c1d52d14f762b1e3e9a907eefa6",
+      "path": "configs/research/usdjpy_hyp037_release_receipt_v2.json"
+    },
+    {
+      "blob_sha": "0cdb964180fe40c897c5e89d197557850effb7b5",
+      "path": "AGENTS.md",
+      "repository": "mitsuru93/usdjpyea-core"
+    },
+    {
+      "commit": "1a646b3795f8e68f7eb1866cbc4a553de70c9d00",
+      "purpose": "Infrastructure Hardening v1",
+      "repository": "mitsuru93/usdjpyea-core"
+    },
+    {
+      "path": "/mnt/data/テスター自動化.txt",
+      "purpose": "MT4 tester handoff and runner contract"
+    }
+  ],
+  "parallel_track": {
+    "comparison": "defer until canonical final result",
+    "latest_main_commit": "d6288d4699c5acd57f6adc60bc8f36ab7c122098",
+    "pr": 407,
+    "remaining_family_atlas": "EXECUTION_V2_TECHNICAL_REVISION_PRE_OUTCOME_NOT_CANONICAL"
+  },
+  "period_access": {
+    "2020_2022": false,
+    "2023_2024": false,
+    "2025H1": false,
+    "2025H2": false
+  },
+  "production_authorized": false,
+  "relevant_hypothesis_ids": [
+    "USDJPY-HYP-035",
+    "USDJPY-HYP-036",
+    "USDJPY-HYP-037"
+  ],
+  "research_main_sha": "d6288d4699c5acd57f6adc60bc8f36ab7c122098",
+  "schema_version": "usdjpy_hyp038_startup_receipt_v1",
+  "status": "PASS_STARTUP_GATE_BEFORE_OUTCOME",
+  "write_plan": {
+    "branch": "agent/usdjpy-hyp038-delayed-continuation-v1",
+    "ci": [
+      "memory validation",
+      "HYP-038 preflight",
+      "HYP-038 2023-2024 outcome run"
+    ],
+    "files_create": [
+      "preregistration",
+      "startup receipt",
+      "duplicate audit",
+      "source manifest",
+      "feature catalog",
+      "candidate catalog",
+      "evaluator",
+      "workflow",
+      "prereg report"
+    ],
+    "files_update": [
+      "global registry v67",
+      "ledger addendum v41",
+      "research memory manifest"
+    ],
+    "notion_after_merge": [
+      "USDJPY Current State",
+      "research archive",
+      "next-action record"
+    ],
+    "readback": [
+      "branch files SHA",
+      "workflow artifact digest",
+      "main files",
+      "Release byte identity",
+      "Notion body/properties"
+    ]
+  }
+}
