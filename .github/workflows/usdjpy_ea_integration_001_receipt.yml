@@ -1,0 +1,138 @@
+name: USDJPY EA Integration 001 Receipt
+
+on:
+  release:
+    types: [published]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/usdjpy_ea_integration_001_receipt.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: read
+
+jobs:
+  receipt:
+    if: github.event_name != 'release' || github.event.release.tag_name == 'usdjpy-ea-integration-001-v1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Resolve immutable Release and asset
+        id: asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=usdjpy-ea-integration-001-v1
+          for _ in $(seq 1 40); do
+            if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              break
+            fi
+            sleep 15
+          done
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null
+          rm -f usdjpy-ea-integration-001-v1.zip
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern usdjpy-ea-integration-001-v1.zip
+          SHA=$(sha256sum usdjpy-ea-integration-001-v1.zip | awk '{print $1}')
+          BYTES=$(stat -c '%s' usdjpy-ea-integration-001-v1.zip)
+          MERGE_SHA=$(gh pr view 427 --repo "$GITHUB_REPOSITORY" --json mergeCommit --jq '.mergeCommit.oid')
+          echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
+          echo "bytes=$BYTES" >> "$GITHUB_OUTPUT"
+          echo "merge_sha=$MERGE_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Write receipt and remove obsolete workflow
+        env:
+          ARCHIVE_SHA: ${{ steps.asset.outputs.sha256 }}
+          ARCHIVE_BYTES: ${{ steps.asset.outputs.bytes }}
+          MERGE_SHA: ${{ steps.asset.outputs.merge_sha }}
+        shell: python
+        run: |
+          import json
+          import os
+          from pathlib import Path
+          receipt = {
+              "schema_version": "usdjpy_ea_integration_001_release_receipt_v1",
+              "work_id": "USDJPY-EA-INTEGRATION-001",
+              "repository": "mitsuru93/usdjpyea-research",
+              "pull_request": 427,
+              "merge_sha": os.environ["MERGE_SHA"],
+              "release_tag": "usdjpy-ea-integration-001-v1",
+              "archive_name": "usdjpy-ea-integration-001-v1.zip",
+              "archive_sha256": os.environ["ARCHIVE_SHA"],
+              "archive_bytes": int(os.environ["ARCHIVE_BYTES"]),
+              "candidate_rules_changed": False,
+              "baseline": {
+                  "2023_2024": {"trades": 1882, "net_jpy": 51627, "profit_factor": 1.1377131303215893, "full_equity_drawdown_jpy": 42660},
+                  "2025H1": {"trades": 463, "net_jpy": -20808, "profit_factor": 0.8294076655052265, "tick_equity_drawdown_jpy": 42737},
+              },
+              "candidate_slots": {"N1": "PENDING_CANDIDATE_EVIDENCE", "N2": "PENDING_CANDIDATE_EVIDENCE", "F": "PENDING_CANDIDATE_EVIDENCE", "B": "PENDING_CANDIDATE_EVIDENCE"},
+              "status": "RELEASED_RECEIPT_RECORDED",
+          }
+          path = Path("configs/integration/usdjpy_ea_integration_001_release_receipt_v1.json")
+          path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          Path(".github/workflows/usdjpy_ea_integration_001_release_v1.yml").unlink(missing_ok=True)
+
+      - name: Commit immutable receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add configs/integration/usdjpy_ea_integration_001_release_receipt_v1.json .github/workflows/usdjpy_ea_integration_001_release_v1.yml
+          if ! git diff --cached --quiet; then
+            git commit -m "research: record USDJPY EA integration release receipt [skip ci]"
+            git push origin HEAD:main
+          fi
+
+      - name: Create or update receipt Issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARCHIVE_SHA: ${{ steps.asset.outputs.sha256 }}
+          ARCHIVE_BYTES: ${{ steps.asset.outputs.bytes }}
+          MERGE_SHA: ${{ steps.asset.outputs.merge_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/receipt.md <<EOF
+          ## USDJPY-EA-INTEGRATION-001 immutable receipt
+
+          - PR: #427
+          - Merge SHA: \\`$MERGE_SHA\\`
+          - Release: https://github.com/$GITHUB_REPOSITORY/releases/tag/usdjpy-ea-integration-001-v1
+          - Asset: \\`usdjpy-ea-integration-001-v1.zip\\`
+          - Asset SHA-256: \\`$ARCHIVE_SHA\\`
+          - Asset bytes: \\`$ARCHIVE_BYTES\\`
+          - Candidate rules changed: \\`false\\`
+
+          ### Exact baseline
+
+          - 2023–2024: 1,882 trades, +¥51,627, PF 1.1377131303215893, full-equity DD ¥42,660
+          - 2025H1: 463 trades, -¥20,808, PF 0.8294076655052265, Tick-equity DD ¥42,737
+          - B02 / F05 2025H1: -¥6,964 / -¥13,844
+
+          ### Candidate availability
+
+          N1, N2, F and B remain \\`PENDING_CANDIDATE_EVIDENCE\\`. No non-baseline combination was calculated.
+
+          ### Exact next action
+
+          Ingest the first complete hash-pinned candidate package. The nearest dependency is HYP-039 Core PR #505; after formal evidence publication, replay BASELINE+N1 without changing candidate rules.
+          EOF
+          EXISTING=$(gh issue list --repo "$GITHUB_REPOSITORY" --state all --search 'USDJPY-EA-INTEGRATION-001 release receipt in:title' --json number,title --jq '.[] | select(.title=="USDJPY-EA-INTEGRATION-001 release receipt") | .number' | head -n1)
+          if [ -n "$EXISTING" ]; then
+            gh issue edit "$EXISTING" --repo "$GITHUB_REPOSITORY" --body-file /tmp/receipt.md
+            if [ "$(gh issue view "$EXISTING" --repo "$GITHUB_REPOSITORY" --json state --jq .state)" = "CLOSED" ]; then
+              gh issue reopen "$EXISTING" --repo "$GITHUB_REPOSITORY"
+            fi
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "USDJPY-EA-INTEGRATION-001 release receipt" --body-file /tmp/receipt.md
+          fi
