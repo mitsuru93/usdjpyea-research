@@ -1,0 +1,21 @@
+{
+  "schema_version": "usdjpy_csos_dukascopy_native_remaining_family_atlas_canonicalization_request_v2",
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "scientific_run_id": 30435884192,
+  "artifact_id": 8717709149,
+  "artifact_digest": "sha256:69fda87cdb5eef9a0fef641f8927918bb1a1fca6a5e9eabf72e34558afeeaa72",
+  "release_asset_sha256": "4fa85d2fef179b82e15abe6cd7e9bb4d7af47ecd200659f183b4d8be7e5dd607",
+  "purpose": "Open the atomic closure PR from exact artifact-derived result, report, ranking, period, program and memory files.",
+  "scientific_recalculation": false,
+  "family_contract_changed": false,
+  "source_changed": false,
+  "cost_assumption_changed": false,
+  "ranking_gate_changed": false,
+  "period_role_changed": false,
+  "analysis_2020_2022_accessed": false,
+  "external_validation_2025_accessed": false,
+  "candidate_freeze_authorized": false,
+  "core_mt4_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
