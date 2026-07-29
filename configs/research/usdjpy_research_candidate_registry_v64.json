@@ -1,0 +1,61 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v64",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v63.json",
+  "status": "USDJPY_HYP036_CLOSED_NO_PORTABLE_EXECUTABLE_CANDIDATE",
+  "active_family": null,
+  "active_hypothesis": null,
+  "current_candidate": null,
+  "current_open_research_question": null,
+  "candidate_ids": [],
+  "development_decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE",
+  "scientific_result": true,
+  "source_run_id": 30414664817,
+  "source_artifact_id": 8709903106,
+  "source_artifact_digest": "sha256:2cf0578322a9ad650ff5fe4ea60d9332624009b9f6bc1744450eb6c0ffc1afd8",
+  "result": "configs/research/usdjpy_hyp036_final_result_v1.json",
+  "report": "docs/research/USDJPY_HYP036_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE_RESULT_V1.md",
+  "candidate_registry": "configs/research/usdjpy_hyp036_candidate_registry_v1.json",
+  "period_access_receipt": "configs/research/usdjpy_hyp036_period_access_receipt_v1.json",
+  "output_manifest": "configs/research/usdjpy_hyp036_output_manifest_v1.json",
+  "release_receipt": "configs/research/usdjpy_hyp036_release_receipt_v1.json",
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v38.json",
+  "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v38.json"
+  },
+  "development_result": {
+    "source_native_trades": 1332,
+    "net_jpy": 17005,
+    "profit_factor": 1.1095393613800422,
+    "positive_folds": 3,
+    "positive_months": 13,
+    "mdd_jpy": 13284,
+    "minimum_equity_jpy": 999736,
+    "failed_binding_stage": "DEVELOPMENT_STANDALONE",
+    "candidate_freeze": false
+  },
+  "closed_boundaries": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE_UNCHANGED",
+    "USDJPY-HYP-031": "NO_PORTABLE_REGIME_RULE_UNCHANGED",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING_UNCHANGED",
+    "USDJPY-HYP-033": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR_UNCHANGED",
+    "USDJPY-HYP-034": "NO_PORTABLE_REJECTION_MECHANISM_UNCHANGED",
+    "USDJPY-HYP-035": "FAIL_ATLAS_IDENTITY_UNCHANGED",
+    "USDJPY-HYP-036": "NO_PORTABLE_EXECUTABLE_CANDIDATE"
+  },
+  "run_authorization": {
+    "2020_2022_historical_validation": false,
+    "Core_implementation": false,
+    "MT4_candidate": false,
+    "2025H1": false,
+    "2025H2": false,
+    "production": false,
+    "live": false
+  },
+  "candidate_rule_changed": false,
+  "scientific_gate_definition_changed": false,
+  "no_retuning": true,
+  "next_action": "Scientific stop. Do not rescue HYP-036 with Short-only selection, session or period exclusion, EMA/ATR/hold retuning, B02/F05 state, lot reduction, or protected-period outcomes. Select the next independent mechanism outside this closed candidate."
+}
