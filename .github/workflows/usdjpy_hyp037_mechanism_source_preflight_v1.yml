@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
       - name: Exact-SHA selective fetch and preflight
         id: init
         shell: bash
@@ -23,6 +25,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
           root="${RUNNER_TEMP}/h37"; rm -rf "$root"; mkdir -p "$root"/{src,raw2023,raw2024,h36,h32,partial,out,evidence}
           sha='${{ github.event.pull_request.head.sha || github.sha }}'; test "${#sha}" = 40
           fetch(){ p="$1"; o="$2"; mkdir -p "$(dirname "$o")"; gh api "repos/${GITHUB_REPOSITORY}/contents/${p}?ref=${sha}" --jq .content | tr -d '\n' | base64 -d > "$o"; test -s "$o"; }
@@ -36,16 +39,13 @@ jobs:
           jq -e '.status=="PASS_NO_OUTCOME_ACCESS" and .candidate_outcomes_2020_2022_accessed==false' "$root/evidence/preflight/preflight_receipt.json"
           jq -e '.hypothesis_id=="USDJPY-HYP-037" and .fixed_candidate_contract.direction=="SHORT_ONLY" and .no_retuning==true and .historical_candidate_outcomes_accessed==false' "$root/src/prereg.json"
           echo "root=$root" >> "$GITHUB_OUTPUT"; echo "sha=$sha" >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-python@v5
-        with: {python-version: '3.12'}
-      - name: Install frozen runtime and materialize discovery authorities
+      - name: Materialize discovery authorities
         env:
           GH_TOKEN: ${{ github.token }}
           ROOT: ${{ steps.init.outputs.root }}
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
           gh api -H 'Accept: application/vnd.github+json' /repos/${GITHUB_REPOSITORY}/actions/artifacts/8709903106/zip > "$ROOT/h36.zip"
           printf '%s  %s\n' 2cf0578322a9ad650ff5fe4ea60d9332624009b9f6bc1744450eb6c0ffc1afd8 "$ROOT/h36.zip" | sha256sum -c -
           unzip -q "$ROOT/h36.zip" -d "$ROOT/h36"
