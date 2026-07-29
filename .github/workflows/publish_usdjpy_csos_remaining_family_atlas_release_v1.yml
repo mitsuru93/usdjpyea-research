@@ -9,6 +9,9 @@ permissions:
   actions: read
   contents: write
   issues: write
+concurrency:
+  group: publish-usdjpy-csos-remaining-family-atlas-v1
+  cancel-in-progress: false
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -29,6 +32,13 @@ jobs:
           tag=usdjpy-csos-dukascopy-native-remaining-family-atlas-v1
           receipt_path=configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json
           root="${RUNNER_TEMP}/atlas-publish"; rm -rf "$root"; mkdir -p "$root"/{artifact,unpacked,readback}
+          fail_receipt() {
+            rc=$?
+            gh issue comment 403 --repo "$repo" --body "Atlas publication FAILED at shell line ${BASH_LINENO[0]} with exit code ${rc}." || true
+            exit "$rc"
+          }
+          trap fail_receipt ERR
+          gh issue comment 403 --repo "$repo" --body "Atlas publication started for PR #${{ github.event.pull_request.number }}; scientific Run ${run_id}; Artifact ${artifact_id}."
 
           if gh api "repos/${repo}/contents/${receipt_path}?ref=main" >/dev/null 2>&1; then
             gh issue comment 403 --repo "$repo" --body "Atlas publication: canonical Release receipt already exists; duplicate publication suppressed."
