@@ -1,0 +1,200 @@
+name: USDJPY HYP-041 F05 v2 closure release v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp041_final_result_v1.json'
+      - 'configs/research/usdjpy_hyp041_closure_receipt_v1.json'
+      - '.github/workflows/usdjpy_hyp041_closure_release_v1.yml'
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: usdjpy-hyp041-f05-v2-closure-release-v1
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TAG: usdjpy-hyp041-f05-v2-portable-recovery-v1
+      ARCHIVE: usdjpy-hyp041-f05-v2-portable-recovery-v1.zip
+      RECEIPT_TITLE: '[HYP041-RECEIPT] F05 v2 portable recovery closure'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate completed scientific result and closure boundaries
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          required = [
+              'configs/research/usdjpy_hyp041_final_result_v1.json',
+              'configs/research/usdjpy_hyp041_finite_candidate_catalog_v1.json',
+              'configs/research/usdjpy_hyp041_integration_handoff_v1.json',
+              'configs/research/usdjpy_hyp041_closure_receipt_v1.json',
+              'configs/research/usdjpy_research_candidate_registry_v70.json',
+              'configs/research/usdjpy_hypothesis_ledger_addendum_v44.json',
+              'configs/research/usdjpy_2023_2024_hypothesis_program_v15.json',
+              'docs/research/USDJPY_HYP041_F05_V2_FINAL_REPORT_V1.md',
+          ]
+          for item in required:
+              if not Path(item).is_file():
+                  raise SystemExit(f'missing required closure file: {item}')
+          result=json.loads(Path(required[0]).read_text(encoding='utf-8'))
+          registry=json.loads(Path(required[4]).read_text(encoding='utf-8'))
+          ledger=json.loads(Path(required[5]).read_text(encoding='utf-8'))
+          handoff=json.loads(Path(required[2]).read_text(encoding='utf-8'))
+          assert result['status']=='COMPLETE_SCIENTIFIC_RESULT'
+          assert result['formal_decision']=='FAIL_F05_V2_PORTABLE_RECOVERY'
+          assert result['research_decision']=='NO_PORTABLE_F05_V2_CANDIDATE_FOR_CORE'
+          assert result['deployment']['selected_candidate'] is None
+          assert result['period_roles']['2025H2']=='NOT_ACCESSED_OR_SUBSTITUTED'
+          assert result['parallel_study_isolation']['USDJPY-HYP-039_changed'] is False
+          assert result['parallel_study_isolation']['USDJPY-HYP-040_changed'] is False
+          assert registry['closed_studies']['USDJPY-HYP-041']['formal_decision']=='FAIL_F05_V2_PORTABLE_RECOVERY'
+          assert ledger['entries'][0]['hypothesis_id']=='USDJPY-HYP-041'
+          assert handoff['F05_dimension_disposition']=='F05_BASELINE_UNCHANGED'
+          assert result['deployment']['production_authorized'] is False
+          assert result['deployment']['live_authorized'] is False
+          PY
+
+      - name: Build deterministic closure archive
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, shutil, zipfile
+          from pathlib import Path
+
+          archive=Path(os.environ['ARCHIVE'])
+          stage=Path('hyp041_closure_package')
+          if stage.exists(): shutil.rmtree(stage)
+          stage.mkdir()
+          files = [
+              'configs/research/usdjpy_hyp041_final_result_v1.json',
+              'configs/research/usdjpy_hyp041_finite_candidate_catalog_v1.json',
+              'configs/research/usdjpy_hyp041_integration_handoff_v1.json',
+              'configs/research/usdjpy_hyp041_closure_receipt_v1.json',
+              'configs/research/usdjpy_research_candidate_registry_v70.json',
+              'configs/research/usdjpy_hypothesis_ledger_addendum_v44.json',
+              'configs/research/usdjpy_2023_2024_hypothesis_program_v15.json',
+              'docs/research/USDJPY_HYP041_F05_V2_FINAL_REPORT_V1.md',
+          ]
+          sums=[]
+          for name in files:
+              source=Path(name)
+              target=stage/name
+              target.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copyfile(source,target)
+              sums.append((hashlib.sha256(source.read_bytes()).hexdigest(),name))
+          manifest={
+              'schema_version':'usdjpy_hyp041_deterministic_archive_manifest_v1',
+              'hypothesis_id':'USDJPY-HYP-041',
+              'formal_decision':'FAIL_F05_V2_PORTABLE_RECOVERY',
+              'research_sha':os.environ['GITHUB_SHA'],
+              'core_merge_sha':'4c82040c62d90cec4dfbeeb68d48123fead1de62',
+              'scientific_run_id':30463671158,
+              'file_count':len(files),
+              'files':[{'path':p,'sha256':s} for s,p in sums],
+              '2025H2_accessed':False,
+              'production_authorized':False,
+              'live_authorized':False,
+          }
+          (stage/'ARCHIVE_MANIFEST.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          all_members=files+['ARCHIVE_MANIFEST.json']
+          sum_lines=[]
+          for name in all_members:
+              payload=(stage/name).read_bytes()
+              sum_lines.append(f'{hashlib.sha256(payload).hexdigest()}  {name}')
+          (stage/'PACKAGE_SHA256SUMS').write_text('\n'.join(sum_lines)+'\n',encoding='ascii')
+          all_members += ['PACKAGE_SHA256SUMS']
+          if archive.exists(): archive.unlink()
+          with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+              for name in sorted(all_members):
+                  payload=(stage/name).read_bytes()
+                  info=zipfile.ZipInfo(name,date_time=(1980,1,1,0,0,0))
+                  info.compress_type=zipfile.ZIP_DEFLATED
+                  info.external_attr=(0o100644 << 16)
+                  info.create_system=3
+                  z.writestr(info,payload,compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
+          sha=hashlib.sha256(archive.read_bytes()).hexdigest()
+          print(json.dumps({'archive':str(archive),'sha256':sha,'bytes':archive.stat().st_size},indent=2))
+          with open(os.environ['GITHUB_ENV'],'a',encoding='utf-8') as fh:
+              fh.write(f'ARCHIVE_SHA={sha}\nARCHIVE_BYTES={archive.stat().st_size}\n')
+          PY
+
+      - name: Publish immutable Release and verify remote byte identity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "immutable Release already exists; verifying existing asset"
+          else
+            cat > release-notes.md <<EOF
+          Hypothesis: USDJPY-HYP-041
+          Family: F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE
+          Formal decision: FAIL_F05_V2_PORTABLE_RECOVERY
+          Research decision: NO_PORTABLE_F05_V2_CANDIDATE_FOR_CORE
+          Selected candidate: none
+          Core evidence merge: 4c82040c62d90cec4dfbeeb68d48123fead1de62
+          Scientific run: 30463671158
+          Research closure SHA: $GITHUB_SHA
+          Archive SHA-256: $ARCHIVE_SHA
+          2025H2 accessed: false
+          Production/live authorized: false
+          EOF
+            gh release create "$TAG" "$ARCHIVE" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title 'USDJPY HYP-041 F05 v2 portable recovery closure v1' --notes-file release-notes.md
+          fi
+          rm -rf release_readback
+          mkdir release_readback
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir release_readback --pattern "$ARCHIVE"
+          test -f "release_readback/$ARCHIVE"
+          REMOTE_SHA=$(sha256sum "release_readback/$ARCHIVE" | awk '{print $1}')
+          test "$REMOTE_SHA" = "$ARCHIVE_SHA"
+          echo "REMOTE_SHA=$REMOTE_SHA" >> "$GITHUB_ENV"
+
+      - name: Publish or update receipt Issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          body=$(cat <<EOF
+          hypothesis_id: USDJPY-HYP-041
+          family_id: F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE
+          status: PASS_BYTE_IDENTICAL_RELEASE_READBACK
+          formal_decision: FAIL_F05_V2_PORTABLE_RECOVERY
+          research_decision: NO_PORTABLE_F05_V2_CANDIDATE_FOR_CORE
+          selected_candidate: none
+          scientific_run_id: 30463671158
+          core_merge_sha: 4c82040c62d90cec4dfbeeb68d48123fead1de62
+          research_closure_sha: $GITHUB_SHA
+          release_tag: $TAG
+          archive_name: $ARCHIVE
+          archive_sha256: $ARCHIVE_SHA
+          archive_bytes: $ARCHIVE_BYTES
+          remote_readback_sha256: $REMOTE_SHA
+          2025H2_accessed: false
+          production_authorized: false
+          live_authorized: false
+          exact_next_action: use F05_BASELINE_UNCHANGED in the existing common portfolio integration; do not reopen or retune HYP-041.
+          EOF
+          )
+          issue=$(gh issue list --repo "$GITHUB_REPOSITORY" --state all --search "in:title $RECEIPT_TITLE" --json number,title --jq ".[] | select(.title == \"$RECEIPT_TITLE\") | .number" | head -n1)
+          if [ -n "$issue" ]; then
+            gh issue edit "$issue" --repo "$GITHUB_REPOSITORY" --body "$body"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$RECEIPT_TITLE" --body "$body"
+          fi

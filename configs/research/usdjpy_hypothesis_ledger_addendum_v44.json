@@ -1,0 +1,97 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v44",
+  "status": "CLOSED_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v43.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v43.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-041",
+      "title": "F05 2025H1 Loss Recovery and Portable Architecture Study",
+      "family_ids": ["F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE"],
+      "candidate_ids": [
+        "C1_CHRONOLOGY_LOSS_PERMISSION",
+        "C2_MARKET_STATE_COMPRESSION",
+        "C3_CONTINUATION_GIVEBACK_LIFECYCLE"
+      ],
+      "status": "CLOSED_COMPLETE_SCIENTIFIC_RESULT",
+      "decision": "FAIL_F05_V2_PORTABLE_RECOVERY",
+      "research_decision": "NO_PORTABLE_F05_V2_CANDIDATE_FOR_CORE",
+      "lineage": "Independent F05 v2 study using HYP-027, HYP-029 and HYP-032 mechanism evidence as design input without reopening, rescuing, retrospectively passing or directly combining those closed hypotheses.",
+      "target_failure_mode": "Recover the known 2025H1 F05 loss of JPY13844 and B02+F05 loss of JPY20808 without materially destroying established 2023-2024 F05 economics.",
+      "period_roles": {
+        "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_NOT_USED",
+        "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+        "2025H1": "VALIDATION_PERIOD",
+        "2025H2": "NOT_ACCESSED"
+      },
+      "baseline": {
+        "2023_2024_F05_net_jpy": 39151,
+        "2025H1_F05_net_jpy": -13844,
+        "2025H1_B02_net_jpy": -6964,
+        "2025H1_portfolio_net_jpy": -20808
+      },
+      "candidate_results": {
+        "C1_CHRONOLOGY_LOSS_PERMISSION": {
+          "2023_2024_F05_net_jpy": 39151,
+          "2025H1_F05_net_jpy": -13844,
+          "2025H1_portfolio_net_jpy": -20808,
+          "decision": "REJECT_NO_2025H1_IMPROVEMENT"
+        },
+        "C2_MARKET_STATE_COMPRESSION": {
+          "2023_2024_F05_net_jpy": 0,
+          "historical_net_retention": 0,
+          "2025H1_F05_net_jpy": 178,
+          "2025H1_portfolio_net_jpy": -6786,
+          "decision": "REJECT_DESTROYS_2023_2024_F05_ECONOMICS"
+        },
+        "C3_CONTINUATION_GIVEBACK_LIFECYCLE": {
+          "2023_2024_F05_net_jpy": 6032,
+          "historical_net_retention": 0.1540701386937754,
+          "2025H1_F05_net_jpy": -13629,
+          "2025H1_portfolio_net_jpy": -20593,
+          "decision": "REJECT_LOW_HISTORICAL_RETENTION_AND_IMMATERIAL_2025H1_RECOVERY"
+        }
+      },
+      "combined_candidate": {
+        "candidate_id": "C4_C1_PLUS_C3",
+        "authorized": false
+      },
+      "authorization": {
+        "candidate_freeze": true,
+        "finite_research": true,
+        "selected_candidate": null,
+        "Core_candidate_implementation": false,
+        "MT4_candidate_implementation": false,
+        "2025H2": false,
+        "production": false,
+        "live": false
+      },
+      "outcome_visibility": {
+        "baseline_2025H1_known": true,
+        "candidate_versions_frozen_before_first_candidate_outcome": true,
+        "valid_candidate_rerun_count_each": 1,
+        "candidate_modified_after_result": false,
+        "retuned_after_2025H1": false
+      },
+      "evidence_refs": {
+        "final_result": "configs/research/usdjpy_hyp041_final_result_v1.json",
+        "human_report": "docs/research/USDJPY_HYP041_F05_V2_FINAL_REPORT_V1.md",
+        "registry": "configs/research/usdjpy_research_candidate_registry_v70.json",
+        "core_result": "usdjpyea-core@4c82040c62d90cec4dfbeeb68d48123fead1de62:configs/research/usdjpy_hyp041_candidate_research_result_v1.json",
+        "core_decomposition": "usdjpyea-core@4c82040c62d90cec4dfbeeb68d48123fead1de62:configs/research/usdjpy_hyp041_failure_decomposition_v1.json",
+        "core_pr": 506,
+        "scientific_run_id": 30463671158
+      },
+      "parallel_study_isolation": {
+        "USDJPY-HYP-039": "UNCHANGED",
+        "USDJPY-HYP-040": "UNCHANGED",
+        "B02_v2": "UNCHANGED",
+        "common_portfolio_integration": "UNCHANGED"
+      },
+      "exact_next_action": "Use F05_BASELINE_UNCHANGED in common portfolio integration and import HYP-041 residual-loss evidence without reopening or retuning HYP-041."
+    }
+  ],
+  "hypothesis_status_updates": []
+}

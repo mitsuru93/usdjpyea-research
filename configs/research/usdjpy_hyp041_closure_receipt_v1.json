@@ -1,0 +1,39 @@
+{
+  "schema_version": "usdjpy_hyp041_closure_receipt_v1",
+  "status": "READY_FOR_CLOSURE_PR_MERGE",
+  "hypothesis_id": "USDJPY-HYP-041",
+  "formal_decision": "FAIL_F05_V2_PORTABLE_RECOVERY",
+  "research_decision": "NO_PORTABLE_F05_V2_CANDIDATE_FOR_CORE",
+  "core_merge_sha": "4c82040c62d90cec4dfbeeb68d48123fead1de62",
+  "scientific_run_id": 30463671158,
+  "research_closure_branch": "research/usdjpy-hyp041-f05-v2-closure-v1",
+  "release_contract": {
+    "tag": "usdjpy-hyp041-f05-v2-portable-recovery-v1",
+    "archive_name": "usdjpy-hyp041-f05-v2-portable-recovery-v1.zip",
+    "deterministic_archive": true,
+    "remote_byte_identical_readback_required": true,
+    "actions_artifact_required": false,
+    "receipt_issue_title": "[HYP041-RECEIPT] F05 v2 portable recovery closure"
+  },
+  "required_files": [
+    "configs/research/usdjpy_hyp041_final_result_v1.json",
+    "configs/research/usdjpy_hyp041_finite_candidate_catalog_v1.json",
+    "configs/research/usdjpy_hyp041_integration_handoff_v1.json",
+    "configs/research/usdjpy_research_candidate_registry_v70.json",
+    "configs/research/usdjpy_hypothesis_ledger_addendum_v44.json",
+    "configs/research/usdjpy_2023_2024_hypothesis_program_v15.json",
+    "docs/research/USDJPY_HYP041_F05_V2_FINAL_REPORT_V1.md"
+  ],
+  "Notion_updates_required": [
+    "USDJPY Research Current State",
+    "USDJPY Research Evaluation Matrix — 2025H1 Goal Alignment"
+  ],
+  "parallel_study_isolation": {
+    "USDJPY-HYP-039_changed": false,
+    "USDJPY-HYP-040_changed": false,
+    "B02_v2_changed": false,
+    "common_portfolio_integration_changed": false
+  },
+  "production_authorized": false,
+  "live_authorized": false
+}

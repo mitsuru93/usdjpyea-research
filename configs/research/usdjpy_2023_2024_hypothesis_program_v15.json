@@ -1,0 +1,48 @@
+{
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v15",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v14.json",
+  "status": "HYP041_COMPLETE_NO_PORTABLE_F05_V2_CANDIDATE",
+  "completed_hypothesis": "USDJPY-HYP-041",
+  "family_id": "F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE",
+  "decision": "FAIL_F05_V2_PORTABLE_RECOVERY",
+  "scientific_result": true,
+  "technical_no_result": false,
+  "selected_candidate": null,
+  "candidate_catalog": [
+    "C1_CHRONOLOGY_LOSS_PERMISSION",
+    "C2_MARKET_STATE_COMPRESSION",
+    "C3_CONTINUATION_GIVEBACK_LIFECYCLE"
+  ],
+  "2020_2022_access": false,
+  "2023_2024_access": true,
+  "2025H1_access": true,
+  "2025H2_access": false,
+  "Core_baseline_diagnostic_access": true,
+  "MT4_baseline_diagnostic_access": true,
+  "Core_candidate_implementation": false,
+  "MT4_candidate_implementation": false,
+  "reason_candidate_implementation_not_executed": "The finite Research gate selected no portable candidate; candidate Core/MT4 implementation was therefore not authorized.",
+  "baseline_identity": {
+    "2023_2024_F05_net_jpy": 39151,
+    "2025H1_F05_net_jpy": -13844,
+    "2025H1_portfolio_net_jpy": -20808
+  },
+  "best_numerical_2025H1_candidate": {
+    "candidate_id": "C2_MARKET_STATE_COMPRESSION",
+    "2025H1_F05_net_jpy": 178,
+    "2025H1_portfolio_net_jpy": -6786,
+    "historical_F05_net_jpy": 0,
+    "historical_net_retention": 0,
+    "adoptable": false
+  },
+  "F05_integration_disposition": "F05_BASELINE_UNCHANGED",
+  "parallel_program_state": {
+    "USDJPY-HYP-039": "UNCHANGED_ACTIVE",
+    "USDJPY-HYP-040": "UNCHANGED_ACTIVE",
+    "HYP042_C3": "CONDITIONAL_B02_RESERVE_UNCHANGED",
+    "common_portfolio_integration": "EXISTING_BRANCH_MAY_CONSUME_HYP041_FORMAL_NO_CHANGE_EVIDENCE"
+  },
+  "production_authorized": false,
+  "live_authorized": false,
+  "next_action": "Complete the existing common portfolio integration using F05_BASELINE_UNCHANGED for the F05 dimension and compare available HYP-039, HYP-040, baseline B02 and HYP-042 C3 reserve combinations. Do not reopen HYP-041 or search additional F05 v2 thresholds from the known 2025H1 result."
+}

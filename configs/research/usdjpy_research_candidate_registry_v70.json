@@ -1,0 +1,102 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v70",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v69.json",
+  "status": "PARALLEL_ACTIVE_HYP039_HYP040_HYP041_CLOSED_FAIL",
+  "legacy_active_hypothesis": "USDJPY-HYP-039",
+  "active_hypotheses": ["USDJPY-HYP-039", "USDJPY-HYP-040"],
+  "parallel_studies": {
+    "USDJPY-HYP-039": {
+      "status": "ACTIVE_FROZEN_PRE_2025H1_QUALIFICATION",
+      "family": "S_SHORT_PULLBACK_UNCHANGED_2025H1_RECOVERY",
+      "candidate": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+      "registry": "configs/research/usdjpy_hyp039_candidate_contract_v1.json",
+      "period_access_receipt": "configs/research/usdjpy_hyp039_period_access_receipt_v1.json",
+      "period_role_correction_receipt": "configs/research/usdjpy_hyp039_period_role_correction_receipt_v2.json",
+      "changed_by_v70": false,
+      "included_in_HYP041_portfolio": false
+    },
+    "USDJPY-HYP-040": {
+      "status": "ACTIVE_FROZEN_PRE_2025H1_QUALIFICATION",
+      "family": "S_ASIAN_RANGE_SWEEP_UNCHANGED_2025H1_RECOVERY",
+      "candidate": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+      "registry": "configs/research/usdjpy_hyp040_candidate_contract_v1.json",
+      "freeze_receipt": "configs/research/usdjpy_hyp040_candidate_freeze_receipt_v1.json",
+      "period_access_receipt": "configs/research/usdjpy_hyp040_period_access_receipt_v1.json",
+      "candidate_rule_changed": false,
+      "changed_by_v70": false,
+      "included_in_HYP041_portfolio": false
+    }
+  },
+  "closed_studies": {
+    "USDJPY-HYP-041": {
+      "status": "CLOSED_COMPLETE_SCIENTIFIC_RESULT",
+      "family": "F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE",
+      "formal_decision": "FAIL_F05_V2_PORTABLE_RECOVERY",
+      "research_decision": "NO_PORTABLE_F05_V2_CANDIDATE_FOR_CORE",
+      "candidate_catalog": [
+        "C1_CHRONOLOGY_LOSS_PERMISSION",
+        "C2_MARKET_STATE_COMPRESSION",
+        "C3_CONTINUATION_GIVEBACK_LIFECYCLE"
+      ],
+      "selected_candidate": null,
+      "combined_candidate_authorized": false,
+      "F05_disposition_for_integration": "F05_BASELINE_UNCHANGED",
+      "final_result": "configs/research/usdjpy_hyp041_final_result_v1.json",
+      "human_report": "docs/research/USDJPY_HYP041_F05_V2_FINAL_REPORT_V1.md",
+      "core_result_path": "configs/research/usdjpy_hyp041_candidate_research_result_v1.json",
+      "core_merge_sha": "4c82040c62d90cec4dfbeeb68d48123fead1de62",
+      "scientific_run_id": 30463671158,
+      "2025H2_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false
+    }
+  },
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v44.json",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD_OR_OPTIONAL_HISTORICAL_REFERENCE_AS_STUDY_SPECIFIES",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_AUTOMATICALLY_CONSUMED_OR_SUBSTITUTED"
+  },
+  "outcome_visibility": {
+    "USDJPY-HYP-039": {
+      "candidate_version": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+      "2025H1": "UNSEEN_AT_FIRST_VALIDATION",
+      "candidate_modified_after_result": false
+    },
+    "USDJPY-HYP-040": {
+      "candidate_version": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+      "2025H1": "UNSEEN_AT_FIRST_VALIDATION",
+      "first_access_timestamp": null,
+      "candidate_version_at_first_access": null,
+      "subsequent_rerun_count": 0,
+      "candidate_modified_after_result": false,
+      "unseen_validation_claim": true
+    },
+    "USDJPY-HYP-041": {
+      "baseline_2025H1_known_before_study": true,
+      "candidate_versions_frozen_before_first_candidate_outcome": true,
+      "valid_candidate_rerun_count_each": 1,
+      "retuned_after_2025H1": false,
+      "2025H2_accessed": false
+    }
+  },
+  "closed_boundaries": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE",
+    "USDJPY-HYP-037": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+    "USDJPY-HYP-038": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+    "USDJPY-HYP-041": "FAIL_F05_V2_PORTABLE_RECOVERY"
+  },
+  "run_authorization": {
+    "USDJPY-HYP-039": "UNCHANGED_FROM_V69",
+    "USDJPY-HYP-040": "UNCHANGED_FROM_V69",
+    "USDJPY-HYP-041_Core_candidate": false,
+    "USDJPY-HYP-041_MT4_candidate": false,
+    "USDJPY-HYP-041_2025H2": false,
+    "production": false,
+    "live": false
+  },
+  "four_strategy_integration_authorized": false,
+  "recurring_monitor_authorized": false,
+  "next_action": "Provide the formal HYP-041 F05_BASELINE_UNCHANGED disposition and residual-loss evidence to the existing common portfolio integration framework; do not reopen or retune HYP-041."
+}
