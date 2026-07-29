@@ -1,0 +1,165 @@
+{
+  "schema_version": "usdjpy_hyp041_final_result_v1",
+  "status": "COMPLETE_SCIENTIFIC_RESULT",
+  "hypothesis_id": "USDJPY-HYP-041",
+  "title": "F05 2025H1 Loss Recovery and Portable Architecture Study",
+  "family_id": "F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE",
+  "formal_decision": "FAIL_F05_V2_PORTABLE_RECOVERY",
+  "research_decision": "NO_PORTABLE_F05_V2_CANDIDATE_FOR_CORE",
+  "decision_reason": "No finite candidate simultaneously preserved material 2023-2024 F05 economics and materially improved both 2025H1 F05 and B02+F05 portfolio economics. No candidate was selected for Core/MT4 implementation.",
+  "period_roles": {
+    "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_NOT_USED",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_ACCESSED_OR_SUBSTITUTED"
+  },
+  "source_authority": {
+    "core_research_merge_sha": "4c82040c62d90cec4dfbeeb68d48123fead1de62",
+    "core_result_path": "configs/research/usdjpy_hyp041_candidate_research_result_v1.json",
+    "core_decomposition_path": "configs/research/usdjpy_hyp041_failure_decomposition_v1.json",
+    "scientific_run_id": 30463671158,
+    "baseline_2025H1_release_tag": "usdjpy-s3-market-state-2025h1-binding-v1",
+    "baseline_2025H1_asset_sha256": "9961bbb2b19d9947d03ffd3446ec351ab3ebc458c3949f838d17bb354eee7865",
+    "research_start_pr": 421,
+    "core_execution_pr": 506
+  },
+  "baseline_identity": {
+    "2023_2024_F05": {
+      "trades": 1451,
+      "net_jpy": 39151,
+      "profit_factor": 1.142399377314158
+    },
+    "2025H1_F05": {
+      "trades": 358,
+      "net_jpy": -13844,
+      "profit_factor": 0.8432748802825671,
+      "gross_profit_jpy": 74489,
+      "gross_loss_jpy": -88333
+    },
+    "2025H1_B02": {
+      "net_jpy": -6964
+    },
+    "2025H1_portfolio": {
+      "trades": 463,
+      "net_jpy": -20808,
+      "profit_factor": 0.8294076655052265,
+      "authority_maximum_tick_equity_drawdown_jpy": 42737
+    }
+  },
+  "failure_decomposition": {
+    "common_schema_F05_trades": 1809,
+    "2025H1_loss_buckets": {
+      "MARKET_STATE_MISFIT": {
+        "trades": 183,
+        "gross_loss_jpy": -81504,
+        "gross_loss_share": 0.9226902743029219,
+        "B02_overlap_trades": 106
+      },
+      "CHRONOLOGY_OR_SAME_TIMESTAMP_INTERACTION": {
+        "trades": 9,
+        "gross_loss_jpy": -6829,
+        "gross_loss_share": 0.0773097256970781,
+        "B02_overlap_trades": 6
+      },
+      "ENTRY_IMMEDIATELY_ADVERSE": {"trades": 0, "gross_loss_jpy": 0},
+      "TEMPORARY_PROFIT_THEN_LOSS": {"trades": 0, "gross_loss_jpy": 0},
+      "EDGE_DECAY_DURING_EXTENDED_HOLD": {"trades": 0, "gross_loss_jpy": 0},
+      "SAME_SESSION_CONSECUTIVE_LOSS": {"trades": 0, "gross_loss_jpy": 0},
+      "OTHER": {"trades": 0, "gross_loss_jpy": 0}
+    },
+    "interpretation_limit": "The seven buckets are deterministic mutually-exclusive labels under the frozen diagnostic schema. They are loss attribution evidence, not proof that a bucket label is a portable causal permission rule."
+  },
+  "finite_candidate_catalog": [
+    {
+      "candidate_id": "C1_CHRONOLOGY_LOSS_PERMISSION",
+      "contract": "Block a later F05 entry only after an accepted same-side F05 realized loss in the same UTC date/session, with closes processed before entries at identical timestamp and Long/Short symmetry.",
+      "2023_2024_F05_net_jpy": 39151,
+      "historical_net_retention": 1.0,
+      "2025H1_F05_net_jpy": -13844,
+      "2025H1_F05_delta_jpy": 0,
+      "2025H1_portfolio_net_jpy": -20808,
+      "2025H1_portfolio_delta_jpy": 0,
+      "blocked_historical_trades": 0,
+      "selection": "REJECT_NO_2025H1_IMPROVEMENT"
+    },
+    {
+      "candidate_id": "C2_MARKET_STATE_COMPRESSION",
+      "contract": "Block F05 Entry when completed-bar market_state is MISALIGNED and Entry-time extension_atr is at least 1.50; re-evaluate independently at each signal.",
+      "2023_2024_F05_net_jpy": 0,
+      "historical_net_retention": 0,
+      "historical_blocked_trades": 1451,
+      "2025H1_F05_net_jpy": 178,
+      "2025H1_F05_delta_jpy": 14022,
+      "2025H1_portfolio_net_jpy": -6786,
+      "2025H1_portfolio_delta_jpy": 14022,
+      "2025H1_blocked_trades": 357,
+      "selection": "REJECT_DESTROYS_2023_2024_F05_ECONOMICS"
+    },
+    {
+      "candidate_id": "C3_CONTINUATION_GIVEBACK_LIFECYCLE",
+      "contract": "Use completed M15 lifecycle observations and Entry-time ATR to exit first-bar continuation failures or ATR-qualified givebacks without future information.",
+      "2023_2024_F05_net_jpy": 6032,
+      "2023_2024_F05_profit_factor": 1.0446183547721373,
+      "historical_net_retention": 0.1540701386937754,
+      "historical_modified_trades": 1028,
+      "2025H1_F05_net_jpy": -13629,
+      "2025H1_F05_profit_factor": 0.695910216649189,
+      "2025H1_F05_delta_jpy": 215,
+      "2025H1_portfolio_net_jpy": -20593,
+      "2025H1_portfolio_profit_factor": 0.7375383948713373,
+      "2025H1_portfolio_delta_jpy": 215,
+      "2025H1_modified_trades": 261,
+      "selection": "REJECT_LOW_HISTORICAL_RETENTION_AND_IMMATERIAL_2025H1_RECOVERY"
+    }
+  ],
+  "combined_candidate": {
+    "candidate_id": "C4_C1_PLUS_C3",
+    "authorized": false,
+    "reason": "The preregistered 2023-2024 complementarity prerequisites were not met."
+  },
+  "outcome_visibility": {
+    "baseline_2025H1_known_before_study": true,
+    "candidate_versions_frozen_before_first_candidate_outcome": true,
+    "valid_candidate_2025H1_rerun_count_each": 1,
+    "candidate_contract_changed_after_outcome": false,
+    "retuned_after_2025H1": false,
+    "technical_invalid_prior_candidate_replay_count": 0
+  },
+  "execution_integrity": {
+    "JPY_currency_mismatch": 0,
+    "same_timestamp_chronology_mismatch": 0,
+    "B02_entry_exit_changed": false,
+    "B02_changed_trades": 0,
+    "baseline_stopout_breached": false,
+    "candidate_research_full_equity_and_margin_status": "NOT_EXECUTED_BECAUSE_NO_CANDIDATE_SELECTED_FOR_CORE_MT4",
+    "Research_Core_parity_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+    "Core_MT4_candidate_parity_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+    "candidate_MT4_compile_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE"
+  },
+  "residual_loss": {
+    "best_2025H1_portfolio_net_among_finite_candidates_jpy": -6786,
+    "best_2025H1_portfolio_candidate": "C2_MARKET_STATE_COMPRESSION",
+    "amount_needed_to_reach_zero_jpy": 6786,
+    "why_not_selected": "It removes all 1,451 historical F05 trades and retains 0% of 2023-2024 F05 net.",
+    "best_historically_nonzero_candidate": "C3_CONTINUATION_GIVEBACK_LIFECYCLE",
+    "its_2025H1_portfolio_net_jpy": -20593,
+    "its_amount_needed_to_reach_zero_jpy": 20593
+  },
+  "parallel_study_isolation": {
+    "USDJPY-HYP-039_changed": false,
+    "USDJPY-HYP-040_changed": false,
+    "B02_v2_branch_changed": false,
+    "common_portfolio_integration_branch_changed": false
+  },
+  "deployment": {
+    "selected_candidate": null,
+    "Core_F05_v2_module_created": false,
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "release": {
+    "tag": "usdjpy-hyp041-f05-v2-portable-recovery-v1",
+    "status": "PENDING_CLOSURE_PR_MERGE_WORKFLOW"
+  },
+  "exact_next_action": "Treat F05 as F05_BASELINE_UNCHANGED in the common portfolio integration framework. Import the formal HYP-041 FAIL and candidate-level residual-loss evidence, then compare available HYP-039, HYP-040, baseline B02 and HYP-042 C3 reserve combinations without reopening or retuning HYP-041."
+}
