@@ -15,6 +15,7 @@ on:
     branches: ['research/usdjpy-hyp041-f05-v2-v1']
     paths:
       - 'configs/run_markers/usdjpy_hyp041_f05_v2_source_probe_v1.json'
+      - 'configs/research/usdjpy_hyp041_2025h1_authority_transfer_receipt_v1.json'
       - 'tools/probe_usdjpy_hyp041_f05_v2_sources_v1.py'
       - '.github/workflows/usdjpy_hyp041_f05_v2_source_probe_v1.yml'
 
@@ -70,15 +71,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Verify marker and fixed boundaries
+      - name: Verify marker and signed authority receipt
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
           m=json.load(open('configs/run_markers/usdjpy_hyp041_f05_v2_source_probe_v1.json'))
+          t=json.load(open('configs/research/usdjpy_hyp041_2025h1_authority_transfer_receipt_v1.json'))
           assert m['hypothesis_id']=='USDJPY-HYP-041'
           assert m['candidate_outcomes_authorized'] is False
           assert m['2025H2_authorized'] is False
+          assert t['status']=='PASS_SIGNED_TRANSFER_URL_ISSUED'
+          assert t['release_asset_sha256']=='9961bbb2b19d9947d03ffd3446ec351ab3ebc458c3949f838d17bb354eee7865'
+          assert t['release_asset_bytes']==754850
+          assert t['transfer_only'] is True
+          assert t['candidate_logic_present'] is False
+          assert t['candidate_outcomes_computed'] is False
+          assert t['2025H2_accessed'] is False
           PY
       - name: Download checksum-identified immutable authorities
         env:
@@ -89,10 +98,15 @@ jobs:
           mkdir -p source_probe_inputs/core source_probe_inputs/phase1 source_probe_inputs/historical
           mkdir -p source_probe_extract/core source_probe_extract/phase1 source_probe_extract/historical
 
-          gh release download usdjpy-s3-market-state-2025h1-binding-v1 \
-            --repo mitsuru93/usdjpyea-core \
-            --dir source_probe_inputs/core \
-            --pattern 'usdjpy-s3-market-state-2025h1-30283492240-1.zip'
+          python - <<'PY'
+          import json, pathlib, urllib.request
+          r=json.load(open('configs/research/usdjpy_hyp041_2025h1_authority_transfer_receipt_v1.json'))
+          out=pathlib.Path('source_probe_inputs/core')/r['release_asset_name']
+          with urllib.request.urlopen(r['signed_url'], timeout=120) as response:
+              out.write_bytes(response.read())
+          if out.stat().st_size != r['release_asset_bytes']:
+              raise RuntimeError('Core transfer byte mismatch')
+          PY
           echo '9961bbb2b19d9947d03ffd3446ec351ab3ebc458c3949f838d17bb354eee7865  source_probe_inputs/core/usdjpy-s3-market-state-2025h1-30283492240-1.zip' | sha256sum -c -
 
           gh release download usdjpy-portfolio-loss-cluster-phase1-v1-r1 \
