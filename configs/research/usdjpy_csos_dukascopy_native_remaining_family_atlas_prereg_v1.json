@@ -7,6 +7,44 @@
   "core_reference_sha": "f897b250b808207d960417b2306935dcb0655acf",
   "purpose": "Reconstruct and rerank remaining CSOS families under one Dukascopy BI5 Bid/Ask Tick authority for independent alpha and portfolio complementarity.",
   "not_candidate_confirmation": true,
+  "period_role_clarification": {
+    "received_before_new_family_outcome_calculation": true,
+    "candidate_outcomes_seen_before_correction": false,
+    "family_contract_changed": false,
+    "ranking_gate_changed": false,
+    "source_changed": false,
+    "2020_2022_confirmation_designation_withdrawn": true,
+    "2025_external_validation_role_preserved": true
+  },
+  "period_roles": {
+    "2020_2022": {
+      "ea_research_role": "ANALYSIS_PERIOD",
+      "atlas_access": "NOT_REQUIRED_NOT_ACCESSED",
+      "atlas_scope_reason": "Atlas scope is fixed to common-source 2023-2024 ranking.",
+      "future_permitted_uses": [
+        "mechanism analysis",
+        "candidate development",
+        "feature evaluation",
+        "failure analysis",
+        "robustness analysis",
+        "period-dependence analysis"
+      ],
+      "confirmation_credit": false,
+      "external_validation_credit": false,
+      "binding_gate_for_2025": false
+    },
+    "2023_2024": {
+      "ea_research_role": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+      "atlas_role": "SOURCE_NATIVE_DISCOVERY_AND_RANKING",
+      "folds": ["2023H1", "2023H2", "2024H1", "2024H2"]
+    },
+    "2025": {
+      "ea_research_role": "UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD",
+      "atlas_access": "PROHIBITED_NOT_ACCESSED",
+      "atlas_ranking_credit": false,
+      "shortlist_can_be_changed_by_2025": false
+    }
+  },
   "parallel_firewall": {
     "separate_from": "Short Pullback Continuation Directional Asymmetry and Historical Portability Study",
     "pullback_family_re_evaluated": false,
@@ -15,7 +53,6 @@
   },
   "discovery_period": ["2023H1", "2023H2", "2024H1", "2024H2"],
   "warmup_only_period": "2019_IF_REQUIRED_BY_FROZEN_CONTRACT",
-  "protected_periods": ["2020", "2021", "2022", "2025"],
   "binding_source": "Dukascopy BI5 source-native Bid/Ask Tick",
   "bar_contract": {
     "timeframe": "M15",
@@ -74,7 +111,12 @@
   "side_or_session_exclusion_prohibited": true,
   "old_atlas_is_comparator_only": true,
   "ranking_tracks": ["INDEPENDENT_ALPHA", "COMPLEMENTARITY_MECHANISM"],
-  "shortlist_limits": {"track_a": 1, "track_b": 1, "same_family_multiple_variants": false, "mechanism_research_only": 1},
+  "shortlist_limits": {
+    "track_a": 1,
+    "track_b": 1,
+    "same_family_multiple_variants": false,
+    "mechanism_research_only": 1
+  },
   "shortlist_gates": {
     "independent_alpha": {
       "min_trades": 120,
@@ -105,6 +147,12 @@
       "top5_removed_net_gt": 0,
       "spread_plus_1pip_net_gt": 0
     }
+  },
+  "shortlist_meaning": "Research prioritization only; not candidate approval, historical validation, Core/MT4 authorization, 2025 authorization, production or live authorization.",
+  "shortlist_followup_period_design": {
+    "2020_2022": "analysis and candidate design are permitted; no confirmation or external-validation credit",
+    "2023_2024": "main research and candidate construction",
+    "2025": "only binding unseen external validation after candidate freeze and Core/MT4 parity"
   },
   "candidate_freeze_authorized": false,
   "core_or_mt4_authorized": false,
