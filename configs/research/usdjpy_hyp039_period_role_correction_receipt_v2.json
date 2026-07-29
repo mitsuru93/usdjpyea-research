@@ -1,0 +1,31 @@
+{
+  "schema_version": "usdjpy_hyp039_period_role_correction_receipt_v2",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "decision": "PERIOD_ROLE_AND_OUTCOME_VISIBILITY_SEPARATED_BEFORE_FIRST_2025H1_SHORT_PULLBACK_ACCESS",
+  "superseded_statements": [
+    "2025H1 candidate-specific external evaluation then development/diagnostic period",
+    "later 2025H1 runs may become development or diagnostic runs as a period role"
+  ],
+  "fixed_period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD"
+  },
+  "outcome_visibility_labels": [
+    "UNSEEN_AT_FIRST_VALIDATION",
+    "PREVIOUSLY_OBSERVED_VALIDATION_PERIOD",
+    "MODIFIED_AFTER_VALIDATION_RESULT",
+    "UNCHANGED_REVALIDATION"
+  ],
+  "candidate_at_correction": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "2025H1_short_pullback_outcome_accessed_before_correction": false,
+  "candidate_rule_changed_by_correction": false,
+  "candidate_freeze_timestamp_changed": false,
+  "HYP037_decision_changed": false,
+  "HYP038_decision_changed": false,
+  "2025H2_automatically_substituted_for_2025H1": false,
+  "validation_period_result_remains_valid_after_prior_visibility": true,
+  "production_authorized": false,
+  "live_authorized": false,
+  "corrected_at_utc": "2026-07-29T11:46:00Z"
+}

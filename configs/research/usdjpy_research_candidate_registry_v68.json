@@ -8,14 +8,24 @@
   "candidate_ids": ["C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED"],
   "candidate_registry": "configs/research/usdjpy_hyp039_candidate_contract_v1.json",
   "candidate_rule_changed": false,
-  "development_decision": "FROZEN_FOR_CORE_MT4_AND_2025H1_RECOVERY_QUALIFICATION",
+  "development_decision": "FROZEN_FOR_CORE_MT4_AND_2025H1_VALIDATION_QUALIFICATION",
   "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v42.json",
   "period_access_receipt": "configs/research/usdjpy_hyp039_period_access_receipt_v1.json",
+  "period_role_correction_receipt": "configs/research/usdjpy_hyp039_period_role_correction_receipt_v2.json",
   "period_roles": {
-    "2020_2022": "ANALYSIS_ONLY_NOT_REQUIRED",
-    "2023_2024": "PORTABILITY_AND_PARITY_NO_RETUNING",
-    "2025H1": "CANDIDATE_SPECIFIC_EXTERNAL_EVALUATION",
-    "2025H2": "RESERVED_FINAL_INTEGRATED_GATE"
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "EA_WIDE_POLICY_AND_ACCESS_HISTORY_CONTROLLED_ADDITIONAL_VALIDATION_PERIOD"
+  },
+  "outcome_visibility": {
+    "candidate_version": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+    "2025H1": "UNSEEN_AT_FIRST_VALIDATION",
+    "first_access_timestamp": null,
+    "candidate_version_at_first_access": null,
+    "subsequent_rerun_count": 0,
+    "candidate_modified_after_result": false,
+    "unseen_validation_claim": true
   },
   "closed_boundaries": {
     "USDJPY-HYP-037": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
@@ -26,13 +36,14 @@
     "2020_2022_binding_confirmation": false,
     "Core_implementation": true,
     "MT4_candidate": true,
-    "2025H1": "CONDITIONAL_AFTER_PRE_2025_SEQUENCE",
-    "2025H2": false,
+    "2025H1": "VALIDATION_PERIOD_CONDITIONAL_AFTER_PREVALIDATION_SEQUENCE",
+    "2025H2": "NOT_AUTOMATICALLY_CONSUMED_OR_SUBSTITUTED",
     "production": false,
     "live": false
   },
   "HYP038_filter_reuse": false,
+  "period_role_changes_after_outcome_access": false,
   "scientific_gate_definition_changed_after_outcome": false,
   "technical_no_result": false,
-  "next_action": "Complete Core implementation, zero-mismatch Research/Core parity, MT4 compile and Rakuten 2023-2024 portability before opening the frozen 2025H1 Short Pullback outcome."
+  "next_action": "Complete Core implementation, zero-mismatch Research/Core parity, MT4 compile and Rakuten 2023-2024 portability before the first 2025H1 validation-period run with UNSEEN_AT_FIRST_VALIDATION visibility."
 }

@@ -6,6 +6,22 @@
   "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
   "candidate_contract": "configs/research/usdjpy_hyp039_candidate_contract_v1.json",
   "period_access_receipt": "configs/research/usdjpy_hyp039_period_access_receipt_v1.json",
+  "period_role_policy": {
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "period_role_independent_of_outcome_visibility": true,
+    "2025H1_never_reclassified_as_analysis_research_or_development": true
+  },
+  "outcome_visibility_at_freeze": {
+    "candidate_version": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+    "2025H1": "UNSEEN_AT_FIRST_VALIDATION",
+    "2025H1_first_access_timestamp": null,
+    "2025H1_candidate_version_at_first_access": null,
+    "2025H1_subsequent_rerun_count": 0,
+    "candidate_modified_after_result": false,
+    "unseen_validation_claim": true
+  },
   "baseline_2025H1_authority": {
     "trades": 463,
     "net_jpy": -20808,
@@ -20,9 +36,9 @@
     "Research/Core row-level parity",
     "MT4 compile",
     "Rakuten 2023-2024 portability",
-    "2025H1 Short Pullback standalone external evaluation",
-    "2025H1 B02/F05/Short Pullback integrated portfolio replay",
-    "concentration, margin and residual-loss diagnostics",
+    "2025H1 Short Pullback standalone validation",
+    "2025H1 B02/F05/Short Pullback integrated validation-period portfolio replay",
+    "2025H1 validation-period concentration, margin and residual-loss diagnostics",
     "immutable evidence and final decision"
   ],
   "rakuten_2023_2024_stop_condition": "Stop before 2025H1 only for algorithm/information-time/contract failure or clearly negative Rakuten-native expectation; source-native population differences alone are not automatic failure.",
@@ -82,18 +98,33 @@
     ],
     "automatic_failure_from_concentration_only": false
   },
+  "post_result_validation_policy": {
+    "additional_2025H1_runs_allowed": true,
+    "unchanged_candidate_label": "UNCHANGED_REVALIDATION",
+    "modified_candidate_label": "MODIFIED_AFTER_VALIDATION_RESULT",
+    "permitted_run_descriptions": [
+      "2025H1 validation-period rerun",
+      "2025H1 validation-period diagnostic comparison",
+      "2025H1 post-result revalidation",
+      "2025H1 POST-MODIFICATION REVALIDATION"
+    ],
+    "changed_candidate_may_claim_unseen_validation": false,
+    "2025H1_validation_result_remains_valid_for_final_EA_decision": true
+  },
   "prohibitions": [
     "change HYP-037 decision",
     "change HYP-038 decision",
     "reuse HYP-038 filters",
-    "change Short Pullback entry, exit, hold, side, thresholds or sessions",
-    "change B02/F05 entry or exit",
-    "retune the same candidate version after 2025H1 access",
+    "change Short Pullback entry, exit, hold, side, thresholds or sessions within C1 unchanged version",
+    "change B02/F05 entry or exit within this qualification",
     "hide 2025H1 outcomes",
-    "consume 2025H2",
+    "reclassify 2025H1 as analysis, research or development period",
+    "invalidate 2025H1 because outcomes were previously observed",
+    "automatically transfer the validation role to 2025H2",
     "authorize production or live trading",
     "add recurring monitor"
   ],
-  "status": "FROZEN_BEFORE_2025H1_OUTCOME_ACCESS",
-  "created_at_utc": "2026-07-29T11:40:00Z"
+  "status": "FROZEN_BEFORE_FIRST_2025H1_VALIDATION_ACCESS",
+  "created_at_utc": "2026-07-29T11:40:00Z",
+  "period_role_corrected_at_utc": "2026-07-29T11:46:00Z"
 }
