@@ -79,6 +79,9 @@
         "period_access_receipt": "configs/research/usdjpy_hyp036_period_access_receipt_v1.json",
         "output_manifest": "configs/research/usdjpy_hyp036_output_manifest_v1.json"
       },
+      "successor_questions": [
+        "Which independent non-Pullback mechanism in the opportunity portfolio has the strongest source-native evidence after HYP-030 through HYP-036 closures?"
+      ],
       "historical_2020_2022_accessed": false,
       "core_mt4_accessed": false,
       "2025_accessed": false,
@@ -93,8 +96,14 @@
       "hypothesis_id": "USDJPY-HYP-036",
       "family_id": "S_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE",
       "prior_status": "PREREGISTERED_DUKASCOPY_NATIVE_DEVELOPMENT",
+      "phase2_status": "COMPLETE_NO_PORTABLE_EXECUTABLE_CANDIDATE",
       "status": "COMPLETE_NO_PORTABLE_EXECUTABLE_CANDIDATE",
       "decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE",
+      "evidence_refs": {
+        "scientific_run_id": 30414664817,
+        "scientific_artifact_id": 8709903106,
+        "result": "configs/research/usdjpy_hyp036_final_result_v1.json"
+      },
       "retuning": false,
       "authorization": {"candidate_freeze": false, "historical_2020_2022": false, "Core": false, "MT4": false, "2025H1": false, "2025H2": false, "production": false, "live": false}
     }
