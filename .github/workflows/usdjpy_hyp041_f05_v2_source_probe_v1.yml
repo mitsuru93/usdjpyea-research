@@ -127,7 +127,25 @@ jobs:
             '9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b' source_probe_inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip > source_probe_inputs/historical/SHA256SUMS
           sha256sum -c source_probe_inputs/historical/SHA256SUMS
 
-          unzip -q source_probe_inputs/core/usdjpy-s3-market-state-2025h1-30283492240-1.zip -d source_probe_extract/core
+          python - <<'PY'
+          import pathlib, shutil, zipfile
+          source=pathlib.Path('source_probe_inputs/core/usdjpy-s3-market-state-2025h1-30283492240-1.zip')
+          root=pathlib.Path('source_probe_extract/core').resolve()
+          with zipfile.ZipFile(source) as z:
+              for info in z.infolist():
+                  name=info.filename.replace('\\','/').lstrip('/')
+                  if not name:
+                      continue
+                  target=(root/name).resolve()
+                  if root not in target.parents and target != root:
+                      raise RuntimeError(f'unsafe ZIP member: {info.filename}')
+                  if info.is_dir() or name.endswith('/'):
+                      target.mkdir(parents=True, exist_ok=True)
+                  else:
+                      target.parent.mkdir(parents=True, exist_ok=True)
+                      with z.open(info) as src, target.open('wb') as dst:
+                          shutil.copyfileobj(src,dst)
+          PY
           unzip -q source_probe_inputs/phase1/usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip -d source_probe_extract/phase1
           for f in source_probe_inputs/historical/*.zip; do
             d="source_probe_extract/historical/$(basename "$f" .zip)"
