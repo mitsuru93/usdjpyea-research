@@ -1,0 +1,42 @@
+name: USDJPY HYP-037 Release v1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp037_final_result_v1.json'
+      - 'docs/research/USDJPY_HYP037_SHORT_PULLBACK_CONTINUATION_PORTABILITY_RESULT_V1.md'
+      - '.github/workflows/usdjpy_hyp037_release_v1.yml'
+permissions:
+  contents: write
+  issues: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exact-SHA selective fetch and publish immutable evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/h37rel"; rm -rf "$root"; mkdir -p "$root"/{repo,artifact,readback}
+          sha='${{ github.sha }}'; fetch(){ p="$1"; o="$root/repo/$p"; mkdir -p "$(dirname "$o")"; gh api "repos/${GITHUB_REPOSITORY}/contents/${p}?ref=${sha}" --jq .content | tr -d '\n' | base64 -d > "$o"; test -s "$o"; }
+          for p in configs/research/usdjpy_hyp037_final_result_v1.json configs/research/usdjpy_hyp037_source_inventory_v1.json configs/research/usdjpy_hyp037_mechanism_attribution_v1.json configs/research/usdjpy_hyp037_currency_audit_v1.json configs/research/usdjpy_hyp037_period_access_receipt_v1.json configs/research/usdjpy_hyp037_candidate_registry_v1.json configs/research/usdjpy_hyp037_output_manifest_v1.json configs/research/usdjpy_short_pullback_continuation_portability_prereg_v1.json docs/research/USDJPY_HYP037_SHORT_PULLBACK_CONTINUATION_PORTABILITY_RESULT_V1.md; do fetch "$p"; done
+          gh api -H 'Accept: application/vnd.github+json' /repos/${GITHUB_REPOSITORY}/actions/artifacts/8712825068/zip > "$root/artifact.zip"
+          printf '%s  %s\n' ef2dc9458f4f15dbcab20172ddad611d8342dec9784d80a4428c2a5bd1bf8ad4 "$root/artifact.zip" | sha256sum -c -
+          unzip -q "$root/artifact.zip" -d "$root/artifact"
+          test -f "$root/artifact/usdjpy-hyp037-source-authority-no-result-v1.zip"
+          printf '%s  %s\n' aca8758a39805c4e56122460013b3a9bf3446a3f06f1d8b322041760f292bc0a "$root/artifact/usdjpy-hyp037-source-authority-no-result-v1.zip" | sha256sum -c -
+          cp "$root/artifact/usdjpy-hyp037-source-authority-no-result-v1.zip" "$root/"
+          cp "$root/artifact/archive_receipt.json" "$root/"
+          tag=usdjpy-hyp037-short-pullback-source-no-result-v1
+          gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target "$sha" --title 'USDJPY-HYP-037 source-authority technical no-result v1' --notes-file "$root/repo/docs/research/USDJPY_HYP037_SHORT_PULLBACK_CONTINUATION_PORTABILITY_RESULT_V1.md" "$root/usdjpy-hyp037-source-authority-no-result-v1.zip" "$root/archive_receipt.json" "$root/repo/configs/research/usdjpy_hyp037_final_result_v1.json" "$root/repo/configs/research/usdjpy_hyp037_source_inventory_v1.json" "$root/repo/configs/research/usdjpy_hyp037_mechanism_attribution_v1.json" "$root/repo/docs/research/USDJPY_HYP037_SHORT_PULLBACK_CONTINUATION_PORTABILITY_RESULT_V1.md"
+          gh release download "$tag" --repo "$GITHUB_REPOSITORY" --dir "$root/readback"
+          test "$(sha256sum "$root/readback/usdjpy-hyp037-source-authority-no-result-v1.zip" | cut -d' ' -f1)" = aca8758a39805c4e56122460013b3a9bf3446a3f06f1d8b322041760f292bc0a
+          python - <<'PY' > "$root/receipt.json"
+          import json, os
+          print(json.dumps({'schema_version':'usdjpy_hyp037_release_receipt_v1','status':'PASS_IMMUTABLE_RELEASE_READBACK','release_tag':'usdjpy-hyp037-short-pullback-source-no-result-v1','main_sha':os.environ['GITHUB_SHA'],'source_run_id':30423475688,'source_artifact_id':8712825068,'source_artifact_digest':'sha256:ef2dc9458f4f15dbcab20172ddad611d8342dec9784d80a4428c2a5bd1bf8ad4','deterministic_archive_sha256':'aca8758a39805c4e56122460013b3a9bf3446a3f06f1d8b322041760f292bc0a','decision':'TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED','candidate_outcomes_2020_2022_accessed':False,'protected_2025_accessed':False},indent=2))
+          PY
+          enc=$(base64 -w0 "$root/receipt.json"); gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/configs/research/usdjpy_hyp037_release_receipt_v1.json" -f message='research: record HYP-037 immutable release readback' -f content="$enc" -f branch=main >/dev/null
+          gh issue create --repo "$GITHUB_REPOSITORY" --title 'Receipt: USDJPY-HYP-037 source-authority technical no-result' --body "Decision: TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED\n\nRun: 30423475688\nArtifact: 8712825068\nRelease: $tag\nArchive SHA256: aca8758a39805c4e56122460013b3a9bf3446a3f06f1d8b322041760f292bc0a\n2020-2022 candidate outcomes accessed: false\n2025 accessed: false\nCore/MT4/production/live authorization: false" >/dev/null
