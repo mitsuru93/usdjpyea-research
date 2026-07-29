@@ -2,6 +2,8 @@
   "schema_version": "usdjpy_csos_dukascopy_native_remaining_family_atlas_canonicalization_request_v1",
   "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
   "source_merge_sha": "1539289d663882a3e472d13159952e74c89a8fb9",
+  "latest_main_observed_sha": "d6dfbc768c2bbf7fdc482543798cb2d8dfe45f4f",
+  "parallel_main_update_preserved": "USDJPY-HYP-037 corrected-period closure from PR #401",
   "purpose": "Run the main-registered workflow on a pull request, read back the complete scientific artifact, and commit canonical result, report, program and memory records without changing contracts or outcomes.",
   "family_contract_changed": false,
   "ranking_gate_changed": false,
