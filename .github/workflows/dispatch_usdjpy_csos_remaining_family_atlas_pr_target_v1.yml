@@ -24,6 +24,8 @@ jobs:
           legacy_run=30428550983
           receipt=configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json
 
+          gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: dispatcher started for PR #${{ github.event.pull_request.number }} at head ${{ github.event.pull_request.head.sha }}."
+
           if gh api "repos/${repo}/contents/${receipt}" >/dev/null 2>&1; then
             gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: immutable Release receipt already exists; no duplicate dispatch performed."
             exit 0
