@@ -1,0 +1,59 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v70",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v69.json",
+  "status": "PARALLEL_ACTIVE_HYP039_HYP040_AND_HYP041_ISOLATED_F05_V2_DECOMPOSITION",
+  "active_hypotheses": ["USDJPY-HYP-039", "USDJPY-HYP-040", "USDJPY-HYP-041"],
+  "inherited_parallel_studies": {
+    "USDJPY-HYP-039": {
+      "status": "ACTIVE_FROZEN_PRE_2025H1_QUALIFICATION",
+      "family": "S_SHORT_PULLBACK_UNCHANGED_2025H1_RECOVERY",
+      "candidate": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+      "source_registry": "configs/research/usdjpy_research_candidate_registry_v69.json",
+      "changed_by_v70": false,
+      "included_in_HYP041_portfolio": false
+    },
+    "USDJPY-HYP-040": {
+      "status": "ACTIVE_FROZEN_PRE_2025H1_QUALIFICATION",
+      "family": "S_ASIAN_RANGE_SWEEP_UNCHANGED_2025H1_RECOVERY",
+      "candidate": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+      "source_registry": "configs/research/usdjpy_research_candidate_registry_v69.json",
+      "changed_by_v70": false,
+      "included_in_HYP041_portfolio": false
+    }
+  },
+  "USDJPY-HYP-041": {
+    "status": "ACTIVE_FAILURE_DECOMPOSITION_PENDING_NO_CANDIDATE_FROZEN",
+    "family": "F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE",
+    "candidate_catalog": [],
+    "maximum_single_candidates": 3,
+    "maximum_combined_candidates": 1,
+    "binding_portfolio": "B02_PLUS_F05_BASELINE_VERSUS_B02_PLUS_F05_V2_WITH_B02_UNCHANGED",
+    "preregistration": "configs/research/usdjpy_hyp041_preregistration_v1.json",
+    "period_access_receipt": "configs/research/usdjpy_hyp041_period_access_receipt_v1.json"
+  },
+  "closed_boundaries": {
+    "USDJPY-HYP-027": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+    "USDJPY-HYP-029": "FAIL_2025H1_BINDING",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING"
+  },
+  "period_roles": {
+    "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_OR_AUXILIARY_ANALYSIS_NOT_BINDING",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_AUTOMATICALLY_USED_OR_SUBSTITUTED"
+  },
+  "run_authorization": {
+    "USDJPY-HYP-039": "UNCHANGED_FROM_V69",
+    "USDJPY-HYP-040": "UNCHANGED_FROM_V69",
+    "USDJPY-HYP-041_source_inventory": true,
+    "USDJPY-HYP-041_failure_decomposition": true,
+    "USDJPY-HYP-041_candidate_research": "AFTER_FINITE_CATALOG_FREEZE",
+    "USDJPY-HYP-041_Core_MT4": "MAXIMUM_ONE_SELECTED_CANDIDATE",
+    "USDJPY-HYP-041_2025H1": "VALIDATION_PERIOD_WITH_VERSION_VISIBILITY",
+    "USDJPY-HYP-041_2025H2": "NOT_AUTOMATICALLY_USED_OR_SUBSTITUTED",
+    "production": false,
+    "live": false
+  },
+  "common_portfolio_integration_authorized": false,
+  "next_action": "Run exact-source inventory and common-schema failure decomposition without changing HYP-039 or HYP-040."
+}
