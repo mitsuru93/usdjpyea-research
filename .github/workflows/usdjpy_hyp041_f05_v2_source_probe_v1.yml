@@ -1,0 +1,155 @@
+name: USDJPY HYP-041 F05 v2 source probe v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp041_*.json'
+      - 'configs/research/usdjpy_hypothesis_ledger_addendum_v44.json'
+      - 'configs/research/usdjpy_research_candidate_registry_v70.json'
+      - 'configs/research/usdjpy_2023_2024_hypothesis_program_v15.json'
+      - 'docs/research/USDJPY_HYP041_F05_V2_PREREGISTRATION_V1.md'
+      - 'tools/probe_usdjpy_hyp041_f05_v2_sources_v1.py'
+      - '.github/workflows/usdjpy_hyp041_f05_v2_source_probe_v1.yml'
+  push:
+    branches: ['research/usdjpy-hyp041-f05-v2-v1']
+    paths:
+      - 'configs/run_markers/usdjpy_hyp041_f05_v2_source_probe_v1.json'
+      - 'tools/probe_usdjpy_hyp041_f05_v2_sources_v1.py'
+      - '.github/workflows/usdjpy_hyp041_f05_v2_source_probe_v1.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: usdjpy-hyp041-source-probe-v1
+  cancel-in-progress: false
+
+jobs:
+  preregistration:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate frozen no-outcome protocol
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/probe_usdjpy_hyp041_f05_v2_sources_v1.py
+          python - <<'PY'
+          import json
+          p=json.load(open('configs/research/usdjpy_hyp041_preregistration_v1.json'))
+          s=json.load(open('configs/research/usdjpy_hyp041_startup_receipt_v1.json'))
+          r=json.load(open('configs/research/usdjpy_hyp041_period_access_receipt_v1.json'))
+          g=json.load(open('configs/research/usdjpy_research_candidate_registry_v70.json'))
+          assert p['hypothesis_id']=='USDJPY-HYP-041'
+          assert p['status']=='FROZEN_FAILURE_DECOMPOSITION_PROTOCOL_NO_CANDIDATE_OUTCOME'
+          assert p['candidate_catalog_contract']['maximum_total_candidates']==4
+          assert p['candidate_outcomes_accessed'] is False
+          assert r['period_roles']['2025H1']=='VALIDATION_PERIOD'
+          assert r['period_roles']['2025H2']=='NOT_AUTOMATICALLY_USED_OR_SUBSTITUTED'
+          assert s['hypothesis_id_audit']['USDJPY-HYP-041']=='UNUSED_AT_START_AND_RESERVED_BY_THIS_RECEIPT'
+          assert g['inherited_parallel_studies']['USDJPY-HYP-039']['changed_by_v70'] is False
+          assert g['inherited_parallel_studies']['USDJPY-HYP-040']['changed_by_v70'] is False
+          assert g['USDJPY-HYP-041']['candidate_catalog']==[]
+          PY
+
+  source-probe:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/usdjpy-hyp041-f05-v2-v1
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify marker and fixed boundaries
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          m=json.load(open('configs/run_markers/usdjpy_hyp041_f05_v2_source_probe_v1.json'))
+          assert m['hypothesis_id']=='USDJPY-HYP-041'
+          assert m['candidate_outcomes_authorized'] is False
+          assert m['2025H2_authorized'] is False
+          PY
+      - name: Download checksum-identified immutable authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf source_probe_inputs source_probe_extract
+          mkdir -p source_probe_inputs/core source_probe_inputs/phase1 source_probe_inputs/historical
+          mkdir -p source_probe_extract/core source_probe_extract/phase1 source_probe_extract/historical
+
+          gh release download usdjpy-s3-market-state-2025h1-binding-v1 \
+            --repo mitsuru93/usdjpyea-core \
+            --dir source_probe_inputs/core \
+            --pattern 'usdjpy-s3-market-state-2025h1-30283492240-1.zip'
+          echo '9961bbb2b19d9947d03ffd3446ec351ab3ebc458c3949f838d17bb354eee7865  source_probe_inputs/core/usdjpy-s3-market-state-2025h1-30283492240-1.zip' | sha256sum -c -
+
+          gh release download usdjpy-portfolio-loss-cluster-phase1-v1-r1 \
+            --repo mitsuru93/usdjpyea-research \
+            --dir source_probe_inputs/phase1 \
+            --pattern 'usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip'
+          echo '32ae25199256ca83e10a6a5da2cb9236f90ce0f41ebd797a3bd205b5b299bada  source_probe_inputs/phase1/usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip' | sha256sum -c -
+
+          gh release download f05-failed-reclaim-historical-authorities-v1 \
+            --repo mitsuru93/usdjpyea-research \
+            --dir source_probe_inputs/historical \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip'
+          printf '%s  %s\n' \
+            '22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01' source_probe_inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip \
+            'e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5' source_probe_inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip \
+            '9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b' source_probe_inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip > source_probe_inputs/historical/SHA256SUMS
+          sha256sum -c source_probe_inputs/historical/SHA256SUMS
+
+          unzip -q source_probe_inputs/core/usdjpy-s3-market-state-2025h1-30283492240-1.zip -d source_probe_extract/core
+          unzip -q source_probe_inputs/phase1/usdjpy-portfolio-loss-cluster-phase1-v1-r1.zip -d source_probe_extract/phase1
+          for f in source_probe_inputs/historical/*.zip; do
+            d="source_probe_extract/historical/$(basename "$f" .zip)"
+            mkdir -p "$d"
+            unzip -q "$f" -d "$d"
+          done
+      - name: Inventory source schemas without candidate outcomes
+        run: |
+          set -euo pipefail
+          python tools/probe_usdjpy_hyp041_f05_v2_sources_v1.py \
+            --core-release-dir source_probe_extract/core \
+            --phase1-dir source_probe_extract/phase1 \
+            --historical-dir source_probe_extract/historical \
+            --out-json configs/research/usdjpy_hyp041_source_inventory_v1.json \
+            --out-report docs/research/USDJPY_HYP041_SOURCE_INVENTORY_V1.md \
+            --research-sha "$GITHUB_SHA" \
+            --run-id "$GITHUB_RUN_ID"
+          jq -e '.status=="PASS_SOURCE_INVENTORY_NO_CANDIDATE_OUTCOME" and .candidate_outcomes_computed==false and ."2025H1_candidate_version_accessed"==false and ."2025H2_accessed"==false' configs/research/usdjpy_hyp041_source_inventory_v1.json
+      - name: Commit inventory to the study branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add configs/research/usdjpy_hyp041_source_inventory_v1.json docs/research/USDJPY_HYP041_SOURCE_INVENTORY_V1.md
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'research: inventory HYP-041 source authorities'
+          git push origin HEAD:research/usdjpy-hyp041-f05-v2-v1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp041-source-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            configs/research/usdjpy_hyp041_source_inventory_v1.json
+            docs/research/USDJPY_HYP041_SOURCE_INVENTORY_V1.md
+          retention-days: 30
+          compression-level: 0
