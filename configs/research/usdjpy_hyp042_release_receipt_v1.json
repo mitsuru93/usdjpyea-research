@@ -1,0 +1,21 @@
+{
+  "schema_version": "usdjpy_hyp042_release_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-042",
+  "decision": "B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE",
+  "release_tag": "usdjpy-hyp042-b02-recovery-v1",
+  "release_count": 1,
+  "release_assets_replaced_in_place": true,
+  "release_source_sha": "931e7480dd13a2712cb843a9469deb9b4e5fae7d",
+  "run_id": 30458937473,
+  "run_attempt": 1,
+  "artifact_id": 8726731308,
+  "artifact_digest": "45780078909e1c251be3dbc28e1bac4df0b2c8093f1b1cf7bef94ef7bd0c1e19",
+  "release_zip_sha256": "3983b7c0d9a8d9dd5f95731dfa64087f5fd23c92fd5f2419f47a8f466d33e023",
+  "receipt_issue": 423,
+  "readback_status": "PASS_ARCHIVE_MANIFEST_AND_PACKAGE_SHA256SUMS",
+  "supersedes_packaging_receipt_run": 30458363219,
+  "scientific_result_changed": false,
+  "baseline_B02_unchanged": true,
+  "core_mt4_implemented": false,
+  "parallel_studies_modified": false
+}
