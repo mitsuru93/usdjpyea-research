@@ -1,0 +1,21 @@
+{
+  "schema_version": "usdjpy_hyp041_2025h1_authority_transfer_receipt_v1",
+  "status": "PASS_SIGNED_TRANSFER_URL_ISSUED",
+  "hypothesis_id": "USDJPY-HYP-041",
+  "core_issue": 507,
+  "core_run_id": 30456580111,
+  "core_sha": "71a396018df273b4a6e1f7a259e9f70e9bfd2e87",
+  "release_tag": "usdjpy-s3-market-state-2025h1-binding-v1",
+  "release_asset_id": 491658936,
+  "release_asset_name": "usdjpy-s3-market-state-2025h1-30283492240-1.zip",
+  "release_asset_sha256": "9961bbb2b19d9947d03ffd3446ec351ab3ebc458c3949f838d17bb354eee7865",
+  "release_asset_bytes": 754850,
+  "signed_url_expiry_utc": "2026-07-29T14:34:18Z",
+  "signed_url": "https://release-assets.githubusercontent.com/github-production-release-asset/1207560375/e8c99b8e-f3b6-4927-b27c-e86f86925464?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-07-29T14%3A34%3A18Z&rscd=attachment%3B+filename%3Dusdjpy-s3-market-state-2025h1-30283492240-1.zip&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-07-29T13%3A34%3A14Z&ske=2026-07-29T14%3A34%3A18Z&sks=b&skv=2018-11-09&sig=UXnVXACQn%2BHCT3Js5htW3jpyEkK4KmpRItdXgIOXT30%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4NTMzMjM1NCwibmJmIjoxNzg1MzMyMDU0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.iCk-2aoG5cYQfeSGmGc8iLHAKMSIFt3uqDflNNVR_fI&response-content-disposition=attachment%3B%20filename%3Dusdjpy-s3-market-state-2025h1-30283492240-1.zip&response-content-type=application%2Foctet-stream",
+  "transfer_only": true,
+  "candidate_logic_present": false,
+  "candidate_outcomes_computed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
