@@ -1,0 +1,19 @@
+{
+  "schema_version": "usdjpy_hyp040_candidate_freeze_receipt_v1",
+  "status": "PASS_UNCHANGED_CONTRACT_FROZEN_PRE_2025H1",
+  "hypothesis_id": "USDJPY-HYP-040",
+  "candidate_id": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+  "contract_path": "configs/research/usdjpy_hyp040_candidate_contract_v1.json",
+  "contract_git_blob_sha": "41c848b9083828224183f429e813da2d7d20dcb4",
+  "source_research_sha": "80ca96c88d20d9a3281a0cdb0b7bd020cd149d42",
+  "source_hypothesis": "USDJPY-HYP-030",
+  "source_candidate": "A_EXACT_EXECUTABLE_12BAR",
+  "candidate_rule_changed": false,
+  "candidate_specific_2025H1_outcome_accessed_before_freeze": false,
+  "outcome_visibility_at_freeze": "UNSEEN_AT_FIRST_VALIDATION",
+  "retuning_after_first_access_allowed": false,
+  "hyp030_formal_decision_changed": false,
+  "hyp039_changed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

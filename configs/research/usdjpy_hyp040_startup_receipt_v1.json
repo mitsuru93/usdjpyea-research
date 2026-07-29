@@ -1,0 +1,38 @@
+{
+  "schema_version": "usdjpy_hyp040_startup_receipt_v1",
+  "generated_utc": "2026-07-29T12:58:00Z",
+  "hypothesis_id": "USDJPY-HYP-040",
+  "title": "Unchanged Asian Range Sweep 2025H1 Portfolio Recovery Qualification",
+  "family_id": "S_ASIAN_RANGE_SWEEP_UNCHANGED_2025H1_RECOVERY",
+  "candidate_id": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+  "research_start_sha": "80ca96c88d20d9a3281a0cdb0b7bd020cd149d42",
+  "core_start_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "hyp040_id_unused_on_start": true,
+  "hyp039_isolation": {
+    "research_status_changed": false,
+    "core_branch_changed": false,
+    "core_pr_changed": false,
+    "actions_changed": false,
+    "artifact_changed": false,
+    "release_changed": false,
+    "issue_changed": false,
+    "notion_status_changed": false,
+    "binding_portfolio": "B02 + F05 versus B02 + F05 + unchanged Asian Range Sweep"
+  },
+  "lineage": {
+    "source_hypothesis": "USDJPY-HYP-030",
+    "source_formal_decision": "NO_PORTABLE_CANDIDATE",
+    "source_formal_decision_changed": false,
+    "new_study_type": "INDEPENDENT_EA_WIDE_DEPLOYMENT_QUALIFICATION",
+    "rescue_or_retroactive_pass": false
+  },
+  "period_roles": {
+    "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_AUTOMATICALLY_USED"
+  },
+  "candidate_specific_2025H1_outcome_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

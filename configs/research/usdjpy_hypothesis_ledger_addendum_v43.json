@@ -1,0 +1,65 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v43",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v42.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v42.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-040",
+      "title": "Unchanged Asian Range Sweep 2025H1 Portfolio Recovery Qualification",
+      "family_ids": ["S_ASIAN_RANGE_SWEEP_UNCHANGED_2025H1_RECOVERY"],
+      "candidate_ids": ["A_EXACT_EXECUTABLE_12BAR_UNCHANGED"],
+      "status": "ACTIVE_FROZEN_PRE_2025H1_QUALIFICATION",
+      "decision": null,
+      "lineage": "Independent deployment qualification of the exact unchanged HYP-030 A_EXACT_EXECUTABLE_12BAR contract. HYP-030 remains NO_PORTABLE_CANDIDATE and HYP-039 remains independent and unchanged.",
+      "target_failure_mode": "The 2025H1 B02/F05 portfolio lost JPY20808; determine whether unchanged Asian Range Sweep restores or materially improves portfolio expectancy without unresolved execution, full-equity or margin failure.",
+      "authorization": {
+        "candidate_freeze": true,
+        "2023_2024_research_reproduction": true,
+        "Core": true,
+        "MT4": true,
+        "2025H1": "VALIDATION_PERIOD_AFTER_FREEZE_PARITY_COMPILE_AND_RAKUTEN_PORTABILITY",
+        "2025H2": "NOT_AUTOMATICALLY_USED_OR_SUBSTITUTED",
+        "production": false,
+        "live": false
+      },
+      "period_roles": {
+        "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_ANALYSIS_PERIOD",
+        "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+        "2025H1": "VALIDATION_PERIOD",
+        "period_role_independent_of_outcome_visibility": true
+      },
+      "period_access": {
+        "2020_2022": false,
+        "2023_2024_HYP030_canonical_outcomes": true,
+        "2025H1_unchanged_asian_range_sweep_outcomes": false,
+        "2025H2": false
+      },
+      "outcome_visibility": {
+        "candidate_version": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+        "2025H1": "UNSEEN_AT_FIRST_VALIDATION",
+        "first_access_timestamp": null,
+        "candidate_version_at_first_access": null,
+        "subsequent_rerun_count": 0,
+        "candidate_modified_after_result": false,
+        "unseen_validation_claim": true
+      },
+      "evidence_refs": {
+        "startup_receipt": "configs/research/usdjpy_hyp040_startup_receipt_v1.json",
+        "duplicate_audit": "configs/research/usdjpy_hyp040_duplicate_research_audit_v1.json",
+        "candidate_contract": "configs/research/usdjpy_hyp040_candidate_contract_v1.json",
+        "candidate_freeze_receipt": "configs/research/usdjpy_hyp040_candidate_freeze_receipt_v1.json",
+        "period_access_receipt": "configs/research/usdjpy_hyp040_period_access_receipt_v1.json",
+        "reproduction_authority": "configs/research/usdjpy_hyp040_hyp030_reproduction_authority_v1.json",
+        "preregistration": "configs/research/usdjpy_hyp040_preregistration_v1.json"
+      },
+      "parallel_study_isolation": {
+        "USDJPY-HYP-039": "UNCHANGED_INHERITED_ACTIVE_STUDY_NOT_INCLUDED_IN_PORTFOLIO"
+      },
+      "next_action": "Implement the frozen contract on a Core main-derived HYP-040 branch, prove exact HYP-030 reproduction and zero-mismatch parity, execute Rakuten 2023-2024 portability, then perform first 2025H1 validation-period access without HYP-039."
+    }
+  ],
+  "hypothesis_status_updates": []
+}
