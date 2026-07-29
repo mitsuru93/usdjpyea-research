@@ -1,0 +1,23 @@
+{
+  "schema_version": "usdjpy_hyp036_release_receipt_v1",
+  "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+  "hypothesis_id": "USDJPY-HYP-036",
+  "family_id": "S_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE",
+  "candidate_id": "A_DUKASCOPY_NATIVE_16BAR",
+  "decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE",
+  "failed_binding_stage": "DEVELOPMENT_STANDALONE",
+  "scientific_run_id": 30414664817,
+  "scientific_artifact_id": 8709903106,
+  "scientific_artifact_digest": "sha256:2cf0578322a9ad650ff5fe4ea60d9332624009b9f6bc1744450eb6c0ffc1afd8",
+  "release_workflow_run_id": 30415909945,
+  "head_sha": "69c70828cc7f714d594850a148ee68db24b94b0d",
+  "release_tag": "usdjpy-hyp036-dukas-native-development-v1",
+  "release_asset_sha256": "f3a69cb60d5e39a72d2d000af54d03a563954df3a74c84db49e3c8c24086f30b",
+  "byte_identical_readback": true,
+  "historical_2020_2022_accessed": false,
+  "protected_2025_accessed": false,
+  "core_modified": false,
+  "mt4_executed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
