@@ -1,0 +1,32 @@
+{
+  "schema_version": "usdjpy_hyp042_startup_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-042",
+  "title": "B02 2025H1 Breakout Failure Recovery Study",
+  "family_id": "B02_V2_BREAKOUT_ACCEPTANCE_AND_LIFECYCLE_RECOVERY",
+  "status": "STARTED_FROM_RESEARCH_MAIN_WITH_PARALLEL_STUDY_ISOLATION",
+  "research_base_sha": "4a6cb16768bbacc0c9bbeabfd5817bb26318c81a",
+  "core_authority": "mitsuru93/usdjpyea-core",
+  "period_roles": {
+    "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_NOT_BINDING",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD_WITH_KNOWN_BASELINE_AND_PERMITTED_FAILURE_DECOMPOSITION",
+    "2025H2": "NOT_AUTOMATICALLY_USED"
+  },
+  "known_2025H1_baseline": {
+    "portfolio_net_jpy": -20808,
+    "portfolio_pf_approx": 0.829,
+    "B02_net_jpy": -6964,
+    "F05_net_jpy": -13844,
+    "outcome_visibility": "KNOWN_BEFORE_HYP042",
+    "unseen_claim": false
+  },
+  "parallel_study_isolation": {
+    "USDJPY-HYP-039": "DO_NOT_MODIFY",
+    "USDJPY-HYP-040": "DO_NOT_MODIFY",
+    "USDJPY-HYP-041": "RESERVED_FOR_PARALLEL_F05_V2_DO_NOT_MODIFY",
+    "portfolio_integration_branch": "DO_NOT_MODIFY"
+  },
+  "prior_decisions_immutable": true,
+  "production_authorized": false,
+  "live_authorized": false
+}
