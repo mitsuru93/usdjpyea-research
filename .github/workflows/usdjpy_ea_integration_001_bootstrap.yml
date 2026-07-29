@@ -1,23 +1,23 @@
 name: USDJPY EA Integration 001 Bootstrap
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/usdjpy-ea-integration-001
-    paths:
-      - ".integration_bootstrap/**"
-      - ".github/workflows/usdjpy_ea_integration_001_bootstrap.yml"
+      - main
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write
 
 jobs:
   materialize:
+    if: github.head_ref == 'agent/usdjpy-ea-integration-001'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout integration branch
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
       - name: Materialize deterministic integration payload
@@ -48,4 +48,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "research: implement USDJPY common portfolio integration framework"
-          git push origin HEAD:agent/usdjpy-ea-integration-001
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
