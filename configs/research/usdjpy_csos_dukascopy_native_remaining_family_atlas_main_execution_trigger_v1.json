@@ -1,0 +1,15 @@
+{
+  "schema_version": "usdjpy_csos_dukascopy_native_remaining_family_atlas_main_execution_trigger_v1",
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "parent_main_sha": "d6dfbc768c2bbf7fdc482543798cb2d8dfe45f4f",
+  "reason": "Explicitly trigger the already-merged GitHub-hosted full Atlas workflow after preserving the parallel HYP-037 corrected-period closure.",
+  "scientific_contract_changed": false,
+  "source_changed": false,
+  "ranking_gate_changed": false,
+  "analysis_2020_2022_accessed": false,
+  "external_validation_2025_accessed": false,
+  "candidate_freeze": false,
+  "core_mt4_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
