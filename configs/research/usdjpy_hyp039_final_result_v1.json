@@ -1,0 +1,127 @@
+{
+  "schema_version": "usdjpy_hyp039_final_result_v1",
+  "status": "COMPLETE_SCIENTIFIC_RESULT",
+  "decision": "FAIL_CORE_MT4_PORTABILITY",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "study_name": "Unchanged Short Pullback Candidate Qualification",
+  "family_id": "J_PULLBACK_CONTINUATION",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "candidate_contract_version": "v2",
+  "authorities": {
+    "research_sha": "b6bc006952eb3355cc6a2c27e294a62771196669",
+    "core_sha": "2a3ec33dca6b933cd3d5501ba6932dd06f8f75b2",
+    "research_core_parity_run_id": 30463001231,
+    "research_core_parity_merge_ref_sha": "3e6b92492a16ee4b6b760c045441eee8f26a7642",
+    "core_execution_run_id": 30500520578,
+    "core_result_issue": 644
+  },
+  "candidate_contract": {
+    "trading_direction": "SHORT_ONLY",
+    "holding_contract": "16_M15_BARS_UNCHANGED",
+    "suppression_population": "BOTH_RAW_SIDES_FROM_HYP036_BEFORE_HYP037_SHORT_FILTER",
+    "shadow_long_order_permission": false,
+    "shadow_long_pl_computation": false,
+    "hyp038_filter_reuse": false,
+    "retuned_after_result": false
+  },
+  "gate_sequence": {
+    "research_core_parity": "PASS_ZERO_MISMATCH_500_OF_500",
+    "metaeditor_compile": "PASS_0_ERRORS_0_WARNINGS",
+    "rakuten_2023_2024_portability": "FAIL_CORE_MT4_PORTABILITY",
+    "progression_to_2025H1_validation_authorized": false,
+    "2025H1_validation": "NOT_EXECUTED_BECAUSE_PORTABILITY_GATE_FAILED"
+  },
+  "rakuten_2023_2024_portability": {
+    "status": "FAIL_CORE_MT4_PORTABILITY",
+    "source": "Rakuten MT4 native M15 HST, Model 0, fixed spread 5 points",
+    "trades": 499,
+    "expected_short_events": 500,
+    "net_jpy": 10739,
+    "gross_profit_jpy": 82025,
+    "gross_loss_jpy": -71286,
+    "profit_factor": 1.1506466907948265,
+    "positive_folds": 3,
+    "realized_drawdown_jpy": 7131,
+    "minimum_realized_equity_jpy": 99849,
+    "currency_mismatch": 0,
+    "execution_anomaly_count": 0,
+    "algorithm_or_information_time_mismatch": 242,
+    "fold_results": {
+      "2023H1": {
+        "expected_trades": 124,
+        "actual_trades": 124,
+        "net_jpy": 3314,
+        "profit_factor": 1.2388640622747586,
+        "full_equity_drawdown_jpy": 3266
+      },
+      "2023H2": {
+        "expected_trades": 137,
+        "actual_trades": 137,
+        "net_jpy": 6586,
+        "profit_factor": 1.416361107598938,
+        "full_equity_drawdown_jpy": 4804
+      },
+      "2024H1": {
+        "expected_trades": 97,
+        "actual_trades": 98,
+        "net_jpy": -1958,
+        "profit_factor": 0.8616938616938616,
+        "full_equity_drawdown_jpy": 3582
+      },
+      "2024H2": {
+        "expected_trades": 142,
+        "actual_trades": 142,
+        "net_jpy": 2311,
+        "profit_factor": 1.0827633133975576,
+        "full_equity_drawdown_jpy": 7400
+      }
+    },
+    "source_audit": {
+      "dukas_research_events": 500,
+      "rakuten_native_events": 500,
+      "common_events": 417,
+      "common_rate_vs_dukas": 0.834,
+      "dukas_only_events": 83,
+      "rakuten_only_events": 83,
+      "population_difference_automatic_failure": false,
+      "binding_failure_basis": "Row-level chronology, signal population, entry/exit price and information-time mismatches prevent exact Core/MT4 portability despite positive aggregate P/L."
+    }
+  },
+  "suppression_diagnostics": {
+    "raw_signal_total": 5094,
+    "raw_long_total": 3224,
+    "raw_short_total": 1870,
+    "accepted_long_shadow_total": 827,
+    "accepted_short_total": 500,
+    "accepted_variant_total": 1327,
+    "shadow_long_orders": 0
+  },
+  "period_access": {
+    "2020_2022_role": "ANALYSIS_PERIOD",
+    "2023_2024_role": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1_role": "VALIDATION_PERIOD",
+    "2025H1_candidate_outcome_accessed": false,
+    "2025H1_first_access_timestamp": null,
+    "2025H1_validation_rerun_count": 0,
+    "2025H1_unseen_claim_consumed": false,
+    "2025H2_accessed": false
+  },
+  "authorization": {
+    "production_authorized": false,
+    "live_authorized": false,
+    "portfolio_integration_authorized": false
+  },
+  "immutable_evidence": {
+    "core_release_tag": "usdjpy-hyp039-short-pullback-recovery-v1",
+    "core_release_id": 362109416,
+    "core_release_asset_id": 494673692,
+    "archive_sha256": "8a1594ac278dcde1f24388d34c3543d0e273c6ea6f7ba0c794e2f53b3e4fb194",
+    "release_readback_status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+  },
+  "formal_closure": {
+    "candidate_status": "CLOSED",
+    "hyp037_decision_changed": false,
+    "hyp038_decision_changed": false,
+    "exact_next_action": "Close the unchanged Short Pullback candidate at FAIL_CORE_MT4_PORTABILITY, preserve the source-audit evidence, do not retune this candidate, and do not access its 2025H1 or 2025H2 outcomes."
+  }
+}
