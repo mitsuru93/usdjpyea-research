@@ -1,0 +1,51 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_parallel_addendum_hyp039_final_v1",
+  "operation": "APPEND_ONLY_FINAL_CLOSURE",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "title": "Unchanged Short Pullback Candidate Qualification",
+  "status": "CLOSED",
+  "formal_decision": "FAIL_CORE_MT4_PORTABILITY",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "candidate_contract_version": "v2",
+  "decision_basis": [
+    "Research/Core parity passed at 500 of 500 with zero row-field mismatch.",
+    "MetaEditor compilation passed with 0 errors and 0 warnings.",
+    "Rakuten-native 2023-2024 execution produced positive aggregate P/L but failed exact portability because 242 algorithm/information-time mismatches remained.",
+    "Only 417 of 500 event keys were common between Dukascopy Research and Rakuten-native reconstruction; 83 were unique to each source.",
+    "The candidate therefore did not receive authorization to enter the 2025H1 validation-period gate."
+  ],
+  "key_metrics": {
+    "rakuten_trades": 499,
+    "rakuten_net_jpy": 10739,
+    "rakuten_profit_factor": 1.1506466907948265,
+    "positive_folds": 3,
+    "algorithm_or_information_time_mismatch": 242,
+    "common_event_rate": 0.834,
+    "2024H1_expected_trades": 97,
+    "2024H1_actual_trades": 98,
+    "2024H1_net_jpy": -1958,
+    "2024H1_profit_factor": 0.8616938616938616
+  },
+  "period_access": {
+    "2025H1_role": "VALIDATION_PERIOD",
+    "2025H1_candidate_outcome_accessed": false,
+    "2025H1_unseen_claim_consumed": false,
+    "2025H2_accessed": false
+  },
+  "unchanged_decisions": {
+    "USDJPY-HYP-037": true,
+    "USDJPY-HYP-038": true
+  },
+  "authorization": {
+    "production": false,
+    "live": false,
+    "portfolio_integration": false
+  },
+  "evidence": {
+    "core_run_id": 30500520578,
+    "core_result_issue": 644,
+    "core_release_tag": "usdjpy-hyp039-short-pullback-recovery-v1",
+    "archive_sha256": "8a1594ac278dcde1f24388d34c3543d0e273c6ea6f7ba0c794e2f53b3e4fb194"
+  },
+  "exact_next_action": "No rescue, retuning, HYP-038 filtering, 2025H1 access, or 2025H2 substitution for this candidate. Preserve the portability evidence and close the branch."
+}

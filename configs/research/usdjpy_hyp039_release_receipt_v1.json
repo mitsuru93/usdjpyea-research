@@ -1,0 +1,27 @@
+{
+  "schema_version": "usdjpy_hyp039_research_release_reference_receipt_v1",
+  "status": "PASS_IMMUTABLE_CORE_RELEASE_BYTE_IDENTICAL_READBACK",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "decision": "FAIL_CORE_MT4_PORTABILITY",
+  "source_repository": "mitsuru93/usdjpyea-core",
+  "release": {
+    "release_id": 362109416,
+    "tag": "usdjpy-hyp039-short-pullback-recovery-v1",
+    "asset_id": 494673692,
+    "archive_sha256": "8a1594ac278dcde1f24388d34c3543d0e273c6ea6f7ba0c794e2f53b3e4fb194",
+    "readback_status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+  },
+  "execution": {
+    "run_id": 30500520578,
+    "core_sha": "2a3ec33dca6b933cd3d5501ba6932dd06f8f75b2",
+    "research_sha": "b6bc006952eb3355cc6a2c27e294a62771196669",
+    "result_issue": 644
+  },
+  "period_and_authorization": {
+    "2025H1_role": "VALIDATION_PERIOD",
+    "2025H1_candidate_outcome_accessed": false,
+    "2025H2_accessed": false,
+    "production_authorized": false,
+    "live_authorized": false
+  }
+}
