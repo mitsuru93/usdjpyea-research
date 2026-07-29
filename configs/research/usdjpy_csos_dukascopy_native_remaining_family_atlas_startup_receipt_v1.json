@@ -10,6 +10,18 @@
   "hypothesis_id_consumed": false,
   "active_hypothesis_registry_overwrite": false,
   "branch": "agent/csos-dukascopy-native-remaining-family-atlas-v1",
+  "period_role_correction": {
+    "received_before_new_family_outcome_calculation": true,
+    "candidate_outcomes_seen_before_correction": false,
+    "2020_2022_role": "ANALYSIS_PERIOD",
+    "2020_2022_atlas_access": "NOT_REQUIRED_NOT_ACCESSED",
+    "2020_2022_confirmation_designation_withdrawn": true,
+    "2025_role": "UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD",
+    "2025_atlas_access": "PROHIBITED_NOT_ACCESSED",
+    "family_contract_changed": false,
+    "ranking_gate_changed": false,
+    "source_changed": false
+  },
   "parallel_research_firewall": {
     "short_pullback_2020_2022_outcomes_accessed": false,
     "hyp036_short_ledger_used_for_selection": false,
@@ -23,8 +35,8 @@
     "F_LIQUIDITY_SWEEP": "EXCLUDED_HYP030_HYP031_HYP033_HYP034",
     "J_PULLBACK_CONTINUATION": "EXCLUDED_HYP035_HYP036_AND_PARALLEL_SUCCESSOR"
   },
-  "protected_2020_2022_accessed": false,
-  "protected_2025_accessed": false,
+  "analysis_2020_2022_accessed": false,
+  "external_validation_2025_accessed": false,
   "core_modified": false,
   "mt4_executed": false,
   "candidate_freeze_authorized": false,
