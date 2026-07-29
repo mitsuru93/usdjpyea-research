@@ -1,0 +1,69 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v69",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v68.json",
+  "status": "PARALLEL_ACTIVE_FROZEN_QUALIFICATIONS_HYP039_AND_HYP040",
+  "legacy_active_hypothesis": "USDJPY-HYP-039",
+  "active_hypotheses": ["USDJPY-HYP-039", "USDJPY-HYP-040"],
+  "parallel_studies": {
+    "USDJPY-HYP-039": {
+      "status": "ACTIVE_FROZEN_PRE_2025H1_QUALIFICATION",
+      "family": "S_SHORT_PULLBACK_UNCHANGED_2025H1_RECOVERY",
+      "candidate": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+      "registry": "configs/research/usdjpy_hyp039_candidate_contract_v1.json",
+      "period_access_receipt": "configs/research/usdjpy_hyp039_period_access_receipt_v1.json",
+      "period_role_correction_receipt": "configs/research/usdjpy_hyp039_period_role_correction_receipt_v2.json",
+      "changed_by_v69": false,
+      "included_in_HYP040_portfolio": false
+    },
+    "USDJPY-HYP-040": {
+      "status": "ACTIVE_FROZEN_PRE_2025H1_QUALIFICATION",
+      "family": "S_ASIAN_RANGE_SWEEP_UNCHANGED_2025H1_RECOVERY",
+      "candidate": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+      "registry": "configs/research/usdjpy_hyp040_candidate_contract_v1.json",
+      "freeze_receipt": "configs/research/usdjpy_hyp040_candidate_freeze_receipt_v1.json",
+      "period_access_receipt": "configs/research/usdjpy_hyp040_period_access_receipt_v1.json",
+      "candidate_rule_changed": false,
+      "binding_portfolio": "B02 + F05 versus B02 + F05 + unchanged Asian Range Sweep"
+    }
+  },
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v43.json",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD_OR_OPTIONAL_HISTORICAL_REFERENCE_AS_STUDY_SPECIFIES",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_AUTOMATICALLY_CONSUMED_OR_SUBSTITUTED"
+  },
+  "outcome_visibility": {
+    "USDJPY-HYP-039": {
+      "candidate_version": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+      "2025H1": "UNSEEN_AT_FIRST_VALIDATION",
+      "candidate_modified_after_result": false
+    },
+    "USDJPY-HYP-040": {
+      "candidate_version": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+      "2025H1": "UNSEEN_AT_FIRST_VALIDATION",
+      "first_access_timestamp": null,
+      "candidate_version_at_first_access": null,
+      "subsequent_rerun_count": 0,
+      "candidate_modified_after_result": false,
+      "unseen_validation_claim": true
+    }
+  },
+  "closed_boundaries": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE",
+    "USDJPY-HYP-037": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+    "USDJPY-HYP-038": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE"
+  },
+  "run_authorization": {
+    "USDJPY-HYP-039": "UNCHANGED_FROM_V68",
+    "USDJPY-HYP-040_Core": true,
+    "USDJPY-HYP-040_MT4": true,
+    "USDJPY-HYP-040_2025H1": "VALIDATION_PERIOD_CONDITIONAL_AFTER_PREVALIDATION_SEQUENCE",
+    "USDJPY-HYP-040_2025H2": "NOT_AUTOMATICALLY_CONSUMED_OR_SUBSTITUTED",
+    "production": false,
+    "live": false
+  },
+  "four_strategy_integration_authorized": false,
+  "recurring_monitor_authorized": false,
+  "next_action": "Complete HYP-040 Core implementation, exact HYP-030 reproduction, zero-mismatch parity, MT4 compile and Rakuten 2023-2024 portability; then execute the first unchanged Asian Range Sweep 2025H1 validation-period run independently of HYP-039."
+}
