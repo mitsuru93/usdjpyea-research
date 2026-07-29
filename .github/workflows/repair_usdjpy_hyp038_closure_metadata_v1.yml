@@ -1,0 +1,150 @@
+name: Repair USDJPY HYP-038 Closure Metadata v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair_usdjpy_hyp038_closure_metadata_v1.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repair-usdjpy-hyp038-closure-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Repair canonical metadata and run repository validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          next_action = (
+              'Do not retune HYP-038, freeze C5, implement Core/MT4, or access 2025. '
+              'Preserve delayed right-tail continuation as mechanism evidence. The third-strategy slot remains open; '
+              'the next eligible independent research direction is a separately preregistered B_BALANCE_MEAN_REVERSION entry-time hypothesis, '
+              'while 2025H2 remains reserved for the integrated B02 v2 + F05 v2 + third-strategy gate.'
+          )
+
+          ledger_path = Path('configs/research/usdjpy_hypothesis_ledger_addendum_v41.json')
+          ledger = json.loads(ledger_path.read_text())
+          ledger['entries'] = [{
+              'hypothesis_id': 'USDJPY-HYP-038',
+              'family_ids': ['S_SHORT_PULLBACK_DELAYED_CONTINUATION_LOSS_DECOUPLING'],
+              'title': 'Short Pullback Delayed Right-Tail Continuation and Portfolio Loss-Decoupling Study',
+              'target_failure_mode': 'HYP-037 delayed right-tail alpha had negative B02/F05 baseline-day contribution and worsened worst 5-business-day loss; determine whether time-causal admission or lifecycle information can decouple losses without destroying the right tail.',
+              'causal_hypothesis': 'Short Pullback profit is delayed 120-240 minute right-tail continuation; entry-time, checkpoint-time, or one portfolio-state condition may reject continuation failure while preserving large winners.',
+              'pre_result_predictions': [
+                  'At least one finite OOF candidate may make negative-baseline-day contribution nonnegative.',
+                  'A deployable rule must retain at least 90 percent of top-5 winner P/L and 80 percent of top-decile gross profit.',
+                  'A deployable rule must have avoided loss greater than sacrificed profit and preserve a majority of the top 25 winners.',
+                  'A deployable rule must pass PF, fold, cost-stress and all portfolio loss-cluster hard gates.'
+              ],
+              'tests': [
+                  'Four-fold 2023H1/2023H2/2024H1/2024H2 leave-one-fold-out evaluation of the preregistered finite C1-C6 catalog.',
+                  'Causal Bid/Ask Tick reconstruction at 15, 30, 60, 90 and 120 minute checkpoints.',
+                  'Right-tail preservation audit against the unchanged HYP-037 C0 reference.',
+                  'UTC/JPY B02/F05 realized and full-equity portfolio replay.',
+                  'Observed spread, +1 pip spread, +15 second Entry delay and 0.5 pip adverse slippage per side stress.',
+                  'Concentration and event/date/session-block bootstrap diagnostics.'
+              ],
+              'decision': 'MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE',
+              'status': 'COMPLETE_RESEARCH_DECISION_NO_CANDIDATE_FREEZE',
+              'phase2_status': 'COMPLETE_RESEARCH_DECISION_NO_CANDIDATE_FREEZE',
+              'authorization': {
+                  '2023_2024_research': False,
+                  '2025H1': False,
+                  '2025H2': False,
+                  'Core': False,
+                  'MT4': False,
+                  'candidate_freeze': False,
+                  'live': False,
+                  'production': False
+              },
+              'period_access': {
+                  '2020_2022': False,
+                  '2023_2024_candidate_outcomes': True,
+                  '2025': False
+              },
+              'retained_findings': [
+                  'Delayed right-tail continuation remains confirmed in the unchanged HYP-037 reference.',
+                  'C5 co-exposure skip made negative-baseline-day contribution positive but destroyed the right tail and failed OOF economics.',
+                  'No finite entry, lifecycle, portfolio, or combined rule passed all hard gates.'
+              ],
+              'falsified_or_unsupported_claims': [
+                  'Observable finite entry-time or lifecycle state can preserve the HYP-037 right tail while rejecting enough losses for deployment.',
+                  'The co-exposure skip is portable across all four half-year folds.',
+                  'The selected OOF rule remains positive under +1 pip spread and 0.5 pip adverse slippage per side.',
+                  'The selected OOF rule improves worst 5-day, worst 20-day and worst calendar month simultaneously.'
+              ],
+              'failed_gates': [
+                  'OOF PF 1.07058 < 1.10',
+                  '2024H2 net -JPY5777 < -JPY1500',
+                  'spread +1 pip and 0.5 pip each-side slippage net -JPY133',
+                  'worst 5-day, 20-day and month worsened',
+                  'top-5 winner retention 17.4 percent',
+                  'top-decile profit retention 23.2 percent',
+                  'sacrificed profit JPY57813 exceeded avoided loss JPY41761',
+                  'top-25 preserved 6/25'
+              ],
+              'prohibited_reuse': [
+                  'Do not change HYP-037 decision.',
+                  'Do not retune HYP-038 C5 or lifecycle thresholds under HYP-038.',
+                  'Do not freeze or implement any HYP-038 variant.',
+                  'Do not use 2025 for HYP-038.'
+              ],
+              'evidence_refs': {
+                  'preregistration': 'configs/research/usdjpy_hyp038_preregistration_v1.json',
+                  'final_result': 'configs/research/usdjpy_hyp038_final_result_v1.json',
+                  'report': 'docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md',
+                  'artifact_archive': 'docs/research/artifact_archives/usdjpy_hyp038_delayed_continuation_v1',
+                  'run_id': 30437473624,
+                  'artifact_id': 8718213549,
+                  'artifact_digest': 'sha256:549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c',
+                  'deterministic_archive_sha256': '0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8'
+              },
+              'successor_questions': [
+                  'Can a separately preregistered B_BALANCE_MEAN_REVERSION entry-time mechanism produce a deployable independent third strategy?',
+                  'Should delayed Short Pullback continuation remain research memory only unless a materially different information set becomes available?'
+              ],
+              'lineage': 'Independent successor to closed HYP-037; HYP-037 decision remains unchanged.',
+              'next_action': next_action
+          }]
+          ledger_path.write_text(json.dumps(ledger, indent=2, sort_keys=True) + '\n')
+
+          manifest_path = Path('configs/research/usdjpy_research_memory_manifest_v1.json')
+          manifest = json.loads(manifest_path.read_text())
+          pointers = manifest['canonical_pointers']
+          pointers.pop('hyp038_release_receipt', None)
+          pointers['hyp038_closure_receipt'] = 'configs/research/usdjpy_hyp038_closure_receipt_v1.json'
+          for item in manifest['mandatory_startup_read_order']:
+              if item['ordinal'] == 3:
+                  item['path'] = 'configs/research/usdjpy_research_candidate_registry_v67.json'
+                  item['reason'] = 'global state after HYP-038 mechanism-only scientific closure'
+              elif item['ordinal'] == 8:
+                  item['path'] = 'configs/research/usdjpy_hypothesis_ledger_addendum_v41.json'
+                  item['reason'] = 'append-only scientific memory through HYP-038 closure'
+          manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
+          PY
+
+          python tools/validate_usdjpy_research_memory_v2.py --root . --output "${RUNNER_TEMP}/hyp038_memory_validation.json"
+          jq -e '.status=="PASS" and .registry_schema=="usdjpy_research_candidate_registry_v67" and .registry_status=="USDJPY_HYP038_COMPLETE_MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE"' "${RUNNER_TEMP}/hyp038_memory_validation.json"
+          cp "${RUNNER_TEMP}/hyp038_memory_validation.json" configs/research/usdjpy_hyp038_research_memory_validation_receipt_v1.json
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add configs/research/usdjpy_hypothesis_ledger_addendum_v41.json configs/research/usdjpy_research_memory_manifest_v1.json configs/research/usdjpy_hyp038_research_memory_validation_receipt_v1.json
+          git commit -m 'research: repair and validate HYP-038 closure metadata'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
