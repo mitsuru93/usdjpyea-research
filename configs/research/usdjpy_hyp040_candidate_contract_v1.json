@@ -1,0 +1,84 @@
+{
+  "schema_version": "usdjpy_hyp040_candidate_contract_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_SPECIFIC_2025H1_ACCESS",
+  "hypothesis_id": "USDJPY-HYP-040",
+  "family_id": "S_ASIAN_RANGE_SWEEP_UNCHANGED_2025H1_RECOVERY",
+  "candidate_id": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+  "source_hypothesis": "USDJPY-HYP-030",
+  "source_candidate": "A_EXACT_EXECUTABLE_12BAR",
+  "source_contract": "configs/research/usdjpy_asian_range_liquidity_sweep_phase2_prereg_v1.json",
+  "source_archive": "docs/research/artifact_archives/usdjpy_asian_range_liquidity_sweep_phase2_v1",
+  "source_research_sha": "80ca96c88d20d9a3281a0cdb0b7bd020cd149d42",
+  "candidate_rule_changed": false,
+  "market_data_semantics": "SOURCE_NATIVE_BID_ASK",
+  "bar_contract": {
+    "timeframe": "M15",
+    "price_side": "BID_OHLC",
+    "completed_bars_only": true,
+    "asian_range_start_utc_inclusive": "00:00:00",
+    "asian_range_end_utc_exclusive": "07:00:00",
+    "required_completed_asian_bars": 28,
+    "signal_window_start_utc_inclusive": "07:00:00",
+    "signal_window_end_utc_exclusive": "20:00:00"
+  },
+  "signal_contract": {
+    "upper_sweep_short": "completed_bar.high > AsianHigh AND completed_bar.close < AsianHigh",
+    "lower_sweep_long": "completed_bar.low < AsianLow AND completed_bar.close > AsianLow",
+    "decision_time": "signal M15 bar completion equal to next M15 boundary",
+    "long_only": false,
+    "short_excluded": false
+  },
+  "execution_contract": {
+    "entry": "first executable source-native Tick timestamp >= decision_time",
+    "long_entry_side": "ASK",
+    "short_entry_side": "BID",
+    "exit_boundary": "decision/entry M15 boundary plus exactly 12 completed M15 bars (3 hours)",
+    "exit": "first executable source-native Tick timestamp >= exit_boundary",
+    "long_exit_side": "BID",
+    "short_exit_side": "ASK",
+    "lot": 0.01,
+    "accounting_currency": "JPY",
+    "research_normalization": "JPY10 per pip for 0.01 lot",
+    "spread": "source-native executable Bid/Ask; MT4 source-native spread or explicitly frozen tester spread",
+    "slippage": "measured and reported; no event selection by slippage or delay"
+  },
+  "suppression_contract": {
+    "active_position_suppression": "variant-local; reject signal index i when i <= prior accepted signal index + 13",
+    "same_day_same_side_suppression": true,
+    "opposite_side_same_day": "permitted only when not blocked by active-position suppression",
+    "reentry": "only after frozen suppression expires",
+    "duplicate_handling": "duplicate event identity is a blocking technical mismatch",
+    "fold_boundary": "reject when signal and frozen exit boundary are not in the same half-year fold during 2023-2024 reproduction"
+  },
+  "chronology_contract": {
+    "same_timestamp_order": [
+      "process matured owned exits at the first executable Tick",
+      "complete and evaluate the newly closed M15 signal bar",
+      "apply candidate-local suppression and ownership restoration",
+      "open accepted candidate at the same first executable Tick"
+    ],
+    "history_policy": "required signal, entry or exit history unavailable => unresolved technical mismatch",
+    "missing_bar_policy": "do not silently exclude",
+    "restart_restoration": "restore open owned position, latest accepted same-day/side state, and pending exit boundary from orders and persisted candidate state"
+  },
+  "forbidden_changes": [
+    "HYP031_regime_routing",
+    "long_only",
+    "short_exclusion",
+    "London_exclusion",
+    "weekday_or_month_or_session_selection",
+    "range_time_change",
+    "sweep_or_reclaim_threshold_change",
+    "hold_change",
+    "entry_or_exit_optimization",
+    "HYP033_reclaim_speed",
+    "HYP034_integration",
+    "HYP027_loss_cap",
+    "HYP039_joint_optimization",
+    "post_2025H1_same_version_retuning"
+  ],
+  "contract_digest_basis": "UTF-8 JSON committed before candidate-specific 2025H1 access",
+  "candidate_specific_2025H1_outcome_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
