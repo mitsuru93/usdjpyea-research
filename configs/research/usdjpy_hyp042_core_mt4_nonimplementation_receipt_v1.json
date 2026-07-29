@@ -1,0 +1,19 @@
+{
+  "Core_MT4_parity_required_for_adopted_candidate": false,
+  "Research_Core_parity_required_for_adopted_candidate": false,
+  "adopted_candidate_id": null,
+  "baseline_B02_unchanged": true,
+  "core_pr_created": false,
+  "decision": "B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE",
+  "hypothesis_id": "USDJPY-HYP-042",
+  "live_authorized": false,
+  "mt4_candidate_implemented": false,
+  "production_authorized": false,
+  "reason": [
+    "C1 destroys development net and winner mass",
+    "C2 turns 2025H1 B02 positive but retains only 40.3% of development B02 net and modifies most trades",
+    "C3 turns 2025H1 B02 positive but modifies 73.2% of development trades, retains only 47.1% of winner gross profit, and worsens 2024 B02 by JPY10963",
+    "No candidate is a narrow portable repair; baseline B02 remains authoritative"
+  ],
+  "schema_version": "usdjpy_hyp042_core_mt4_nonimplementation_receipt_v1"
+}
