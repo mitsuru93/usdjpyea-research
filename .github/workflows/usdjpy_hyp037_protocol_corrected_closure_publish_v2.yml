@@ -1,0 +1,307 @@
+name: USDJPY HYP-037 Protocol-Corrected Closure Publish v2
+
+on:
+  push:
+    branches:
+      - repair/hyp037-historical-source-authority-v2
+    paths:
+      - '.github/workflows/usdjpy_hyp037_protocol_corrected_closure_publish_v2.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: usdjpy-hyp037-protocol-corrected-closure-publish-v2
+  cancel-in-progress: false
+
+jobs:
+  publish-closure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: repair/hyp037-historical-source-authority-v2
+          fetch-depth: 0
+          sparse-checkout: |
+            configs/research
+            docs/research
+            .github/workflows
+          sparse-checkout-cone-mode: false
+
+      - name: Materialize immutable scientific artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: '8714601229'
+          ARTIFACT_DIGEST: 'sha256:046f56e519fd8e047dd54c98962c7e7ad24bcbc9d159445cb9a3fb227fa8a2d4'
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/h37close"; rm -rf "$root"; mkdir -p "$root/unpacked"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" > "$root/artifact.zip"
+          unzip -q "$root/artifact.zip" -d "$root/unpacked"
+          out=$(find "$root/unpacked" -type f -name final_result_v2.json -printf '%h\n' -quit)
+          test -n "$out"
+          jq -e '.decision=="FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING" and .failed_binding_stage=="CONCENTRATION" and .candidate_unchanged==true and ."2020_2022_outcomes_accessed"==false and ."2025_outcomes_accessed"==false' "$out/final_result_v2.json"
+          printf '%s\n' "$out" > "$root/output_path.txt"
+          echo "ROOT=$root" >> "$GITHUB_ENV"
+          echo "OUT=$out" >> "$GITHUB_ENV"
+
+      - name: Publish canonical v2 result, registries and memory
+        shell: bash
+        env:
+          ARTIFACT_ID: '8714601229'
+          ARTIFACT_DIGEST: 'sha256:046f56e519fd8e047dd54c98962c7e7ad24bcbc9d159445cb9a3fb227fa8a2d4'
+          SCIENTIFIC_RUN_ID: '30428356407'
+          PR_NUMBER: '401'
+          RELEASE_TAG: 'usdjpy-hyp037-protocol-corrected-research-fail-v2'
+        run: |
+          set -euo pipefail
+          mkdir -p configs/research docs/research
+          cp "$OUT/final_result_v2.json" configs/research/usdjpy_hyp037_final_result_v2.json
+          cp "$OUT/candidate_registry_v2.json" configs/research/usdjpy_hyp037_candidate_registry_v2.json
+          cp "$OUT/period_access_receipt_v2.json" configs/research/usdjpy_hyp037_period_access_receipt_v2.json
+          cp "$OUT/standalone_metrics.json" configs/research/usdjpy_hyp037_standalone_metrics_v2.json
+          cp "$OUT/concentration.json" configs/research/usdjpy_hyp037_concentration_v2.json
+          cp "$OUT/bootstrap.json" configs/research/usdjpy_hyp037_bootstrap_v2.json
+          cp "$OUT/execution_robustness.json" configs/research/usdjpy_hyp037_execution_robustness_v2.json
+          cp "$OUT/portfolio_result.json" configs/research/usdjpy_hyp037_portfolio_result_v2.json
+          cp "$OUT/artifact_manifest_v2.json" configs/research/usdjpy_hyp037_artifact_manifest_v2.json
+          cp "$OUT/candidate_gate_matrix.csv" configs/research/usdjpy_hyp037_candidate_gate_matrix_v2.csv
+
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+
+          cfg=Path('configs/research'); docs=Path('docs/research')
+          def load(p): return json.loads(Path(p).read_text(encoding='utf-8'))
+          def write(p,o): Path(p).write_text(json.dumps(o,indent=2,sort_keys=True,ensure_ascii=False)+'\n',encoding='utf-8')
+          def sha(p):
+              h=hashlib.sha256()
+              with Path(p).open('rb') as f:
+                  for c in iter(lambda:f.read(1<<20),b''): h.update(c)
+              return h.hexdigest()
+          result=load(cfg/'usdjpy_hyp037_final_result_v2.json')
+          stand=load(cfg/'usdjpy_hyp037_standalone_metrics_v2.json')
+          conc=load(cfg/'usdjpy_hyp037_concentration_v2.json')
+          boot=load(cfg/'usdjpy_hyp037_bootstrap_v2.json')
+          rob=load(cfg/'usdjpy_hyp037_execution_robustness_v2.json')
+          port=load(cfg/'usdjpy_hyp037_portfolio_result_v2.json')
+          gates=[]
+          import csv
+          with (cfg/'usdjpy_hyp037_candidate_gate_matrix_v2.csv').open(encoding='utf-8') as f:
+              for r in csv.DictReader(f):
+                  r['pass']=str(r['pass']).lower()=='true'; gates.append(r)
+          failed=[{'stage':r['stage'],'gate':r['gate'],'value':r['value'],'threshold':r['threshold']} for r in gates if not r['pass']]
+          result['scientific_evidence']={
+              'pr':int(os.environ['PR_NUMBER']), 'workflow_run_id':int(os.environ['SCIENTIFIC_RUN_ID']),
+              'artifact_id':int(os.environ['ARTIFACT_ID']), 'artifact_digest':os.environ['ARTIFACT_DIGEST'],
+              'research_execution_sha':result['research_execution_sha'],
+              'deterministic_archive':'usdjpy-hyp037-protocol-corrected-research-v2.zip',
+              'archive_readback':'PASS'
+          }
+          result['failed_binding_gates_detailed']=failed
+          result['supersedes_period_role_only']='configs/research/usdjpy_hyp037_final_result_v1.json'
+          result['scientific_outcome_not_rewritten']=True
+          result['2020_2022_binding_confirmation_removed']=True
+          result['2025_external_gate_restored']=True
+          write(cfg/'usdjpy_hyp037_final_result_v2.json',result)
+
+          correction={
+              'schema_version':'usdjpy_hyp037_technical_revision_receipt_v2',
+              'hypothesis_id':'USDJPY-HYP-037','technical_revision':'PERIOD_ROLE_CORRECTION_AND_RESEARCH_CONTINUATION_V2',
+              'supersedes_period_role_only':'configs/research/usdjpy_hyp037_final_result_v1.json',
+              'scientific_outcome_not_rewritten':True,'v1_evidence_preserved':True,
+              'candidate_unchanged':True,'2020_2022_binding_confirmation_removed':True,'2020_2022_role':'NONBINDING_ANALYSIS',
+              '2020_2022_outcomes_accessed_before_correction':False,'2020_2022_outcomes_accessed_in_v2':False,
+              '2025_external_gate_restored':True,'2025_outcomes_accessed':False,
+              'hyp036_decision_unchanged':True,'no_retuning':True,'production_authorized':False,'live_authorized':False,
+              'protocol_decision':'PROTOCOL_CORRECTION_PERIOD_ROLE_BEFORE_EXTERNAL_VALIDATION',
+              'scientific_decision':result['decision'],'failed_binding_stage':result['failed_binding_stage'],
+              'scientific_run_id':int(os.environ['SCIENTIFIC_RUN_ID']),'artifact_id':int(os.environ['ARTIFACT_ID']),
+              'artifact_digest':os.environ['ARTIFACT_DIGEST']
+          }
+          write(cfg/'usdjpy_hyp037_technical_revision_receipt_v2.json',correction)
+
+          release_receipt={
+              'schema_version':'usdjpy_hyp037_release_receipt_v2','status':'PENDING_POST_MERGE_IMMUTABLE_RELEASE',
+              'hypothesis_id':'USDJPY-HYP-037','release_tag':os.environ['RELEASE_TAG'],
+              'scientific_run_id':int(os.environ['SCIENTIFIC_RUN_ID']),'artifact_id':int(os.environ['ARTIFACT_ID']),
+              'artifact_digest':os.environ['ARTIFACT_DIGEST'],'release_readback':False,
+              'candidate_freeze':False,'core_mt4_accessed':False,'2025_accessed':False,
+              'production_authorized':False,'live_authorized':False
+          }
+          write(cfg/'usdjpy_hyp037_release_receipt_v2.json',release_receipt)
+
+          ledger={
+              'schema_version':'usdjpy_hypothesis_ledger_addendum_v40','status':'ACTIVE_APPEND_ONLY_DELTA',
+              'entry_mode':'DELTA_INHERIT_SUPERSEDES','base_ledger':'configs/research/usdjpy_hypothesis_ledger_v1.json',
+              'supersedes':'configs/research/usdjpy_hypothesis_ledger_addendum_v39.json',
+              'inherited_addendum':'configs/research/usdjpy_hypothesis_ledger_addendum_v39.json',
+              'entries':[{
+                  'hypothesis_id':'USDJPY-HYP-037','family_id':'S_SHORT_PULLBACK_CONTINUATION_PORTABILITY',
+                  'family_ids':['S_SHORT_PULLBACK_CONTINUATION_PORTABILITY'],'candidate_ids':['C1_SHORT_DUKASCOPY_NATIVE_16BAR'],
+                  'title':'Short Pullback Continuation Directional Asymmetry and Historical Portability Study',
+                  'protocol_correction':'PROTOCOL_CORRECTION_PERIOD_ROLE_BEFORE_EXTERNAL_VALIDATION',
+                  'period_roles':{'2020_2022':'NONBINDING_ANALYSIS','2023_2024':'RESEARCH_AND_CANDIDATE_CONSTRUCTION','2025':'SOLE_BINDING_EXTERNAL_VALIDATION'},
+                  'v1_preserved':True,'candidate_unchanged':True,'2020_2022_outcomes_accessed':False,'2025_accessed':False,
+                  'tests':[{'type':'protocol_corrected_research_candidate_gate','period':'2023-2024','run_id':int(os.environ['SCIENTIFIC_RUN_ID']),
+                            'artifact_id':int(os.environ['ARTIFACT_ID']),'result':{'trades':stand['trades'],'net_jpy':stand['net_jpy'],
+                            'profit_factor':stand['profit_factor'],'decision':result['decision'],'failed_binding_stage':result['failed_binding_stage'],
+                            'failed_binding_gates':failed}}],
+                  'status':'COMPLETE_FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING','decision':result['decision'],
+                  'scientific_result':True,'technical_no_result':False,'failed_binding_stage':result['failed_binding_stage'],
+                  'retained_findings':['Short pooled economics are positive in 2023-2024.','The fixed Short candidate fails preregistered concentration portability.'],
+                  'prohibited_reuse':['Do not rescue by excluding winner concentration, session, month, year or 2024H2.','Do not access 2025 for this closed candidate.','Do not alter HYP-036.'],
+                  'evidence_refs':{'pr':int(os.environ['PR_NUMBER']),'run_id':int(os.environ['SCIENTIFIC_RUN_ID']),
+                                   'artifact_id':int(os.environ['ARTIFACT_ID']),'artifact_digest':os.environ['ARTIFACT_DIGEST'],
+                                   'result':'configs/research/usdjpy_hyp037_final_result_v2.json',
+                                   'report':'docs/research/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md'},
+                  'successor_questions':[],'decision_note':'Scientific stop at the first 2023-2024 binding research gate failure. Candidate freeze, Core/MT4 and 2025 not reached.'
+              }]
+          }
+          write(cfg/'usdjpy_hypothesis_ledger_addendum_v40.json',ledger)
+
+          registry=load(cfg/'usdjpy_research_candidate_registry_v65.json')
+          registry.update({
+              'schema_version':'usdjpy_research_candidate_registry_v66','supersedes':'configs/research/usdjpy_research_candidate_registry_v65.json',
+              'status':'USDJPY_HYP037_CLOSED_2023_2024_RESEARCH_GATE_FAILURE_NO_RETUNING','active_family':None,'active_hypothesis':None,
+              'candidate_ids':[],'current_candidate':None,'current_open_research_question':None,
+              'candidate_registry':'configs/research/usdjpy_hyp037_candidate_registry_v2.json',
+              'development_decision':result['decision'],'result':'configs/research/usdjpy_hyp037_final_result_v2.json',
+              'report':'docs/research/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md',
+              'output_manifest':'configs/research/usdjpy_hyp037_output_manifest_v2.json',
+              'period_access_receipt':'configs/research/usdjpy_hyp037_period_access_receipt_v2.json',
+              'release_receipt':'configs/research/usdjpy_hyp037_release_receipt_v2.json',
+              'hypothesis_ledger_addendum':'configs/research/usdjpy_hypothesis_ledger_addendum_v40.json',
+              'scientific_result':True,'technical_no_result':False,'candidate_rule_changed':False,
+              'period_role_corrected':True,'supersedes_period_role_only':True,'scientific_outcome_not_rewritten':True,
+              'next_action':'Scientific stop. Do not retune C1, do not implement Core/MT4, and do not access 2025 for HYP-037.',
+              'source_run_id':int(os.environ['SCIENTIFIC_RUN_ID']),'source_artifact_id':int(os.environ['ARTIFACT_ID']),
+              'source_artifact_digest':os.environ['ARTIFACT_DIGEST'],
+              'run_authorization':{'2020_2022_analysis_only':True,'2023_2024_research':False,'Core_implementation':False,'MT4_candidate':False,'2025H1':False,'2025H2':False,'production':False,'live':False}
+          })
+          registry['closed_boundaries']['USDJPY-HYP-037']=result['decision']
+          write(cfg/'usdjpy_research_candidate_registry_v66.json',registry)
+
+          memory=load(cfg/'usdjpy_research_memory_manifest_v1.json')
+          cp=memory['canonical_pointers']; cp.update({
+              'current_candidate_registry':'configs/research/usdjpy_research_candidate_registry_v66.json',
+              'hyp037_candidate_registry':'configs/research/usdjpy_hyp037_candidate_registry_v2.json',
+              'hyp037_corrected_preregistration_addendum':'configs/research/usdjpy_hyp037_corrected_preregistration_addendum_v2.json',
+              'hyp037_period_role_correction_receipt':'configs/research/usdjpy_hyp037_period_role_correction_receipt_v2.json',
+              'hyp037_technical_revision_receipt':'configs/research/usdjpy_hyp037_technical_revision_receipt_v2.json',
+              'hyp037_output_manifest':'configs/research/usdjpy_hyp037_output_manifest_v2.json',
+              'hyp037_period_access_receipt':'configs/research/usdjpy_hyp037_period_access_receipt_v2.json',
+              'hyp037_release_receipt':'configs/research/usdjpy_hyp037_release_receipt_v2.json',
+              'hyp037_result':'configs/research/usdjpy_hyp037_final_result_v2.json',
+              'hyp037_result_report':'docs/research/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md',
+              'hypothesis_ledger_addendum':'configs/research/usdjpy_hypothesis_ledger_addendum_v40.json'
+          })
+          memory['current_state_snapshot'].update({
+              '2025_H1_authorized':False,'2025_H2_authorized':False,'MT4_parity_authorized':False,
+              'active_family':None,'active_hypothesis':None,'candidate_outcome_evaluation_authorized':False,
+              'candidate_signal_generation_authorized':False,'current_candidate':None,'current_open_research_question':None,
+              'historical_2020_2022_authorized':False,'historical_source_repair_authorized':False,
+              'next_action':'Scientific stop at HYP-037 concentration gate. Do not retune, implement Core/MT4, or access 2025.',
+              'registry_status':'USDJPY_HYP037_CLOSED_2023_2024_RESEARCH_GATE_FAILURE_NO_RETUNING',
+              'production_authorized':False,'live_authorized':False
+          })
+          memory['lineage_rules'].pop('HYP037_requires_complete_2020_2022_Dukascopy_BI5_authority_before_candidate_outcomes',None)
+          memory['lineage_rules'].update({'HYP037_2020_2022_is_nonbinding_analysis_only':True,'HYP037_2025_is_sole_binding_external_validation':True})
+          memory['parallel_track_state']['USDJPY-HYP-037']={
+              '2020_2022_candidate_outcomes_accessed':False,'2025_accessed':False,'candidate_freeze':False,
+              'decision':result['decision'],'live_authorized':False,'production_authorized':False,
+              'status':'COMPLETE_FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING'
+          }
+          memory['mandatory_startup_read_order']=[
+              {'ordinal':1,'path':'AGENTS.md','reason':'repository-wide AI operating rules'},
+              {'ordinal':2,'path':'configs/research/usdjpy_research_memory_manifest_v1.json','reason':'canonical pointers through HYP-037 protocol-corrected closure'},
+              {'ordinal':3,'path':'configs/research/usdjpy_research_candidate_registry_v66.json','reason':'global state after HYP-037 research gate failure'},
+              {'ordinal':4,'path':'docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md','reason':'mandatory execution safeguards'},
+              {'ordinal':5,'path':'configs/research/usdjpy_validation_operating_contract_v4.json','reason':'lifecycle controls'},
+              {'ordinal':6,'path':'configs/research/usdjpy_period_role_policy_v5.json','reason':'period roles'},
+              {'ordinal':7,'path':'configs/research/usdjpy_hypothesis_ledger_v1.json','reason':'base causal memory'},
+              {'ordinal':8,'path':'configs/research/usdjpy_hypothesis_ledger_addendum_v40.json','reason':'append-only memory through HYP-037 corrected closure'},
+              {'ordinal':9,'path':'configs/research/usdjpy_hyp037_final_result_v2.json','reason':'HYP-037 corrected scientific result'},
+              {'ordinal':10,'path':'docs/research/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md','reason':'human-readable interpretation'}
+          ]
+          write(cfg/'usdjpy_research_memory_manifest_v1.json',memory)
+
+          def yen(v): return f"¥{v:,.0f}"
+          lines=[
+              '# USDJPY-HYP-037 Protocol-Corrected Research Candidate Result v2','',
+              f"Final decision: `{result['decision']}`",'',
+              '## Protocol correction','',
+              '- HYP-037 v1 is preserved as the historical record of a technical stop under the superseded period-role contract.',
+              '- The correction occurred before any 2020–2022 candidate outcome and before any 2025 outcome was accessed.',
+              '- 2020–2022 returned to nonbinding analysis; 2023–2024 is Research/candidate construction; 2025 is the sole binding external validation.',
+              '- Candidate, source, EMA/ATR/tolerance, Entry/Exit, hold, lot and currency were unchanged. HYP-036 remains unchanged.','',
+              '## 2023–2024 Short-only result','',
+              f"- Trades: {stand['trades']}",f"- Net: {yen(stand['net_jpy'])}",f"- PF: {stand['profit_factor']:.9f}",
+              f"- Positive folds: {stand['positive_folds']}/4",f"- Positive months: {stand['positive_months']}/24",
+              f"- Realized MDD: {yen(stand['mdd_jpy'])}",f"- Minimum equity: {yen(stand['minimum_equity_jpy'])}",'',
+              '## First binding failure','',f"Stage: `{result['failed_binding_stage']}`",'',
+              '| Gate | Value | Threshold |','|---|---:|---:|'
+          ]
+          for r in failed:
+              lines.append(f"| {r['stage']}/{r['gate']} | {r['value']} | {r['threshold']} |")
+          lines += ['', '## Concentration','',
+              f"- Best event removed net: {yen(conc['best_event_removed_net_jpy'])}",
+              f"- Top 3 removed net: {yen(conc['top3_removed_net_jpy'])}",
+              f"- Top 5 removed net: {yen(conc['top5_removed_net_jpy'])}",
+              f"- Top-decile winners removed net: {yen(conc['top_decile_winners_removed_net_jpy'])}",
+              f"- Largest positive fold share: {conc['largest_positive_fold_share']:.6f}",
+              f"- Largest positive month share: {conc['largest_positive_month_share']:.6f}",
+              f"- Largest positive session share: {conc['largest_positive_session_share']:.6f}",'',
+              '## Bootstrap and robustness','',
+              f"- Event bootstrap lower 95%: {yen(boot['event']['lower_95_jpy'])}; P(non-positive)={boot['event']['p_nonpositive']:.4f}",
+              f"- Date bootstrap lower 95%: {yen(boot['date']['lower_95_jpy'])}; P(non-positive)={boot['date']['p_nonpositive']:.4f}",
+              f"- Session-block bootstrap lower 95%: {yen(boot['session_block']['lower_95_jpy'])}; P(non-positive)={boot['session_block']['p_nonpositive']:.4f}",
+              f"- Observed Bid/Ask net: {yen(rob['observed_bid_ask_net_jpy'])}",
+              f"- Spread +1 pip net: {yen(rob['spread_plus_1_0_pip_net_jpy'])}",
+              f"- Entry delay +5s net: {yen(rob['entry_delay_5s_net_jpy'])}",
+              f"- Entry delay +15s net: {yen(rob['entry_delay_15s_net_jpy'])}",
+              f"- Adverse slippage 0.5 pip per execution net: {yen(rob['adverse_slippage_0_5_each_net_jpy'])}",'',
+              '## Portfolio diagnostics','',
+              f"- Baseline/combined net: {yen(port['baseline_net_jpy'])} / {yen(port['combined_net_jpy'])}",
+              f"- Realized DD: {yen(port['baseline_realized_dd_jpy'])} / {yen(port['combined_realized_dd_jpy'])}",
+              f"- Full-equity DD: {yen(port['baseline_full_equity_dd_jpy'])} / {yen(port['combined_full_equity_dd_jpy'])}",
+              f"- Minimum full equity: {yen(port['baseline_minimum_full_equity_jpy'])} / {yen(port['combined_minimum_full_equity_jpy'])}",
+              f"- Worst 5 business days: {yen(port['baseline_worst_5_business_day_jpy'])} / {yen(port['combined_worst_5_business_day_jpy'])}",
+              f"- Worst 20 business days: {yen(port['baseline_worst_20_business_day_jpy'])} / {yen(port['combined_worst_20_business_day_jpy'])}",
+              f"- Worst month: {yen(port['baseline_worst_calendar_month_jpy'])} / {yen(port['combined_worst_calendar_month_jpy'])}",
+              f"- Correlation to B02/F05: {port['correlation_to_B02']:.6f} / {port['correlation_to_F05']:.6f}",
+              f"- Negative baseline-day contribution: {yen(port['negative_baseline_day_candidate_contribution_jpy'])}",
+              f"- Peak candidate/combined concurrency: {port['candidate_peak_concurrency']} / {port['combined_peak_concurrency']}",
+              f"- Incremental margin max: {yen(port['incremental_margin_jpy_max'])}",
+              f"- Minimum margin level: {port['minimum_margin_level_percent']:.2f}%",'',
+              '## Authorization','',
+              '- Candidate freeze: false','- Core/MT4: not reached','- 2025H1/H2: not accessed','- Production: unauthorized','- Live: unauthorized','',
+              f"Scientific Run: `{os.environ['SCIENTIFIC_RUN_ID']}`; Artifact: `{os.environ['ARTIFACT_ID']}`; digest `{os.environ['ARTIFACT_DIGEST']}`.',''
+          ]
+          (docs/'USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md').write_text('\n'.join(lines),encoding='utf-8')
+
+          canonical=[
+              cfg/'usdjpy_hyp037_final_result_v2.json',cfg/'usdjpy_hyp037_candidate_registry_v2.json',
+              cfg/'usdjpy_hyp037_period_access_receipt_v2.json',cfg/'usdjpy_hyp037_standalone_metrics_v2.json',
+              cfg/'usdjpy_hyp037_concentration_v2.json',cfg/'usdjpy_hyp037_bootstrap_v2.json',
+              cfg/'usdjpy_hyp037_execution_robustness_v2.json',cfg/'usdjpy_hyp037_portfolio_result_v2.json',
+              cfg/'usdjpy_hyp037_artifact_manifest_v2.json',cfg/'usdjpy_hyp037_candidate_gate_matrix_v2.csv',
+              cfg/'usdjpy_hyp037_technical_revision_receipt_v2.json',cfg/'usdjpy_hyp037_release_receipt_v2.json',
+              cfg/'usdjpy_hypothesis_ledger_addendum_v40.json',cfg/'usdjpy_research_candidate_registry_v66.json',
+              docs/'USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md'
+          ]
+          manifest={'schema_version':'usdjpy_hyp037_output_manifest_v2','hypothesis_id':'USDJPY-HYP-037','decision':result['decision'],
+                    'scientific_run_id':int(os.environ['SCIENTIFIC_RUN_ID']),'artifact_id':int(os.environ['ARTIFACT_ID']),
+                    'artifact_digest':os.environ['ARTIFACT_DIGEST'],'files':[{'path':str(p),'bytes':p.stat().st_size,'sha256':sha(p)} for p in canonical],
+                    '2020_2022_outcomes_accessed':False,'2025_outcomes_accessed':False,'candidate_unchanged':True}
+          write(cfg/'usdjpy_hyp037_output_manifest_v2.json',manifest)
+          PY
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add configs/research docs/research
+          git commit -m 'research: record HYP-037 corrected gate failure' || exit 0
+          git push origin HEAD:repair/hyp037-historical-source-authority-v2
