@@ -15,7 +15,7 @@
     "USDJPY-HYP-037": "TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED"
   },
   "current_candidate": null,
-  "current_open_research_question": "Complete exact same-source 2020-2022 Dukascopy authority, then rerun unchanged HYP-037.",
+  "current_open_research_question": null,
   "development_decision": "TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED",
   "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v39.json",
   "next_action": "Complete and checksum immutable Dukascopy BI5 Bid/Ask monthly archives for 2020-2022, then rerun the unchanged HYP-037 preregistration. Do not change candidate, gate, source lineage, periods, or lot.",
@@ -24,6 +24,11 @@
   "period_access_receipt": "configs/research/usdjpy_hyp037_period_access_receipt_v1.json",
   "release_receipt": "configs/research/usdjpy_hyp037_release_receipt_v1.json",
   "report": "docs/research/USDJPY_HYP037_SHORT_PULLBACK_CONTINUATION_PORTABILITY_RESULT_V1.md",
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v39.json"
+  },
   "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
   "result": "configs/research/usdjpy_hyp037_final_result_v1.json",
   "run_authorization": {
