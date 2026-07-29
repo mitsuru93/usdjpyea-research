@@ -1,0 +1,27 @@
+{
+  "schema_version": "usdjpy_csos_dukascopy_native_remaining_family_prior_study_audit_v1",
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "research_main_audited_sha": "1841ed3fba757a9a44496faeb9a6c7e014efa9d6",
+  "exact_variant_search": [
+    {"variant_id":"A_FALSE_BREAKOUT_REVERSAL","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"B_BALANCE_MEAN_REVERSION","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"C_SHOCK_CONTINUATION","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"E_TOKYO_LONDON","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"E_LONDON_NY","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"E_NY_TOKYO","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"G_TREND_EXHAUSTION","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"H_COMPRESSION_BREAKOUT","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"I_FAILED_TREND_CONTINUATION","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"K_LONDON_OPENING_RANGE_BREAKOUT","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"K_ROUND_NUMBER_REJECTION","binding_independent_closure_found":false,"matches":[]},
+    {"variant_id":"K_DAILY_TIME_SERIES_MOMENTUM","binding_independent_closure_found":false,"matches":[]}
+  ],
+  "excluded_binding_closures": [
+    {"family":"D_SHOCK_FAILURE","duplication_status":"EXCLUDED_COMPLETE","reason":"Independent Shock Failure study and postmortem are complete.","source_authority":"HYP-028 and immutable Shock Failure evidence"},
+    {"family":"F_LIQUIDITY_SWEEP","duplication_status":"EXCLUDED_COMPLETE","reason":"Asian and previous-day sweep lineages are closed.","source_authority":"HYP-030, HYP-031, HYP-033 and HYP-034"},
+    {"family":"J_PULLBACK_CONTINUATION","duplication_status":"EXCLUDED_ACTIVE_OR_COMPLETE","reason":"Dukascopy-native Pullback is closed and its directional successor is separate.","source_authority":"HYP-035, HYP-036 and the parallel Short Pullback successor"}
+  ],
+  "evaluated_variant_count": 12,
+  "excluded_duplicate_family_count": 3,
+  "active_hypothesis_registry_overwritten": false
+}
