@@ -1,0 +1,22 @@
+{
+  "2020_2022_candidate_outcomes_accessed": false,
+  "2023_2024_confirmation_credit": false,
+  "2025_accessed": false,
+  "Core_authorized": false,
+  "MT4_authorized": false,
+  "candidate_freeze_receipt_created": false,
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR",
+  "candidate_rule_frozen": true,
+  "decision": "TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED",
+  "family_id": "S_SHORT_PULLBACK_CONTINUATION_PORTABILITY",
+  "hypothesis_id": "USDJPY-HYP-037",
+  "live_authorized": false,
+  "next_action": "Complete and checksum immutable Dukascopy BI5 Bid/Ask monthly archives for 2020-2022, then rerun the unchanged HYP-037 preregistration. Do not change candidate, gate, source lineage, periods, or lot.",
+  "production_authorized": false,
+  "reason_candidate_freeze_not_created": "Historical standalone and portfolio gates were not reached.",
+  "schema_version": "usdjpy_hyp037_candidate_registry_v1",
+  "source_artifact_digest": "sha256:ef2dc9458f4f15dbcab20172ddad611d8342dec9784d80a4428c2a5bd1bf8ad4",
+  "source_artifact_id": 8712825068,
+  "source_run_id": 30423475688,
+  "status": "CLOSED_TECHNICAL_NO_RESULT_SOURCE_AUTHORITY_UNRESOLVED"
+}
