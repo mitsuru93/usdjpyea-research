@@ -17,39 +17,46 @@ jobs:
         env:
           GH_TOKEN: '${{ github.token }}'
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
           repo="$GITHUB_REPOSITORY"
           workflow=usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml
           issue=403
           legacy_run=30428550983
           receipt=configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json
+          fail_receipt() {
+            rc=$?
+            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: dispatcher failed at shell line ${BASH_LINENO[0]} with exit code ${rc}." || true
+            exit "$rc"
+          }
+          trap fail_receipt ERR
 
-          gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: dispatcher started for PR #${{ github.event.pull_request.number }} at head ${{ github.event.pull_request.head.sha }}."
+          gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: REST dispatcher started for PR #${{ github.event.pull_request.number }} at head ${{ github.event.pull_request.head.sha }}."
 
           if gh api "repos/${repo}/contents/${receipt}" >/dev/null 2>&1; then
             gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: immutable Release receipt already exists; no duplicate dispatch performed."
             exit 0
           fi
 
-          runs=$(gh run list --repo "$repo" --workflow "$workflow" --limit 30 --json databaseId,status,conclusion,event,headSha,createdAt,url)
-          active=$(printf '%s' "$runs" | jq -c --argjson legacy "$legacy_run" '[.[] | select(.databaseId != $legacy and (.status=="queued" or .status=="in_progress"))] | sort_by(.createdAt) | last // empty')
+          runs=$(gh api "repos/${repo}/actions/workflows/${workflow}/runs?per_page=30")
+          active=$(printf '%s' "$runs" | jq -c --argjson legacy "$legacy_run" '[.workflow_runs[] | select(.id != $legacy and (.status=="queued" or .status=="in_progress"))] | sort_by(.created_at) | last // empty')
           if [ -n "$active" ]; then
-            run_id=$(printf '%s' "$active" | jq -r .databaseId)
+            run_id=$(printf '%s' "$active" | jq -r .id)
             status=$(printf '%s' "$active" | jq -r .status)
             event=$(printf '%s' "$active" | jq -r .event)
-            url=$(printf '%s' "$active" | jq -r .url)
+            url=$(printf '%s' "$active" | jq -r .html_url)
             gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: existing non-legacy Run ${run_id} is ${status} (${event}); duplicate dispatch suppressed. ${url}"
             exit 0
           fi
 
-          gh workflow run "$workflow" --repo "$repo" --ref main
+          gh api --method POST "repos/${repo}/actions/workflows/${workflow}/dispatches" -f ref=main
           sleep 4
-          dispatched=$(gh run list --repo "$repo" --workflow "$workflow" --limit 10 --json databaseId,status,event,headSha,createdAt,url | jq -c --argjson legacy "$legacy_run" '[.[] | select(.databaseId != $legacy and .event=="workflow_dispatch")] | sort_by(.createdAt) | last // empty')
+          runs=$(gh api "repos/${repo}/actions/workflows/${workflow}/runs?per_page=10")
+          dispatched=$(printf '%s' "$runs" | jq -c --argjson legacy "$legacy_run" '[.workflow_runs[] | select(.id != $legacy and .event=="workflow_dispatch")] | sort_by(.created_at) | last // empty')
           if [ -n "$dispatched" ]; then
-            run_id=$(printf '%s' "$dispatched" | jq -r .databaseId)
+            run_id=$(printf '%s' "$dispatched" | jq -r .id)
             status=$(printf '%s' "$dispatched" | jq -r .status)
-            url=$(printf '%s' "$dispatched" | jq -r .url)
+            url=$(printf '%s' "$dispatched" | jq -r .html_url)
             gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: dispatched Run ${run_id}; current status ${status}. ${url}"
           else
-            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: workflow_dispatch accepted, but non-legacy Run ID was not visible in immediate readback."
+            gh issue comment "$issue" --repo "$repo" --body "Atlas PR-target diagnostic: REST workflow_dispatch accepted, but non-legacy Run ID was not visible in immediate readback."
           fi
