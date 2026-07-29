@@ -25,6 +25,7 @@ jobs:
           fetch configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json "$root/src/prereg.json"
           fetch configs/research/usdjpy_pullback_continuation_source_manifest_v1.json "$root/src/source_manifest.json"
           fetch tools/evaluate_usdjpy_pullback_continuation_v1.py "$root/src/evaluate.py"
+          fetch tools/usdjpy_hyp034_sitecustomize_v1.py "$root/src/sitecustomize.py"
           fetch tools/usdjpy_hyp034_bi5_source_v1.py "$root/src/usdjpy_hyp034_bi5_source_v1.py"
           fetch tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py "$root/src/build_baseline.py"
           fetch tools/vendor/fx2_infra_core_f897b250_v1.py "$root/infra/fx2_infra.py"
