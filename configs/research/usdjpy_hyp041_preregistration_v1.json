@@ -1,0 +1,109 @@
+{
+  "schema_version": "usdjpy_hyp041_preregistration_v1",
+  "status": "FROZEN_FAILURE_DECOMPOSITION_PROTOCOL_NO_CANDIDATE_OUTCOME",
+  "hypothesis_id": "USDJPY-HYP-041",
+  "study_id": "USDJPY-F05-V2-2025H1-LOSS-RECOVERY-PORTABLE-ARCHITECTURE-V1",
+  "title": "F05 2025H1 Loss Recovery and Portable Architecture Study",
+  "family_id": "F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE",
+  "objective": "Preserve the material 2023-2024 F05 expectancy while materially reducing or reversing the known 2025H1 F05 and B02-plus-F05 portfolio loss under exact Research Core MT4 chronology currency equity and margin contracts.",
+  "primary_decision_question": "Does a finite mechanism-based F05 architecture preserve 2023-2024 economics and improve the 2025H1 validation-period F05 and B02-plus-F05 portfolio without destroying B02 economics or execution integrity?",
+  "immutable_prior_boundaries": {
+    "USDJPY-HYP-027": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT_NOT_REOPENED",
+    "USDJPY-HYP-029": "FAIL_2025H1_BINDING_NOT_REOPENED",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING_NOT_REOPENED",
+    "USDJPY-HYP-039": "ACTIVE_PARALLEL_UNCHANGED_NOT_TOUCHED",
+    "USDJPY-HYP-040": "ACTIVE_PARALLEL_UNCHANGED_NOT_TOUCHED"
+  },
+  "period_receipt": "configs/research/usdjpy_hyp041_period_access_receipt_v1.json",
+  "failure_decomposition": {
+    "required_common_schema": [
+      "trade_id", "strategy", "side", "session", "signal_utc", "entry_utc", "close_utc", "realized_pl_jpy",
+      "MFE_5s", "MAE_5s", "MFE_15s", "MAE_15s", "MFE_1m", "MAE_1m", "MFE_5m", "MAE_5m", "MFE_15m", "MAE_15m",
+      "initial_adverse_excursion", "initial_favorable_excursion", "temporary_profit_then_giveback", "maximum_profit_to_loss_close",
+      "continuation_failure", "breakout_or_trend_acceptance_failure", "same_session_prior_losses", "same_direction_prior_losses",
+      "consecutive_loss_ordinal", "same_timestamp_close_entry", "open_position_overlap", "market_state", "ATR_state",
+      "trend_extension_or_exhaustion", "conditional_expectancy_by_elapsed_hold", "entry_month", "entry_week", "entry_day",
+      "B02_overlap", "portfolio_drawdown_state"
+    ],
+    "exclusive_primary_buckets": [
+      "ENTRY_IMMEDIATELY_ADVERSE",
+      "TEMPORARY_PROFIT_THEN_LOSS",
+      "EDGE_DECAY_DURING_EXTENDED_HOLD",
+      "SAME_SESSION_CONSECUTIVE_LOSS",
+      "MARKET_STATE_MISFIT",
+      "CHRONOLOGY_OR_SAME_TIMESTAMP_INTERACTION",
+      "OTHER"
+    ],
+    "bucket_metrics": [
+      "trades", "net_jpy", "gross_loss_jpy", "average_loss_jpy", "maximum_loss_jpy", "loss_contribution_share",
+      "difference_vs_2023_2024", "B02_overlap_trades", "B02_overlap_net_jpy"
+    ],
+    "information_cutoff": "Features use only completed bars observed ticks and state available at each decision timestamp; post-close path labels are diagnostic only and cannot directly define Entry permission."
+  },
+  "candidate_catalog_contract": {
+    "maximum_single_candidates": 3,
+    "maximum_combined_candidates": 1,
+    "maximum_total_candidates": 4,
+    "candidate_axes": [
+      {
+        "candidate_slot": "C1",
+        "name": "Chronology-aware Loss Persistence Permission",
+        "purpose": "Model F05 realized-loss persistence with native close-before-entry chronology.",
+        "forbidden": ["reuse exact HYP-027 threshold", "post-hoc Short-only exclusion", "session-specific threshold", "unbounded loss-count search"]
+      },
+      {
+        "candidate_slot": "C2",
+        "name": "Market-State Risk Compression",
+        "purpose": "Rebuild one F05-specific market-state mechanism from HYP-029 information without reusing exact S3.",
+        "required_freeze": ["information_time", "state_definition", "Entry_permission", "restoration", "expiry"],
+        "forbidden": ["exact S3 reuse", "H4 or D1 parameter grid", "side session month or fold exception"]
+      },
+      {
+        "candidate_slot": "C3",
+        "name": "Continuation-Failure or Giveback Lifecycle",
+        "purpose": "React prospectively when continuation fails or observed profit giveback invalidates the entry thesis.",
+        "allowed_information": ["completed_bar", "observed_Tick_path", "current_MFE_MAE", "elapsed_time", "entry_time_frozen_market_structure"],
+        "forbidden": ["fixed SL grid", "fixed TP grid", "hold-time grid", "large profit-threshold catalog", "winner-derived exceptions"]
+      }
+    ],
+    "combined_candidate_rule": "Only one combination is allowed and only when the single-candidate decision ledgers show clearly distinct affected trades and additive economics before combined 2025H1 access."
+  },
+  "research_periods": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "research_metrics": [
+    "F05_standalone_net_pf", "Long_Short", "fold_net_pf", "monthly_breadth", "gross_profit_loss", "win_rate", "average_trade",
+    "realized_DD", "full_equity_DD", "minimum_equity", "winner_retention", "top20_winner_loss", "spread_stress",
+    "Entry_Exit_delay", "concentration", "bootstrap", "B02_plus_F05_portfolio", "B02_invariance", "margin_concurrency"
+  ],
+  "research_diagnostic_policy": "Breadth bootstrap and concentration are retained as risk diagnostics and are not automatic standalone disqualifiers. Selection is based on preserving 2023-2024 F05 economics while offering a causally coherent 2025H1 loss-recovery mechanism.",
+  "2025H1_validation_outputs": [
+    "trades", "blocked_or_modified_trades", "net_jpy", "profit_factor", "gross_profit_loss", "Long_Short", "Q1_Q2",
+    "monthly_result", "realized_DD", "full_equity_DD", "minimum_equity", "worst_1_5_20_business_days",
+    "recovery_duration", "maximum_consecutive_losses", "giveback_loss", "initial_adverse_loss", "margin",
+    "maximum_concurrency", "execution_anomalies", "chronology_mismatch", "currency_mismatch"
+  ],
+  "candidate_versioning": {
+    "2025H1_informed_change_requires_new_version": true,
+    "new_version_requires_2023_2024_rerun_before_2025H1_revalidation": true,
+    "required_fields": ["change_reason", "evidence", "2023_2024_result", "2025H1_result", "outcome_visibility", "rerun_count"]
+  },
+  "decision_classes": {
+    "PASS_F05_V2_2025H1_RECOVERY": ["F05_net_positive", "F05_PF_above_1", "portfolio_net_positive", "portfolio_PF_above_1", "B02_not_destroyed", "acceptable_full_equity_DD", "chronology_currency_parity_mismatch_zero", "margin_valid"],
+    "PASS_F05_V2_PARTIAL_RECOVERY": ["F05_materially_above_baseline", "portfolio_above_baseline", "F05_or_portfolio_still_nonpositive"],
+    "FAIL_F05_V2_PORTABLE_RECOVERY": ["2023_2024_materially_destroyed_or_2025H1_not_improved_or_cost_failure_or_parity_failure_or_margin_failure"],
+    "TECHNICAL_NO_RESULT": ["irreparable_authority_execution_or_evidence_failure_before_valid_scientific_result"]
+  },
+  "implementation_contract": {
+    "selected_candidates_to_Core_MT4": 1,
+    "required": ["shared_F05_v2_module", "information_time_contract", "same_timestamp_chronology", "restart_restoration", "session_loss_state_restoration", "position_ownership", "exact_Entry_Exit", "JPY_accounting", "Research_Core_parity", "Core_MT4_parity", "standalone_tester", "B02_integrated_tester", "full_equity_replay", "margin_concurrency"],
+    "mismatch_tolerance": 0
+  },
+  "forbidden": [
+    "unbounded_parameter_search", "profit-seeking_grid_search", "post-hoc_month_side_session_exclusion", "result-following_exception",
+    "HYP027_exact_rule_reuse", "S3_exact_reuse", "HYP039_or_HYP040_change", "B02_v2_change", "common_portfolio_integration_branch_change",
+    "dependency_on_unmerged_parallel_code", "automatic_2025H2_substitution", "production_or_live_authorization"
+  ],
+  "candidate_outcomes_accessed": false,
+  "2025H1_candidate_rerun_count": 0,
+  "production_authorized": false,
+  "live_authorized": false
+}
