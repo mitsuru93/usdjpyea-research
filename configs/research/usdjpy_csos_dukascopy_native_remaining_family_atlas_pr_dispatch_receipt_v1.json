@@ -3,6 +3,7 @@
   "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
   "purpose": "Trigger the duplicate-safe pull_request_target dispatcher for the frozen Atlas.",
   "synchronize_event_requested": true,
+  "dispatch_attempt": 2,
   "scientific_contract_changed": false,
   "family_contract_changed": false,
   "ranking_gate_changed": false,
