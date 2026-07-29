@@ -55,6 +55,8 @@
     "hyp038_output_manifest": "configs/research/usdjpy_hyp038_output_manifest_v1.json",
     "hyp038_period_access_receipt": "configs/research/usdjpy_hyp038_period_access_receipt_v1.json",
     "hyp038_preregistration": "configs/research/usdjpy_hyp038_preregistration_v1.json",
+    "hyp038_release_readback_receipt": "configs/research/usdjpy_hyp038_release_readback_receipt_v1.json",
+    "hyp038_release_receipt": "configs/research/usdjpy_hyp038_release_receipt_v1.json",
     "hyp038_result": "configs/research/usdjpy_hyp038_final_result_v1.json",
     "hyp038_result_report": "docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md",
     "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
@@ -238,6 +240,16 @@
       "ordinal": 19,
       "path": "configs/research/usdjpy_hyp038_atlas_comparison_v1.json",
       "reason": "HYP-038 and Remaining-Family Atlas common comparison"
+    },
+    {
+      "ordinal": 20,
+      "path": "configs/research/usdjpy_hyp038_release_receipt_v1.json",
+      "reason": "HYP-038 immutable Release and receipt Issue authority"
+    },
+    {
+      "ordinal": 21,
+      "path": "configs/research/usdjpy_hyp038_release_readback_receipt_v1.json",
+      "reason": "HYP-038 byte-identical Release readback authority"
     }
   ],
   "parallel_track_state": {
