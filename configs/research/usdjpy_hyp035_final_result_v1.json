@@ -1,0 +1,171 @@
+{
+  "schema_version": "usdjpy_hyp035_final_result_v1",
+  "status": "COMPLETE_FAIL_ATLAS_IDENTITY",
+  "hypothesis_id": "USDJPY-HYP-035",
+  "family_id": "S_PULLBACK_CONTINUATION_PORTABILITY",
+  "candidate_id": "A_EXACT_EXECUTABLE_16BAR",
+  "decision": "FAIL_ATLAS_IDENTITY",
+  "scientific_result": true,
+  "first_binding_failure": {
+    "stage": "EVENT_IDENTITY",
+    "failed_gates": [
+      {
+        "gate": "exact_event_identity_match_rate_ge_95pct",
+        "observed": 0.8844711177794449,
+        "required": 0.95
+      },
+      {
+        "gate": "material_contradiction_rate_le_5pct",
+        "observed": 0.20175438596491227,
+        "required": 0.05
+      }
+    ]
+  },
+  "research_start_sha": "b7711c554b3ab21331537911cfb5a7d423d19cc3",
+  "research_execution_sha": "fbba359f62a5b3a3cde8c4bc2d3c7d4032398f5d",
+  "core_start_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "core_end_sha_at_scientific_run": "f897b250b808207d960417b2306935dcb0655acf",
+  "authority": {
+    "atlas_pr": 295,
+    "atlas_run_id": 30202535070,
+    "atlas_artifact_id": 8632092013,
+    "atlas_release": "usdjpy-csos-opportunity-atlas-v1-r1",
+    "scientific_pr": 394,
+    "scientific_run_id": 30411335631,
+    "scientific_artifact_id": 8708610330,
+    "scientific_artifact_digest": "sha256:1dc1018a6b9c10743b367bf698bcaa97bd4b27a4838eb5eeadbf8d2f011a3c5d",
+    "effective_evaluator_sha256": "63fad89036e20269c47a1ed5e7c98e0abc2fddf5408a5b01f3dc1e9702a0c273",
+    "expected_release_tag": "usdjpy-hyp035-pullback-continuation-development-v1"
+  },
+  "atlas_reproduction": {
+    "opportunities": 1333,
+    "net_jpy": 20751.999999999258,
+    "profit_factor": 1.1358533056633857,
+    "positive_folds": 4,
+    "positive_months": 15,
+    "fold_net_jpy": {
+      "2023H1": 2530.9999999999486,
+      "2023H2": 9507.999999999918,
+      "2024H1": 8561.999999999822,
+      "2024H2": 150.9999999995744
+    }
+  },
+  "source_authority": {
+    "status": "PASS_AFTER_TECHNICAL_FALSE_GATE_REPAIR",
+    "archive_count": 24,
+    "tick_count": 84428370,
+    "m15_bar_count": 49894,
+    "ask_bid_inversion_count": 0,
+    "duplicate_timestamp_count": 0,
+    "nonmonotonic_timestamp_count": 0,
+    "duplicate_m15_bar_count": 0,
+    "unresolved_chronology": 0,
+    "technical_repair": {
+      "reason": "The initial evaluator mistakenly required more than 60000 M15 bars for two observed calendar years. This was not a preregistered scientific gate. It was replaced with the verified 49000 through 50100 population sanity range.",
+      "candidate_changed": false,
+      "atlas_rule_changed": false,
+      "execution_semantics_changed": false,
+      "scientific_gate_changed": false,
+      "period_changed": false
+    }
+  },
+  "atlas_identity": {
+    "atlas_opportunities": 1333,
+    "raw_native_opportunities": 1332,
+    "common_signal_side_events": 1183,
+    "common_exact_events": 1179,
+    "atlas_only_events": 150,
+    "raw_only_events": 149,
+    "side_mismatches": 0,
+    "entry_exit_boundary_mismatches": 4,
+    "bid_open_pl_mismatches": 444,
+    "signal_side_match_rate": 0.8874718679669917,
+    "exact_event_identity_match_rate": 0.8844711177794449,
+    "material_contradiction_rate": 0.20175438596491227,
+    "all_mismatches_classified": true,
+    "unfavorable_mismatch_excluded": false
+  },
+  "mismatch_attribution": {
+    "all_signal_set_mismatches_are_in_2023": true,
+    "2023": {
+      "atlas_source": "Rakuten MT4 M15 Bid OHLC",
+      "atlas_source_sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+      "binding_source": "Dukascopy BI5 Bid/Ask Tick reconstructed M15",
+      "atlas_events": 664,
+      "raw_native_events": 663,
+      "common_signal_side_events": 514,
+      "common_exact_events": 510,
+      "atlas_only_events": 150,
+      "raw_only_events": 149,
+      "exact_identity_match_rate": 0.7680722891566265,
+      "material_contradiction_rate": 0.3677736777367774,
+      "mechanism": "Cross-venue M15 OHLC differences propagate recursively through EMA20, EMA96 and ATR20 and then alter signal qualification and same-variant active suppression chronology."
+    },
+    "2024": {
+      "atlas_source": "public Bid/Ask-derived M15 bars",
+      "atlas_source_sha256": "d22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020",
+      "binding_source": "Dukascopy BI5 Bid/Ask Tick reconstructed M15",
+      "atlas_events": 669,
+      "raw_native_events": 669,
+      "common_signal_side_events": 669,
+      "common_exact_events": 669,
+      "atlas_only_events": 0,
+      "raw_only_events": 0,
+      "exact_identity_match_rate": 1.0
+    },
+    "selective_exclusion": false
+  },
+  "suppression_diagnostics": {
+    "raw_qualifying_signals": 5093,
+    "warmup_suppressed": 8,
+    "fold_crossing_suppressed": 7,
+    "same_variant_active_suppressed": 3746,
+    "tail_suppressed": 0
+  },
+  "not_executed_due_first_binding_stop": {
+    "source_native_executable_trades": true,
+    "long_short_results": true,
+    "fold_month_session_economics": true,
+    "net_profit_factor_mdd_minimum_equity": true,
+    "mae_mfe": true,
+    "concentration": true,
+    "bootstrap": true,
+    "spread_delay": true,
+    "portfolio_realized_dd": true,
+    "portfolio_full_equity_dd": true,
+    "loss_clusters": true,
+    "concurrency_margin": true,
+    "candidate_freeze": true,
+    "historical_2020_2022": true,
+    "core_mt4": true,
+    "2025h1": true,
+    "2025h2": true
+  },
+  "authorization": {
+    "candidate_freeze": false,
+    "historical_2020_2022": false,
+    "core": false,
+    "mt4": false,
+    "2025h1": false,
+    "2025h2": false,
+    "production": false,
+    "live": false
+  },
+  "period_access": {
+    "development_2023_2024": true,
+    "historical_2020_2022": false,
+    "2025h1": false,
+    "2025h2": false
+  },
+  "closed_boundaries_preserved": {
+    "USDJPY-HYP-030": "NO_PORTABLE_CANDIDATE",
+    "USDJPY-HYP-031": "NO_PORTABLE_REGIME_RULE",
+    "USDJPY-HYP-032": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+    "USDJPY-HYP-033": "NO_EX_ANTE_OBSERVABLE_DISCRIMINATOR",
+    "USDJPY-HYP-034": "NO_PORTABLE_REJECTION_MECHANISM"
+  },
+  "production_authorized": false,
+  "live_authorized": false,
+  "no_retuning": true,
+  "exact_next_action": "Close HYP-035 at Atlas identity. Do not rescue with side, session, EMA threshold, hold-time, lot sizing, B02/F05 state, Sweep features, 2020-2022 or 2025 outcomes. A future Pullback Continuation study would require a newly preregistered source-native family whose discovery ledger is built on one consistent venue from the outset."
+}
