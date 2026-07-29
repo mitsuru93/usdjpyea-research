@@ -1,0 +1,52 @@
+name: Dispatch USDJPY CSOS Remaining-Family Atlas Canonicalization v1
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_canonicalization_request_v2.json'
+permissions:
+  actions: write
+  issues: write
+  contents: read
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch canonicalization once
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          repo="$GITHUB_REPOSITORY"
+          workflow=canonicalize_usdjpy_csos_remaining_family_atlas_v1.yml
+          gh issue comment 403 --repo "$repo" --body "Atlas canonicalization dispatcher started for PR #${{ github.event.pull_request.number }}."
+          open_pr=$(gh pr list --repo "$repo" --state open --head agent/canonicalize-csos-remaining-family-atlas-v1-final --json number,url --jq '.[0] // empty')
+          if [ -n "$open_pr" ]; then
+            url=$(printf '%s' "$open_pr" | jq -r .url)
+            gh issue comment 403 --repo "$repo" --body "Atlas canonicalization dispatcher: closure PR already exists; duplicate dispatch suppressed. ${url}"
+            exit 0
+          fi
+          runs=$(gh api "repos/${repo}/actions/workflows/${workflow}/runs?per_page=10")
+          active=$(printf '%s' "$runs" | jq -c '[.workflow_runs[] | select(.status=="queued" or .status=="in_progress")] | first // empty')
+          if [ -n "$active" ]; then
+            run_id=$(printf '%s' "$active" | jq -r .id)
+            url=$(printf '%s' "$active" | jq -r .html_url)
+            gh issue comment 403 --repo "$repo" --body "Atlas canonicalization dispatcher: active Run ${run_id}; duplicate dispatch suppressed. ${url}"
+            exit 0
+          fi
+          rc=0
+          output=$(gh api --method POST "repos/${repo}/actions/workflows/${workflow}/dispatches" -f ref=main 2>&1) || rc=$?
+          if [ "$rc" -ne 0 ]; then
+            compact=$(printf '%s' "$output" | tr '\n' ' ' | cut -c1-1200)
+            gh issue comment 403 --repo "$repo" --body "Atlas canonicalization dispatcher FAILED with exit code ${rc}. API response: ${compact}"
+            exit "$rc"
+          fi
+          sleep 4
+          runs=$(gh api "repos/${repo}/actions/workflows/${workflow}/runs?per_page=10")
+          latest=$(printf '%s' "$runs" | jq -c '[.workflow_runs[] | select(.event=="workflow_dispatch")] | sort_by(.created_at) | last // empty')
+          run_id=$(printf '%s' "$latest" | jq -r .id)
+          status=$(printf '%s' "$latest" | jq -r .status)
+          url=$(printf '%s' "$latest" | jq -r .html_url)
+          gh issue comment 403 --repo "$repo" --body "Atlas canonicalization dispatcher: Run ${run_id}; status ${status}. ${url}"
