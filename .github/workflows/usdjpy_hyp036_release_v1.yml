@@ -1,3 +1,4 @@
+# Canonical post-merge publication trigger.
 name: USDJPY HYP-036 Release v1
 on:
   push:
