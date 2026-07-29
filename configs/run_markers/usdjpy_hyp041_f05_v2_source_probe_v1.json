@@ -1,6 +1,8 @@
 {
   "schema_version": "usdjpy_hyp041_f05_v2_source_probe_marker_v1",
   "status": "AUTHORIZED_NO_CANDIDATE_OUTCOME",
+  "trigger_revision": 1,
+  "triggered_utc": "2026-07-29T13:27:00Z",
   "hypothesis_id": "USDJPY-HYP-041",
   "branch": "research/usdjpy-hyp041-f05-v2-v1",
   "expected_research_base": "4a6cb16768bbacc0c9bbeabfd5817bb26318c81a",
