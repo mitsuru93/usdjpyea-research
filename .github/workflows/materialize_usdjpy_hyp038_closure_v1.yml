@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: write
-  actions: read
 
 concurrency:
   group: materialize-usdjpy-hyp038-closure-${{ github.event.pull_request.number }}
@@ -18,221 +17,117 @@ jobs:
   materialize:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
-      - name: Verify immutable evidence and materialize closure
+      - name: Repair canonical metadata and validate repository memory
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          root="${RUNNER_TEMP}/hyp038-closure"
-          rm -rf "$root" && mkdir -p "$root"/{h38,atlas,src}
-
-          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/8718213549/zip" > "$root/h38.zip"
-          printf '%s  %s\n' 549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c "$root/h38.zip" | sha256sum -c -
-          unzip -q "$root/h38.zip" -d "$root/h38"
-          test -f "$root/h38/output/final_result.json"
-          (cd "$root/h38/output" && sha256sum -c PACKAGE_SHA256SUMS)
-          jq -e '.decision=="MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE" and .candidate_freeze_authorized==false and .period_access."2025H1"==false and .period_access."2025H2"==false and .production_authorized==false and .live_authorized==false and .technical_failure==false' "$root/h38/output/final_result.json"
-          jq -e '.status=="PASS"' "$root/h38/evidence/archive_readback.json"
-          printf '%s  %s\n' 0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8 "$root/h38/usdjpy-hyp038-delayed-continuation-research-v1.zip" | sha256sum -c -
-
-          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/8717709149/zip" > "$root/atlas.zip"
-          printf '%s  %s\n' 69fda87cdb5eef9a0fef641f8927918bb1a1fca6a5e9eabf72e34558afeeaa72 "$root/atlas.zip" | sha256sum -c -
-          unzip -q "$root/atlas.zip" -d "$root/atlas"
-          jq -e '.decision=="ATLAS_COMPLETE_MECHANISM_RESEARCH_ONLY" and .shortlist.shortlist_count==0 and .shortlist.track_a==null and .shortlist.track_b==null and .external_validation_2025_accessed==false' "$root/atlas/output/final_result.json"
-
-          fetch_old(){
-            local p="$1" o="$2"
-            mkdir -p "$(dirname "$o")"
-            gh api "repos/${GITHUB_REPOSITORY}/contents/${p}?ref=14a449baa1b13060ff71e75adaa3353ff95b1be1" --jq .content | tr -d '\n' | base64 -d > "$o"
-            test -s "$o"
-          }
-          for p in \
-            configs/research/usdjpy_hyp038_preregistration_v1.json \
-            configs/research/usdjpy_hyp038_startup_receipt_v1.json \
-            configs/research/usdjpy_hyp038_duplicate_research_audit_v1.json \
-            configs/research/usdjpy_hyp038_source_manifest_v1.json \
-            configs/research/usdjpy_hyp038_feature_catalog_v1.json \
-            configs/research/usdjpy_hyp038_finite_candidate_catalog_v1.json \
-            docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_PREREGISTRATION_V1.md \
-            tools/evaluate_usdjpy_hyp038_delayed_continuation_v1.py; do
-            fetch_old "$p" "$p"
-          done
-          printf '%s  %s\n' 66da172e403ff6b53bbf5e84b492d0abdae553c3703c2b794ae3190c647e6af3 tools/evaluate_usdjpy_hyp038_delayed_continuation_v1.py | sha256sum -c -
-          python -m py_compile tools/evaluate_usdjpy_hyp038_delayed_continuation_v1.py
-
-          archive_dir='docs/research/artifact_archives/usdjpy_hyp038_delayed_continuation_v1'
-          rm -rf "$archive_dir" && mkdir -p "$archive_dir"
-          cp -a "$root/h38/output/." "$archive_dir/"
-          cp "$root/h38/evidence/preflight/preflight_receipt.json" "$archive_dir/preflight_no_outcome_receipt.json"
-          cp "$root/h38/evidence/archive_build.json" "$archive_dir/deterministic_archive_build.json"
-          cp "$root/h38/evidence/archive_readback.json" "$archive_dir/deterministic_archive_readback.json"
-          cp "$root/h38/evidence/research_run.log" "$archive_dir/research_run.log"
-
-          cp "$root/h38/output/final_result.json" configs/research/usdjpy_hyp038_final_result_v1.json
-          cp "$root/h38/output/period_access_receipt.json" configs/research/usdjpy_hyp038_period_access_receipt_v1.json
-          cp "$root/h38/output/source_native_tick_audit.json" configs/research/usdjpy_hyp038_source_native_tick_audit_v1.json
-          cp "$root/h38/output/concentration_bootstrap_diagnostics.json" configs/research/usdjpy_hyp038_concentration_bootstrap_diagnostics_v1.json
-          cp "$root/h38/output/execution_robustness.json" configs/research/usdjpy_hyp038_execution_robustness_v1.json
-          cp "$root/h38/output/portfolio_loss_decoupling_audit.json" configs/research/usdjpy_hyp038_portfolio_loss_decoupling_audit_v1.json
-          cp "$root/h38/output/right_tail_preservation_audit.json" configs/research/usdjpy_hyp038_right_tail_preservation_audit_v1.json
-          cp "$root/h38/output/candidate_registry.json" configs/research/usdjpy_hyp038_candidate_registry_v1.json
-          cp "$root/h38/output/artifact_manifest.json" configs/research/usdjpy_hyp038_output_manifest_v1.json
-          cp "$root/h38/output/preflight_receipt.json" configs/research/usdjpy_hyp038_preflight_receipt_v1.json
-          cp "$root/h38/output/source_manifest_runtime.json" configs/research/usdjpy_hyp038_source_manifest_runtime_v1.json
-          cp "$root/h38/output/human_report.md" docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md
-
           python - <<'PY'
-          import csv, json, pathlib
-          h=json.load(open('/tmp/hyp038-closure/h38/output/final_result.json')) if pathlib.Path('/tmp/hyp038-closure/h38/output/final_result.json').exists() else None
-          # RUNNER_TEMP varies; resolve through environment-derived glob.
-          if h is None:
-              import glob
-              hp=glob.glob('/home/runner/work/_temp/hyp038-closure/h38/output/final_result.json')[0]
-              ap=glob.glob('/home/runner/work/_temp/hyp038-closure/atlas/output/final_result.json')[0]
-              h=json.load(open(hp)); a=json.load(open(ap))
-          else:
-              a=json.load(open('/tmp/hyp038-closure/atlas/output/final_result.json'))
-          selected=h['selected_oof']; ref=h['reference']; atlas=a['shortlist']
-          payload={
-            'schema_version':'usdjpy_hyp038_atlas_comparison_v1',
-            'hyp038_decision':h['decision'],
-            'remaining_family_atlas_decision':a['decision'],
-            'remaining_family_track_a':atlas['track_a'],
-            'remaining_family_track_b':atlas['track_b'],
-            'remaining_family_shortlist_count':atlas['shortlist_count'],
-            'comparison_interpretation':'No Remaining-Family Track A or Track B candidate exists. HYP-038 also has no deployable candidate. B_BALANCE_MEAN_REVERSION remains mechanism-research-only and is not a candidate.',
-            'third_strategy_rank':[
-              {'rank':1,'item':'NO_DEPLOYABLE_THIRD_STRATEGY_CANDIDATE','classification':'OPEN_SLOT'},
-              {'rank':2,'item':'B_BALANCE_MEAN_REVERSION','classification':'MECHANISM_RESEARCH_ONLY_NOT_SHORTLISTED'},
-              {'rank':3,'item':'HYP038_SHORT_PULLBACK_DELAYED_CONTINUATION','classification':'MECHANISM_CONFIRMED_NOT_DEPLOYABLE'}
-            ],
-            'hyp038_selected_oof':selected,
-            'hyp037_reference':ref,
-            'atlas_mechanism_research_only':atlas.get('mechanism_research_only'),
-            '2025_accessed':False,
-            'candidate_freeze':False,
-            'production_authorized':False,
-            'live_authorized':False
-          }
-          pathlib.Path('configs/research/usdjpy_hyp038_atlas_comparison_v1.json').write_text(json.dumps(payload,indent=2,sort_keys=True)+'\n')
-          rows=[
-            {'candidate':'HYP038_C5_COEXPOSURE_SKIP_OOF','status':'MECHANISM_ONLY','net_jpy':selected['standalone']['net_jpy'],'pf':selected['standalone']['profit_factor'],'positive_folds':selected['standalone']['positive_folds'],'positive_months':selected['standalone']['positive_months'],'spread_plus_1_net_jpy':selected['execution']['spread_plus_1_net_jpy'],'top5_winner_retention':selected['right_tail']['top5_winner_pl_retention'],'b02_daily_corr':selected['portfolio']['daily_correlation_to_B02'],'f05_daily_corr':selected['portfolio']['daily_correlation_to_F05'],'negative_baseline_day_contribution_jpy':selected['portfolio']['negative_baseline_day_candidate_contribution_jpy'],'combined_realized_dd_jpy':selected['portfolio']['combined_realized_dd_jpy'],'combined_full_equity_dd_jpy':selected['portfolio']['combined_full_equity_dd_jpy'],'worst_5d_jpy':selected['portfolio']['combined_worst_5_business_day_jpy'],'worst_20d_jpy':selected['portfolio']['combined_worst_20_business_day_jpy'],'worst_month_jpy':selected['portfolio']['combined_worst_calendar_month_jpy'],'implementation_complexity':'one portfolio co-exposure admission condition','source_portability':'Dukascopy research only; freeze denied','mt4_readiness':'LOCKED','external_gate':'NOT_OPENED'},
-            {'candidate':'REMAINING_ATLAS_TRACK_A','status':'NONE','net_jpy':'','pf':'','positive_folds':'','positive_months':'','spread_plus_1_net_jpy':'','top5_winner_retention':'','b02_daily_corr':'','f05_daily_corr':'','negative_baseline_day_contribution_jpy':'','combined_realized_dd_jpy':'','combined_full_equity_dd_jpy':'','worst_5d_jpy':'','worst_20d_jpy':'','worst_month_jpy':'','implementation_complexity':'','source_portability':'','mt4_readiness':'LOCKED','external_gate':'NOT_OPENED'},
-            {'candidate':'REMAINING_ATLAS_TRACK_B','status':'NONE','net_jpy':'','pf':'','positive_folds':'','positive_months':'','spread_plus_1_net_jpy':'','top5_winner_retention':'','b02_daily_corr':'','f05_daily_corr':'','negative_baseline_day_contribution_jpy':'','combined_realized_dd_jpy':'','combined_full_equity_dd_jpy':'','worst_5d_jpy':'','worst_20d_jpy':'','worst_month_jpy':'','implementation_complexity':'','source_portability':'','mt4_readiness':'LOCKED','external_gate':'NOT_OPENED'}
-          ]
-          with open('docs/research/artifact_archives/usdjpy_hyp038_delayed_continuation_v1/atlas_candidate_comparison.csv','w',newline='') as f:
-              w=csv.DictWriter(f,fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+          import json
+          from pathlib import Path
+
+          next_action = (
+              'Do not retune HYP-038, freeze C5, implement Core/MT4, or access 2025. '
+              'Preserve delayed right-tail continuation as mechanism evidence. The third-strategy slot remains open; '
+              'the next eligible independent research direction is a separately preregistered B_BALANCE_MEAN_REVERSION entry-time hypothesis, '
+              'while 2025H2 remains reserved for the integrated B02 v2 + F05 v2 + third-strategy gate.'
+          )
+
+          ledger_path = Path('configs/research/usdjpy_hypothesis_ledger_addendum_v41.json')
+          ledger = json.loads(ledger_path.read_text())
+          ledger['entries'] = [{
+              'hypothesis_id': 'USDJPY-HYP-038',
+              'family_ids': ['S_SHORT_PULLBACK_DELAYED_CONTINUATION_LOSS_DECOUPLING'],
+              'title': 'Short Pullback Delayed Right-Tail Continuation and Portfolio Loss-Decoupling Study',
+              'target_failure_mode': 'HYP-037 delayed right-tail alpha had negative B02/F05 baseline-day contribution and worsened worst 5-business-day loss; determine whether time-causal admission or lifecycle information can decouple losses without destroying the right tail.',
+              'causal_hypothesis': 'Short Pullback profit is delayed 120-240 minute right-tail continuation; entry-time, checkpoint-time, or one portfolio-state condition may reject continuation failure while preserving large winners.',
+              'pre_result_predictions': [
+                  'At least one finite OOF candidate may make negative-baseline-day contribution nonnegative.',
+                  'A deployable rule must retain at least 90 percent of top-5 winner P/L and 80 percent of top-decile gross profit.',
+                  'A deployable rule must have avoided loss greater than sacrificed profit and preserve a majority of the top 25 winners.',
+                  'A deployable rule must pass PF, fold, cost-stress and all portfolio loss-cluster hard gates.'
+              ],
+              'tests': [
+                  'Four-fold 2023H1/2023H2/2024H1/2024H2 leave-one-fold-out evaluation of the preregistered finite C1-C6 catalog.',
+                  'Causal Bid/Ask Tick reconstruction at 15, 30, 60, 90 and 120 minute checkpoints.',
+                  'Right-tail preservation audit against the unchanged HYP-037 C0 reference.',
+                  'UTC/JPY B02/F05 realized and full-equity portfolio replay.',
+                  'Observed spread, +1 pip spread, +15 second Entry delay and 0.5 pip adverse slippage per side stress.',
+                  'Concentration and event/date/session-block bootstrap diagnostics.'
+              ],
+              'decision': 'MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE',
+              'status': 'COMPLETE_RESEARCH_DECISION_NO_CANDIDATE_FREEZE',
+              'phase2_status': 'COMPLETE_RESEARCH_DECISION_NO_CANDIDATE_FREEZE',
+              'authorization': {'2023_2024_research': False, '2025H1': False, '2025H2': False, 'Core': False, 'MT4': False, 'candidate_freeze': False, 'live': False, 'production': False},
+              'period_access': {'2020_2022': False, '2023_2024_candidate_outcomes': True, '2025': False},
+              'retained_findings': [
+                  'Delayed right-tail continuation remains confirmed in the unchanged HYP-037 reference.',
+                  'C5 co-exposure skip made negative-baseline-day contribution positive but destroyed the right tail and failed OOF economics.',
+                  'No finite entry, lifecycle, portfolio, or combined rule passed all hard gates.'
+              ],
+              'falsified_or_unsupported_claims': [
+                  'Observable finite entry-time or lifecycle state can preserve the HYP-037 right tail while rejecting enough losses for deployment.',
+                  'The co-exposure skip is portable across all four half-year folds.',
+                  'The selected OOF rule remains positive under +1 pip spread and 0.5 pip adverse slippage per side.',
+                  'The selected OOF rule improves worst 5-day, worst 20-day and worst calendar month simultaneously.'
+              ],
+              'failed_gates': [
+                  'OOF PF 1.07058 < 1.10',
+                  '2024H2 net -JPY5777 < -JPY1500',
+                  'spread +1 pip and 0.5 pip each-side slippage net -JPY133',
+                  'worst 5-day, 20-day and month worsened',
+                  'top-5 winner retention 17.4 percent',
+                  'top-decile profit retention 23.2 percent',
+                  'sacrificed profit JPY57813 exceeded avoided loss JPY41761',
+                  'top-25 preserved 6/25'
+              ],
+              'prohibited_reuse': ['Do not change HYP-037 decision.', 'Do not retune HYP-038 C5 or lifecycle thresholds under HYP-038.', 'Do not freeze or implement any HYP-038 variant.', 'Do not use 2025 for HYP-038.'],
+              'evidence_refs': {
+                  'preregistration': 'configs/research/usdjpy_hyp038_preregistration_v1.json',
+                  'final_result': 'configs/research/usdjpy_hyp038_final_result_v1.json',
+                  'report': 'docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md',
+                  'artifact_archive': 'docs/research/artifact_archives/usdjpy_hyp038_delayed_continuation_v1',
+                  'run_id': 30437473624,
+                  'artifact_id': 8718213549,
+                  'artifact_digest': 'sha256:549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c',
+                  'deterministic_archive_sha256': '0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8'
+              },
+              'successor_questions': [
+                  'Can a separately preregistered B_BALANCE_MEAN_REVERSION entry-time mechanism produce a deployable independent third strategy?',
+                  'Should delayed Short Pullback continuation remain research memory only unless a materially different information set becomes available?'
+              ],
+              'lineage': 'Independent successor to closed HYP-037; HYP-037 decision remains unchanged.',
+              'next_action': next_action
+          }]
+          ledger_path.write_text(json.dumps(ledger, indent=2, sort_keys=True) + '\n')
+
+          manifest_path = Path('configs/research/usdjpy_research_memory_manifest_v1.json')
+          manifest = json.loads(manifest_path.read_text())
+          pointers = manifest['canonical_pointers']
+          pointers.pop('hyp038_release_receipt', None)
+          pointers['hyp038_closure_receipt'] = 'configs/research/usdjpy_hyp038_closure_receipt_v1.json'
+          for item in manifest['mandatory_startup_read_order']:
+              if item['ordinal'] == 3:
+                  item['path'] = 'configs/research/usdjpy_research_candidate_registry_v67.json'
+                  item['reason'] = 'global state after HYP-038 mechanism-only scientific closure'
+              elif item['ordinal'] == 8:
+                  item['path'] = 'configs/research/usdjpy_hypothesis_ledger_addendum_v41.json'
+                  item['reason'] = 'append-only scientific memory through HYP-038 closure'
+          manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
           PY
 
-          python - <<'PY'
-          import json, pathlib
-          next_action=('Do not retune HYP-038, freeze C5, implement Core/MT4, or access 2025. '
-                       'Preserve delayed right-tail continuation as mechanism evidence. The third-strategy slot remains open; '
-                       'the next eligible independent research direction is a separately preregistered B_BALANCE_MEAN_REVERSION entry-time hypothesis, '
-                       'while 2025H2 remains reserved for the integrated B02 v2 + F05 v2 + third-strategy gate.')
-          r=json.load(open('configs/research/usdjpy_research_candidate_registry_v66.json'))
-          r.update({
-            'schema_version':'usdjpy_research_candidate_registry_v67',
-            'supersedes':'configs/research/usdjpy_research_candidate_registry_v66.json',
-            'status':'USDJPY_HYP038_COMPLETE_MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE',
-            'active_hypothesis':None,'active_family':None,'current_candidate':None,'candidate_ids':[],
-            'current_open_research_question':None,
-            'development_decision':'MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE',
-            'candidate_rule_changed':False,'scientific_gate_definition_changed_after_outcome':False,
-            'scientific_result':True,'technical_no_result':False,'no_retuning':True,
-            'candidate_registry':'configs/research/usdjpy_hyp038_candidate_registry_v1.json',
-            'result':'configs/research/usdjpy_hyp038_final_result_v1.json',
-            'report':'docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md',
-            'output_manifest':'configs/research/usdjpy_hyp038_output_manifest_v1.json',
-            'period_access_receipt':'configs/research/usdjpy_hyp038_period_access_receipt_v1.json',
-            'hypothesis_ledger_addendum':'configs/research/usdjpy_hypothesis_ledger_addendum_v41.json',
-            'source_run_id':30437473624,'source_artifact_id':8718213549,
-            'source_artifact_digest':'sha256:549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c',
-            'next_action':next_action
-          })
-          r['closed_boundaries']['USDJPY-HYP-038']='MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE'
-          r['run_authorization']={'2020_2022_analysis':False,'2020_2022_binding_confirmation':False,'Core_implementation':False,'MT4_candidate':False,'2025H1':False,'2025H2':False,'production':False,'live':False}
-          r['research_memory']['hypothesis_ledger_addendum']='configs/research/usdjpy_hypothesis_ledger_addendum_v41.json'
-          pathlib.Path('configs/research/usdjpy_research_candidate_registry_v67.json').write_text(json.dumps(r,indent=2,sort_keys=True)+'\n')
-
-          old=json.load(open('configs/research/usdjpy_hypothesis_ledger_addendum_v40.json'))
-          entry={
-            'hypothesis_id':'USDJPY-HYP-038',
-            'title':'Short Pullback Delayed Right-Tail Continuation and Portfolio Loss-Decoupling Study',
-            'lineage':'Independent successor to closed HYP-037; HYP-037 decision remains unchanged.',
-            'decision':'MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE',
-            'phase2_status':'COMPLETE_RESEARCH_DECISION_NO_CANDIDATE_FREEZE',
-            'authorization':{'2023_2024_research':False,'2025H1':False,'2025H2':False,'Core':False,'MT4':False,'candidate_freeze':False,'live':False,'production':False},
-            'period_access':{'2020_2022':False,'2023_2024_candidate_outcomes':True,'2025':False},
-            'retained_findings':['Delayed right-tail continuation remains confirmed in the unchanged HYP-037 reference.','C5 co-exposure skip made negative-baseline-day contribution positive but destroyed the right tail and failed OOF economics.','No finite entry/lifecycle/portfolio rule passed all hard gates.'],
-            'failed_gates':['OOF PF 1.07058 < 1.10','2024H2 net -JPY5777 < -JPY1500','spread +1 pip and 0.5 pip each-side slippage net -JPY133','worst 5-day, 20-day and month worsened','top-5 winner retention 17.4%','top-decile profit retention 23.2%','sacrificed profit JPY57813 exceeded avoided loss JPY41761','top-25 preserved 6/25'],
-            'evidence_refs':{'preregistration':'configs/research/usdjpy_hyp038_preregistration_v1.json','final_result':'configs/research/usdjpy_hyp038_final_result_v1.json','report':'docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md','artifact_archive':'docs/research/artifact_archives/usdjpy_hyp038_delayed_continuation_v1','run_id':30437473624,'artifact_id':8718213549},
-            'next_action':next_action,
-            'prohibited_reuse':['Do not change HYP-037 decision.','Do not retune HYP-038 C5 or lifecycle thresholds under HYP-038.','Do not freeze or implement any HYP-038 variant.','Do not use 2025 for HYP-038.']
-          }
-          ledger={'schema_version':'usdjpy_hypothesis_ledger_addendum_v41','status':'ACTIVE_APPEND_ONLY_DELTA','entry_mode':'DELTA_INHERIT_SUPERSEDES','base_ledger':'configs/research/usdjpy_hypothesis_ledger_v1.json','inherited_addendum':'configs/research/usdjpy_hypothesis_ledger_addendum_v40.json','supersedes':'configs/research/usdjpy_hypothesis_ledger_addendum_v40.json','entries':[entry],'hypothesis_status_updates':[]}
-          pathlib.Path('configs/research/usdjpy_hypothesis_ledger_addendum_v41.json').write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n')
-
-          m=json.load(open('configs/research/usdjpy_research_memory_manifest_v1.json'))
-          p=m['canonical_pointers']
-          p.update({'current_candidate_registry':'configs/research/usdjpy_research_candidate_registry_v67.json','hypothesis_ledger_addendum':'configs/research/usdjpy_hypothesis_ledger_addendum_v41.json','hyp038_preregistration':'configs/research/usdjpy_hyp038_preregistration_v1.json','hyp038_result':'configs/research/usdjpy_hyp038_final_result_v1.json','hyp038_result_report':'docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md','hyp038_candidate_registry':'configs/research/usdjpy_hyp038_candidate_registry_v1.json','hyp038_period_access_receipt':'configs/research/usdjpy_hyp038_period_access_receipt_v1.json','hyp038_output_manifest':'configs/research/usdjpy_hyp038_output_manifest_v1.json','hyp038_atlas_comparison':'configs/research/usdjpy_hyp038_atlas_comparison_v1.json','hyp038_release_receipt':'configs/research/usdjpy_hyp038_release_receipt_v1.json'})
-          s=m['current_state_snapshot']; s.update({'2025_H1_authorized':False,'2025_H2_authorized':False,'MT4_parity_authorized':False,'active_family':None,'active_hypothesis':None,'candidate_outcome_evaluation_authorized':False,'candidate_signal_generation_authorized':False,'current_candidate':None,'current_open_research_question':None,'historical_2020_2022_authorized':False,'live_authorized':False,'production_authorized':False,'registry_status':'USDJPY_HYP038_COMPLETE_MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE','next_action':next_action})
-          m['parallel_track_state']['USDJPY-HYP-038']={'status':'COMPLETE_RESEARCH_DECISION_NO_CANDIDATE_FREEZE','decision':'MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE','2020_2022_accessed':False,'2025_accessed':False,'candidate_freeze':False,'core_mt4_authorized':False,'production_authorized':False,'live_authorized':False}
-          m['lineage_rules'].update({'HYP038_is_independent_from_HYP037':True,'HYP037_decision_remains_unchanged_after_HYP038':True,'HYP038_2020_2022_not_accessed':True,'HYP038_2025_not_accessed':True,'HYP038_candidate_not_frozen':True})
-          if 'HYP038 finite variants must not be retuned or relabeled after closure' not in m['duplicate_research_guard']['block_conditions']:
-              m['duplicate_research_guard']['block_conditions'].append('HYP038 finite variants must not be retuned or relabeled after closure')
-          paths={x['path'] for x in m['mandatory_startup_read_order']}
-          n=max(x['ordinal'] for x in m['mandatory_startup_read_order'])
-          for path,reason in [('configs/research/usdjpy_hyp038_final_result_v1.json','HYP-038 binding Research decision'),('docs/research/USDJPY_HYP038_DELAYED_CONTINUATION_RESULT_V1.md','HYP-038 human-readable result'),('configs/research/usdjpy_hyp038_atlas_comparison_v1.json','HYP-038 and Remaining-Family Atlas common comparison')]:
-              if path not in paths:
-                  n+=1; m['mandatory_startup_read_order'].append({'ordinal':n,'path':path,'reason':reason})
-          pathlib.Path('configs/research/usdjpy_research_memory_manifest_v1.json').write_text(json.dumps(m,indent=2,sort_keys=True)+'\n')
-          PY
-
-          cat > configs/research/usdjpy_hyp038_closure_receipt_v1.json <<'JSON'
-          {
-            "schema_version": "usdjpy_hyp038_closure_receipt_v1",
-            "hypothesis_id": "USDJPY-HYP-038",
-            "decision": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
-            "research_start_sha": "d6288d4699c5acd57f6adc60bc8f36ab7c122098",
-            "research_execution_sha": "14a449baa1b13060ff71e75adaa3353ff95b1be1",
-            "core_start_end_sha": "f897b250b808207d960417b2306935dcb0655acf",
-            "run_id": 30437473624,
-            "artifact_id": 8718213549,
-            "artifact_digest": "sha256:549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c",
-            "deterministic_archive_sha256": "0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8",
-            "atlas_run_id": 30435884192,
-            "atlas_artifact_id": 8717709149,
-            "atlas_artifact_zip_sha256": "69fda87cdb5eef9a0fef641f8927918bb1a1fca6a5e9eabf72e34558afeeaa72",
-            "candidate_freeze": false,
-            "core_modified": false,
-            "mt4_executed": false,
-            "2020_2022_accessed": false,
-            "2025_accessed": false,
-            "production_authorized": false,
-            "live_authorized": false,
-            "technical_failure": false
-          }
-          JSON
-
-          python -m json.tool configs/research/usdjpy_research_candidate_registry_v67.json >/dev/null
-          python -m json.tool configs/research/usdjpy_hypothesis_ledger_addendum_v41.json >/dev/null
-          python -m json.tool configs/research/usdjpy_research_memory_manifest_v1.json >/dev/null
-          jq -e '.decision=="MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE" and .candidate_freeze_authorized==false' configs/research/usdjpy_hyp038_final_result_v1.json
-          jq -e '.status=="USDJPY_HYP038_COMPLETE_MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE" and .run_authorization."2025H1"==false' configs/research/usdjpy_research_candidate_registry_v67.json
-          jq -e '.parallel_track_state."USDJPY-HYP-038".candidate_freeze==false and .current_state_snapshot."2025_H1_authorized"==false' configs/research/usdjpy_research_memory_manifest_v1.json
+          python tools/validate_usdjpy_research_memory_v2.py --root . --output "${RUNNER_TEMP}/hyp038_memory_validation.json"
+          jq -e '.status=="PASS" and .registry_schema=="usdjpy_research_candidate_registry_v67" and .registry_status=="USDJPY_HYP038_COMPLETE_MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE"' "${RUNNER_TEMP}/hyp038_memory_validation.json"
+          cp "${RUNNER_TEMP}/hyp038_memory_validation.json" configs/research/usdjpy_hyp038_research_memory_validation_receipt_v1.json
 
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add configs/research docs/research tools/evaluate_usdjpy_hyp038_delayed_continuation_v1.py
+          git add configs/research/usdjpy_hypothesis_ledger_addendum_v41.json configs/research/usdjpy_research_memory_manifest_v1.json configs/research/usdjpy_hyp038_research_memory_validation_receipt_v1.json
           git diff --cached --quiet && exit 0
-          git commit -m 'research: canonicalize HYP-038 mechanism-only closure'
+          git commit -m 'research: repair and validate HYP-038 closure metadata'
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
