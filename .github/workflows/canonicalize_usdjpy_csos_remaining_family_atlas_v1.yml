@@ -44,6 +44,7 @@ jobs:
           jq -e '.shortlist_count==0 and .track_a==null and .track_b==null and .mechanism_research_only.variant_id=="B_BALANCE_MEAN_REVERSION" and .candidate_freeze==false and .core_mt4_authorized==false and ."2025_external_validation_authorized_in_this_atlas"==false' "$root/out/shortlist_decision.json"
           jq -e '.status=="PASS_BYTE_IDENTICAL_RELEASE_READBACK" and .scientific_run_id==30435884192 and .artifact_id==8717709149 and .release_asset_sha256=="4fa85d2fef179b82e15abe6cd7e9bb4d7af47ecd200659f183b4d8be7e5dd607" and .analysis_2020_2022_accessed==false and .external_validation_2025_accessed==false' <(gh api "repos/${repo}/contents/configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_release_receipt_v1.json?ref=main" --jq .content | tr -d '\n' | base64 -d)
 
+          gh auth setup-git
           gh repo clone "$repo" "$root/repo" -- --depth 1 --branch main
           cd "$root/repo"
           git config user.name github-actions[bot]
