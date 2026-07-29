@@ -1,0 +1,41 @@
+{
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v15",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v14.json",
+  "status": "HYP041_F05_V2_ACTIVE_FAILURE_DECOMPOSITION",
+  "active_hypothesis": "USDJPY-HYP-041",
+  "family_id": "F05_V2_PORTABLE_LOSS_RECOVERY_ARCHITECTURE",
+  "objective": "Preserve 2023-2024 F05 expectancy and recover the known 2025H1 F05 and B02-plus-F05 losses through a finite portable architecture.",
+  "prior_mechanism_inputs": {
+    "USDJPY-HYP-027": {
+      "decision": "FAIL_PHASE2_SIDE_BREADTH_SHORT_DEPENDENT",
+      "evidence_only": ["same-session loss persistence", "F05 concentration", "Short concentration", "same-timestamp chronology"]
+    },
+    "USDJPY-HYP-029": {
+      "decision": "FAIL_2025H1_BINDING",
+      "evidence_only": ["F05 market-state risk compression", "full-equity DD compression", "Q1 versus Q2 instability"]
+    },
+    "USDJPY-HYP-032": {
+      "decision": "FAIL_HISTORICAL_VALIDATION_NO_RETUNING",
+      "evidence_only": ["native close-before-entry chronology", "session-state restoration", "JPY accounting", "historical portability failure"]
+    }
+  },
+  "period_roles": {
+    "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_OR_AUXILIARY_ANALYSIS_NOT_BINDING",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_AUTOMATICALLY_USED_OR_SUBSTITUTED"
+  },
+  "candidate_limit": {
+    "single": 3,
+    "combined": 1,
+    "total": 4,
+    "Core_MT4_selected": 1
+  },
+  "parallel_isolation": {
+    "USDJPY-HYP-039_changed": false,
+    "USDJPY-HYP-040_changed": false,
+    "B02_v2_changed": false,
+    "common_portfolio_integration_changed": false
+  },
+  "next_action": "Complete exact authority inventory, common-schema failure decomposition and bucket-level loss attribution before freezing the finite candidate catalog."
+}
