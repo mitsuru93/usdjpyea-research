@@ -59,7 +59,7 @@ jobs:
           PY
 
   source-probe:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.head_ref == 'research/usdjpy-hyp041-f05-v2-v1')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -129,8 +129,8 @@ jobs:
             --historical-dir source_probe_extract/historical \
             --out-json configs/research/usdjpy_hyp041_source_inventory_v1.json \
             --out-report docs/research/USDJPY_HYP041_SOURCE_INVENTORY_V1.md \
-            --research-sha "$GITHUB_SHA" \
-            --run-id "$GITHUB_RUN_ID"
+            --research-sha '4a6cb16768bbacc0c9bbeabfd5817bb26318c81a' \
+            --run-id 'SOURCE_PROBE_V1'
           jq -e '.status=="PASS_SOURCE_INVENTORY_NO_CANDIDATE_OUTCOME" and .candidate_outcomes_computed==false and ."2025H1_candidate_version_accessed"==false and ."2025H2_accessed"==false' configs/research/usdjpy_hyp041_source_inventory_v1.json
       - name: Commit inventory to the study branch
         env:
