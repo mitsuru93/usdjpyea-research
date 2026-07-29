@@ -1,0 +1,44 @@
+{
+  "schema_version": "usdjpy_hyp039_period_access_final_receipt_v1",
+  "status": "PASS_PERIOD_FIREWALL_PRESERVED_AT_PORTABILITY_CLOSURE",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "candidate_contract_version": "v2",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_ACCESSED"
+  },
+  "outcome_visibility": {
+    "state_before_candidate_specific_2025H1_run": "UNSEEN_AT_FIRST_VALIDATION",
+    "candidate_specific_2025H1_run_executed": false,
+    "candidate_specific_2025H1_outcome_accessed": false,
+    "first_access_timestamp_utc": null,
+    "first_access_candidate_version": null,
+    "validation_rerun_count": 0,
+    "candidate_modified_after_result": false,
+    "unseen_validation_claim_consumed": false
+  },
+  "gate_reason": {
+    "preceding_gate": "RAKUTEN_2023_2024_PORTABILITY",
+    "preceding_gate_decision": "FAIL_CORE_MT4_PORTABILITY",
+    "progression_to_2025H1_authorized": false,
+    "reason": "The unchanged candidate failed exact Core/MT4 portability before the validation-period gate."
+  },
+  "access_boundaries": {
+    "2025H2_accessed": false,
+    "2025H2_auto_substituted": false,
+    "2025H1_reclassified_as_analysis_or_development": false
+  },
+  "authorization": {
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "authorities": {
+    "research_sha": "b6bc006952eb3355cc6a2c27e294a62771196669",
+    "core_sha": "2a3ec33dca6b933cd3d5501ba6932dd06f8f75b2",
+    "core_run_id": 30500520578,
+    "core_result_issue": 644
+  }
+}
