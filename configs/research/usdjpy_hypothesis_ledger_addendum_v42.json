@@ -15,10 +15,16 @@
         "2023_2024_research": true,
         "Core": true,
         "MT4": true,
-        "2025H1": "ONLY_AFTER_FREEZE_PARITY_COMPILE_AND_RAKUTEN_PORTABILITY",
-        "2025H2": false,
+        "2025H1": "VALIDATION_PERIOD_AFTER_FREEZE_PARITY_COMPILE_AND_RAKUTEN_PORTABILITY",
+        "2025H2": "CONTROLLED_BY_EA_WIDE_PERIOD_POLICY_AND_ACCESS_HISTORY",
         "production": false,
         "live": false
+      },
+      "period_roles": {
+        "2020_2022": "ANALYSIS_PERIOD",
+        "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+        "2025H1": "VALIDATION_PERIOD",
+        "period_role_independent_of_outcome_visibility": true
       },
       "period_access": {
         "2020_2022": false,
@@ -26,14 +32,24 @@
         "2025H1_short_pullback_outcomes": false,
         "2025H2": false
       },
+      "outcome_visibility": {
+        "candidate_version": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+        "2025H1": "UNSEEN_AT_FIRST_VALIDATION",
+        "first_access_timestamp": null,
+        "candidate_version_at_first_access": null,
+        "subsequent_rerun_count": 0,
+        "candidate_modified_after_result": false,
+        "unseen_validation_claim": true
+      },
       "evidence_refs": {
         "startup_receipt": "configs/research/usdjpy_hyp039_startup_receipt_v1.json",
         "duplicate_audit": "configs/research/usdjpy_hyp039_duplicate_research_audit_v1.json",
         "candidate_contract": "configs/research/usdjpy_hyp039_candidate_contract_v1.json",
         "period_access_receipt": "configs/research/usdjpy_hyp039_period_access_receipt_v1.json",
+        "period_role_correction_receipt": "configs/research/usdjpy_hyp039_period_role_correction_receipt_v2.json",
         "preregistration": "configs/research/usdjpy_hyp039_preregistration_v1.json"
       },
-      "next_action": "Implement the frozen contract in Core, prove zero-mismatch parity and Rakuten 2023-2024 portability, then open the 2025H1 candidate-specific external outcome exactly once for version C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED."
+      "next_action": "Implement the frozen contract in Core, prove zero-mismatch parity and Rakuten 2023-2024 portability, then execute the first 2025H1 validation-period run for C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED with outcome visibility UNSEEN_AT_FIRST_VALIDATION."
     }
   ],
   "entry_mode": "DELTA_INHERIT_SUPERSEDES",
