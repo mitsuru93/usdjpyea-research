@@ -32,6 +32,11 @@
   "technical_revision_receipt": "configs/research/usdjpy_hyp037_technical_revision_receipt_v2.json",
   "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v40.json",
   "research_memory_manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "research_memory": {
+    "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+    "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+    "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v40.json"
+  },
   "source_run_id": 30428356407,
   "source_artifact_id": 8714601229,
   "source_artifact_digest": "sha256:046f56e519fd8e047dd54c98962c7e7ad24bcbc9d159445cb9a3fb227fa8a2d4",
@@ -50,5 +55,5 @@
     "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION",
     "2025": "SOLE_BINDING_EXTERNAL_VALIDATION"
   },
-  "next_action": "Do not retune or open 2025 for HYP-037 C1. Preserve the Short directional mechanism and execution-stress evidence as research memory; pursue only a separately preregistered independent mechanism if further strategy research is authorized."
+  "next_action": "Do not retune or open 2025 for HYP-037 C1. Preserve the Short directional mechanism and execution-stress evidence as research memory; pursue only a separately preregistered independent mechanism if authorized."
 }
