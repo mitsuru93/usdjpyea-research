@@ -1,0 +1,87 @@
+{
+  "append_only": true,
+  "entry": {
+    "candidate_ids": [
+      "C1_SHORT_DUKASCOPY_NATIVE_16BAR"
+    ],
+    "causal_hypothesis": "Downtrend pullback continuation has a delayed right-tail payoff structure that differs from the Long counterpart and should reproduce in 2020-2022 and 2025.",
+    "decision": "Technical stop before historical candidate outcome construction. HYP-036 remains closed and unchanged.",
+    "evidence_refs": [
+      {
+        "artifact_digest": "sha256:ef2dc9458f4f15dbcab20172ddad611d8342dec9784d80a4428c2a5bd1bf8ad4",
+        "artifact_id": 8712825068,
+        "path": "configs/research/usdjpy_hyp037_final_result_v1.json",
+        "repository": "mitsuru93/usdjpyea-research",
+        "run_id": 30423475688
+      },
+      {
+        "path": "configs/research/usdjpy_hyp037_mechanism_attribution_v1.json",
+        "repository": "mitsuru93/usdjpyea-research"
+      }
+    ],
+    "falsified_or_unsupported_claims": [
+      "None scientifically tested because the first binding historical source authority was unresolved."
+    ],
+    "family_ids": [
+      "S_SHORT_PULLBACK_CONTINUATION_PORTABILITY"
+    ],
+    "hypothesis_id": "USDJPY-HYP-037",
+    "origin_analysis": "HYP-036 source-native side attribution placed nearly all pooled profit in Short. This was discovery evidence for an independent unseen-period portability question, not permission to alter HYP-036.",
+    "pre_result_predictions": [
+      "2020-2022 Short net positive and PF>=1.10",
+      "positive at least 2/3 years and 4/6 half-years",
+      "robust after concentration/bootstrap/execution stress",
+      "portfolio risk non-worse before 2025"
+    ],
+    "prohibited_reuse": [
+      "Do not count 2023-2024 as HYP-037 confirmation",
+      "Do not substitute MT4/HST or another venue for unresolved Dukascopy authority",
+      "Do not change side, EMA, ATR, tolerance, hold, execution, session, period or lot during technical repair",
+      "Do not access 2025 before all pre-2025 gates pass"
+    ],
+    "retained_findings": [
+      "Short and Long have similar pullback/confirmation geometry in 2023-2024",
+      "Short shows materially larger MFE and positive late-horizon mean returns despite worse early returns and MAE",
+      "The mechanism remains plausible but unconfirmed"
+    ],
+    "status": "COMPLETE_TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED",
+    "successor_questions": [
+      "Can complete immutable 2020-2022 Dukascopy BI5 monthly authority be acquired under the unchanged contract?"
+    ],
+    "target_failure_mode": [
+      "period-specific USDJPY directional bias",
+      "outcome-defined Short rescue",
+      "source-lineage mismatch"
+    ],
+    "tests": [
+      {
+        "artifact_id": 8712825068,
+        "period": "2023-2024",
+        "result": {
+          "confirmation_credit": false,
+          "long_net_jpy": -674,
+          "long_pf": 0.9925465563763436,
+          "long_trades": 832,
+          "short_net_jpy": 17679,
+          "short_pf": 1.2727693518275656,
+          "short_trades": 500
+        },
+        "run_id": 30423475688,
+        "type": "discovery_mechanism_attribution_only"
+      },
+      {
+        "artifact_id": 8712825068,
+        "period": "2020-2022",
+        "result": {
+          "candidate_outcomes_accessed": false,
+          "complete_36_month_dukascopy_authority": false,
+          "decision": "TECHNICAL_NO_RESULT_HISTORICAL_SOURCE_AUTHORITY_UNRESOLVED"
+        },
+        "run_id": 30423475688,
+        "type": "binding_source_authority_preflight"
+      }
+    ]
+  },
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v39",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v38.json"
+}
