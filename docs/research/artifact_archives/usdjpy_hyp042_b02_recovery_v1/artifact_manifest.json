@@ -1,0 +1,18 @@
+{
+  "schema_version": "usdjpy_hyp042_artifact_manifest_v1",
+  "hypothesis_id": "USDJPY-HYP-042",
+  "decision": "B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE",
+  "files": [
+    {"path":"2025h1_b02_failure_bucket_summary_complete.csv","bytes":1275,"sha256":"7d036a44be485d8d090cb9dc35a7fcdf983a9aa9ae2c602bfdb367922137e597"},
+    {"path":"2025h1_candidate_total_validation.csv","bytes":703,"sha256":"5136d985c1e4d6b28fe80a05b05ed736384fe17e1fb578bb57b5eb3818430e8f"},
+    {"path":"2025h1_worst_trade_windows.csv","bytes":1212,"sha256":"cb50a265bac66028ef409408cda5b9439320120140af0296e84e560803d9e48f"},
+    {"path":"bootstrap.json","bytes":601,"sha256":"e7a09e1711c2be56f41d6842581095f0a88596861b1cbe4e6e6ff1aae204a5ea"},
+    {"path":"candidate_equity_risk.csv","bytes":1393,"sha256":"bb12a629fb1f6e046e19c2143aeb48cc1f6d73b3a432f308acddbe1385cd56ef"},
+    {"path":"candidate_robustness.csv","bytes":1472,"sha256":"035e99de640ecfea65a9cf91dd2980f8d510ca5ff8613b36753f73e42a5b7dfb"},
+    {"path":"development_candidate_fold_matrix.csv","bytes":1103,"sha256":"ae9632ff1c8f39a17461a4c3081351a804065122701727cbfb6b77779643d25c"},
+    {"path":"development_candidate_monthly_breadth_summary.csv","bytes":413,"sha256":"3898225904b747f51414ea0b99b9c27ffcb2b7a85e975b7b0f4f7febe21a6e43"},
+    {"path":"development_candidate_session_matrix.csv","bytes":885,"sha256":"ff5cb919537bfe46bed7cec6b09f4efb1d3f7d019ca91d1860d5007d5f1c581b"},
+    {"path":"development_candidate_side_matrix.csv","bytes":595,"sha256":"ecd307fcdd77180c7f8e390c3e55dcab3667d697b2a18bac0f5efbb1a18f898b"},
+    {"path":"development_failure_bucket_comparison.csv","bytes":712,"sha256":"2983101c03f2509bbba3b189b9d962f9dc79dfe94d6f74fb53bf314ea0e0f9a9"}
+  ]
+}
