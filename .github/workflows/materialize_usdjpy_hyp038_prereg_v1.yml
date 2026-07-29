@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/materialize_usdjpy_hyp038_prereg_v1.yml'
-      - 'tools/staging/usdjpy_hyp038_prereg_payload_v1.b64'
+      - 'tools/staging/usdjpy_hyp038_prereg_payload_v1.part*'
 
 permissions:
   contents: write
@@ -29,8 +29,10 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           import base64, hashlib, io, pathlib, zipfile
-          payload=pathlib.Path('tools/staging/usdjpy_hyp038_prereg_payload_v1.b64')
-          raw=base64.b64decode(payload.read_text(encoding='ascii'))
+          parts=sorted(pathlib.Path('tools/staging').glob('usdjpy_hyp038_prereg_payload_v1.part*'))
+          assert [p.name for p in parts] == [f'usdjpy_hyp038_prereg_payload_v1.part{i:02d}' for i in range(4)]
+          encoded=''.join(p.read_text(encoding='ascii') for p in parts)
+          raw=base64.b64decode(encoded)
           expected='c4576470271cee697a9640a93a9f4a34d9454751f4e21e03da5635e0bc287680'
           assert hashlib.sha256(raw).hexdigest()==expected
           allowed={
