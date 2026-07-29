@@ -1,0 +1,51 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_parallel_addendum_hyp039_suppression_v2",
+  "status": "ACTIVE_PARALLEL_APPEND_ONLY_DELTA_NON_SUPERSEDING",
+  "base_hypothesis_id": "USDJPY-HYP-039",
+  "parallel_stream_isolation": {
+    "HYP040_modified": false,
+    "HYP041_modified": false,
+    "HYP042_modified": false,
+    "global_registry_superseded": false,
+    "global_memory_manifest_superseded": false
+  },
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-039",
+      "title": "Unchanged Short Pullback 2025H1 Portfolio Recovery Qualification",
+      "status": "ACTIVE_FROZEN_PRE_2025H1_SUPPRESSION_LINEAGE_CLARIFIED",
+      "decision": null,
+      "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+      "candidate_contract": "configs/research/usdjpy_hyp039_candidate_contract_v2.json",
+      "clarification": "The exact HYP-037 500-Short authority uses HYP-036 shared Long/Short variant occupancy before Short filtering. Long accepted events are state-only suppressors for HYP-039 and are not trades.",
+      "evidence": {
+        "suppression_lineage_receipt": "configs/research/usdjpy_hyp039_suppression_lineage_receipt_v2.json",
+        "preregistration_addendum": "configs/research/usdjpy_hyp039_preregistration_addendum_v2.json",
+        "HYP036_artifact_id": 8709903106,
+        "HYP037_artifact_id": 8714601229,
+        "Core_diagnostic_run_id": 30457575366
+      },
+      "authorization": {
+        "candidate_freeze": true,
+        "Core": true,
+        "MT4": true,
+        "2025H1": "ONLY_AFTER_500_OF_500_ZERO_MISMATCH_AND_RAKUTEN_PORTABILITY",
+        "2025H2": false,
+        "production": false,
+        "live": false
+      },
+      "period_access": {
+        "2020_2022": false,
+        "2023_2024_candidate_outcomes": true,
+        "2025H1_short_pullback_outcomes": false,
+        "2025H2": false
+      },
+      "outcome_visibility": "UNSEEN_AT_FIRST_VALIDATION",
+      "candidate_modified_after_result": false,
+      "HYP037_decision_changed": false,
+      "HYP038_decision_changed": false,
+      "HYP038_filter_reuse": false,
+      "next_action": "Implement shared-side suppression occupancy with Short-only order permission, prove 500/500 zero-mismatch Research/Core parity, then continue MT4/Rakuten and 2025H1 VALIDATION_PERIOD qualification."
+    }
+  ]
+}
