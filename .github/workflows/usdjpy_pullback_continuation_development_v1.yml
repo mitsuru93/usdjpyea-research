@@ -2,10 +2,10 @@ name: USDJPY HYP-035 Pullback Continuation Development v1
 on:
   pull_request:
     branches: [main]
-    paths: ['.github/workflows/usdjpy_pullback_continuation_development_v1.yml','configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json','configs/research/usdjpy_pullback_continuation_source_manifest_v1.json','configs/research/usdjpy_hyp035_startup_receipt_v1.json','configs/research/usdjpy_hyp035_hypothesis_reservation_v1.json','tools/evaluate_usdjpy_pullback_continuation_v1.py']
+    paths: ['.github/workflows/usdjpy_pullback_continuation_development_v1.yml','configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json','configs/research/usdjpy_pullback_continuation_source_manifest_v1.json','configs/research/usdjpy_hyp035_startup_receipt_v1.json','configs/research/usdjpy_hyp035_hypothesis_reservation_v1.json','tools/evaluate_usdjpy_pullback_continuation_v1.py','tools/usdjpy_hyp035_source_population_repair_v1.py']
   push:
     branches: [main]
-    paths: ['.github/workflows/usdjpy_pullback_continuation_development_v1.yml','configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json','configs/research/usdjpy_pullback_continuation_source_manifest_v1.json','configs/research/usdjpy_hyp035_startup_receipt_v1.json','configs/research/usdjpy_hyp035_hypothesis_reservation_v1.json','tools/evaluate_usdjpy_pullback_continuation_v1.py']
+    paths: ['.github/workflows/usdjpy_pullback_continuation_development_v1.yml','configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json','configs/research/usdjpy_pullback_continuation_source_manifest_v1.json','configs/research/usdjpy_hyp035_startup_receipt_v1.json','configs/research/usdjpy_hyp035_hypothesis_reservation_v1.json','tools/evaluate_usdjpy_pullback_continuation_v1.py','tools/usdjpy_hyp035_source_population_repair_v1.py']
   workflow_dispatch:
 permissions: {contents: write, issues: write, actions: read}
 jobs:
@@ -25,10 +25,14 @@ jobs:
           fetch configs/research/usdjpy_pullback_continuation_portability_prereg_v1.json "$root/src/prereg.json"
           fetch configs/research/usdjpy_pullback_continuation_source_manifest_v1.json "$root/src/source_manifest.json"
           fetch tools/evaluate_usdjpy_pullback_continuation_v1.py "$root/src/evaluate.py"
+          fetch tools/usdjpy_hyp035_source_population_repair_v1.py "$root/src/source_population_repair.py"
           fetch tools/usdjpy_hyp034_sitecustomize_v1.py "$root/src/sitecustomize.py"
           fetch tools/usdjpy_hyp034_bi5_source_v1.py "$root/src/usdjpy_hyp034_bi5_source_v1.py"
           fetch tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py "$root/src/build_baseline.py"
           fetch tools/vendor/fx2_infra_core_f897b250_v1.py "$root/infra/fx2_infra.py"
+          python "$root/src/source_population_repair.py" --evaluator "$root/src/evaluate.py" --receipt "$root/evidence/source_population_repair_receipt.json"
+          jq -e '.status=="PASS_TECHNICAL_FALSE_GATE_REPAIR" and .candidate_changed==false and .atlas_rule_changed==false and .execution_semantics_changed==false and .scientific_gate_changed==false and .protected_2020_2022_accessed==false and .protected_2025_accessed==false' "$root/evidence/source_population_repair_receipt.json"
+          sha256sum "$root/src/evaluate.py" > "$root/evidence/effective_evaluator_sha256.txt"
           python -m py_compile "$root/src/"*.py "$root/infra/fx2_infra.py"
           python "$root/infra/fx2_infra.py" probe --json "$root/evidence/runner_capability.json" --markdown "$root/evidence/runner_capability.md"
           jq -e '.hypothesis_id=="USDJPY-HYP-035" and .candidate_id=="A_EXACT_EXECUTABLE_16BAR" and .status=="FROZEN_BEFORE_DEVELOPMENT_OUTCOMES" and .fixed_atlas_contract.hold_bars==16 and .monetary_contract.reporting_currency=="JPY" and .protected_boundaries.historical_2020_2022_access_before_freeze==false and .protected_boundaries.protected_2025_access==false and .no_retuning==true' "$root/src/prereg.json"
