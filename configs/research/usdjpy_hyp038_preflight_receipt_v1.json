@@ -1,0 +1,13 @@
+{
+  "2020_2022_accessed": false,
+  "2025_accessed": false,
+  "candidate_catalog_size": 18,
+  "core_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "hypothesis_id": "USDJPY-HYP-038",
+  "inputs_exist": true,
+  "outcomes_authorized": true,
+  "pass": true,
+  "raw_archive_count": 24,
+  "research_sha": "14a449baa1b13060ff71e75adaa3353ff95b1be1",
+  "schema_version": "usdjpy_hyp038_preflight_receipt_v1"
+}

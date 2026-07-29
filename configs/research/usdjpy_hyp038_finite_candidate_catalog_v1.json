@@ -1,0 +1,43 @@
+{
+  "candidate_outcomes_accessed": false,
+  "candidates": {
+    "C1_ENTRY_TIME_ADMISSION": [
+      "C1_E1_SEP_GE_1_5",
+      "C1_E2_SEP_GE_2_0",
+      "C1_E3_SLOPE_SPREAD"
+    ],
+    "C2_30_MIN_FAILURE_EXIT": [
+      "C2_F30_M10",
+      "C2_F30_M15",
+      "C2_F30_M20"
+    ],
+    "C3_60_MIN_NO_PROGRESS_EXIT": [
+      "C3_NP60_MFE5_PL0",
+      "C3_NP60_MFE10_PL0",
+      "C3_NP60_MFE10_PLM5"
+    ],
+    "C4_CONTINUATION_ALIVE_STATE_MACHINE": [
+      "C4_S1_NEW_LOW",
+      "C4_S2_NEW_LOW",
+      "C4_S3_EMA_RECROSS"
+    ],
+    "C5_PORTFOLIO_LOSS_DECOUPLING": [
+      "C5_COEXPOSURE_SKIP",
+      "C5_RECENT_LOSS_SKIP",
+      "C5_DD_GE_4000_SKIP"
+    ],
+    "C6_BEST_ADMISSIBLE_COMBINED": [
+      "C6_K1_E1_NP60_1",
+      "C6_K2_E2_S2",
+      "C6_K3_E3_NP60_3"
+    ]
+  },
+  "fixed_variants_per_candidate": 3,
+  "hypothesis_id": "USDJPY-HYP-038",
+  "maximum_nonreference_candidates": 6,
+  "reference": "C0_HYP037_REFERENCE",
+  "schema_version": "usdjpy_hyp038_finite_candidate_catalog_v1",
+  "selection": "four leave-one-half-year-out selections, concatenate OOF, then choose by hard gate and fixed ranking",
+  "status": "FROZEN_BEFORE_OUTCOME",
+  "total_fixed_variants": 18
+}

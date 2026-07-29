@@ -1,0 +1,38 @@
+{
+  "2025_used_for_selection": false,
+  "candidate_outcomes_accessed": false,
+  "falsified_claims_not_repeated": [
+    "diffuse profitability after top-decile winner removal",
+    "positive bootstrap lower 95 percent",
+    "HYP-037 exact C1 qualifies for freeze"
+  ],
+  "hyp037_decision_changed": false,
+  "hypothesis_id": "USDJPY-HYP-038",
+  "new_falsifiable_predictions": [
+    "right-tail top-5 P/L retention >=90%",
+    "top-decile gross-profit retention >=80%",
+    "avoided loss exceeds sacrificed profit",
+    "negative baseline-day contribution >=0",
+    "worst 5-day non-worse in OOF and full exact"
+  ],
+  "new_hypothesis_is_not_hyp037_reopening": true,
+  "new_observable_or_causal_distinction": "Entry-time admission and time-causal 30/60/90-minute lifecycle state use only information available at each decision timestamp; portfolio state is a separate ex-ante loss-decoupling variable.",
+  "overlap": {
+    "USDJPY-HYP-035": "same Atlas family lineage only; HYP-035 failed identity and is not reopened",
+    "USDJPY-HYP-036": "same Dukascopy source-native Pullback population; HYP-036 direction-pooled portability decision unchanged",
+    "USDJPY-HYP-037": "same 500 Short reference population and mechanism evidence; exact C1 is reference only and never re-frozen"
+  },
+  "prior_hypotheses_reviewed": [
+    "USDJPY-HYP-035",
+    "USDJPY-HYP-036",
+    "USDJPY-HYP-037"
+  ],
+  "retained_findings_used": [
+    "Short is positive 4/4 folds with delayed 120-240m right-tail continuation",
+    "execution stress remains positive",
+    "HYP-037 negative baseline-day contribution and worst-5-day deterioration are target failures"
+  ],
+  "schema_version": "usdjpy_hyp038_duplicate_research_audit_v1",
+  "status": "PASS_NOVEL_INDEPENDENT_SUCCESSOR",
+  "why_not_threshold_only_relabeling": "The action changes the information set and lifecycle decision timing; HYP-037 exact entry/exit remains untouched as C0. No HYP-037 gate is relaxed."
+}

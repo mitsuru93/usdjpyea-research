@@ -1,0 +1,183 @@
+{
+  "current_open_research_question": null,
+  "hypothesis_count": 57,
+  "hypothesis_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "hypothesis_ledger_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v41.json",
+  "legacy_schema_warnings": [
+    {
+      "hypothesis_id": "USDJPY-RQ-011",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-011-ERRATUM-001",
+      "missing_fields": [
+        "family_ids"
+      ],
+      "warning": "LEGACY_INHERITED_ENTRY_MISSING_CURRENT_SCHEMA_FIELDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-011-ERRATUM-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-013",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-013",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-016",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-016-RESULT-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-017",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-016-RESULT-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-017",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-019",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-019",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-019-RESULT-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-020",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-020A-RESULT-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-020D-RESULT-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-020B",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-020B-RESULT-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-020E",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-020E-PREFLIGHT-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-020E-RESULT-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-021",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-021-RESULT-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-022",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-RQ-022-RESULT-001",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-031",
+      "missing_fields": [
+        "pre_result_predictions",
+        "successor_questions",
+        "target_failure_mode"
+      ],
+      "warning": "LEGACY_INHERITED_ENTRY_MISSING_CURRENT_SCHEMA_FIELDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-032",
+      "missing_fields": [
+        "causal_hypothesis",
+        "decision",
+        "evidence_refs",
+        "falsified_or_unsupported_claims",
+        "family_ids",
+        "pre_result_predictions",
+        "prohibited_reuse",
+        "retained_findings",
+        "successor_questions",
+        "target_failure_mode",
+        "tests"
+      ],
+      "warning": "LEGACY_INHERITED_ENTRY_MISSING_CURRENT_SCHEMA_FIELDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-032",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-033",
+      "missing_fields": [
+        "causal_hypothesis",
+        "evidence_refs",
+        "falsified_or_unsupported_claims",
+        "family_ids",
+        "pre_result_predictions",
+        "prohibited_reuse",
+        "retained_findings",
+        "successor_questions",
+        "target_failure_mode",
+        "tests"
+      ],
+      "warning": "LEGACY_INHERITED_ENTRY_MISSING_CURRENT_SCHEMA_FIELDS"
+    },
+    {
+      "hypothesis_id": "USDJPY-HYP-033",
+      "warning": "LEGACY_ENTRY_WITHOUT_FAMILY_IDS"
+    },
+    {
+      "hypothesis_ids": [
+        "USDJPY-HYP-012",
+        "USDJPY-HYP-014-RESULT-001",
+        "USDJPY-HYP-018-RESULT-001",
+        "USDJPY-RQ-013",
+        "USDJPY-RQ-016-RESULT-001",
+        "USDJPY-RQ-017",
+        "USDJPY-RQ-019"
+      ],
+      "warning": "LEGACY_SNAPSHOT_REPEATED_IDS_COLLAPSED_TO_LATEST"
+    }
+  ],
+  "manifest": "configs/research/usdjpy_research_memory_manifest_v1.json",
+  "next_action": "Do not retune HYP-038, freeze C5, implement Core/MT4, or access 2025. Preserve delayed right-tail continuation as mechanism evidence. The third-strategy slot remains open; the next eligible independent research direction is a separately preregistered B_BALANCE_MEAN_REVERSION entry-time hypothesis, while 2025H2 remains reserved for the integrated B02 v2 + F05 v2 + third-strategy gate.",
+  "raw_entry_count": 72,
+  "registry": "configs/research/usdjpy_research_candidate_registry_v67.json",
+  "registry_schema": "usdjpy_research_candidate_registry_v67",
+  "registry_status": "USDJPY_HYP038_COMPLETE_MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+  "schema_version": "usdjpy_research_memory_validation_receipt_v2",
+  "status": "PASS",
+  "status_update_count": 0,
+  "validator": "tools/validate_usdjpy_research_memory_v2.py"
+}

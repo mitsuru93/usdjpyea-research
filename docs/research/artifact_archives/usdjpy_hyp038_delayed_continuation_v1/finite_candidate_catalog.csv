@@ -1,0 +1,20 @@
+candidate_id,variant_id,reference_only,complexity,portability,description
+C0_HYP037_REFERENCE,C0_HYP037_REFERENCE,True,0,3,unchanged HYP-037 16-bar Short reference; never frozen in HYP-038
+C1_ENTRY_TIME_ADMISSION,C1_E1_SEP_GE_1_5,False,1,3,admit when separation_atr_ratio >= 1.5
+C1_ENTRY_TIME_ADMISSION,C1_E2_SEP_GE_2_0,False,1,3,admit when separation_atr_ratio >= 2.0
+C1_ENTRY_TIME_ADMISSION,C1_E3_SLOPE_SPREAD,False,2,3,admit when EMA20 directional slope >=1 pip/4 bars and spread <=2 pips
+C2_30_MIN_FAILURE_EXIT,C2_F30_M10,False,1,3,exit at 30m when current P/L <= -10 pips
+C2_30_MIN_FAILURE_EXIT,C2_F30_M15,False,1,3,exit at 30m when current P/L <= -15 pips
+C2_30_MIN_FAILURE_EXIT,C2_F30_M20,False,1,3,exit at 30m when current P/L <= -20 pips
+C3_60_MIN_NO_PROGRESS_EXIT,C3_NP60_MFE5_PL0,False,2,3,exit at 60m when MFE<5 pips and current P/L<=0
+C3_60_MIN_NO_PROGRESS_EXIT,C3_NP60_MFE10_PL0,False,2,3,exit at 60m when MFE<10 pips and current P/L<=0
+C3_60_MIN_NO_PROGRESS_EXIT,C3_NP60_MFE10_PLM5,False,2,3,exit at 60m when MFE<10 pips and current P/L<=-5
+C4_CONTINUATION_ALIVE_STATE_MACHINE,C4_S1_NEW_LOW,False,2,2,30/60/90m loss thresholds -20/-10/0 with no new low
+C4_CONTINUATION_ALIVE_STATE_MACHINE,C4_S2_NEW_LOW,False,2,2,30/60/90m loss thresholds -25/-15/-5 with no new low
+C4_CONTINUATION_ALIVE_STATE_MACHINE,C4_S3_EMA_RECROSS,False,2,2,30/60/90m loss thresholds -20/-10/0 with EMA20 adverse recross
+C5_PORTFOLIO_LOSS_DECOUPLING,C5_COEXPOSURE_SKIP,False,1,3,skip entry when B02/F05 has any open position
+C5_PORTFOLIO_LOSS_DECOUPLING,C5_RECENT_LOSS_SKIP,False,1,3,skip entry when B02/F05 has a realized loss in prior 24 hours
+C5_PORTFOLIO_LOSS_DECOUPLING,C5_DD_GE_4000_SKIP,False,1,3,"skip entry when baseline full-equity DD >= JPY 4,000"
+C6_BEST_ADMISSIBLE_COMBINED,C6_K1_E1_NP60_1,False,3,2,separation>=1.5 plus 60m MFE<5/current<=0 exit
+C6_BEST_ADMISSIBLE_COMBINED,C6_K2_E2_S2,False,3,1,separation>=2.0 plus conservative new-low state machine
+C6_BEST_ADMISSIBLE_COMBINED,C6_K3_E3_NP60_3,False,4,1,slope/spread admission plus 60m MFE<10/current<=-5 exit
