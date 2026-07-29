@@ -1,0 +1,21 @@
+{
+  "schema_version": "usdjpy_hyp038_release_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-038",
+  "decision": "MECHANISM_CONFIRMED_NO_DEPLOYABLE_LOSS_DECOUPLING_RULE",
+  "merge_sha": "2e831815e22cd2dfdf4a26d48831161f1e4d2fc5",
+  "run_id": 30437473624,
+  "artifact_id": 8718213549,
+  "artifact_zip_sha256": "549d2f79937d2304cd5ae4b700c6a22eabf2a105587f367491364aca8025342c",
+  "release_tag": "usdjpy-hyp038-delayed-continuation-v1",
+  "release_url": "https://github.com/mitsuru93/usdjpyea-research/releases/tag/usdjpy-hyp038-delayed-continuation-v1",
+  "deterministic_archive_asset": "usdjpy-hyp038-delayed-continuation-research-v1.zip",
+  "deterministic_archive_sha256": "0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8",
+  "binding_result_byte_identical": true,
+  "human_report_byte_identical": true,
+  "receipt_issue_number": 416,
+  "candidate_freeze": false,
+  "core_mt4_executed": false,
+  "2025_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

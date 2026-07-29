@@ -1,0 +1,10 @@
+{
+  "schema_version": "usdjpy_hyp038_release_readback_receipt_v1",
+  "release_tag": "usdjpy-hyp038-delayed-continuation-v1",
+  "archive_sha256_expected": "0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8",
+  "archive_sha256_readback": "0322ccb9f62f4f11a70ef4d9e99dc7086b7b4ec3072d3c1cba9b905dc3d62bb8",
+  "archive_byte_identical": true,
+  "binding_result_byte_identical": true,
+  "human_report_byte_identical": true,
+  "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+}
