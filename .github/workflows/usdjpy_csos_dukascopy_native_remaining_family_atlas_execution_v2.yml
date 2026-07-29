@@ -16,7 +16,7 @@ jobs:
           GH_TOKEN: '${{ github.token }}'
         run: |
           gh issue comment 403 --repo "$GITHUB_REPOSITORY" --body "Atlas Execution v2 started. Run: ${GITHUB_RUN_ID}; head: ${GITHUB_SHA}; event: ${GITHUB_EVENT_NAME}. 2023-2024 only; 2020-2022 and 2025 not accessed."
-      - name: Exact-SHA selective fetch and Infrastructure v1 capability probe
+      - name: Exact-SHA selective fetch, technical repair and Infrastructure v1 probe
         id: init
         shell: bash
         env:
@@ -32,18 +32,23 @@ jobs:
           fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_period_role_clarification_v1.json "$root/src/period_role_clarification.json"
           fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_contract_catalog_v1.json "$root/src/contract_catalog.json"
           fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_prior_study_audit_v1.json "$root/src/prior_study_audit.json"
+          fetch configs/research/usdjpy_csos_dukascopy_native_remaining_family_atlas_technical_revision_receipt_v1.json "$root/src/technical_revision.json"
           fetch configs/research/usdjpy_period_role_policy_v6.json "$root/src/period_policy.json"
           fetch tools/evaluate_usdjpy_csos_dukascopy_native_remaining_family_atlas_v1.py "$root/src/evaluate.py"
+          fetch tools/patch_usdjpy_csos_remaining_family_atlas_evaluator_table_annotation_v1.py "$root/src/patch_evaluator.py"
           fetch tools/usdjpy_csos_dukascopy_native_remaining_family_atlas_lib_v1.py "$root/src/usdjpy_csos_dukascopy_native_remaining_family_atlas_lib_v1.py"
           fetch tools/evaluate_usdjpy_pullback_continuation_v1.py "$root/src/hyp035.py"
           fetch tools/usdjpy_hyp034_bi5_source_v1.py "$root/src/usdjpy_hyp034_bi5_source_v1.py"
           fetch tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py "$root/src/build_baseline.py"
           fetch tools/vendor/fx2_infra_core_f897b250_v1.py "$root/infra/fx2_infra.py"
+          python "$root/src/patch_evaluator.py" --target "$root/src/evaluate.py" --receipt "$root/evidence/evaluator_patch_receipt.json"
+          jq -e '.status=="PASS_TECHNICAL_TABLE_ANNOTATION_REPAIR" and .replacement_count==1 and .scientific_contract_changed==false and .family_contract_changed==false and .source_changed==false and .ranking_metric_changed==false and .shortlist_gate_changed==false and .trade_outcomes_changed==false and .partial_outcome_conditioning==false and .analysis_2020_2022_accessed==false and .external_validation_2025_accessed==false' "$root/evidence/evaluator_patch_receipt.json"
           python -m py_compile "$root/src/"*.py "$root/infra/fx2_infra.py"
           python "$root/infra/fx2_infra.py" probe --json "$root/evidence/runner_capability.json" --markdown "$root/evidence/runner_capability.md"
           jq -e '.status=="FROZEN_BEFORE_DUKASCOPY_NATIVE_OUTCOMES" and .period_role_clarification.received_before_new_family_outcome_calculation==true and .period_roles."2020_2022".ea_research_role=="ANALYSIS_PERIOD" and .period_roles."2020_2022".confirmation_credit==false and .period_roles."2025".ea_research_role=="UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD" and .candidate_freeze_authorized==false and .core_or_mt4_authorized==false' "$root/src/prereg.json"
           jq -e '.binding_tick_years==[2023,2024] and ."2020_2022_confirmation_credit"==false and ."2025_external_validation_role"==true and .whole_repository_checkout_required==false and .exact_sha_selective_fetch_required==true' "$root/src/source_manifest.json"
           jq -e '.status=="PASS_PROTOCOL_CLARIFICATION_BEFORE_NEW_FAMILY_OUTCOMES" and .candidate_outcomes_accessed_before_correction==false and .family_contract_changed==false and .ranking_metric_changed==false and .shortlist_gate_changed==false and .source_authority_changed==false' "$root/src/period_role_clarification.json"
+          jq -e '.status=="PASS_TECHNICAL_REVISION_BEFORE_COMPLETE_ATLAS_OUTCOMES" and .complete_atlas_result_produced==false and .shortlist_produced==false and .partial_variant_outcomes_reviewed_before_repair==false and .repair_conditioned_on_outcome==false and .family_contract_changed==false and .source_authority_changed==false and .ranking_metric_changed==false and .shortlist_gate_changed==false and .trade_outcome_formula_changed==false and .portfolio_metric_formula_changed==false and .analysis_2020_2022_accessed==false and .external_validation_2025_accessed==false' "$root/src/technical_revision.json"
           jq -e '.status=="FROZEN_BEFORE_DUKASCOPY_NATIVE_OUTCOMES" and (.variants|length)==12' "$root/src/contract_catalog.json"
           jq -e '.period_roles."2020_2022".role=="ANALYSIS_PERIOD" and .period_roles."2020_2022".confirmation_credit==false and .period_roles."2025".role=="UNSEEN_BINDING_EXTERNAL_VALIDATION_PERIOD"' "$root/src/period_policy.json"
           echo "root=$root" >>"$GITHUB_OUTPUT"; echo "sha=$sha" >>"$GITHUB_OUTPUT"; printf '%s\n' "$sha" >"$root/evidence/research_execution_sha.txt"
