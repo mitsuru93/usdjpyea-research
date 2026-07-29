@@ -1,0 +1,47 @@
+{
+  "schema_version": "usdjpy_hyp040_duplicate_research_audit_v1",
+  "generated_utc": "2026-07-29T12:58:00Z",
+  "research_authority_sha": "80ca96c88d20d9a3281a0cdb0b7bd020cd149d42",
+  "requested_hypothesis_id": "USDJPY-HYP-040",
+  "hypothesis_id_search_result": "UNUSED",
+  "nearest_active_hypothesis": "USDJPY-HYP-039",
+  "parallel_execution_allowed": true,
+  "duplicate_classification": "NO_DUPLICATE_ACTIVE_ASIAN_RANGE_SWEEP_2025H1_DEPLOYMENT_QUALIFICATION",
+  "prior_studies": {
+    "USDJPY-HYP-030": {
+      "status": "NO_PORTABLE_CANDIDATE",
+      "relationship": "SOURCE_OF_UNCHANGED_EXECUTABLE_CONTRACT_AND_2023_2024_ECONOMIC_EVIDENCE",
+      "reopened": false,
+      "decision_changed": false
+    },
+    "USDJPY-HYP-031": {
+      "relationship": "FORBIDDEN_REGIME_ROUTING_STUDY",
+      "rules_reused": false
+    },
+    "USDJPY-HYP-033": {
+      "relationship": "FORBIDDEN_RECLAIM_SPEED_MECHANISM_STUDY",
+      "rules_reused": false
+    },
+    "USDJPY-HYP-034": {
+      "relationship": "FORBIDDEN_PREVIOUS_DAY_SWEEP_STUDY",
+      "rules_reused": false
+    },
+    "USDJPY-HYP-039": {
+      "relationship": "INDEPENDENT_PARALLEL_SHORT_PULLBACK_QUALIFICATION",
+      "candidate_combined": false,
+      "branch_or_status_changed": false
+    }
+  },
+  "forbidden_research_changes": [
+    "long_only",
+    "short_exclusion",
+    "regime_routing",
+    "session_or_weekday_or_month_selection",
+    "range_or_threshold_change",
+    "hold_or_entry_or_exit_change",
+    "parameter_grid",
+    "post_2025H1_retuning",
+    "HYP039_joint_optimization"
+  ],
+  "candidate_specific_2025H1_outcome_accessed": false
+}
