@@ -1,0 +1,54 @@
+{
+  "schema_version": "usdjpy_ea_integration_001_contract_v1",
+  "work_id": "USDJPY-EA-INTEGRATION-001",
+  "role": "EA_WIDE_INFRASTRUCTURE_INTEGRATION",
+  "scientific_decision_authority": false,
+  "period_roles": {
+    "2020_2022": "OPTIONAL_REFERENCE",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_RESULT_INTEGRATION_COMPARISON",
+    "2025H1": "VALIDATION_RESULT_INTEGRATION_COMPARISON"
+  },
+  "accepted_candidate_sources": [
+    "MERGED_MAIN",
+    "IMMUTABLE_RELEASE",
+    "HASH_PINNED_ACTIONS_ARTIFACT"
+  ],
+  "pending_status": "PENDING_CANDIDATE_EVIDENCE",
+  "common_accounting": {
+    "reporting_currency": "JPY",
+    "comparison_initial_capital_jpy": 100000,
+    "default_lot_per_strategy": 0.01,
+    "pip_size": 0.01,
+    "point_size": 0.001,
+    "jpy_per_pip_per_0_01_lot": 10,
+    "baseline_spread_points": 5,
+    "spread_cost_jpy_per_trade": 5,
+    "commission_policy": "EXPLICIT_SOURCE_VALUE_OR_NULL",
+    "swap_policy": "EXPLICIT_SOURCE_VALUE_OR_NULL",
+    "missing_value_policy": "EXPLICIT_NULL_AND_STOP_DEPENDENT_GATE",
+    "realized_equity": "INITIAL_CAPITAL_PLUS_ORDERED_REALIZED_PL",
+    "full_equity": "REALIZED_BALANCE_PLUS_SOURCE_NATIVE_OPEN_POSITION_MARK_TO_MARKET",
+    "drawdown": "RUNNING_PEAK_EQUITY_MINUS_CURRENT_EQUITY",
+    "margin": "BROKER_REPORTED_WHERE_AVAILABLE_ELSE_COMPLETE_BROKER_CONTRACT_REQUIRED"
+  },
+  "chronology": [
+    "EXECUTABLE_MARKET_TICK",
+    "STRATEGY_LOCAL_EXIT_CONDITION_FINALIZED",
+    "CLOSE_EXECUTION",
+    "REALIZED_PL_APPLIED",
+    "STATE_AND_LOSS_COUNTER_UPDATED",
+    "ENTRY_PERMISSION",
+    "ENTRY_EXECUTION",
+    "MARGIN_UPDATED",
+    "EQUITY_SNAPSHOT"
+  ],
+  "invariants": [
+    "NO_CANDIDATE_RULE_CHANGE",
+    "NO_POST_2025H1_RETUNING",
+    "NO_AGGREGATE_ONLY_CANDIDATE_INGESTION",
+    "NO_RECONSTRUCTED_MISSING_TRADES",
+    "NO_INFERRED_ZERO_FOR_MISSING_COST_OR_CHRONOLOGY_FIELDS",
+    "CANDIDATE_LOCAL_CHRONOLOGY_MAPPED_INTO_GLOBAL_CHRONOLOGY",
+    "ONLY_AVAILABLE_COMPONENTS_MAY_BE_COMBINED"
+  ]
+}
