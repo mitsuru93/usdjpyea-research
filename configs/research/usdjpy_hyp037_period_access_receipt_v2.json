@@ -1,0 +1,16 @@
+{
+  "schema_version": "usdjpy_hyp037_period_access_receipt_v2",
+  "hypothesis_id": "USDJPY-HYP-037",
+  "period_role_correction": "PROTOCOL_CORRECTION_PERIOD_ROLE_BEFORE_EXTERNAL_VALIDATION",
+  "2020_2022_role": "NONBINDING_ANALYSIS",
+  "2020_2022_outcomes_accessed": false,
+  "2023_2024_role": "RESEARCH_AND_CANDIDATE_CONSTRUCTION",
+  "2023_2024_research_accessed": true,
+  "2025H1_role": "SOLE_FIRST_BINDING_EXTERNAL_VALIDATION",
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "candidate_unchanged": true,
+  "candidate_freeze_authorized": false,
+  "reason": "Stopped at the 2023-2024 CONCENTRATION binding gate before Core/MT4 and 2025.",
+  "no_retuning": true
+}

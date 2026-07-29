@@ -1,0 +1,102 @@
+name: Publish USDJPY HYP-037 Protocol-Corrected Release v2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp037_final_result_v2.json'
+      - 'configs/research/usdjpy_hyp037_output_manifest_v2.json'
+      - 'docs/research/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+  issues: write
+
+concurrency:
+  group: publish-usdjpy-hyp037-protocol-corrected-release-v2
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Exact-SHA fetch, artifact readback and Release publication
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: usdjpy-hyp037-protocol-corrected-research-v2
+          SOURCE_RUN: '30428356407'
+          SOURCE_ARTIFACT: '8714601229'
+          EXPECTED_ARCHIVE_SHA: '2353f2f3b08f3b686a6244ce661ab043d7b488a41ca9f1d5e0f1cebaba6c44fd'
+        run: |
+          set -euo pipefail
+          root="${RUNNER_TEMP}/h37-release"; rm -rf "$root"; mkdir -p "$root"/{artifact,canonical,readback}
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${SOURCE_ARTIFACT}/zip" > "$root/artifact/source.zip"
+          unzip -q "$root/artifact/source.zip" -d "$root/artifact/unpacked"
+          archive=$(find "$root/artifact/unpacked" -name usdjpy-hyp037-protocol-corrected-research-v2.zip -print -quit); test -n "$archive"
+          printf '%s  %s\n' "$EXPECTED_ARCHIVE_SHA" "$archive" | sha256sum -c -
+          fetch(){ p="$1"; o="$2"; gh api "repos/${GITHUB_REPOSITORY}/contents/${p}?ref=${GITHUB_SHA}" --jq .content | tr -d '\n' | base64 -d > "$o"; test -s "$o"; }
+          fetch configs/research/usdjpy_hyp037_final_result_v2.json "$root/canonical/usdjpy_hyp037_final_result_v2.json"
+          fetch configs/research/usdjpy_hyp037_candidate_registry_v2.json "$root/canonical/usdjpy_hyp037_candidate_registry_v2.json"
+          fetch configs/research/usdjpy_hyp037_period_access_receipt_v2.json "$root/canonical/usdjpy_hyp037_period_access_receipt_v2.json"
+          fetch configs/research/usdjpy_hyp037_period_role_correction_receipt_v2.json "$root/canonical/usdjpy_hyp037_period_role_correction_receipt_v2.json"
+          fetch configs/research/usdjpy_hyp037_technical_revision_receipt_v2.json "$root/canonical/usdjpy_hyp037_technical_revision_receipt_v2.json"
+          fetch configs/research/usdjpy_hyp037_output_manifest_v2.json "$root/canonical/usdjpy_hyp037_output_manifest_v2.json"
+          fetch docs/research/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md "$root/canonical/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md"
+          jq -e '.decision=="FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING" and .period_role_correction."2020_2022_outcomes_accessed"==false and .period_role_correction."2025_outcomes_accessed"==false and .authorization.production==false and .authorization.live==false' "$root/canonical/usdjpy_hyp037_final_result_v2.json"
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title 'USDJPY HYP-037 Protocol-Corrected Research Result v2' --notes 'HYP-037 period-role correction and 2023-2024 Short-only Research gate. Final decision: FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING. 2020-2022 outcomes and 2025 were not accessed. Candidate freeze, Core/MT4, production and live authorization are false.'
+          fi
+          gh release upload "$TAG" "$archive" "$root/canonical/"* --repo "$GITHUB_REPOSITORY" --clobber
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir "$root/readback" --pattern usdjpy-hyp037-protocol-corrected-research-v2.zip
+          printf '%s  %s\n' "$EXPECTED_ARCHIVE_SHA" "$root/readback/usdjpy-hyp037-protocol-corrected-research-v2.zip" | sha256sum -c -
+          issue_url=$(gh issue create --repo "$GITHUB_REPOSITORY" --title 'Receipt: USDJPY-HYP-037 protocol-corrected research closure' --body "Decision: FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING
+
+Protocol correction: PROTOCOL_CORRECTION_PERIOD_ROLE_BEFORE_EXTERNAL_VALIDATION
+Run: ${SOURCE_RUN}
+Artifact: ${SOURCE_ARTIFACT}
+Artifact digest: sha256:046f56e519fd8e047dd54c98962c7e7ad24bcbc9d159445cb9a3fb227fa8a2d4
+Release: ${TAG}
+Archive SHA256: ${EXPECTED_ARCHIVE_SHA}
+2020-2022 candidate outcomes accessed: false
+2025 accessed: false
+Candidate freeze/Core/MT4/production/live authorization: false")
+          issue_number="${issue_url##*/}"
+          gh issue close "$issue_number" --repo "$GITHUB_REPOSITORY" --reason completed
+          python - "$root/receipt.json" "$issue_number" "$issue_url" <<'PY'
+          import json,os,sys
+          out,number,url=sys.argv[1:]
+          obj={
+            'schema_version':'usdjpy_hyp037_release_receipt_v2',
+            'hypothesis_id':'USDJPY-HYP-037',
+            'status':'PASS_IMMUTABLE_RELEASE_READBACK',
+            'release_tag':os.environ['TAG'],
+            'release_target_sha':os.environ['GITHUB_SHA'],
+            'source_workflow_run_id':int(os.environ['SOURCE_RUN']),
+            'source_artifact_id':int(os.environ['SOURCE_ARTIFACT']),
+            'source_artifact_digest':'sha256:046f56e519fd8e047dd54c98962c7e7ad24bcbc9d159445cb9a3fb227fa8a2d4',
+            'archive_sha256':os.environ['EXPECTED_ARCHIVE_SHA'],
+            'readback_status':'PASS_BYTE_IDENTICAL',
+            'receipt_issue_number':int(number),
+            'receipt_issue_url':url,
+            'decision':'FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING',
+            '2020_2022_outcomes_accessed':False,
+            '2025_outcomes_accessed':False,
+            'candidate_freeze_authorized':False,
+            'production_authorized':False,
+            'live_authorized':False
+          }
+          open(out,'w',encoding='utf-8').write(json.dumps(obj,indent=2,sort_keys=True)+'\n')
+          PY
+          path='configs/research/usdjpy_hyp037_release_receipt_v2.json'
+          current_sha=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${path}?ref=main" --jq .sha)
+          payload=$(python - "$root/receipt.json" "$current_sha" <<'PY'
+          import base64,json,sys
+          content=open(sys.argv[1],'rb').read()
+          print(json.dumps({'message':'research: record HYP-037 v2 immutable release readback','content':base64.b64encode(content).decode(),'sha':sys.argv[2],'branch':'main'}))
+          PY
+          )
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${path}" --input - <<<"$payload"

@@ -1,0 +1,35 @@
+{
+  "schema_version": "usdjpy_hyp037_output_manifest_v2",
+  "hypothesis_id": "USDJPY-HYP-037",
+  "decision": "FAIL_2023_2024_RESEARCH_CANDIDATE_GATE_NO_RETUNING",
+  "workflow_run_id": 30428356407,
+  "artifact_id": 8714601229,
+  "artifact_digest": "sha256:046f56e519fd8e047dd54c98962c7e7ad24bcbc9d159445cb9a3fb227fa8a2d4",
+  "deterministic_archive": "usdjpy-hyp037-protocol-corrected-research-v2.zip",
+  "deterministic_archive_sha256": "2353f2f3b08f3b686a6244ce661ab043d7b488a41ca9f1d5e0f1cebaba6c44fd",
+  "archive_readback": "PASS",
+  "source_commit_sha": "498296a4e147a5fa958fb45f467342d7039a75f8",
+  "origin_core_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "canonical_files": {
+    "result": "configs/research/usdjpy_hyp037_final_result_v2.json",
+    "candidate_registry": "configs/research/usdjpy_hyp037_candidate_registry_v2.json",
+    "period_access_receipt": "configs/research/usdjpy_hyp037_period_access_receipt_v2.json",
+    "period_role_correction": "configs/research/usdjpy_hyp037_period_role_correction_receipt_v2.json",
+    "corrected_preregistration_addendum": "configs/research/usdjpy_hyp037_corrected_preregistration_addendum_v2.json",
+    "human_report": "docs/research/USDJPY_HYP037_PROTOCOL_CORRECTED_RESEARCH_RESULT_V2.md"
+  },
+  "artifact_member_sha256": {
+    "final_result_v2.json": "319185327a549c4935bf90c4a2e6b4081102be7e0aa1c02111edb89e9e342e00",
+    "candidate_gate_matrix.csv": "f32fa95620238b0e1c6bce2959603edbda4ac50040143fc75129bf65b688fcf8",
+    "short_source_native_executable_ledger.csv.gz": "806907743aa99b36097b0aac815cd34e71b0e82440546d5b2be031a1f58fd0b7",
+    "baseline_full_equity.csv": "bff1f823635b478c262d8972118f35b07c681b2c4f0edceb055681e12eab8d1e",
+    "combined_full_equity.csv": "179b78f829c4fdcbc1423fcd8d60152f107d8ea8641b5643468fc20f1e61745a",
+    "portfolio_result.json": "eefdaef0310011a3b2151e3e49735c600077c6a0772409d85a6dbb7e98b05cc2",
+    "bootstrap.json": "e56d14b23b35db53d3b5ac5188b1a3d7f3c48b282616416394fda26630af9c5e",
+    "concentration.json": "fc9cbf1a1e60d005159019955bb503cd8b8de13a6a7b41e7c86821d7ca196ee8",
+    "execution_robustness.json": "b05b235b5a10811b4014ce2a61222f3ba8f16a7e71f17b75ace1ebaa6234e6af"
+  },
+  "2020_2022_outcomes_accessed": false,
+  "2025_outcomes_accessed": false,
+  "supersedes_period_role_only": "configs/research/usdjpy_hyp037_output_manifest_v1.json"
+}
