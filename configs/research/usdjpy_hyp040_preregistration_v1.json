@@ -1,0 +1,99 @@
+{
+  "schema_version": "usdjpy_hyp040_preregistration_v1",
+  "status": "FROZEN_BEFORE_CANDIDATE_SPECIFIC_2025H1_ACCESS",
+  "hypothesis_id": "USDJPY-HYP-040",
+  "title": "Unchanged Asian Range Sweep 2025H1 Portfolio Recovery Qualification",
+  "family_id": "S_ASIAN_RANGE_SWEEP_UNCHANGED_2025H1_RECOVERY",
+  "candidate_id": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+  "top_level_goal": "Preserve the profitable 2023-2024 B02/F05 base and determine whether the unchanged Asian Range Sweep can make the 2025H1 EA portfolio profitable with acceptable full-equity, margin and execution characteristics.",
+  "binding_portfolio": {
+    "baseline": "B02 + F05",
+    "candidate": "B02 + F05 + A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+    "diagnostic_comparisons": [
+      "Asian Range Sweep standalone",
+      "B02 + Asian Range Sweep",
+      "F05 + Asian Range Sweep"
+    ],
+    "HYP039_included": false
+  },
+  "baseline_authority": {
+    "2023_2024_net_jpy": 51627,
+    "2025H1_net_jpy": -20808,
+    "2025H1_pf_approx": 0.829,
+    "2025H1_B02_net_jpy": -6964,
+    "2025H1_F05_net_jpy": -13844,
+    "2025H1_max_tick_equity_dd_jpy_approx": 42737
+  },
+  "lineage": {
+    "source_hypothesis": "USDJPY-HYP-030",
+    "source_decision": "NO_PORTABLE_CANDIDATE",
+    "source_decision_immutable": true,
+    "source_failure_reason": "2023-2024 additive portfolio MDD worsened by JPY61",
+    "independent_new_hypothesis": true,
+    "retroactive_pass_or_gate_relaxation": false
+  },
+  "contract_refs": {
+    "candidate_contract": "configs/research/usdjpy_hyp040_candidate_contract_v1.json",
+    "freeze_receipt": "configs/research/usdjpy_hyp040_candidate_freeze_receipt_v1.json",
+    "period_access_receipt": "configs/research/usdjpy_hyp040_period_access_receipt_v1.json",
+    "reproduction_authority": "configs/research/usdjpy_hyp040_hyp030_reproduction_authority_v1.json"
+  },
+  "sequence": [
+    "exact HYP-030 canonical reproduction",
+    "Core implementation from latest main without B02/F05 rule changes",
+    "zero-mismatch Research/Core parity",
+    "clean MT4 compile and Core/MT4 parity",
+    "Rakuten 2023-2024 source-native portability",
+    "first candidate-specific 2025H1 standalone validation",
+    "same-version 2025H1 portfolio revalidation comparisons",
+    "full-equity, margin, concurrency, concentration and residual-loss diagnostics",
+    "immutable evidence publication and final canonicalization"
+  ],
+  "rakuten_2023_2024_gate": {
+    "fail_decision": "FAIL_RAKUTEN_2023_2024_PORTABILITY",
+    "fail_only_if": "standalone net or PF clearly reverses negative, or an unresolved algorithm/information-time/execution contract mismatch remains",
+    "event_population_difference_alone_is_failure": false,
+    "required_classification": [
+      "algorithm mismatch",
+      "information-time mismatch",
+      "source-native market-data difference",
+      "broker spread difference",
+      "executable Bid/Ask difference"
+    ]
+  },
+  "2025H1_metrics": {
+    "standalone": [
+      "opportunities", "accepted trades", "Long/Short", "net", "PF", "gross profit", "gross loss", "win rate", "median", "mean", "average trade", "realized MDD", "full-equity DD", "minimum equity", "recovery factor", "monthly", "Q1/Q2", "session", "weekday", "spread", "slippage", "MAE", "MFE", "time to MFE", "holding integrity", "top winner removal", "bootstrap", "losing streak", "execution and chronology anomalies"
+    ],
+    "portfolio": [
+      "net", "PF", "realized DD", "M15 snapshot DD", "full-equity DD", "minimum equity", "recovery factor", "worst 1/5/20 business-day windows", "worst month", "Q1/Q2", "monthly breadth", "daily/weekly correlation", "baseline loss-day and drawdown contribution", "same/opposite exposure", "concurrency", "incremental margin", "minimum margin level", "margin call", "recovery duration", "chronology conflicts"
+    ]
+  },
+  "decisions": {
+    "A": "PASS_ASIAN_RANGE_SWEEP_2025H1_FULL_PORTFOLIO_RECOVERY",
+    "B": "PASS_ASIAN_RANGE_SWEEP_2025H1_RECOVERY_WITH_RISK_TRADEOFF",
+    "C": "PASS_ASIAN_RANGE_SWEEP_PARTIAL_2025H1_RECOVERY",
+    "D": "FAIL_ASIAN_RANGE_SWEEP_2025H1_PORTABILITY",
+    "RAKUTEN": "FAIL_RAKUTEN_2023_2024_PORTABILITY",
+    "TECHNICAL": "TECHNICAL_NO_RESULT"
+  },
+  "binding_rules": {
+    "full_recovery": "standalone net>0 and PF>1; combined net>0 and PF>1; no parity, chronology, currency or margin-call failure",
+    "risk_tradeoff": "same economic pass with combined DD or worst-window deterioration; retain for risk review",
+    "partial_recovery": "standalone net>0 and PF>1 and combined improves baseline but combined net<=0 or PF<=1; retain as reserve",
+    "failure": "standalone net<=0 and PF<=1 and no portfolio improvement, or unresolved execution/margin/Rakuten portability failure",
+    "single_small_DD_or_concentration_or_negative_bootstrap_lower_bound_is_automatic_failure": false
+  },
+  "period_roles": {
+    "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_AUTOMATICALLY_USED"
+  },
+  "outcome_visibility_before_first_2025H1_run": "UNSEEN_AT_FIRST_VALIDATION",
+  "candidate_specific_2025H1_outcome_accessed": false,
+  "HYP039_changed_or_combined": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "recurring_monitor_authorized": false
+}
