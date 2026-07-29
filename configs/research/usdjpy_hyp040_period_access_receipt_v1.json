@@ -1,0 +1,45 @@
+{
+  "schema_version": "usdjpy_hyp040_period_access_receipt_v1",
+  "status": "FROZEN_BEFORE_FIRST_CANDIDATE_SPECIFIC_2025H1_RUN",
+  "hypothesis_id": "USDJPY-HYP-040",
+  "candidate_id": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+  "period_roles": {
+    "2020_2022": "OPTIONAL_HISTORICAL_REFERENCE_ANALYSIS_PERIOD_NOT_A_BINDING_GATE",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_AUTOMATICALLY_USED_OR_SUBSTITUTED"
+  },
+  "period_access_before_freeze": {
+    "2020_2022_candidate_outcomes": false,
+    "2023_2024_hyp030_canonical_outcomes": true,
+    "2025H1_asian_range_sweep_candidate_outcomes": false,
+    "2025H2_asian_range_sweep_candidate_outcomes": false
+  },
+  "outcome_visibility": {
+    "candidate_version": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+    "state_before_first_2025H1_candidate_run": "UNSEEN_AT_FIRST_VALIDATION",
+    "first_access_timestamp": null,
+    "candidate_version_at_first_access": null,
+    "subsequent_same_version_run_label": "2025H1 VALIDATION-PERIOD RERUN OR 2025H1 POST-RESULT REVALIDATION",
+    "candidate_modified_after_result": false,
+    "period_role_independent_of_access_count": true
+  },
+  "prevalidation_sequence": [
+    "unchanged contract freeze",
+    "HYP-030 exact reproduction",
+    "Core implementation",
+    "zero-mismatch Research/Core parity",
+    "MT4 compile and Core/MT4 parity",
+    "Rakuten 2023-2024 portability",
+    "margin and concurrency preflight"
+  ],
+  "2020_2022_missing_does_not_block": [
+    "candidate_freeze",
+    "Core",
+    "MT4",
+    "2025H1_validation"
+  ],
+  "2025H2_automatic_migration": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
