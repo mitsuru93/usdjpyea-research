@@ -1,0 +1,102 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v38",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v37.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v37.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-036",
+      "family_ids": ["S_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE"],
+      "family_id": "S_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE",
+      "title": "Pullback Continuation Dukascopy-Native Independent Alpha and Portfolio Portability Study",
+      "target_failure_mode": "Determine whether the fixed Pullback Continuation mechanism has executable and period-portable alpha when its event population and execution are defined entirely on one Dukascopy Bid/Ask Tick lineage.",
+      "causal_hypothesis": "A strong EMA-separated trend that retraces to EMA20 and completes a directional confirmation bar contains a 16-M15-bar continuation edge across 2023H1-2024H2 after source-native Bid/Ask execution.",
+      "pre_result_predictions": [
+        "The source-native candidate should remain profitable with PF at least 1.10.",
+        "All four development folds should be positive and no fold should be negative.",
+        "At least 16 of 24 months should be positive.",
+        "Both directions remain eligible; no direction, session or period is removed after outcomes."
+      ],
+      "tests": [
+        "24-month Dukascopy BI5 Tick authority and source-native M15 reconstruction",
+        "Source-native event detection and first-Tick Bid/Ask executable chronology",
+        "Fixed 2023H1, 2023H2, 2024H1 and 2024H2 standalone portability gates",
+        "First-binding-failure stop before protected periods, Core/MT4 or 2025"
+      ],
+      "status": "COMPLETE_NO_PORTABLE_EXECUTABLE_CANDIDATE",
+      "decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE",
+      "scientific_result": true,
+      "source_authority": "PASS",
+      "source_native_trades": 1332,
+      "net_jpy": 17005,
+      "profit_factor": 1.1095393613800422,
+      "positive_folds": 3,
+      "positive_months": 13,
+      "mdd_jpy": 13284,
+      "minimum_equity_jpy": 999736,
+      "failed_binding_stage": "DEVELOPMENT_STANDALONE",
+      "failed_binding_gates": ["folds_4_of_4", "minimum_fold_nonnegative", "positive_months_ge_16"],
+      "direction_results": {
+        "LONG": {"trades": 832, "net_jpy": -674, "profit_factor": 0.9925465563763406},
+        "SHORT": {"trades": 500, "net_jpy": 17679, "profit_factor": 1.272769351827556}
+      },
+      "fold_results": {
+        "2023H1": {"trades": 318, "net_jpy": 3953},
+        "2023H2": {"trades": 345, "net_jpy": 7112},
+        "2024H1": {"trades": 342, "net_jpy": 7103},
+        "2024H2": {"trades": 327, "net_jpy": -1163}
+      },
+      "retained_findings": [
+        "A completely Dukascopy-native construction retained positive pooled economics at +¥17,005 and PF 1.110.",
+        "The pooled result was not portable across all folds or months; 2024H2 was negative and only 13/24 months were positive.",
+        "The positive result was concentrated directionally in Short while Long was slightly negative.",
+        "Diagnostic realized-close portfolio replay added net and reduced realized DD but worsened 5-day and 20-day loss clusters."
+      ],
+      "falsified_or_unsupported_claims": [
+        "The fixed all-Dukascopy Pullback Continuation candidate is portable across all four development folds.",
+        "The fixed candidate has balanced Long and Short alpha.",
+        "The candidate may proceed to concentration, historical validation, Core/MT4 or 2025 gates."
+      ],
+      "prohibited_reuse": [
+        "Short-only rescue",
+        "LONDON or other session-only rescue",
+        "2024H2 exclusion or period routing",
+        "EMA, ATR, pullback tolerance or hold-time retuning",
+        "B02/F05 state filtering",
+        "lot-size rescue",
+        "2020-2022 or 2025 outcome access for HYP-036 rescue"
+      ],
+      "evidence_refs": {
+        "scientific_pr": 396,
+        "scientific_run_id": 30414664817,
+        "scientific_artifact_id": 8709903106,
+        "scientific_artifact_digest": "sha256:2cf0578322a9ad650ff5fe4ea60d9332624009b9f6bc1744450eb6c0ffc1afd8",
+        "result": "configs/research/usdjpy_hyp036_final_result_v1.json",
+        "report": "docs/research/USDJPY_HYP036_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE_RESULT_V1.md",
+        "candidate_registry": "configs/research/usdjpy_hyp036_candidate_registry_v1.json",
+        "period_access_receipt": "configs/research/usdjpy_hyp036_period_access_receipt_v1.json",
+        "output_manifest": "configs/research/usdjpy_hyp036_output_manifest_v1.json"
+      },
+      "historical_2020_2022_accessed": false,
+      "core_mt4_accessed": false,
+      "2025_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false,
+      "no_retuning": true,
+      "exact_next_action": "Close HYP-036 at the standalone portability gate; do not rescue the observed Short/session/period pattern."
+    }
+  ],
+  "hypothesis_status_updates": [
+    {
+      "hypothesis_id": "USDJPY-HYP-036",
+      "family_id": "S_PULLBACK_CONTINUATION_DUKASCOPY_NATIVE",
+      "prior_status": "PREREGISTERED_DUKASCOPY_NATIVE_DEVELOPMENT",
+      "status": "COMPLETE_NO_PORTABLE_EXECUTABLE_CANDIDATE",
+      "decision": "NO_PORTABLE_EXECUTABLE_CANDIDATE",
+      "retuning": false,
+      "authorization": {"candidate_freeze": false, "historical_2020_2022": false, "Core": false, "MT4": false, "2025H1": false, "2025H2": false, "production": false, "live": false}
+    }
+  ]
+}
