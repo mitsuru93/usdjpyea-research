@@ -33,6 +33,7 @@ jobs:
           jq -e '.baseline_B02_unchanged==true and .core_pr_created==false and .mt4_candidate_implemented==false' configs/research/usdjpy_hyp042_core_mt4_nonimplementation_receipt_v1.json
           jq -e '.baseline_2025H1.identity_complete==true and .baseline_2025H1.B02_realized_pl_jpy==-6964 and .baseline_2025H1.portfolio_realized_pl_jpy==-20808' configs/research/usdjpy_hyp042_chronology_currency_parity_receipt_v1.json
           jq -e '.status=="CLOSED_PARALLEL_APPEND_ONLY_DELTA_NON_SUPERSEDING" and .entries[0].hypothesis_id=="USDJPY-HYP-042" and .entries[0].decision=="B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE"' configs/research/usdjpy_hypothesis_ledger_parallel_addendum_hyp042_v1.json
+          jq -e '.scientific_result_changed==false and .repair_contract.release_count==1 and .repair_contract.replace_assets_in_place==true' configs/research/usdjpy_hyp042_release_readback_repair_v1.json
           test -s docs/research/USDJPY_HYP042_B02_2025H1_RECOVERY_RESULT_V1.md
           test -s docs/research/artifact_archives/usdjpy_hyp042_b02_recovery_v1/artifact_manifest.json
 
@@ -46,10 +47,21 @@ jobs:
           set -euo pipefail
           jq -e '.decision=="B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE" and .adopted_candidate_id==null and .core_mt4_required==false' configs/research/usdjpy_hyp042_result_v1.json
           jq -e '.files|length>=10' docs/research/artifact_archives/usdjpy_hyp042_b02_recovery_v1/artifact_manifest.json
-      - name: Build deterministic evidence package
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('docs/research/artifact_archives/usdjpy_hyp042_b02_recovery_v1')
+          manifest = json.loads((root / 'artifact_manifest.json').read_text())
+          for item in manifest['files']:
+              path = root / item['path']
+              assert path.is_file(), item['path']
+              assert path.stat().st_size == item['bytes'], item['path']
+              assert hashlib.sha256(path.read_bytes()).hexdigest() == item['sha256'], item['path']
+          PY
+      - name: Build and verify deterministic evidence package
         run: |
           set -euo pipefail
-          rm -rf release_payload
+          rm -rf release_payload usdjpy-hyp042-b02-recovery-v1.zip usdjpy-hyp042-b02-recovery-v1.zip.sha256
           mkdir -p release_payload
           cp configs/research/usdjpy_hyp042_startup_receipt_v1.json release_payload/
           cp configs/research/usdjpy_hyp042_preregistration_v1.json release_payload/
@@ -58,10 +70,14 @@ jobs:
           cp configs/research/usdjpy_hyp042_chronology_currency_parity_receipt_v1.json release_payload/
           cp configs/research/usdjpy_hyp042_source_authority_receipt_v1.json release_payload/
           cp configs/research/usdjpy_hyp042_core_mt4_nonimplementation_receipt_v1.json release_payload/
+          cp configs/research/usdjpy_hyp042_release_readback_repair_v1.json release_payload/
           cp configs/research/usdjpy_hypothesis_ledger_parallel_addendum_hyp042_v1.json release_payload/
           cp docs/research/USDJPY_HYP042_B02_2025H1_RECOVERY_RESULT_V1.md release_payload/
           cp -r docs/research/artifact_archives/usdjpy_hyp042_b02_recovery_v1 release_payload/artifact_archive
-          find release_payload -type f -print0 | sort -z | xargs -0 sha256sum > release_payload/PACKAGE_SHA256SUMS
+          find release_payload -type f ! -name PACKAGE_SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > /tmp/PACKAGE_SHA256SUMS
+          mv /tmp/PACKAGE_SHA256SUMS release_payload/PACKAGE_SHA256SUMS
+          sha256sum -c release_payload/PACKAGE_SHA256SUMS
+          find release_payload -exec touch -t 198001010000 {} +
           zip -q -X -9 -r usdjpy-hyp042-b02-recovery-v1.zip release_payload
           sha256sum usdjpy-hyp042-b02-recovery-v1.zip > usdjpy-hyp042-b02-recovery-v1.zip.sha256
       - name: Upload workflow evidence
@@ -75,37 +91,86 @@ jobs:
             usdjpy-hyp042-b02-recovery-v1.zip.sha256
           retention-days: 90
           compression-level: 0
-      - name: Publish immutable Release
+      - name: Publish or repair the single immutable Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           TAG='usdjpy-hyp042-b02-recovery-v1'
-          test "$(gh release view "$TAG" --json tagName --jq .tagName 2>/dev/null || true)" = "$TAG" || \
+          if [ "$(gh release view "$TAG" --json tagName --jq .tagName 2>/dev/null || true)" = "$TAG" ]; then
+            gh release upload "$TAG" usdjpy-hyp042-b02-recovery-v1.zip usdjpy-hyp042-b02-recovery-v1.zip.sha256 --clobber
+          else
             gh release create "$TAG" usdjpy-hyp042-b02-recovery-v1.zip usdjpy-hyp042-b02-recovery-v1.zip.sha256 \
               --target "$GITHUB_SHA" \
               --title 'USDJPY-HYP-042 B02 2025H1 Recovery v1' \
               --notes 'Final decision: B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE. Baseline B02 remains unchanged; no Core/MT4 candidate was authorized. 2025H1 remains the validation period. HYP-039, HYP-040, HYP-041 and portfolio-integration work were not modified.'
-      - name: Create one receipt Issue
+          fi
+      - name: Canonicalize corrected Release receipt on main
+        id: receipt
         env:
-          GH_TOKEN: ${{ github.token }}
           ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
           ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
         run: |
           set -euo pipefail
+          ZIP_SHA="$(cut -d' ' -f1 usdjpy-hyp042-b02-recovery-v1.zip.sha256)"
+          export ZIP_SHA
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          payload = {
+            "schema_version": "usdjpy_hyp042_release_receipt_v1",
+            "hypothesis_id": "USDJPY-HYP-042",
+            "decision": "B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE",
+            "release_tag": "usdjpy-hyp042-b02-recovery-v1",
+            "release_count": 1,
+            "release_assets_replaced_in_place": True,
+            "release_source_sha": os.environ["GITHUB_SHA"],
+            "run_id": int(os.environ["GITHUB_RUN_ID"]),
+            "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
+            "artifact_id": int(os.environ["ARTIFACT_ID"]),
+            "artifact_digest": os.environ["ARTIFACT_DIGEST"],
+            "release_zip_sha256": os.environ["ZIP_SHA"],
+            "receipt_issue": 423,
+            "readback_status": "PASS_ARCHIVE_MANIFEST_AND_PACKAGE_SHA256SUMS",
+            "supersedes_packaging_receipt_run": 30458363219,
+            "scientific_result_changed": False,
+            "baseline_B02_unchanged": True,
+            "core_mt4_implemented": False,
+            "parallel_studies_modified": False
+          }
+          Path('configs/research/usdjpy_hyp042_release_receipt_v1.json').write_text(json.dumps(payload, indent=2) + '\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add configs/research/usdjpy_hyp042_release_receipt_v1.json
+          git commit -m 'research: bind HYP-042 corrected Release receipt'
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "receipt_commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Update the single receipt Issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+          RECEIPT_COMMIT_SHA: ${{ steps.receipt.outputs.receipt_commit_sha }}
+        run: |
+          set -euo pipefail
           TITLE='HYP-042 B02 recovery immutable receipt'
           EXISTING="$(gh issue list --state all --search "$TITLE in:title" --json number --jq '.[0].number // empty')"
-          if [ -z "$EXISTING" ]; then
-            ZIP_SHA="$(cut -d' ' -f1 usdjpy-hyp042-b02-recovery-v1.zip.sha256)"
-            cat > receipt.md <<EOF
+          ZIP_SHA="$(cut -d' ' -f1 usdjpy-hyp042-b02-recovery-v1.zip.sha256)"
+          cat > receipt.md <<EOF
           Decision: \`B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE\`
 
-          - Research SHA: \`$GITHUB_SHA\`
+          - Release source SHA: \`$GITHUB_SHA\`
+          - Canonical receipt commit: \`$RECEIPT_COMMIT_SHA\`
           - Run: \`$GITHUB_RUN_ID\` attempt \`$GITHUB_RUN_ATTEMPT\`
           - Actions artifact: \`$ARTIFACT_ID\`
           - Artifact digest: \`$ARTIFACT_DIGEST\`
-          - Release: \`usdjpy-hyp042-b02-recovery-v1\`
+          - Release: \`usdjpy-hyp042-b02-recovery-v1\` (single tag; assets repaired in place)
           - Release ZIP SHA-256: \`$ZIP_SHA\`
+          - Readback: \`PASS_ARCHIVE_MANIFEST_AND_PACKAGE_SHA256SUMS\`
+          - Superseded packaging-only Run: \`30458363219\`
+          - Scientific decision changed: false
           - Adopted candidate: none
           - Core/MT4 implementation: not authorized and not performed
           - Baseline B02: unchanged
@@ -113,5 +178,8 @@ jobs:
           - 2025H2 accessed: false
           - Parallel HYP-039/HYP-040/HYP-041 modified: false
           EOF
+          if [ -z "$EXISTING" ]; then
             gh issue create --title "$TITLE" --body-file receipt.md
+          else
+            gh issue edit "$EXISTING" --body-file receipt.md
           fi

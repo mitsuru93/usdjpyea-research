@@ -1,0 +1,40 @@
+{
+  "schema_version": "usdjpy_hyp042_release_readback_repair_v1",
+  "hypothesis_id": "USDJPY-HYP-042",
+  "decision_unchanged": "B02_V2_NO_CHANGE_REQUIRED_AT_CURRENT_STAGE",
+  "initial_release": {
+    "research_sha": "9d4f7cfaa6d96465cae6855f4e291a2eb13f40b8",
+    "run_id": 30458363219,
+    "artifact_id": 8726497710,
+    "artifact_digest": "sha256:c8d6ae1fd9893856ba543d1239eb0898cedcf7eb43e001a0388d1f45d24878f1",
+    "release_tag": "usdjpy-hyp042-b02-recovery-v1",
+    "release_zip_sha256": "6b974d773400b7ecd155edc5c618a3a351aa1f746c298f8d729082f249d7d3eb",
+    "receipt_issue": 423
+  },
+  "readback_findings": [
+    {
+      "finding": "PACKAGE_SHA256SUMS_SELF_REFERENCE",
+      "scope": "packaging only",
+      "detail": "The checksum file was created inside release_payload while find traversed release_payload, causing the checksum file to include a non-final checksum for itself. All other listed package files matched."
+    },
+    {
+      "finding": "BOOTSTRAP_MANIFEST_SERIALIZATION_IDENTITY",
+      "scope": "archive formatting only",
+      "detail": "bootstrap.json values were correct but compact serialization did not match the preregistered archive-manifest byte count and SHA-256. The file is restored to the exact manifest-bound serialization."
+    }
+  ],
+  "scientific_result_changed": false,
+  "candidate_result_changed": false,
+  "baseline_changed": false,
+  "parallel_studies_modified": false,
+  "repair_contract": {
+    "release_count": 1,
+    "release_tag_unchanged": true,
+    "replace_assets_in_place": true,
+    "exclude_PACKAGE_SHA256SUMS_from_its_own_checksum_set": true,
+    "verify_all_archive_manifest_entries_before_upload": true,
+    "verify_PACKAGE_SHA256SUMS_before_upload": true,
+    "update_existing_receipt_issue": true,
+    "commit_corrected_release_receipt_to_main": true
+  }
+}
