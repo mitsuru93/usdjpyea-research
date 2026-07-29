@@ -1,0 +1,34 @@
+{
+  "schema_version": "usdjpy_csos_dukascopy_native_remaining_family_atlas_startup_receipt_v1",
+  "status": "PASS_CANONICAL_STARTUP_AND_PROGRAM_FIREWALL",
+  "program_id": "USDJPY-CSOS-DUKASCOPY-NATIVE-REMAINING-FAMILY-ATLAS-V1",
+  "research_start_sha": "1841ed3fba757a9a44496faeb9a6c7e014efa9d6",
+  "core_reference_sha": "f897b250b808207d960417b2306935dcb0655acf",
+  "latest_ledger": "configs/research/usdjpy_hypothesis_ledger_addendum_v38.json",
+  "latest_registry": "configs/research/usdjpy_research_candidate_registry_v64.json",
+  "latest_program": "configs/research/usdjpy_2023_2024_hypothesis_program_v13.json",
+  "hypothesis_id_consumed": false,
+  "active_hypothesis_registry_overwrite": false,
+  "branch": "agent/csos-dukascopy-native-remaining-family-atlas-v1",
+  "parallel_research_firewall": {
+    "short_pullback_2020_2022_outcomes_accessed": false,
+    "hyp036_short_ledger_used_for_selection": false,
+    "pullback_family_evaluated": false,
+    "shared_branch": false,
+    "shared_workflow": false,
+    "shared_outputs": false
+  },
+  "closed_family_boundaries": {
+    "D_SHOCK_FAILURE": "EXCLUDED_COMPLETE",
+    "F_LIQUIDITY_SWEEP": "EXCLUDED_HYP030_HYP031_HYP033_HYP034",
+    "J_PULLBACK_CONTINUATION": "EXCLUDED_HYP035_HYP036_AND_PARALLEL_SUCCESSOR"
+  },
+  "protected_2020_2022_accessed": false,
+  "protected_2025_accessed": false,
+  "core_modified": false,
+  "mt4_executed": false,
+  "candidate_freeze_authorized": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "recurring_monitor_created": false
+}
