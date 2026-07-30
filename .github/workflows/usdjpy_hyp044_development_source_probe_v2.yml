@@ -1,0 +1,81 @@
+name: USDJPY HYP-044 Development Source Probe v2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp044_development_source_probe_v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      - name: Download byte-identical historical authority mirror Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf hyp044_development_probe_v2 artifacts/research/usdjpy_hyp044/development_source_probe_v2
+          mkdir -p hyp044_development_probe_v2/downloads artifacts/research/usdjpy_hyp044/development_source_probe_v2
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo mitsuru93/usdjpyea-research --dir hyp044_development_probe_v2/downloads
+          test "$(sha256sum hyp044_development_probe_v2/downloads/usdjpy-2023-canonical-baseline-prep-v1.zip | awk '{print $1}')" = '22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01'
+          test "$(sha256sum hyp044_development_probe_v2/downloads/mt4-usdjpy-2024h1-event-audit-v1.zip | awk '{print $1}')" = 'e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5'
+          test "$(sha256sum hyp044_development_probe_v2/downloads/mt4-usdjpy-f05-extatr-h2-validation-v1.zip | awk '{print $1}')" = '9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b'
+          for zip in hyp044_development_probe_v2/downloads/*.zip; do
+            d="hyp044_development_probe_v2/extracted/$(basename "$zip" .zip)";mkdir -p "$d";unzip -q -o "$zip" -d "$d"
+          done
+      - name: Build schema and chronology probe
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv,gzip,hashlib,json
+          from collections import Counter
+          from pathlib import Path
+          root=Path('hyp044_development_probe_v2/extracted');out=Path('artifacts/research/usdjpy_hyp044/development_source_probe_v2')
+          targets={
+            'baseline/usdjpy_2023_canonical_baseline_expected_trade_ledger_v1.csv':'33d08d580d584f533bc5f9dda510184fb86c668608f76f8e9b7c014924c5f1b8',
+            'normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz':'4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78',
+            'tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv':'9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a',
+            'h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv':'a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd',
+          }
+          files=[]
+          for logical,expected in targets.items():
+            matches=[p for p in root.rglob(Path(logical).name) if p.as_posix().endswith(logical)]
+            if len(matches)!=1: raise SystemExit(f'{logical} matches={len(matches)}')
+            p=matches[0];sha=hashlib.sha256(p.read_bytes()).hexdigest()
+            if sha!=expected: raise SystemExit(f'sha mismatch {logical} {sha}')
+            opener=gzip.open if p.suffix=='.gz' else open
+            with opener(p,'rt',encoding='utf-8-sig',newline='') as fh:
+              reader=csv.DictReader(fh);header=reader.fieldnames or [];count=0;events=Counter();strategies=Counter();first=None;last=None;sample=[]
+              for row in reader:
+                count+=1
+                if len(sample)<5: sample.append(row)
+                if row.get('event'): events[row['event']]+=1
+                if row.get('strategy'): strategies[row['strategy']]+=1
+                ts=row.get('utc_time') or row.get('entry_utc') or row.get('timestamp_utc') or row.get('timestamp') or row.get('entry_time') or ''
+                if ts:
+                  first=ts if first is None or ts<first else first;last=ts if last is None or ts>last else last
+            files.append({'logical_path':logical,'sha256':sha,'rows':count,'header':header,'events':dict(events),'strategies':dict(strategies),'first_timestamp_text':first,'last_timestamp_text':last,'sample':sample})
+          payload={'schema_version':'usdjpy_hyp044_development_source_probe_v2','hypothesis_id':'USDJPY-HYP-044','status':'PASS_RELEASE_BACKED_DEVELOPMENT_SOURCE_PROBE','release_tag':'f05-failed-reclaim-historical-authorities-v1','files':files,'expired_actions_artifacts_required':False,'2025H2_accessed':False}
+          (out/'development_source_probe.json').write_text(json.dumps(payload,indent=2,ensure_ascii=False,sort_keys=True)+'\n')
+          print(json.dumps(payload,indent=2,ensure_ascii=False))
+          PY
+          jq -e '.status=="PASS_RELEASE_BACKED_DEVELOPMENT_SOURCE_PROBE" and (.files|length)==4 and .expired_actions_artifacts_required==false and ."2025H2_accessed"==false' artifacts/research/usdjpy_hyp044/development_source_probe_v2/development_source_probe.json
+      - name: Commit probe receipt
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add artifacts/research/usdjpy_hyp044/development_source_probe_v2
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'research(hyp044): bind Release-backed 2023-2024 source probe'
+          git pull --rebase origin ${{ github.event.pull_request.head.ref || github.ref_name }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}
