@@ -1,0 +1,45 @@
+{
+  "schema_version": "usdjpy_data_baseline_catalog_addendum_mt4_2020_2022_v1",
+  "work_id": "USDJPY-MT4-2020-2022-PROVISIONAL-BASELINE-001",
+  "catalog_role": "ANALYSIS_ONLY_PROVISIONAL_BROKER_HISTORY_EVIDENCE",
+  "period": "2020-01-01 through 2022-12-31",
+  "source": "Rakuten MT4 broker-history HST",
+  "source_native_tick": false,
+  "tester_model": "MT4_MODEL0_FIXED_SPREAD_PROVISIONAL",
+  "spread": "5 points / 0.5 pip fixed primary",
+  "variants": ["B02_BASELINE_UNCHANGED", "F05_BASELINE_UNCHANGED", "B02_F05_BASELINE_UNCHANGED_PORTFOLIO"],
+  "history_coverage": "SUFFICIENT_NO_MISSING_MONTHS",
+  "deterministic_repeat": "PASS",
+  "known_period_reproduction": "NOT_COMPARABLE",
+  "final_classification": "FAIL_KNOWN_PERIOD_REPRODUCTION_NOT_COMPARABLE",
+  "use_allowed": [
+    "long-horizon descriptive analysis",
+    "year/half-year/month attribution",
+    "future Dukascopy Tick reconciliation",
+    "source portability diagnostics"
+  ],
+  "use_prohibited": [
+    "candidate selection",
+    "retuning",
+    "threshold selection",
+    "side/session exclusion",
+    "formal strategy PASS or FAIL",
+    "2025H1 replacement validation",
+    "production or live authorization"
+  ],
+  "core_authority": {
+    "sha": "56cbf5da0b7f0dd0a6560a6d1c9cedd492a7fa70",
+    "run_id": "30534882633",
+    "issue": 714,
+    "release_tag": "usdjpy-mt4-2020-2022-provisional-baseline-v1",
+    "archive_sha256": "a50f723f9ba7dbd43ab0c783c4e352da058ee1ad04038bbcb90c69817504eea3",
+    "readback": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+    "small_evidence_branch": "evidence/usdjpy-mt4-2020-2022-provisional-baseline-v1"
+  },
+  "reconciliation_required": true,
+  "reconciliation_target_release": "usdjpy-2020-2022-source-native-bidask-tick-authority-v1",
+  "formal_decision_change": false,
+  "production_authorization": false,
+  "live_authorization": false,
+  "2025H2_accessed": false
+}
