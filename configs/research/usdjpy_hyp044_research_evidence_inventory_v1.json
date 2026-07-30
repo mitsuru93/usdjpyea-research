@@ -2,7 +2,7 @@
   "schema_version": "usdjpy_hyp044_research_evidence_inventory_v1",
   "hypothesis_id": "USDJPY-HYP-044",
   "status": "PASS_COMPACT_INVENTORY_COMMITTED",
-  "matching_file_count": 360,
+  "matching_file_count": 362,
   "matching_files": [
     {
       "path": ".github/workflows/archive_usdjpy_portfolio_loss_cluster_phase1_r1.yml",
@@ -188,6 +188,11 @@
       "path": "artifacts/research/usdjpy_hyp044/source_native_full_equity_v2/sha256sums.txt",
       "bytes": 104,
       "sha256": "42539ab10f8005f1d41fd7544131c4f49e954602ef07c74442cd5c3425134bde"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/source_native_ledger_tieout_v1.json",
+      "bytes": 2879,
+      "sha256": "cdee1d60fc01e56371dadf6d074acee6b72e6ed45fa136632dc8c11319ff64e0"
     },
     {
       "path": "configs/data_sources/usdjpy_2020_2022_tick_authority_contract_v1.json",
@@ -923,6 +928,11 @@
       "path": "configs/research/usdjpy_hyp044_candidate_catalog_round_a_v1.json",
       "bytes": 4263,
       "sha256": "7e51f299b4eba0b2870a58a74225c42e806913b800a61f55e19944ede7dda683"
+    },
+    {
+      "path": "configs/research/usdjpy_hyp044_candidate_catalog_round_b_v1.json",
+      "bytes": 2131,
+      "sha256": "717fb815c271ca09b755a46c82cff3b68951aa23b7b3118245c1bdd69ee8ab70"
     },
     {
       "path": "configs/research/usdjpy_hyp044_candidate_freeze_receipt_v1.json",
