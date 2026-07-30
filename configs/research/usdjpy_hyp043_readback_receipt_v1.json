@@ -1,0 +1,22 @@
+{
+  "2025H2_accessed": false,
+  "archive_bytes": 15955,
+  "archive_name": "usdjpy-hyp043-f05-localized-recovery-v1-research-closure.zip",
+  "archive_sha256": "4f9d9dca1dab7b65fc86a3693062f71c2a87923171c45714c8d2f16b393984cc",
+  "candidate_specific_2025H1_replay_executed": false,
+  "core_archive_sha256": "b7004225b637205623fcc38630c57c272dcf8b0de20774d6d6cb38c1ee75c157",
+  "core_scientific_result_sha": "1e6a5eda4ee9f36ad2d5c9defa61dfcc5a535cea",
+  "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "issue_number": 441,
+  "issue_url": "https://github.com/mitsuru93/usdjpyea-research/issues/441",
+  "live_authorized": false,
+  "production_authorized": false,
+  "release_tag": "usdjpy-hyp043-f05-localized-recovery-v1",
+  "release_url": "https://github.com/mitsuru93/usdjpyea-research/releases/tag/usdjpy-hyp043-f05-localized-recovery-v1",
+  "remote_readback_sha256": "4f9d9dca1dab7b65fc86a3693062f71c2a87923171c45714c8d2f16b393984cc",
+  "research_closure_sha": "e18cf6d9d2f19cef8e41c9a434e96a5176e9336f",
+  "schema_version": "usdjpy_hyp043_readback_receipt_v1",
+  "scientific_run_id": 30523476402,
+  "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+}
