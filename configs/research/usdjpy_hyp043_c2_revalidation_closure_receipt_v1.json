@@ -1,0 +1,58 @@
+{
+  "schema_version": "usdjpy_hyp043_c2_revalidation_closure_receipt_v1",
+  "status": "PASS_C2_2025H1_ECONOMIC_REVALIDATION_AND_BYTE_IDENTICAL_RELEASE_READBACK",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "candidate_id": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+  "formal_historical_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+  "economic_decision": "PARTIAL_RECOVERY_ECONOMIC_HISTORICAL_GATE_FAIL",
+  "historical_positive_effect_folds": 2,
+  "historical_required_folds": 3,
+  "2025H1": {
+    "F05_baseline_net_jpy": -13844,
+    "F05_C2_net_jpy": -7935,
+    "F05_improvement_jpy": 5909,
+    "F05_C2_profit_factor": 0.8853141395308503,
+    "F05_C2_realized_drawdown_jpy": 24118,
+    "modified_trades": 63,
+    "modified_share": 0.17597765363128492,
+    "B02_plus_F05_baseline_net_jpy": -20808,
+    "B02_plus_F05_C2_net_jpy": -14899,
+    "portfolio_improvement_jpy": 5909,
+    "B02_plus_F05_C2_profit_factor": 0.855111785356556,
+    "B02_C3_reserve_plus_F05_C2_net_jpy": -5614
+  },
+  "git": {
+    "core_PR": "https://github.com/mitsuru93/usdjpyea-core/pull/707",
+    "core_merge_sha": "fa99a3fe83fa8892096289dd4bfb86d21d856923",
+    "research_PR": "https://github.com/mitsuru93/usdjpyea-research/pull/447",
+    "research_merge_sha": "deb6dec502b65ede7b63374c0d9645ce43e405c8"
+  },
+  "release": {
+    "tag": "usdjpy-hyp043-c2-2025h1-revalidation-v1",
+    "url": "https://github.com/mitsuru93/usdjpyea-research/releases/tag/usdjpy-hyp043-c2-2025h1-revalidation-v1",
+    "archive": "usdjpy-hyp043-c2-2025h1-revalidation-v1.zip",
+    "archive_sha256": "320c4985b03028277f5d53cd606ea9fda812071f8ce9696554803091679134a9",
+    "remote_readback_sha256": "320c4985b03028277f5d53cd606ea9fda812071f8ce9696554803091679134a9",
+    "archive_bytes": 11996,
+    "readback_status": "PASS_BYTE_IDENTICAL"
+  },
+  "receipt_issue": {
+    "number": 448,
+    "url": "https://github.com/mitsuru93/usdjpyea-research/issues/448",
+    "state": "CLOSED_COMPLETED"
+  },
+  "notion": {
+    "hypothesis_page": "https://app.notion.com/p/3adc44d099738142935af297e69b3b7d",
+    "current_state": "https://app.notion.com/p/3a6c44d0997381889f37ee7d75582215",
+    "evaluation_matrix": "https://app.notion.com/p/3acc44d0997381fbb72dc853cc6651dc",
+    "program_synthesis": "https://app.notion.com/p/3acc44d09973814693a0f5d97c4ee9f5",
+    "decision_log": "https://app.notion.com/p/3adc44d0997381719dd6e69a1724d7f5",
+    "common_portfolio_task": "https://app.notion.com/p/3acc44d099738196a8f3e801aceceec2"
+  },
+  "event_level_portfolio_full_equity_Core_MT4_Rakuten": "PENDING_UNCHANGED_C2_SELF_HOSTED_EVIDENCE",
+  "candidate_rule_changed_after_result": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "exact_next_action": "Complete event-level portfolio/full-equity and Core/MT4/Rakuten evidence for the exact unchanged C2. Do not retune C2."
+}
