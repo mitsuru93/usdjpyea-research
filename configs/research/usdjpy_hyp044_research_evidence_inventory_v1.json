@@ -2,7 +2,7 @@
   "schema_version": "usdjpy_hyp044_research_evidence_inventory_v1",
   "hypothesis_id": "USDJPY-HYP-044",
   "status": "PASS_COMPACT_INVENTORY_COMMITTED",
-  "matching_file_count": 339,
+  "matching_file_count": 341,
   "matching_files": [
     {
       "path": ".github/workflows/archive_usdjpy_portfolio_loss_cluster_phase1_r1.yml",
@@ -870,6 +870,11 @@
       "sha256": "6fb98741946838cb30d7edf00fe584ca5ff869505bdaa64964db9c5b3e34028a"
     },
     {
+      "path": "configs/research/usdjpy_hyp044_source_native_schema_probe_v1.json",
+      "bytes": 21373,
+      "sha256": "fd2c08030bd3565da770eae34011378afcaf593f68faecae6011a84fedcbf2b2"
+    },
+    {
       "path": "configs/research/usdjpy_hyp044_work_manifest_v1.json",
       "bytes": 2016,
       "sha256": "f2e887e4bb2505ebc7392c3b7c328e11d6cb30abd1859ac420ad6e0736ca2ff5"
@@ -1603,6 +1608,11 @@
       "path": "tools/run_usdjpy_hyp044_bootstrap_inventory_v1.py",
       "bytes": 5086,
       "sha256": "97c3b6c43ce935aee9b84f70ec9008fc71ed27e4292d57721d4c16a5f8b49661"
+    },
+    {
+      "path": "tools/run_usdjpy_hyp044_source_native_2020_2022_v1.py",
+      "bytes": 20060,
+      "sha256": "94a65fc09c66acfe5b0e80cc0cf50fc8e6e70a14eeefeefa84d04476079fe5b9"
     },
     {
       "path": "tools/usdjpy_fixed5_portability_lib_v1.py",
