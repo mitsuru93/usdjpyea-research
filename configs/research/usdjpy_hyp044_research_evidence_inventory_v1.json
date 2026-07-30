@@ -86,8 +86,8 @@
     },
     {
       "path": ".github/workflows/usdjpy_hyp044_round_b_source_native_2020_2022_v1.yml",
-      "bytes": 4725,
-      "sha256": "7ec60d5492382144a0916a16b0fc8c535aabddc70e935e89fc96b12e0a2c46ef"
+      "bytes": 4784,
+      "sha256": "bf463f04a8396781e6bdc9307d8204463e8ec684f8163bd128cf5afa4bab903e"
     },
     {
       "path": ".github/workflows/usdjpy_hyp044_source_native_2020_2022_v1.yml",
