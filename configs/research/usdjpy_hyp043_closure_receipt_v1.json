@@ -1,0 +1,97 @@
+{
+  "schema_version": "usdjpy_hyp043_closure_receipt_v1",
+  "status": "PASS_END_TO_END_SCIENTIFIC_CLOSURE",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "title": "F05 Localized State–Loss Persistence and Lifecycle Recovery Study",
+  "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+  "economic_decision": "NO_RECOVERY_NOT_REVALIDATED_AFTER_BINDING_HISTORICAL_GATE",
+  "selected_candidate": null,
+  "rejected_candidates": {
+    "C1_LOCALIZED_SHORT_LOSS_PERSISTENCE_PERMISSION": "REJECT_ZERO_HISTORICAL_SUPPORT",
+    "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION": "REJECT_ONLY_2_OF_4_POSITIVE_EFFECT_FOLDS",
+    "C3_LOCALIZED_PRIOR_LOSS_GIVEBACK_EXIT": "REJECT_ZERO_HISTORICAL_SUPPORT"
+  },
+  "git": {
+    "research_preregistration_pr": "https://github.com/mitsuru93/usdjpyea-research/pull/439",
+    "research_preregistration_merge_sha": "41a875024e2ada8e414aa63eae1923df7b6e2edd",
+    "core_execution_pr": "https://github.com/mitsuru93/usdjpyea-core/pull/695",
+    "core_scientific_closure_pr": "https://github.com/mitsuru93/usdjpyea-core/pull/696",
+    "core_scientific_result_sha": "1e6a5eda4ee9f36ad2d5c9defa61dfcc5a535cea",
+    "research_scientific_closure_pr": "https://github.com/mitsuru93/usdjpyea-research/pull/440",
+    "research_scientific_closure_merge_sha": "e18cf6d9d2f19cef8e41c9a434e96a5176e9336f",
+    "release_receipt_pr": "https://github.com/mitsuru93/usdjpyea-research/pull/446",
+    "release_receipt_merge_sha": "8261f23975acde3cc7406d3d158100312b4b1c20",
+    "receipt_parent_main_sha": "7b7e46f0cb3ee1c2d9c4f9b6c26f925b79f6399c",
+    "common_portfolio_pr": "https://github.com/mitsuru93/usdjpyea-research/pull/427",
+    "common_portfolio_handoff_path": "configs/research/usdjpy_hyp043_integration_handoff_v1.json"
+  },
+  "runs": {
+    "scientific_run_id": 30523476402,
+    "release_readback_run_id": 30525495940,
+    "release_readback_status": "SUCCESS"
+  },
+  "release": {
+    "tag": "usdjpy-hyp043-f05-localized-recovery-v1",
+    "url": "https://github.com/mitsuru93/usdjpyea-research/releases/tag/usdjpy-hyp043-f05-localized-recovery-v1",
+    "asset_name": "usdjpy-hyp043-f05-localized-recovery-v1-research-closure.zip",
+    "asset_sha256": "4f9d9dca1dab7b65fc86a3693062f71c2a87923171c45714c8d2f16b393984cc",
+    "asset_bytes": 15955,
+    "published_asset_digest": "sha256:4f9d9dca1dab7b65fc86a3693062f71c2a87923171c45714c8d2f16b393984cc",
+    "remote_readback_sha256": "4f9d9dca1dab7b65fc86a3693062f71c2a87923171c45714c8d2f16b393984cc",
+    "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+    "release_receipt": "configs/research/usdjpy_hyp043_release_receipt_v1.json",
+    "readback_receipt": "configs/research/usdjpy_hyp043_readback_receipt_v1.json"
+  },
+  "core_archive": {
+    "file": "usdjpy-hyp043-f05-localized-recovery-v1.zip",
+    "sha256": "b7004225b637205623fcc38630c57c272dcf8b0de20774d6d6cb38c1ee75c157",
+    "bytes": 510084,
+    "file_count": 18,
+    "status": "PASS_DETERMINISTIC_ARCHIVE_CREATED"
+  },
+  "receipt_issue": {
+    "number": 442,
+    "url": "https://github.com/mitsuru93/usdjpyea-research/issues/442",
+    "state": "CLOSED_COMPLETED",
+    "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+  },
+  "notion": {
+    "hypothesis_page": "https://app.notion.com/p/3adc44d099738142935af297e69b3b7d",
+    "current_state": "https://app.notion.com/p/3a6c44d0997381889f37ee7d75582215",
+    "research_evaluation_matrix": "https://app.notion.com/p/3acc44d0997381fbb72dc853cc6651dc",
+    "ea_program_synthesis": "https://app.notion.com/p/3acc44d09973814693a0f5d97c4ee9f5",
+    "decision_log_entry": "https://app.notion.com/p/3adc44d0997381719dd6e69a1724d7f5",
+    "common_portfolio_task": "https://app.notion.com/p/3acc44d099738196a8f3e801aceceec2",
+    "source_portability_technical_debt": "https://app.notion.com/p/3abc44d099738111aad8f067f12254db"
+  },
+  "period_and_safety_receipts": {
+    "2025H1_role": "VALIDATION_PERIOD_REVALIDATION_MODIFIED_AFTER_VALIDATION_RESULT",
+    "candidate_specific_2025H1_replay_executed": false,
+    "2025H2_accessed": false,
+    "2020_2022_used_for_selection": false,
+    "candidate_rule_changed_after_result": false,
+    "HYP041_reopened": false,
+    "formal_decisions_changed": [],
+    "B02_C3_role": "RESEARCH_COUNTERFACTUAL_RESERVE_ONLY",
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "implementation_receipts": {
+    "Core_candidate_module_created": false,
+    "MT4_candidate_module_created": false,
+    "Research_Core_parity": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+    "Core_MT4_parity": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+    "Rakuten_portability": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+    "candidate_full_equity_margin_concurrency": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE"
+  },
+  "common_portfolio_disposition": {
+    "integration_eligibility": false,
+    "deployment_eligibility": false,
+    "diagnostic_evidence_eligibility": true,
+    "candidate_logic_injected": false,
+    "F05_role": "F05_BASELINE_UNCHANGED"
+  },
+  "production_authorized": false,
+  "live_authorized": false,
+  "exact_next_action": "Keep F05_BASELINE_UNCHANGED. Do not implement, retune, union or integrate HYP-043 candidates. Import HYP-043 only as immutable diagnostic evidence in Common Portfolio Integration. Any further F05 recovery mechanism must be a new independently preregistered hypothesis."
+}
