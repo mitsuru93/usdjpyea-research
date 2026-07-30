@@ -2,7 +2,7 @@
   "schema_version": "usdjpy_hyp044_research_evidence_inventory_v1",
   "hypothesis_id": "USDJPY-HYP-044",
   "status": "PASS_COMPACT_INVENTORY_COMMITTED",
-  "matching_file_count": 346,
+  "matching_file_count": 354,
   "matching_files": [
     {
       "path": ".github/workflows/archive_usdjpy_portfolio_loss_cluster_phase1_r1.yml",
@@ -133,6 +133,41 @@
       "path": ".github/workflows/verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.yml",
       "bytes": 2360,
       "sha256": "c7e473449807b189b54232a14e287997f74be65e1ac196bb31a74cddc03fcd87"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/annual_metrics_2020_2022.csv",
+      "bytes": 4544,
+      "sha256": "a0e5d646d53dcf190f08d494138dd626c2217cfce099c62832d4a7ac9f12415a"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/halfyear_metrics_2020_2022.csv",
+      "bytes": 8784,
+      "sha256": "44f2d1fdd0a59c7acac0da6738d6088366f73aeb11bf199d00bc7e4b394ba223"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/monthly_metrics_2020_2022.csv",
+      "bytes": 50010,
+      "sha256": "9946f494b600a064b22cf3e25ae0710ed24a9fd723eaf88fa72c285598c35cc5"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/quarterly_metrics_2020_2022.csv",
+      "bytes": 17265,
+      "sha256": "c24d3bbb5e034f48f2336d5eeca1f9440d065da4c95d83a01874099027a14c28"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/sha256sums.txt",
+      "bytes": 595,
+      "sha256": "e6433632cda86067a0c97c38c7828d7154cc752fd119bcf4cec352674eb62547"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/source_native_result_2020_2022.json",
+      "bytes": 10930,
+      "sha256": "7910b9405e69c2ada9839a6be95fc5391b2ab657f6f07998937cd7836126a29e"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/source_native_trade_ledger_2020_2022.csv",
+      "bytes": 3310093,
+      "sha256": "776b0f30d81072abcc947113b9c938b351f4699297bcba76bbc7ce7779c37058"
     },
     {
       "path": "configs/data_sources/usdjpy_2020_2022_tick_authority_contract_v1.json",
@@ -1628,6 +1663,11 @@
       "path": "tools/replay_f05_failed_reclaim_portfolio_v1.py",
       "bytes": 353,
       "sha256": "123a894acb31530c5001a17c742c13bd0c951c4bb0fd7bbb0a3efb66c484bb54"
+    },
+    {
+      "path": "tools/replay_usdjpy_hyp044_source_native_full_equity_v2.py",
+      "bytes": 11148,
+      "sha256": "e667ac5416041beeb45b131064889f21039273aa3801f5d67938eb07e6716705"
     },
     {
       "path": "tools/run_usdjpy_hyp044_bootstrap_inventory_v1.py",
