@@ -1,0 +1,32 @@
+{
+  "schema_version": "usdjpy_cross_cutting_work_registry_v1",
+  "work_id": "USDJPY-PORTABILITY-001",
+  "formal_name": "USDJPY Dukascopy–Rakuten Signal Chronology and Source Portability Root-Cause Study",
+  "work_type": "CROSS_CUTTING_TECHNICAL_RESEARCH",
+  "strategy_hypothesis": false,
+  "candidate_created": false,
+  "candidate_rule_change_authorized": false,
+  "formal_hypothesis_decision_change_authorized": false,
+  "research_branch": "research/usdjpy-source-portability-root-cause-v1",
+  "core_branch": "infra/usdjpy-source-portability-contract-v1",
+  "startup_research_authority_sha": "41a875024e2ada8e414aa63eae1923df7b6e2edd",
+  "startup_core_authority_sha": "46e1afea304d665ca701248eb10e53c47d68aa6e",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD_PORTABILITY_DIAGNOSIS",
+    "2025H1": "VALIDATION_PERIOD_READ_ONLY_WHEN_REQUIRED",
+    "2025H2": "PROHIBITED"
+  },
+  "binding_invariants": {
+    "HYP039_formal_decision_changed": false,
+    "HYP040_formal_decision_changed": false,
+    "HYP039_candidate_rule_changed": false,
+    "HYP040_candidate_rule_changed": false,
+    "profit_optimization": false,
+    "rakuten_hst_is_raw_tick": false,
+    "rakuten_model0_is_raw_tick": false,
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "status": "EXECUTION_IN_PROGRESS"
+}
