@@ -1,0 +1,60 @@
+{
+  "schema_version": "usdjpy_hyp043_common_portfolio_handoff_v2",
+  "status": "IMMUTABLE_DIAGNOSTIC_ECONOMIC_HANDOFF_C2_PARTIAL_NO_INTEGRATION",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "candidate_id": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+  "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+  "economic_decision": "PARTIAL_RECOVERY_ECONOMIC_HISTORICAL_GATE_FAIL",
+  "deployment_eligibility": false,
+  "integration_eligibility": false,
+  "diagnostic_economic_evidence_eligibility": true,
+  "candidate_rule": {
+    "side": "SHORT_ONLY",
+    "volatility_state": "HIGH_HISTORICAL_ATR_TERTILE",
+    "extension_atr_min": 2.0,
+    "decision_time_seconds_after_entry": 60,
+    "current_pips_max": 0.0,
+    "mfe_atr_max_exclusive": 0.25,
+    "action": "EXIT_AT_60_SECOND_OBSERVED_EXCURSION"
+  },
+  "historical": {
+    "F05_net_retention": 0.9790043677045286,
+    "gross_profit_retention": 0.8826160737880028,
+    "winner_trade_count_retention": 0.9173553719008265,
+    "modified_share": 0.10613370089593384,
+    "positive_effect_folds": 2,
+    "required_positive_effect_folds": 3,
+    "gate_pass": false
+  },
+  "validation_2025H1": {
+    "F05_baseline_net_jpy": -13844,
+    "F05_C2_net_jpy": -7935,
+    "F05_improvement_jpy": 5909,
+    "F05_C2_profit_factor": 0.8853141395308503,
+    "F05_C2_realized_drawdown_jpy": 24118,
+    "B02_plus_F05_baseline_net_jpy": -20808,
+    "B02_plus_F05_C2_net_jpy": -14899,
+    "portfolio_improvement_jpy": 5909,
+    "B02_plus_F05_C2_profit_factor": 0.855111785356556,
+    "B02_C3_reserve_plus_F05_C2_net_jpy": -5614
+  },
+  "source_identity": {
+    "core_economic_result_merge_sha": "fa99a3fe83fa8892096289dd4bfb86d21d856923",
+    "core_full_result_path": "configs/research/usdjpy_hyp043_c2_frozen_ledger_2025h1_revalidation_v1.json",
+    "core_result_blob_sha": "4b60d56ad206457890e64861a72f876e2d7fb563",
+    "historical_decision_ledger_sha256": "bc44ed69593ac93a146abe891baeb7b10eadfb555a68d6af4cd05d793772471a",
+    "candidate_rule_authority_sha256": "bc019b7c6b89f1f291a404a68453ff60af5e9834e5c15fc661e902df858e536b"
+  },
+  "pending_evidence": {
+    "event_level_B02_plus_F05_realized_drawdown": true,
+    "full_equity_drawdown": true,
+    "Core_MT4_parity": true,
+    "Rakuten_portability": true
+  },
+  "common_portfolio_candidate_logic_injected": false,
+  "integration_instruction": "Do not add C2 as an authorized portfolio constituent. Preserve its +¥5,909 2025H1 economic improvement as diagnostic reserve evidence while the binding 2/4 historical fold failure remains.",
+  "candidate_rule_changed_after_result": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
