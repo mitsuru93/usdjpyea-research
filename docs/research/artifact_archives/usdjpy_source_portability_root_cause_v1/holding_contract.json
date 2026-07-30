@@ -1,0 +1,7 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "HYP039": "16 observed M15 bars",
+  "HYP040": "12 observed M15 bars",
+  "calendar_minutes_are_not_authority_when_bars_missing": true,
+  "restart_restoration": "remaining observed bars restored from owned position state"
+}

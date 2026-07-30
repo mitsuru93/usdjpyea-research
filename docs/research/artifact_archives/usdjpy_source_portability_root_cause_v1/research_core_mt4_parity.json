@@ -1,0 +1,35 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "Research_Core": {
+    "HYP039_research_core": {
+      "rows": 500,
+      "field_mismatch": 0
+    },
+    "HYP040_research_core": {
+      "rows": 545,
+      "field_mismatch": 0
+    },
+    "chronology_mismatch": 0,
+    "holding_mismatch": 0,
+    "JPY_accounting_mismatch": 0,
+    "raw_tick_portability_certified": false
+  },
+  "Core_MT4_binding_mismatch": {
+    "HYP039_binding_total": 242,
+    "HYP040_binding_total": 265,
+    "binding_total": 507,
+    "source_population_difference_total": 407,
+    "by_taxonomy_binding_scope": {
+      "FIRST_EXECUTABLE_TICK_DIFFERENCE": 500,
+      "LIFECYCLE_STATE_DIFFERENCE": 2,
+      "MT4_TESTER_MODEL_LIMITATION": 4,
+      "SUPPRESSION_STATE_DIFFERENCE": 1
+    },
+    "implementation_correctable": 3,
+    "source_irreducible": 407,
+    "tester_model_limited": 504,
+    "unresolved": 0,
+    "double_counted_downstream_differences": 0
+  },
+  "raw_tick_portability_certified": false
+}

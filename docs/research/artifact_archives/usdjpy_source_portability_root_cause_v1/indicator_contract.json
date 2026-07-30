@@ -1,0 +1,13 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "HYP039": {
+    "EMA20_EMA96": "recursive EWM adjust=false seeded with first close",
+    "ATR20": "rolling 20 true range",
+    "shift": "closed bar",
+    "warmup": "observed_index >= 100"
+  },
+  "HYP040": {
+    "Asian_range": "28 observed M15 bars 00:00-<07:00 UTC"
+  },
+  "same_bar_input_research_core": "ZERO_MISMATCH"
+}

@@ -1,0 +1,17 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "same_timestamp_sequence": [
+    "market data update",
+    "indicator state update",
+    "existing position exit check",
+    "order close",
+    "realized state update",
+    "lifecycle release",
+    "new signal evaluation",
+    "suppression evaluation",
+    "order entry",
+    "portfolio snapshot"
+  ],
+  "exit_before_entry": true,
+  "duplicate_prevention": true
+}

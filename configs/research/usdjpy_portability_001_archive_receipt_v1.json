@@ -1,0 +1,12 @@
+{
+  "2025H2_accessed": false,
+  "archive": "usdjpy-portability-001-research-root-cause-v1.zip",
+  "bytes": 24525,
+  "file_count": 30,
+  "full_row_level_authority": "PRIVATE_CORE_IMMUTABLE_RELEASE",
+  "live_authorized": false,
+  "production_authorized": false,
+  "sha256": "69b768e405893bbb9fb3152e30a38f70bbbd1f68c807f49f7760147f647ebc23",
+  "status": "PASS_DETERMINISTIC_RESEARCH_ARCHIVE",
+  "work_id": "USDJPY-PORTABILITY-001"
+}

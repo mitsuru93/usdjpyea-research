@@ -1,0 +1,15 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "formal_decision": "PARTIAL_COMMON_CONTRACT_WITH_REMAINING_SOURCE_LIMITATIONS",
+  "classification": {
+    "HYP039": {
+      "primary": "MT4_TESTER_LIMITED",
+      "secondary": "NON_PORTABLE_SOURCE_INFORMATION_DIFFERENCE"
+    },
+    "HYP040": {
+      "primary": "MT4_TESTER_LIMITED",
+      "secondary": "ECONOMICALLY_SIMILAR_NOT_EXACT_PORTABLE"
+    }
+  },
+  "deployment_authority": false
+}

@@ -1,0 +1,99 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "formal_decision": "PARTIAL_COMMON_CONTRACT_WITH_REMAINING_SOURCE_LIMITATIONS",
+  "source_inventory": {
+    "Dukascopy": {
+      "source_native_raw_bid_ask_tick": true,
+      "symbol": "USDJPY",
+      "timezone": "UTC",
+      "timestamp_precision": "BI5 authority; comparison ledger serialized to seconds",
+      "duplicate_handling": "source order preserved",
+      "missing_interval_handling": "preserve and classify; no synthesis",
+      "spread": "source-native Ask minus Bid"
+    },
+    "Rakuten": {
+      "broker_native_raw_bid_ask_tick": "RAKUTEN_BROKER_NATIVE_RAW_TICK_NOT_AVAILABLE",
+      "available": [
+        "MT4 HST M1/M15 inventory",
+        "terminal chart history",
+        "tester history",
+        "generated FXT",
+        "Model=0 fixed-spread execution"
+      ],
+      "not_raw_tick_authority": [
+        "HST",
+        "FXT",
+        "Model=0",
+        "terminal chart history"
+      ],
+      "server_timezone": "UTC+2 winter / UTC+3 US DST",
+      "tester_contract": "Model=0 fixed spread 5 points; synthetic first observed Tick"
+    }
+  },
+  "portability_classification": {
+    "HYP039": {
+      "primary": "MT4_TESTER_LIMITED",
+      "secondary": "NON_PORTABLE_SOURCE_INFORMATION_DIFFERENCE"
+    },
+    "HYP040": {
+      "primary": "MT4_TESTER_LIMITED",
+      "secondary": "ECONOMICALLY_SIMILAR_NOT_EXACT_PORTABLE"
+    }
+  },
+  "technical_corrections": {
+    "accepted": [
+      "T1_TIMESTAMP_NORMALIZATION_CONTRACT",
+      "T2_CANONICAL_BAR_RECONSTRUCTION_SAME_RAW_INPUT_SCOPE",
+      "T4_CHRONOLOGY_AND_HOLDING_CONTRACT"
+    ],
+    "rejected": [
+      "T3_EXACT_DEPLOYMENT_CERTIFICATION"
+    ]
+  },
+  "B02_F05_regression": {
+    "2023_2024": {
+      "trade_count": 1893,
+      "net_jpy": 52779.0,
+      "B02_trade_count": 429,
+      "B02_net_jpy": 11911.0,
+      "F05_trade_count": 1464,
+      "F05_net_jpy": 40868.0,
+      "chronology_mismatch": 0,
+      "execution_failure_count": 0
+    },
+    "2025H1": {
+      "trade_count": 463,
+      "net_jpy": -20808.0,
+      "B02_net_jpy": -6964.0,
+      "F05_net_jpy": -13844.0,
+      "chronology_mismatch": 0,
+      "execution_failure_count": 0
+    },
+    "authority_lineage": {
+      "classification": "AUTHORITY_GENERATION_DIFFERENCE_NOT_COMMON_CONTRACT_REGRESSION",
+      "superseded_authority": {
+        "trade_count": 1882,
+        "net_jpy": 51627.0
+      },
+      "binding_latest_release_authority": {
+        "trade_count": 1893,
+        "net_jpy": 52779.0
+      },
+      "delta": {
+        "trade_count": 11,
+        "net_jpy": 1152.0
+      },
+      "common_contract_caused_delta": false
+    }
+  },
+  "core_release": {
+    "tag": "usdjpy-portability-001-core-root-cause-v1",
+    "release_id": 362366456,
+    "asset_id": 495261158,
+    "asset_name": "usdjpy-portability-001-result-v1.zip",
+    "asset_bytes": 80353,
+    "archive_sha256": "8b79a39d072872b365f0109da38d786fa07b501b1cb2307a6593e60c8d6c00c9",
+    "remote_readback": "PASS_REMOTE_BYTE_IDENTICAL_READBACK"
+  },
+  "production_authorization": false
+}

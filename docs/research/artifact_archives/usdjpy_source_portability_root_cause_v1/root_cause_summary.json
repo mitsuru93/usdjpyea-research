@@ -1,0 +1,20 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "root_cause": {
+    "HYP039_binding_total": 242,
+    "HYP040_binding_total": 265,
+    "binding_total": 507,
+    "source_population_difference_total": 407,
+    "by_taxonomy_binding_scope": {
+      "FIRST_EXECUTABLE_TICK_DIFFERENCE": 500,
+      "LIFECYCLE_STATE_DIFFERENCE": 2,
+      "MT4_TESTER_MODEL_LIMITATION": 4,
+      "SUPPRESSION_STATE_DIFFERENCE": 1
+    },
+    "implementation_correctable": 3,
+    "source_irreducible": 407,
+    "tester_model_limited": 504,
+    "unresolved": 0,
+    "double_counted_downstream_differences": 0
+  }
+}

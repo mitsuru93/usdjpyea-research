@@ -1,0 +1,33 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "source_inventory": {
+    "Dukascopy": {
+      "source_native_raw_bid_ask_tick": true,
+      "symbol": "USDJPY",
+      "timezone": "UTC",
+      "timestamp_precision": "BI5 authority; comparison ledger serialized to seconds",
+      "duplicate_handling": "source order preserved",
+      "missing_interval_handling": "preserve and classify; no synthesis",
+      "spread": "source-native Ask minus Bid"
+    },
+    "Rakuten": {
+      "broker_native_raw_bid_ask_tick": "RAKUTEN_BROKER_NATIVE_RAW_TICK_NOT_AVAILABLE",
+      "available": [
+        "MT4 HST M1/M15 inventory",
+        "terminal chart history",
+        "tester history",
+        "generated FXT",
+        "Model=0 fixed-spread execution"
+      ],
+      "not_raw_tick_authority": [
+        "HST",
+        "FXT",
+        "Model=0",
+        "terminal chart history"
+      ],
+      "server_timezone": "UTC+2 winter / UTC+3 US DST",
+      "tester_contract": "Model=0 fixed spread 5 points; synthetic first observed Tick"
+    }
+  },
+  "production_authorization": false
+}
