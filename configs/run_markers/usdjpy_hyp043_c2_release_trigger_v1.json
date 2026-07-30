@@ -1,0 +1,9 @@
+{
+  "schema_version": "usdjpy_hyp043_c2_release_trigger_v1",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "candidate_id": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+  "result_sha": "deb6dec502b65ede7b63374c0d9645ce43e405c8",
+  "candidate_rule_changed_after_result": false,
+  "2025H2_accessed": false,
+  "trigger_utc": "2026-07-30T09:02:00Z"
+}
