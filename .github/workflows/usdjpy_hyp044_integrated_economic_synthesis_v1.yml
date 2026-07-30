@@ -1,5 +1,6 @@
 name: USDJPY HYP-044 Integrated Economic Synthesis v1
 
+# User-authored execution trigger after Core economic handoff registration.
 on:
   pull_request:
     branches: [main]
