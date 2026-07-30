@@ -1,0 +1,65 @@
+name: USDJPY HYP-044 Source-Native Full-Equity v2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/replay_usdjpy_hyp044_source_native_full_equity_v2.py'
+      - '.github/workflows/usdjpy_hyp044_source_native_full_equity_v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      - name: Install runtime
+        run: python -m pip install --disable-pip-version-check --quiet pandas numpy
+      - name: Download certified 2020-2022 normalized tick assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf hyp044_fe_ticks artifacts/research/usdjpy_hyp044/source_native_full_equity_v2
+          mkdir -p hyp044_fe_ticks artifacts/research/usdjpy_hyp044/source_native_full_equity_v2
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest=json.loads(Path('docs/data_authorities/usdjpy_2020_2022_tick_authority_v1/release_manifest.json').read_text())
+          rows=[]
+          for a in manifest['payload_assets']:
+              y=int(a['year']);m=int(a['month'])
+              if 2020<=y<=2022 and a['layer']=='normalized':
+                  rows.append([str(a['release_asset_id']),a['name'],a['sha256'],f'{y:04d}_{m:02d}'])
+          if len(rows)!=36: raise SystemExit(f'expected 36 assets, got {len(rows)}')
+          Path('hyp044_fe_ticks/assets.tsv').write_text('\n'.join('\t'.join(r) for r in rows)+'\n')
+          PY
+          while IFS=$'\t' read -r id name sha ym; do
+            d="hyp044_fe_ticks/$ym"; mkdir -p "$d"; p="$d/$name"
+            gh api "repos/mitsuru93/usdjpyea-research/releases/assets/$id" -H 'Accept: application/octet-stream' > "$p"
+            test "$(sha256sum "$p" | awk '{print $1}')" = "$sha"
+          done < hyp044_fe_ticks/assets.tsv
+      - name: Execute corrected tick full-equity replay
+        run: |
+          set -euo pipefail
+          python tools/replay_usdjpy_hyp044_source_native_full_equity_v2.py \
+            --ledger artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/source_native_trade_ledger_2020_2022.csv \
+            --tick-root hyp044_fe_ticks \
+            --out artifacts/research/usdjpy_hyp044/source_native_full_equity_v2
+          jq -e '.status=="PASS_CORRECTED_TICK_FULL_EQUITY_REPLAY" and ([.metrics[].maximum_concurrency] | min)>0 and ([.realized_balance_tieout[].pass] | all) and ."2025H2_accessed"==false' artifacts/research/usdjpy_hyp044/source_native_full_equity_v2/full_equity_metrics_2020_2022_v2.json
+      - name: Commit corrected risk result
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add artifacts/research/usdjpy_hyp044/source_native_full_equity_v2
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'research(hyp044): bind corrected source-native full-equity metrics'
+          git pull --rebase origin ${{ github.event.pull_request.head.ref || github.ref_name }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}
