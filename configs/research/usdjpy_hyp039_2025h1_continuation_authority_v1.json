@@ -1,0 +1,19 @@
+{
+  "schema_version": "usdjpy_hyp039_2025h1_continuation_authority_v1",
+  "status": "AUTHORIZED_CONTINUE_TO_2025H1_WITHOUT_CANDIDATE_CHANGE",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "candidate_contract_version": "v2",
+  "authority_basis": "Explicit user direction on 2026-07-30 to not skip 2025H1 and execute through final result.",
+  "historical_portability_result": "FAIL_CORE_MT4_PORTABILITY",
+  "historical_portability_failure_preserved": true,
+  "historical_portability_failure_waived_for_adoption": false,
+  "continue_to_2025H1_validation": true,
+  "2025H1_period_role": "VALIDATION_PERIOD",
+  "outcome_visibility_before_first_access": "UNSEEN_AT_FIRST_VALIDATION",
+  "candidate_modified_after_portability_result": false,
+  "HYP038_filter_reuse": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
