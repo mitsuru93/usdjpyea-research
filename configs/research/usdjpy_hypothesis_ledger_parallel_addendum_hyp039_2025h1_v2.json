@@ -1,0 +1,62 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_parallel_addendum_hyp039_2025h1_v2",
+  "operation": "APPEND_ONLY_VALIDATION_COMPLETION_CORRECTION",
+  "supersedes_for_period_access_only": "usdjpy_hypothesis_ledger_parallel_addendum_hyp039_final_v1",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "title": "Unchanged Short Pullback Candidate Qualification",
+  "status": "CLOSED",
+  "formal_decision": "FAIL_CORE_MT4_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED",
+  "economic_2025H1_decision": "PASS_SHORT_PULLBACK_PORTABILITY_PARTIAL_2025H1_RECOVERY",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "candidate_contract_version": "v2",
+  "decision_basis": [
+    "Research/Core parity passed at 500 of 500 with zero row-field mismatch.",
+    "Rakuten-native 2023-2024 execution remained a binding exact-portability failure because 242 algorithm or information-time mismatches remained and only 417 of 500 event keys were common.",
+    "At explicit user direction the unchanged candidate proceeded to its first 2025H1 validation-period execution without retuning or candidate modification.",
+    "The 2025H1 standalone candidate produced 172 trades, JPY 3,483 net and PF 1.12615.",
+    "Adding the candidate improved baseline net from JPY -20,808 to JPY -17,325 but worsened full-equity drawdown from JPY 42,737 to JPY 46,281.",
+    "The positive validation evidence does not waive the historical portability failure and does not authorize portfolio, production or live adoption."
+  ],
+  "key_metrics": {
+    "2025H1_standalone_trades": 172,
+    "2025H1_standalone_net_jpy": 3483,
+    "2025H1_standalone_profit_factor": 1.12615451483212,
+    "2025H1_standalone_full_equity_drawdown_jpy": 6919,
+    "baseline_net_jpy": -20808,
+    "combined_net_jpy": -17325,
+    "net_improvement_jpy": 3483,
+    "baseline_full_equity_drawdown_jpy": 42737,
+    "combined_full_equity_drawdown_jpy": 46281,
+    "drawdown_change_jpy": 3544,
+    "daily_candidate_to_baseline_correlation": 0.4118563198783911,
+    "weekly_candidate_to_baseline_correlation": 0.2901816869794503,
+    "bootstrap_event_p_nonpositive": 0.2633,
+    "top5_winners_removed_net_jpy": -1668
+  },
+  "period_access": {
+    "2025H1_role": "VALIDATION_PERIOD",
+    "2025H1_candidate_outcome_accessed": true,
+    "2025H1_first_access_timestamp_utc": "2026-07-30T00:43:08.7774609Z",
+    "2025H1_outcome_visibility": "UNSEEN_AT_FIRST_VALIDATION",
+    "2025H1_unseen_claim_consumed": true,
+    "candidate_modified_after_result": false,
+    "2025H2_accessed": false
+  },
+  "unchanged_decisions": {
+    "USDJPY-HYP-037": true,
+    "USDJPY-HYP-038": true
+  },
+  "authorization": {
+    "portfolio_integration": false,
+    "production": false,
+    "live": false
+  },
+  "evidence": {
+    "core_run_id": 30503084961,
+    "core_result_issue": 676,
+    "core_release_issue": 689,
+    "core_release_tag": "usdjpy-hyp039-short-pullback-2025h1-validation-v2",
+    "archive_sha256": "e13015f77679a230685a867748f5ac000f5f43c920d1574e181b003df353ae4c"
+  },
+  "exact_next_action": "Preserve HYP-039 as closed portability failure with valid positive 2025H1 economic evidence. Do not reopen, retune, deploy or include it in the authorized common portfolio under this candidate identity."
+}
