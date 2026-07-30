@@ -2,7 +2,7 @@
   "schema_version": "usdjpy_hyp044_research_evidence_inventory_v1",
   "hypothesis_id": "USDJPY-HYP-044",
   "status": "PASS_COMPACT_INVENTORY_COMMITTED",
-  "matching_file_count": 366,
+  "matching_file_count": 367,
   "matching_files": [
     {
       "path": ".github/workflows/archive_usdjpy_portfolio_loss_cluster_phase1_r1.yml",
@@ -81,8 +81,8 @@
     },
     {
       "path": ".github/workflows/usdjpy_hyp044_development_source_probe_v2.yml",
-      "bytes": 5574,
-      "sha256": "2ef53691fb704ea6a7f09df8be7c9619992258b079d03f57e5e8b363d3155240"
+      "bytes": 5634,
+      "sha256": "940ff57a6bc83d99614049cdc2533e0f9646228c5d87b8cfe2f4e54ef25436ed"
     },
     {
       "path": ".github/workflows/usdjpy_hyp044_research_evidence_inventory_v1.yml",
@@ -153,6 +153,11 @@
       "path": ".github/workflows/verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.yml",
       "bytes": 2360,
       "sha256": "c7e473449807b189b54232a14e287997f74be65e1ac196bb31a74cddc03fcd87"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/development_source_probe_v2/development_source_probe.json",
+      "bytes": 18413,
+      "sha256": "c8bbf3ac458ef212a7c4439659230432586ee55eec7397528f1a29d21ac67c6f"
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/annual_metrics_2020_2022.csv",
