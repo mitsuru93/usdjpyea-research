@@ -1,0 +1,124 @@
+name: USDJPY HYP-044 Bootstrap Evidence Inventory v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp044_*.json'
+      - 'configs/research/usdjpy_hypothesis_ledger_addendum_v48.json'
+      - 'tools/run_usdjpy_hyp044_bootstrap_inventory_v1.py'
+      - '.github/workflows/usdjpy_hyp044_bootstrap_inventory_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Freeze HYP-044 preregistration boundary
+        run: |
+          set -euo pipefail
+          jq -e '.hypothesis_id=="USDJPY-HYP-044" and .status=="PREREGISTERED_ACTIVE" and .period_roles."2020_2022"=="ANALYSIS_PERIOD" and .period_roles."2025H1"=="KNOWN_OUTCOME_VALIDATION_REASSESSMENT" and .period_roles."2025H2"=="PROHIBITED_NOT_ACCESSED"' configs/research/usdjpy_hyp044_preregistration_v1.json
+          jq -e '.entries[0].hypothesis_id=="USDJPY-HYP-044" and .entries[0].baseline_relative_fold_breadth_binding==false and .entries[0]."2025H2_accessed"==false' configs/research/usdjpy_hypothesis_ledger_addendum_v48.json
+
+      - name: Inventory releases and select bounded evidence assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          rm -rf hyp044_inputs hyp044_bootstrap_output
+          mkdir -p hyp044_inputs/releases hyp044_inputs/extracted
+          gh api --paginate "repos/${GH_REPO}/releases?per_page=100" > hyp044_inputs/release_metadata.json
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+          releases=json.loads(Path('hyp044_inputs/release_metadata.json').read_text())
+          patterns=[
+              r'usdjpy-hyp039', r'usdjpy-hyp042', r'usdjpy-hyp043',
+              r'usdjpy-common-portfolio', r'usdjpy-portfolio', r'usdjpy-portability',
+              r'usdjpy-source-portability', r'usdjpy-2020-2022.*baseline',
+              r'usdjpy-hyp040', r'usdjpy-hyp041'
+          ]
+          selected=[]
+          rows=[]
+          for rel in releases:
+              tag=rel.get('tag_name','')
+              assets=rel.get('assets') or []
+              total=sum(int(a.get('size') or 0) for a in assets)
+              relevant=any(re.search(p, tag, re.I) for p in patterns)
+              rows.append({
+                  'tag_name':tag,
+                  'release_id':rel.get('id'),
+                  'published_at':rel.get('published_at'),
+                  'target_commitish':rel.get('target_commitish'),
+                  'asset_count':len(assets),
+                  'asset_total_bytes':total,
+                  'assets':[{'id':a.get('id'),'name':a.get('name'),'size':a.get('size'),'digest':a.get('digest'),'created_at':a.get('created_at')} for a in assets],
+                  'relevant':relevant,
+              })
+              if relevant and assets and total <= 400_000_000:
+                  selected.append(tag)
+          Path('hyp044_inputs/relevant_release_metadata.json').write_text(json.dumps([r for r in rows if r['relevant']], indent=2)+'\n')
+          Path('hyp044_inputs/download_tags.txt').write_text('\n'.join(sorted(set(selected)))+'\n')
+          print('selected tags:')
+          print('\n'.join(sorted(set(selected))))
+          PY
+
+      - name: Download bounded Release evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          while IFS= read -r tag; do
+            [ -n "$tag" ] || continue
+            safe="$(printf '%s' "$tag" | tr '/:' '__')"
+            mkdir -p "hyp044_inputs/releases/$safe"
+            gh release download "$tag" --dir "hyp044_inputs/releases/$safe" || true
+          done < hyp044_inputs/download_tags.txt
+          find hyp044_inputs/releases -type f -name '*.zip' -print0 | while IFS= read -r -d '' z; do
+            d="hyp044_inputs/extracted/$(basename "${z%.zip}")"
+            mkdir -p "$d"
+            unzip -q -o "$z" -d "$d" || true
+          done
+
+      - name: Copy canonical repository evidence
+        run: |
+          set -euo pipefail
+          mkdir -p hyp044_inputs/repository_evidence/configs hyp044_inputs/repository_evidence/docs
+          cp configs/research/usdjpy_hyp039_2025h1_validation_final_result_v2.json hyp044_inputs/repository_evidence/configs/ || true
+          cp configs/research/usdjpy_hyp039_final_result_v1.json hyp044_inputs/repository_evidence/configs/ || true
+          cp configs/research/usdjpy_hyp042_result_v1.json hyp044_inputs/repository_evidence/configs/ || true
+          cp configs/research/usdjpy_hyp043_final_result_v2.json hyp044_inputs/repository_evidence/configs/ || true
+          cp configs/research/usdjpy_hyp043_c2_2025h1_revalidation_addendum_v1.json hyp044_inputs/repository_evidence/configs/ || true
+          cp configs/research/usdjpy_2025h1_result_inventory_v1.json hyp044_inputs/repository_evidence/configs/ || true
+          cp configs/research/usdjpy_hyp040_2025h1_validation_final_result_v2.json hyp044_inputs/repository_evidence/configs/ || true
+          cp configs/research/usdjpy_hyp041_final_result_v1.json hyp044_inputs/repository_evidence/configs/ || true
+          cp configs/research/usdjpy_hyp044_*.json hyp044_inputs/repository_evidence/configs/
+          cp configs/research/usdjpy_hypothesis_ledger_addendum_v48.json hyp044_inputs/repository_evidence/configs/
+
+      - name: Build evidence inventory
+        env:
+          HYP044_INPUT_ROOT: hyp044_inputs
+          HYP044_OUTPUT_ROOT: hyp044_bootstrap_output
+        run: |
+          set -euo pipefail
+          python tools/run_usdjpy_hyp044_bootstrap_inventory_v1.py
+          cat hyp044_bootstrap_output/summary.json
+
+      - name: Upload bootstrap inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-hyp044-bootstrap-inventory-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            hyp044_bootstrap_output
+            hyp044_inputs/relevant_release_metadata.json
+            hyp044_inputs/download_tags.txt
+          retention-days: 90
+          compression-level: 6
