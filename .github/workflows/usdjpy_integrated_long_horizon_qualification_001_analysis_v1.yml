@@ -49,14 +49,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          parts='tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part*'
-          wc -c $parts
-          sha256sum $parts
-          test "$(sha256sum tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part00 | awk '{print $1}')" = '1334cec1d42058a92549fd3745739b6c312aa8036f71259ef48a9a6999622eb1'
-          test "$(sha256sum tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part01 | awk '{print $1}')" = '7c58f5b2a9a487b365aade57f76078a50da44422c9745fd214f532d133c77558'
-          test "$(sha256sum tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part02 | awk '{print $1}')" = '6e07f82f066444baf853de2067cb61e7544bb17a7d6f64afde829f253159f40a'
-          test "$(sha256sum tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part03 | awk '{print $1}')" = '91cd5882676cd50648c13587226e8ac164b8e66a1275f01b788b53842d03603e'
-          cat $parts | base64 --decode | gzip --decompress > "$SCRIPT_PATH"
+          parts=(
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part00a
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part00b
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part01
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part02
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part03
+          )
+          wc -c "${parts[@]}"
+          sha256sum "${parts[@]}"
+          test "$(sha256sum "${parts[0]}" | awk '{print $1}')" = '57aed7ed888fbc933fe25545f5ce6607b71cb341904df2a2fea3402e9b898135'
+          test "$(sha256sum "${parts[1]}" | awk '{print $1}')" = 'ea633ac62f39c1248e1c0b142ee3393e1b2ce8b1dca55bbb199d1e2ebef68137'
+          test "$(sha256sum "${parts[2]}" | awk '{print $1}')" = '7c58f5b2a9a487b365aade57f76078a50da44422c9745fd214f532d133c77558'
+          test "$(sha256sum "${parts[3]}" | awk '{print $1}')" = '6e07f82f066444baf853de2067cb61e7544bb17a7d6f64afde829f253159f40a'
+          test "$(sha256sum "${parts[4]}" | awk '{print $1}')" = '91cd5882676cd50648c13587226e8ac164b8e66a1275f01b788b53842d03603e'
+          cat "${parts[@]}" | base64 --decode | gzip --decompress > "$SCRIPT_PATH"
           test "$(sha256sum "$SCRIPT_PATH" | awk '{print $1}')" = '03318a2d1e1ad9320f7d9cb009c5fec691b08dee3d9997520d38290b05bad4cc'
           python -m py_compile "$SCRIPT_PATH"
 
