@@ -1,0 +1,67 @@
+{
+  "schema_version": "usdjpy_hyp044_candidate_input_registry_v1",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "status": "FROZEN_INPUT_REGISTRY",
+  "F05_C2": {
+    "candidate_id": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+    "source_repository": "mitsuru93/usdjpyea-core",
+    "source_branch": "feature/usdjpy-hyp044-integrated-candidate-qualification-v1",
+    "source_summary_path": "artifacts/research/usdjpy_hyp044/input_registry_v1/candidate_input_export_summary.json",
+    "source_summary_sha": "e616eee3f1ce1050ae063365fece757868482dc7",
+    "source_trade_ledger": "artifacts/research/usdjpy_hyp041/failure_decomposition_v1/f05_common_schema_trade_ledger.csv.gz",
+    "source_trade_ledger_sha256": "25e2e983ac9448986c95e9cc04dba7ea1c732df64ee6737e62cb782c8be853d0",
+    "normalized_C2_ledger_sha256": "60f42f8d380cad88f7c7391121317127aa4d1ddd1cd77490adc50f8d74f89033",
+    "thresholds": {
+      "volatility_tertile_low_upper_atr_pips": 9.857143,
+      "volatility_tertile_medium_upper_atr_pips": 14.878571,
+      "extension_atr_min": 2.0,
+      "evaluation_seconds": 60,
+      "current_pips_max": 0.0,
+      "mfe_atr_max_exclusive": 0.25
+    },
+    "reproduction": {
+      "2023_2024": {
+        "trades": 1451,
+        "net_jpy": 38329,
+        "profit_factor": 1.1604455588532008,
+        "modified_trades": 154
+      },
+      "2025H1": {
+        "trades": 358,
+        "net_jpy": -7935,
+        "profit_factor": 0.8853141395308503,
+        "modified_trades": 63
+      }
+    }
+  },
+  "B02_C3": {
+    "candidate_id": "C3_PROFIT_TO_NONPROFIT_GIVEBACK",
+    "source": "USDJPY-HYP-042 immutable result",
+    "contract": "Arm after a completed M15 boundary is profitable; close at the first later completed M15 boundary at or below non-profit.",
+    "reproduction": {
+      "2023_2024_net_jpy": 11219,
+      "2025H1_net_jpy": 2321,
+      "2025H1_profit_factor": 1.166237
+    }
+  },
+  "SHORT_PULLBACK": {
+    "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+    "source": "USDJPY-HYP-039 immutable result and frozen v2 contract",
+    "row_ledger_in_2025H1_release": false,
+    "regeneration_required": true,
+    "reproduction": {
+      "2023_2024_dukas_trades": 500,
+      "2023_2024_dukas_net_jpy": 17679,
+      "2025H1_trades": 172,
+      "2025H1_net_jpy": 3483,
+      "2025H1_profit_factor": 1.12615451483212
+    }
+  },
+  "ASIAN_RANGE_SWEEP": {
+    "status": "DD_HEDGE_RESERVE_ONLY",
+    "2025H1_net_jpy": -23,
+    "2025H1_profit_factor": 0.998896
+  },
+  "outcome_visibility": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT",
+  "2025H2_accessed": false
+}
