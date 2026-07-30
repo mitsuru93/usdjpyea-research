@@ -1,0 +1,15 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "same_raw_input": "exact deterministic OHLC/first/last/tick-count",
+  "cross_source_copy": false,
+  "missing_bar": "preserve absence",
+  "weekend_partial_bar": "classify explicitly",
+  "timeframes": [
+    "M1",
+    "M5",
+    "M15",
+    "H1",
+    "H4",
+    "D1"
+  ]
+}

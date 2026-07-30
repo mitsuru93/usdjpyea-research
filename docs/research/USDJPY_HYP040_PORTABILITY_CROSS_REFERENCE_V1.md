@@ -1,0 +1,3 @@
+# HYP-040 Portability Cross-Reference
+
+Original formal decision remains `FAIL_RAKUTEN_2023_2024_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED`. Cross-cutting classification: `MT4_TESTER_LIMITED` / `ECONOMICALLY_SIMILAR_NOT_EXACT_PORTABLE`.

@@ -1,0 +1,8 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "closed_bar_only": true,
+  "future_tick_use": false,
+  "signal_available": "after signal bar close",
+  "asian_range_available": "after 07:00 UTC range completion",
+  "prior_realized_state": "updated after close before new signal"
+}

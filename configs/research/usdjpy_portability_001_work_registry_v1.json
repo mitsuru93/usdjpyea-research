@@ -1,0 +1,23 @@
+{
+  "schema_version": "usdjpy_portability_001_work_registry_v1",
+  "work_id": "USDJPY-PORTABILITY-001",
+  "formal_name": "USDJPY Dukascopy–Rakuten Signal Chronology and Source Portability Root-Cause Study",
+  "work_type": "CROSS_CUTTING_TECHNICAL_RESEARCH",
+  "strategy_hypothesis": false,
+  "formal_decision": "PARTIAL_COMMON_CONTRACT_WITH_REMAINING_SOURCE_LIMITATIONS",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_ONLY_NON_BINDING_EVIDENCE",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD"
+  },
+  "HYP039_formal_decision_changed": false,
+  "HYP040_formal_decision_changed": false,
+  "strategy_rule_changed": false,
+  "profit_optimization": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "core_release": "usdjpy-portability-001-core-root-cause-v1",
+  "core_archive_sha256": "8b79a39d072872b365f0109da38d786fa07b501b1cb2307a6593e60c8d6c00c9",
+  "exact_next_action": "Apply this common contract as a mandatory qualification protocol only in future independent deployment qualification studies; do not reopen or retrospectively PASS HYP-039 or HYP-040."
+}

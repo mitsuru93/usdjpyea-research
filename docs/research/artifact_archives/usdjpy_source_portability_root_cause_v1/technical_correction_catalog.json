@@ -1,0 +1,14 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "corrections": {
+    "accepted": [
+      "T1_TIMESTAMP_NORMALIZATION_CONTRACT",
+      "T2_CANONICAL_BAR_RECONSTRUCTION_SAME_RAW_INPUT_SCOPE",
+      "T4_CHRONOLOGY_AND_HOLDING_CONTRACT"
+    ],
+    "rejected": [
+      "T3_EXACT_DEPLOYMENT_CERTIFICATION"
+    ]
+  },
+  "selection_uses_strategy_pl": false
+}

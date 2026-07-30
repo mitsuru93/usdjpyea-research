@@ -1,0 +1,14 @@
+{
+  "status": "PASS_RESEARCH_RELEASE_AND_READBACK",
+  "work_id": "USDJPY-PORTABILITY-001",
+  "tag": "usdjpy-portability-001-research-root-cause-v1",
+  "release_id": 362373367,
+  "asset_id": 495272063,
+  "archive_sha256": "69b768e405893bbb9fb3152e30a38f70bbbd1f68c807f49f7760147f647ebc23",
+  "archive_bytes": 24525,
+  "run_id": 30537772231,
+  "full_row_level_authority": "PRIVATE_CORE_IMMUTABLE_RELEASE",
+  "production_authorized": false,
+  "live_authorized": false,
+  "2025H2_accessed": false
+}

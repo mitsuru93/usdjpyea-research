@@ -1,0 +1,39 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "B02_F05_regression": {
+    "2023_2024": {
+      "trade_count": 1893,
+      "net_jpy": 52779.0,
+      "B02_trade_count": 429,
+      "B02_net_jpy": 11911.0,
+      "F05_trade_count": 1464,
+      "F05_net_jpy": 40868.0,
+      "chronology_mismatch": 0,
+      "execution_failure_count": 0
+    },
+    "2025H1": {
+      "trade_count": 463,
+      "net_jpy": -20808.0,
+      "B02_net_jpy": -6964.0,
+      "F05_net_jpy": -13844.0,
+      "chronology_mismatch": 0,
+      "execution_failure_count": 0
+    },
+    "authority_lineage": {
+      "classification": "AUTHORITY_GENERATION_DIFFERENCE_NOT_COMMON_CONTRACT_REGRESSION",
+      "superseded_authority": {
+        "trade_count": 1882,
+        "net_jpy": 51627.0
+      },
+      "binding_latest_release_authority": {
+        "trade_count": 1893,
+        "net_jpy": 52779.0
+      },
+      "delta": {
+        "trade_count": 11,
+        "net_jpy": 1152.0
+      },
+      "common_contract_caused_delta": false
+    }
+  }
+}

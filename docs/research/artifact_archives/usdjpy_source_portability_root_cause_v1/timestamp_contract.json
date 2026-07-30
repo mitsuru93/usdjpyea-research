@@ -1,0 +1,8 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "canonical_timezone": "UTC",
+  "server_conversion": "UTC+2 winter / UTC+3 US DST",
+  "precision": "preserve source precision; no tolerance-based hiding",
+  "bar_timestamp_is_not_execution_timestamp": true,
+  "boundary": "exact [open, close)"
+}

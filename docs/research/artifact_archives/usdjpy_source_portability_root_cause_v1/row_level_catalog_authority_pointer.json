@@ -1,0 +1,19 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "full_row_level_artifact_authority": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "release_tag": "usdjpy-portability-001-core-root-cause-v1",
+    "archive_sha256": "8b79a39d072872b365f0109da38d786fa07b501b1cb2307a6593e60c8d6c00c9",
+    "contains": [
+      "hyp039_mismatch_catalog.csv",
+      "hyp040_mismatch_catalog.csv",
+      "first_divergence_matrix.csv",
+      "all common contract JSON files",
+      "reproduction fixtures",
+      "automated tests",
+      "SHA-256 manifest",
+      "release and readback receipts"
+    ]
+  },
+  "note": "The complete 242-row and 265-row catalogs and first-divergence matrix are byte-identified in the private Core immutable Release; Research stores this verified authority pointer rather than an unverified duplicate."
+}

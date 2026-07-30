@@ -141,3 +141,16 @@ A new 2025 Tick collection is therefore required before the binding retest. Beca
 2020–2022 Tick authorityはanalysis-onlyであり、既存candidateのformal decisionや2025H1 validation resultを変更しない。
 
 Work ID: `USDJPY-DATA-2020-2022-TICK-AUTHORITY-001`. Release: `usdjpy-2020-2022-source-native-bidask-tick-authority-v1`. Receipt Issue: #438.
+
+<!-- USDJPY-PORTABILITY-001 -->
+## USDJPY-PORTABILITY-001 — Source Portability Root-Cause Study
+
+- decision: `PARTIAL_COMMON_CONTRACT_WITH_REMAINING_SOURCE_LIMITATIONS`
+- HYP-039/HYP-040 reopened: false
+- formal decisions and strategy rules changed: false
+- Rakuten broker-native raw Tick: unavailable
+- accepted corrections: T1, T2 identical-raw-input scope, T4
+- rejected exact deployment certification: T3
+- 2020–2022: analysis-only non-binding
+- 2025H2 accessed: false
+- production/live authorization: false

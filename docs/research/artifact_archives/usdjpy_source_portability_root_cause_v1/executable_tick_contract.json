@@ -1,0 +1,11 @@
+{
+  "work_id": "USDJPY-PORTABILITY-001",
+  "E1": "FIRST_SOURCE_TICK_AT_OR_AFTER_INFORMATION_TIME",
+  "E2": "FIRST_SOURCE_TICK_STRICTLY_AFTER_INFORMATION_TIME",
+  "E3": "MT4_FIRST_OBSERVED_TICK_AFTER_BAR_OPEN_EVENT",
+  "E4": "BROKER_HISTORY_BAR_OPEN_EXECUTION",
+  "Research_source_native": "E1",
+  "Rakuten_Model0": "E3",
+  "broker_live_certification": "NOT_AVAILABLE_WITHOUT_RAW_TICK_AND_SEQUENCE",
+  "profit_optimization_used": false
+}
