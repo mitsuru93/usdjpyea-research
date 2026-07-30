@@ -1,0 +1,41 @@
+name: USDJPY HYP-044 Integrated Economic Synthesis v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/build_usdjpy_hyp044_integrated_economic_synthesis_v1.py'
+      - 'configs/research/usdjpy_hyp044_core_economic_handoff_v1.json'
+      - '.github/workflows/usdjpy_hyp044_integrated_economic_synthesis_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  synthesize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      - name: Build integrated economic artifacts
+        run: |
+          set -euo pipefail
+          rm -rf artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1
+          python tools/build_usdjpy_hyp044_integrated_economic_synthesis_v1.py \
+            --source-native-dir artifacts/research/usdjpy_hyp044/round_b_source_native_2020_2022_v1 \
+            --core-handoff configs/research/usdjpy_hyp044_core_economic_handoff_v1.json \
+            --out artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1
+          jq -e '.status=="PASS_INTEGRATED_ECONOMIC_SYNTHESIS" and .total_net_jpy==85405 and ."2025H1_net_jpy">0 and ."2025H1_profit_factor">1 and ."2025H2_accessed"==false' artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/economic_synthesis_receipt.json
+      - name: Commit integrated economic evidence
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'research(hyp044): bind integrated 2020-2025H1 economic synthesis'
+          git pull --rebase origin ${{ github.event.pull_request.head.ref || github.ref_name }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}
