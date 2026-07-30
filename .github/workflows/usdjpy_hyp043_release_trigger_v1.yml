@@ -106,11 +106,11 @@ jobs:
               z.writestr(info,(stage/name).read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
           sha=hashlib.sha256(archive.read_bytes()).hexdigest()
           with open(os.environ['GITHUB_ENV'],'a') as fh:
-            fh.write(f'ARCHIVE_SHA={sha}\nARCHIVE_BYTES={archive.stat().st_size}\n')
-          print(json.dumps({'sha256':sha,'bytes':archive.stat().st_size},indent=2))
+            fh.write(f'LOCAL_ARCHIVE_SHA={sha}\nLOCAL_ARCHIVE_BYTES={archive.stat().st_size}\n')
+          print(json.dumps({'local_rebuild_sha256':sha,'local_rebuild_bytes':archive.stat().st_size},indent=2))
           PY
 
-      - name: Create immutable Release or verify existing Release and readback
+      - name: Create immutable Release or validate existing asset and byte-identical readback
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -122,9 +122,50 @@ jobs:
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir readback --pattern "$ARCHIVE"
           test -f "readback/$ARCHIVE"
           REMOTE_SHA=$(sha256sum "readback/$ARCHIVE" | awk '{print $1}')
-          test "$REMOTE_SHA" = "$ARCHIVE_SHA"
+          REMOTE_BYTES=$(stat -c %s "readback/$ARCHIVE")
+          ASSET_DIGEST=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq ".assets[] | select(.name == \"$ARCHIVE\") | .digest")
+          test -n "$ASSET_DIGEST"
+          PUBLISHED_SHA=${ASSET_DIGEST#sha256:}
+          test "$REMOTE_SHA" = "$PUBLISHED_SHA"
+          export REMOTE_ARCHIVE="readback/$ARCHIVE"
+          python - <<'PY'
+          import json, os, zipfile
+          archive=os.environ['REMOTE_ARCHIVE']
+          required={
+            'configs/research/usdjpy_hyp043_preregistration_v1.json',
+            'configs/research/usdjpy_hyp043_period_role_receipt_v1.json',
+            'configs/research/usdjpy_hyp043_final_result_v1.json',
+            'configs/research/usdjpy_hyp043_integration_handoff_v1.json',
+            'configs/research/usdjpy_hypothesis_ledger_addendum_v46.json',
+            'configs/research/usdjpy_research_candidate_registry_v72.json',
+            'configs/research/usdjpy_2023_2024_hypothesis_program_v17.json',
+            'docs/research/USDJPY_HYP043_FINAL_REPORT_V1.md',
+            'ARCHIVE_MANIFEST.json',
+            'PACKAGE_SHA256SUMS',
+          }
+          with zipfile.ZipFile(archive) as z:
+            assert z.testzip() is None
+            names=set(z.namelist())
+            assert required <= names, sorted(required-names)
+            result=json.loads(z.read('configs/research/usdjpy_hyp043_final_result_v1.json'))
+            handoff=json.loads(z.read('configs/research/usdjpy_hyp043_integration_handoff_v1.json'))
+            manifest=json.loads(z.read('ARCHIVE_MANIFEST.json'))
+          assert result['formal_decision']=='NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE'
+          assert result['selected_candidate'] is None
+          assert result['candidate_freeze']['candidate_specific_2025H1_replay_authorized'] is False
+          assert result['period_roles']['2025H2']=='NOT_ACCESSED'
+          assert result['deployment']['production_authorized'] is False
+          assert result['deployment']['live_authorized'] is False
+          assert handoff['integration_eligibility'] is False
+          assert handoff['common_portfolio_candidate_logic_injected'] is False
+          assert manifest['core_deterministic_archive_sha256']==os.environ['CORE_ARCHIVE_SHA']
+          assert manifest['candidate_specific_2025H1_replay_executed'] is False
+          assert manifest['2025H2_accessed'] is False
+          PY
           RELEASE_URL=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json url --jq .url)
           echo "REMOTE_SHA=$REMOTE_SHA" >> "$GITHUB_ENV"
+          echo "REMOTE_BYTES=$REMOTE_BYTES" >> "$GITHUB_ENV"
+          echo "PUBLISHED_ASSET_DIGEST=$ASSET_DIGEST" >> "$GITHUB_ENV"
           echo "RELEASE_URL=$RELEASE_URL" >> "$GITHUB_ENV"
 
       - name: Close receipt Issue and publish machine-readable receipts
@@ -144,7 +185,10 @@ jobs:
           release_tag: $TAG
           release_url: $RELEASE_URL
           archive_name: $ARCHIVE
-          research_archive_sha256: $ARCHIVE_SHA
+          release_asset_sha256: $REMOTE_SHA
+          release_asset_bytes: $REMOTE_BYTES
+          published_asset_digest: $PUBLISHED_ASSET_DIGEST
+          local_rebuild_sha256: $LOCAL_ARCHIVE_SHA
           core_archive_sha256: $CORE_ARCHIVE_SHA
           remote_readback_sha256: $REMOTE_SHA
           candidate_specific_2025H1_replay_executed: false
@@ -169,8 +213,11 @@ jobs:
             'release_tag':os.environ['TAG'],
             'release_url':os.environ['RELEASE_URL'],
             'archive_name':os.environ['ARCHIVE'],
-            'archive_sha256':os.environ['ARCHIVE_SHA'],
-            'archive_bytes':int(os.environ['ARCHIVE_BYTES']),
+            'archive_sha256':os.environ['REMOTE_SHA'],
+            'archive_bytes':int(os.environ['REMOTE_BYTES']),
+            'published_asset_digest':os.environ['PUBLISHED_ASSET_DIGEST'],
+            'local_rebuild_sha256':os.environ['LOCAL_ARCHIVE_SHA'],
+            'local_rebuild_bytes':int(os.environ['LOCAL_ARCHIVE_BYTES']),
             'core_archive_sha256':os.environ['CORE_ARCHIVE_SHA'],
             'issue_number':int(os.environ['ISSUE_NUMBER']),
             'issue_url':'https://github.com/mitsuru93/usdjpyea-research/issues/'+os.environ['ISSUE_NUMBER'],
@@ -179,7 +226,7 @@ jobs:
             'production_authorized':False,
             'live_authorized':False,
           }
-          release={'schema_version':'usdjpy_hyp043_release_receipt_v1','status':'PASS_IMMUTABLE_RELEASE_PUBLISHED',**common}
+          release={'schema_version':'usdjpy_hyp043_release_receipt_v1','status':'PASS_IMMUTABLE_RELEASE_PUBLISHED_AND_CONTENT_VALIDATED',**common}
           readback={'schema_version':'usdjpy_hyp043_readback_receipt_v1','status':'PASS_BYTE_IDENTICAL_RELEASE_READBACK','remote_readback_sha256':os.environ['REMOTE_SHA'],**common}
           (out/'usdjpy_hyp043_release_receipt_v1.json').write_text(json.dumps(release,indent=2,sort_keys=True)+'\n')
           (out/'usdjpy_hyp043_readback_receipt_v1.json').write_text(json.dumps(readback,indent=2,sort_keys=True)+'\n')
