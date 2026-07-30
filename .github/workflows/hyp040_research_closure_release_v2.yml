@@ -1,0 +1,95 @@
+name: HYP-040 Research closure Release v2
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths: ['.github/workflows/hyp040_research_closure_release_v2.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.event.pull_request.head.ref == 'ops/hyp040-research-release-v2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TARGET_SHA: 83c8b2cb52f723dac26dc694d209a1974e99c9d9
+      TAG: usdjpy-hyp040-2025h1-closure-v2
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+      - name: Build deterministic Research closure archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json, zipfile
+          files=[
+            'configs/research/usdjpy_hyp040_2025h1_validation_final_result_v2.json',
+            'configs/research/usdjpy_hyp040_period_access_final_receipt_v2.json',
+            'configs/research/usdjpy_hypothesis_ledger_parallel_addendum_hyp040_final_v1.json',
+            'configs/research/usdjpy_hypothesis_program_parallel_addendum_hyp040_final_v1.json',
+            'configs/research/usdjpy_hyp040_closure_receipt_v2.json',
+            'configs/research/usdjpy_hyp040_common_portfolio_handoff_v1.json',
+            'docs/research/USDJPY_HYP040_FINAL_2025H1_DECISION_V2.md',
+            'docs/research/USDJPY_CURRENT_MEMORY_HYP040_CLOSURE_V1.md',
+          ]
+          for f in files:
+            if not Path(f).is_file(): raise SystemExit(f'missing={f}')
+          archive=Path('usdjpy-hyp040-2025h1-research-closure-v2.zip')
+          sums=[]
+          with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+            for f in sorted(files):
+              data=Path(f).read_bytes()
+              info=zipfile.ZipInfo(f,date_time=(2026,7,30,0,0,0))
+              info.compress_type=zipfile.ZIP_DEFLATED
+              info.external_attr=0o100644<<16
+              z.writestr(info,data)
+              sums.append({'path':f,'sha256':hashlib.sha256(data).hexdigest(),'bytes':len(data)})
+            manifest={
+              'schema_version':'usdjpy_hyp040_research_release_manifest_v2',
+              'status':'PASS_PACKAGE_BUILD',
+              'hypothesis_id':'USDJPY-HYP-040',
+              'target_sha':'83c8b2cb52f723dac26dc694d209a1974e99c9d9',
+              'formal_deployment_decision':'FAIL_RAKUTEN_2023_2024_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED',
+              'economic_2025H1_decision':'FAIL_ASIAN_RANGE_SWEEP_2025H1_PORTABILITY',
+              'members':sums,
+            }
+            info=zipfile.ZipInfo('RELEASE_MANIFEST.json',date_time=(2026,7,30,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o100644<<16
+            z.writestr(info,(json.dumps(manifest,indent=2,sort_keys=True)+'\n').encode())
+          sha=hashlib.sha256(archive.read_bytes()).hexdigest()
+          Path('ARCHIVE_SHA256').write_text(sha+'\n')
+          print(json.dumps({'status':'PASS_DETERMINISTIC_ARCHIVE','archive':str(archive),'sha256':sha,'bytes':archive.stat().st_size},separators=(',',':')))
+          PY
+      - name: Publish immutable Release and byte-identical readback
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then echo "immutable release exists" >&2; exit 1; fi
+          SHA=$(cat ARCHIVE_SHA256)
+          cat > release-notes.md <<EOF
+          USDJPY-HYP-040 Research closure after completed 2025H1 validation.
+
+          Formal deployment decision: FAIL_RAKUTEN_2023_2024_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED
+          Economic 2025H1 decision: FAIL_ASIAN_RANGE_SWEEP_2025H1_PORTABILITY
+          Research main SHA: $TARGET_SHA
+          Core main SHA: 50f4b70bc3500c395ae332ed7fd16427bc968f53
+          Core evidence Release: usdjpy-hyp040-asian-range-sweep-2025h1-validation-v2
+          Research archive SHA-256: $SHA
+          HYP-030 changed: false
+          HYP-039 changed: false
+          2025H2 accessed: false
+          Production/live authorized: false
+          EOF
+          gh release create "$TAG" usdjpy-hyp040-2025h1-research-closure-v2.zip --repo "$GITHUB_REPOSITORY" --target "$TARGET_SHA" --title 'USDJPY HYP-040 Research Closure v2' --notes-file release-notes.md
+          mkdir remote
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern 'usdjpy-hyp040-2025h1-research-closure-v2.zip' --dir remote
+          REMOTE=$(sha256sum remote/usdjpy-hyp040-2025h1-research-closure-v2.zip|cut -d' ' -f1)
+          test "$REMOTE" = "$SHA"
+          printf '{"status":"PASS_BYTE_IDENTICAL_RESEARCH_RELEASE_READBACK","release_tag":"%s","target_sha":"%s","archive_sha256":"%s"}\n' "$TAG" "$TARGET_SHA" "$REMOTE"
