@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - 'configs/run_markers/usdjpy_hyp043_release_trigger_v1.json'
+  push:
+    branches: ['research/usdjpy-hyp043-release-trigger-v1']
+    paths:
+      - 'configs/run_markers/usdjpy_hyp043_release_trigger_v1.json'
 
 permissions:
   contents: write
@@ -16,7 +20,7 @@ concurrency:
 
 jobs:
   release:
-    if: github.head_ref == 'research/usdjpy-hyp043-release-trigger-v1'
+    if: github.event_name == 'push' || github.head_ref == 'research/usdjpy-hyp043-release-trigger-v1'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -128,7 +132,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          ISSUE_URL=$(gh issue view "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --json url --jq .url)
           body=$(cat <<EOF
           hypothesis_id: USDJPY-HYP-043
           status: PASS_BYTE_IDENTICAL_RELEASE_READBACK
