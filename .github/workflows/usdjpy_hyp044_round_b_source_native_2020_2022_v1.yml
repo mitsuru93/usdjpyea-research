@@ -1,5 +1,6 @@
 name: USDJPY HYP-044 Round B Source-Native 2020-2022 v1
 
+# User-authored trigger after freeze-registration commits.
 on:
   pull_request:
     branches: [main]
