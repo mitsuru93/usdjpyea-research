@@ -1,0 +1,203 @@
+{
+  "schema_version": "usdjpy_hyp043_final_result_v1",
+  "status": "COMPLETE_SCIENTIFIC_RESULT",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "title": "F05 Localized State–Loss Persistence and Lifecycle Recovery Study",
+  "family_id": "F05_LOCALIZED_STATE_LOSS_PERSISTENCE_LIFECYCLE_RECOVERY",
+  "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+  "economic_decision": "NO_RECOVERY_NOT_REVALIDATED_AFTER_BINDING_HISTORICAL_GATE",
+  "selected_candidate": null,
+  "recovery_classification": "NOT_APPLICABLE_NO_HISTORICALLY_ADMISSIBLE_CANDIDATE",
+  "decision_reason": "None of the three preregistered localized candidates passed every binding 2023-2024 F05 historical support and fold-breadth gate. Candidate-specific 2025H1 replay, Core/MT4 implementation and Rakuten portability were therefore not authorized.",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD_NON_BINDING_NOT_EXECUTED_NO_SELECTED_CANDIDATE",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD_REVALIDATION_MODIFIED_AFTER_VALIDATION_RESULT_BASELINE_IDENTITY_ONLY",
+    "2025H2": "NOT_ACCESSED"
+  },
+  "source_authority": {
+    "research_preregistration_main_sha": "41a875024e2ada8e414aa63eae1923df7b6e2edd",
+    "core_scientific_result_merge_sha": "1e6a5eda4ee9f36ad2d5c9defa61dfcc5a535cea",
+    "core_result_path": "configs/research/usdjpy_hyp043_research_result_v1.json",
+    "core_result_blob_sha": "8fff622ff2722f370fadac46f98bee9f5e3cbec5",
+    "scientific_run_id": 30523476402,
+    "trade_ledger_sha256": "25e2e983ac9448986c95e9cc04dba7ea1c732df64ee6737e62cb782c8be853d0",
+    "lifecycle_ledger_sha256": "9cf18df10a896d2de0c35ecfae88366ffbba43598fd59e5b1a3c1f504db96855",
+    "decomposition_sha256": "c6eef17fc61b90a7dae1b1ed4e02acff3b8b1d7c69ab5cb87fc8dcd60086cc7e",
+    "precheck_sha256": "564196283ced7a06d9b71732d9fa46faddfcdf767a9907f8d2e1d928baa4e57b"
+  },
+  "baseline_identity": {
+    "2023_2024_F05": {
+      "trades": 1451,
+      "net_jpy": 39151,
+      "gross_profit_jpy": 314089,
+      "gross_loss_jpy": -274938,
+      "profit_factor": 1.142399377314158,
+      "realized_drawdown_jpy": 28862,
+      "winner_trades": 726,
+      "positive_net_half_years": 3
+    },
+    "2025H1_F05": {
+      "trades": 358,
+      "net_jpy": -13844,
+      "gross_profit_jpy": 74489,
+      "gross_loss_jpy": -88333,
+      "profit_factor": 0.8432748802825671
+    },
+    "2025H1_B02": {"net_jpy": -6964},
+    "2025H1_B02_plus_F05": {
+      "trades": 463,
+      "net_jpy": -20808,
+      "profit_factor": 0.8294076655052265,
+      "authority_maximum_tick_equity_drawdown_jpy": 42737
+    },
+    "2025H1_B02_C3_reserve_plus_F05_baseline": {
+      "B02_C3_net_jpy": 2321,
+      "combined_net_jpy": -11523,
+      "role": "RESEARCH_COUNTERFACTUAL_RESERVE_ONLY"
+    }
+  },
+  "candidate_results": [
+    {
+      "candidate_id": "C1_LOCALIZED_SHORT_LOSS_PERSISTENCE_PERMISSION",
+      "architecture": "ENTRY_PERMISSION",
+      "affected_trades": 0,
+      "modified_share": 0.0,
+      "historical_net_jpy": 39151,
+      "historical_net_retention": 1.0,
+      "gross_profit_retention": 1.0,
+      "winner_trade_count_retention": 1.0,
+      "positive_effect_folds": 0,
+      "positive_net_folds": 3,
+      "decision": "REJECT_ZERO_HISTORICAL_SUPPORT"
+    },
+    {
+      "candidate_id": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+      "architecture": "LOCALIZED_EARLY_LIFECYCLE_EXIT",
+      "affected_trades": 154,
+      "modified_share": 0.10613370089593384,
+      "historical_net_jpy": 38329,
+      "historical_profit_factor": 1.1604455588532008,
+      "historical_gross_profit_jpy": 277220,
+      "historical_gross_loss_jpy": -238891,
+      "historical_realized_drawdown_jpy": 23847,
+      "historical_minimum_realized_equity_jpy": 77849,
+      "historical_winner_trades": 666,
+      "historical_net_retention": 0.9790043677045286,
+      "gross_profit_retention": 0.8826160737880028,
+      "winner_trade_count_retention": 0.9173553719008265,
+      "positive_effect_folds": 2,
+      "positive_net_folds": 3,
+      "fold_delta_jpy": {
+        "2023H1": 2805,
+        "2023H2": -2905,
+        "2024H1": 2274,
+        "2024H2": -2996
+      },
+      "concentration": {
+        "top_1_event_removal_net_jpy": 35877,
+        "top_3_event_removal_net_jpy": 31364,
+        "top_5_event_removal_net_jpy": 27337,
+        "top_winner_decile_removal_net_jpy": -50186,
+        "worst_day_jpy": -6061,
+        "worst_month_jpy": -11747
+      },
+      "decision": "REJECT_ONLY_2_OF_4_POSITIVE_EFFECT_FOLDS"
+    },
+    {
+      "candidate_id": "C3_LOCALIZED_PRIOR_LOSS_GIVEBACK_EXIT",
+      "architecture": "LOCALIZED_PROFIT_GIVEBACK_EXIT",
+      "affected_trades": 0,
+      "modified_share": 0.0,
+      "historical_net_jpy": 39151,
+      "historical_net_retention": 1.0,
+      "gross_profit_retention": 1.0,
+      "winner_trade_count_retention": 1.0,
+      "positive_effect_folds": 0,
+      "positive_net_folds": 3,
+      "decision": "REJECT_ZERO_HISTORICAL_SUPPORT"
+    }
+  ],
+  "historical_gate": {
+    "status": "FAIL_NO_CANDIDATE_PASSED_ALL_MANDATORY_SUBGATES",
+    "candidate_freeze_permitted": false,
+    "portfolio_gate_reached": false,
+    "portfolio_gate_reason": "A failed mandatory F05 support or fold-breadth gate cannot be rescued by portfolio aggregation.",
+    "B02_changed_trades": 0
+  },
+  "robustness": {
+    "completed_for_preregistered_historical_candidates": true,
+    "checks": [
+      "spread_plus_0_5_1_2_pips",
+      "entry_delay_1_5_15_seconds_proxy",
+      "same_timestamp_order_variation",
+      "source_timestamp_precision_60_seconds",
+      "top_event_removal",
+      "worst_day_and_month",
+      "bootstrap_event_10000",
+      "bootstrap_date_session_block_10000",
+      "limited_threshold_neighborhood"
+    ],
+    "binding_interpretation": "Robustness did not and could not rescue the failed mandatory historical support/fold gate."
+  },
+  "candidate_freeze": {
+    "status": "NO_CANDIDATE_FREEZE_PERMITTED",
+    "candidate_specific_2025H1_replay_authorized": false,
+    "candidate_rule_changed_after_result": false,
+    "no_grid_search_receipt": true,
+    "no_2025H2_receipt": true
+  },
+  "2025H1_revalidation": {
+    "baseline_identity_reproduced": true,
+    "candidate_specific_outcomes_computed": false,
+    "F05_improvement_jpy": null,
+    "portfolio_improvement_jpy": null,
+    "candidate_profit_factor": null,
+    "candidate_realized_drawdown_jpy": null,
+    "candidate_full_equity_drawdown_jpy": null,
+    "candidate_margin": null,
+    "candidate_concurrency": null,
+    "reason": "No candidate was eligible for freeze after the binding 2023-2024 historical gate."
+  },
+  "execution_integrity": {
+    "Core_candidate_module_created": false,
+    "MT4_candidate_module_created": false,
+    "Research_Core_parity_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+    "Core_MT4_parity_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+    "MetaEditor_compile_status": "NOT_APPLICABLE_NO_CANDIDATE_MODULE",
+    "Rakuten_portability_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+    "baseline_stopout_breached": false,
+    "candidate_full_equity_margin_concurrency_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE"
+  },
+  "analysis_2020_2022": {
+    "status": "NOT_EXECUTED_NO_SELECTED_CANDIDATE_AND_NO_CERTIFIED_AUTHORITY_BOUND_TO_RUN",
+    "binding": false,
+    "used_for_candidate_selection": false,
+    "used_for_formal_decision": false
+  },
+  "archive": {
+    "file": "usdjpy-hyp043-f05-localized-recovery-v1.zip",
+    "sha256": "b7004225b637205623fcc38630c57c272dcf8b0de20774d6d6cb38c1ee75c157",
+    "bytes": 510084,
+    "file_count": 18,
+    "status": "PASS_DETERMINISTIC_ARCHIVE_CREATED"
+  },
+  "parallel_study_isolation": {
+    "USDJPY_HYP_027_changed": false,
+    "USDJPY_HYP_029_changed": false,
+    "USDJPY_HYP_032_changed": false,
+    "USDJPY_HYP_039_changed": false,
+    "USDJPY_HYP_040_changed": false,
+    "USDJPY_HYP_041_changed_or_reopened": false,
+    "USDJPY_HYP_042_changed": false,
+    "common_portfolio_candidate_logic_injected": false
+  },
+  "deployment": {
+    "deployment_eligibility": false,
+    "integration_candidate_eligibility": false,
+    "diagnostic_handoff_eligibility": true,
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "exact_next_action": "Keep F05_BASELINE_UNCHANGED. Do not implement or integrate HYP-043 candidates. Hand off the localized failure/intersection evidence to Common Portfolio Integration as immutable diagnostic evidence only, and continue with a new independently preregistered mechanism rather than threshold retuning or union rescue."
+}
