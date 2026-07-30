@@ -1,5 +1,6 @@
 name: USDJPY HYP-044 Development Source Probe v2
 
+# User-authored trigger for Release-backed authority probe.
 on:
   pull_request:
     branches: [main]
