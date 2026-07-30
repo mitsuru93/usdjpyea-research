@@ -1,0 +1,29 @@
+{
+  "schema_version": "usdjpy_hypothesis_program_parallel_addendum_hyp040_final_v1",
+  "status": "CLOSED",
+  "program": "USDJPY Complementary Strategy Qualification",
+  "hypothesis_id": "USDJPY-HYP-040",
+  "family_id": "S_ASIAN_RANGE_SWEEP_UNCHANGED_2025H1_RECOVERY",
+  "candidate_id": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+  "formal_decision": "FAIL_RAKUTEN_2023_2024_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED",
+  "economic_2025H1_decision": "FAIL_ASIAN_RANGE_SWEEP_2025H1_PORTABILITY",
+  "program_readthrough": {
+    "independent_alpha_confirmed": false,
+    "portable_third_strategy_confirmed": false,
+    "2025H1_portfolio_recovery_confirmed": false,
+    "drawdown_reduction_observed": true,
+    "drawdown_reduction_sufficient_for_adoption": false,
+    "common_portfolio_authorized": false
+  },
+  "evidence_summary": {
+    "historical_rakuten_net_jpy": 4221,
+    "historical_rakuten_profit_factor": 1.06993041749503,
+    "historical_exact_mismatch_count": 265,
+    "2025H1_standalone_net_jpy": -23,
+    "2025H1_standalone_profit_factor": 0.9988961412939144,
+    "2025H1_combined_net_delta_jpy": -23,
+    "2025H1_combined_full_equity_dd_delta_jpy": -4093
+  },
+  "strategic_implication": "Low correlation and drawdown relief alone are insufficient. A third-strategy candidate must satisfy exact portability and positive standalone or portfolio recovery gates. HYP-040 supplies diagnostic evidence only and must not be rescued by retuning under the same identity.",
+  "exact_next_action": "Continue the Common Portfolio framework with only formally authorized candidates. Record HYP-040 as closed diagnostic-only evidence."
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": "usdjpy_hyp040_closure_receipt_v2",
+  "status": "PASS_FORMAL_CLOSURE",
+  "hypothesis_id": "USDJPY-HYP-040",
+  "candidate_id": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+  "formal_deployment_decision": "FAIL_RAKUTEN_2023_2024_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED",
+  "economic_2025H1_decision": "FAIL_ASIAN_RANGE_SWEEP_2025H1_PORTABILITY",
+  "candidate_status": "CLOSED_PORTABILITY_FAILURE_WITH_2025H1_EVIDENCE",
+  "closure_checks": {
+    "research_core_parity_complete": true,
+    "metaeditor_clean_compile": true,
+    "rakuten_2023_2024_portability_recorded": true,
+    "2025H1_all_five_variants_executed": true,
+    "2025H1_final_evaluation_complete": true,
+    "immutable_release_published": true,
+    "remote_byte_identical_readback_pass": true,
+    "core_result_issue_closed_completed": true,
+    "core_pr_merged": true,
+    "candidate_retuned": false,
+    "HYP030_decision_changed": false,
+    "HYP039_changed_or_combined": false,
+    "2025H2_accessed": false,
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "references": {
+    "core_main_merge_sha": "50f4b70bc3500c395ae332ed7fd16427bc968f53",
+    "core_pr": 641,
+    "core_result_issue": 694,
+    "release_tag": "usdjpy-hyp040-asian-range-sweep-2025h1-validation-v2",
+    "release_id": 362185497,
+    "release_asset_id": 494902071,
+    "archive_sha256": "dde913ad860da5be5a6a4ae21e17e3e02f1d64333858ca8c3e432e8a18feb6e9",
+    "parity_run_id": 30503243876,
+    "mt4_run_id": 30506742207,
+    "evaluation_run_id": 30512972565,
+    "release_run_id": 30513255702
+  },
+  "exact_next_action": "No HYP-040 deployment, rescue, retuning or reopening. Exclude the candidate from authorized integration and preserve evidence only."
+}

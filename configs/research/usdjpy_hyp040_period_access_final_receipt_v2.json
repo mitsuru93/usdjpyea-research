@@ -1,0 +1,51 @@
+{
+  "schema_version": "usdjpy_hyp040_period_access_final_receipt_v2",
+  "status": "PASS_2025H1_VALIDATION_COMPLETED_WITH_PERIOD_FIREWALL_PRESERVED",
+  "hypothesis_id": "USDJPY-HYP-040",
+  "candidate_id": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD",
+    "2025H2": "NOT_ACCESSED"
+  },
+  "outcome_visibility": {
+    "state_before_candidate_specific_2025H1_run": "UNSEEN_AT_FIRST_VALIDATION",
+    "candidate_specific_2025H1_run_executed": true,
+    "candidate_specific_2025H1_outcome_accessed": true,
+    "first_access_timestamp_utc": "2026-07-30T02:07:18.1978177Z",
+    "first_access_candidate_version": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+    "subsequent_run_visibility": "2025H1_POST_RESULT_REVALIDATION",
+    "candidate_modified_after_result": false,
+    "unseen_validation_claim_consumed": true
+  },
+  "continuation_basis": {
+    "preceding_gate": "RAKUTEN_2023_2024_PORTABILITY",
+    "preceding_gate_decision": "FAIL_RAKUTEN_2023_2024_PORTABILITY",
+    "progression_to_2025H1_under_original_automatic_gate": false,
+    "progression_to_2025H1_under_explicit_user_direction": true,
+    "portability_failure_waived_for_adoption": false,
+    "reason": "The user explicitly required the unchanged candidate to be executed through 2025H1. The historical portability failure remained recorded and binding for deployment while 2025H1 was evaluated as economic evidence."
+  },
+  "access_boundaries": {
+    "2025H2_accessed": false,
+    "2025H2_auto_substituted": false,
+    "2025H1_reclassified_as_analysis_or_development": false,
+    "candidate_retuned_using_2025H1": false
+  },
+  "authorization": {
+    "common_portfolio_integration_authorized": false,
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "authorities": {
+    "binding_research_sha": "4a6cb16768bbacc0c9bbeabfd5817bb26318c81a",
+    "core_candidate_sha": "5d6c55c0bf6273354de6e102da57e758cf7663e9",
+    "core_main_merge_sha": "50f4b70bc3500c395ae332ed7fd16427bc968f53",
+    "research_core_parity_run_id": 30503243876,
+    "core_mt4_run_id": 30506742207,
+    "final_evaluation_run_id": 30512972565,
+    "core_result_issue": 694,
+    "release_tag": "usdjpy-hyp040-asian-range-sweep-2025h1-validation-v2"
+  }
+}

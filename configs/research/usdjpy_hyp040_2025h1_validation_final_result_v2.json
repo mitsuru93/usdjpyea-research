@@ -1,0 +1,166 @@
+{
+  "schema_version": "usdjpy_hyp040_2025h1_validation_final_result_v2",
+  "status": "COMPLETE_SCIENTIFIC_RESULT",
+  "hypothesis_id": "USDJPY-HYP-040",
+  "study_name": "Unchanged Asian Range Sweep 2025H1 Recovery Qualification",
+  "family_id": "S_ASIAN_RANGE_SWEEP_UNCHANGED_2025H1_RECOVERY",
+  "candidate_id": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+  "formal_deployment_decision": "FAIL_RAKUTEN_2023_2024_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED",
+  "economic_2025H1_decision": "FAIL_ASIAN_RANGE_SWEEP_2025H1_PORTABILITY",
+  "historical_portability_status": "FAIL_RAKUTEN_2023_2024_PORTABILITY",
+  "validation_execution_policy": "USER_DIRECTED_CONTINUATION_AFTER_PORTABILITY_DIAGNOSTIC_FAILURE",
+  "portability_failure_waived_for_adoption": false,
+  "authorities": {
+    "binding_preregistration_research_sha": "4a6cb16768bbacc0c9bbeabfd5817bb26318c81a",
+    "core_candidate_sha": "5d6c55c0bf6273354de6e102da57e758cf7663e9",
+    "core_main_merge_sha": "50f4b70bc3500c395ae332ed7fd16427bc968f53",
+    "research_core_parity_run_id": 30503243876,
+    "static_audit_run_id": 30506742190,
+    "core_mt4_run_id": 30506742207,
+    "final_evaluation_run_id": 30512972565,
+    "release_workflow_run_id": 30513255702,
+    "core_result_issue": 694,
+    "core_pull_request": 641
+  },
+  "candidate_contract": {
+    "direction": "BOTH_SIDES_UNCHANGED",
+    "asian_range_utc": "00:00_TO_BEFORE_07:00",
+    "signal_window_utc": "07:00_TO_BEFORE_20:00",
+    "upper_sweep_action": "SHORT",
+    "lower_sweep_action": "LONG",
+    "entry": "NEXT_OBSERVED_M15_OPEN",
+    "exit": "OPEN_AFTER_12_OBSERVED_M15_BARS",
+    "suppression": "VARIANT_ACTIVE_AND_SAME_DAY_SAME_SIDE_AND_FOLD_BOUNDARY",
+    "fixed_lot": 0.01,
+    "candidate_modified_after_result": false,
+    "retuned_after_result": false
+  },
+  "gate_sequence": {
+    "hyp030_exact_reproduction": "PASS_545_OF_545",
+    "research_core_parity": "PASS_ZERO_MISMATCH_545_OF_545",
+    "metaeditor_compile": "PASS_0_ERRORS_0_WARNINGS",
+    "rakuten_2023_2024_portability": "FAIL_RAKUTEN_2023_2024_PORTABILITY",
+    "2025H1_validation": "COMPLETE_VALIDATION_PERIOD_RESULT",
+    "technical_contract": "PASS",
+    "production_authorization": false,
+    "live_authorization": false
+  },
+  "rakuten_2023_2024_portability": {
+    "trades": 545,
+    "net_jpy": 4221,
+    "profit_factor": 1.06993041749503,
+    "positive_folds": 3,
+    "exact_schedule_or_row_mismatch_count": 265,
+    "baseline_net_jpy": 52779,
+    "combined_net_jpy": 57000,
+    "candidate_incremental_net_jpy": 4221,
+    "binding_failure_basis": "The Rakuten-native execution remained profitable in aggregate but did not reproduce the binding Dukascopy candidate at the exact schedule, price, chronology and row contract. The 265 exact mismatches remain a binding portability failure."
+  },
+  "validation_2025H1": {
+    "period_role": "VALIDATION_PERIOD",
+    "outcome_visibility_at_first_access": "UNSEEN_AT_FIRST_VALIDATION",
+    "first_access_timestamp_utc": "2026-07-30T02:07:18.1978177Z",
+    "outcome_accessed": true,
+    "2025H2_accessed": false,
+    "baseline_reproduction_pass": true,
+    "execution_integrity_pass": true,
+    "technical_contract_pass": true,
+    "currency_mismatch": 0,
+    "chronology_mismatch": 0,
+    "execution_failure_count": 0,
+    "holding_contract": "12_OBSERVED_M15_BARS",
+    "holding_integrity_mismatch": 0,
+    "holding_integrity_unresolved": 0,
+    "baseline_B02_F05": {
+      "trades": 463,
+      "net_jpy": -20808,
+      "profit_factor": 0.8294076655052265,
+      "full_equity_drawdown_jpy": 42737,
+      "realized_drawdown_jpy": 42154,
+      "minimum_equity_jpy": 57328,
+      "minimum_free_margin_jpy": 22611.58
+    },
+    "standalone_ARS40": {
+      "trades": 140,
+      "net_jpy": -23,
+      "profit_factor": 0.9988961412939144,
+      "win_rate": 0.5142857142857142,
+      "long_net_jpy": -1140,
+      "short_net_jpy": 1117,
+      "full_equity_drawdown_jpy": 5990,
+      "realized_drawdown_jpy": 5693,
+      "minimum_equity_jpy": 99108,
+      "maximum_open_orders": 1,
+      "stopout_breached": false
+    },
+    "combined_B02_F05_ARS40": {
+      "trades": 603,
+      "net_jpy": -20831,
+      "profit_factor": 0.8541358858911429,
+      "full_equity_drawdown_jpy": 38644,
+      "realized_drawdown_jpy": 38390,
+      "minimum_equity_jpy": 61421,
+      "minimum_free_margin_jpy": 21260.76,
+      "net_change_vs_baseline_jpy": -23,
+      "profit_factor_change_vs_baseline": 0.024728220385916377,
+      "full_equity_drawdown_change_vs_baseline_jpy": -4093,
+      "minimum_equity_change_vs_baseline_jpy": 4093
+    },
+    "B02_ARS40": {
+      "trades": 245,
+      "net_jpy": -6987,
+      "profit_factor": 0.871746393039392,
+      "full_equity_drawdown_jpy": 12132
+    },
+    "F05_ARS40": {
+      "trades": 498,
+      "net_jpy": -13867,
+      "profit_factor": 0.8729767608020592,
+      "full_equity_drawdown_jpy": 25321
+    },
+    "correlation": {
+      "daily_candidate_to_B02_F05_baseline": -0.413954859925071,
+      "weekly_candidate_to_B02_F05_baseline": -0.5288094892436468
+    },
+    "loss_and_drawdown_day_contribution": {
+      "B02_F05_loss_day_contribution_jpy": 4980,
+      "B02_F05_drawdown_day_contribution_jpy": -1872
+    },
+    "concentration": {
+      "bootstrap_event_p_nonpositive": 0.4947,
+      "bootstrap_day_p_nonpositive": 0.5101,
+      "top_1_winner_removed_net_jpy": -1459,
+      "top_5_winners_removed_net_jpy": -4910,
+      "top_decile_winners_removed_net_jpy": -6934,
+      "maximum_losing_streak": 6
+    },
+    "portfolio_readthrough": "The unchanged Asian Range Sweep was essentially flat but slightly negative standalone and worsened portfolio net by JPY 23. It reduced full-equity drawdown by JPY 4,093, but neither standalone profitability nor portfolio recovery was achieved."
+  },
+  "period_access": {
+    "2020_2022_role": "ANALYSIS_PERIOD",
+    "2023_2024_role": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1_role": "VALIDATION_PERIOD",
+    "2025H1_candidate_outcome_accessed": true,
+    "2025H1_unseen_claim_consumed": true,
+    "2025H2_accessed": false
+  },
+  "authorization": {
+    "common_portfolio_integration_authorized": false,
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "immutable_evidence": {
+    "core_release_tag": "usdjpy-hyp040-asian-range-sweep-2025h1-validation-v2",
+    "core_release_id": 362185497,
+    "core_release_asset_id": 494902071,
+    "archive_sha256": "dde913ad860da5be5a6a4ae21e17e3e02f1d64333858ca8c3e432e8a18feb6e9",
+    "release_readback_status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+  },
+  "formal_closure": {
+    "candidate_status": "CLOSED_PORTABILITY_FAILURE_WITH_2025H1_EVIDENCE",
+    "HYP030_formal_decision": "NO_PORTABLE_CANDIDATE_UNCHANGED",
+    "HYP030_decision_changed": false,
+    "HYP039_changed_or_combined": false,
+    "exact_next_action": "Close HYP-040 without retuning. Exclude HYP-040 from the authorized Common Portfolio Integration strategy set while preserving its drawdown-reduction evidence as a diagnostic only."
+  }
+}
