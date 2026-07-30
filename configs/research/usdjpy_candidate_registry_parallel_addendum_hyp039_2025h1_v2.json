@@ -1,0 +1,71 @@
+{
+  "schema_version": "usdjpy_candidate_registry_parallel_addendum_hyp039_2025h1_v2",
+  "operation": "APPEND_ONLY_VALIDATION_COMPLETION_CORRECTION",
+  "supersedes_for_period_access_only": "usdjpy_candidate_registry_parallel_addendum_hyp039_final_v1",
+  "candidate": {
+    "hypothesis_id": "USDJPY-HYP-039",
+    "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+    "family_id": "J_PULLBACK_CONTINUATION",
+    "version": "v2",
+    "status": "CLOSED_PORTABILITY_FAILURE_WITH_2025H1_EVIDENCE",
+    "research_candidate_gate": "PASS",
+    "research_core_parity_gate": "PASS_ZERO_MISMATCH_500_OF_500",
+    "core_compile_gate": "PASS_0_ERRORS_0_WARNINGS",
+    "rakuten_2023_2024_portability_gate": "FAIL",
+    "2025H1_validation_gate": "COMPLETE_ECONOMIC_PARTIAL_RECOVERY",
+    "formal_deployment_decision": "FAIL_CORE_MT4_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED",
+    "portfolio_adoption": "NOT_AUTHORIZED",
+    "production_adoption": "NOT_AUTHORIZED",
+    "live_adoption": "NOT_AUTHORIZED"
+  },
+  "fixed_contract": {
+    "direction": "SHORT_ONLY",
+    "holding": "16_M15_BARS_UNCHANGED",
+    "shared_side_suppression": true,
+    "suppression_population": "BOTH_RAW_SIDES_FROM_HYP036_BEFORE_HYP037_SHORT_FILTER",
+    "long_shadow_orders": false,
+    "long_shadow_pl": false,
+    "hyp038_filter": false,
+    "candidate_modified_after_result": false,
+    "retuned_after_result": false
+  },
+  "historical_failure_reason": {
+    "code": "FAIL_CORE_MT4_PORTABILITY",
+    "binding_evidence": {
+      "algorithm_or_information_time_mismatch": 242,
+      "common_events": 417,
+      "dukas_only_events": 83,
+      "rakuten_only_events": 83,
+      "common_rate": 0.834,
+      "2024H1_expected_vs_actual": "97_vs_98"
+    }
+  },
+  "validation_evidence": {
+    "standalone_trades": 172,
+    "standalone_net_jpy": 3483,
+    "standalone_profit_factor": 1.12615451483212,
+    "standalone_full_equity_drawdown_jpy": 6919,
+    "baseline_net_jpy": -20808,
+    "combined_net_jpy": -17325,
+    "net_improvement_jpy": 3483,
+    "baseline_full_equity_drawdown_jpy": 42737,
+    "combined_full_equity_drawdown_jpy": 46281,
+    "drawdown_change_jpy": 3544,
+    "interpretation": "Positive standalone and partial loss recovery were observed, but combined portfolio loss remained negative and full-equity drawdown worsened."
+  },
+  "period_firewall": {
+    "2025H1_role": "VALIDATION_PERIOD",
+    "2025H1_outcome_accessed": true,
+    "2025H1_first_access_timestamp_utc": "2026-07-30T00:43:08.7774609Z",
+    "2025H1_outcome_visibility": "UNSEEN_AT_FIRST_VALIDATION",
+    "2025H1_unseen_claim_consumed": true,
+    "2025H2_accessed": false
+  },
+  "evidence_reference": {
+    "core_run_id": 30503084961,
+    "core_issue": 676,
+    "core_release_issue": 689,
+    "core_release_tag": "usdjpy-hyp039-short-pullback-2025h1-validation-v2",
+    "archive_sha256": "e13015f77679a230685a867748f5ac000f5f43c920d1574e181b003df353ae4c"
+  }
+}
