@@ -1,0 +1,31 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v46",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v45.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v45.json",
+  "entries": [],
+  "hypothesis_status_updates": [
+    {
+      "hypothesis_id": "USDJPY-HYP-043",
+      "status": "CLOSED_COMPLETE_SCIENTIFIC_RESULT",
+      "decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+      "economic_decision": "NO_RECOVERY_NOT_REVALIDATED_AFTER_BINDING_HISTORICAL_GATE",
+      "selected_candidate": null,
+      "candidate_specific_2025H1_replay_executed": false,
+      "Core_candidate_module_created": false,
+      "MT4_candidate_module_created": false,
+      "Rakuten_portability_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+      "final_result": "configs/research/usdjpy_hyp043_final_result_v1.json",
+      "integration_handoff": "configs/research/usdjpy_hyp043_integration_handoff_v1.json",
+      "scientific_run_id": 30523476402,
+      "archive_sha256": "b7004225b637205623fcc38630c57c272dcf8b0de20774d6d6cb38c1ee75c157",
+      "candidate_rule_changed_after_result": false,
+      "2025H2_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false,
+      "exact_next_action": "Keep F05_BASELINE_UNCHANGED and import HYP-043 only as immutable diagnostic evidence in Common Portfolio Integration."
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "schema_version": "usdjpy_hyp043_common_portfolio_handoff_v1",
+  "status": "IMMUTABLE_DIAGNOSTIC_HANDOFF_NO_CANDIDATE",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "candidate_id": null,
+  "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+  "economic_decision": "NO_RECOVERY_NOT_REVALIDATED_AFTER_BINDING_HISTORICAL_GATE",
+  "deployment_eligibility": false,
+  "integration_eligibility": false,
+  "diagnostic_evidence_eligibility": true,
+  "source_identity": {
+    "research_repository": "mitsuru93/usdjpyea-research",
+    "core_repository": "mitsuru93/usdjpyea-core",
+    "research_contract_sha": "41a875024e2ada8e414aa63eae1923df7b6e2edd",
+    "core_scientific_result_sha": "1e6a5eda4ee9f36ad2d5c9defa61dfcc5a535cea",
+    "config_blob_sha": "7419230801e1866262cbbafee69b3f00e7c7a110",
+    "scientific_run_id": 30523476402,
+    "trade_ledger_sha256": "25e2e983ac9448986c95e9cc04dba7ea1c732df64ee6737e62cb782c8be853d0",
+    "lifecycle_ledger_sha256": "9cf18df10a896d2de0c35ecfae88366ffbba43598fd59e5b1a3c1f504db96855",
+    "decomposition_sha256": "c6eef17fc61b90a7dae1b1ed4e02acff3b8b1d7c69ab5cb87fc8dcd60086cc7e"
+  },
+  "release": {
+    "tag": "usdjpy-hyp043-f05-localized-recovery-v1",
+    "status": "PENDING_RESEARCH_CLOSURE_RELEASE_WORKFLOW"
+  },
+  "archive": {
+    "file": "usdjpy-hyp043-f05-localized-recovery-v1.zip",
+    "sha256": "b7004225b637205623fcc38630c57c272dcf8b0de20774d6d6cb38c1ee75c157",
+    "bytes": 510084,
+    "file_count": 18
+  },
+  "historical_metrics": {
+    "baseline_F05": {
+      "trades": 1451,
+      "net_jpy": 39151,
+      "gross_profit_jpy": 314089,
+      "gross_loss_jpy": -274938,
+      "profit_factor": 1.142399377314158,
+      "realized_drawdown_jpy": 28862
+    },
+    "best_supported_but_rejected_candidate": {
+      "candidate_id": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+      "trades": 1451,
+      "modified_trades": 154,
+      "modified_share": 0.10613370089593384,
+      "net_jpy": 38329,
+      "net_retention": 0.9790043677045286,
+      "gross_profit_retention": 0.8826160737880028,
+      "winner_trade_count_retention": 0.9173553719008265,
+      "profit_factor": 1.1604455588532008,
+      "realized_drawdown_jpy": 23847,
+      "positive_effect_folds": 2,
+      "required_positive_effect_folds": 3,
+      "rejection": "BINDING_FOLD_BREADTH_FAILURE"
+    }
+  },
+  "validation_2025H1": {
+    "outcome_role": "VALIDATION_PERIOD_REVALIDATION_MODIFIED_AFTER_VALIDATION_RESULT",
+    "candidate_specific_replay_executed": false,
+    "F05_baseline": {
+      "trades": 358,
+      "net_jpy": -13844,
+      "gross_profit_jpy": 74489,
+      "gross_loss_jpy": -88333,
+      "profit_factor": 0.8432748802825671
+    },
+    "B02_baseline_plus_F05_baseline": {
+      "trades": 463,
+      "net_jpy": -20808,
+      "profit_factor": 0.8294076655052265,
+      "maximum_tick_equity_drawdown_jpy": 42737
+    },
+    "B02_C3_reserve_plus_F05_baseline": {
+      "net_jpy": -11523,
+      "role": "RESEARCH_COUNTERFACTUAL_RESERVE_ONLY"
+    },
+    "candidate_metrics": null,
+    "reason": "No candidate passed the binding historical gate."
+  },
+  "standalone_ledger": {
+    "path": "usdjpyea-core/artifacts/research/usdjpy_hyp043/closure_v1/f05_local_failure_population_ledger.csv.gz",
+    "role": "DIAGNOSTIC_SOURCE_LEDGER"
+  },
+  "combined_ledger": {
+    "status": "NOT_CREATED_NO_SELECTED_CANDIDATE",
+    "baseline_authority": "HYP-041/HYP-042 canonical B02+F05 baseline"
+  },
+  "full_equity_ledger": {
+    "candidate_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+    "baseline_maximum_tick_equity_drawdown_jpy": 42737
+  },
+  "margin_ledger": {
+    "candidate_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+    "baseline_stopout_breached": false
+  },
+  "concurrency_ledger": {
+    "candidate_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE"
+  },
+  "residual_loss_decomposition": {
+    "status": "AVAILABLE_DIAGNOSTIC_ONLY",
+    "paths": [
+      "usdjpyea-core/configs/research/usdjpy_hyp043_failure_intersection_matrix_v1.json",
+      "usdjpyea-core/artifacts/research/usdjpy_hyp043/closure_v1/failure_intersection_matrix.csv",
+      "usdjpyea-core/artifacts/research/usdjpy_hyp043/closure_v1/candidate_decision_ledger.csv.gz"
+    ],
+    "interpretation": "Localized state/acceptance evidence exists, but the preregistered portable intersection was not consistent across at least three half-year folds."
+  },
+  "B02_baseline_comparison": {
+    "B02_2025H1_net_jpy": -6964,
+    "B02_plus_F05_baseline_net_jpy": -20808,
+    "B02_changed": false
+  },
+  "B02_C3_reserve_comparison": {
+    "B02_C3_2025H1_net_jpy": 2321,
+    "B02_C3_plus_F05_baseline_net_jpy": -11523,
+    "formal_decision_changed": false,
+    "role": "RESEARCH_COUNTERFACTUAL_RESERVE_ONLY"
+  },
+  "portability_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+  "Research_Core_parity_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+  "Core_MT4_parity_status": "NOT_APPLICABLE_NO_SELECTED_CANDIDATE",
+  "candidate_rule_changed_after_result": false,
+  "2025H2_accessed": false,
+  "2020_2022_used_for_selection": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "common_portfolio_candidate_logic_injected": false,
+  "integration_instruction": "Do not add HYP-043 as a portfolio constituent. Preserve this handoff as immutable diagnostic evidence and continue to use F05_BASELINE_UNCHANGED."
+}
