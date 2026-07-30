@@ -1,0 +1,26 @@
+name: USDJPY 2020-2022 Tick Authority v1 Supersession Guard
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_2020_2022_tick_authority_v1.yml'
+      - 'tools/build_usdjpy_2020_2022_tick_authority_month_v1.py'
+      - 'tools/finalize_usdjpy_2020_2022_tick_authority_v1.py'
+      - 'configs/data_sources/usdjpy_2020_2022_tick_authority_contract_v1.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: usdjpy-2020-2022-tick-authority-v1
+  cancel-in-progress: true
+
+jobs:
+  supersession-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record deterministic supersession
+        run: |
+          echo 'The initial four-way collection run is superseded by usdjpy_2020_2022_tick_authority_accelerated_v1.yml.'
+          echo 'The Work ID, source, period roles, schema, Release tag, and scientific firewall are unchanged.'

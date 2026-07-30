@@ -1,0 +1,121 @@
+{
+  "schema_version": "usdjpy_tick_authority_release_readback_receipt_v1",
+  "work_id": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001",
+  "release_tag": "usdjpy-2020-2022-source-native-bidask-tick-authority-v1",
+  "workflow_run_id": 30513521957,
+  "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+  "metadata_assets": [
+    {
+      "name": "bar_reconstruction_receipt.json",
+      "id": 494963534,
+      "sha256": "00535aea46bb4b512f8a32c941ea75a03771b18e22deda8a0a05bc94e07b0da2",
+      "bytes": 32357,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "collection_manifest.json",
+      "id": 494963564,
+      "sha256": "a7e0c0c7af29d51fcb831d26a7e7b865a72e6ccebe66471cefbdc5f5c2296b9f",
+      "bytes": 13639,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "final_result.json",
+      "id": 494963676,
+      "sha256": "72007d2261d0965bb81f0894d4f08d390862fa6cb10b9c210168c0a62fb2e83d",
+      "bytes": 127388,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "gap_catalog.csv",
+      "id": 494963569,
+      "sha256": "76c9484cf7f92b9cac4d8b0ab991366d579fb35b7c12f53fee7c6f4058592be4",
+      "bytes": 74,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "human_report.md",
+      "id": 494963573,
+      "sha256": "82a1d797fd80903fec7513cbaffe71430b59340d219dffeeb4990db5334f84de",
+      "bytes": 1451,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "normalized_asset_catalog.csv",
+      "id": 494963580,
+      "sha256": "9b159c42776a1f5298a0eeb2e6953556fc3422786d203ed55c0122ec7073184a",
+      "bytes": 17160,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "period_role_receipt.json",
+      "id": 494963595,
+      "sha256": "d63feb8bb6044923eb9c41f6575dd155a2304c97e2a4d76c0484ebc41d00bc88",
+      "bytes": 534,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "rakuten_history_availability.json",
+      "id": 494963613,
+      "sha256": "c42070987977b2964975b85ce613a2d8e9d846fec8f49aba12621d11c5b8c37e",
+      "bytes": 1601,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "raw_asset_catalog.csv",
+      "id": 494963627,
+      "sha256": "094d947541d08089b5265748b06a681d25fde65d32497a3583bd9a8b78ab37ea",
+      "bytes": 16414,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "release_manifest.json",
+      "id": 494963675,
+      "sha256": "f96e0d9ef9c33e9cf80e1e11dc182369b935305e54d86401968396dfec43f811",
+      "bytes": 131186,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "schema_compatibility_2020_2024.json",
+      "id": 494963635,
+      "sha256": "eac26d71e10540987226f149051f095ab4b539b3fd68fdc51d9a6e5552b335f9",
+      "bytes": 1607,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "sha256sums.txt",
+      "id": 494963673,
+      "sha256": "78c4caf9133413c9d8daa24f56cfcf33579d40f89786d96fd4d060c016519ae1",
+      "bytes": 18029,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "source_identity.json",
+      "id": 494963639,
+      "sha256": "b60f001498d9a7383e41af5b5f99d606e6df0ddcc92e6bdf4e58ba6985be0c7d",
+      "bytes": 980,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "spread_distribution_by_month.csv",
+      "id": 494963645,
+      "sha256": "3cb65e80a7d71420ca4484ab98bb31846b053bf50013f2aff01694054c1f6a19",
+      "bytes": 7985,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "tick_quality_by_month.csv",
+      "id": 494963651,
+      "sha256": "86ce61dffd046d1e13b88a9d2f0924d3e1b37c17b198a7196c07d0d2295c75b8",
+      "bytes": 7636,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    {
+      "name": "tick_quality_summary.json",
+      "id": 494963661,
+      "sha256": "a61d03dc4dca75f7c6a8cd8cdb5f82597128cad4ce671284297fdb4c97452fe7",
+      "bytes": 881,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "authority_substitution_allowed": false,
+  "available_history": [
+    {
+      "M1": {
+        "bytes": 583023988,
+        "records": 9717064,
+        "sha256": "db00b63e9e7ff2dd3f785563ad7f392a7e79ccef8a2c3e696f662b397b2b5af0"
+      },
+      "M15": {
+        "bytes": 40958008,
+        "records": 682631,
+        "sha256": "b22e9fb9a6d0f397b4186ba17f6e71cae9eb38aa59f214dfd1eb5173e4e7f165"
+      },
+      "coverage": "2019-01-01 through 2022-12-31 with tester runoff to 2023-01-10",
+      "raw_tick": false,
+      "source": "RakutenSecurities-Live terminal history",
+      "symbol": "USDJPY",
+      "timeframes": [
+        "M1",
+        "M15"
+      ],
+      "timezone": "Rakuten server UTC+2 standard / UTC+3 US-DST converted to UTC",
+      "type": "MT4_HST"
+    },
+    {
+      "model": 0,
+      "raw_tick": false,
+      "source": "Rakuten HST plus MT4 tester interpolation/model contract",
+      "spread_pips": 0.5,
+      "spread_points": 5,
+      "type": "MT4_MODEL_0_FIXED_SPREAD_TESTER"
+    },
+    {
+      "availability": "existing separate portability/import workflows",
+      "raw_rakuten_tick": false,
+      "source": "Dukascopy-derived",
+      "type": "DUKASCOPY_CONVERTED_PSEUDO_BROKER_HISTORY"
+    }
+  ],
+  "broker_native_raw_bidask_tick": {
+    "available": false,
+    "basis": "No documented Rakuten export/API for historical broker-native Bid/Ask raw ticks was identified; existing assets are MT4 bar/tester history."
+  },
+  "decision": "RAKUTEN_RAW_TICK_NOT_AVAILABLE",
+  "schema_version": "rakuten_history_availability_v1",
+  "work_id": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001"
+}

@@ -1,0 +1,36 @@
+name: Publish USDJPY Tick Authority Draft Recovery v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_usdjpy_tick_authority_draft_recovery_v1.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usdjpy-2020-2022-tick-authority-release-recovery-v1
+  cancel-in-progress: false
+
+jobs:
+  publish-existing-draft:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: usdjpy-2020-2022-source-native-bidask-tick-authority-v1
+    steps:
+      - name: Publish the existing draft Release without replacing it
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_id=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            --jq '.[] | select(.tag_name==env.RELEASE_TAG) | .id' | head -n1)
+          test -n "$release_id"
+          jq -n '{draft:false,prerelease:false}' | \
+            gh api --method PATCH "repos/$GITHUB_REPOSITORY/releases/$release_id" --input - > release.json
+          test "$(jq -r '.tag_name' release.json)" = "$RELEASE_TAG"
+          test "$(jq -r '.draft' release.json)" = "false"
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" \
+            --jq '{id,tag_name,draft,prerelease,html_url}'

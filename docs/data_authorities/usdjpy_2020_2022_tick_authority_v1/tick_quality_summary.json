@@ -1,0 +1,28 @@
+{
+  "all_month_timestamp_monotonic": true,
+  "all_normalized_to_bar_tick_counts_match": true,
+  "all_raw_to_normalized_rows_match": true,
+  "analysis_period_tick_count": 78737040,
+  "candidate_evaluation_executed": false,
+  "critical_gap_count": 0,
+  "decision": "PASS_2020_2022_TICK_AUTHORITY_CERTIFIED",
+  "invalid_bid_ask_or_price_count": 0,
+  "leap_day_2020_tick_count": 0,
+  "month_coverage": {
+    "expected_analysis_months": 36,
+    "expected_warmup_months": 3,
+    "missing_months": [],
+    "received_analysis_months": 36,
+    "received_warmup_months": 3
+  },
+  "production_authorization": false,
+  "schema_version": "usdjpy_tick_quality_summary_v1",
+  "terminal_download_error_hours": 0,
+  "warmup_tick_count": 4421635,
+  "work_id": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001",
+  "year_tick_counts": {
+    "2020": 24321113,
+    "2021": 14822017,
+    "2022": 39593910
+  }
+}

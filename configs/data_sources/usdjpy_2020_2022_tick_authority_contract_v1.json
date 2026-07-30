@@ -1,0 +1,20 @@
+{
+  "schema_version": "usdjpy_2020_2022_tick_authority_contract_v1",
+  "work_id": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001",
+  "branch": "data/usdjpy-2020-2022-tick-authority-v1",
+  "primary_source": "Dukascopy source-native USDJPY Bid/Ask BI5",
+  "period_roles": {
+    "2019_10_2019_12": "WARMUP_ONLY",
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD"
+  },
+  "strategy_scoring_authorized": false,
+  "candidate_evaluation_executed": false,
+  "candidate_selection_or_retuning_authorized": false,
+  "2025_access_authorized": false,
+  "production_authorization": false,
+  "required_timeframes": ["M1", "M5", "M15", "H1", "H4", "D1"],
+  "required_sides": ["bid", "ask"],
+  "release_tag": "usdjpy-2020-2022-source-native-bidask-tick-authority-v1"
+}
