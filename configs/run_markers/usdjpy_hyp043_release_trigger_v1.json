@@ -1,0 +1,13 @@
+{
+  "schema_version": "usdjpy_hyp043_release_trigger_marker_v1",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+  "release_tag": "usdjpy-hyp043-f05-localized-recovery-v1",
+  "scientific_run_id": 30523476402,
+  "candidate_specific_2025H1_replay_executed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "trigger_utc": "2026-07-30T08:20:00Z",
+  "trigger_mode": "IMMUTABLE_REMOTE_ASSET_DIGEST_VALIDATION"
+}
