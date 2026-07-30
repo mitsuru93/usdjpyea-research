@@ -1,11 +1,11 @@
 name: USDJPY HYP-044 Source-Native Full-Equity v2
 
-# User-authored trigger after v1 datetime-unit defect isolation.
 on:
   pull_request:
     branches: [main]
     paths:
       - 'tools/replay_usdjpy_hyp044_source_native_full_equity_v2.py'
+      - 'tools/replay_usdjpy_hyp044_source_native_full_equity_v3.py'
       - '.github/workflows/usdjpy_hyp044_source_native_full_equity_v2.yml'
   workflow_dispatch:
 
@@ -49,7 +49,7 @@ jobs:
       - name: Execute corrected tick full-equity replay
         run: |
           set -euo pipefail
-          python tools/replay_usdjpy_hyp044_source_native_full_equity_v2.py \
+          python tools/replay_usdjpy_hyp044_source_native_full_equity_v3.py \
             --ledger artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/source_native_trade_ledger_2020_2022.csv \
             --tick-root hyp044_fe_ticks \
             --out artifacts/research/usdjpy_hyp044/source_native_full_equity_v2
