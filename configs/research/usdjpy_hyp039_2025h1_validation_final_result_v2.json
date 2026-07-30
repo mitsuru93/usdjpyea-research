@@ -1,0 +1,141 @@
+{
+  "schema_version": "usdjpy_hyp039_2025h1_validation_final_result_v2",
+  "status": "COMPLETE_SCIENTIFIC_RESULT",
+  "hypothesis_id": "USDJPY-HYP-039",
+  "study_name": "Unchanged Short Pullback Candidate Qualification",
+  "family_id": "J_PULLBACK_CONTINUATION",
+  "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+  "candidate_contract_version": "v2",
+  "formal_deployment_decision": "FAIL_CORE_MT4_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED",
+  "economic_2025H1_decision": "PASS_SHORT_PULLBACK_PORTABILITY_PARTIAL_2025H1_RECOVERY",
+  "historical_portability_status": "FAIL_CORE_MT4_PORTABILITY",
+  "validation_execution_policy": "USER_DIRECTED_CONTINUATION_AFTER_PORTABILITY_DIAGNOSTIC_FAILURE",
+  "portability_failure_waived_for_adoption": false,
+  "authorities": {
+    "binding_research_sha": "b6bc006952eb3355cc6a2c27e294a62771196669",
+    "core_sha": "92fa706c5e4957b9250c97cc91be891927565ad6",
+    "research_core_parity_run_id": 30463001231,
+    "research_core_parity_merge_ref_sha": "3e6b92492a16ee4b6b760c045441eee8f26a7642",
+    "core_execution_run_id": 30503084961,
+    "core_result_issue": 676,
+    "core_release_issue": 689
+  },
+  "candidate_contract": {
+    "trading_direction": "SHORT_ONLY",
+    "holding_contract": "16_M15_BARS_UNCHANGED",
+    "suppression_population": "BOTH_RAW_SIDES_FROM_HYP036_BEFORE_HYP037_SHORT_FILTER",
+    "shadow_long_order_permission": false,
+    "shadow_long_pl_computation": false,
+    "hyp038_filter_reuse": false,
+    "candidate_modified_after_result": false,
+    "retuned_after_result": false
+  },
+  "gate_sequence": {
+    "research_core_parity": "PASS_ZERO_MISMATCH_500_OF_500",
+    "metaeditor_compile": "PASS_0_ERRORS_0_WARNINGS",
+    "rakuten_2023_2024_portability": "FAIL_CORE_MT4_PORTABILITY",
+    "2025H1_validation": "COMPLETE_VALIDATION_PERIOD_RESULT",
+    "production_authorization": false,
+    "live_authorization": false
+  },
+  "rakuten_2023_2024_portability": {
+    "trades": 499,
+    "net_jpy": 10739,
+    "profit_factor": 1.1506466907948265,
+    "positive_folds": 3,
+    "algorithm_or_information_time_mismatch": 242,
+    "common_events": 417,
+    "dukas_only_events": 83,
+    "rakuten_only_events": 83,
+    "common_rate_vs_dukas": 0.834,
+    "binding_failure_basis": "The Rakuten-native execution was profitable in aggregate but did not reproduce the binding Dukascopy candidate at the row-level signal population, chronology, information-time and price contract."
+  },
+  "validation_2025H1": {
+    "period_role": "VALIDATION_PERIOD",
+    "outcome_visibility_at_first_access": "UNSEEN_AT_FIRST_VALIDATION",
+    "first_access_timestamp_utc": "2026-07-30T00:43:08.7774609Z",
+    "outcome_accessed": true,
+    "2025H2_accessed": false,
+    "baseline_reproduction_pass": true,
+    "execution_integrity_pass": true,
+    "currency_mismatch": 0,
+    "chronology_mismatch": 0,
+    "execution_failure_count": 0,
+    "margin_pass": true,
+    "standalone": {
+      "trades": 172,
+      "net_jpy": 3483,
+      "profit_factor": 1.12615451483212,
+      "win_rate": 0.5058139534883721,
+      "full_equity_drawdown_jpy": 6919,
+      "realized_drawdown_jpy": 6109,
+      "minimum_equity_jpy": 95757,
+      "maximum_open_orders": 1,
+      "stopout_breached": false
+    },
+    "baseline_B02_F05": {
+      "trades": 463,
+      "net_jpy": -20808,
+      "profit_factor": 0.8294076655052265,
+      "full_equity_drawdown_jpy": 42737,
+      "minimum_equity_jpy": 57328
+    },
+    "combined_B02_F05_SP39": {
+      "net_jpy": -17325,
+      "profit_factor": 0.8841787891753129,
+      "full_equity_drawdown_jpy": 46281,
+      "minimum_equity_jpy": 53784,
+      "net_improvement_vs_baseline_jpy": 3483,
+      "full_equity_drawdown_change_vs_baseline_jpy": 3544
+    },
+    "B02_SP39": {
+      "net_jpy": -3481,
+      "profit_factor": 0.9431682748036767,
+      "full_equity_drawdown_jpy": 18601
+    },
+    "F05_SP39": {
+      "net_jpy": -10361,
+      "profit_factor": 0.9106363526590882,
+      "full_equity_drawdown_jpy": 33628
+    },
+    "correlation": {
+      "daily_candidate_to_B02_F05_baseline": 0.4118563198783911,
+      "weekly_candidate_to_B02_F05_baseline": 0.2901816869794503
+    },
+    "concentration": {
+      "bootstrap_event_p_nonpositive": 0.2633,
+      "bootstrap_session_block_p_nonpositive": 0.2974,
+      "top5_winners_removed_net_jpy": -1668,
+      "top_winner_decile_removed_net_jpy": -5209,
+      "largest_positive_month_share": 0.5794963649773469,
+      "maximum_losing_streak": 10
+    },
+    "portfolio_readthrough": "The candidate delivered positive standalone evidence and reduced the baseline loss by JPY 3,483, but the combined portfolio remained negative and full-equity drawdown worsened by JPY 3,544."
+  },
+  "period_access": {
+    "2020_2022_role": "ANALYSIS_PERIOD",
+    "2023_2024_role": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1_role": "VALIDATION_PERIOD",
+    "2025H1_candidate_outcome_accessed": true,
+    "2025H1_unseen_claim_consumed": true,
+    "2025H2_accessed": false
+  },
+  "authorization": {
+    "portfolio_integration_authorized": false,
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "immutable_evidence": {
+    "core_release_tag": "usdjpy-hyp039-short-pullback-2025h1-validation-v2",
+    "core_release_id": 362131716,
+    "core_release_asset_id": 494741716,
+    "archive_sha256": "e13015f77679a230685a867748f5ac000f5f43c920d1574e181b003df353ae4c",
+    "release_readback_status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+  },
+  "formal_closure": {
+    "candidate_status": "CLOSED_PORTABILITY_FAILURE_WITH_2025H1_EVIDENCE",
+    "hyp037_decision_changed": false,
+    "hyp038_decision_changed": false,
+    "exact_next_action": "Preserve the completed 2025H1 result as economic evidence. Do not deploy, rescue, retune, re-identify, or portfolio-adopt HYP-039 under this candidate identity because the historical portability failure remains binding."
+  }
+}
