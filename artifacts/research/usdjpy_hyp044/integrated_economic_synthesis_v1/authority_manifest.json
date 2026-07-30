@@ -1,0 +1,24 @@
+{
+  "2020_2022": {
+    "source": "Dukascopy source-native Bid/Ask BI5",
+    "ticks": 78737040,
+    "work_id": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001"
+  },
+  "2023_2024": {
+    "classification": "KNOWN_AUTHORITY_GENERATION_DIFFERENCE_NOT_CANDIDATE_RULE_CHANGE",
+    "common_contract_B02": {
+      "net_jpy": 11911,
+      "trades": 429
+    },
+    "program_baseline": {
+      "B02_net_jpy": 12722,
+      "F05_net_jpy": 39151,
+      "net_jpy": 51627,
+      "trades": 1882
+    }
+  },
+  "2025H1": {
+    "source": "Rakuten MT4 immutable baseline audit plus frozen candidate ledgers"
+  },
+  "HST_is_raw_tick_authority": false
+}

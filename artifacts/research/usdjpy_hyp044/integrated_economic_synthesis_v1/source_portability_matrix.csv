@@ -1,0 +1,3 @@
+algorithm_or_information_time_mismatch,common_events,dukas_2023_2024,dukas_only,rakuten_2023_2024,rakuten_only,status,strategy
+242,417,"{'trades': 500, 'net_jpy': 17679, 'profit_factor': 1.272769}",83,"{'trades': 499, 'net_jpy': 10739, 'profit_factor': 1.1506466907948265}",83,ECONOMICALLY_POSITIVE_ROW_IDENTITY_NOT_EXACT,SP39
+,,,,,,COMMON_CONTRACT_LINEAGE_REPRODUCED_WITH_PROGRAM_AUTHORITY_DIFFERENCE_PRESERVED,B02_F05

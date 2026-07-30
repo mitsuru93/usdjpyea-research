@@ -1,0 +1,11 @@
+dimension,net_jpy,period_scope,profit_factor,state,trades,value
+side,-7155,2025H1,0.844497087716248,LONG,203,
+side,7764,2025H1,1.126365130775883,SHORT,406,
+session_control,,2020_2022,,blocked_B02,,5
+session_control,,2020_2022,,blocked_F05,,42
+session_control,,2020_2022,,blocked_source_net_jpy,,-3378.0000000000286
+session_control,,2020_2022,,blocked_trade_count,,47
+session_control,,2025H1,,blocked_trade_count,,26
+session_control,,2025H1,,blocked_B02,,4
+session_control,,2025H1,,blocked_F05,,22
+session_control,,2025H1,,blocked_source_net_jpy,,-1123
