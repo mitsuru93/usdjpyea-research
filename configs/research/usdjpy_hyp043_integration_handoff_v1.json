@@ -1,6 +1,6 @@
 {
   "schema_version": "usdjpy_hyp043_common_portfolio_handoff_v1",
-  "status": "IMMUTABLE_DIAGNOSTIC_HANDOFF_NO_CANDIDATE",
+  "status": "IMMUTABLE_DIAGNOSTIC_HANDOFF_NO_CANDIDATE_RELEASE_VERIFIED",
   "hypothesis_id": "USDJPY-HYP-043",
   "candidate_id": null,
   "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
@@ -16,19 +16,38 @@
     "core_scientific_result_sha": "1e6a5eda4ee9f36ad2d5c9defa61dfcc5a535cea",
     "config_blob_sha": "7419230801e1866262cbbafee69b3f00e7c7a110",
     "scientific_run_id": 30523476402,
+    "release_readback_run_id": 30525495940,
     "trade_ledger_sha256": "25e2e983ac9448986c95e9cc04dba7ea1c732df64ee6737e62cb782c8be853d0",
     "lifecycle_ledger_sha256": "9cf18df10a896d2de0c35ecfae88366ffbba43598fd59e5b1a3c1f504db96855",
     "decomposition_sha256": "c6eef17fc61b90a7dae1b1ed4e02acff3b8b1d7c69ab5cb87fc8dcd60086cc7e"
   },
   "release": {
     "tag": "usdjpy-hyp043-f05-localized-recovery-v1",
-    "status": "TRIGGER_REQUESTED_AFTER_RESEARCH_CLOSURE_MERGE"
+    "url": "https://github.com/mitsuru93/usdjpyea-research/releases/tag/usdjpy-hyp043-f05-localized-recovery-v1",
+    "status": "PASS_IMMUTABLE_RELEASE_PUBLISHED_AND_CONTENT_VALIDATED",
+    "asset_name": "usdjpy-hyp043-f05-localized-recovery-v1-research-closure.zip",
+    "asset_sha256": "4f9d9dca1dab7b65fc86a3693062f71c2a87923171c45714c8d2f16b393984cc",
+    "asset_bytes": 15955,
+    "published_asset_digest": "sha256:4f9d9dca1dab7b65fc86a3693062f71c2a87923171c45714c8d2f16b393984cc",
+    "remote_readback_sha256": "4f9d9dca1dab7b65fc86a3693062f71c2a87923171c45714c8d2f16b393984cc",
+    "release_receipt": "configs/research/usdjpy_hyp043_release_receipt_v1.json",
+    "readback_receipt": "configs/research/usdjpy_hyp043_readback_receipt_v1.json",
+    "receipt_issue": "https://github.com/mitsuru93/usdjpyea-research/issues/442"
   },
   "archive": {
-    "file": "usdjpy-hyp043-f05-localized-recovery-v1.zip",
-    "sha256": "b7004225b637205623fcc38630c57c272dcf8b0de20774d6d6cb38c1ee75c157",
-    "bytes": 510084,
-    "file_count": 18
+    "research_release_asset": {
+      "file": "usdjpy-hyp043-f05-localized-recovery-v1-research-closure.zip",
+      "sha256": "4f9d9dca1dab7b65fc86a3693062f71c2a87923171c45714c8d2f16b393984cc",
+      "bytes": 15955,
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+    },
+    "core_deterministic_evidence": {
+      "file": "usdjpy-hyp043-f05-localized-recovery-v1.zip",
+      "sha256": "b7004225b637205623fcc38630c57c272dcf8b0de20774d6d6cb38c1ee75c157",
+      "bytes": 510084,
+      "file_count": 18,
+      "status": "PASS_DETERMINISTIC_ARCHIVE_CREATED"
+    }
   },
   "historical_metrics": {
     "baseline_F05": {
