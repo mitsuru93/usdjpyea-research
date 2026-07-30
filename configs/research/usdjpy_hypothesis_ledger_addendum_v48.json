@@ -1,0 +1,49 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v48",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v47.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v47.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-044",
+      "name": "INTEGRATED_PROFITABILITY_STABILIZATION_AND_RESIDUAL_LOSS_ELIMINATION",
+      "title": "USDJPY 2020–2025H1 Integrated Profitability Stabilization and Residual-Loss Elimination Study",
+      "status": "ACTIVE_RESEARCH",
+      "research_branch": "research/usdjpy-hyp044-integrated-profitability-stabilization-v1",
+      "core_branch": "feature/usdjpy-hyp044-integrated-candidate-qualification-v1",
+      "formal_parent_hypotheses_reopened": false,
+      "inputs": [
+        "F05 C2 / C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+        "B02 C3 / C3_PROFIT_TO_NONPROFIT_GIVEBACK",
+        "unchanged Short Pullback / C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+        "Asian Range Sweep DD hedge reserve"
+      ],
+      "primary_objective": "Complete a Rakuten MT4 EA configuration that is profitable across multiple regimes from 2020 onward, retains material 2023–2024 profitability, and makes the 2025H1 portfolio net positive with PF above 1.",
+      "period_roles": {
+        "2020_2022": "ANALYSIS_PERIOD",
+        "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+        "2025H1": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT",
+        "2025H2": "PROHIBITED_NOT_ACCESSED"
+      },
+      "binding_decision_priority": [
+        "2025H1 portfolio net > 0",
+        "2025H1 portfolio PF > 1",
+        "2020–2024 pooled net > 0",
+        "absolute period stability",
+        "full-equity and capital viability",
+        "Rakuten MT4 portability and parity"
+      ],
+      "baseline_relative_fold_breadth_binding": false,
+      "candidate_catalog_limits": {
+        "round_a_max": 5,
+        "round_b_max": 3
+      },
+      "2025H2_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false
+    }
+  ],
+  "hypothesis_status_updates": []
+}
