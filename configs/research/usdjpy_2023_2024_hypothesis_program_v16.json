@@ -1,0 +1,22 @@
+{
+  "schema_version": "usdjpy_2023_2024_hypothesis_program_v16",
+  "supersedes": "configs/research/usdjpy_2023_2024_hypothesis_program_v15.json",
+  "status": "HYP043_ACTIVE_PREREGISTERED",
+  "active_hypothesis": "USDJPY-HYP-043",
+  "family_id": "F05_LOCALIZED_STATE_LOSS_PERSISTENCE_LIFECYCLE_RECOVERY",
+  "objective": "Preserve at least 85 percent of 2023-2024 F05 net while selectively compressing a reproducible localized 2025H1 loss population.",
+  "candidate_limit": 3,
+  "candidate_selection_uses_only_2023_2024": true,
+  "candidate_freeze_before_2025H1": true,
+  "2020_2022_access": "ANALYSIS_ONLY_AFTER_FREEZE_IF_AUTHORITY_AVAILABLE",
+  "2023_2024_access": true,
+  "2025H1_access": "VALIDATION_PERIOD_REVALIDATION_AFTER_FREEZE",
+  "2025H2_access": false,
+  "formal_decisions_changed": [],
+  "HYP041_reopened": false,
+  "B02_C3_reserve_changed": false,
+  "common_portfolio_integration_changed": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "next_action": "Run exact baseline reproduction and HYP-043 intersection analysis from the canonical source-native diagnostic authority, apply the finite historical gate, and freeze a candidate before any candidate-specific 2025H1 replay."
+}
