@@ -1,0 +1,16 @@
+{
+  "schema_version": "usdjpy_integrated_long_horizon_qualification_001_analysis_dispatch_v1",
+  "work_id": "USDJPY-INTEGRATED-LONG-HORIZON-QUALIFICATION-001",
+  "dispatch": "ONCE",
+  "primary_portfolio": "P4_B02_C3_F05_C2_SP39",
+  "candidate_rules_changed": false,
+  "latest_baseline_anchor": {
+    "trades": 1893,
+    "net_jpy": 52779
+  },
+  "known_2025H1_anchor": {
+    "P4_net_jpy": -2131,
+    "P4_profit_factor": 0.9807602022390842
+  },
+  "2025H2_accessed": false
+}
