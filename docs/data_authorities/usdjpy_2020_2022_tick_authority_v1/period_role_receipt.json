@@ -1,0 +1,15 @@
+{
+  "2025_accessed": false,
+  "binding_candidate_gate_executed": false,
+  "candidate_selection_or_retuning_executed": false,
+  "production_authorization": false,
+  "roles": {
+    "2019-10-01_2019-12-31": "WARMUP_ONLY",
+    "2020-01-01_2022-12-31": "ANALYSIS_PERIOD",
+    "2023-01-01_2024-12-31": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD"
+  },
+  "schema_version": "usdjpy_period_role_receipt_v1",
+  "strategy_profit_loss_computed": false,
+  "work_id": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001"
+}

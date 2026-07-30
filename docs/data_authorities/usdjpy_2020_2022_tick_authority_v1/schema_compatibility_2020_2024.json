@@ -1,0 +1,40 @@
+{
+  "authorities_compared": [
+    "usdjpy-2023-raw-bidask-ticks-v1",
+    "usdjpy-2024-raw-bidask-ticks-v1",
+    "usdjpy-2020-2022-source-native-bidask-tick-authority-v1"
+  ],
+  "byte_identical_schema": false,
+  "compatible_for_source_native_analysis": true,
+  "differences": [
+    {
+      "2020_2022": "timestamp_utc,bid,ask,spread_price,spread_pips,symbol,source,source_file,year,month,trading_date_utc,sequence",
+      "2023_2024": "timestamp_utc,symbol,bid,ask,bid_volume,ask_volume,source",
+      "downstream_adapter": "select or map common fields; sequence is month-scoped 1-based",
+      "field": "normalized_schema",
+      "impact": "backward-compatible semantic superset but not byte-schema-identical"
+    },
+    {
+      "2020_2022": "M1/M5/M15/H1/H4/D1 bid and ask bars included",
+      "2023_2024": "not part of original raw release contract",
+      "downstream_adapter": "none for raw readers",
+      "field": "derived_bars",
+      "impact": "additive derived layer only"
+    }
+  ],
+  "matches": {
+    "bid_ask_orientation": "normalized bid then ask",
+    "compression": "deterministic gzip/tar.gz",
+    "duplicate_policy": "preserve source order; audit, do not silently delete",
+    "pip_definition": "0.01 JPY",
+    "price_scale": 1000.0,
+    "raw_preservation": "hourly BI5 payloads",
+    "release_readback": "byte size and SHA-256",
+    "source": "Dukascopy BI5",
+    "symbol": "USDJPY",
+    "timestamp_source_precision": "milliseconds",
+    "timezone": "UTC"
+  },
+  "schema_version": "usdjpy_tick_schema_compatibility_2020_2024_v1",
+  "work_id": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001"
+}

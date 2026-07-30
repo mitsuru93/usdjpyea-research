@@ -134,3 +134,10 @@ A new 2025 Tick collection is therefore required before the binding retest. Beca
 3. Rerun unchanged `F05_FAILED_RECLAIM_BASIC_V1` on 2025 Tick data.
 4. Record the external-period pass/fail result in the registry and this current-state document.
 5. Freeze and evaluate the B02/common native H1/H4 transition hypothesis.
+
+<!-- USDJPY-DATA-2020-2022-TICK-AUTHORITY-001 -->
+## USDJPY 2020–2022 Tick authority
+
+2020–2022 Tick authorityはanalysis-onlyであり、既存candidateのformal decisionや2025H1 validation resultを変更しない。
+
+Work ID: `USDJPY-DATA-2020-2022-TICK-AUTHORITY-001`. Release: `usdjpy-2020-2022-source-native-bidask-tick-authority-v1`. Receipt Issue: #438.

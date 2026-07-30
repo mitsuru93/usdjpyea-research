@@ -1,0 +1,24 @@
+{
+  "collection_tool": {
+    "authority_builder": "tools/build_usdjpy_2020_2022_tick_authority_month_v1.py",
+    "downloader": "tools/download_dukascopy_raw_tick_day_v1.py",
+    "source_sha": "d2b4770e20fdac4f30cb9bc2e8164278eec15b3c",
+    "workflow_run_id": 30513521957
+  },
+  "not_rakuten_quote_equivalence": true,
+  "primary_authority": {
+    "orientation": "ask_raw then bid_raw; normalized bid then ask",
+    "pip_definition": "0.01 JPY",
+    "price_scale": 1000.0,
+    "raw_payload_preserved": true,
+    "record_layout": ">IIIff",
+    "source_identifier": "datafeed.dukascopy.com BI5",
+    "symbol": "USDJPY",
+    "timestamp_precision": "milliseconds source; ISO-8601 microsecond field",
+    "timezone": "UTC",
+    "url_template": "https://datafeed.dukascopy.com/datafeed/USDJPY/{year}/{zero_based_month}/{day}/{hour}h_ticks.bi5",
+    "vendor": "Dukascopy"
+  },
+  "schema_version": "usdjpy_tick_source_identity_v1",
+  "work_id": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001"
+}
