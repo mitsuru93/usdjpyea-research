@@ -2,7 +2,7 @@
   "schema_version": "usdjpy_hyp044_research_evidence_inventory_v1",
   "hypothesis_id": "USDJPY-HYP-044",
   "status": "PASS_COMPACT_INVENTORY_COMMITTED",
-  "matching_file_count": 356,
+  "matching_file_count": 360,
   "matching_files": [
     {
       "path": ".github/workflows/archive_usdjpy_portfolio_loss_cluster_phase1_r1.yml",
@@ -95,6 +95,11 @@
       "sha256": "4c02985fab83b917352c8af54279a804937a07d3ede50919d3fd69d87730b37d"
     },
     {
+      "path": ".github/workflows/usdjpy_hyp044_source_native_ledger_tieout_v1.yml",
+      "bytes": 1581,
+      "sha256": "6986bcd53d0f431685a8960f7b46cff6ff1e9e9e8ccf940f2131b14f23eb3ca3"
+    },
+    {
       "path": ".github/workflows/usdjpy_hyp044_source_native_schema_probe_v1.yml",
       "bytes": 3587,
       "sha256": "e2be28ec9ea3706d11ce1310f422bb1c4066a03e9096e6da0d4bdafefd29ac06"
@@ -173,6 +178,16 @@
       "path": "artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/source_native_trade_ledger_2020_2022.csv",
       "bytes": 3310093,
       "sha256": "776b0f30d81072abcc947113b9c938b351f4699297bcba76bbc7ce7779c37058"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/source_native_full_equity_v2/full_equity_metrics_2020_2022_v2.json",
+      "bytes": 4851,
+      "sha256": "38e4ef9e4b5892a1c7cd2559cd765a07b9825f90db6b58c45c2786af565f4138"
+    },
+    {
+      "path": "artifacts/research/usdjpy_hyp044/source_native_full_equity_v2/sha256sums.txt",
+      "bytes": 104,
+      "sha256": "42539ab10f8005f1d41fd7544131c4f49e954602ef07c74442cd5c3425134bde"
     },
     {
       "path": "configs/data_sources/usdjpy_2020_2022_tick_authority_contract_v1.json",
@@ -1543,6 +1558,11 @@
       "path": "research_inputs/usdjpy/shock_failure/2025_postmortem_v1/portfolio_context_compact.json",
       "bytes": 8926,
       "sha256": "e3375cdf431fda0780f37b2eccd06e70643a7ba805ed4a666a162e583fac0e8b"
+    },
+    {
+      "path": "tools/audit_usdjpy_hyp044_source_native_ledger_v1.py",
+      "bytes": 2280,
+      "sha256": "20bde2b71a9edcafe3d7db740170bb94a4b9d202243c4e24010d0c95edba3494"
     },
     {
       "path": "tools/build_usdjpy_2020_2022_tick_authority_month_v1.py",
