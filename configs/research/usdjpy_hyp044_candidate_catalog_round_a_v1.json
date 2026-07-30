@@ -1,0 +1,72 @@
+{
+  "schema_version": "usdjpy_hyp044_candidate_catalog_round_a_v1",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "status": "FROZEN_BEFORE_FORMAL_ROUND_A_2025H1_RESULT_CONSUMPTION",
+  "maximum_candidates": 5,
+  "candidate_count": 5,
+  "candidates": [
+    {
+      "candidate_id": "A0_CURRENT_BEST_UNCHANGED",
+      "family": "REFERENCE",
+      "parent_architecture": "B02_C3 + F05_C2 + SP39_UNCHANGED",
+      "primary_mechanism": "No additional modification",
+      "rule": "Use the authoritative C3, C2 and unchanged Short Pullback contracts without an additional permission or exit rule."
+    },
+    {
+      "candidate_id": "A1_F05_C2_NO_B02_OVERLAP",
+      "family": "F05_C2_STABILITY_REFINEMENT",
+      "parent_architecture": "B02_C3 + F05_C2 + SP39_UNCHANGED",
+      "primary_mechanism": "Avoid C2 winner damage in cross-strategy overlap states",
+      "rule": "Apply the frozen F05 C2 60-second exit only when B02 overlap_count at F05 Entry is zero; otherwise retain the original F05 exit.",
+      "information_time": "B02 owned-position state at F05 Entry plus the frozen C2 state at Entry+60 seconds",
+      "development_evidence": {
+        "2023_2024_no_B02_overlap_C2_delta_jpy": 4668,
+        "2023_2024_B02_overlap_C2_delta_jpy": -5490
+      }
+    },
+    {
+      "candidate_id": "A2_B02_C3_EARLY_GIVEBACK_16BAR",
+      "family": "B02_C3_WINNER_PRESERVATION_REFINEMENT",
+      "parent_architecture": "B02_C3 + F05_C2 + SP39_UNCHANGED",
+      "primary_mechanism": "Localize C3 to early breakout acceptance failure",
+      "rule": "Arm and execute C3 only if its first profit-to-nonprofit giveback boundary occurs no later than the 16th completed M15 boundary after Entry; otherwise retain the original 48-bar B02 exit.",
+      "information_time": "Completed M15 executable boundary state only",
+      "threshold_rationale": "One third of the original 48-bar B02 lifecycle; separates immediate/slow acceptance failure from late lifecycle without a threshold grid."
+    },
+    {
+      "candidate_id": "A3_SP39_NEGATIVE_SAME_DIRECTION_CLUSTER_VETO",
+      "family": "SHORT_PULLBACK_PORTFOLIO_RISK_REFINEMENT",
+      "parent_architecture": "B02_C3 + F05_C2 + SP39_UNCHANGED",
+      "primary_mechanism": "Prevent SP39 entry only in an active losing same-direction parent cluster",
+      "rule": "Keep the unchanged SP39 signal and 16-bar lifecycle, but veto Entry only when at least two owned B02/F05 positions with the same Short direction are already open and their aggregate executable floating P/L is negative at the SP39 Entry tick.",
+      "information_time": "Owned parent positions and executable floating P/L at the SP39 Entry tick",
+      "not_reused": "HYP-038 C5_COEXPOSURE_SKIP; this rule requires both count>=2 and negative floating P/L and does not veto generic coexposure."
+    },
+    {
+      "candidate_id": "A4_P3_SESSION_LOSS_PERSISTENCE_CAP_2",
+      "family": "RESIDUAL_LOSS_CLUSTER_CONTROL",
+      "parent_architecture": "B02_C3 + F05_C2; SP39 remains unchanged and outside the Round A cap",
+      "primary_mechanism": "Limit repeated realized loss persistence after C2/C3",
+      "rule": "Process matured closes before entries. Reset at each UTC session boundary or realized winner. After two consecutive realized losses in the active UTC session, block subsequent B02/F05 entries until the next session boundary.",
+      "information_time": "Realized owned-position closes and UTC session state before each Entry",
+      "new_candidate_scope": "Recomputed on the P3 parent architecture; not a retrospective adoption of the old baseline SESSION_LOSS_CAP_2 result.",
+      "development_evidence": {
+        "baseline_parent_mechanism_reproduced_2023_2024": true,
+        "historical_reference_pooled_net_improvement_jpy": 5585,
+        "historical_reference_positive_net_folds": 3,
+        "historical_reference_winner_retention": 0.9928912230519442
+      }
+    }
+  ],
+  "prohibited": [
+    "2025H1 event labels in rule logic",
+    "calendar-name permissions",
+    "future MFE or future peak",
+    "threshold grid search",
+    "candidate rescue after formal result",
+    "2025H2 access"
+  ],
+  "2025H1_outcome_visibility": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT",
+  "all_candidates_must_run_through_2025H1": true,
+  "2025H2_accessed": false
+}
