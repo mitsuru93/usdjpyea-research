@@ -1,0 +1,55 @@
+{
+  "2025H2_accessed": false,
+  "decision_reasons": [
+    "2020-2024 pooled net is positive.",
+    "2025H1 P4 net remains negative (-2131 JPY).",
+    "2025H1 P4 profit factor remains below 1 (0.9807602022).",
+    "2021 and material half-year/quarter loss clusters remain.",
+    "Full integrated latest-lineage Core/MT4 same-input parity is incomplete."
+  ],
+  "economic_summary": {
+    "2020_2024_pooled_net_jpy": 80674,
+    "2025H1_net_jpy": -2131,
+    "2025H1_profit_factor": 0.9807602022390755,
+    "positive_halfyears": 7,
+    "positive_months": 38,
+    "positive_quarters": 12,
+    "positive_years_2020_2024": 4,
+    "rolling_12m_min_diagnostic": {
+      "net_jpy": -34880.0,
+      "period_end": "2023-08"
+    },
+    "rolling_6m_min_diagnostic": {
+      "net_jpy": -30319.0,
+      "period_end": "2023-01"
+    },
+    "total_2020_2025H1_net_jpy": 78543,
+    "total_halfyears": 11,
+    "total_months": 66,
+    "total_quarters": 22,
+    "total_years_2020_2024": 5,
+    "worst_halfyear": {
+      "net_jpy": -23825,
+      "period": "2022H2"
+    },
+    "worst_month_diagnostic": {
+      "net_jpy": -11781.0,
+      "period": "2024-09"
+    },
+    "worst_quarter": {
+      "net_jpy": -18599,
+      "period": "2025Q1"
+    },
+    "worst_year": {
+      "net_jpy": -4279,
+      "period": "2021"
+    }
+  },
+  "exact_next_action": "Do not deploy P4. Preserve this qualification as closed PARTIAL evidence; in a separate work item eliminate the 2025Q1 residual loss without changing this frozen study, then rerun the same long-horizon contract and complete Rakuten forward raw-Tick C2 qualification.",
+  "final_decision": "PARTIAL_LONG_HORIZON_RECOVERY_WITH_RESIDUAL_LOSS",
+  "live_authorization": false,
+  "production_authorization": false,
+  "schema_version": "usdjpy_integrated_long_horizon_qualification_001_final_decision_v1",
+  "selected_portfolio": "P4_B02_C3_F05_C2_SP39",
+  "work_id": "USDJPY-INTEGRATED-LONG-HORIZON-QUALIFICATION-001"
+}
