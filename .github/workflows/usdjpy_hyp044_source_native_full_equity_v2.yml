@@ -1,5 +1,6 @@
 name: USDJPY HYP-044 Source-Native Full-Equity v2
 
+# User-authored trigger after v1 datetime-unit defect isolation.
 on:
   pull_request:
     branches: [main]
