@@ -1,0 +1,35 @@
+{
+  "schema_version": "usdjpy_source_portability_analysis_only_2020_2022_receipt_v1",
+  "work_id": "USDJPY-PORTABILITY-001",
+  "evidence_role": "ANALYSIS_ONLY_NON_BINDING_EVIDENCE",
+  "authority_work_id": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001",
+  "authority_source_sha": "58d30872a1ccda86bd33848e8ecd5373bf1ca945",
+  "authority_decision": "PASS_2020_2022_TICK_AUTHORITY_CERTIFIED",
+  "source": "Dukascopy source-native USDJPY Bid/Ask BI5",
+  "analysis_tick_count": 78737040,
+  "critical_gap_count": 0,
+  "invalid_bid_ask_count": 0,
+  "bar_reconstruction": {
+    "timeframes": ["M1", "M5", "M15", "H1", "H4", "D1"],
+    "sides": ["bid", "ask"],
+    "bar_rule": "UTC epoch-aligned OHLC; first and last actual tick timestamps; source order preserved",
+    "all_months_tick_count_consistent": true,
+    "warmup_period": "2019-10-01/2019-12-31 WARMUP_ONLY"
+  },
+  "common_contract_readthrough": {
+    "timestamp_continuity": "PASS_AUTHORITY_CONTINUITY",
+    "bar_reconstruction_continuity": "PASS_AUTHORITY_CONTINUITY",
+    "indicator_warmup_support": "PASS_THREE_MONTH_PREPEND_AVAILABLE",
+    "weekend_holiday_boundary": "PASS_GAP_CATALOG_NO_CRITICAL_GAPS",
+    "source_gap_behavior": "PRESERVE_AND_CLASSIFY_DO_NOT_SYNTHESIZE",
+    "execution_fixture_reproducibility": "SEMANTIC_INPUT_AVAILABLE; NOT_A_RAKUTEN_EXECUTION_CERTIFICATION",
+    "HYP039_HYP040_population_use": "CHARACTERIZATION_ONLY_NOT_EXECUTED_FOR_SELECTION"
+  },
+  "contract_selected_or_changed_from_2020_2022": false,
+  "candidate_selected_or_retuned": false,
+  "formal_gate": false,
+  "strategy_profit_loss_computed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
