@@ -1,0 +1,55 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v73",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v72.json",
+  "status": "HYP043_CLOSED_WITH_C2_PARTIAL_ECONOMIC_ADDENDUM_NO_DEPLOYMENT",
+  "active_hypotheses": [],
+  "closed_hypotheses": {
+    "USDJPY-HYP-043": {
+      "status": "CLOSED_COMPLETE_WITH_C2_2025H1_ECONOMIC_ADDENDUM",
+      "family": "F05_LOCALIZED_STATE_LOSS_PERSISTENCE_LIFECYCLE_RECOVERY",
+      "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+      "economic_decision": "PARTIAL_RECOVERY_ECONOMIC_HISTORICAL_GATE_FAIL",
+      "economic_revalidation_candidate": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+      "deployment_candidate": null,
+      "candidate_results": {
+        "C1_LOCALIZED_SHORT_LOSS_PERSISTENCE_PERMISSION": "REJECT_ZERO_HISTORICAL_SUPPORT",
+        "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION": "ECONOMIC_PARTIAL_RECOVERY_BUT_REJECT_HISTORICAL_FOLD_BREADTH_2_OF_4",
+        "C3_LOCALIZED_PRIOR_LOSS_GIVEBACK_EXIT": "REJECT_ZERO_HISTORICAL_SUPPORT"
+      },
+      "candidate_specific_2025H1_replay_executed": true,
+      "F05_2025H1_improvement_jpy": 5909,
+      "portfolio_2025H1_improvement_jpy": 5909,
+      "candidate_freeze_role": "USER_DIRECTED_UNCHANGED_RULE_ECONOMIC_REVALIDATION_NOT_HISTORICAL_GATE_PASS",
+      "Core_economic_replay_created": true,
+      "Core_MT4_full_equity_portability_status": "PENDING_SEPARATE_SELF_HOSTED_RUN",
+      "integration_candidate_eligibility": false,
+      "diagnostic_economic_handoff_eligibility": true,
+      "final_result": "configs/research/usdjpy_hyp043_final_result_v2.json",
+      "integration_handoff": "configs/research/usdjpy_hyp043_integration_handoff_v2.json",
+      "candidate_rule_changed_after_result": false,
+      "2025H2_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false
+    }
+  },
+  "closed_formal_decisions_unchanged": {
+    "USDJPY-HYP-027": true,
+    "USDJPY-HYP-029": true,
+    "USDJPY-HYP-032": true,
+    "USDJPY-HYP-039": true,
+    "USDJPY-HYP-040": true,
+    "USDJPY-HYP-041": true,
+    "USDJPY-HYP-042": true
+  },
+  "common_portfolio_integration": {
+    "formal_decision_changed": false,
+    "candidate_logic_injection_authorized": false,
+    "immutable_diagnostic_economic_handoff_authorized": true,
+    "F05_role": "F05_BASELINE_UNCHANGED"
+  },
+  "run_authorization": {
+    "2025H2": false,
+    "production": false,
+    "live": false
+  }
+}
