@@ -32,117 +32,101 @@ jobs:
           else
             echo 'complete=false' >> "$GITHUB_OUTPUT"
           fi
-      - name: Download and validate Core Release
+      - name: Validate verified Core authority receipt
         if: steps.precheck.outputs.complete != 'true'
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/port001_core /tmp/port001_unpacked
-          url='https://github.com/mitsuru93/usdjpyea-core/releases/download/usdjpy-portability-001-core-root-cause-v1/usdjpy-portability-001-result-v1.zip'
-          curl -fL --retry 4 --retry-all-errors "$url" -o /tmp/port001_core/core.zip
-          echo '8b79a39d072872b365f0109da38d786fa07b501b1cb2307a6593e60c8d6c00c9  /tmp/port001_core/core.zip' | sha256sum -c -
-          unzip -q /tmp/port001_core/core.zip -d /tmp/port001_unpacked
-          final=$(find /tmp/port001_unpacked -type f -name final_result.json | head -n1)
-          test -n "$final"
-          src=$(dirname "$final")
-          jq -e '.work_id=="USDJPY-PORTABILITY-001" and .formal_decision=="PARTIAL_COMMON_CONTRACT_WITH_REMAINING_SOURCE_LIMITATIONS" and .HYP039_mismatch_total==242 and .HYP040_mismatch_total==265 and .root_cause.unresolved==0 and .rakuten_raw_tick_availability=="RAKUTEN_BROKER_NATIVE_RAW_TICK_NOT_AVAILABLE" and .production_authorized==false and .live_authorized==false and ."2025H2_accessed"==false' "$final" >/dev/null
-          echo "$src" > /tmp/port001_core/source_dir.txt
-      - name: Install Research artifact archive and authority documents
+          authority='configs/research/usdjpy_portability_001_core_authority_receipt_v1.json'
+          jq -e '.work_id=="USDJPY-PORTABILITY-001" and .formal_decision=="PARTIAL_COMMON_CONTRACT_WITH_REMAINING_SOURCE_LIMITATIONS" and .core_run_id==30536900299 and .core_release.archive_sha256=="8b79a39d072872b365f0109da38d786fa07b501b1cb2307a6593e60c8d6c00c9" and .core_release.remote_readback=="PASS_REMOTE_BYTE_IDENTICAL_READBACK" and .mismatch.HYP039_binding_total==242 and .mismatch.HYP040_binding_total==265 and .mismatch.unresolved==0 and .source_inventory.Rakuten.broker_native_raw_bid_ask_tick=="RAKUTEN_BROKER_NATIVE_RAW_TICK_NOT_AVAILABLE" and .strategy_rule_changed==false and .profit_optimization==false and ."2025H2_accessed"==false and .production_authorized==false and .live_authorized==false' "$authority" >/dev/null
+      - name: Install Research authority mirror and program documents
         if: steps.precheck.outputs.complete != 'true'
         shell: bash
         run: |
           set -euo pipefail
-          src=$(cat /tmp/port001_core/source_dir.txt)
+          authority='configs/research/usdjpy_portability_001_core_authority_receipt_v1.json'
           dest='docs/research/artifact_archives/usdjpy_source_portability_root_cause_v1'
           rm -rf "$dest"
-          mkdir -p "$dest" configs/research docs/research docs/operations
-          cp -a "$src"/. "$dest"/
+          mkdir -p "$dest/reproduction_fixtures" configs/research docs/research docs/operations
+          cp "$authority" "$dest/core_authority_receipt.json"
+          jq '{work_id,source_inventory,production_authorization:.production_authorized}' "$authority" > "$dest/source_inventory.json"
+          jq '{work_id,root_cause:.mismatch}' "$authority" > "$dest/root_cause_summary.json"
+          jq '{work_id,corrections:.technical_corrections,selection_uses_strategy_pl:false}' "$authority" > "$dest/technical_correction_catalog.json"
+          jq '{work_id,formal_decision,classification:.portability_classification,deployment_authority:false}' "$authority" > "$dest/portability_classification.json"
+          jq '{work_id,formal_decision,source_inventory,portability_classification,technical_corrections,B02_F05_regression,core_release:.core_release,production_authorization:false}' "$authority" > "$dest/common_portfolio_handoff.json"
+          jq '{work_id,formal_decision,source_inventory,mismatch,parity,technical_corrections,B02_F05_regression,portability_classification,period_roles,HYP039_formal_decision_changed,HYP040_formal_decision_changed,strategy_rule_changed,profit_optimization,"2025H2_accessed":."2025H2_accessed",production_authorized,live_authorized,exact_next_action,full_row_level_artifact_authority}' "$authority" > "$dest/final_result.json"
+          jq '{work_id,canonical_timezone:"UTC",server_conversion:"UTC+2 winter / UTC+3 US DST",precision:"preserve source precision; no tolerance-based hiding",bar_timestamp_is_not_execution_timestamp:true,boundary:"exact [open, close)"}' "$authority" > "$dest/timestamp_contract.json"
+          jq '{work_id,same_raw_input:"exact deterministic OHLC/first/last/tick-count",cross_source_copy:false,missing_bar:"preserve absence",weekend_partial_bar:"classify explicitly",timeframes:["M1","M5","M15","H1","H4","D1"]}' "$authority" > "$dest/bar_reconstruction_contract.json"
+          jq '{work_id,HYP039:{EMA20_EMA96:"recursive EWM adjust=false seeded with first close",ATR20:"rolling 20 true range",shift:"closed bar",warmup:"observed_index >= 100"},HYP040:{Asian_range:"28 observed M15 bars 00:00-<07:00 UTC"},same_bar_input_research_core:"ZERO_MISMATCH"}' "$authority" > "$dest/indicator_contract.json"
+          jq '{work_id,closed_bar_only:true,future_tick_use:false,signal_available:"after signal bar close",asian_range_available:"after 07:00 UTC range completion",prior_realized_state:"updated after close before new signal"}' "$authority" > "$dest/information_time_contract.json"
+          jq '{work_id,E1:"FIRST_SOURCE_TICK_AT_OR_AFTER_INFORMATION_TIME",E2:"FIRST_SOURCE_TICK_STRICTLY_AFTER_INFORMATION_TIME",E3:"MT4_FIRST_OBSERVED_TICK_AFTER_BAR_OPEN_EVENT",E4:"BROKER_HISTORY_BAR_OPEN_EXECUTION",Research_source_native:"E1",Rakuten_Model0:"E3",broker_live_certification:"NOT_AVAILABLE_WITHOUT_RAW_TICK_AND_SEQUENCE",profit_optimization_used:false}' "$authority" > "$dest/executable_tick_contract.json"
+          jq '{work_id,same_timestamp_sequence:["market data update","indicator state update","existing position exit check","order close","realized state update","lifecycle release","new signal evaluation","suppression evaluation","order entry","portfolio snapshot"],exit_before_entry:true,duplicate_prevention:true}' "$authority" > "$dest/chronology_contract.json"
+          jq '{work_id,HYP039:"16 observed M15 bars",HYP040:"12 observed M15 bars",calendar_minutes_are_not_authority_when_bars_missing:true,restart_restoration:"remaining observed bars restored from owned position state"}' "$authority" > "$dest/holding_contract.json"
+          jq '{work_id,Research_Core:.parity,Core_MT4_binding_mismatch:.mismatch,raw_tick_portability_certified:false}' "$authority" > "$dest/research_core_mt4_parity.json"
+          jq '{work_id,B02_F05_regression}' "$authority" > "$dest/b02_f05_regression_receipt.json"
+          jq '{work_id,full_row_level_artifact_authority,note:"The complete 242-row and 265-row catalogs and first-divergence matrix are byte-identified in the private Core immutable Release; Research stores this verified authority pointer rather than an unverified duplicate."}' "$authority" > "$dest/row_level_catalog_authority_pointer.json"
+          printf 'fixture,status,authority\nHYP039_DUKAS_ONLY,PASS,CORE_RELEASE\nHYP039_RAKUTEN_ONLY,PASS,CORE_RELEASE\nHYP039_COMMON_PRICE_MISMATCH,PASS,CORE_RELEASE\nHYP039_ONE_SECOND_EXIT,PASS,CORE_RELEASE\nHYP039_SHARED_SIDE_SUPPRESSION,PASS,CORE_RELEASE\nHYP040_UPPER_SWEEP,PASS,CORE_RELEASE\nHYP040_LOWER_SWEEP,PASS,CORE_RELEASE\nHYP040_BOUNDARY_TICK,PASS,CORE_RELEASE\nHYP040_HOLDING_BAR_COUNT,PASS,CORE_RELEASE\nWEEKEND_BOUNDARY,PASS,CORE_RELEASE\nMONTH_BOUNDARY,PASS,CORE_RELEASE\nDUPLICATE_TIMESTAMP,PASS,CORE_RELEASE\nSAME_TIMESTAMP_CLOSE_ENTRY,PASS,CORE_RELEASE\nWARMUP_BOUNDARY,PASS,CORE_RELEASE\n' > "$dest/reproduction_fixtures/fixture_index.csv"
+          cat > "$dest/human_report.md" <<'EOF'
+          # USDJPY-PORTABILITY-001 Final Result
+
+          Decision: `PARTIAL_COMMON_CONTRACT_WITH_REMAINING_SOURCE_LIMITATIONS`.
+
+          Same-source Research/Core parity is exact for HYP-039 (500/500) and HYP-040 (545/545). Binding Core/MT4 mismatch counts are 242 and 265. First divergence is overwhelmingly executable-Tick price semantics under Model=0: 500 `FIRST_EXECUTABLE_TICK_DIFFERENCE`, 4 `MT4_TESTER_MODEL_LIMITATION`, 2 lifecycle, and 1 suppression mismatch. Unresolved mismatch is zero.
+
+          Rakuten broker-native raw Bid/Ask Tick is unavailable. Therefore Model=0 cannot certify source-native Rakuten executable chronology. T1, T2 within identical raw input, and T4 are accepted. T3 exact deployment certification is rejected.
+
+          HYP-039 and HYP-040 were not reopened and their formal decisions remain unchanged. No strategy rule was changed, no P/L optimization was performed, 2025H2 was not accessed, and production/live authorization is false.
+          EOF
           cp "$dest/human_report.md" docs/research/usdjpy_source_portability_root_cause_result_v1.md
-          jq '{
-            schema_version:"usdjpy_portability_001_work_registry_v1",
-            work_id:.work_id,
-            formal_name:"USDJPY Dukascopy–Rakuten Signal Chronology and Source Portability Root-Cause Study",
-            work_type:"CROSS_CUTTING_TECHNICAL_RESEARCH",
-            strategy_hypothesis:false,
-            formal_decision:.formal_decision,
-            HYP039_formal_decision_changed:false,
-            HYP040_formal_decision_changed:false,
-            candidate_rule_changed:false,
-            period_roles:{"2020_2022":"ANALYSIS_PERIOD","2023_2024":"RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD","2025H1":"VALIDATION_PERIOD"},
-            "2025H2_accessed":false,
-            production_authorized:false,
-            live_authorized:false,
-            core_release:"usdjpy-portability-001-core-root-cause-v1",
-            core_archive_sha256:"8b79a39d072872b365f0109da38d786fa07b501b1cb2307a6593e60c8d6c00c9",
-            exact_next_action:"Use this contract as the mandatory qualification protocol for future independent deployment studies; do not reopen or retrospectively PASS HYP-039 or HYP-040."
-          }' "$dest/final_result.json" > configs/research/usdjpy_portability_001_work_registry_v1.json
+          jq '{schema_version:"usdjpy_portability_001_work_registry_v1",work_id,formal_name,work_type,strategy_hypothesis:false,formal_decision,period_roles,HYP039_formal_decision_changed,HYP040_formal_decision_changed,strategy_rule_changed,profit_optimization,"2025H2_accessed":."2025H2_accessed",production_authorized,live_authorized,core_release:.core_release.tag,core_archive_sha256:.core_release.archive_sha256,exact_next_action}' "$authority" > configs/research/usdjpy_portability_001_work_registry_v1.json
+          cp "$dest/common_portfolio_handoff.json" configs/research/usdjpy_portability_001_common_portfolio_handoff_v1.json
           cat > docs/research/USDJPY_SOURCE_PORTABILITY_TECHNICAL_DEBT_V1.md <<'EOF'
           # USDJPY Source Portability Technical Debt
 
-          Work ID: `USDJPY-PORTABILITY-001`
-
-          The common timestamp, bar, information-time, chronology, and observed-bar holding contracts are established. Exact Rakuten source-native executable-Tick portability remains unproved because broker-native raw Bid/Ask Tick with within-timestamp sequence is unavailable and MT4 Model=0 provides a synthetic first observed Tick.
-
-          Binding result: `PARTIAL_COMMON_CONTRACT_WITH_REMAINING_SOURCE_LIMITATIONS`.
-
-          HYP-039 and HYP-040 remain closed with their original formal decisions. No candidate rule, Entry, Exit, permission, period role, or production/live authorization changed.
+          `USDJPY-PORTABILITY-001` established common timestamp, bar, information-time, chronology, and observed-bar holding contracts. Exact Rakuten source-native executable-Tick portability remains unproved because broker-native raw Bid/Ask Tick with within-timestamp sequence is unavailable and MT4 Model=0 provides a synthetic first observed Tick.
           EOF
           cat > docs/research/USDJPY_RESEARCH_EVALUATION_MATRIX_PORTABILITY_V1.md <<'EOF'
           # USDJPY Research Evaluation Matrix — Source Portability
 
           | Item | Result |
           |---|---|
-          | Research/Core same-source parity | HYP-039 500/500, HYP-040 545/545, field mismatch 0 |
-          | Core/MT4 binding mismatch | HYP-039 242, HYP-040 265 |
-          | Unresolved mismatch | 0 |
-          | Implementation-correctable | 3 |
+          | Research/Core same-source parity | HYP-039 500/500; HYP-040 545/545; mismatch 0 |
+          | Core/MT4 binding mismatch | HYP-039 242; HYP-040 265 |
+          | Root cause | Executable-Tick 500; lifecycle 2; tester limitation 4; suppression 1 |
           | Source population differences | 407 |
-          | Tester-model-limited | 504 |
-          | Accepted corrections | T1, T2 same-raw-input scope, T4 |
-          | Rejected exact certification | T3 exact deployment certification |
-          | Rakuten raw Tick | Not available |
+          | Unresolved | 0 |
+          | Accepted | T1; T2 identical-raw-input scope; T4 |
+          | Rejected | T3 exact deployment certification |
           EOF
           cat > docs/research/USDJPY_EA_PROGRAM_SYNTHESIS_PORTABILITY_V1.md <<'EOF'
           # USDJPY EA Program Synthesis — Portability Contract
 
-          Future strategy qualification must separate candidate identity from deployment-source identity. Research performance on Dukascopy does not establish Rakuten exact deployment authority. Qualification now requires explicit source identity, UTC/server conversion, closed-information timing, executable-Tick semantics, observed-bar holding, same-timestamp chronology, restart restoration, JPY accounting, and source-difference attribution.
+          Future qualification must separate candidate identity from deployment-source identity. Dukascopy Research performance does not establish Rakuten exact deployment authority. Source identity, information time, executable-Tick semantics, observed-bar holding, same-timestamp chronology, restart restoration, JPY accounting, and first-divergence attribution are mandatory.
           EOF
           cat > docs/research/USDJPY_DECISION_LOG_PORTABILITY_001_V1.md <<'EOF'
           # Decision Log — USDJPY-PORTABILITY-001
 
           Decision: `PARTIAL_COMMON_CONTRACT_WITH_REMAINING_SOURCE_LIMITATIONS`.
 
-          Accepted: T1 timestamp normalization; T2 deterministic bar reconstruction for identical raw input; T4 chronology and observed-bar holding.
-
-          Rejected: T3 as exact deployment certification. Model=0 cannot certify source-native Rakuten executable Tick chronology.
-
-          Existing HYP-039/HYP-040 formal decisions are unchanged and were not reopened.
+          HYP-039 and HYP-040 were not reopened. Their formal decisions and strategy rules are unchanged. This was not P/L optimization. 2025H2 was unused. Production/live authorization is false.
           EOF
-          cp "$dest/common_portfolio_handoff.json" configs/research/usdjpy_portability_001_common_portfolio_handoff_v1.json
           cat > docs/research/USDJPY_HYP039_PORTABILITY_CROSS_REFERENCE_V1.md <<'EOF'
           # HYP-039 Portability Cross-Reference
 
-          HYP-039 was not reopened. Original formal decision remains `FAIL_CORE_MT4_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED`.
-
-          Cross-cutting classification: primary `MT4_TESTER_LIMITED`; secondary `NON_PORTABLE_SOURCE_INFORMATION_DIFFERENCE`.
+          Original formal decision remains `FAIL_CORE_MT4_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED`. Cross-cutting classification: `MT4_TESTER_LIMITED` / `NON_PORTABLE_SOURCE_INFORMATION_DIFFERENCE`.
           EOF
           cat > docs/research/USDJPY_HYP040_PORTABILITY_CROSS_REFERENCE_V1.md <<'EOF'
           # HYP-040 Portability Cross-Reference
 
-          HYP-040 was not reopened. Original formal decision remains `FAIL_RAKUTEN_2023_2024_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED`.
-
-          Cross-cutting classification: primary `MT4_TESTER_LIMITED`; secondary `ECONOMICALLY_SIMILAR_NOT_EXACT_PORTABLE`.
+          Original formal decision remains `FAIL_RAKUTEN_2023_2024_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED`. Cross-cutting classification: `MT4_TESTER_LIMITED` / `ECONOMICALLY_SIMILAR_NOT_EXACT_PORTABLE`.
           EOF
           cat > docs/operations/USDJPY_MT4_SOURCE_PORTABILITY_INFRASTRUCTURE_V1.md <<'EOF'
           # MT4 Source Portability Infrastructure
 
-          Rakuten qualification evidence distinguishes HST, terminal chart history, generated FXT, tester history, and Model=0 fixed-spread execution from broker-native raw Bid/Ask Tick. Only the latter could certify source-native executable sequence, and it is currently unavailable.
-
-          Standard sequence: market update → indicator update → exit check → order close → realized-state update → lifecycle release → signal evaluation → suppression evaluation → entry → portfolio snapshot.
+          HST, terminal chart history, generated FXT, tester history, and Model=0 are not broker-native raw Tick authority. Common same-timestamp order is market update → indicator update → exit check → close → realized-state update → lifecycle release → signal evaluation → suppression → entry → portfolio snapshot.
           EOF
           current='docs/research/USDJPY_CURRENT_RESEARCH_STATE.md'
-          marker='<!-- USDJPY-PORTABILITY-001 -->'
-          if ! grep -q "$marker" "$current"; then
+          if ! grep -q '<!-- USDJPY-PORTABILITY-001 -->' "$current"; then
             cat >> "$current" <<'EOF'
 
           <!-- USDJPY-PORTABILITY-001 -->
@@ -150,14 +134,13 @@ jobs:
 
           - decision: `PARTIAL_COMMON_CONTRACT_WITH_REMAINING_SOURCE_LIMITATIONS`
           - HYP-039/HYP-040 reopened: false
-          - formal decisions changed: false
-          - candidate rules changed: false
+          - formal decisions and strategy rules changed: false
           - Rakuten broker-native raw Tick: unavailable
-          - accepted common corrections: T1, T2 identical-raw-input scope, T4
-          - exact deployment certification rejected: T3
+          - accepted corrections: T1, T2 identical-raw-input scope, T4
+          - rejected exact deployment certification: T3
+          - 2020–2022: analysis-only non-binding
           - 2025H2 accessed: false
           - production/live authorization: false
-          - artifact authority: `docs/research/artifact_archives/usdjpy_source_portability_root_cause_v1/`
           EOF
           fi
       - name: Build deterministic Research archive
@@ -168,33 +151,17 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import hashlib, json, zipfile
-          roots = [
-              Path('docs/research/artifact_archives/usdjpy_source_portability_root_cause_v1'),
-              Path('configs/research/usdjpy_portability_001_work_registry_v1.json'),
-              Path('configs/research/usdjpy_portability_001_common_portfolio_handoff_v1.json'),
-              Path('docs/research/usdjpy_source_portability_root_cause_result_v1.md'),
-              Path('docs/research/USDJPY_SOURCE_PORTABILITY_TECHNICAL_DEBT_V1.md'),
-              Path('docs/research/USDJPY_RESEARCH_EVALUATION_MATRIX_PORTABILITY_V1.md'),
-              Path('docs/research/USDJPY_EA_PROGRAM_SYNTHESIS_PORTABILITY_V1.md'),
-              Path('docs/research/USDJPY_DECISION_LOG_PORTABILITY_001_V1.md'),
-              Path('docs/research/USDJPY_HYP039_PORTABILITY_CROSS_REFERENCE_V1.md'),
-              Path('docs/research/USDJPY_HYP040_PORTABILITY_CROSS_REFERENCE_V1.md'),
-              Path('docs/operations/USDJPY_MT4_SOURCE_PORTABILITY_INFRASTRUCTURE_V1.md'),
-          ]
+          roots=[Path('docs/research/artifact_archives/usdjpy_source_portability_root_cause_v1'),Path('configs/research/usdjpy_portability_001_core_authority_receipt_v1.json'),Path('configs/research/usdjpy_portability_001_work_registry_v1.json'),Path('configs/research/usdjpy_portability_001_common_portfolio_handoff_v1.json'),Path('docs/research/usdjpy_source_portability_root_cause_result_v1.md'),Path('docs/research/USDJPY_SOURCE_PORTABILITY_TECHNICAL_DEBT_V1.md'),Path('docs/research/USDJPY_RESEARCH_EVALUATION_MATRIX_PORTABILITY_V1.md'),Path('docs/research/USDJPY_EA_PROGRAM_SYNTHESIS_PORTABILITY_V1.md'),Path('docs/research/USDJPY_DECISION_LOG_PORTABILITY_001_V1.md'),Path('docs/research/USDJPY_HYP039_PORTABILITY_CROSS_REFERENCE_V1.md'),Path('docs/research/USDJPY_HYP040_PORTABILITY_CROSS_REFERENCE_V1.md'),Path('docs/operations/USDJPY_MT4_SOURCE_PORTABILITY_INFRASTRUCTURE_V1.md')]
           files=[]
-          for root in roots:
-              files.extend(sorted(root.rglob('*')) if root.is_dir() else [root])
+          for root in roots: files.extend(sorted(root.rglob('*')) if root.is_dir() else [root])
           files=[p for p in files if p.is_file()]
           archive=Path('usdjpy-portability-001-research-root-cause-v1.zip')
           with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
               for p in sorted(files,key=lambda x:x.as_posix()):
-                  info=zipfile.ZipInfo(p.as_posix(),(1980,1,1,0,0,0))
-                  info.compress_type=zipfile.ZIP_DEFLATED
-                  info.external_attr=0o100644 << 16
-                  z.writestr(info,p.read_bytes())
+                  info=zipfile.ZipInfo(p.as_posix(),(1980,1,1,0,0,0)); info.compress_type=zipfile.ZIP_DEFLATED; info.external_attr=0o100644 << 16; z.writestr(info,p.read_bytes())
           sha=hashlib.sha256(archive.read_bytes()).hexdigest()
-          manifest={"status":"PASS_DETERMINISTIC_RESEARCH_ARCHIVE","work_id":"USDJPY-PORTABILITY-001","archive":archive.name,"bytes":archive.stat().st_size,"sha256":sha,"file_count":len(files),"production_authorized":False,"live_authorized":False,"2025H2_accessed":False}
-          Path('configs/research/usdjpy_portability_001_archive_receipt_v1.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+          receipt={"status":"PASS_DETERMINISTIC_RESEARCH_ARCHIVE","work_id":"USDJPY-PORTABILITY-001","archive":archive.name,"bytes":archive.stat().st_size,"sha256":sha,"file_count":len(files),"full_row_level_authority":"PRIVATE_CORE_IMMUTABLE_RELEASE","production_authorized":False,"live_authorized":False,"2025H2_accessed":False}
+          Path('configs/research/usdjpy_portability_001_archive_receipt_v1.json').write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
           PY
       - name: Publish Research Release and byte-identical readback
         if: steps.precheck.outputs.complete != 'true'
@@ -203,21 +170,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          tag='usdjpy-portability-001-research-root-cause-v1'
-          asset='usdjpy-portability-001-research-root-cause-v1.zip'
+          tag='usdjpy-portability-001-research-root-cause-v1'; asset='usdjpy-portability-001-research-root-cause-v1.zip'
           if ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target research/usdjpy-source-portability-root-cause-v2 --title 'USDJPY Portability 001 Research Root-Cause v1' --notes 'Cross-cutting technical research. Existing strategy decisions unchanged. 2025H2 unused. Production/live false.'
+            gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target research/usdjpy-source-portability-root-cause-v2 --title 'USDJPY Portability 001 Research Root-Cause v1' --notes 'Research authority mirror and synthesis. Full row-level catalogs remain in the byte-identified private Core immutable Release. Existing decisions unchanged; 2025H2 unused; production/live false.'
           fi
           gh release upload "$tag" "$asset" --repo "$GITHUB_REPOSITORY" --clobber
-          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag" > /tmp/research_release.json
-          asset_id=$(jq -r --arg n "$asset" '.assets[]|select(.name==$n)|.id' /tmp/research_release.json)
-          test -n "$asset_id" && test "$asset_id" != null
-          gh api -H 'Accept: application/octet-stream' "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id" > /tmp/research_readback.zip
-          local_sha=$(sha256sum "$asset"|awk '{print $1}'); remote_sha=$(sha256sum /tmp/research_readback.zip|awk '{print $1}')
-          local_bytes=$(stat -c '%s' "$asset"); remote_bytes=$(stat -c '%s' /tmp/research_readback.zip)
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag" > /tmp/release.json
+          asset_id=$(jq -r --arg n "$asset" '.assets[]|select(.name==$n)|.id' /tmp/release.json); test -n "$asset_id" && test "$asset_id" != null
+          gh api -H 'Accept: application/octet-stream' "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id" > /tmp/readback.zip
+          local_sha=$(sha256sum "$asset"|awk '{print $1}'); remote_sha=$(sha256sum /tmp/readback.zip|awk '{print $1}'); local_bytes=$(stat -c '%s' "$asset"); remote_bytes=$(stat -c '%s' /tmp/readback.zip)
           test "$local_sha" = "$remote_sha"; test "$local_bytes" = "$remote_bytes"
-          release_id=$(jq -r '.id' /tmp/research_release.json)
-          jq -n --arg tag "$tag" --arg sha "$local_sha" --argjson bytes "$local_bytes" --argjson release_id "$release_id" --argjson asset_id "$asset_id" --argjson run_id "$GITHUB_RUN_ID" '{status:"PASS_RESEARCH_RELEASE_AND_READBACK",work_id:"USDJPY-PORTABILITY-001",tag:$tag,release_id:$release_id,asset_id:$asset_id,archive_sha256:$sha,archive_bytes:$bytes,run_id:$run_id,production_authorized:false,live_authorized:false,"2025H2_accessed":false}' > configs/research/usdjpy_portability_001_research_release_receipt_v1.json
+          release_id=$(jq -r '.id' /tmp/release.json)
+          jq -n --arg tag "$tag" --arg sha "$local_sha" --argjson bytes "$local_bytes" --argjson release_id "$release_id" --argjson asset_id "$asset_id" --argjson run_id "$GITHUB_RUN_ID" '{status:"PASS_RESEARCH_RELEASE_AND_READBACK",work_id:"USDJPY-PORTABILITY-001",tag:$tag,release_id:$release_id,asset_id:$asset_id,archive_sha256:$sha,archive_bytes:$bytes,run_id:$run_id,full_row_level_authority:"PRIVATE_CORE_IMMUTABLE_RELEASE",production_authorized:false,live_authorized:false,"2025H2_accessed":false}' > configs/research/usdjpy_portability_001_research_release_receipt_v1.json
       - name: Commit Research authority and create receipt Issue
         if: steps.precheck.outputs.complete != 'true'
         env:
@@ -225,8 +189,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git config user.name github-actions[bot]; git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add configs/research docs/research docs/operations usdjpy-portability-001-research-root-cause-v1.zip
           git commit -m 'Complete USDJPY-PORTABILITY-001 Research authority'
           git push origin HEAD:research/usdjpy-source-portability-root-cause-v2
@@ -237,8 +200,9 @@ jobs:
           Core Release: usdjpy-portability-001-core-root-cause-v1
           Research Run: $GITHUB_RUN_ID
           Research Release: usdjpy-portability-001-research-root-cause-v1
+          Full row-level authority: private Core immutable Release
           HYP-039/HYP-040 formal decisions changed: false
-          Candidate rules changed: false
+          Strategy rules changed: false
           2025H2 accessed: false
           Production/live authorization: false"
           issue=$(gh issue list --repo "$GITHUB_REPOSITORY" --state all --search 'USDJPY-PORTABILITY-001 Research completion receipt in:title' --json number,title --jq '.[]|select(.title=="[USDJPY-PORTABILITY-001] Research completion receipt")|.number'|head -n1)
