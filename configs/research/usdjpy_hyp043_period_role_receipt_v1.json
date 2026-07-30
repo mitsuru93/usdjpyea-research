@@ -1,0 +1,13 @@
+{
+  "schema_version": "usdjpy_hyp043_period_role_receipt_v1",
+  "status": "SEALED_BEFORE_CANDIDATE_OUTCOMES",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "2020_2022": "ANALYSIS_PERIOD_NON_BINDING_AFTER_FREEZE_ONLY",
+  "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+  "2025H1": "VALIDATION_PERIOD_REVALIDATION_MODIFIED_AFTER_VALIDATION_RESULT",
+  "2025H2": "NOT_AUTHORIZED_NOT_ACCESSED",
+  "candidate_specific_2025H1_outcomes_visible": false,
+  "candidate_rule_changed_after_validation_result": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

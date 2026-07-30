@@ -1,0 +1,48 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v71",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v70.json",
+  "status": "HYP043_ACTIVE_PREREGISTERED_LOCALIZED_F05_RECOVERY",
+  "active_hypotheses": ["USDJPY-HYP-043"],
+  "active_studies": {
+    "USDJPY-HYP-043": {
+      "status": "ACTIVE_PREREGISTERED_BEFORE_CANDIDATE_OUTCOMES",
+      "family": "F05_LOCALIZED_STATE_LOSS_PERSISTENCE_LIFECYCLE_RECOVERY",
+      "candidate_catalog": [
+        "C1_LOCALIZED_SHORT_LOSS_PERSISTENCE_PERMISSION",
+        "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+        "C3_LOCALIZED_PRIOR_LOSS_GIVEBACK_EXIT"
+      ],
+      "selected_candidate": null,
+      "registry": "configs/research/usdjpy_hyp043_preregistration_v1.json",
+      "period_role_receipt": "configs/research/usdjpy_hyp043_period_role_receipt_v1.json",
+      "2025H1_outcome_role": "VALIDATION_PERIOD_REVALIDATION_MODIFIED_AFTER_VALIDATION_RESULT",
+      "candidate_rule_changed_after_result": false,
+      "2025H2_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false
+    }
+  },
+  "closed_formal_decisions_unchanged": {
+    "USDJPY-HYP-027": true,
+    "USDJPY-HYP-029": true,
+    "USDJPY-HYP-032": true,
+    "USDJPY-HYP-039": true,
+    "USDJPY-HYP-040": true,
+    "USDJPY-HYP-041": true,
+    "USDJPY-HYP-042": true
+  },
+  "common_portfolio_integration": {
+    "formal_decision_changed": false,
+    "direct_candidate_logic_injection_authorized": false,
+    "immutable_handoff_required": true
+  },
+  "run_authorization": {
+    "2023_2024_research": true,
+    "candidate_freeze_after_historical_gate": true,
+    "2025H1_revalidation_after_freeze": true,
+    "2020_2022_analysis_only_after_freeze": true,
+    "2025H2": false,
+    "production": false,
+    "live": false
+  }
+}

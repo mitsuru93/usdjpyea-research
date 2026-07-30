@@ -1,0 +1,102 @@
+{
+  "schema_version": "usdjpy_hyp043_preregistration_v1",
+  "status": "PREREGISTERED_BEFORE_HYP043_CANDIDATE_OUTCOMES",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "title": "F05 Localized State–Loss Persistence and Lifecycle Recovery Study",
+  "family_id": "F05_LOCALIZED_STATE_LOSS_PERSISTENCE_LIFECYCLE_RECOVERY",
+  "branch": "research/usdjpy-hyp043-f05-localized-recovery-v1",
+  "lineage": {
+    "independent_new_hypothesis": true,
+    "design_inputs": ["USDJPY-HYP-027", "USDJPY-HYP-029", "USDJPY-HYP-032", "USDJPY-HYP-041"],
+    "formal_decisions_changed": [],
+    "HYP041_reopened": false,
+    "HYP042_C3_role": "RESEARCH_COUNTERFACTUAL_RESERVE_ONLY"
+  },
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD_NON_BINDING_AFTER_FREEZE_ONLY_IF_AUTHORITY_AVAILABLE",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD_REVALIDATION_MODIFIED_AFTER_VALIDATION_RESULT",
+    "2025H2": "FORBIDDEN_NOT_ACCESSED"
+  },
+  "known_baseline_identity": {
+    "2023_2024_F05": {"trades": 1451, "net_jpy": 39151, "profit_factor": 1.142399377314158},
+    "2025H1_F05": {"trades": 358, "net_jpy": -13844, "profit_factor": 0.8432748802825671},
+    "2025H1_B02": {"net_jpy": -6964},
+    "2025H1_B02_plus_F05": {"trades": 463, "net_jpy": -20808, "profit_factor": 0.8294076655052265, "authority_maximum_tick_equity_drawdown_jpy": 42737}
+  },
+  "primary_hypothesis": "The 2025H1 F05 loss is concentrated in a limited intersection of Short exposure, already-realized local loss persistence, adverse volatility/state fit, weak post-entry acceptance, and temporary-profit giveback; processing only that intersection can preserve at least 85 percent of 2023-2024 F05 net while materially improving 2025H1.",
+  "alternative_hypothesis": "No reproducible localized population exists; material recovery requires broad F05 suppression or lifecycle replacement and is therefore not portable.",
+  "candidate_limit": 3,
+  "candidate_contracts_frozen_before_execution": [
+    {
+      "candidate_id": "C1_LOCALIZED_SHORT_LOSS_PERSISTENCE_PERMISSION",
+      "architecture": "ENTRY_PERMISSION",
+      "rule": "Block only a F05 Short entry when the most recent accepted same-side F05 close in the same UTC session was a realized loss, the native close is available before the entry decision, the local consecutive-loss count is at least one, and Entry ATR volatility state is HIGH using 2023-2024 ATR tertiles.",
+      "expiry": "UTC session boundary",
+      "simple_one_loss_stop": false,
+      "future_information": false
+    },
+    {
+      "candidate_id": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+      "architecture": "EARLY_LIFECYCLE_EXIT",
+      "rule": "For accepted F05 Short trades only, at the first 60-second observation exit when Entry volatility state is HIGH, extension_atr is at least 2.00, current excursion is nonpositive, and MFE is below 0.25 times Entry ATR.",
+      "entry_permission": "UNCHANGED",
+      "future_information": false
+    },
+    {
+      "candidate_id": "C3_LOCALIZED_PRIOR_LOSS_GIVEBACK_EXIT",
+      "architecture": "PROFIT_GIVEBACK_LIFECYCLE_EXIT",
+      "rule": "For F05 Short trades whose most recent accepted same-side F05 close in the same UTC session was a realized loss, exit at the first completed lifecycle observation where MFE is at least 0.75 times Entry ATR, current excursion is nonpositive, and MFE minus current excursion is at least 0.75 times Entry ATR.",
+      "entry_permission": "UNCHANGED",
+      "future_information": false
+    }
+  ],
+  "combined_candidate": {
+    "authorized": false,
+    "reason": "No simple union is preregistered. A combined candidate may be created only in a separate immutable addendum before any combined validation outcome and only if two single candidates independently pass all historical gates with affected-trade overlap at most 15 percent."
+  },
+  "candidate_support_gate": {
+    "minimum_affected_trades": 30,
+    "maximum_modified_or_blocked_share": 0.30,
+    "minimum_positive_effect_folds": 3,
+    "minimum_positive_net_folds": 3,
+    "future_information": false,
+    "source_computable": true
+  },
+  "historical_gate": {
+    "F05_net_retention_min": 0.85,
+    "F05_gross_profit_retention_min": 0.80,
+    "winner_trade_count_retention_min": 0.80,
+    "modified_or_blocked_share_max": 0.30,
+    "F05_net_positive": true,
+    "positive_net_half_years_min": 3,
+    "portfolio_net_retention_min": 0.90,
+    "B02_trade_mismatch_required": 0,
+    "margin_breach_allowed": false,
+    "stopout_breach_allowed": false
+  },
+  "candidate_selection": {
+    "uses_only_2023_2024": true,
+    "ranking": ["historical_gate_pass", "lower_modified_share", "higher_F05_net_retention", "lower_realized_drawdown", "candidate_id_lexical"],
+    "no_candidate_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE"
+  },
+  "freeze_before_2025H1": true,
+  "2025H1_classification": {
+    "FULL_RECOVERY": "F05 net >= 0, material portfolio improvement, no full-equity DD worsening, historical gate pass, portability pass",
+    "PARTIAL_RECOVERY": "F05 and portfolio improvement each >= JPY5000, localized population, no material full-equity DD worsening, historical gate pass, portability pass",
+    "ECONOMIC_RECOVERY_PORTABILITY_FAIL": "FULL or PARTIAL economics with binding portability failure",
+    "NO_RECOVERY": "otherwise"
+  },
+  "prohibitions": {
+    "grid_search": true,
+    "2025H1_threshold_tuning": true,
+    "2025H1_loss_trade_lookup": true,
+    "broad_F05_suppression": true,
+    "2025H2_access": true,
+    "2020_2022_binding_gate": true,
+    "production_authorization": true,
+    "live_authorization": true
+  },
+  "production_authorized": false,
+  "live_authorized": false
+}
