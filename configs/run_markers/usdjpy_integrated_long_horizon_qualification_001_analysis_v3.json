@@ -1,0 +1,9 @@
+{
+  "schema_version": "usdjpy_integrated_long_horizon_qualification_001_analysis_dispatch_v3",
+  "work_id": "USDJPY-INTEGRATED-LONG-HORIZON-QUALIFICATION-001",
+  "dispatch": "ONCE_AFTER_EXACT_SOURCE_RESTAGE",
+  "failed_predecessor_runs": [30548321091, 30548517075, 30548801588, 30549080948],
+  "resume_from": "EXACT_ANALYSIS_SOURCE_RECONSTRUCTION",
+  "candidate_rules_changed": false,
+  "2025H2_accessed": false
+}
