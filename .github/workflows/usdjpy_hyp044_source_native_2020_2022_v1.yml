@@ -6,6 +6,7 @@ on:
     paths:
       - 'tools/run_usdjpy_hyp044_source_native_2020_2022_v1.py'
       - '.github/workflows/usdjpy_hyp044_source_native_2020_2022_v1.yml'
+      - 'configs/research/usdjpy_hyp044_candidate_input_registry_v1.json'
   workflow_dispatch:
 
 permissions:
@@ -55,13 +56,11 @@ jobs:
               tar -xzf "$p" -C "$d"
             fi
           done < hyp044_source_native_data/assets.tsv
-      - name: Fetch authoritative C2 thresholds
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Materialize frozen C2 thresholds
         run: |
           set -euo pipefail
-          gh api 'repos/mitsuru93/usdjpyea-core/contents/artifacts/research/usdjpy_hyp044/input_registry_v1/candidate_input_export_summary.json?ref=feature/usdjpy-hyp044-integrated-candidate-qualification-v1' -H 'Accept: application/vnd.github.raw+json' > hyp044_source_native_data/c2_summary.json
-          jq -e '.status=="PASS_C2_INPUT_EXPORTED" and .f05_c2.modified_2023_2024==154 and .f05_c2.modified_2025H1==63 and ."2025H2_accessed"==false' hyp044_source_native_data/c2_summary.json
+          jq -e '.status=="FROZEN_INPUT_REGISTRY" and .F05_C2.reproduction."2023_2024".modified_trades==154 and .F05_C2.reproduction."2025H1".modified_trades==63 and ."2025H2_accessed"==false' configs/research/usdjpy_hyp044_candidate_input_registry_v1.json
+          jq '{f05_c2:{thresholds:{low_upper_atr_pips:.F05_C2.thresholds.volatility_tertile_low_upper_atr_pips,medium_upper_atr_pips:.F05_C2.thresholds.volatility_tertile_medium_upper_atr_pips}}}' configs/research/usdjpy_hyp044_candidate_input_registry_v1.json > hyp044_source_native_data/c2_summary.json
       - name: Execute source-native integrated replay
         run: |
           set -euo pipefail
