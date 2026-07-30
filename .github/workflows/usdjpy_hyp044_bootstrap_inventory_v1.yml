@@ -112,7 +112,7 @@ jobs:
           python tools/run_usdjpy_hyp044_bootstrap_inventory_v1.py
           cat hyp044_bootstrap_output/summary.json
 
-      - name: Upload bootstrap inventory
+      - name: Upload bootstrap inventory and extracted evidence
         uses: actions/upload-artifact@v4
         with:
           name: usdjpy-hyp044-bootstrap-inventory-${{ github.run_id }}-${{ github.run_attempt }}
@@ -120,5 +120,7 @@ jobs:
             hyp044_bootstrap_output
             hyp044_inputs/relevant_release_metadata.json
             hyp044_inputs/download_tags.txt
+            hyp044_inputs/extracted
+            hyp044_inputs/repository_evidence
           retention-days: 90
           compression-level: 6
