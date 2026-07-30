@@ -1,8 +1,9 @@
 {
   "schema_version": "usdjpy_integrated_long_horizon_qualification_001_analysis_dispatch_v4",
   "work_id": "USDJPY-INTEGRATED-LONG-HORIZON-QUALIFICATION-001",
-  "dispatch": "ONCE_FINAL_EXACT_SOURCE_TRANSFER",
-  "failed_predecessor_runs": [30548321091, 30548517075, 30548801588, 30549080948, 30549767398],
+  "dispatch": "ONCE_AFTER_EXACT_BLOB_RESTORATION",
+  "attempt": 2,
+  "failed_predecessor_runs": [30548321091, 30548517075, 30548801588, 30549080948, 30549767398, 30550055922],
   "resume_from": "EXACT_SOURCE_SHA_AND_AUTHORITY_PREFLIGHT",
   "candidate_rules_changed": false,
   "2025H2_accessed": false
