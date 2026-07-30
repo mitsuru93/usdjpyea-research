@@ -1,0 +1,57 @@
+name: USDJPY HYP-044 Research Evidence Inventory v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp044_research_evidence_inventory_v1.yml'
+      - 'configs/research/usdjpy_hyp044_preregistration_v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      - name: Build compact evidence inventory
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,re,subprocess
+          from pathlib import Path
+          terms=re.compile(r'(hyp0(39|40|42|43|44)|short.?pullback|c2_|c3_|profit.?to.?nonprofit|localized.?short|portfolio|portability|2020.?2022|tick.?authority|b02|f05)',re.I)
+          rows=[]
+          for p in sorted(Path('.').rglob('*')):
+              if not p.is_file() or '.git' in p.parts: continue
+              rel=p.as_posix()
+              if terms.search(rel):
+                  rows.append({'path':rel,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+          payload={
+            'schema_version':'usdjpy_hyp044_research_evidence_inventory_v1',
+            'hypothesis_id':'USDJPY-HYP-044',
+            'status':'PASS_COMPACT_INVENTORY_COMMITTED',
+            'repository_sha':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
+            'matching_file_count':len(rows),
+            'matching_files':rows,
+            '2025H2_accessed':False
+          }
+          Path('configs/research/usdjpy_hyp044_research_evidence_inventory_v1.json').write_text(json.dumps(payload,indent=2)+'\n')
+          print(json.dumps({'matching_files':len(rows)},indent=2))
+          PY
+      - name: Commit inventory
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add configs/research/usdjpy_hyp044_research_evidence_inventory_v1.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'research(hyp044): bind compact evidence inventory'
+          git push origin HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}
