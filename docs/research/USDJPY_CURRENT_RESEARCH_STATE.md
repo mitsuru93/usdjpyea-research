@@ -1,6 +1,6 @@
 # USDJPY B02/F05 current research state
 
-Updated: 2026-07-26
+Updated: 2026-07-30
 
 ## Executive status
 
@@ -154,3 +154,30 @@ Work ID: `USDJPY-DATA-2020-2022-TICK-AUTHORITY-001`. Release: `usdjpy-2020-2022-
 - 2020–2022: analysis-only non-binding
 - 2025H2 accessed: false
 - production/live authorization: false
+
+<!-- USDJPY-MT4-2020-2022-PROVISIONAL-BASELINE-001 -->
+## USDJPY 2020–2022 Rakuten MT4 broker-history provisional baseline
+
+- Work ID: `USDJPY-MT4-2020-2022-PROVISIONAL-BASELINE-001`
+- Final classification: `FAIL_KNOWN_PERIOD_REPRODUCTION_NOT_COMPARABLE`
+- Evidence class: `ANALYSIS_ONLY_PROVISIONAL_BROKER_HISTORY_EVIDENCE`
+- Source: Rakuten MT4 broker-history HST; source-native Tick authorityではない
+- Tester: M15, Model=0, fixed 5 points / 0.5 pip
+- Scope: unchanged B02, unchanged F05, unchanged B02+F05 portfolio only
+- 2020–2022 portfolio: 2,781 trades, +¥28,637, PF 1.076937, realized DD ¥40,622
+- Coverage: sufficient, missing months 0, deterministic repeat PASS
+- Known-period reproduction: 2023–2024 and 2025H1 both not comparable because of large unresolved trade-count, timestamp, price, P/L, source-population and tester-model differences
+- Core Run: `30534882633`
+- Core SHA: `56cbf5da0b7f0dd0a6560a6d1c9cedd492a7fa70`
+- Core Issue: `#714`
+- Core Release: `usdjpy-mt4-2020-2022-provisional-baseline-v1`
+- Release archive SHA-256: `a50f723f9ba7dbd43ab0c783c4e352da058ee1ad04038bbcb90c69817504eea3`
+- Readback: `PASS_BYTE_IDENTICAL_RELEASE_READBACK`
+- Candidate selection: false
+- Retuning: false
+- B02 C3 / HYP-039 / HYP-040 used: false
+- Formal decision changes: false
+- Production/live authorization: false
+- 2025H2 accessed: false
+
+Exact next action: certified 2020–2022 Dukascopy source-native Bid/Ask Tick authorityとtrade-level reconciliationを実施し、MT4-only、Tick-only、common event、timestamp、Entry/Exit price、holding、P/L差を分類する。retuningやformal decision変更は行わない。
