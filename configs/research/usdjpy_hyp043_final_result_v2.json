@@ -1,0 +1,71 @@
+{
+  "schema_version": "usdjpy_hyp043_final_result_v2",
+  "status": "COMPLETE_SCIENTIFIC_RESULT_WITH_USER_DIRECTED_C2_2025H1_ADDENDUM",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "title": "F05 Localized State–Loss Persistence and Lifecycle Recovery Study",
+  "supersedes_result_summary": "configs/research/usdjpy_hyp043_final_result_v1.json",
+  "v1_preserved_as_historical_record": true,
+  "correction": "C2 candidate-specific 2025H1 economic replay was required and has now been completed. The original historical gate decision is preserved, but the prior statement that no candidate-specific 2025H1 result existed is superseded.",
+  "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+  "economic_decision": "PARTIAL_RECOVERY_ECONOMIC_HISTORICAL_GATE_FAIL",
+  "selected_for_economic_revalidation": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+  "selected_for_deployment": null,
+  "historical_fold_breadth": {
+    "positive_effect_folds": 2,
+    "required": 3,
+    "gate_pass": false
+  },
+  "historical_metrics": {
+    "F05_baseline_net_jpy": 39151,
+    "F05_C2_net_jpy": 38329,
+    "net_retention": 0.9790043677045286,
+    "gross_profit_retention": 0.8826160737880028,
+    "winner_trade_count_retention": 0.9173553719008265,
+    "modified_trades": 154,
+    "modified_share": 0.10613370089593384,
+    "C2_profit_factor": 1.1604455588532008,
+    "C2_realized_drawdown_jpy": 23847
+  },
+  "validation_2025H1": {
+    "F05_baseline_net_jpy": -13844,
+    "F05_C2_net_jpy": -7935,
+    "F05_improvement_jpy": 5909,
+    "F05_C2_profit_factor": 0.8853141395308503,
+    "F05_baseline_realized_drawdown_jpy": 29339,
+    "F05_C2_realized_drawdown_jpy": 24118,
+    "F05_C2_modified_trades": 63,
+    "F05_C2_modified_share": 0.17597765363128492,
+    "B02_plus_F05_baseline_net_jpy": -20808,
+    "B02_plus_F05_C2_net_jpy": -14899,
+    "portfolio_improvement_jpy": 5909,
+    "B02_plus_F05_C2_profit_factor": 0.855111785356556,
+    "B02_C3_reserve_plus_F05_baseline_net_jpy": -11523,
+    "B02_C3_reserve_plus_F05_C2_net_jpy": -5614,
+    "portfolio_realized_drawdown_status": "PENDING_EVENT_LEVEL_B02_REPLAY",
+    "portfolio_full_equity_drawdown_status": "PENDING_CORE_MT4_REPLAY"
+  },
+  "classification": {
+    "economic": "PARTIAL_RECOVERY",
+    "formal_deployment": "FAIL_HISTORICAL_FOLD_BREADTH_2_OF_4",
+    "production_authorized": false
+  },
+  "period_roles": {
+    "2020_2022": "ANALYSIS_ONLY_NON_BINDING_NOT_USED_FOR_C2_SELECTION_OR_RETUNING",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD_REVALIDATION_MODIFIED_AFTER_VALIDATION_RESULT",
+    "2025H2": "NOT_ACCESSED"
+  },
+  "candidate_rule_changed_after_result": false,
+  "HYP041_reopened": false,
+  "B02_changed": false,
+  "B02_C3_role": "RESEARCH_COUNTERFACTUAL_RESERVE_ONLY",
+  "common_portfolio_candidate_logic_injected": false,
+  "deployment_eligibility": false,
+  "integration_eligibility": false,
+  "diagnostic_economic_handoff_eligibility": true,
+  "core_economic_result_merge_sha": "fa99a3fe83fa8892096289dd4bfb86d21d856923",
+  "addendum": "configs/research/usdjpy_hyp043_c2_2025h1_revalidation_addendum_v1.json",
+  "production_authorized": false,
+  "live_authorized": false,
+  "exact_next_action": "Complete event-level B02+F05 replay, full-equity DD, Core/MT4 parity and Rakuten portability for the exact frozen C2 rule. Do not retune C2."
+}

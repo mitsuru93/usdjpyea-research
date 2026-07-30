@@ -1,0 +1,112 @@
+{
+  "schema_version": "usdjpy_hyp043_c2_2025h1_revalidation_addendum_v1",
+  "status": "COMPLETE_USER_DIRECTED_C2_ECONOMIC_REVALIDATION",
+  "hypothesis_id": "USDJPY-HYP-043",
+  "candidate_id": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+  "correction_reason": "The prior closure incorrectly treated the historical admission gate as permission to omit the explicitly required C2 2025H1 economic result. The user directed that C2 be run. This addendum records that result without changing the C2 rule or the historical fold-breadth finding.",
+  "outcome_role": "VALIDATION_PERIOD_REVALIDATION_MODIFIED_AFTER_VALIDATION_RESULT",
+  "candidate_rule": {
+    "side": "SHORT_ONLY",
+    "volatility_state": "HIGH_HISTORICAL_ATR_TERTILE",
+    "extension_atr_min": 2.0,
+    "decision_time_seconds_after_entry": 60,
+    "current_pips_max": 0.0,
+    "mfe_atr_max_exclusive": 0.25,
+    "action": "EXIT_AT_60_SECOND_OBSERVED_EXCURSION"
+  },
+  "candidate_rule_changed_after_result": false,
+  "historical_gate": {
+    "status": "FAIL_ONLY_2_OF_4_POSITIVE_EFFECT_FOLDS",
+    "formal_decision_preserved": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+    "affected_trades": 154,
+    "modified_share": 0.10613370089593384,
+    "net_jpy": 38329,
+    "net_retention": 0.9790043677045286,
+    "gross_profit_retention": 0.8826160737880028,
+    "winner_trade_count_retention": 0.9173553719008265,
+    "profit_factor": 1.1604455588532008,
+    "realized_drawdown_jpy": 23847,
+    "positive_effect_folds": 2,
+    "required_positive_effect_folds": 3
+  },
+  "validation_2025H1": {
+    "F05_baseline": {
+      "trades": 358,
+      "net_jpy": -13844,
+      "gross_profit_jpy": 74489,
+      "gross_loss_jpy": -88333,
+      "profit_factor": 0.8432748802825671,
+      "realized_drawdown_jpy": 29339,
+      "minimum_realized_equity_jpy": 70661
+    },
+    "F05_C2": {
+      "trades": 358,
+      "modified_trades": 63,
+      "modified_share": 0.17597765363128492,
+      "net_jpy": -7935,
+      "gross_profit_jpy": 61254,
+      "gross_loss_jpy": -69189,
+      "profit_factor": 0.8853141395308503,
+      "realized_drawdown_jpy": 24118,
+      "minimum_realized_equity_jpy": 75882,
+      "improvement_jpy": 5909
+    },
+    "B02_plus_F05_baseline": {
+      "trades": 463,
+      "net_jpy": -20808,
+      "profit_factor": 0.8294076655052265,
+      "authority_maximum_tick_equity_drawdown_jpy": 42737
+    },
+    "B02_plus_F05_C2": {
+      "trades": 463,
+      "net_jpy": -14899,
+      "gross_profit_jpy": 87932,
+      "gross_loss_jpy": -102831,
+      "profit_factor": 0.855111785356556,
+      "improvement_jpy": 5909,
+      "realized_drawdown_jpy": "PENDING_EVENT_LEVEL_B02_REPLAY",
+      "full_equity_drawdown_jpy": "PENDING_CORE_MT4_REPLAY"
+    },
+    "B02_C3_reserve_plus_F05_baseline_net_jpy": -11523,
+    "B02_C3_reserve_plus_F05_C2_net_jpy": -5614,
+    "economic_classification": "PARTIAL_RECOVERY_ECONOMIC_HISTORICAL_GATE_FAIL"
+  },
+  "robustness_2025H1": {
+    "bootstrap_event_10000": {
+      "positive_share": 0.2223,
+      "p05_net_jpy": -24393,
+      "median_net_jpy": -7738,
+      "p95_net_jpy": 8798
+    },
+    "spread_stress": {
+      "extra_0.5_pip_net_jpy": -9725,
+      "extra_1.0_pip_net_jpy": -11515,
+      "extra_2.0_pips_net_jpy": -15095
+    },
+    "entry_delay_proxy": {
+      "1s_net_jpy": -8114,
+      "5s_net_jpy": -8293,
+      "15s_net_jpy": -8651
+    },
+    "concentration": {
+      "largest_winner_jpy": 1368,
+      "largest_loser_jpy": -3473,
+      "top_1_event_removal_net_jpy": -9303,
+      "top_3_event_removal_net_jpy": -11691,
+      "top_5_event_removal_net_jpy": -14002,
+      "top_winner_decile_removal_net_jpy": -22907
+    }
+  },
+  "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+  "economic_decision": "PARTIAL_RECOVERY_ECONOMIC_HISTORICAL_GATE_FAIL",
+  "deployment_eligibility": false,
+  "integration_eligibility": false,
+  "diagnostic_economic_evidence_eligibility": true,
+  "core_economic_result_merge_sha": "fa99a3fe83fa8892096289dd4bfb86d21d856923",
+  "core_full_result_path": "configs/research/usdjpy_hyp043_c2_frozen_ledger_2025h1_revalidation_v1.json",
+  "self_hosted_event_full_equity_portability_status": "PENDING_SEPARATE_RUN",
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false,
+  "exact_next_action": "Preserve C2 as a non-deployable economic reserve finding. Complete event-level portfolio/full-equity and Core/MT4/Rakuten parity on the same unchanged frozen C2; do not retune the rule."
+}
