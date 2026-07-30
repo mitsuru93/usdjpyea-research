@@ -1,0 +1,188 @@
+{
+  "schema_version": "usdjpy_mt4_2020_2022_provisional_baseline_handoff_v1",
+  "work_id": "USDJPY-MT4-2020-2022-PROVISIONAL-BASELINE-001",
+  "formal_name": "USDJPY 2020–2022 Rakuten MT4 Broker-History Provisional Baseline",
+  "final_classification": "FAIL_KNOWN_PERIOD_REPRODUCTION_NOT_COMPARABLE",
+  "evidence_class": "ANALYSIS_ONLY_PROVISIONAL_BROKER_HISTORY_EVIDENCE",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD"
+  },
+  "source_contract": {
+    "source_type": "RAKUTEN_MT4_BROKER_HISTORY_HST",
+    "raw_tick_status": "RAKUTEN_BROKER_NATIVE_RAW_TICK_NOT_AVAILABLE",
+    "source_native_tick_authority": false,
+    "tester_model": 0,
+    "tester_model_label": "MT4_MODEL0_FIXED_SPREAD_PROVISIONAL",
+    "timeframe": "M15",
+    "primary_spread_points": 5,
+    "primary_spread_pips": 0.5,
+    "warmup_period": "2019-10-01 through 2019-12-31 WARMUP_ONLY",
+    "analysis_period": "2020-01-01 through 2022-12-31",
+    "missing_months": [],
+    "coverage_sufficient": true,
+    "primary_m15_hst_sha256": "b22e9fb9a6d0f397b4186ba17f6e71cae9eb38aa59f214dfd1eb5173e4e7f165",
+    "primary_m15_hst_size_bytes": 40958008,
+    "primary_m15_analysis_records": 74722,
+    "potential_history_gap_count": 0
+  },
+  "variants": [
+    "B02_BASELINE_UNCHANGED",
+    "F05_BASELINE_UNCHANGED",
+    "B02_F05_BASELINE_UNCHANGED_PORTFOLIO"
+  ],
+  "excluded": [
+    "B02 C3",
+    "HYP-039",
+    "HYP-040",
+    "HYP-041 candidate",
+    "HYP-042 candidate",
+    "HYP-043 candidate",
+    "diagnostic-only strategy",
+    "source portability correction proposal"
+  ],
+  "portfolio_2020_2022": {
+    "trades": 2781,
+    "net_jpy": 28637,
+    "gross_profit_jpy": 400851,
+    "gross_loss_jpy": 372214,
+    "profit_factor": 1.076937,
+    "average_trade_jpy": 10.2974,
+    "median_trade_jpy": 0,
+    "win_rate": 0.499461,
+    "payoff_ratio": 1.075386,
+    "maximum_winner_jpy": 2845,
+    "maximum_loser_jpy": -5870,
+    "maximum_consecutive_wins": 17,
+    "maximum_consecutive_losses": 15,
+    "realized_drawdown_jpy": 40622,
+    "minimum_realized_equity_jpy": 98246,
+    "longest_underwater_hours": 9166.75,
+    "mt4_virtual_tick_path_drawdown_jpy": 42839,
+    "mt4_virtual_tick_path_minimum_equity_jpy": 98173,
+    "maximum_open_orders": 10,
+    "maximum_open_lots": 0.1,
+    "minimum_free_margin_jpy": 62929.18,
+    "minimum_margin_level_percent": 250.292,
+    "source_native_tick_full_equity_dd_claimed": false,
+    "mt4_tester_reported_dd": "SEE_RUN_HTML_REPORT_AND_VIRTUAL_TICK_PATH; NOT_SOURCE_NATIVE_TICK_FULL_EQUITY_DD"
+  },
+  "strategy_metrics": {
+    "B02_BASELINE_UNCHANGED": {
+      "trades": 672,
+      "net_jpy": 11167,
+      "profit_factor": 1.105023,
+      "realized_drawdown_jpy": 17627
+    },
+    "F05_BASELINE_UNCHANGED": {
+      "trades": 2109,
+      "net_jpy": 17470,
+      "profit_factor": 1.065705,
+      "realized_drawdown_jpy": 29455
+    }
+  },
+  "side_contribution_jpy": {
+    "LONG": 41871,
+    "SHORT": -13234
+  },
+  "session_contribution_jpy": {
+    "ASIAN": 14307,
+    "LONDON_OPEN": 29194,
+    "LONDON_NY_OVERLAP": -11720,
+    "NEW_YORK": -3144
+  },
+  "annual_portfolio": [
+    {"year": 2020, "trades": 922, "net_jpy": 20197, "profit_factor": 1.21815, "realized_drawdown_jpy": 7834},
+    {"year": 2021, "trades": 958, "net_jpy": 3445, "profit_factor": 1.03889, "realized_drawdown_jpy": 7112},
+    {"year": 2022, "trades": 901, "net_jpy": 4995, "profit_factor": 1.026145, "realized_drawdown_jpy": 40622}
+  ],
+  "halfyear_portfolio": [
+    {"half": "2020H1", "trades": 435, "net_jpy": 19614, "profit_factor": 1.403622},
+    {"half": "2020H2", "trades": 487, "net_jpy": 583, "profit_factor": 1.013254},
+    {"half": "2021H1", "trades": 445, "net_jpy": -2340, "profit_factor": 0.943264},
+    {"half": "2021H2", "trades": 513, "net_jpy": 5785, "profit_factor": 1.122204},
+    {"half": "2022H1", "trades": 439, "net_jpy": 32362, "profit_factor": 1.62458},
+    {"half": "2022H2", "trades": 462, "net_jpy": -27367, "profit_factor": 0.803446}
+  ],
+  "stability": {
+    "positive_years": 3,
+    "positive_half_years": 4,
+    "positive_months": 19,
+    "best_year": "2020",
+    "worst_year": "2021",
+    "best_half_year": "2022H1",
+    "worst_half_year": "2022H2",
+    "best_month": "2020-02",
+    "best_month_net_jpy": 15222,
+    "worst_month": "2022-09",
+    "worst_month_net_jpy": -8962,
+    "worst_day": "2022-10-21",
+    "worst_day_net_jpy": -13968,
+    "worst_week": "2022-W42",
+    "worst_week_net_jpy": -13140,
+    "top_1_trade_removal_net_jpy": 25792,
+    "top_3_trade_removal_net_jpy": 21068,
+    "top_5_trade_removal_net_jpy": 17178,
+    "top_winner_decile_removal_net_jpy": -118001
+  },
+  "spread_stress": [
+    {"spread_points": 10, "spread_pips": 1.0, "trades": 2781, "net_jpy": 14732, "profit_factor": 1.038848},
+    {"spread_points": 15, "spread_pips": 1.5, "trades": 2781, "net_jpy": 827, "profit_factor": 1.002141},
+    {"spread_points": 25, "spread_pips": 2.5, "trades": 1901, "net_jpy": -14809, "profit_factor": 0.927317}
+  ],
+  "bootstrap_10000": {
+    "probability_positive_net": 0.8828,
+    "net_jpy_p05": -11606,
+    "net_jpy_median": 28694,
+    "net_jpy_p95": 68556,
+    "profit_factor_p05": 0.970797,
+    "profit_factor_median": 1.07709,
+    "profit_factor_p95": 1.196302,
+    "tick_path_assumed": false
+  },
+  "known_period_reproduction": {
+    "overall_comparable": false,
+    "2023_2024": {
+      "authority_portfolio": {"trades": 1882, "net_jpy": 51627, "profit_factor": 1.137713},
+      "broker_history_portfolio": {"trades": 257, "net_jpy": -28552, "profit_factor": 0.663484},
+      "classification": ["P/L mismatch", "price mismatch", "source event population difference", "tester model difference", "timestamp mismatch requires trade-level reconciliation", "trade-count mismatch"]
+    },
+    "2025H1": {
+      "authority_portfolio": {"trades": 463, "net_jpy": -20808, "profit_factor": 0.829408, "full_equity_dd_jpy": 42737},
+      "broker_history_portfolio": {"trades": 160, "net_jpy": -19332, "profit_factor": 0.546591},
+      "classification": ["P/L mismatch", "price mismatch", "source event population difference", "tester model difference", "timestamp mismatch requires trade-level reconciliation", "trade-count mismatch"]
+    }
+  },
+  "deterministic_repeat": "PASS",
+  "identity": {
+    "core_sha": "56cbf5da0b7f0dd0a6560a6d1c9cedd492a7fa70",
+    "run_id": "30534882633",
+    "terminal_sha256": "683d3638af3a14dc4e643f51d2fb27bf579b0c9c916f4b85444ccb156a3a1655",
+    "metaeditor_sha256": "92db0ef6a13e9fdb0eb2d7e6ad7719fc24b12e10ea394c714c76ddeab1b2dbba",
+    "source_mq4_sha256": "34cc3a4978dffbe98887a676a2321db3f10daa1f64b75b99cf4f86243e6fc972",
+    "ex4_sha256": "af10c3877f1d16fb8c4a0541aae19fa01af0823cd9cfb240a3a6243d576e4a69",
+    "compile_success": true,
+    "compile_errors": false
+  },
+  "remote_evidence": {
+    "core_issue": 714,
+    "core_release_tag": "usdjpy-mt4-2020-2022-provisional-baseline-v1",
+    "release_id": 362378690,
+    "release_asset_id": 495282368,
+    "archive_sha256": "a50f723f9ba7dbd43ab0c783c4e352da058ee1ad04038bbcb90c69817504eea3",
+    "readback_status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+    "artifact_id": null,
+    "artifact_status": "NOT_AVAILABLE_ACTIONS_STORAGE_OR_API",
+    "core_evidence_branch": "evidence/usdjpy-mt4-2020-2022-provisional-baseline-v1"
+  },
+  "formal_effect": {
+    "candidate_selection": false,
+    "retuning": false,
+    "formal_decision_changes": false,
+    "production_authorization": false,
+    "live_authorization": false,
+    "2025H2_accessed": false
+  },
+  "exact_next_action": "Perform trade-level reconciliation against the certified 2020–2022 Dukascopy source-native Bid/Ask Tick authority using strategy, side, signal UTC, Entry UTC, Exit UTC, trading date, prices, holding bars and sequence; do not retune or change any formal decision."
+}
