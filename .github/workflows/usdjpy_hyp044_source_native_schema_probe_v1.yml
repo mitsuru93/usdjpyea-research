@@ -1,0 +1,70 @@
+name: USDJPY HYP-044 Source-Native Schema Probe v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp044_source_native_schema_probe_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      - name: Download certified January 2020 bars asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf hyp044_source_probe
+          mkdir -p hyp044_source_probe/extracted
+          gh api repos/mitsuru93/usdjpyea-research/releases/assets/494940081 \
+            -H 'Accept: application/octet-stream' > hyp044_source_probe/USDJPY_DUKASCOPY_BARS_2020_01.tar.gz
+          echo '4577c53f10f65f8998ce905dbd03e60f0a582b4f10a6a95722f4f2b07aec2108  hyp044_source_probe/USDJPY_DUKASCOPY_BARS_2020_01.tar.gz' | sha256sum -c -
+          tar -xzf hyp044_source_probe/USDJPY_DUKASCOPY_BARS_2020_01.tar.gz -C hyp044_source_probe/extracted
+      - name: Probe files and schemas
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv,gzip,hashlib,json
+          from pathlib import Path
+          rows=[]
+          for p in sorted(Path('hyp044_source_probe/extracted').rglob('*')):
+              if not p.is_file(): continue
+              rec={'path':p.relative_to('hyp044_source_probe/extracted').as_posix(),'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+              name=p.name.lower()
+              try:
+                  if name.endswith('.csv') or name.endswith('.csv.gz'):
+                      opener=gzip.open if name.endswith('.gz') else open
+                      with opener(p,'rt',encoding='utf-8-sig',newline='') as f:
+                          r=csv.DictReader(f); rec['columns']=r.fieldnames or []; samples=[]; count=0
+                          for row in r:
+                              count+=1
+                              if len(samples)<3: samples.append(row)
+                          rec['rows']=count; rec['samples']=samples
+                  else:
+                      rec['preview']=p.read_text(encoding='utf-8',errors='replace')[:4000]
+              except Exception as e:
+                  rec['probe_error']=f'{type(e).__name__}: {e}'
+              rows.append(rec)
+          payload={'schema_version':'usdjpy_hyp044_source_native_schema_probe_v1','hypothesis_id':'USDJPY-HYP-044','status':'PASS','authority_asset_id':494940081,'authority_asset_sha256':'4577c53f10f65f8998ce905dbd03e60f0a582b4f10a6a95722f4f2b07aec2108','records':rows,'2025H2_accessed':False}
+          Path('configs/research/usdjpy_hyp044_source_native_schema_probe_v1.json').write_text(json.dumps(payload,indent=2,ensure_ascii=False)+'\n')
+          print(json.dumps({'records':len(rows)},indent=2))
+          PY
+      - name: Commit probe
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add configs/research/usdjpy_hyp044_source_native_schema_probe_v1.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'research(hyp044): bind source-native bar schema probe'
+          git pull --rebase origin ${{ github.event.pull_request.head.ref || github.ref_name }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}
