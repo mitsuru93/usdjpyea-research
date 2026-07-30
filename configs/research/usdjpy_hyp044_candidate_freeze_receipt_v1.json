@@ -1,0 +1,33 @@
+{
+  "schema_version": "usdjpy_hyp044_candidate_freeze_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "status": "ROUND_A_FROZEN",
+  "catalog_path": "configs/research/usdjpy_hyp044_candidate_catalog_round_a_v1.json",
+  "contract_path": "configs/research/usdjpy_hyp044_candidate_rule_contracts_v1.json",
+  "catalog_commit": "8ef5c5e222017aa1843f6a5bd3ca9689713d2a3e",
+  "contract_commit": "0857a68b6ff863385fe5dff08a283d1e860a8909",
+  "candidate_ids": [
+    "A0_CURRENT_BEST_UNCHANGED",
+    "A1_F05_C2_NO_B02_OVERLAP",
+    "A2_B02_C3_EARLY_GIVEBACK_16BAR",
+    "A3_SP39_NEGATIVE_SAME_DIRECTION_CLUSTER_VETO",
+    "A4_P3_SESSION_LOSS_PERSISTENCE_CAP_2"
+  ],
+  "rule_hashes_sha256": {
+    "A0_CURRENT_BEST_UNCHANGED": "942a8adbfcb29998f838eeff06341c110df7b29ae731eceb400f63e54b54ed38",
+    "A1_F05_C2_NO_B02_OVERLAP": "230e451eefea478afd6a96e31c0cd6ed0227f24de634f54560370a370b2437b7",
+    "A2_B02_C3_EARLY_GIVEBACK_16BAR": "b1d5272666c6546826bc8b3206e28d59cf1cee997d6e0b7aab9583ab0bdfd3bd",
+    "A3_SP39_NEGATIVE_SAME_DIRECTION_CLUSTER_VETO": "2e6a916f74710a05575ed65d30edd45c52b891266f8f87c9cce50334688438a5",
+    "A4_P3_SESSION_LOSS_PERSISTENCE_CAP_2": "fa4aa1ea3766285687f004dc2abd592ce351b25441e699e2adc2ee310497e6fc"
+  },
+  "implementation_commits_known_at_freeze": {
+    "A4_core_evaluator": "5985e7e87b26155f1a8c46684049f6702a541286",
+    "A4_workflow": "1768ad56ff50552a4191529dc38707408d5caabd"
+  },
+  "freeze_timestamp_utc": "2026-07-30T12:21:00Z",
+  "2025H1_outcome_visibility": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT",
+  "formal_candidate_result_consumed_before_freeze": false,
+  "all_frozen_candidates_must_run_through_2025H1": true,
+  "rule_change_after_freeze_allowed": false,
+  "2025H2_accessed": false
+}
