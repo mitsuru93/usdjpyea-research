@@ -2,7 +2,7 @@
   "schema_version": "usdjpy_hyp044_research_evidence_inventory_v1",
   "hypothesis_id": "USDJPY-HYP-044",
   "status": "PASS_COMPACT_INVENTORY_COMMITTED",
-  "matching_file_count": 363,
+  "matching_file_count": 364,
   "matching_files": [
     {
       "path": ".github/workflows/archive_usdjpy_portfolio_loss_cluster_phase1_r1.yml",
@@ -1718,6 +1718,11 @@
       "path": "tools/run_usdjpy_hyp044_bootstrap_inventory_v1.py",
       "bytes": 5086,
       "sha256": "97c3b6c43ce935aee9b84f70ec9008fc71ed27e4292d57721d4c16a5f8b49661"
+    },
+    {
+      "path": "tools/run_usdjpy_hyp044_round_b_source_native_2020_2022_v1.py",
+      "bytes": 9945,
+      "sha256": "a2d4a86761add2c951c660528452a2e5c3a4ee9b5ba524b91b226aa919056009"
     },
     {
       "path": "tools/run_usdjpy_hyp044_source_native_2020_2022_v1.py",
