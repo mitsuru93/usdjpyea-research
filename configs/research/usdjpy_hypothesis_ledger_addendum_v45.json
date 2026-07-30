@@ -1,0 +1,34 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v45",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v44.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v44.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-043",
+      "title": "F05 Localized State–Loss Persistence and Lifecycle Recovery Study",
+      "family_ids": ["F05_LOCALIZED_STATE_LOSS_PERSISTENCE_LIFECYCLE_RECOVERY"],
+      "candidate_ids": [
+        "C1_LOCALIZED_SHORT_LOSS_PERSISTENCE_PERMISSION",
+        "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+        "C3_LOCALIZED_PRIOR_LOSS_GIVEBACK_EXIT"
+      ],
+      "status": "ACTIVE_PREREGISTERED",
+      "decision": "PENDING_FINITE_HISTORICAL_GATE",
+      "lineage": "Independent HYP-043 study using HYP-027, HYP-029, HYP-032 and HYP-041 mechanism evidence without reopening or changing their formal decisions.",
+      "period_roles": {
+        "2020_2022": "ANALYSIS_PERIOD_NON_BINDING_AFTER_FREEZE_ONLY",
+        "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+        "2025H1": "VALIDATION_PERIOD_REVALIDATION_MODIFIED_AFTER_VALIDATION_RESULT",
+        "2025H2": "NOT_AUTHORIZED"
+      },
+      "preregistration": "configs/research/usdjpy_hyp043_preregistration_v1.json",
+      "period_role_receipt": "configs/research/usdjpy_hyp043_period_role_receipt_v1.json",
+      "production_authorized": false,
+      "live_authorized": false
+    }
+  ],
+  "hypothesis_status_updates": []
+}
