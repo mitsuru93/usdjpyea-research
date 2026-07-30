@@ -1,0 +1,57 @@
+{
+  "schema_version": "usdjpy_research_candidate_registry_v72",
+  "supersedes": "configs/research/usdjpy_research_candidate_registry_v71.json",
+  "status": "HYP043_CLOSED_NO_HISTORICALLY_ADMISSIBLE_CANDIDATE",
+  "active_hypotheses": [],
+  "closed_hypotheses": {
+    "USDJPY-HYP-043": {
+      "status": "CLOSED_COMPLETE_SCIENTIFIC_RESULT",
+      "family": "F05_LOCALIZED_STATE_LOSS_PERSISTENCE_LIFECYCLE_RECOVERY",
+      "formal_decision": "NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE",
+      "economic_decision": "NO_RECOVERY_NOT_REVALIDATED_AFTER_BINDING_HISTORICAL_GATE",
+      "candidate_catalog": [
+        "C1_LOCALIZED_SHORT_LOSS_PERSISTENCE_PERMISSION",
+        "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+        "C3_LOCALIZED_PRIOR_LOSS_GIVEBACK_EXIT"
+      ],
+      "selected_candidate": null,
+      "candidate_results": {
+        "C1_LOCALIZED_SHORT_LOSS_PERSISTENCE_PERMISSION": "REJECT_ZERO_HISTORICAL_SUPPORT",
+        "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION": "REJECT_ONLY_2_OF_4_POSITIVE_EFFECT_FOLDS",
+        "C3_LOCALIZED_PRIOR_LOSS_GIVEBACK_EXIT": "REJECT_ZERO_HISTORICAL_SUPPORT"
+      },
+      "candidate_freeze_permitted": false,
+      "candidate_specific_2025H1_replay_executed": false,
+      "Core_candidate_module_created": false,
+      "MT4_candidate_module_created": false,
+      "integration_candidate_eligibility": false,
+      "diagnostic_handoff_eligibility": true,
+      "final_result": "configs/research/usdjpy_hyp043_final_result_v1.json",
+      "integration_handoff": "configs/research/usdjpy_hyp043_integration_handoff_v1.json",
+      "candidate_rule_changed_after_result": false,
+      "2025H2_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false
+    }
+  },
+  "closed_formal_decisions_unchanged": {
+    "USDJPY-HYP-027": true,
+    "USDJPY-HYP-029": true,
+    "USDJPY-HYP-032": true,
+    "USDJPY-HYP-039": true,
+    "USDJPY-HYP-040": true,
+    "USDJPY-HYP-041": true,
+    "USDJPY-HYP-042": true
+  },
+  "common_portfolio_integration": {
+    "formal_decision_changed": false,
+    "candidate_logic_injection_authorized": false,
+    "immutable_diagnostic_handoff_authorized": true,
+    "F05_role": "F05_BASELINE_UNCHANGED"
+  },
+  "run_authorization": {
+    "2025H2": false,
+    "production": false,
+    "live": false
+  }
+}
