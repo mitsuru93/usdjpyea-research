@@ -1,0 +1,160 @@
+name: USDJPY Integrated Long-Horizon Qualification Analysis v3
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_integrated_long_horizon_qualification_001_analysis_v3.yml'
+      - 'configs/run_markers/usdjpy_integrated_long_horizon_qualification_001_analysis_v3.json'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: usdjpy-integrated-long-horizon-qualification-001-analysis-v3
+  cancel-in-progress: false
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      WORK_ID: USDJPY-INTEGRATED-LONG-HORIZON-QUALIFICATION-001
+      OUTPUT_DIR: artifacts/research/usdjpy_integrated_long_horizon_qualification_001/v1
+      SCRIPT_PATH: tools/run_usdjpy_integrated_long_horizon_qualification_001_v1.py
+      HYP039_READBACK_TAG: usdjpy-integrated-long-horizon-qualification-001-hyp039-audit-readback-v1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          fetch-depth: 0
+
+      - name: Refuse completed duplicate analysis
+        id: dedup
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f "$OUTPUT_DIR/final_decision.json" ] && jq -e '.work_id==env.WORK_ID' "$OUTPUT_DIR/final_decision.json" >/dev/null; then
+            echo 'skip=true' >> "$GITHUB_OUTPUT"
+            echo 'Completed qualification result already exists; duplicate run refused.'
+          else
+            echo 'skip=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Reconstruct exact analysis source
+        if: steps.dedup.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          parts=(
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part00a
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part00b0
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part00b1
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part00b2a
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part00b2b
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part00b2c
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part00b2d
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part01
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part02
+            tools/bootstrap/usdjpy_integrated_long_horizon_qualification_001_analysis_v1.py.gz.b64.part03
+          )
+          expected=(
+            57aed7ed888fbc933fe25545f5ce6607b71cb341904df2a2fea3402e9b898135
+            fc906dca5283c6014de77370415cc77d3f47496ff9bfa70cced4f340e96f5367
+            24712403d60f77bca458cd0f5e6db257e401eaeea2bbd336e0121843c919eecd
+            3ad58c90879e461baf2bf372b8be6da41bf6c5696f04956e14fde7fc6aa645b4
+            2da0f25de4ae68177513657367ad351d6af875528ba7d0410db014a31b2aa4b2
+            7f97bb8e32eb5de5d12566c1b7bafae6f86ffbd7a9f03cff6a2d9a20dff0061e
+            427c74d6f6be84a411717dfc2c6e45e399a051e9c45f347942b60b6efcd4c105
+            7c58f5b2a9a487b365aade57f76078a50da44422c9745fd214f532d133c77558
+            6e07f82f066444baf853de2067cb61e7544bb17a7d6f64afde829f253159f40a
+            91cd5882676cd50648c13587226e8ac164b8e66a1275f01b788b53842d03603e
+          )
+          for idx in "${!parts[@]}"; do
+            actual="$(sha256sum "${parts[$idx]}" | awk '{print $1}')"
+            test "$actual" = "${expected[$idx]}" || { echo "source part mismatch: ${parts[$idx]} $actual"; exit 1; }
+          done
+          cat "${parts[@]}" | base64 --decode | gzip --decompress > "$SCRIPT_PATH"
+          test "$(sha256sum "$SCRIPT_PATH" | awk '{print $1}')" = '03318a2d1e1ad9320f7d9cb009c5fec691b08dee3d9997520d38290b05bad4cc'
+          python -m py_compile "$SCRIPT_PATH"
+
+      - name: Install deterministic runtime
+        if: steps.dedup.outputs.skip != 'true'
+        run: python -m pip install --disable-pip-version-check --quiet pandas numpy
+
+      - name: Materialize immutable authorities
+        if: steps.dedup.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/$WORK_ID-authorities"
+          rm -rf "$root"
+          mkdir -p "$root"/{hyp042,sp2025}
+          gh repo clone mitsuru93/usdjpyea-research "$root/research_hyp044" -- --branch research/usdjpy-hyp044-integrated-profitability-stabilization-v1 --single-branch --depth 1
+          gh repo clone mitsuru93/usdjpyea-core "$root/core_hyp044" -- --branch feature/usdjpy-hyp044-integrated-candidate-qualification-v1 --single-branch --depth 1
+          gh repo clone mitsuru93/usdjpyea-core "$root/portability" -- --branch hosted/usdjpy-portability-authorities-v2 --single-branch --depth 1
+          for id in 8559483151 8625412799; do
+            mkdir -p "$root/hyp042/$id"
+            gh api "repos/mitsuru93/usdjpyea-core/actions/artifacts/$id/zip" > "$root/hyp042/$id.zip"
+            unzip -q -o "$root/hyp042/$id.zip" -d "$root/hyp042/$id"
+          done
+          mkdir -p "$root/sp2025/download" "$root/sp2025/extracted"
+          gh release download "$HYP039_READBACK_TAG" --repo mitsuru93/usdjpyea-core --pattern '*.zip' --dir "$root/sp2025/download"
+          find "$root/sp2025/download" -type f -name '*.zip' -print0 | while IFS= read -r -d '' z; do unzip -q -o "$z" -d "$root/sp2025/extracted"; done
+          echo "AUTHORITY_ROOT=$root" >> "$GITHUB_ENV"
+          echo "RESEARCH_HEAD_SHA=$(git -C "$root/research_hyp044" rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "CORE_HEAD_SHA=$(git -C "$root/core_hyp044" rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "PORTABILITY_HEAD_SHA=$(git -C "$root/portability" rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Preflight authorities and period firewall
+        if: steps.dedup.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$AUTHORITY_ROOT/research_hyp044/artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/source_native_trade_ledger_2020_2022.csv"
+          test -f "$AUTHORITY_ROOT/research_hyp044/artifacts/research/usdjpy_hyp044/source_native_full_equity_v2/full_equity_metrics_2020_2022_v2.json"
+          test -f "$AUTHORITY_ROOT/core_hyp044/artifacts/research/usdjpy_hyp044/input_registry_v1/f05_c2_trade_ledger_2023_2025h1.csv"
+          test -f "$AUTHORITY_ROOT/portability/tmp/usdjpy_portability_authorities/hyp039_full/rakuten_expected_schedule.csv"
+          test -f "$AUTHORITY_ROOT/sp2025/extracted/short_pullback_trade_ledger_2025h1.csv"
+          test "$(jq -r '.metrics.P4_B02_C3_F05_C2_SP39.net_jpy|round' "$AUTHORITY_ROOT/research_hyp044/artifacts/research/usdjpy_hyp044/source_native_full_equity_v2/full_equity_metrics_2020_2022_v2.json")" = '13447'
+          if grep -R -I -n -E '2025[-_/ ]?(07|08|09|10|11|12)' "$AUTHORITY_ROOT/hyp042" "$AUTHORITY_ROOT/sp2025"; then
+            echo 'Forbidden 2025H2 market data detected.' >&2
+            exit 1
+          fi
+
+      - name: Execute qualification and enforce anchors
+        if: steps.dedup.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$OUTPUT_DIR"
+          python "$SCRIPT_PATH" \
+            --research-hyp044 "$AUTHORITY_ROOT/research_hyp044" \
+            --core-hyp044 "$AUTHORITY_ROOT/core_hyp044" \
+            --portability "$AUTHORITY_ROOT/portability" \
+            --hyp042 "$AUTHORITY_ROOT/hyp042" \
+            --sp2025 "$AUTHORITY_ROOT/sp2025/extracted" \
+            --out "$OUTPUT_DIR" \
+            | tee "$RUNNER_TEMP/integrated-analysis-stdout.json"
+          jq -e '.status=="PASS" and .latest_2023_2024.trades==1893 and (.latest_2023_2024.net_jpy|round)==52779' "$OUTPUT_DIR/baseline_reproduction.json"
+          jq -e '.checks."2025H1_P4"==true and .checks."2025H1_B02_C3"==true and .checks."2025H1_F05_C2"==true and .checks."2025H1_SP39"==true' "$OUTPUT_DIR/known_period_anchor_receipt.json"
+          jq -e '.final_decision=="FAIL_C2_C3_SHORT_PULLBACK_LONG_HORIZON_STABILITY" and (.economic_result."2025H1_net_jpy"|round)==-2131 and .production_authorized==false and .live_authorized==false and ."2025H2_accessed"==false' "$OUTPUT_DIR/final_decision.json"
+          cat "$OUTPUT_DIR/human_report.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit immutable result
+        if: steps.dedup.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$SCRIPT_PATH" "$OUTPUT_DIR"
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'research(qualification): bind integrated 2020-2025H1 economic result'
+          branch='${{ github.event.pull_request.head.ref || github.ref_name }}'
+          git pull --rebase origin "$branch"
+          git push origin "HEAD:$branch"
