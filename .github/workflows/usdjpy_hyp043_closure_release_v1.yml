@@ -1,0 +1,257 @@
+name: USDJPY HYP-043 localized recovery closure release v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/research/usdjpy_hyp043_final_result_v1.json'
+      - 'configs/research/usdjpy_hyp043_integration_handoff_v1.json'
+      - '.github/workflows/usdjpy_hyp043_closure_release_v1.yml'
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: usdjpy-hyp043-localized-recovery-closure-release-v1
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TAG: usdjpy-hyp043-f05-localized-recovery-v1
+      ARCHIVE: usdjpy-hyp043-f05-localized-recovery-v1-research-closure.zip
+      CORE_ARCHIVE_SHA: b7004225b637205623fcc38630c57c272dcf8b0de20774d6d6cb38c1ee75c157
+      RECEIPT_TITLE: '[HYP043-RECEIPT] F05 localized recovery closure'
+      RECEIPT_BRANCH: research/usdjpy-hyp043-release-receipts-v1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate complete scientific closure
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          required = [
+              'configs/research/usdjpy_hyp043_preregistration_v1.json',
+              'configs/research/usdjpy_hyp043_period_role_receipt_v1.json',
+              'configs/research/usdjpy_hyp043_final_result_v1.json',
+              'configs/research/usdjpy_hyp043_integration_handoff_v1.json',
+              'configs/research/usdjpy_hypothesis_ledger_addendum_v46.json',
+              'configs/research/usdjpy_research_candidate_registry_v72.json',
+              'configs/research/usdjpy_2023_2024_hypothesis_program_v17.json',
+              'docs/research/USDJPY_HYP043_FINAL_REPORT_V1.md',
+          ]
+          for item in required:
+              assert Path(item).is_file(), item
+          result=json.loads(Path(required[2]).read_text(encoding='utf-8'))
+          handoff=json.loads(Path(required[3]).read_text(encoding='utf-8'))
+          registry=json.loads(Path(required[5]).read_text(encoding='utf-8'))
+          assert result['status']=='COMPLETE_SCIENTIFIC_RESULT'
+          assert result['formal_decision']=='NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE'
+          assert result['selected_candidate'] is None
+          assert result['candidate_freeze']['candidate_specific_2025H1_replay_authorized'] is False
+          assert result['parallel_study_isolation']['USDJPY_HYP_041_changed_or_reopened'] is False
+          assert result['deployment']['production_authorized'] is False
+          assert result['deployment']['live_authorized'] is False
+          assert result['period_roles']['2025H2']=='NOT_ACCESSED'
+          assert handoff['integration_eligibility'] is False
+          assert handoff['common_portfolio_candidate_logic_injected'] is False
+          assert registry['closed_hypotheses']['USDJPY-HYP-043']['selected_candidate'] is None
+          PY
+
+      - name: Build deterministic Research closure archive
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, shutil, zipfile
+          from pathlib import Path
+          archive=Path(os.environ['ARCHIVE'])
+          stage=Path('hyp043_closure_package')
+          if stage.exists(): shutil.rmtree(stage)
+          stage.mkdir()
+          files = [
+              'configs/research/usdjpy_hyp043_preregistration_v1.json',
+              'configs/research/usdjpy_hyp043_period_role_receipt_v1.json',
+              'configs/research/usdjpy_hyp043_final_result_v1.json',
+              'configs/research/usdjpy_hyp043_integration_handoff_v1.json',
+              'configs/research/usdjpy_hypothesis_ledger_addendum_v46.json',
+              'configs/research/usdjpy_research_candidate_registry_v72.json',
+              'configs/research/usdjpy_2023_2024_hypothesis_program_v17.json',
+              'docs/research/USDJPY_HYP043_FINAL_REPORT_V1.md',
+          ]
+          sums=[]
+          for name in files:
+              source=Path(name)
+              target=stage/name
+              target.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copyfile(source,target)
+              sums.append((hashlib.sha256(source.read_bytes()).hexdigest(),name))
+          manifest={
+              'schema_version':'usdjpy_hyp043_deterministic_research_archive_manifest_v1',
+              'hypothesis_id':'USDJPY-HYP-043',
+              'formal_decision':'NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE',
+              'research_closure_sha':os.environ['GITHUB_SHA'],
+              'core_scientific_result_sha':'1e6a5eda4ee9f36ad2d5c9defa61dfcc5a535cea',
+              'scientific_run_id':30523476402,
+              'core_deterministic_archive_sha256':os.environ['CORE_ARCHIVE_SHA'],
+              'file_count':len(files),
+              'files':[{'path':p,'sha256':s} for s,p in sums],
+              'candidate_specific_2025H1_replay_executed':False,
+              '2025H2_accessed':False,
+              'production_authorized':False,
+              'live_authorized':False,
+          }
+          (stage/'ARCHIVE_MANIFEST.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          all_members=files+['ARCHIVE_MANIFEST.json']
+          (stage/'PACKAGE_SHA256SUMS').write_text('\n'.join(f'{hashlib.sha256((stage/name).read_bytes()).hexdigest()}  {name}' for name in all_members)+'\n',encoding='ascii')
+          all_members.append('PACKAGE_SHA256SUMS')
+          if archive.exists(): archive.unlink()
+          with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+              for name in sorted(all_members):
+                  payload=(stage/name).read_bytes()
+                  info=zipfile.ZipInfo(name,date_time=(1980,1,1,0,0,0))
+                  info.compress_type=zipfile.ZIP_DEFLATED
+                  info.external_attr=(0o100644 << 16)
+                  info.create_system=3
+                  z.writestr(info,payload,compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
+          sha=hashlib.sha256(archive.read_bytes()).hexdigest()
+          with open(os.environ['GITHUB_ENV'],'a',encoding='utf-8') as fh:
+              fh.write(f'ARCHIVE_SHA={sha}\nARCHIVE_BYTES={archive.stat().st_size}\n')
+          print(json.dumps({'archive':str(archive),'sha256':sha,'bytes':archive.stat().st_size},indent=2))
+          PY
+
+      - name: Publish immutable Release and verify byte-identical readback
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'immutable Release already exists; verifying existing asset'
+          else
+            cat > release-notes.md <<EOF
+          Hypothesis: USDJPY-HYP-043
+          Family: F05_LOCALIZED_STATE_LOSS_PERSISTENCE_LIFECYCLE_RECOVERY
+          Formal decision: NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE
+          Economic decision: NO_RECOVERY_NOT_REVALIDATED_AFTER_BINDING_HISTORICAL_GATE
+          Selected candidate: none
+          Core scientific result: 1e6a5eda4ee9f36ad2d5c9defa61dfcc5a535cea
+          Scientific run: 30523476402
+          Research closure SHA: $GITHUB_SHA
+          Core archive SHA-256: $CORE_ARCHIVE_SHA
+          Research release archive SHA-256: $ARCHIVE_SHA
+          Candidate-specific 2025H1 replay: false
+          2025H2 accessed: false
+          Production/live authorized: false
+          EOF
+            gh release create "$TAG" "$ARCHIVE" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title 'USDJPY HYP-043 F05 localized recovery closure v1' --notes-file release-notes.md
+          fi
+          rm -rf release_readback
+          mkdir release_readback
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir release_readback --pattern "$ARCHIVE"
+          test -f "release_readback/$ARCHIVE"
+          REMOTE_SHA=$(sha256sum "release_readback/$ARCHIVE" | awk '{print $1}')
+          test "$REMOTE_SHA" = "$ARCHIVE_SHA"
+          RELEASE_URL=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json url --jq .url)
+          echo "REMOTE_SHA=$REMOTE_SHA" >> "$GITHUB_ENV"
+          echo "RELEASE_URL=$RELEASE_URL" >> "$GITHUB_ENV"
+
+      - name: Publish or update closure receipt Issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          body=$(cat <<EOF
+          hypothesis_id: USDJPY-HYP-043
+          family_id: F05_LOCALIZED_STATE_LOSS_PERSISTENCE_LIFECYCLE_RECOVERY
+          status: PASS_BYTE_IDENTICAL_RELEASE_READBACK
+          formal_decision: NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE
+          economic_decision: NO_RECOVERY_NOT_REVALIDATED_AFTER_BINDING_HISTORICAL_GATE
+          selected_candidate: none
+          scientific_run_id: 30523476402
+          core_scientific_result_sha: 1e6a5eda4ee9f36ad2d5c9defa61dfcc5a535cea
+          research_closure_sha: $GITHUB_SHA
+          release_tag: $TAG
+          archive_name: $ARCHIVE
+          research_archive_sha256: $ARCHIVE_SHA
+          core_archive_sha256: $CORE_ARCHIVE_SHA
+          remote_readback_sha256: $REMOTE_SHA
+          candidate_specific_2025H1_replay_executed: false
+          2025H2_accessed: false
+          production_authorized: false
+          live_authorized: false
+          exact_next_action: keep F05_BASELINE_UNCHANGED and import HYP-043 only as immutable diagnostic evidence in Common Portfolio Integration.
+          EOF
+          )
+          issue=$(gh issue list --repo "$GITHUB_REPOSITORY" --state all --search "in:title $RECEIPT_TITLE" --json number,title --jq ".[] | select(.title == \"$RECEIPT_TITLE\") | .number" | head -n1)
+          if [ -n "$issue" ]; then
+            gh issue edit "$issue" --repo "$GITHUB_REPOSITORY" --body "$body" --state closed
+          else
+            issue_url=$(gh issue create --repo "$GITHUB_REPOSITORY" --title "$RECEIPT_TITLE" --body "$body")
+            issue=${issue_url##*/}
+            gh issue close "$issue" --repo "$GITHUB_REPOSITORY" --reason completed
+          fi
+          ISSUE_URL=$(gh issue view "$issue" --repo "$GITHUB_REPOSITORY" --json url --jq .url)
+          echo "ISSUE_NUMBER=$issue" >> "$GITHUB_ENV"
+          echo "ISSUE_URL=$ISSUE_URL" >> "$GITHUB_ENV"
+
+      - name: Publish release and readback receipts to isolated branch
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          target=Path('/tmp/hyp043-receipts')
+          target.mkdir(parents=True,exist_ok=True)
+          common={
+              'hypothesis_id':'USDJPY-HYP-043',
+              'formal_decision':'NO_HISTORICALLY_ADMISSIBLE_LOCALIZED_F05_CANDIDATE',
+              'scientific_run_id':30523476402,
+              'research_closure_sha':os.environ['GITHUB_SHA'],
+              'core_scientific_result_sha':'1e6a5eda4ee9f36ad2d5c9defa61dfcc5a535cea',
+              'release_tag':os.environ['TAG'],
+              'release_url':os.environ['RELEASE_URL'],
+              'archive_name':os.environ['ARCHIVE'],
+              'archive_sha256':os.environ['ARCHIVE_SHA'],
+              'archive_bytes':int(os.environ['ARCHIVE_BYTES']),
+              'core_archive_sha256':os.environ['CORE_ARCHIVE_SHA'],
+              'issue_number':int(os.environ['ISSUE_NUMBER']),
+              'issue_url':os.environ['ISSUE_URL'],
+              'candidate_specific_2025H1_replay_executed':False,
+              '2025H2_accessed':False,
+              'production_authorized':False,
+              'live_authorized':False,
+          }
+          release={'schema_version':'usdjpy_hyp043_release_receipt_v1','status':'PASS_IMMUTABLE_RELEASE_PUBLISHED',**common}
+          readback={'schema_version':'usdjpy_hyp043_readback_receipt_v1','status':'PASS_BYTE_IDENTICAL_RELEASE_READBACK','remote_readback_sha256':os.environ['REMOTE_SHA'],**common}
+          (target/'usdjpy_hyp043_release_receipt_v1.json').write_text(json.dumps(release,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          (target/'usdjpy_hyp043_readback_receipt_v1.json').write_text(json.dumps(readback,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          if git ls-remote --exit-code --heads origin "$RECEIPT_BRANCH" >/dev/null 2>&1; then
+            git fetch origin "$RECEIPT_BRANCH"
+            git checkout -B "$RECEIPT_BRANCH" "origin/$RECEIPT_BRANCH"
+            git merge --no-edit "$GITHUB_SHA"
+          else
+            git checkout -b "$RECEIPT_BRANCH" "$GITHUB_SHA"
+          fi
+          mkdir -p configs/research
+          cp /tmp/hyp043-receipts/*.json configs/research/
+          git add configs/research/usdjpy_hyp043_release_receipt_v1.json configs/research/usdjpy_hyp043_readback_receipt_v1.json
+          if git diff --cached --quiet; then
+            echo 'release receipts already byte-identical'
+          else
+            git commit -m 'research(hyp043): publish release and readback receipts'
+            git push origin HEAD:"$RECEIPT_BRANCH"
+          fi
