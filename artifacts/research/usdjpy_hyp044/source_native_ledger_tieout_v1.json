@@ -1,0 +1,116 @@
+{
+  "2025H2_accessed": false,
+  "combinations": {
+    "P0_B02_BASELINE_F05_BASELINE": {
+      "difference_jpy": 3.637978807091713e-12,
+      "ledger_net_jpy": 21525.000000000517,
+      "pass": true,
+      "source_result_net_jpy": 21525.000000000513,
+      "variant_ids": [
+        "B02_BASELINE",
+        "F05_BASELINE"
+      ]
+    },
+    "P1_B02_BASELINE_F05_C2": {
+      "difference_jpy": -3.637978807091713e-12,
+      "ledger_net_jpy": 26000.00000000054,
+      "pass": true,
+      "source_result_net_jpy": 26000.000000000542,
+      "variant_ids": [
+        "B02_BASELINE",
+        "F05_C2"
+      ]
+    },
+    "P2_B02_C3_F05_BASELINE": {
+      "difference_jpy": 3.637978807091713e-12,
+      "ledger_net_jpy": 12331.000000000628,
+      "pass": true,
+      "source_result_net_jpy": 12331.000000000624,
+      "variant_ids": [
+        "B02_C3",
+        "F05_BASELINE"
+      ]
+    },
+    "P3_B02_C3_F05_C2": {
+      "difference_jpy": 7.275957614183426e-12,
+      "ledger_net_jpy": 16806.00000000065,
+      "pass": true,
+      "source_result_net_jpy": 16806.000000000644,
+      "variant_ids": [
+        "B02_C3",
+        "F05_C2"
+      ]
+    },
+    "P4_B02_C3_F05_C2_SP39": {
+      "difference_jpy": -5.4569682106375694e-12,
+      "ledger_net_jpy": 13447.000000000726,
+      "pass": true,
+      "source_result_net_jpy": 13447.000000000731,
+      "variant_ids": [
+        "B02_C3",
+        "F05_C2",
+        "SP39_UNCHANGED"
+      ]
+    }
+  },
+  "row_count": 6471,
+  "schema_version": "usdjpy_hyp044_source_native_ledger_tieout_v1",
+  "status": "PASS",
+  "variants": {
+    "B02_BASELINE": {
+      "blank_pnl": 0,
+      "duplicate_trade_ids": 0,
+      "modified": 0,
+      "net_baseline_pnl_jpy": 8644.999999999955,
+      "net_pnl_jpy": 8644.999999999955,
+      "rows": 671,
+      "strategies": {
+        "B02": 671
+      }
+    },
+    "B02_C3": {
+      "blank_pnl": 0,
+      "duplicate_trade_ids": 0,
+      "modified": 458,
+      "net_baseline_pnl_jpy": 8644.999999999955,
+      "net_pnl_jpy": -548.9999999999355,
+      "rows": 671,
+      "strategies": {
+        "B02": 671
+      }
+    },
+    "F05_BASELINE": {
+      "blank_pnl": 0,
+      "duplicate_trade_ids": 0,
+      "modified": 0,
+      "net_baseline_pnl_jpy": 12880.000000000564,
+      "net_pnl_jpy": 12880.000000000564,
+      "rows": 2128,
+      "strategies": {
+        "F05": 2128
+      }
+    },
+    "F05_C2": {
+      "blank_pnl": 0,
+      "duplicate_trade_ids": 0,
+      "modified": 81,
+      "net_baseline_pnl_jpy": 12880.000000000564,
+      "net_pnl_jpy": 17355.000000000586,
+      "rows": 2128,
+      "strategies": {
+        "F05": 2128
+      }
+    },
+    "SP39_UNCHANGED": {
+      "blank_pnl": 0,
+      "duplicate_trade_ids": 0,
+      "modified": 0,
+      "net_baseline_pnl_jpy": -3358.999999999924,
+      "net_pnl_jpy": -3358.999999999924,
+      "rows": 873,
+      "strategies": {
+        "SP39": 873
+      }
+    }
+  }
+}
