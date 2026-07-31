@@ -3,15 +3,36 @@
   "work_id": "USDJPY-B0-CROSS-REGIME-STABILITY-IMPROVEMENT-001",
   "hypothesis_id": "USDJPY-HYP-045",
   "formal_name": "B0_CROSS_REGIME_LOSS_MONTH_AND_LOSS_QUARTER_STABILITY_IMPROVEMENT",
-  "status": "ACTIVE_EXECUTION",
+  "status": "ECONOMIC_SELECTION_COMPLETE_TECHNICAL_QUALIFICATION_PENDING",
   "primary_reference_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
   "primary_reference_rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
+  "selected_candidate": "A3_B0_LOCALIZED_F05_LONG_SESSION_CLUSTER_CONTROL",
+  "selected_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP_PLUS_A3_B0_LOCALIZED_F05_LONG_SESSION_CLUSTER_CONTROL",
+  "selected_rule_hash_sha256": "1425b4caf6c0a5e8c4f21be7efdf410442bbd6d24d329f87c9c4931eecbd4b7f",
+  "economic_decision": "PARTIAL_B0_STABILITY_IMPROVEMENT_WITH_REMAINING_LOSS_PERIODS",
   "parent_formal_decisions_modified": false,
   "asian_range_sweep_included": false,
   "period_roles": {
-    "2020_2024": "ANALYSIS_AND_CANDIDATE_SELECTION",
+    "2020_2024": "ANALYSIS_CAUSE_DECOMPOSITION_CANDIDATE_CONSTRUCTION_AND_FREEZE",
     "2025H1": "VALIDATION_ONLY_AFTER_FREEZE",
     "2025H2": "PROHIBITED_NOT_ACCESSED"
+  },
+  "economic_metrics": {
+    "current_b0_2020_2024_net_jpy": 84796.0000000007,
+    "selected_2020_2024_net_jpy": 98762.00000000081,
+    "current_b0_2025H1_net_jpy": 609.0000000009604,
+    "selected_2025H1_net_jpy": 1399.0000000009604,
+    "selected_2025H1_profit_factor": 1.013116075865117,
+    "current_b0_red_quarters_2020_2024": 9,
+    "selected_red_quarters_2020_2024": 8,
+    "current_b0_red_months_2020_2024": 22,
+    "selected_red_months_2020_2024": 20,
+    "current_b0_rolling_6m_min_jpy": -27731.00000000006,
+    "selected_rolling_6m_min_jpy": -17457.000000000062,
+    "current_b0_rolling_12m_min_jpy": -32000.000000000047,
+    "selected_rolling_12m_min_jpy": -23240.000000000073,
+    "current_b0_realized_drawdown_jpy": 50884.000000000204,
+    "selected_realized_drawdown_jpy": 39562.000000000175
   },
   "authority_lineage": {
     "latest_binding_f05_trade_count": 1464,
@@ -21,9 +42,11 @@
   },
   "execution": {
     "core_pull_request": 818,
-    "core_analysis_run": 30606591440,
+    "core_economic_authority_commit": "3c02162ac52c929396be12217d0d8a4f8dbbc353",
+    "core_economic_source_archive_sha256": "0c0de1ea945229524b8525e9199b9d9c5341a6cc2a00a611ebfa97e53d2d5ac4",
     "repository_mutex": "usdjpy-b0-cross-regime-stability-improvement-v1",
-    "duplicate_dispatch_permitted": false
+    "duplicate_dispatch_permitted": false,
+    "technical_qualification": "PENDING_SOURCE_NATIVE_2020_2022_FULL_EQUITY_AND_RAKUTEN_MT4_2023_2025H1"
   },
   "production_authorized": false,
   "live_authorized": false,
