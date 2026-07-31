@@ -3,7 +3,7 @@
   "work_id": "USDJPY-B0-CROSS-REGIME-STABILITY-IMPROVEMENT-001",
   "hypothesis_id": "USDJPY-HYP-045",
   "formal_name": "B0_CROSS_REGIME_LOSS_MONTH_AND_LOSS_QUARTER_STABILITY_IMPROVEMENT",
-  "status": "ECONOMIC_SELECTION_COMPLETE_TECHNICAL_QUALIFICATION_BLOCKED_BY_RUNNER",
+  "status": "ECONOMIC_AND_SOURCE_NATIVE_QUALIFICATION_COMPLETE_MT4_QUALIFICATION_IN_PROGRESS",
   "primary_reference_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
   "primary_reference_rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
   "selected_candidate": "A3_B0_LOCALIZED_F05_LONG_SESSION_CLUSTER_CONTROL",
@@ -40,6 +40,28 @@
     "unresolved_difference": 13,
     "synthetic_rows_created": false
   },
+  "selected_ledger_authority": {
+    "status": "PASS_RECONSTRUCTED_SELECTED_EVENT_LEDGER_SEMANTIC_AUTHORITY",
+    "selected_rows": 6513,
+    "original_archive_selected_ledger_sha256": "ab8bc335080bcd169b8d36160c22b5090484c8f867329a61d0f68dc6da74bed2",
+    "reconstructed_execution_ledger_sha256": "0d15f647bfdae10e29de845440d55a32f5e89d8671cda2393ce14620141bb0f4",
+    "byte_identity_with_original_archive": false,
+    "semantic_authority_certified": true,
+    "core_authority_commit": "3612f88239a4934cc25a94be4a56622f7243e32c",
+    "core_reconstruction_receipt_commit": "5759af30dc5658e6d7e47c2e010cae0d65b11d35"
+  },
+  "source_native_2020_2022": {
+    "status": "PASS_SELECTED_CANDIDATE_SOURCE_NATIVE_TICK_FULL_EQUITY_2020_2022",
+    "run_id": 30640088883,
+    "tick_count": 78737040,
+    "net_jpy": 36073,
+    "full_equity_drawdown_jpy": 36626,
+    "minimum_equity_jpy": 97316,
+    "minimum_free_margin_jpy": 62510,
+    "minimum_margin_level_pct": 235.48518896833653,
+    "maximum_concurrency": 10,
+    "stopout_breached": false
+  },
   "execution": {
     "core_pull_request": 818,
     "core_economic_authority_commit": "3c02162ac52c929396be12217d0d8a4f8dbbc353",
@@ -47,8 +69,17 @@
     "core_economic_source_archive_sha256": "0c0de1ea945229524b8525e9199b9d9c5341a6cc2a00a611ebfa97e53d2d5ac4",
     "repository_mutex": "usdjpy-b0-cross-regime-stability-improvement-v1",
     "duplicate_dispatch_permitted": false,
-    "technical_qualification": "BLOCKED_SERVICE_RUNNER_NOT_ACCEPTING_JOBS",
-    "technical_blocker_receipt": "artifacts/research/usdjpy_b0_cross_regime_stability_improvement_001/v1/technical_blocker_receipt.json"
+    "runner_recovery": "PASS_BOTH_SELF_HOSTED_LANES_ACCEPTED_JOBS",
+    "hosted_runner_used_for_continuation": false,
+    "compile_status": {
+      "pinned_hyp044_baseline": "PASS_0_ERRORS_4_KNOWN_WARNING60",
+      "selected_a3_candidate": "PASS_0_ERRORS_0_WARNINGS",
+      "candidate_ex4_sha256": "c578b68e4598f528cfe888403eba7546be771537eab66bdc2487fea6f450c4f7"
+    },
+    "technical_qualification": "IN_PROGRESS_RAKUTEN_MT4_SAME_INPUT",
+    "mt4_run_id": 30642368081,
+    "mt4_job_id": 91195239054,
+    "mt4_current_stage": "BASELINE_2023_2024_STRATEGY_TESTER"
   },
   "production_authorized": false,
   "live_authorized": false,
