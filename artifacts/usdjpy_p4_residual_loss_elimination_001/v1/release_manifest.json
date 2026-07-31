@@ -1,0 +1,34 @@
+{
+  "schema_version": "usdjpy_p4_residual_loss_elimination_001_release_manifest_summary_v1",
+  "work_id": "USDJPY-P4-RESIDUAL-LOSS-ELIMINATION-001",
+  "decision": "PARTIAL_RESIDUAL_LOSS_REDUCTION_WITH_REMAINING_WEAK_REGIME",
+  "selected_candidate": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+  "candidate_rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
+  "release": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "tag": "usdjpy-p4-residual-loss-elimination-001-v1",
+    "release_id": 362813094,
+    "asset_id": 496110578,
+    "asset_name": "usdjpy-p4-residual-loss-elimination-001-v1.zip",
+    "asset_bytes": 58177,
+    "asset_sha256": "5a6421b9b1533e5477cd37580f52ac268b4155ff95ff036eef43a45de8b85bdd",
+    "internal_file_count": 28,
+    "publisher_run_id": 30598082681,
+    "publisher_run_attempt": 1,
+    "publisher_job_id": 91054732569,
+    "receipt_issue": 817
+  },
+  "remote_readback": {
+    "status": "PASS",
+    "byte_identical": true,
+    "zip_integrity": "PASS",
+    "zip_test_bad_file": null
+  },
+  "research_main_merge_sha": "efd771eb4d433225255867a3f3c385b6aee781ee",
+  "core_main_merge_sha": "3a4caedf644d6f4ccf9df22cf7ee2159a968e078",
+  "mt4_qualification_run_id": 30588133058,
+  "ex4_sha256": "4ed7fecc0349cbe36db5b2884b0e470018bd141c52d078f6251e285718c0a493",
+  "production_authorized": false,
+  "live_authorized": false,
+  "2025H2_accessed": false
+}
