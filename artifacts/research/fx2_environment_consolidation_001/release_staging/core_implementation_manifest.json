@@ -1,0 +1,27 @@
+{
+  "schema_version": "fx2_core_implementation_manifest_v1",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "repository": "mitsuru93/usdjpyea-core",
+  "source_commit_sha": "cd0cfcdb72bc71c13be7e639d9de48d8e31dff3a",
+  "files": [
+    {"path": ".github/workflows/fx2_research_analysis.yml", "git_blob_sha": "20a1d3ac67640ceb52867ed9a58f069a25cfe3a1", "staged_copy": true},
+    {"path": ".github/workflows/fx2_core_compile.yml", "git_blob_sha": "66ff9a05847c529baf5ecc999dea7c6833c36065", "staged_copy": false},
+    {"path": ".github/workflows/fx2_mt4_execute.yml", "git_blob_sha": "dedfe060dd0e444aa884b1e2818041b7ee0b6125", "staged_copy": false},
+    {"path": ".github/workflows/fx2_evidence_publish.yml", "git_blob_sha": "7a07d76437e4148e994b88cef60c4cebba303146", "staged_copy": false},
+    {"path": ".github/workflows/fx2_runner_health.yml", "git_blob_sha": "90e2ecfb6ed7291254232edb143ea66decaf38cd", "staged_copy": false},
+    {"path": "MQL4/Experts/Infrastructure/FX2_MT4_INFRA_SMOKE.mq4", "git_blob_sha": "14ab7c085bccec96bf45f4afd8797dfe99452126", "staged_copy": true},
+    {"path": "schemas/research_infra/runner_profile_schema_v1.json", "git_blob_sha": "b2914eec9bf9bc7e11a8639ee7b3b6884703819e", "staged_copy": true},
+    {"path": "tools/research_infra/fx2_env_v1.py", "git_blob_sha": "801c1a0b0072d4ea0dcee5b40cf5d18a51549973", "staged_copy": false},
+    {"path": "scripts/mt4/Invoke-FX2NeutralMt4Smoke.ps1", "git_blob_sha": "9e160fe7b0db2cbee3032dc6559b5810370be8c7", "staged_copy": false},
+    {"path": "scripts/runner/Get-FX2RunnerHealth.ps1", "git_blob_sha": "96d432869a833e2e42f662bc12c6859ebb571e92", "staged_copy": false},
+    {"path": "config/runner_profile.example.json", "git_blob_sha": "29dbf7a0d86141a746ba786aa90cc382f306fe96", "staged_copy": false},
+    {"path": "templates/fx2_new_study_wrapper.yml", "git_blob_sha": "2237662edd9ce5b844465c34f4d033b07ee65979", "staged_copy": false}
+  ],
+  "candidate_outcome_computed": false,
+  "strategy_rule_changed": false,
+  "protected_period_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
