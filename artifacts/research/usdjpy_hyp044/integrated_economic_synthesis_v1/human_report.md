@@ -42,7 +42,7 @@ Direction attribution:
 - LONG: 203 trades, -JPY 7,155, PF 0.844497
 - SHORT: 406 trades, +JPY 7,764, PF 1.126365
 
-The remaining weakness is therefore concentrated in F05 and the long side. The configuration is profitable because B02 and SP39 offset that residual loss.
+The remaining weakness is concentrated in F05 and the long side. The configuration is profitable because B02 and SP39 offset that residual loss.
 
 ## Core / MT4 / Rakuten qualification
 
@@ -120,6 +120,24 @@ ARS40 clearly provides diversification and DD reduction. It is nevertheless reje
 
 Independent unseen forward/Rakuten evidence and explicit capital-risk approval are required before live deployment.
 
-## Release status
+## Immutable Releases
 
-Core and Research deterministic Release publication and byte-identical remote readback are the remaining publication steps. The economic, implementation, parity, full-equity, and ARS-disposition decisions are complete.
+### Core / MT4 / Rakuten
+
+- tag: `usdjpy-hyp044-integrated-profitability-stabilization-v1`
+- Release ID: `362800814`
+- asset ID: `496075894`
+- asset bytes: `2,981,655`
+- SHA-256: `39e3da6e8a8513d106c80113ac28d43f98a58465593e58d7d8b9a8a822ca3089`
+- local/remote readback: identical / PASS
+
+### Research closure
+
+- tag: `usdjpy-hyp044-integrated-profitability-stabilization-research-v1`
+- Release ID: `362805909`
+- asset ID: `496089104`
+- asset bytes: `430,650`
+- SHA-256: `9314416b4bae4bde628de5b8d5c356dc5ae47fc608d6e73bd745e5993b75e935`
+- local/remote readback: identical / PASS
+
+The economic, implementation, parity, full-equity, ARS-disposition, deterministic archive, and remote readback work is complete.
