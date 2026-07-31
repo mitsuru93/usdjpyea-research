@@ -1,16 +1,29 @@
 {
+  "schema_version": "fx2_cleanup_receipt_v1",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "status": "PASS",
+  "remote_readback_completed": true,
+  "ephemeral_workspace_cleanup": "AUTOMATIC_AFTER_JOB",
+  "lock_release_required": false,
+  "temporary_workflow_cleanup_pending": false,
+  "deleted_completed_one_shot_paths": [
+    ".github/workflows/fx2_environment_release_publish.yml",
+    ".github/workflows/fx2_environment_release_publish_pr.yml",
+    "artifacts/research/fx2_environment_consolidation_001/release_request.json"
+  ],
+  "retained_binding_paths": [
+    "authority/authority_catalog.json",
+    "authority/authority_retention_contract.json",
+    "artifacts/research/fx2_environment_consolidation_001/release/",
+    "artifacts/research/fx2_environment_consolidation_001/release_staging/"
+  ],
+  "historical_workflows_deleted": false,
+  "canonical_workflows_deleted": false,
+  "candidate_outcome_computed": false,
+  "strategy_rule_changed": false,
+  "protected_period_accessed": false,
   "2025H1_accessed": false,
   "2025H2_accessed": false,
-  "candidate_outcome_computed": false,
-  "ephemeral_workspace_cleanup": "AUTOMATIC_AFTER_JOB",
-  "live_authorized": false,
-  "lock_release_required": false,
   "production_authorized": false,
-  "protected_period_accessed": false,
-  "remote_readback_completed": true,
-  "schema_version": "fx2_cleanup_receipt_v1",
-  "status": "PASS",
-  "strategy_rule_changed": false,
-  "temporary_workflow_cleanup_pending": true,
-  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001"
+  "live_authorized": false
 }
