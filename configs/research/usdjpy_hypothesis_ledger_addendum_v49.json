@@ -11,7 +11,7 @@
       "name": "B0_CROSS_REGIME_LOSS_MONTH_AND_LOSS_QUARTER_STABILITY_IMPROVEMENT",
       "title": "USDJPY 2020–2025H1 B0 Cross-Regime Loss-Month and Loss-Quarter Stability Improvement Study",
       "work_id": "USDJPY-B0-CROSS-REGIME-STABILITY-IMPROVEMENT-001",
-      "status": "ECONOMIC_SELECTION_COMPLETE_TECHNICAL_QUALIFICATION_PENDING",
+      "status": "ECONOMIC_SELECTION_COMPLETE_TECHNICAL_QUALIFICATION_BLOCKED_BY_RUNNER",
       "research_branch": "research/usdjpy-b0-cross-regime-stability-improvement-v1",
       "core_branch": "research/usdjpy-b0-cross-regime-stability-improvement-v1",
       "formal_parent_hypotheses_reopened": false,
@@ -40,7 +40,9 @@
       "core_authority": {
         "pull_request": 818,
         "economic_commit": "3c02162ac52c929396be12217d0d8a4f8dbbc353",
-        "source_archive_sha256": "0c0de1ea945229524b8525e9199b9d9c5341a6cc2a00a611ebfa97e53d2d5ac4"
+        "receipt_commit": "a0a434c4d5932cf9805534af765ad1eedad59a1a",
+        "source_archive_sha256": "0c0de1ea945229524b8525e9199b9d9c5341a6cc2a00a611ebfa97e53d2d5ac4",
+        "technical_status": "BLOCKED_SERVICE_RUNNER_NOT_ACCEPTING_JOBS"
       },
       "2025H2_accessed": false,
       "production_authorized": false,
