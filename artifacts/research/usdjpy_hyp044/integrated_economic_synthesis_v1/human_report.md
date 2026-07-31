@@ -27,7 +27,7 @@ The EA software configuration is selected and authorized for deterministic Relea
 | 2025H1 | Rakuten MT4 | 609 | +JPY 609 | 1.005668 | JPY 26,756 |
 | 2020–2025H1 pooled | mixed binding authorities | 6,620 | +JPY 93,763 | 1.111357 | — |
 
-2025H1 therefore satisfies the preregistered conditions `net > 0` and `PF > 1`. The margin is narrow rather than strong.
+2025H1 satisfies the preregistered conditions `net > 0` and `PF > 1`. The margin is narrow rather than strong.
 
 ## 2025H1 strategy attribution
 
@@ -57,7 +57,7 @@ The remaining weakness is concentrated in F05 and the long side. The configurati
 - Stopout: no breach
 - F05 C2 exact-60-second execution: 148/148 in 2023–2024 and 56/56 in 2025H1
 
-For 2025H1, expected and actual economics are identical at 609 trades and +JPY 609. B02 has 101 exact rows and F05 has 336 exact rows. SP39 has 171 exact rows plus one order whose expected entry timestamp is 22:30 UTC and MT4 first executable tick is 22:31 UTC; close time, exit identity, and -JPY 126 P/L are identical. This is classified as an explained executable-tick timestamp difference, not a candidate-rule mismatch.
+For 2025H1, expected and actual economics are identical at 609 trades and +JPY 609. B02 has 101 exact rows and F05 has 336 exact rows. SP39 has 171 exact rows plus one order whose expected entry timestamp is 22:30 UTC and MT4 first executable tick is 22:31 UTC; close time, exit identity, and -JPY 126 P/L are identical. This is an explained executable-tick timestamp difference, not a candidate-rule mismatch.
 
 For 2023–2024, actual Rakuten MT4 is +JPY 70,455 versus +JPY 62,097 in the event replay. Full source-row parity is not achieved. The source-population, price, and information-time divergence remains an explicit limitation and does not retroactively change HYP-039 through HYP-043 decisions.
 
@@ -100,7 +100,7 @@ Adding unchanged ARS40 to selected B0 produced:
 - daily close-P/L correlation: -0.1625
 - weekly close-P/L correlation: -0.4995
 
-ARS40 clearly provides diversification and DD reduction. It is nevertheless rejected because it reduces net by JPY 23, has standalone PF below 1, and is not an authorized Common Portfolio constituent after its formal Rakuten portability failure. Its DD benefit is retained as mechanism evidence only.
+ARS40 provides diversification and DD reduction. It is nevertheless rejected because it reduces net by JPY 23, has standalone PF below 1, and is not an authorized Common Portfolio constituent after its formal Rakuten portability failure. Its DD benefit is retained as mechanism evidence only.
 
 ## Residual limitations
 
@@ -120,7 +120,7 @@ ARS40 clearly provides diversification and DD reduction. It is nevertheless reje
 
 Independent unseen forward/Rakuten evidence and explicit capital-risk approval are required before live deployment.
 
-## Immutable Releases
+## Immutable publication contract
 
 ### Core / MT4 / Rakuten
 
@@ -134,10 +134,9 @@ Independent unseen forward/Rakuten evidence and explicit capital-risk approval a
 ### Research closure
 
 - tag: `usdjpy-hyp044-integrated-profitability-stabilization-research-v1`
-- Release ID: `362805909`
-- asset ID: `496089104`
-- asset bytes: `430,650`
-- SHA-256: `9314416b4bae4bde628de5b8d5c356dc5ae47fc608d6e73bd745e5993b75e935`
-- local/remote readback: identical / PASS
+- archive asset: `usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip`
+- publication receipt asset: `usdjpy-hyp044-integrated-profitability-stabilization-research-v1-publication-receipt.json`
 
-The economic, implementation, parity, full-equity, ARS-disposition, deterministic archive, and remote readback work is complete.
+The final Research archive contains this final decision, release manifest, report, economic evidence, parity evidence, and prior Core publication receipt. The archive cannot contain its own final digest without creating a self-reference. Therefore its final Release ID, archive asset ID, bytes, SHA-256, authority commit, and byte-identical readback are recorded in the co-released publication receipt and repository receipt outside the archive. The previous Research asset ID `496089104` and SHA-256 `9314416b4bae4bde628de5b8d5c356dc5ae47fc608d6e73bd745e5993b75e935` are retained only as superseded publication history.
+
+The economic, implementation, parity, full-equity, ARS-disposition, deterministic archive, and publication-contract decisions are complete.
