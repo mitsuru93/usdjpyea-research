@@ -1,0 +1,14 @@
+{
+  "schema_version": "fx2_authority_catalog_v1",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "status": "SEED_PENDING_METADATA_ONLY_GENERATION",
+  "authority_count": 0,
+  "authorities": [],
+  "candidate_outcome_computed": false,
+  "strategy_rule_changed": false,
+  "protected_period_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

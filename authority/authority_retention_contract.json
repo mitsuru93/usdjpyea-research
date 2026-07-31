@@ -1,0 +1,22 @@
+{
+  "schema_version": "fx2_authority_retention_contract_v1",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "mandatory_types": [
+    "SOURCE_NATIVE_RAW_TICK", "CANONICAL_BAR_AUTHORITY", "SIGNAL_LEDGER", "TRADE_LEDGER",
+    "DECISION_STATE_LEDGER", "SOURCE_TO_CANDIDATE_MAP", "FULL_EQUITY_EVENT_LEDGER",
+    "CHRONOLOGY_LEDGER", "AUTHORITY_MANIFEST", "RULE_CONTRACT", "RULE_HASH",
+    "IMPLEMENTATION_HASH", "FINAL_DECISION", "READBACK_RECEIPT"
+  ],
+  "large_authority_storage": "IMMUTABLE_GITHUB_RELEASE_OR_EXTERNAL_OBJECT_STORAGE",
+  "remote_byte_identical_readback_required": true,
+  "release_overwrite_prohibited": true,
+  "asset_deletion_prohibited": true,
+  "repository_storage_for_large_authority_prohibited": true,
+  "candidate_outcome_computed": false,
+  "strategy_rule_changed": false,
+  "protected_period_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

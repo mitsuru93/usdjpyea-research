@@ -1,0 +1,43 @@
+name: FX2 Authority Registry Publication
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+  issues: write
+
+concurrency:
+  group: fx2-${{ github.repository }}-authority-registry-publication
+  cancel-in-progress: false
+
+jobs:
+  publish-registry-pr:
+    if: github.event.issue.title == '[FX2-AUTHORITY-REGISTRY-PUBLISH] FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 0, persist-credentials: true}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Generate metadata-only canonical catalog
+        env: {GITHUB_TOKEN: '${{ github.token }}'}
+        run: |
+          python tools/research_infra/fx2_authority_registry_v1.py --root . --out artifacts/research/fx2_environment_consolidation_001 --repository '${{ github.repository }}' --source-sha '${{ github.sha }}'
+      - name: Open result-binding PR instead of writing main
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          branch="infra/fx2-authority-catalog-${GITHUB_RUN_ID}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -b "$branch"
+          git add authority/authority_catalog.json artifacts/research/fx2_environment_consolidation_001
+          git commit -m 'infra: generate FX2 authority and workflow registry'
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" --title 'infra: bind FX2 authority catalog and workflow registry' --body "Metadata-only registry generation for FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001. No candidate outcome computed; no protected-period content inspected; no production/live authorization. Source SHA: ${{ github.sha }}."
+      - name: Close trigger issue
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: gh issue close '${{ github.event.issue.number }}' --reason completed --comment 'Registry generation completed and a result-binding PR was opened.'

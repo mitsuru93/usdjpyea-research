@@ -1,0 +1,27 @@
+name: FX2 New Research Study Wrapper Template
+
+on:
+  workflow_dispatch:
+    inputs:
+      core_source_sha:
+        description: Exact 40-character Core source SHA
+        required: true
+      work_id:
+        description: Study Work ID
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-analysis:
+    uses: mitsuru93/usdjpyea-core/.github/workflows/fx2_research_analysis.yml@main
+    with:
+      source_sha: ${{ inputs.core_source_sha }}
+      work_id: ${{ inputs.work_id }}
+      evaluator_path: studies/REPLACE/evaluator.py
+      evaluator_arguments: --contract studies/REPLACE/contract.json
+      expected_output_path: out/REPLACE
+
+# Strategy-specific compile/MT4 wrappers are added only after rule/period/authority contracts are frozen.
+# Publication is always a separate result-binding PR and immutable Release stage.
