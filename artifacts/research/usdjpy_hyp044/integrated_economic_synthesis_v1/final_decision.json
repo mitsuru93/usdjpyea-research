@@ -1,5 +1,5 @@
 {
-  "schema_version": "usdjpy_hyp044_final_decision_v2",
+  "schema_version": "usdjpy_hyp044_final_decision_v3",
   "hypothesis_id": "USDJPY-HYP-044",
   "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
   "selected_production_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
@@ -13,37 +13,10 @@
       "2025H2": "PROHIBITED_NOT_ACCESSED"
     },
     "economics": {
-      "2020_2022_source_native": {
-        "trades": 3625,
-        "gross_profit_jpy": 412940.0,
-        "gross_loss_jpy": -390241.0,
-        "net_jpy": 22699.0,
-        "profit_factor": 1.058166620114239,
-        "full_equity_drawdown_jpy": 39650.0
-      },
-      "2023_2024_rakuten_mt4": {
-        "trades": 2386,
-        "gross_profit_jpy": 414767.0,
-        "gross_loss_jpy": -344312.0,
-        "net_jpy": 70455.0,
-        "profit_factor": 1.204625455981784,
-        "full_equity_drawdown_jpy": 27206.0
-      },
-      "2025H1_rakuten_mt4": {
-        "trades": 609,
-        "gross_profit_jpy": 108062.0,
-        "gross_loss_jpy": -107453.0,
-        "net_jpy": 609.0,
-        "profit_factor": 1.0056675942039774,
-        "full_equity_drawdown_jpy": 26756.0
-      },
-      "2020_2025H1_pooled_mixed_authority": {
-        "trades": 6620,
-        "gross_profit_jpy": 935769.0,
-        "gross_loss_jpy": -842006.0,
-        "net_jpy": 93763.0,
-        "profit_factor": 1.1113566886696769
-      }
+      "2020_2022_source_native": {"trades": 3625, "gross_profit_jpy": 412940.0, "gross_loss_jpy": -390241.0, "net_jpy": 22699.0, "profit_factor": 1.058166620114239, "full_equity_drawdown_jpy": 39650.0},
+      "2023_2024_rakuten_mt4": {"trades": 2386, "gross_profit_jpy": 414767.0, "gross_loss_jpy": -344312.0, "net_jpy": 70455.0, "profit_factor": 1.204625455981784, "full_equity_drawdown_jpy": 27206.0},
+      "2025H1_rakuten_mt4": {"trades": 609, "gross_profit_jpy": 108062.0, "gross_loss_jpy": -107453.0, "net_jpy": 609.0, "profit_factor": 1.0056675942039774, "full_equity_drawdown_jpy": 26756.0},
+      "2020_2025H1_pooled_mixed_authority": {"trades": 6620, "gross_profit_jpy": 935769.0, "gross_loss_jpy": -842006.0, "net_jpy": 93763.0, "profit_factor": 1.1113566886696769}
     },
     "technical": {
       "metaeditor_compile": "PASS_ZERO_ERRORS_ZERO_WARNINGS",
@@ -93,8 +66,22 @@
     "forward_authorization_requirement": "Independent unseen forward/Rakuten evidence and explicit capital-risk approval are required before live deployment."
   },
   "release_publication": {
-    "core_release": "PENDING_BYTE_IDENTICAL_READBACK",
-    "research_release": "PENDING_BYTE_IDENTICAL_READBACK"
+    "core_release": {
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+      "tag": "usdjpy-hyp044-integrated-profitability-stabilization-v1",
+      "release_id": 362800814,
+      "asset_id": 496075894,
+      "asset_bytes": 2981655,
+      "sha256": "39e3da6e8a8513d106c80113ac28d43f98a58465593e58d7d8b9a8a822ca3089"
+    },
+    "research_release": {
+      "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+      "tag": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1",
+      "release_id": 362805909,
+      "asset_id": 496089104,
+      "asset_bytes": 430650,
+      "sha256": "9314416b4bae4bde628de5b8d5c356dc5ae47fc608d6e73bd745e5993b75e935"
+    }
   },
   "formal_prior_hypothesis_decisions_changed": false,
   "candidate_rule_changed_after_2025H1": false,
