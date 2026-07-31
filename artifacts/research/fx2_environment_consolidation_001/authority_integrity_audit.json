@@ -1,0 +1,21 @@
+{
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "authority_count": 301,
+  "candidate_outcome_computed": false,
+  "duplicate_file_sha256_count": 8,
+  "live_authorized": false,
+  "missing_mandatory_types": [
+    "CHRONOLOGY_LEDGER",
+    "DECISION_STATE_LEDGER",
+    "IMPLEMENTATION_HASH",
+    "RULE_HASH",
+    "SOURCE_TO_CANDIDATE_MAP"
+  ],
+  "production_authorized": false,
+  "protected_period_accessed": false,
+  "remote_assets_indexed": 644,
+  "schema_version": "fx2_authority_integrity_audit_v1",
+  "status": "PASS_WITH_CATALOG_GAPS",
+  "strategy_rule_changed": false
+}

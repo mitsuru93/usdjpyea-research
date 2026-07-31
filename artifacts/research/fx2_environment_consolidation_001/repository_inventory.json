@@ -1,0 +1,16 @@
+{
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "artifact_count": 2000,
+  "authority_count": 301,
+  "candidate_outcome_computed": false,
+  "live_authorized": false,
+  "production_authorized": false,
+  "protected_period_accessed": false,
+  "release_asset_count": 644,
+  "release_count": 60,
+  "schema_version": "fx2_repository_inventory_v1",
+  "source_sha": "3400297c9a329f48202868fbf7a3d67757579724",
+  "strategy_rule_changed": false,
+  "workflow_count": 158
+}

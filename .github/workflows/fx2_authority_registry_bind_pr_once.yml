@@ -1,0 +1,49 @@
+name: FX2 Authority Registry Bind PR Once
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ci/fx2_authority_catalog_binding_request.json
+      - .github/workflows/fx2_authority_registry_bind_pr_once.yml
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: fx2-authority-catalog-bind-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  generate-and-bind:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Generate metadata-only registry from exact PR head
+        env: {GITHUB_TOKEN: '${{ github.token }}'}
+        run: |
+          python tools/research_infra/fx2_authority_registry_v1.py \
+            --root . \
+            --out artifacts/research/fx2_environment_consolidation_001 \
+            --repository '${{ github.repository }}' \
+            --source-sha '${{ github.event.pull_request.head.sha }}'
+      - name: Bind generated registry to PR branch
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add authority/authority_catalog.json artifacts/research/fx2_environment_consolidation_001
+          if git diff --cached --quiet; then
+            echo 'Registry already byte-identical.'
+          else
+            git commit -m 'infra: bind generated FX2 authority and workflow registry'
+            git push origin HEAD:${{ github.head_ref }}
+          fi

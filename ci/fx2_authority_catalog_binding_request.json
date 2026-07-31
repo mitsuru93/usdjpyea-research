@@ -1,0 +1,14 @@
+{
+  "schema_version": "fx2_authority_catalog_binding_request_v1",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "mode": "METADATA_ONLY_PR_BOUND_GENERATION",
+  "expected_authority_count_at_last_ci": 300,
+  "expected_workflow_count_at_last_ci": 157,
+  "candidate_outcome_computed": false,
+  "strategy_rule_changed": false,
+  "protected_period_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
