@@ -1,0 +1,15 @@
+{
+  "schema_version": "usdjpy_hyp044_research_release_readback_v2",
+  "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+  "tag": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1",
+  "release_id": 362805909,
+  "asset_id": 496088568,
+  "asset_name": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip",
+  "asset_bytes": 430009,
+  "local_sha256": "511ee3c4613df8585f9eabc29680291edeab62dc4f93cf091d3ac620ddb8734a",
+  "remote_sha256": "511ee3c4613df8585f9eabc29680291edeab62dc4f93cf091d3ac620ddb8734a",
+  "software_release_authorized": true,
+  "production_authorized": false,
+  "live_authorized": false,
+  "2025H2_accessed": false
+}
