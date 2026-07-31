@@ -1,0 +1,12 @@
+{
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "candidate_outcome_computed": false,
+  "live_authorized": false,
+  "migrated_active_runs": 0,
+  "production_authorized": false,
+  "protected_period_accessed": false,
+  "schema_version": "fx2_migration_receipt_v1",
+  "status": "PASS_NEW_STUDY_PATH_READY_LEGACY_RETAINED",
+  "strategy_rule_changed": false
+}

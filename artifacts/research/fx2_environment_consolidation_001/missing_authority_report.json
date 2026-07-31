@@ -1,0 +1,19 @@
+{
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "candidate_outcome_computed": false,
+  "limitation": "Metadata scan cannot prove off-repository Release-only row-level authorities unless their manifests/readback receipts are present.",
+  "live_authorized": false,
+  "missing_mandatory_types": [
+    "CHRONOLOGY_LEDGER",
+    "DECISION_STATE_LEDGER",
+    "IMPLEMENTATION_HASH",
+    "RULE_HASH",
+    "SOURCE_TO_CANDIDATE_MAP"
+  ],
+  "missing_type_count": 5,
+  "production_authorized": false,
+  "protected_period_accessed": false,
+  "schema_version": "fx2_missing_authority_report_v1",
+  "strategy_rule_changed": false
+}
