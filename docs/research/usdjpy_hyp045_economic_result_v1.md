@@ -44,12 +44,20 @@ After the current A4 control, block only an additional F05 Long entry when one o
 
 - Core PR: `mitsuru93/usdjpyea-core#818`
 - Core economic authority commit: `3c02162ac52c929396be12217d0d8a4f8dbbc353`
+- Core authority and blocker receipt commit: `a0a434c4d5932cf9805534af765ad1eedad59a1a`
 - Economic source archive SHA-256: `0c0de1ea945229524b8525e9199b9d9c5341a6cc2a00a611ebfa97e53d2d5ac4`
 - The F05 1,464-vs-1,451 authority gap remains explicit; no synthetic rows were created.
 
+## Current technical status
+
+`BLOCKED_SERVICE_RUNNER_NOT_ACCEPTING_JOBS`
+
+The stale service-runner holder was cancelled, but the replacement checkout-free job remained queued. This is an execution-environment stop, not a scientific failure and not a candidate decision change. The Rakuten Strategy Tester remains restricted to the interactive runner and must not run in Session 0.
+
 ## Remaining binding work
 
-1. Reconstruct the selected A3 implementation in Core.
-2. Replay 2020–2022 over the certified 78,737,040 source-native ticks and bind full-equity, margin and concurrency evidence.
-3. Run Rakuten MT4 qualification for 2023–2024 and 2025H1 without retuning.
-4. Bind Research/Core parity, immutable Release/readback, final decision and cleanup receipts.
+1. Restore the service and interactive runner listeners and verify pagefile/memory state.
+2. Reconstruct the selected A3 implementation in Core.
+3. Replay 2020–2022 over the certified 78,737,040 source-native ticks and bind full-equity, margin and concurrency evidence.
+4. Run Rakuten MT4 qualification for 2023–2024 and 2025H1 without retuning.
+5. Bind Research/Core parity, immutable Release/readback, final decision and cleanup receipts.
