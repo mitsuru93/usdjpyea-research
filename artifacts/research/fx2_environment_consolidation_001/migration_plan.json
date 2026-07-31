@@ -1,0 +1,571 @@
+{
+  "active_execution_migration_prohibited": true,
+  "items": [
+    {
+      "current_workflow": ".github/workflows/_collect_eurusd_2024_raw_tick_day_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/_collect_eurusd_2024_raw_tick_day_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/_temporary_usdjpy_ea_integration_001_materialize.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/_temporary_usdjpy_ea_integration_001_materialize.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/build_usdjpy_2024_derived_bars_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/build_usdjpy_2024_derived_bars_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/build_usdjpy_2024_mt4_tick_import_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/build_usdjpy_2024_mt4_tick_import_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/canonicalize_usdjpy_csos_remaining_family_atlas_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/canonicalize_usdjpy_csos_remaining_family_atlas_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/canonicalize_usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/canonicalize_usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/capture_mt4_tick_conversion_status.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/capture_mt4_tick_conversion_status.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/collect_usdjpy_2023_2025_raw_ticks_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/collect_usdjpy_2023_2025_raw_ticks_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/collect_usdjpy_2024_raw_ticks_max_parallel_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/collect_usdjpy_2024_raw_ticks_max_parallel_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/collect_usdjpy_dukascopy_raw_ticks_2024_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/collect_usdjpy_dukascopy_raw_ticks_2024_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/dispatch_f05_failed_reclaim_scientific_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/dispatch_f05_failed_reclaim_scientific_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_canonicalization_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_canonicalization_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_once_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_once_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_pr_target_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_pr_target_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/evaluate_f05_failed_reclaim_stage2b_ordered_tick_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/evaluate_f05_failed_reclaim_stage2b_ordered_tick_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/finalize_eurusd_2024_raw_ticks_from_runs_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/finalize_eurusd_2024_raw_ticks_from_runs_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/fx2_authority_registry_bind_pr_once.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/fx2_authority_registry_bind_pr_once.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/fx2_authority_registry_ci.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/fx2_authority_registry_ci.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/fx2_authority_registry_publish.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/fx2_authority_registry_publish.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/integrate_usdjpy_portability_001_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/integrate_usdjpy_portability_001_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/publish_usdjpy_tick_authority_draft_recovery_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/publish_usdjpy_tick_authority_draft_recovery_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/research-ci.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/research-ci.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/resume_eurusd_2024_raw_ticks_run_29749870784_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/resume_eurusd_2024_raw_ticks_run_29749870784_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/resume_usdjpy_2024_raw_tick_repair_run_29707697472_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/resume_usdjpy_2024_raw_tick_repair_run_29707697472_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/reusable_research_execution_infra_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/reusable_research_execution_infra_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_eurusd_2024_full_year_collect.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_eurusd_2024_full_year_collect.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_eurusd_fv2_cost_execution_stress_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_eurusd_fv2_cost_execution_stress_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_eurusd_fv2_h1_diagnostic_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_eurusd_fv2_h1_diagnostic_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_eurusd_h1_h2_screen_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_eurusd_h1_h2_screen_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_fx_session_baseline_2024_01.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_fx_session_baseline_2024_01.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_fx_session_baseline_monthly.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_fx_session_baseline_monthly.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_data_pilot_2024_01.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_data_pilot_2024_01.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_data_smoke.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_data_smoke.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_AUDUSD_2024_01.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_AUDUSD_2024_01.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_EURUSD_2024_01.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_EURUSD_2024_01.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_GBPUSD_2024_01.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_GBPUSD_2024_01.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDCAD_2024_01.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDCAD_2024_01.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDCHF_2024_01.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDCHF_2024_01.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_01.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDJPY_2024_01.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_02.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDJPY_2024_02.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_03.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDJPY_2024_03.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_04.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDJPY_2024_04.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_05.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDJPY_2024_05.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_06.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDJPY_2024_06.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_07.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDJPY_2024_07.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_08.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDJPY_2024_08.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_09.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_public_fx_tick_pilot_USDJPY_2024_09.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_research_batch.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_research_batch.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_research_timing_study.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_research_timing_study.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_rvtr_ml_from_batch_spec.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_rvtr_ml_from_batch_spec.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_rvtr_ml_research.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_rvtr_ml_research.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_usdjpy_h1_dukascopy_impulse_confirmation.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_usdjpy_h1_dukascopy_impulse_confirmation.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_usdjpy_h1_multi_family_screen.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_usdjpy_h1_multi_family_screen.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_usdjpy_h2_2024_09_12_collect_and_baseline.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_usdjpy_h2_2024_09_12_collect_and_baseline.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_usdjpy_joint_h2_a1_e3_eval_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_usdjpy_joint_h2_a1_e3_eval_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_usdjpy_r0_canonical_bundle_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_usdjpy_r0_canonical_bundle_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_usdjpy_r1_entry_registry_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_usdjpy_r1_entry_registry_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_usdjpy_r2_horizon_surface_final_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_usdjpy_r2_horizon_surface_final_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_usdjpy_r3_temporal_stability_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_usdjpy_r3_temporal_stability_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/run_usdjpy_session_baseline_2024_01.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/run_usdjpy_session_baseline_2024_01.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/test_research_platform_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/test_research_platform_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/trigger_usdjpy_csos_dukascopy_native_remaining_family_atlas_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/trigger_usdjpy_csos_dukascopy_native_remaining_family_atlas_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_2020_2022_tick_authority_accelerated_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_2020_2022_tick_authority_accelerated_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_2020_2022_tick_authority_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_2020_2022_tick_authority_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_asian_range_liquidity_sweep_phase2_evidence_repair_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_asian_range_liquidity_sweep_phase2_evidence_repair_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_ea_integration_001_receipt.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_ea_integration_001_receipt.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_entry_establishment_phase2_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_entry_establishment_phase2_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_f05_short_loss_persistence_chronology_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_f05_short_loss_persistence_chronology_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_impact_atlas_phase0_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_impact_atlas_phase0_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_impact_atlas_phase1_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_impact_atlas_phase1_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_market_state_router_reference_freeze_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_market_state_router_reference_freeze_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_market_state_strategy_routing_phase2_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_market_state_strategy_routing_phase2_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_portfolio_loss_cluster_phase2_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_portfolio_loss_cluster_phase2_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_previous_day_extreme_sweep_development_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_previous_day_extreme_sweep_development_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_pullback_continuation_development_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_pullback_continuation_development_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_pullback_continuation_dukas_native_development_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_pullback_continuation_dukas_native_development_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_shock_failure_2025_postmortem_bridge_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_shock_failure_2025_postmortem_bridge_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_shock_failure_2025_postmortem_dispatch_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_shock_failure_2025_postmortem_dispatch_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/usdjpy_shock_failure_regime_discriminator_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/usdjpy_shock_failure_regime_discriminator_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/validate_f05_failed_reclaim_2025_oos_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/validate_f05_failed_reclaim_2025_oos_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/validate_f05_failed_reclaim_extended_grid_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/validate_f05_failed_reclaim_extended_grid_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/validate_f05_failed_reclaim_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/validate_f05_failed_reclaim_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/validate_usdjpy_csos_shock_failure_contract_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/validate_usdjpy_csos_shock_failure_contract_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/validate_usdjpy_research_memory_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/validate_usdjpy_research_memory_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/verify_f05_failed_reclaim_analysis_source_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/verify_f05_failed_reclaim_analysis_source_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    },
+    {
+      "current_workflow": ".github/workflows/verify_usdjpy_b02_f05_all_loss_structural_sl_closure_v1.yml",
+      "migration_status": "DEFERRED_UNTIL_REPEAT",
+      "rollback_method": "git checkout 3400297c9a329f48202868fbf7a3d67757579724 -- .github/workflows/verify_usdjpy_b02_f05_all_loss_structural_sl_closure_v1.yml",
+      "target_canonical_workflow": "DETERMINE_BY_OPERATION_CLASS"
+    }
+  ],
+  "new_study_canonical_required": true,
+  "schema_version": "fx2_migration_plan_v1"
+}

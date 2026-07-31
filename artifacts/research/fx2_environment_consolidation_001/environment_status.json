@@ -1,0 +1,18 @@
+{
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "authority_catalog_path": "authority/authority_catalog.json",
+  "authority_count": 301,
+  "candidate_outcome_computed": false,
+  "decision": "PARTIAL_FX2_ENVIRONMENT_CONSOLIDATION_WITH_REMAINING_LEGACY_WORKFLOWS",
+  "live_authorized": false,
+  "mandatory_retention_count": 34,
+  "missing_authority_type_count": 5,
+  "production_authorized": false,
+  "protected_period_accessed": false,
+  "research_source_sha": "3400297c9a329f48202868fbf7a3d67757579724",
+  "schema_version": "fx2_environment_status_v1",
+  "strategy_rule_changed": false,
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "workflow_count": 158
+}

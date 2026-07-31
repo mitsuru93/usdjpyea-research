@@ -1,0 +1,281 @@
+{
+  "edges": [
+    {
+      "from": ".github/workflows/collect_eurusd_2024_raw_ticks_max_parallel_v2.yml",
+      "to": "./.github/workflows/_collect_eurusd_2024_raw_tick_day_v1.yml"
+    },
+    {
+      "from": ".github/workflows/collect_eurusd_2024_raw_ticks_max_parallel_v2.yml",
+      "to": "./.github/workflows/_collect_eurusd_2024_raw_tick_day_v1.yml"
+    },
+    {
+      "from": ".github/workflows/collect_usdjpy_2023_2025_raw_ticks_v1.yml",
+      "to": "./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml"
+    },
+    {
+      "from": ".github/workflows/run_eurusd_2024_full_year_collect.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml"
+    },
+    {
+      "from": ".github/workflows/run_eurusd_2024_full_year_collect.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml"
+    },
+    {
+      "from": ".github/workflows/run_eurusd_2024_full_year_collect.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_AUDUSD_2024_01.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_EURUSD_2024_01.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_GBPUSD_2024_01.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDCAD_2024_01.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDCHF_2024_01.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_01.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_02.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_03.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_04.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_05.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_06.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_07.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_08.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_09.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_usdjpy_h2_2024_09_12_collect_and_baseline.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_usdjpy_h2_2024_09_12_collect_and_baseline.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_usdjpy_h2_2024_09_12_collect_and_baseline.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/run_usdjpy_h2_2024_09_12_collect_and_baseline.yml",
+      "to": "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+    },
+    {
+      "from": ".github/workflows/usdjpy_hyp031_pre2023_authority_v1.yml",
+      "to": "./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml"
+    },
+    {
+      "from": ".github/workflows/usdjpy_hyp031_pre2023_authority_v1.yml",
+      "to": "./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml"
+    },
+    {
+      "from": ".github/workflows/usdjpy_hyp031_pre2023_authority_v1.yml",
+      "to": "./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml"
+    },
+    {
+      "from": ".github/workflows/usdjpy_hyp031_pre2023_authority_v1.yml",
+      "to": "./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml"
+    },
+    {
+      "from": ".github/workflows/usdjpy_hyp033_binding_v2.yml",
+      "to": "./.github/workflows/reusable_research_execution_infra_v1.yml"
+    }
+  ],
+  "nodes": [
+    ".github/workflows/_collect_eurusd_2024_raw_tick_day_v1.yml",
+    ".github/workflows/_temporary_usdjpy_ea_integration_001_materialize.yml",
+    ".github/workflows/acquire_usdjpy_hyp032_historical_input_v1.yml",
+    ".github/workflows/archive_eurusd_2024_source_artifact_v1.yml",
+    ".github/workflows/archive_eurusd_2024_tick_data_v1.yml",
+    ".github/workflows/archive_usdjpy_market_state_router_reference_v2.yml",
+    ".github/workflows/archive_usdjpy_portfolio_loss_cluster_phase1_r1.yml",
+    ".github/workflows/archive_usdjpy_r0_artifacts_v2.yml",
+    ".github/workflows/build_usdjpy_2024_derived_bars_v1.yml",
+    ".github/workflows/build_usdjpy_2024_mt4_tick_import_v1.yml",
+    ".github/workflows/canonicalize_usdjpy_csos_remaining_family_atlas_v1.yml",
+    ".github/workflows/canonicalize_usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+    ".github/workflows/capture_mt4_tick_conversion_status.yml",
+    ".github/workflows/collect_eurusd_2024_raw_ticks_max_parallel_v2.yml",
+    ".github/workflows/collect_usdjpy_2023_2025_raw_ticks_v1.yml",
+    ".github/workflows/collect_usdjpy_2024_raw_ticks_max_parallel_v1.yml",
+    ".github/workflows/collect_usdjpy_dukascopy_raw_ticks_2024_v1.yml",
+    ".github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml",
+    ".github/workflows/diagnose_usdjpy_hyp032_historical_failure_v1.yml",
+    ".github/workflows/diagnose_usdjpy_hyp032_input_download_v1.yml",
+    ".github/workflows/dispatch_f05_failed_reclaim_scientific_v1.yml",
+    ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_canonicalization_v1.yml",
+    ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_once_v1.yml",
+    ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_pr_target_v1.yml",
+    ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_publication_v2.yml",
+    ".github/workflows/dispatch_usdjpy_structural_sl_policy_regime_v3.yml",
+    ".github/workflows/evaluate_f05_failed_reclaim_stage2b_ordered_tick_v1.yml",
+    ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v1.yml",
+    ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v2.yml",
+    ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v4.yml",
+    ".github/workflows/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.yml",
+    ".github/workflows/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.yml",
+    ".github/workflows/finalize_eurusd_2024_raw_ticks_from_runs_v1.yml",
+    ".github/workflows/finalize_usdjpy_hyp027_phase2_release_v1.yml",
+    ".github/workflows/fx2_authority_registry_bind_pr_once.yml",
+    ".github/workflows/fx2_authority_registry_ci.yml",
+    ".github/workflows/fx2_authority_registry_publish.yml",
+    ".github/workflows/integrate_usdjpy_portability_001_v1.yml",
+    ".github/workflows/monitor_usdjpy_hyp032_historical_validation_v1.yml",
+    ".github/workflows/monitor_usdjpy_hyp032_input_acquisition_v1.yml",
+    ".github/workflows/patch_usdjpy_status_after_r1_v2.yml",
+    ".github/workflows/preflight_usdjpy_hyp032_historical_evaluator_v1.yml",
+    ".github/workflows/probe_eurusd_fv2_cost_stress_v1.yml",
+    ".github/workflows/probe_eurusd_fv2_h1_diagnostic_v1.yml",
+    ".github/workflows/publish_usdjpy_csos_remaining_family_atlas_release_v1.yml",
+    ".github/workflows/publish_usdjpy_csos_remaining_family_atlas_release_v2.yml",
+    ".github/workflows/publish_usdjpy_hyp037_protocol_corrected_release_v2.yml",
+    ".github/workflows/publish_usdjpy_hyp038_closure_v1.yml",
+    ".github/workflows/publish_usdjpy_tick_authority_draft_recovery_v1.yml",
+    ".github/workflows/recover_eurusd_2024_june_diagnostic_run_29749870784_v1.yml",
+    ".github/workflows/repair_usdjpy_2024_raw_ticks_run_29689427642_v1.yml",
+    ".github/workflows/research-ci.yml",
+    ".github/workflows/resume_eurusd_2024_raw_ticks_run_29749870784_v1.yml",
+    ".github/workflows/resume_usdjpy_2024_raw_tick_repair_run_29707697472_v1.yml",
+    ".github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml",
+    ".github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml",
+    ".github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml",
+    ".github/workflows/reusable_research_execution_infra_v1.yml",
+    ".github/workflows/run_eurusd_2024_full_year_collect.yml",
+    ".github/workflows/run_eurusd_fv2_cost_execution_stress_v1.yml",
+    ".github/workflows/run_eurusd_fv2_h1_diagnostic_v1.yml",
+    ".github/workflows/run_eurusd_h1_h2_screen_v1.yml",
+    ".github/workflows/run_eurusd_h1_h2_v2_validation.yml",
+    ".github/workflows/run_fx_session_baseline_2024_01.yml",
+    ".github/workflows/run_fx_session_baseline_monthly.yml",
+    ".github/workflows/run_public_fx_data_pilot_2024_01.yml",
+    ".github/workflows/run_public_fx_data_smoke.yml",
+    ".github/workflows/run_public_fx_tick_pilot_AUDUSD_2024_01.yml",
+    ".github/workflows/run_public_fx_tick_pilot_EURUSD_2024_01.yml",
+    ".github/workflows/run_public_fx_tick_pilot_GBPUSD_2024_01.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDCAD_2024_01.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDCHF_2024_01.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_01.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_02.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_03.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_04.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_05.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_06.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_07.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_08.yml",
+    ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_09.yml",
+    ".github/workflows/run_research_batch.yml",
+    ".github/workflows/run_research_timing_study.yml",
+    ".github/workflows/run_rvtr_ml_from_batch_spec.yml",
+    ".github/workflows/run_rvtr_ml_research.yml",
+    ".github/workflows/run_usdjpy_h1_dukascopy_impulse_confirmation.yml",
+    ".github/workflows/run_usdjpy_h1_entry_horizon_diagnostic_v2.yml",
+    ".github/workflows/run_usdjpy_h1_multi_family_screen.yml",
+    ".github/workflows/run_usdjpy_h2_2024_09_12_collect_and_baseline.yml",
+    ".github/workflows/run_usdjpy_joint_h2_a1_e3_eval_v1.yml",
+    ".github/workflows/run_usdjpy_r0_canonical_bundle_v1.yml",
+    ".github/workflows/run_usdjpy_r1_entry_registry_v1.yml",
+    ".github/workflows/run_usdjpy_r1_entry_registry_v2.yml",
+    ".github/workflows/run_usdjpy_r2_horizon_surface_final_v1.yml",
+    ".github/workflows/run_usdjpy_r3_temporal_stability_v1.yml",
+    ".github/workflows/run_usdjpy_session_baseline_2024_01.yml",
+    ".github/workflows/snapshot_eurusd_h1_h2_v2_run_status.yml",
+    ".github/workflows/snapshot_usdjpy_tick_collection_status_v1.yml",
+    ".github/workflows/test_research_platform_v1.yml",
+    ".github/workflows/trigger_usdjpy_csos_dukascopy_native_remaining_family_atlas_v1.yml",
+    ".github/workflows/usdjpy_2020_2022_tick_authority_accelerated_v1.yml",
+    ".github/workflows/usdjpy_2020_2022_tick_authority_v1.yml",
+    ".github/workflows/usdjpy_asian_range_liquidity_sweep_phase2_evidence_repair_v1.yml",
+    ".github/workflows/usdjpy_csos_dukascopy_native_remaining_family_atlas_execution_v2.yml",
+    ".github/workflows/usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml",
+    ".github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml",
+    ".github/workflows/usdjpy_ea_integration_001_receipt.yml",
+    ".github/workflows/usdjpy_ea_integration_001_release.yml",
+    ".github/workflows/usdjpy_entry_establishment_phase2_v1.yml",
+    ".github/workflows/usdjpy_f05_short_loss_persistence_chronology_v1.yml",
+    ".github/workflows/usdjpy_hyp031_canonicalize_v1.yml",
+    ".github/workflows/usdjpy_hyp031_pre2023_authority_fast_v1.yml",
+    ".github/workflows/usdjpy_hyp031_pre2023_authority_v1.yml",
+    ".github/workflows/usdjpy_hyp032_historical_validation_currency_v2.yml",
+    ".github/workflows/usdjpy_hyp032_historical_validation_retry_v1.yml",
+    ".github/workflows/usdjpy_hyp032_historical_validation_v1.yml",
+    ".github/workflows/usdjpy_hyp033_binding_v2.yml",
+    ".github/workflows/usdjpy_hyp036_release_v1.yml",
+    ".github/workflows/usdjpy_hyp037_mechanism_source_preflight_v1.yml",
+    ".github/workflows/usdjpy_hyp037_protocol_corrected_research_v2.yml",
+    ".github/workflows/usdjpy_hyp037_release_v1.yml",
+    ".github/workflows/usdjpy_hyp041_closure_release_v1.yml",
+    ".github/workflows/usdjpy_hyp042_release_v1.yml",
+    ".github/workflows/usdjpy_hyp044_bootstrap_inventory_v1.yml",
+    ".github/workflows/usdjpy_hyp044_development_source_probe_v2.yml",
+    ".github/workflows/usdjpy_hyp044_export_development_authorities_v1.yml",
+    ".github/workflows/usdjpy_hyp044_integrated_economic_synthesis_v1.yml",
+    ".github/workflows/usdjpy_hyp044_research_evidence_inventory_v1.yml",
+    ".github/workflows/usdjpy_hyp044_round_b_source_native_2020_2022_v1.yml",
+    ".github/workflows/usdjpy_hyp044_source_native_2020_2022_v1.yml",
+    ".github/workflows/usdjpy_hyp044_source_native_full_equity_v2.yml",
+    ".github/workflows/usdjpy_hyp044_source_native_ledger_tieout_v1.yml",
+    ".github/workflows/usdjpy_hyp044_source_native_schema_probe_v1.yml",
+    ".github/workflows/usdjpy_impact_atlas_phase0_v1.yml",
+    ".github/workflows/usdjpy_impact_atlas_phase1_v1.yml",
+    ".github/workflows/usdjpy_market_state_router_reference_freeze_v1.yml",
+    ".github/workflows/usdjpy_market_state_router_reference_freeze_v2.yml",
+    ".github/workflows/usdjpy_market_state_strategy_routing_phase2_v1.yml",
+    ".github/workflows/usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+    ".github/workflows/usdjpy_portfolio_loss_cluster_phase2_v1.yml",
+    ".github/workflows/usdjpy_previous_day_extreme_sweep_development_v1.yml",
+    ".github/workflows/usdjpy_pullback_continuation_development_v1.yml",
+    ".github/workflows/usdjpy_pullback_continuation_dukas_native_development_v1.yml",
+    ".github/workflows/usdjpy_shock_failure_2025_postmortem_bridge_v1.yml",
+    ".github/workflows/usdjpy_shock_failure_2025_postmortem_dispatch_v1.yml",
+    ".github/workflows/usdjpy_shock_failure_2025_postmortem_v3.yml",
+    ".github/workflows/usdjpy_shock_failure_2025_postmortem_v4.yml",
+    ".github/workflows/usdjpy_shock_failure_regime_discriminator_v1.yml",
+    ".github/workflows/validate_f05_failed_reclaim_2025_oos_v1.yml",
+    ".github/workflows/validate_f05_failed_reclaim_extended_grid_v1.yml",
+    ".github/workflows/validate_f05_failed_reclaim_v1.yml",
+    ".github/workflows/validate_usdjpy_csos_shock_failure_contract_v1.yml",
+    ".github/workflows/validate_usdjpy_hyp027_phase2_closure_v1.yml",
+    ".github/workflows/validate_usdjpy_research_memory_v1.yml",
+    ".github/workflows/verify_f05_failed_reclaim_analysis_source_v1.yml",
+    ".github/workflows/verify_usdjpy_b02_f05_all_loss_structural_sl_closure_v1.yml",
+    ".github/workflows/verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.yml",
+    ".github/workflows/watch_eurusd_h1_h2_v2_validation.yml"
+  ],
+  "schema_version": "fx2_workflow_dependency_graph_v1"
+}
