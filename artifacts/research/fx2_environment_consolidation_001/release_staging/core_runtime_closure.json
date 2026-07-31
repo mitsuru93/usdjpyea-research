@@ -1,0 +1,26 @@
+{
+  "schema_version": "fx2_core_runtime_closure_v1",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "core_source_sha": "cd0cfcdb72bc71c13be7e639d9de48d8e31dff3a",
+  "owner_safe_recovery": {
+    "status": "PASS",
+    "run_id": 30611993956,
+    "issue": 837,
+    "profile_installed": true,
+    "scheduled_task_invoked": true,
+    "process_termination_performed": false
+  },
+  "runner_health_issue": 838,
+  "service_compile_issue": 839,
+  "neutral_mt4_smoke_issue": 840,
+  "runtime_receipt_collection_issue": 842,
+  "status": "PARTIAL_FX2_ENVIRONMENT_CONSOLIDATION_WITH_TECHNICAL_RUNTIME_GAPS",
+  "note": "Owner-safe recovery completed. At Release staging time, post-recovery health, compile and neutral-smoke result receipts had not yet been bound to Core main, so they are not represented as PASS.",
+  "candidate_outcome_computed": false,
+  "strategy_rule_changed": false,
+  "protected_period_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

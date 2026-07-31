@@ -1,0 +1,115 @@
+name: FX2 Canonical Research Analysis
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        required: true
+        type: string
+      evaluator_path:
+        required: true
+        type: string
+      evaluator_arguments:
+        required: false
+        type: string
+        default: ''
+      expected_output_path:
+        required: true
+        type: string
+      work_id:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact 40-character source SHA
+        required: true
+      evaluator_path:
+        description: Repository-relative Python evaluator path
+        required: true
+      expected_output_path:
+        description: Repository-relative expected output path
+        required: true
+      work_id:
+        description: Work ID
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: fx2-${{ github.repository }}-github-hosted-analysis-${{ inputs.work_id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Validate exact source identity and paths
+        shell: bash
+        env:
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          EVALUATOR_PATH: ${{ inputs.evaluator_path }}
+          EXPECTED_OUTPUT: ${{ inputs.expected_output_path }}
+        run: |
+          python - <<'PY'
+          import os,re
+          from pathlib import PurePosixPath
+          sha=os.environ['SOURCE_SHA']
+          assert re.fullmatch(r'[0-9a-fA-F]{40}',sha), 'exact SHA required'
+          for key in ('EVALUATOR_PATH','EXPECTED_OUTPUT'):
+            raw=os.environ[key].replace('\\','/')
+            p=PurePosixPath(raw)
+            assert raw and not p.is_absolute() and '..' not in p.parts and '.' not in p.parts
+          PY
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Execute read-only evaluator
+        shell: bash
+        env:
+          EVALUATOR_PATH: ${{ inputs.evaluator_path }}
+          EVALUATOR_ARGUMENTS: ${{ inputs.evaluator_arguments }}
+        run: |
+          test -f "$EVALUATOR_PATH"
+          python "$EVALUATOR_PATH" $EVALUATOR_ARGUMENTS
+      - name: Validate expected output
+        shell: bash
+        env:
+          EXPECTED_OUTPUT: ${{ inputs.expected_output_path }}
+        run: test -e "$EXPECTED_OUTPUT"
+      - name: Emit technical execution receipt
+        shell: bash
+        run: |
+          cat > fx2_analysis_execution_receipt.json <<EOF
+          {
+            "schema_version":"fx2_analysis_execution_receipt_v1",
+            "work_id":"${{ inputs.work_id }}",
+            "source_sha":"${{ inputs.source_sha }}",
+            "run_id":"${{ github.run_id }}",
+            "run_attempt":"${{ github.run_attempt }}",
+            "status":"PASS",
+            "candidate_outcome_computed":false,
+            "strategy_rule_changed":false,
+            "protected_period_accessed":false,
+            "2025H1_accessed":false,
+            "2025H2_accessed":false,
+            "production_authorized":false,
+            "live_authorized":false,
+            "publication_write_performed":false
+          }
+          EOF
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fx2-analysis-${{ inputs.work_id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ inputs.expected_output_path }}
+            fx2_analysis_execution_receipt.json
+          retention-days: 14
+          if-no-files-found: error
