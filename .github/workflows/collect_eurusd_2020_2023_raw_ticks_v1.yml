@@ -1,0 +1,470 @@
+name: Collect EURUSD 2020-2023 Raw Bid Ask Ticks v1
+
+on:
+  workflow_dispatch:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+concurrency:
+  group: eurusd-2020-2023-raw-ticks-v1
+  cancel-in-progress: false
+
+env:
+  SYMBOL: EURUSD
+
+jobs:
+  prepare:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.actor == github.repository_owner &&
+       github.event.issue.title == '[EURUSD] Archive 2020-2023 tick data v1' &&
+       contains(github.event.issue.body, 'trigger: archive-eurusd-2020-2023-tick-v1'))
+    runs-on: ubuntu-latest
+    outputs:
+      periods: ${{ steps.matrix.outputs.periods }}
+      years: ${{ steps.matrix.outputs.years }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lock missing EURUSD calendar years and months
+        id: matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+
+          years = [2020, 2021, 2022, 2023]
+          periods = [
+              {"year": year, "month": f"{month:02d}"}
+              for year in years
+              for month in range(1, 13)
+          ]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+              fh.write("periods=" + json.dumps({"include": periods}, separators=(",", ":")) + "\n")
+              fh.write("years=" + json.dumps(years, separators=(",", ":")) + "\n")
+          PY
+          python -m py_compile \
+            tools/download_dukascopy_bi5_ticks.py \
+            tools/download_dukascopy_tick_archive_v1.py
+
+  collect-package-month:
+    name: collect-package-${{ matrix.year }}-${{ matrix.month }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix: ${{ fromJSON(needs.prepare.outputs.periods) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download source-native Dukascopy BI5 and decoded Bid Ask ticks
+        shell: bash
+        env:
+          YEAR: ${{ matrix.year }}
+          MONTH: ${{ matrix.month }}
+          ROOT: ${{ runner.temp }}/eurusd-raw-ticks/${{ matrix.year }}-${{ matrix.month }}
+        run: |
+          set -euo pipefail
+          START="${YEAR}-${MONTH}-01T00"
+          END=$(date -u -d "${YEAR}-${MONTH}-01 + 1 month" +%Y-%m-%dT00)
+          mkdir -p "$ROOT/source_bi5" "$ROOT/decoded_csv"
+          python tools/download_dukascopy_tick_archive_v1.py \
+            --symbols "$SYMBOL" \
+            --start "$START" \
+            --end "$END" \
+            --bi5-output-root "$ROOT/source_bi5" \
+            --tick-output-root "$ROOT/decoded_csv" \
+            --manifest-out "$ROOT/download_manifest.attempts.jsonl" \
+            --retries 4 \
+            --sleep-seconds 1.0 \
+            --request-interval 0.05 \
+            --request-timeout 45 \
+            --max-errors 744 \
+            --error-retry-passes 3 \
+            --error-retry-sleep-seconds 8 \
+            --error-retry-request-timeout 60 \
+            --error-retry-retries 4
+
+      - name: Validate every UTC hour and package the month
+        if: always()
+        shell: bash
+        env:
+          YEAR: ${{ matrix.year }}
+          MONTH: ${{ matrix.month }}
+          ROOT: ${{ runner.temp }}/eurusd-raw-ticks/${{ matrix.year }}-${{ matrix.month }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv
+          import gzip
+          import hashlib
+          import json
+          import os
+          import subprocess
+          from datetime import datetime, timedelta, timezone
+          from decimal import Decimal
+          from pathlib import Path
+
+          year = int(os.environ["YEAR"])
+          month = int(os.environ["MONTH"])
+          root = Path(os.environ["ROOT"])
+          attempts_path = root / "download_manifest.attempts.jsonl"
+          failures = []
+          attempts = []
+          if attempts_path.exists():
+              attempts = [
+                  json.loads(line)
+                  for line in attempts_path.read_text(encoding="utf-8").splitlines()
+                  if line.strip()
+              ]
+          else:
+              failures.append("missing attempts manifest")
+
+          final = {}
+          for row in attempts:
+              final[(str(row.get("symbol", "")), str(row.get("hour_start_utc", "")))] = row
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+              with path.open("rb") as fh:
+                  for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          start = datetime(year, month, 1, tzinfo=timezone.utc)
+          end = datetime(year + (1 if month == 12 else 0), 1 if month == 12 else month + 1, 1, tzinfo=timezone.utc)
+          expected_hours = int((end - start).total_seconds() // 3600)
+          normalized = []
+          totals = {
+              "expected_hours": expected_hours,
+              "resolved_hours": 0,
+              "downloaded_hours": 0,
+              "missing_404_hours": 0,
+              "no_tick_hours": 0,
+              "error_hours": 0,
+              "tick_rows": 0,
+              "negative_spread_rows": 0,
+              "source_bi5_bytes": 0,
+              "decoded_csv_bytes": 0,
+          }
+
+          current = start
+          while current < end:
+              hour_text = current.strftime("%Y-%m-%dT%H:%M:%SZ")
+              row = final.get(("EURUSD", hour_text))
+              if row is None:
+                  failures.append(f"missing terminal record: {hour_text}")
+                  totals["error_hours"] += 1
+                  current += timedelta(hours=1)
+                  continue
+
+              status = str(row.get("status", "error"))
+              out = {
+                  "symbol": "EURUSD",
+                  "hour_start_utc": hour_text,
+                  "status": status,
+                  "rows": int(row.get("rows", 0)),
+                  "url": row.get("url"),
+              }
+              if status == "downloaded":
+                  source_rel = Path("source_bi5") / "EURUSD" / current.strftime("%Y/%m/%d") / f"{current:%H}h_ticks.bi5"
+                  tick_rel = Path("decoded_csv") / "EURUSD" / current.strftime("%Y/%m/%d") / f"{current:%H}.csv.gz"
+                  source = root / source_rel
+                  tick = root / tick_rel
+                  if not source.exists() or not tick.exists():
+                      failures.append(f"missing downloaded payload: {hour_text}")
+                      totals["error_hours"] += 1
+                      normalized.append(out)
+                      current += timedelta(hours=1)
+                      continue
+
+                  source_sha = sha256_file(source)
+                  tick_sha = sha256_file(tick)
+                  if source_sha != row.get("bi5_sha256"):
+                      failures.append(f"BI5 digest mismatch: {hour_text}")
+                  if tick_sha != row.get("tick_gzip_sha256"):
+                      failures.append(f"Tick digest mismatch: {hour_text}")
+
+                  tick_rows = 0
+                  negative = 0
+                  with gzip.open(tick, "rt", encoding="utf-8", newline="") as fh:
+                      for tick_row in csv.DictReader(fh):
+                          tick_rows += 1
+                          if tick_row.get("symbol") != "EURUSD":
+                              failures.append(f"unexpected symbol: {hour_text}")
+                              break
+                          if Decimal(tick_row["ask"]) < Decimal(tick_row["bid"]):
+                              negative += 1
+                  if tick_rows != int(row.get("rows", 0)):
+                      failures.append(f"Tick row mismatch: {hour_text} {tick_rows} != {row.get('rows')}")
+                  if negative:
+                      failures.append(f"negative spreads: {hour_text} rows={negative}")
+
+                  out.update({
+                      "source_bi5_path": source_rel.as_posix(),
+                      "source_bi5_sha256": source_sha,
+                      "source_bi5_bytes": source.stat().st_size,
+                      "decoded_csv_path": tick_rel.as_posix(),
+                      "decoded_csv_sha256": tick_sha,
+                      "decoded_csv_bytes": tick.stat().st_size,
+                      "negative_spread_rows": negative,
+                  })
+                  totals["resolved_hours"] += 1
+                  totals["downloaded_hours"] += 1
+                  totals["tick_rows"] += tick_rows
+                  totals["negative_spread_rows"] += negative
+                  totals["source_bi5_bytes"] += source.stat().st_size
+                  totals["decoded_csv_bytes"] += tick.stat().st_size
+              elif status in {"missing_404", "no_ticks"}:
+                  totals["resolved_hours"] += 1
+                  totals["missing_404_hours" if status == "missing_404" else "no_tick_hours"] += 1
+              else:
+                  totals["error_hours"] += 1
+                  failures.append(f"terminal error: {hour_text} {row.get('error_type')} {row.get('error')}")
+                  out.update(error_type=row.get("error_type"), error=row.get("error"))
+
+              normalized.append(out)
+              current += timedelta(hours=1)
+
+          final_manifest = root / "download_manifest.jsonl"
+          final_manifest.write_text(
+              "".join(json.dumps(row, sort_keys=True) + "\n" for row in normalized),
+              encoding="utf-8",
+          )
+          accepted = (
+              not failures
+              and len(normalized) == expected_hours
+              and totals["resolved_hours"] == expected_hours
+              and totals["error_hours"] == 0
+              and totals["negative_spread_rows"] == 0
+          )
+          month_manifest = {
+              "schema_version": "eurusd_raw_tick_month_v1",
+              "symbol": "EURUSD",
+              "month": f"{year:04d}-{month:02d}",
+              "start_utc": start.isoformat().replace("+00:00", "Z"),
+              "end_utc": end.isoformat().replace("+00:00", "Z"),
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+              "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "source": "Dukascopy BI5 public source-native Bid/Ask ticks",
+              "totals": totals,
+              "manifest_sha256": sha256_file(final_manifest),
+              "failures": failures,
+              "accepted": accepted,
+          }
+          manifest_path = root / f"eurusd-{year:04d}-{month:02d}-raw-ticks-v1.manifest.json"
+          manifest_path.write_text(json.dumps(month_manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(json.dumps(month_manifest, sort_keys=True))
+          if not accepted:
+              raise SystemExit("month validation failed: " + "; ".join(failures[:20]))
+
+          checksums = root / "SHA256SUMS"
+          files = sorted(path for path in root.rglob("*") if path.is_file() and path.name != "SHA256SUMS")
+          with checksums.open("w", encoding="utf-8", newline="\n") as fh:
+              for path in files:
+                  fh.write(f"{sha256_file(path)}  {path.relative_to(root).as_posix()}\n")
+
+          out = Path("out")
+          out.mkdir(parents=True, exist_ok=True)
+          package = out / f"eurusd-{year:04d}-{month:02d}-raw-ticks-v1.tar.gz"
+          subprocess.run([
+              "tar", "--sort=name", "--mtime=UTC 1970-01-01", "--owner=0", "--group=0", "--numeric-owner",
+              "-czf", str(package), "-C", str(root), "."
+          ], check=True)
+          target_manifest = out / manifest_path.name
+          target_manifest.write_bytes(manifest_path.read_bytes())
+          with (out / f"eurusd-{year:04d}-{month:02d}-raw-ticks-v1.SHA256SUMS").open("w", encoding="utf-8", newline="\n") as fh:
+              fh.write(f"{sha256_file(package)}  {package.name}\n")
+              fh.write(f"{sha256_file(target_manifest)}  {target_manifest.name}\n")
+          PY
+
+      - name: Upload validated monthly package
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-${{ matrix.year }}-raw-ticks-month-${{ matrix.month }}-${{ github.run_id }}
+          path: out
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+  publish-year:
+    name: publish-${{ matrix.year }}-durable-release
+    needs: [prepare, collect-package-month]
+    if: always() && needs.prepare.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        year: ${{ fromJSON(needs.prepare.outputs.years) }}
+    steps:
+      - name: Download all validated monthly packages for year
+        uses: actions/download-artifact@v4
+        with:
+          pattern: eurusd-${{ matrix.year }}-raw-ticks-month-*-${{ github.run_id }}
+          path: release-assets
+          merge-multiple: true
+
+      - name: Build and verify annual release inventory
+        shell: bash
+        env:
+          YEAR: ${{ matrix.year }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          year = int(os.environ["YEAR"])
+          root = Path("release-assets")
+          packages = sorted(root.glob(f"eurusd-{year:04d}-??-raw-ticks-v1.tar.gz"))
+          manifests = sorted(root.glob(f"eurusd-{year:04d}-??-raw-ticks-v1.manifest.json"))
+          checksum_files = sorted(root.glob(f"eurusd-{year:04d}-??-raw-ticks-v1.SHA256SUMS"))
+          if len(packages) != 12 or len(manifests) != 12 or len(checksum_files) != 12:
+              raise SystemExit(
+                  f"expected 12 packages/manifests/checksums, got "
+                  f"packages={len(packages)} manifests={len(manifests)} checksums={len(checksum_files)}"
+              )
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+              with path.open("rb") as fh:
+                  for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          monthly = []
+          expected_hours = resolved_hours = tick_rows = negative_spread_rows = 0
+          for manifest_path in manifests:
+              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+              if manifest.get("symbol") != "EURUSD" or not manifest.get("accepted"):
+                  raise SystemExit(f"unaccepted month manifest: {manifest_path}")
+              month = manifest["month"]
+              package = root / f"eurusd-{month}-raw-ticks-v1.tar.gz"
+              if not package.exists():
+                  raise SystemExit(f"missing package: {package}")
+              totals = manifest["totals"]
+              expected_hours += int(totals["expected_hours"])
+              resolved_hours += int(totals["resolved_hours"])
+              tick_rows += int(totals["tick_rows"])
+              negative_spread_rows += int(totals["negative_spread_rows"])
+              monthly.append({
+                  "month": month,
+                  "package": package.name,
+                  "package_sha256": sha256_file(package),
+                  "package_bytes": package.stat().st_size,
+                  "manifest": manifest_path.name,
+                  "manifest_sha256": sha256_file(manifest_path),
+                  "totals": totals,
+              })
+
+          start = datetime(year, 1, 1, tzinfo=timezone.utc)
+          end = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+          calendar_hours = int((end - start).total_seconds() // 3600)
+          accepted = (
+              expected_hours == calendar_hours
+              and resolved_hours == calendar_hours
+              and negative_spread_rows == 0
+          )
+          annual = {
+              "schema_version": "eurusd_raw_tick_annual_v1",
+              "symbol": "EURUSD",
+              "start_utc": start.isoformat().replace("+00:00", "Z"),
+              "end_utc": end.isoformat().replace("+00:00", "Z"),
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+              "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "source": "Dukascopy BI5 public source-native Bid/Ask ticks",
+              "expected_hours": expected_hours,
+              "resolved_hours": resolved_hours,
+              "tick_rows": tick_rows,
+              "negative_spread_rows": negative_spread_rows,
+              "accepted": accepted,
+              "months": monthly,
+              "authority_boundary": "Public Dukascopy source-native Bid/Ask Tick authority; not Rakuten broker quotes.",
+              "mt4_boundary": "Raw BI5 and deterministic decoded Bid/Ask Tick CSV.GZ files are preserved. FXT/HST or the selected importer conversion is required before MT4 Strategy Tester use.",
+          }
+          if not accepted:
+              raise SystemExit(
+                  f"annual validation failed calendar={calendar_hours} expected={expected_hours} "
+                  f"resolved={resolved_hours} negative_spread_rows={negative_spread_rows}"
+              )
+
+          annual_path = root / f"eurusd-{year:04d}-raw-ticks-v1.annual-manifest.json"
+          annual_path.write_text(json.dumps(annual, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          notes = root / "RELEASE_NOTES.md"
+          notes.write_text(
+              f"# EURUSD {year} Raw Dukascopy Bid/Ask Ticks v1\n\n"
+              f"Coverage: `{year}-01-01T00:00:00Z` through `{year + 1}-01-01T00:00:00Z`.\n\n"
+              "This Release preserves the source BI5 payloads and deterministic decoded Bid/Ask Tick CSV.GZ files. "
+              "It is a public Dukascopy proxy and is not Rakuten broker history. MT4 use requires the selected importer conversion.\n",
+              encoding="utf-8",
+          )
+          with (root / "SHA256SUMS").open("w", encoding="utf-8", newline="\n") as fh:
+              for path in sorted(root.iterdir()):
+                  if path.is_file() and path.name != "SHA256SUMS":
+                      fh.write(f"{sha256_file(path)}  {path.name}\n")
+          PY
+
+      - name: Upload validated annual package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurusd-${{ matrix.year }}-raw-ticks-annual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release-assets
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Create or update durable GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          YEAR: ${{ matrix.year }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="eurusd-${YEAR}-raw-bidask-ticks-v1"
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "EURUSD ${YEAR} Raw Dukascopy Bid/Ask Ticks v1" \
+              --notes-file release-assets/RELEASE_NOTES.md
+          fi
+          gh release upload "$TAG" release-assets/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+
+  report:
+    name: report-collection-result
+    needs: [prepare, collect-package-month, publish-year]
+    if: always() && github.event_name == 'issues' && needs.prepare.result != 'skipped'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment result on trigger issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          COLLECT_RESULT: ${{ needs.collect-package-month.result }}
+          PUBLISH_RESULT: ${{ needs.publish-year.result }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$COLLECT_RESULT" = "success" ] && [ "$PUBLISH_RESULT" = "success" ]; then
+            BODY="EURUSD 2020-2023 source-native Bid/Ask Tick collection completed. Durable Releases: eurusd-2020-raw-bidask-ticks-v1 through eurusd-2023-raw-bidask-ticks-v1."
+          else
+            BODY="EURUSD 2020-2023 Tick collection did not fully complete. collect=${COLLECT_RESULT}, publish=${PUBLISH_RESULT}. Re-run only failed jobs after reviewing the failed month logs; no incomplete year was promoted as accepted authority."
+          fi
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
