@@ -1,6 +1,10 @@
 name: FX2 Authority Registry Publication
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - artifacts/research/fx2_environment_consolidation_001/registry_request.json
   issues:
     types: [opened]
 
@@ -16,7 +20,7 @@ concurrency:
 
 jobs:
   publish-registry-pr:
-    if: github.event.issue.title == '[FX2-AUTHORITY-REGISTRY-PUBLISH] FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001'
+    if: github.event_name == 'push' || github.event.issue.title == '[FX2-AUTHORITY-REGISTRY-PUBLISH] FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,6 +42,7 @@ jobs:
           git commit -m 'infra: generate FX2 authority and workflow registry'
           git push origin "$branch"
           gh pr create --base main --head "$branch" --title 'infra: bind FX2 authority catalog and workflow registry' --body "Metadata-only registry generation for FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001. No candidate outcome computed; no protected-period content inspected; no production/live authorization. Source SHA: ${{ github.sha }}."
-      - name: Close trigger issue
+      - name: Close issue trigger
+        if: github.event_name == 'issues'
         env: {GH_TOKEN: '${{ github.token }}'}
         run: gh issue close '${{ github.event.issue.number }}' --reason completed --comment 'Registry generation completed and a result-binding PR was opened.'
