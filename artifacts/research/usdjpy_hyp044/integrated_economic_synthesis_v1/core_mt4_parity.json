@@ -1,3 +1,50 @@
 {
-  "status": "PENDING_SELECTED_B0_COMPILE_AND_MT4_EXECUTION"
+  "schema_version": "usdjpy_hyp044_core_mt4_parity_v2",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+  "rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
+  "status": "PASS_2025H1_ECONOMIC_AND_EXECUTION_PARITY_WITH_EXPLAINED_SP39_TIMESTAMP_DIFFERENCE__2023_2024_SOURCE_ROW_DIVERGENCE_RETAINED",
+  "compile": {
+    "builder_schema": "usdjpy_hyp044_round_b_mt4_builder_v5",
+    "errors": 0,
+    "warnings": 0,
+    "sp39_default_enabled": true,
+    "ex4_sha256": "4ed7fecc0349cbe36db5b2884b0e470018bd141c52d078f6251e285718c0a493"
+  },
+  "2025H1": {
+    "expected_executed_trades": 609,
+    "actual_trades": 609,
+    "expected_net_jpy": 609.0,
+    "actual_net_jpy": 609.0,
+    "expected_profit_factor": 1.0056675942039774,
+    "actual_profit_factor": 1.0056675942039774,
+    "B02_exact_rows": 101,
+    "F05_exact_rows": 336,
+    "SP39_exact_rows": 171,
+    "sp39_timestamp_only_pair": {
+      "expected_entry_utc": "2025-02-23T22:30:00Z",
+      "mt4_entry_utc": "2025-02-23T22:31:00Z",
+      "entry_delta_seconds": 60,
+      "close_utc": "2025-02-24T02:30:00Z",
+      "pnl_jpy": -126.0,
+      "exit": "FIXED_TIME_CAP",
+      "economic_effect_jpy": 0.0,
+      "taxonomy": "MT4_TESTER_FIRST_EXECUTABLE_TICK_TIMESTAMP_DIFFERENCE"
+    },
+    "candidate_rule_mismatch": false
+  },
+  "2023_2024": {
+    "expected_event_replay": {"trades": 2343, "net_jpy": 62097.0, "profit_factor": 1.176954861506896},
+    "actual_rakuten_mt4": {"trades": 2386, "net_jpy": 70455.0, "profit_factor": 1.204625455981784},
+    "trade_count_delta": 43,
+    "net_delta_jpy": 8358.0,
+    "full_row_parity": false,
+    "classification": "KNOWN_SOURCE_POPULATION_PRICE_AND_INFORMATION_TIME_DIVERGENCE",
+    "actual_rakuten_absolute_profitability_pass": true
+  },
+  "preregistered_success_condition": "PASS_OR_EXPLAINED_EXECUTABLE",
+  "success_condition_met": true,
+  "HYP039_043_formal_decisions_changed": false,
+  "2025H2_accessed": false,
+  "live_authorized": false
 }
