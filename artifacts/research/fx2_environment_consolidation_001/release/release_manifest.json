@@ -1,0 +1,49 @@
+{
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "assets": [
+    {
+      "asset_id": 496459261,
+      "bytes": 1025,
+      "digest": "sha256:fde6584665604534df70e1624313394e7192d711ce32d8718baba797d606f407",
+      "name": "final_decision.json"
+    },
+    {
+      "asset_id": 496459262,
+      "bytes": 826693,
+      "digest": "sha256:952d5a6d66dfcec8a3d31bb5fa363b337d83ac25a9c6ce5c9e854a5b690dabaa",
+      "name": "fx2-research-execution-environment-consolidation-v1.zip"
+    },
+    {
+      "asset_id": 496459305,
+      "bytes": 3353,
+      "digest": "sha256:873ee4cdb24d76b4772d54c6a30704139899470c71d54189cd143597bb392b1b",
+      "name": "remote_readback_receipt.json"
+    },
+    {
+      "asset_id": 496459260,
+      "bytes": 770,
+      "digest": "sha256:17226fd09c1f57af411695e0a7d99ea3d2aa374753e91370b5254e6de582326c",
+      "name": "security_audit.json"
+    },
+    {
+      "asset_id": 496459259,
+      "bytes": 2273,
+      "digest": "sha256:9f1ea835f52c32816c61805c5b63b3e35059576447464be10422dd16b72d7fd5",
+      "name": "sha256sums.txt"
+    }
+  ],
+  "candidate_outcome_computed": false,
+  "live_authorized": false,
+  "production_authorized": false,
+  "protected_period_accessed": false,
+  "release_id": 362942438,
+  "release_url": "https://github.com/mitsuru93/usdjpyea-research/releases/tag/fx2-research-execution-environment-consolidation-v1",
+  "remote_readback_status": "PASS",
+  "schema_version": "fx2_release_manifest_v1",
+  "status": "PASS",
+  "strategy_rule_changed": false,
+  "tag": "fx2-research-execution-environment-consolidation-v1",
+  "target_commitish": "eb033fffadafc2dceca39bf2221c71881ff38900",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001"
+}
