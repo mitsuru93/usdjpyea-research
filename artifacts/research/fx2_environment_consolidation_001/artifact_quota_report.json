@@ -1,0 +1,18 @@
+{
+  "schema_version": "fx2_artifact_quota_report_v1",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "status": "USAGE_INVENTORIED_QUOTA_TOTAL_NOT_EXPOSED",
+  "artifact_inventory_present": true,
+  "quota_total_bytes": null,
+  "quota_percent": null,
+  "warning_threshold_percent": 70,
+  "stop_large_run_threshold_percent": 85,
+  "artifact_upload_prohibited_threshold_percent": 95,
+  "candidate_outcome_computed": false,
+  "strategy_rule_changed": false,
+  "protected_period_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
