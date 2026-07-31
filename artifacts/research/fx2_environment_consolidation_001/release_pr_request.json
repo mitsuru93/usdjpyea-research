@@ -1,0 +1,14 @@
+{
+  "schema_version": "fx2_release_request_v1",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "tag": "fx2-research-execution-environment-consolidation-v1",
+  "core_source_sha": "cd0cfcdb72bc71c13be7e639d9de48d8e31dff3a",
+  "research_authority_sha": "eb033fffadafc2dceca39bf2221c71881ff38900",
+  "candidate_outcome_computed": false,
+  "strategy_rule_changed": false,
+  "protected_period_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
