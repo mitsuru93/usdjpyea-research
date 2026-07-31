@@ -226,8 +226,8 @@
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/core_mt4_parity.json",
-      "bytes": 64,
-      "sha256": "923ab5b32f93189da90d6bf9a2f83d72be32dfe9f4e398f64ebeb2032c5c356f"
+      "bytes": 2027,
+      "sha256": "4b17cdc91f6c32c5a3624a9d6ba751aab948eb051a43eb90e325ec646a103cf7"
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/current_best_portfolio_replay.json",
