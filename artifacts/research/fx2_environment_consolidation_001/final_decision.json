@@ -1,0 +1,13 @@
+{
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "candidate_outcome_computed": false,
+  "decision": "PARTIAL_FX2_ENVIRONMENT_CONSOLIDATION_WITH_REMAINING_LEGACY_WORKFLOWS",
+  "live_authorized": false,
+  "production_authorized": false,
+  "protected_period_accessed": false,
+  "reason": "Central registry is operational; legacy workflows and metadata-only authority gaps remain explicitly retained/reported.",
+  "schema_version": "fx2_environment_final_decision_v1",
+  "strategy_rule_changed": false,
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001"
+}

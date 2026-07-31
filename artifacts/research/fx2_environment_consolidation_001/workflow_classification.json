@@ -1,0 +1,1631 @@
+{
+  "counts": {
+    "ACTIVE_STUDY_WRAPPER": 6,
+    "IMMUTABLE_HISTORICAL_REFERENCE": 29,
+    "LEGACY_SUPERSEDED": 24,
+    "TEMPORARY_DIAGNOSTIC": 11,
+    "UNKNOWN_REQUIRES_REVIEW": 87
+  },
+  "schema_version": "fx2_workflow_classification_v1",
+  "workflows": [
+    {
+      "bytes": 9025,
+      "classification": "ACTIVE_STUDY_WRAPPER",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "_collect_eurusd_2024_raw_tick_day_v1.yml",
+      "path": ".github/workflows/_collect_eurusd_2024_raw_tick_day_v1.yml",
+      "sha256": "f5a41c46e7b2f8a22595f5cde5932ef8c77400c1437e604df06f53f1d4af9a6c"
+    },
+    {
+      "bytes": 1634,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "_temporary_usdjpy_ea_integration_001_materialize.yml",
+      "path": ".github/workflows/_temporary_usdjpy_ea_integration_001_materialize.yml",
+      "sha256": "1687acefb5d1bfa6b829e5a4e19d61802403b0ce9fff557ac4124c6f04618c20"
+    },
+    {
+      "bytes": 6844,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "acquire_usdjpy_hyp032_historical_input_v1.yml",
+      "path": ".github/workflows/acquire_usdjpy_hyp032_historical_input_v1.yml",
+      "sha256": "23fbfdf9fb812cae65fd21d9026f74bcde96ab4124249c92a77e457f52d0203c"
+    },
+    {
+      "bytes": 14361,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "archive_eurusd_2024_source_artifact_v1.yml",
+      "path": ".github/workflows/archive_eurusd_2024_source_artifact_v1.yml",
+      "sha256": "56c54fad47fd0a7a89de4b7c2f13135db7a44a879051b09cd2c2eaf7eedcd463"
+    },
+    {
+      "bytes": 15472,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "archive_eurusd_2024_tick_data_v1.yml",
+      "path": ".github/workflows/archive_eurusd_2024_tick_data_v1.yml",
+      "sha256": "5f06a18972a3472cd1e5e190014970278470a9193363b8267c0420186b6e862e"
+    },
+    {
+      "bytes": 3319,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "archive_usdjpy_market_state_router_reference_v2.yml",
+      "path": ".github/workflows/archive_usdjpy_market_state_router_reference_v2.yml",
+      "sha256": "c9ee7765ddb7e57077b531b14d47ca7caaac7e378c1753502897529954e7883a"
+    },
+    {
+      "bytes": 5986,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "archive_usdjpy_portfolio_loss_cluster_phase1_r1.yml",
+      "path": ".github/workflows/archive_usdjpy_portfolio_loss_cluster_phase1_r1.yml",
+      "sha256": "deea4383d3a3cb9f79bea97a0c3c8b5520a43ab3e1287a38148c6761c8c67410"
+    },
+    {
+      "bytes": 7152,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "archive_usdjpy_r0_artifacts_v2.yml",
+      "path": ".github/workflows/archive_usdjpy_r0_artifacts_v2.yml",
+      "sha256": "7dfb84168eade5dc504850a1c161d292c30b50a06af4ff2cea8c026272378fff"
+    },
+    {
+      "bytes": 10677,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "build_usdjpy_2024_derived_bars_v1.yml",
+      "path": ".github/workflows/build_usdjpy_2024_derived_bars_v1.yml",
+      "sha256": "965ce5711d2d9f67f61e0b52bd967f71c551e28b4f350998cb0d618d537beec6"
+    },
+    {
+      "bytes": 6172,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "build_usdjpy_2024_mt4_tick_import_v1.yml",
+      "path": ".github/workflows/build_usdjpy_2024_mt4_tick_import_v1.yml",
+      "sha256": "a87ab809cdac98507d9d34f6ea73a8ff3e0c831d3b44245660d2791be38d20e5"
+    },
+    {
+      "bytes": 14223,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "canonicalize_usdjpy_csos_remaining_family_atlas_v1.yml",
+      "path": ".github/workflows/canonicalize_usdjpy_csos_remaining_family_atlas_v1.yml",
+      "sha256": "b911b3a2e398156bd2afc32a5a9512239cc980f4111126362733b70def5fa1ce"
+    },
+    {
+      "bytes": 5182,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "canonicalize_usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+      "path": ".github/workflows/canonicalize_usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+      "sha256": "df9369f5c324089f1639f363554e0b0669fded4211a30ba7b6ed7f67c1705182"
+    },
+    {
+      "bytes": 1529,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "capture_mt4_tick_conversion_status.yml",
+      "path": ".github/workflows/capture_mt4_tick_conversion_status.yml",
+      "sha256": "3ddda0f7dcda066d55802fc7a272b4339dd13517e54a77b3d8b3094d27f8a7dd"
+    },
+    {
+      "bytes": 14286,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [
+        "./.github/workflows/_collect_eurusd_2024_raw_tick_day_v1.yml",
+        "./.github/workflows/_collect_eurusd_2024_raw_tick_day_v1.yml"
+      ],
+      "direct_git_write": false,
+      "name": "collect_eurusd_2024_raw_ticks_max_parallel_v2.yml",
+      "path": ".github/workflows/collect_eurusd_2024_raw_ticks_max_parallel_v2.yml",
+      "sha256": "c1adce736031d47241528a9f5df6067e9ff6d985d6dbe7a039e2179647833672"
+    },
+    {
+      "bytes": 449,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [
+        "./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml"
+      ],
+      "direct_git_write": false,
+      "name": "collect_usdjpy_2023_2025_raw_ticks_v1.yml",
+      "path": ".github/workflows/collect_usdjpy_2023_2025_raw_ticks_v1.yml",
+      "sha256": "50f2750d63601e9d0902edf3da1d507d25286026565e9ec2a47374b0caca7fa7"
+    },
+    {
+      "bytes": 17630,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "collect_usdjpy_2024_raw_ticks_max_parallel_v1.yml",
+      "path": ".github/workflows/collect_usdjpy_2024_raw_ticks_max_parallel_v1.yml",
+      "sha256": "51d4dd8482659936dbe32a2a6e202e0f4f27cab654b8bd8b0edcfd7ba8a17675"
+    },
+    {
+      "bytes": 15442,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "collect_usdjpy_dukascopy_raw_ticks_2024_v1.yml",
+      "path": ".github/workflows/collect_usdjpy_dukascopy_raw_ticks_2024_v1.yml",
+      "sha256": "b2a96ba4575505f6a0494f7e9752ff14c286342b5bd11344f358ee948828af32"
+    },
+    {
+      "bytes": 18709,
+      "classification": "ACTIVE_STUDY_WRAPPER",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "collect_usdjpy_raw_ticks_year_reusable_v1.yml",
+      "path": ".github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml",
+      "sha256": "edc75dc0b5ac76eb7a24779906bb088ced21839fbbea6daf316e48acca19ebe3"
+    },
+    {
+      "bytes": 1725,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "diagnose_usdjpy_hyp032_historical_failure_v1.yml",
+      "path": ".github/workflows/diagnose_usdjpy_hyp032_historical_failure_v1.yml",
+      "sha256": "bcff5328b93ea54355a4de75c1fe33562570b62f4915c005cedc8d1770423cac"
+    },
+    {
+      "bytes": 2222,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "diagnose_usdjpy_hyp032_input_download_v1.yml",
+      "path": ".github/workflows/diagnose_usdjpy_hyp032_input_download_v1.yml",
+      "sha256": "c20e608617bf95bf7dc168e3108b6ba7506444860d938f7298802d9afa00e5fb"
+    },
+    {
+      "bytes": 2131,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "dispatch_f05_failed_reclaim_scientific_v1.yml",
+      "path": ".github/workflows/dispatch_f05_failed_reclaim_scientific_v1.yml",
+      "sha256": "115a67949abafc5ab27ca1613fb7081c68b582f5f41a4a88f43c480a56546602"
+    },
+    {
+      "bytes": 2809,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "dispatch_usdjpy_csos_remaining_family_atlas_canonicalization_v1.yml",
+      "path": ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_canonicalization_v1.yml",
+      "sha256": "130b6ee301152fa09b47442a71e1b5d2eb2ab597501fd051216fa3a95cdaa6fb"
+    },
+    {
+      "bytes": 2828,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "dispatch_usdjpy_csos_remaining_family_atlas_once_v1.yml",
+      "path": ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_once_v1.yml",
+      "sha256": "bef6676156f497c093d5c92823ab271a2267c93a4d339fee0a43961ea662c043"
+    },
+    {
+      "bytes": 3708,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "dispatch_usdjpy_csos_remaining_family_atlas_pr_target_v1.yml",
+      "path": ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_pr_target_v1.yml",
+      "sha256": "946a458eee3d27ccdaa65a45d0fd5b3c0acd88f179c1d6f26e2c825b66160220"
+    },
+    {
+      "bytes": 2869,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "dispatch_usdjpy_csos_remaining_family_atlas_publication_v2.yml",
+      "path": ".github/workflows/dispatch_usdjpy_csos_remaining_family_atlas_publication_v2.yml",
+      "sha256": "6d988170f0d574e6b77d8f15e2a79e8d390a1906fd6ab1c65ff9f994f4543fbd"
+    },
+    {
+      "bytes": 2398,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "dispatch_usdjpy_structural_sl_policy_regime_v3.yml",
+      "path": ".github/workflows/dispatch_usdjpy_structural_sl_policy_regime_v3.yml",
+      "sha256": "c6c0bd823fe5b979937def2644c109fb4314f4a7595bdce766c885fb943156b9"
+    },
+    {
+      "bytes": 5413,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "evaluate_f05_failed_reclaim_stage2b_ordered_tick_v1.yml",
+      "path": ".github/workflows/evaluate_f05_failed_reclaim_stage2b_ordered_tick_v1.yml",
+      "sha256": "b85c4496648e1466ca0f5e950ee8b83001c1585d7208ad5da5572667f069d90a"
+    },
+    {
+      "bytes": 11224,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "evaluate_usdjpy_b02_f05_all_loss_structural_sl_v1.yml",
+      "path": ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v1.yml",
+      "sha256": "b22cfad49cebb5a3da9266148fb326eb4ad0a872b02ba87574a7a2859c842e8c"
+    },
+    {
+      "bytes": 9530,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "evaluate_usdjpy_b02_f05_all_loss_structural_sl_v2.yml",
+      "path": ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v2.yml",
+      "sha256": "b48241b648da4f2d3fd03e8ab9f1d1579a107e7a8e410e1ac2ffb80f5fbf2211"
+    },
+    {
+      "bytes": 5882,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "evaluate_usdjpy_b02_f05_all_loss_structural_sl_v4.yml",
+      "path": ".github/workflows/evaluate_usdjpy_b02_f05_all_loss_structural_sl_v4.yml",
+      "sha256": "9be175f5c881edfeba74a27a58965af9ae6b21b177f4e52d3ffd67157fc51fe1"
+    },
+    {
+      "bytes": 10827,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.yml",
+      "path": ".github/workflows/evaluate_usdjpy_b02_f05_structural_sl_atlas_v2.yml",
+      "sha256": "c5c96c1148e6eef7f0b7c5ad05c84669852ca315d0fa5d09a4a8296be50d6064"
+    },
+    {
+      "bytes": 15076,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.yml",
+      "path": ".github/workflows/evaluate_usdjpy_b02_f05_structural_sl_policy_regime_v3.yml",
+      "sha256": "1f81c86191d2173d5399e72376252dba1d76d1ccc4ce5b82e9ce89b3fde0365d"
+    },
+    {
+      "bytes": 4678,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "finalize_eurusd_2024_raw_ticks_from_runs_v1.yml",
+      "path": ".github/workflows/finalize_eurusd_2024_raw_ticks_from_runs_v1.yml",
+      "sha256": "793b13705bb389e0803d56e14fe96137ac8c63e39983c3c0808519a854831453"
+    },
+    {
+      "bytes": 7443,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "finalize_usdjpy_hyp027_phase2_release_v1.yml",
+      "path": ".github/workflows/finalize_usdjpy_hyp027_phase2_release_v1.yml",
+      "sha256": "7acaf6ad5d0a10d07fe2f566a3a14f7b5768d107644df6f187cd99184c6bf50f"
+    },
+    {
+      "bytes": 2031,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "fx2_authority_registry_ci.yml",
+      "path": ".github/workflows/fx2_authority_registry_ci.yml",
+      "sha256": "f37654be764432088b4fa5c37ae28551206c764658bcbfcf84ba5bcb15b18bd0"
+    },
+    {
+      "bytes": 2348,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "fx2_authority_registry_publish.yml",
+      "path": ".github/workflows/fx2_authority_registry_publish.yml",
+      "sha256": "f88570fee1cfda462afdc2068d0663806e039c6edfffbf29fa73737890919cd4"
+    },
+    {
+      "bytes": 19532,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "integrate_usdjpy_portability_001_v1.yml",
+      "path": ".github/workflows/integrate_usdjpy_portability_001_v1.yml",
+      "sha256": "a8a0d267d13d8e509e7881553d76a4a23ccbd1111232dcafbebc31894f003375"
+    },
+    {
+      "bytes": 1599,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "monitor_usdjpy_hyp032_historical_validation_v1.yml",
+      "path": ".github/workflows/monitor_usdjpy_hyp032_historical_validation_v1.yml",
+      "sha256": "0187027f38e61504bc03c7c01d0b39df8ee5aad375f2547b97ec2aeb4967193a"
+    },
+    {
+      "bytes": 1302,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "monitor_usdjpy_hyp032_input_acquisition_v1.yml",
+      "path": ".github/workflows/monitor_usdjpy_hyp032_input_acquisition_v1.yml",
+      "sha256": "ce87ba16d0c4c335e9a1be0a14212e1d101aa84ee2a0b89ee76997a3983aec44"
+    },
+    {
+      "bytes": 3834,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "patch_usdjpy_status_after_r1_v2.yml",
+      "path": ".github/workflows/patch_usdjpy_status_after_r1_v2.yml",
+      "sha256": "6e865bce8eeb753201d576f63d64a23397c3d44001f3d7c82c41ea306622a983"
+    },
+    {
+      "bytes": 1248,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "preflight_usdjpy_hyp032_historical_evaluator_v1.yml",
+      "path": ".github/workflows/preflight_usdjpy_hyp032_historical_evaluator_v1.yml",
+      "sha256": "5387f2e031416f709e57fdf7bf2a6b113f725f1a3bb03eba987cc3c4d8daca39"
+    },
+    {
+      "bytes": 1467,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "probe_eurusd_fv2_cost_stress_v1.yml",
+      "path": ".github/workflows/probe_eurusd_fv2_cost_stress_v1.yml",
+      "sha256": "a75ac7c03f1c5f841deac61fafffeb95f257bab0a9900b09b38bea0947314d27"
+    },
+    {
+      "bytes": 1477,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "probe_eurusd_fv2_h1_diagnostic_v1.yml",
+      "path": ".github/workflows/probe_eurusd_fv2_h1_diagnostic_v1.yml",
+      "sha256": "6840847afef24db5ee8639926dde0d9b3dee60b2db5898659dd8d710c58b1d80"
+    },
+    {
+      "bytes": 7308,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "publish_usdjpy_csos_remaining_family_atlas_release_v1.yml",
+      "path": ".github/workflows/publish_usdjpy_csos_remaining_family_atlas_release_v1.yml",
+      "sha256": "6e4cd9de80d3f3714f7e57101490cb05a8ffba6c5fc6d4abc3c6d083f9a869c8"
+    },
+    {
+      "bytes": 7088,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "publish_usdjpy_csos_remaining_family_atlas_release_v2.yml",
+      "path": ".github/workflows/publish_usdjpy_csos_remaining_family_atlas_release_v2.yml",
+      "sha256": "f6539ae712d655150159373d9caaaabebb67b32bd19e5fc79936cde5f3e3aa2a"
+    },
+    {
+      "bytes": 7342,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "publish_usdjpy_hyp037_protocol_corrected_release_v2.yml",
+      "path": ".github/workflows/publish_usdjpy_hyp037_protocol_corrected_release_v2.yml",
+      "sha256": "f5ccb48793c83a00bc04bdb8d8ccaa9ad389cbe4e42a23afea5ef17289cd4ad7"
+    },
+    {
+      "bytes": 7041,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "publish_usdjpy_hyp038_closure_v1.yml",
+      "path": ".github/workflows/publish_usdjpy_hyp038_closure_v1.yml",
+      "sha256": "08d55fb0372c239a2adfea69750fe36621c05012aa2afec3d410f4123e9f3138"
+    },
+    {
+      "bytes": 1283,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "publish_usdjpy_tick_authority_draft_recovery_v1.yml",
+      "path": ".github/workflows/publish_usdjpy_tick_authority_draft_recovery_v1.yml",
+      "sha256": "4d3543fce112d144172ac037acb64937136a7b7602ef888d21b50a19742c41de"
+    },
+    {
+      "bytes": 3430,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "recover_eurusd_2024_june_diagnostic_run_29749870784_v1.yml",
+      "path": ".github/workflows/recover_eurusd_2024_june_diagnostic_run_29749870784_v1.yml",
+      "sha256": "242670ae99289082e5caa9281f3295b212ad3164d100583136e98fcb1ae72a61"
+    },
+    {
+      "bytes": 14038,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "repair_usdjpy_2024_raw_ticks_run_29689427642_v1.yml",
+      "path": ".github/workflows/repair_usdjpy_2024_raw_ticks_run_29689427642_v1.yml",
+      "sha256": "67745ac727063f0b2231a5b63aa0322ab64a0bcb99020cfc630d44e9ca38484c"
+    },
+    {
+      "bytes": 14608,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "research-ci.yml",
+      "path": ".github/workflows/research-ci.yml",
+      "sha256": "c1555887cadf2f52b22ff2e35e92b14ed7f91169f5fab143e1a047068e353db8"
+    },
+    {
+      "bytes": 4677,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "resume_eurusd_2024_raw_ticks_run_29749870784_v1.yml",
+      "path": ".github/workflows/resume_eurusd_2024_raw_ticks_run_29749870784_v1.yml",
+      "sha256": "8bdb22182a3e960daf71023348bd77bdbf57b899a9fa0c5af34a12a16a805521"
+    },
+    {
+      "bytes": 7751,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "resume_usdjpy_2024_raw_tick_repair_run_29707697472_v1.yml",
+      "path": ".github/workflows/resume_usdjpy_2024_raw_tick_repair_run_29707697472_v1.yml",
+      "sha256": "05072e136a2fd370510979d32cfc49d7c461b068097e8535b3916645cab5f412"
+    },
+    {
+      "bytes": 17126,
+      "classification": "ACTIVE_STUDY_WRAPPER",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "reusable_public_fx_tick_symbol_pilot_2024_01.yml",
+      "path": ".github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml",
+      "sha256": "b722166bbc67646fbe19c00e7f2a3001744f4e24fd44df6fdaa7a4615bdbe93c"
+    },
+    {
+      "bytes": 17206,
+      "classification": "ACTIVE_STUDY_WRAPPER",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "reusable_public_fx_tick_symbol_pilot_monthly.yml",
+      "path": ".github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml",
+      "sha256": "9f9bb32c06c61fcdae31e40ee987ca64b161c9870f3250d01aed36c2e8575a5b"
+    },
+    {
+      "bytes": 15905,
+      "classification": "ACTIVE_STUDY_WRAPPER",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "reusable_public_fx_tick_symbol_pilot_monthly_v2.yml",
+      "path": ".github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml",
+      "sha256": "c3b940b012529000c5003847ebc57fb4504723b45bb489a793256d478155be79"
+    },
+    {
+      "bytes": 6104,
+      "classification": "ACTIVE_STUDY_WRAPPER",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "reusable_research_execution_infra_v1.yml",
+      "path": ".github/workflows/reusable_research_execution_infra_v1.yml",
+      "sha256": "29e28d148c0aa386e959034b5d5acbd0b8f2eb568d99e5fc2c17a2a80897426f"
+    },
+    {
+      "bytes": 15299,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml",
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml",
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly_v2.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_eurusd_2024_full_year_collect.yml",
+      "path": ".github/workflows/run_eurusd_2024_full_year_collect.yml",
+      "sha256": "be35a22ae342902ea7e11ba151e5ad79f78555cc206cce3391595be3c4ab19c3"
+    },
+    {
+      "bytes": 9042,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "run_eurusd_fv2_cost_execution_stress_v1.yml",
+      "path": ".github/workflows/run_eurusd_fv2_cost_execution_stress_v1.yml",
+      "sha256": "92e62df8f9a53679a691dc5c8fbef6f40fde243db595df94f9c696aa76215200"
+    },
+    {
+      "bytes": 10605,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "run_eurusd_fv2_h1_diagnostic_v1.yml",
+      "path": ".github/workflows/run_eurusd_fv2_h1_diagnostic_v1.yml",
+      "sha256": "52cc1b06878ba210c949d87a9bb6b29dfe3f1f1a301d04d2b1d25510ad183710"
+    },
+    {
+      "bytes": 12920,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "run_eurusd_h1_h2_screen_v1.yml",
+      "path": ".github/workflows/run_eurusd_h1_h2_screen_v1.yml",
+      "sha256": "e372b59d0e93af24a4cf3a2758be45a1151cc7fb8d4b65c8bdb9b2f95a786149"
+    },
+    {
+      "bytes": 8899,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "run_eurusd_h1_h2_v2_validation.yml",
+      "path": ".github/workflows/run_eurusd_h1_h2_v2_validation.yml",
+      "sha256": "1860bdb65fa7fef904f223510ad9e33c4984bd052fe3edf4b6602d4367b55776"
+    },
+    {
+      "bytes": 9403,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_fx_session_baseline_2024_01.yml",
+      "path": ".github/workflows/run_fx_session_baseline_2024_01.yml",
+      "sha256": "e8e63a655c5eeb6aa84d69fd2d77e2a5a3a744ad42ca0f5eb3e0ae6d5059a5d8"
+    },
+    {
+      "bytes": 10168,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_fx_session_baseline_monthly.yml",
+      "path": ".github/workflows/run_fx_session_baseline_monthly.yml",
+      "sha256": "91be1efbb054bded06b9ff05cd6515798e58e0220966603c3ef7ac535dbe566f"
+    },
+    {
+      "bytes": 922,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_public_fx_data_pilot_2024_01.yml",
+      "path": ".github/workflows/run_public_fx_data_pilot_2024_01.yml",
+      "sha256": "7f9b679c56fc6ea7fd0e6d425bd274ac68bf1aa4151f7ca410cc73bfc515f094"
+    },
+    {
+      "bytes": 5683,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_public_fx_data_smoke.yml",
+      "path": ".github/workflows/run_public_fx_data_smoke.yml",
+      "sha256": "59f452aa3bef9cb282affa8f0ec03ed586f2d2051237c93fe73d77fecd2bd7b9"
+    },
+    {
+      "bytes": 304,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_AUDUSD_2024_01.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_AUDUSD_2024_01.yml",
+      "sha256": "c145ef6239e8ae43e7c86edd241b009c12072d65b7f36715f3d4265824990aff"
+    },
+    {
+      "bytes": 304,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_EURUSD_2024_01.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_EURUSD_2024_01.yml",
+      "sha256": "6acd6bc19c3c8cd9b3cf1883625e7597747e7b89b151826cf632c08484e83c72"
+    },
+    {
+      "bytes": 304,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_GBPUSD_2024_01.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_GBPUSD_2024_01.yml",
+      "sha256": "ea25f384f925a9a1a929149c5ebf4ae41bf764fd9312e4bfe68c8ccbe1dd3306"
+    },
+    {
+      "bytes": 304,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDCAD_2024_01.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDCAD_2024_01.yml",
+      "sha256": "6104e7ced5e61665aa4ad8ee2a0d5733bc0f0382a39f01d7c3605a9a146f723a"
+    },
+    {
+      "bytes": 304,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDCHF_2024_01.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDCHF_2024_01.yml",
+      "sha256": "2dcd23fbe50cc7c3dda3dde71a93c4bc4bdf97e645bbabfa26d82162f66ebdd4"
+    },
+    {
+      "bytes": 304,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_2024_01.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDJPY_2024_01.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_01.yml",
+      "sha256": "a6b21d54ef23431701de9e2728912a377cea1921a2b39cc3a04fdf66e544d068"
+    },
+    {
+      "bytes": 373,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDJPY_2024_02.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_02.yml",
+      "sha256": "f65a6320254ea62a6dbfbcd978df68d8517e65dfd6e6df0a300a4ddb03547667"
+    },
+    {
+      "bytes": 373,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDJPY_2024_03.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_03.yml",
+      "sha256": "47e5b03ea10a84f7bf5cfd85d0889256fc4db3d5047d2b27e9445671fdc78421"
+    },
+    {
+      "bytes": 403,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDJPY_2024_04.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_04.yml",
+      "sha256": "48b7a27b74dafe06c6413edef31f4d2e8e1a9c1640f62312ae8bf4f44bf39262"
+    },
+    {
+      "bytes": 403,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDJPY_2024_05.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_05.yml",
+      "sha256": "3025b5927e7fe674ee3ebb3947ec266139e84bc250019079c9fbabd8ff094d90"
+    },
+    {
+      "bytes": 403,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDJPY_2024_06.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_06.yml",
+      "sha256": "027739e41909d97037fab2fd1ba9b20c7dd81489112522be7377295fe8bbde18"
+    },
+    {
+      "bytes": 403,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDJPY_2024_07.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_07.yml",
+      "sha256": "2f1e5de7dbb4d006e8fa3264915a9d40bb4d8dfa8b0d5eafeeb40cef97eba0c1"
+    },
+    {
+      "bytes": 403,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDJPY_2024_08.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_08.yml",
+      "sha256": "4ea9bcc569edff42f7399196048324391fc908eb2c26ee0cbeaf24ff890b6e97"
+    },
+    {
+      "bytes": 403,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_public_fx_tick_pilot_USDJPY_2024_09.yml",
+      "path": ".github/workflows/run_public_fx_tick_pilot_USDJPY_2024_09.yml",
+      "sha256": "60fa5d5b0a1f25d11990493c3dcd34bbf198e553092a642bc319ead328548d09"
+    },
+    {
+      "bytes": 19797,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_research_batch.yml",
+      "path": ".github/workflows/run_research_batch.yml",
+      "sha256": "fb599fd93e91613a136e5a9349012138ed90f1db0ef47158c959eb5f4bef72a1"
+    },
+    {
+      "bytes": 5096,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_research_timing_study.yml",
+      "path": ".github/workflows/run_research_timing_study.yml",
+      "sha256": "eca226dbb43d3750b22bd5bd4e4956dca2e09bd7a81443be05c762f97465a567"
+    },
+    {
+      "bytes": 22493,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_rvtr_ml_from_batch_spec.yml",
+      "path": ".github/workflows/run_rvtr_ml_from_batch_spec.yml",
+      "sha256": "dab25a51cc6997d5af032079320b4a2e0132f8660c2027e1d055bcaafac3e764"
+    },
+    {
+      "bytes": 5686,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_rvtr_ml_research.yml",
+      "path": ".github/workflows/run_rvtr_ml_research.yml",
+      "sha256": "c4413a4d8cae68f48c1c88021a553c2f4012166557bf22ed10cd49c05a8f243f"
+    },
+    {
+      "bytes": 7288,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_usdjpy_h1_dukascopy_impulse_confirmation.yml",
+      "path": ".github/workflows/run_usdjpy_h1_dukascopy_impulse_confirmation.yml",
+      "sha256": "e3e882972a7dd597cc8484730aa49dfff75959d1df0177d8db9057580bcb6da4"
+    },
+    {
+      "bytes": 12595,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_usdjpy_h1_entry_horizon_diagnostic_v2.yml",
+      "path": ".github/workflows/run_usdjpy_h1_entry_horizon_diagnostic_v2.yml",
+      "sha256": "8f99c1f5010ba3b3ad4f110a20935f38e32f6220f6ab76ed226c26d63e4ac38b"
+    },
+    {
+      "bytes": 8416,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_usdjpy_h1_multi_family_screen.yml",
+      "path": ".github/workflows/run_usdjpy_h1_multi_family_screen.yml",
+      "sha256": "3db5e897c41df9b5ce9813e05ff055f9a729c9cae6cf12180964091567152c47"
+    },
+    {
+      "bytes": 10080,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml",
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml",
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml",
+        "./.github/workflows/reusable_public_fx_tick_symbol_pilot_monthly.yml"
+      ],
+      "direct_git_write": false,
+      "name": "run_usdjpy_h2_2024_09_12_collect_and_baseline.yml",
+      "path": ".github/workflows/run_usdjpy_h2_2024_09_12_collect_and_baseline.yml",
+      "sha256": "c0e11b97d00d43cacf52b22dbfeef5f9ff7bb28e26b55769953204238a9096f0"
+    },
+    {
+      "bytes": 17267,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_usdjpy_joint_h2_a1_e3_eval_v1.yml",
+      "path": ".github/workflows/run_usdjpy_joint_h2_a1_e3_eval_v1.yml",
+      "sha256": "3b6c73fab38e8fb52e6145f3d23863f27abaa94d64545d150920b467e7eef357"
+    },
+    {
+      "bytes": 7660,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_usdjpy_r0_canonical_bundle_v1.yml",
+      "path": ".github/workflows/run_usdjpy_r0_canonical_bundle_v1.yml",
+      "sha256": "c40ae10726fa796a4e9caef88b995ca1a01bbaadbccdb26c9aa5d100fd7303ed"
+    },
+    {
+      "bytes": 10070,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_usdjpy_r1_entry_registry_v1.yml",
+      "path": ".github/workflows/run_usdjpy_r1_entry_registry_v1.yml",
+      "sha256": "7b6589b3db85e0a991e5e98115526d3e77a319b3918486dc051e42400d453546"
+    },
+    {
+      "bytes": 11354,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_usdjpy_r1_entry_registry_v2.yml",
+      "path": ".github/workflows/run_usdjpy_r1_entry_registry_v2.yml",
+      "sha256": "908590d6330230dfd5ac12cd935716b33c9b5d5f382755718e6d1f96d4a5c110"
+    },
+    {
+      "bytes": 17262,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_usdjpy_r2_horizon_surface_final_v1.yml",
+      "path": ".github/workflows/run_usdjpy_r2_horizon_surface_final_v1.yml",
+      "sha256": "7a260e77c46c06216b3018dce82b86509873077220571585164668e197572aad"
+    },
+    {
+      "bytes": 11106,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_usdjpy_r3_temporal_stability_v1.yml",
+      "path": ".github/workflows/run_usdjpy_r3_temporal_stability_v1.yml",
+      "sha256": "0e54836ace45dd24648a992b0078b98f3213c5919832fba6fa35967f81c42358"
+    },
+    {
+      "bytes": 7415,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "run_usdjpy_session_baseline_2024_01.yml",
+      "path": ".github/workflows/run_usdjpy_session_baseline_2024_01.yml",
+      "sha256": "3de4c8d4dfeedc2e8647438caf184a49ad7104fed08aa00dcd44696e05fb88df"
+    },
+    {
+      "bytes": 1484,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "snapshot_eurusd_h1_h2_v2_run_status.yml",
+      "path": ".github/workflows/snapshot_eurusd_h1_h2_v2_run_status.yml",
+      "sha256": "b83ddaadeacc104993a20df401c33ab142036a8e242eba82869ae14439265538"
+    },
+    {
+      "bytes": 9298,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "snapshot_usdjpy_tick_collection_status_v1.yml",
+      "path": ".github/workflows/snapshot_usdjpy_tick_collection_status_v1.yml",
+      "sha256": "6c586ddbe0a35fa59fa586481e2dcf03d44eb1c88de346f8e29e9548199cc541"
+    },
+    {
+      "bytes": 3825,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "test_research_platform_v1.yml",
+      "path": ".github/workflows/test_research_platform_v1.yml",
+      "sha256": "b6a5f4e309551760d4974cc832fcc1570404304429725c437ec1a2e6a5bb9683"
+    },
+    {
+      "bytes": 3409,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "trigger_usdjpy_csos_dukascopy_native_remaining_family_atlas_v1.yml",
+      "path": ".github/workflows/trigger_usdjpy_csos_dukascopy_native_remaining_family_atlas_v1.yml",
+      "sha256": "2e3a6315c1fa8458715b6c83efb19bb82d3edf02d1a28708c7ec2a7c91fcf906"
+    },
+    {
+      "bytes": 16668,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_2020_2022_tick_authority_accelerated_v1.yml",
+      "path": ".github/workflows/usdjpy_2020_2022_tick_authority_accelerated_v1.yml",
+      "sha256": "59c11b2eb16aca9c9c28f85bdbee8a965438b3859c429c8b12157218bf93f545"
+    },
+    {
+      "bytes": 869,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_2020_2022_tick_authority_v1.yml",
+      "path": ".github/workflows/usdjpy_2020_2022_tick_authority_v1.yml",
+      "sha256": "c2aae0138c9492fa7245c7de2af7d1bb6ab1ef47c13c89a602bfc61eca87f35a"
+    },
+    {
+      "bytes": 7684,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_asian_range_liquidity_sweep_phase2_evidence_repair_v1.yml",
+      "path": ".github/workflows/usdjpy_asian_range_liquidity_sweep_phase2_evidence_repair_v1.yml",
+      "sha256": "e3a495c02f76b47f08d3cc5b7dcec443a442a7628693e10f5cd8c9ac8000ead4"
+    },
+    {
+      "bytes": 12832,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_csos_dukascopy_native_remaining_family_atlas_execution_v2.yml",
+      "path": ".github/workflows/usdjpy_csos_dukascopy_native_remaining_family_atlas_execution_v2.yml",
+      "sha256": "f09684d9a25e1fa9172ae5fdf1d09645d3d2fee090fa826288d3893a49688f3a"
+    },
+    {
+      "bytes": 16402,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml",
+      "path": ".github/workflows/usdjpy_csos_dukascopy_native_remaining_family_atlas_inventory_v1.yml",
+      "sha256": "474b0c49312185f669344323aacf35223bd55872653ac32a722c353204745985"
+    },
+    {
+      "bytes": 12548,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_csos_shock_failure_phase2_v1.yml",
+      "path": ".github/workflows/usdjpy_csos_shock_failure_phase2_v1.yml",
+      "sha256": "ba271cb42ababe7061a924bc3fa42a4823178a5d18ea1d1dd42bd4a4d4f44dc8"
+    },
+    {
+      "bytes": 6232,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_ea_integration_001_receipt.yml",
+      "path": ".github/workflows/usdjpy_ea_integration_001_receipt.yml",
+      "sha256": "be6e0590d7072ea3768c828af5406eb73a0ff174393ab033a13f054b716b805a"
+    },
+    {
+      "bytes": 4145,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_ea_integration_001_release.yml",
+      "path": ".github/workflows/usdjpy_ea_integration_001_release.yml",
+      "sha256": "00022143fcbd154c0e07732a8deb46ac9e3182b25f1db9d0f19ecf98d7f9c3a4"
+    },
+    {
+      "bytes": 5941,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_entry_establishment_phase2_v1.yml",
+      "path": ".github/workflows/usdjpy_entry_establishment_phase2_v1.yml",
+      "sha256": "e0947bf1c02dacfdb1d256845beef8f5b1e8d252dbac5442730ac3e24c46dea0"
+    },
+    {
+      "bytes": 15260,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_f05_short_loss_persistence_chronology_v1.yml",
+      "path": ".github/workflows/usdjpy_f05_short_loss_persistence_chronology_v1.yml",
+      "sha256": "dcae0dc0982dea269da419044d54c91b12654a082a47aa690f13086a3ca1041a"
+    },
+    {
+      "bytes": 20136,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp031_canonicalize_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp031_canonicalize_v1.yml",
+      "sha256": "f410b6914a477f727b187b12fdad57fad56c5bed480a5914b66a69de1840c2eb"
+    },
+    {
+      "bytes": 9525,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_hyp031_pre2023_authority_fast_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp031_pre2023_authority_fast_v1.yml",
+      "sha256": "05bf2d8f43f70d85219a125ca1084df8a529840f4bf7e1582ffcd6b8bb85ca69"
+    },
+    {
+      "bytes": 2987,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [
+        "./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml",
+        "./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml",
+        "./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml",
+        "./.github/workflows/collect_usdjpy_raw_ticks_year_reusable_v1.yml"
+      ],
+      "direct_git_write": false,
+      "name": "usdjpy_hyp031_pre2023_authority_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp031_pre2023_authority_v1.yml",
+      "sha256": "893fd0f638811485485429707ea6fbae882be468c4047ea17f4404b9b0a6f708"
+    },
+    {
+      "bytes": 18579,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp032_historical_validation_currency_v2.yml",
+      "path": ".github/workflows/usdjpy_hyp032_historical_validation_currency_v2.yml",
+      "sha256": "396791a04a3019fc35fdcef0c979b0dabb92c5b66a317a437348d05a5b731829"
+    },
+    {
+      "bytes": 16840,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp032_historical_validation_retry_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp032_historical_validation_retry_v1.yml",
+      "sha256": "2d24afb758f718bd422a4d5e0558328890ac00bbbaf5d98030ebe2301acda323"
+    },
+    {
+      "bytes": 15921,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp032_historical_validation_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp032_historical_validation_v1.yml",
+      "sha256": "763d13daea66a2afe927e562afbc5f4f38f2d1bc4c6930ac3be11fde5d821c4a"
+    },
+    {
+      "bytes": 11935,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": false,
+      "dependencies": [
+        "./.github/workflows/reusable_research_execution_infra_v1.yml"
+      ],
+      "direct_git_write": false,
+      "name": "usdjpy_hyp033_binding_v2.yml",
+      "path": ".github/workflows/usdjpy_hyp033_binding_v2.yml",
+      "sha256": "8ce1141ed678cebcd7a13c923c82f79d1be83d3d2c2243f6658e8b28350dcc09"
+    },
+    {
+      "bytes": 4499,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_hyp036_release_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp036_release_v1.yml",
+      "sha256": "128e7439b262c74af80eb4c185ff233fe635083b21d4e45699a0f172ac457b90"
+    },
+    {
+      "bytes": 7591,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_hyp037_mechanism_source_preflight_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp037_mechanism_source_preflight_v1.yml",
+      "sha256": "5ea678cf7eea0d9360e5a674b69f20de88bc14693e42d66af4cff55c5402af3c"
+    },
+    {
+      "bytes": 8486,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_hyp037_protocol_corrected_research_v2.yml",
+      "path": ".github/workflows/usdjpy_hyp037_protocol_corrected_research_v2.yml",
+      "sha256": "82a94c9e25ffe07ae758536b38fe8379df11ad837d365977ab6eb7dd8e426f4a"
+    },
+    {
+      "bytes": 4860,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_hyp037_release_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp037_release_v1.yml",
+      "sha256": "d3b7b6f170d26e4cb7d42fb3e6ff41dd5ce96deca0295b2c88694d49e70cb7d7"
+    },
+    {
+      "bytes": 9572,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_hyp041_closure_release_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp041_closure_release_v1.yml",
+      "sha256": "552e61626081ab2543b796fd3def5753759861b65f560852afedab07b30e4033"
+    },
+    {
+      "bytes": 10613,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp042_release_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp042_release_v1.yml",
+      "sha256": "56ef7a842a923d55d484b83827e67ce78303b8de79a5d872f048fb164e791c60"
+    },
+    {
+      "bytes": 6287,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_hyp044_bootstrap_inventory_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp044_bootstrap_inventory_v1.yml",
+      "sha256": "ff34968efc818e89e423f721490332217cd74092dad1c8bea5f9f59d00762081"
+    },
+    {
+      "bytes": 5634,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp044_development_source_probe_v2.yml",
+      "path": ".github/workflows/usdjpy_hyp044_development_source_probe_v2.yml",
+      "sha256": "940ff57a6bc83d99614049cdc2533e0f9646228c5d87b8cfe2f4e54ef25436ed"
+    },
+    {
+      "bytes": 3937,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_hyp044_export_development_authorities_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp044_export_development_authorities_v1.yml",
+      "sha256": "65b74c6d40e2ae56d3e18d004441bdf24b838962095799344af1813dfc4d82cf"
+    },
+    {
+      "bytes": 2123,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp044_integrated_economic_synthesis_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp044_integrated_economic_synthesis_v1.yml",
+      "sha256": "0f37f12d86b374fff8826308112696cfc1dd1a782de3f91deacdb5289f2343a7"
+    },
+    {
+      "bytes": 2279,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp044_research_evidence_inventory_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp044_research_evidence_inventory_v1.yml",
+      "sha256": "b51427c4cd87fe6a0b2bcf86707751c79e918611e89727715d974b55c184abcb"
+    },
+    {
+      "bytes": 4784,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp044_round_b_source_native_2020_2022_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp044_round_b_source_native_2020_2022_v1.yml",
+      "sha256": "bf463f04a8396781e6bdc9307d8204463e8ec684f8163bd128cf5afa4bab903e"
+    },
+    {
+      "bytes": 4453,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp044_source_native_2020_2022_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp044_source_native_2020_2022_v1.yml",
+      "sha256": "2a2793ab6fa63a00d401ef42c270d66597f660e2025b8c303d65e99d3a12d144"
+    },
+    {
+      "bytes": 3433,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp044_source_native_full_equity_v2.yml",
+      "path": ".github/workflows/usdjpy_hyp044_source_native_full_equity_v2.yml",
+      "sha256": "4c02985fab83b917352c8af54279a804937a07d3ede50919d3fd69d87730b37d"
+    },
+    {
+      "bytes": 1581,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp044_source_native_ledger_tieout_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp044_source_native_ledger_tieout_v1.yml",
+      "sha256": "6986bcd53d0f431685a8960f7b46cff6ff1e9e9e8ccf940f2131b14f23eb3ca3"
+    },
+    {
+      "bytes": 3587,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_hyp044_source_native_schema_probe_v1.yml",
+      "path": ".github/workflows/usdjpy_hyp044_source_native_schema_probe_v1.yml",
+      "sha256": "e2be28ec9ea3706d11ce1310f422bb1c4066a03e9096e6da0d4bdafefd29ac06"
+    },
+    {
+      "bytes": 1784,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_impact_atlas_phase0_v1.yml",
+      "path": ".github/workflows/usdjpy_impact_atlas_phase0_v1.yml",
+      "sha256": "74ae70cb6c0087243ff2293ed72ae1575e8ba08c3f8afb083fca81c1ce73ef88"
+    },
+    {
+      "bytes": 7019,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_impact_atlas_phase1_v1.yml",
+      "path": ".github/workflows/usdjpy_impact_atlas_phase1_v1.yml",
+      "sha256": "52463f9b9da2ced86d73acb9c610ba0cb2367affa6ff123fd73545b599c9cd31"
+    },
+    {
+      "bytes": 4046,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_market_state_router_reference_freeze_v1.yml",
+      "path": ".github/workflows/usdjpy_market_state_router_reference_freeze_v1.yml",
+      "sha256": "c438a046e3aea43c062599057deddd020dc60eeb2df24d34fac492da5c327fe7"
+    },
+    {
+      "bytes": 4402,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_market_state_router_reference_freeze_v2.yml",
+      "path": ".github/workflows/usdjpy_market_state_router_reference_freeze_v2.yml",
+      "sha256": "893ba8bb178d79ec7f794fbf8136a949271dc328d6727a544cda55caaa97bd4d"
+    },
+    {
+      "bytes": 5486,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_market_state_strategy_routing_phase2_v1.yml",
+      "path": ".github/workflows/usdjpy_market_state_strategy_routing_phase2_v1.yml",
+      "sha256": "407d6b5e8b6c94b7db9472e6bbfa3f5b543dc053829a80029c95509e476ba255"
+    },
+    {
+      "bytes": 11887,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+      "path": ".github/workflows/usdjpy_portfolio_loss_cluster_phase1_v1.yml",
+      "sha256": "8c3bf7727e24b84b91069f725a8d916b29463cd77eb0faf72742e2d39e3dc131"
+    },
+    {
+      "bytes": 11481,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_portfolio_loss_cluster_phase2_v1.yml",
+      "path": ".github/workflows/usdjpy_portfolio_loss_cluster_phase2_v1.yml",
+      "sha256": "71d6adf85456e78faeccc22876711f81d706d0a874441814838121fc44bcb54d"
+    },
+    {
+      "bytes": 9014,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_previous_day_extreme_sweep_development_v1.yml",
+      "path": ".github/workflows/usdjpy_previous_day_extreme_sweep_development_v1.yml",
+      "sha256": "d7765b982a8a4b90c4224217f5129c37bdf2a3ec9429982ef8d0a7520f1853db"
+    },
+    {
+      "bytes": 13410,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_pullback_continuation_development_v1.yml",
+      "path": ".github/workflows/usdjpy_pullback_continuation_development_v1.yml",
+      "sha256": "28d2b86ceb1242b5d7fda38d988805f597aed53bec28c5a0356bdea3016abaa4"
+    },
+    {
+      "bytes": 8035,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_pullback_continuation_dukas_native_development_v1.yml",
+      "path": ".github/workflows/usdjpy_pullback_continuation_dukas_native_development_v1.yml",
+      "sha256": "71ea324fa8ba1d6d8adc72dcf74565781d47d2124a387397d7f65972cab1faf9"
+    },
+    {
+      "bytes": 14184,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_shock_failure_2025_postmortem_bridge_v1.yml",
+      "path": ".github/workflows/usdjpy_shock_failure_2025_postmortem_bridge_v1.yml",
+      "sha256": "9f54f4ba1e971d2886eea3e91a856788c93358fd71dbc0c4919052228f0af3c5"
+    },
+    {
+      "bytes": 2068,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_shock_failure_2025_postmortem_dispatch_v1.yml",
+      "path": ".github/workflows/usdjpy_shock_failure_2025_postmortem_dispatch_v1.yml",
+      "sha256": "5dce8a5733b81c9e27c6f6756dd28f05ed2dc98ae13415d8cbbcec6372410c67"
+    },
+    {
+      "bytes": 14213,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_shock_failure_2025_postmortem_v3.yml",
+      "path": ".github/workflows/usdjpy_shock_failure_2025_postmortem_v3.yml",
+      "sha256": "e3bf531e9143fe2bd1306b15226106551fbb2578e2c54853f6ee87588cca5ab7"
+    },
+    {
+      "bytes": 3307,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "usdjpy_shock_failure_2025_postmortem_v4.yml",
+      "path": ".github/workflows/usdjpy_shock_failure_2025_postmortem_v4.yml",
+      "sha256": "f31d3603d1de038ccf5505b0b2a1d95430c9560b365c456cf8b6b9f8828029f2"
+    },
+    {
+      "bytes": 14785,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": true,
+      "name": "usdjpy_shock_failure_regime_discriminator_v1.yml",
+      "path": ".github/workflows/usdjpy_shock_failure_regime_discriminator_v1.yml",
+      "sha256": "de50166eb9771a38db8694ee5129a4c647b852bdb9c78d96e9fa3368435fe520"
+    },
+    {
+      "bytes": 6552,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "validate_f05_failed_reclaim_2025_oos_v1.yml",
+      "path": ".github/workflows/validate_f05_failed_reclaim_2025_oos_v1.yml",
+      "sha256": "1ae22ddea95914bee6aebfd918e888c0ff90190dff63314bcaeebc9f02739d79"
+    },
+    {
+      "bytes": 4049,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "validate_f05_failed_reclaim_extended_grid_v1.yml",
+      "path": ".github/workflows/validate_f05_failed_reclaim_extended_grid_v1.yml",
+      "sha256": "45f18a2eb91005c9d8a3537d994ddc09e5a9c0fe26450bcd19d13c942071951e"
+    },
+    {
+      "bytes": 15739,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": true,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "validate_f05_failed_reclaim_v1.yml",
+      "path": ".github/workflows/validate_f05_failed_reclaim_v1.yml",
+      "sha256": "4580cf0e3e3ad3b546e52e3c93448bd5860440eb3dd07ea61681abf855071ad5"
+    },
+    {
+      "bytes": 1564,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "validate_usdjpy_csos_shock_failure_contract_v1.yml",
+      "path": ".github/workflows/validate_usdjpy_csos_shock_failure_contract_v1.yml",
+      "sha256": "81e9b503df73cf2d691902bd6936e494df427a7db76bb30616e43d16896b5b32"
+    },
+    {
+      "bytes": 4592,
+      "classification": "IMMUTABLE_HISTORICAL_REFERENCE",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "validate_usdjpy_hyp027_phase2_closure_v1.yml",
+      "path": ".github/workflows/validate_usdjpy_hyp027_phase2_closure_v1.yml",
+      "sha256": "ec35dfa3f7898a5984c6152e805492b1a4704200cb91a56a890ff6d6d16ad4d4"
+    },
+    {
+      "bytes": 2800,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "validate_usdjpy_research_memory_v1.yml",
+      "path": ".github/workflows/validate_usdjpy_research_memory_v1.yml",
+      "sha256": "78633e617600d138553b0a6994259b47e0ed23d9dfd874c25c393f644762ebbb"
+    },
+    {
+      "bytes": 2251,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "verify_f05_failed_reclaim_analysis_source_v1.yml",
+      "path": ".github/workflows/verify_f05_failed_reclaim_analysis_source_v1.yml",
+      "sha256": "764916f61be1a27e83b1c7511a5fbed8460d38e7a6ca4221e5f8b899c310a6fb"
+    },
+    {
+      "bytes": 3032,
+      "classification": "UNKNOWN_REQUIRES_REVIEW",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "verify_usdjpy_b02_f05_all_loss_structural_sl_closure_v1.yml",
+      "path": ".github/workflows/verify_usdjpy_b02_f05_all_loss_structural_sl_closure_v1.yml",
+      "sha256": "e081b8cd90d677d393f58b820530f4520d7e6fd7fdc0698383e2502c5c1c501c"
+    },
+    {
+      "bytes": 2360,
+      "classification": "LEGACY_SUPERSEDED",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.yml",
+      "path": ".github/workflows/verify_usdjpy_b02_f05_structural_sl_atlas_closure_v2.yml",
+      "sha256": "c7e473449807b189b54232a14e287997f74be65e1ac196bb31a74cddc03fcd87"
+    },
+    {
+      "bytes": 1233,
+      "classification": "TEMPORARY_DIAGNOSTIC",
+      "contents_write": false,
+      "dependencies": [],
+      "direct_git_write": false,
+      "name": "watch_eurusd_h1_h2_v2_validation.yml",
+      "path": ".github/workflows/watch_eurusd_h1_h2_v2_validation.yml",
+      "sha256": "4e90e040d4ef35f713ad65871307251026f44c9e4e5005b83c6bc4ac7599a701"
+    }
+  ]
+}
