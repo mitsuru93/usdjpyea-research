@@ -1,0 +1,139 @@
+name: USDJPY HYP-044 Research Publication Receipt v4
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp044_research_publication_receipt_v4.yml'
+      - 'configs/run_markers/usdjpy_hyp044_research_publication_receipt_v4.json'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      AUTHORITY_BRANCH: research/usdjpy-hyp044-integrated-profitability-stabilization-v1
+      AUTHORITY_COMMIT: 9a1b7465fe2ed10e862b16b6e8428ff731224e08
+      TAG: usdjpy-hyp044-integrated-profitability-stabilization-research-v1
+      ARCHIVE_NAME: usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip
+      ARCHIVE_SHA: 85688dc48fb82941e30dbb07df929e2c99ba68c7d126eec75113dea154789462
+      RECEIPT_NAME: usdjpy-hyp044-integrated-profitability-stabilization-research-v1-publication-receipt.json
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify released archive and publish external identity receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/h44-publication-v4-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          mkdir -p "$ROOT/archive" "$ROOT/receipt"
+
+          download_asset() {
+            local name="$1"
+            local dir="$2"
+            for attempt in $(seq 1 20); do
+              rm -rf "$dir" && mkdir -p "$dir"
+              if gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$name" --dir "$dir" >/dev/null 2>&1; then
+                if [ -f "$dir/$name" ]; then return 0; fi
+              fi
+              sleep 2
+            done
+            echo "unable to download release asset: $name" >&2
+            return 1
+          }
+
+          fetch_release() {
+            local out="$1"
+            for attempt in $(seq 1 20); do
+              if gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" > "$out" 2>/dev/null; then return 0; fi
+              sleep 2
+            done
+            return 1
+          }
+
+          download_asset "$ARCHIVE_NAME" "$ROOT/archive"
+          ACTUAL_ARCHIVE_SHA=$(sha256sum "$ROOT/archive/$ARCHIVE_NAME" | awk '{print $1}')
+          test "$ACTUAL_ARCHIVE_SHA" = "$ARCHIVE_SHA"
+
+          fetch_release "$ROOT/release.json"
+          RELEASE_ID=$(jq -r '.id' "$ROOT/release.json")
+          ARCHIVE_ASSET_ID=$(jq -r --arg n "$ARCHIVE_NAME" '.assets[]|select(.name==$n)|.id' "$ROOT/release.json")
+          ARCHIVE_BYTES=$(jq -r --arg n "$ARCHIVE_NAME" '.assets[]|select(.name==$n)|.size' "$ROOT/release.json")
+          test -n "$ARCHIVE_ASSET_ID" && test "$ARCHIVE_ASSET_ID" != null
+
+          jq -n \
+            --arg tag "$TAG" \
+            --arg authority_branch "$AUTHORITY_BRANCH" \
+            --arg authority_commit "$AUTHORITY_COMMIT" \
+            --arg archive_name "$ARCHIVE_NAME" \
+            --arg archive_sha "$ARCHIVE_SHA" \
+            --arg receipt_name "$RECEIPT_NAME" \
+            --argjson release_id "$RELEASE_ID" \
+            --argjson archive_asset_id "$ARCHIVE_ASSET_ID" \
+            --argjson archive_bytes "$ARCHIVE_BYTES" \
+            '{
+              schema_version:"usdjpy_hyp044_research_publication_receipt_v4",
+              status:"PASS_FINAL_ARCHIVE_AND_BYTE_IDENTICAL_REMOTE_READBACK",
+              hypothesis_id:"USDJPY-HYP-044",
+              candidate_id:"B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+              selected_production_architecture:"B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
+              authority_branch:$authority_branch,
+              authority_commit_sha:$authority_commit,
+              tag:$tag,
+              release_id:$release_id,
+              archive_asset_id:$archive_asset_id,
+              archive_asset_name:$archive_name,
+              archive_asset_bytes:$archive_bytes,
+              archive_local_sha256:$archive_sha,
+              archive_remote_sha256:$archive_sha,
+              archive_byte_identical_readback:true,
+              publication_receipt_asset_name:$receipt_name,
+              identity_contract:"Archive identity is externalized to this co-released receipt to avoid self-reference.",
+              software_release_authorized:true,
+              production_configuration_selected:true,
+              production_authorized:false,
+              live_authorized:false,
+              "2025H2_accessed":false
+            }' > "$ROOT/publication-receipt.json"
+
+          gh release upload "$TAG" "$ROOT/publication-receipt.json#$RECEIPT_NAME" --repo "$GITHUB_REPOSITORY" --clobber
+          download_asset "$RECEIPT_NAME" "$ROOT/receipt"
+          RECEIPT_LOCAL_SHA=$(sha256sum "$ROOT/publication-receipt.json" | awk '{print $1}')
+          RECEIPT_REMOTE_SHA=$(sha256sum "$ROOT/receipt/$RECEIPT_NAME" | awk '{print $1}')
+          test "$RECEIPT_LOCAL_SHA" = "$RECEIPT_REMOTE_SHA"
+
+          fetch_release "$ROOT/release-final.json"
+          RECEIPT_ASSET_ID=$(jq -r --arg n "$RECEIPT_NAME" '.assets[]|select(.name==$n)|.id' "$ROOT/release-final.json")
+          RECEIPT_BYTES=$(jq -r --arg n "$RECEIPT_NAME" '.assets[]|select(.name==$n)|.size' "$ROOT/release-final.json")
+          test -n "$RECEIPT_ASSET_ID" && test "$RECEIPT_ASSET_ID" != null
+
+          jq \
+            --argjson receipt_asset_id "$RECEIPT_ASSET_ID" \
+            --argjson receipt_bytes "$RECEIPT_BYTES" \
+            --arg receipt_local_sha "$RECEIPT_LOCAL_SHA" \
+            --arg receipt_remote_sha "$RECEIPT_REMOTE_SHA" \
+            '. + {
+              repository_receipt_schema:"usdjpy_hyp044_research_repository_receipt_v4",
+              publication_receipt_asset_id:$receipt_asset_id,
+              publication_receipt_asset_bytes:$receipt_bytes,
+              publication_receipt_local_sha256:$receipt_local_sha,
+              publication_receipt_remote_sha256:$receipt_remote_sha,
+              publication_receipt_byte_identical_readback:true
+            }' "$ROOT/publication-receipt.json" > "$ROOT/repository-receipt.json"
+
+          PATH_IN_REPO='artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/remote_readback_receipt.json'
+          CONTENT=$(base64 -w0 "$ROOT/repository-receipt.json")
+          OLD_SHA=$(gh api "repos/$GITHUB_REPOSITORY/contents/$PATH_IN_REPO?ref=$AUTHORITY_BRANCH" --jq .sha)
+          gh api --method PUT "repos/$GITHUB_REPOSITORY/contents/$PATH_IN_REPO" \
+            -f message='release(hyp044): bind final Research publication receipt v4' \
+            -f content="$CONTENT" -f branch="$AUTHORITY_BRANCH" -f sha="$OLD_SHA" >/dev/null
+
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "[HYP044-RESEARCH-FINAL-PUBLICATION-V4] $TAG PASS" \
+            --body "\`\`\`json
+          $(cat "$ROOT/repository-receipt.json")
+          \`\`\`" >/dev/null
