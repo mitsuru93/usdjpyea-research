@@ -251,8 +251,8 @@
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/full_equity_metrics.json",
-      "bytes": 624,
-      "sha256": "3b973217032ce13069131a10cc79f3cbdf514ce6c38e8521555cb3374823aa9a"
+      "bytes": 2253,
+      "sha256": "9782942221bf60a86ba509ceab34b87a32a6958f26bcb6bc16caf1d0f2464eb1"
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/halfyear_metrics.csv",
