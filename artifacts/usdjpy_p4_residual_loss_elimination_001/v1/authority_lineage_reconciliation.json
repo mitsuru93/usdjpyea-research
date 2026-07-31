@@ -1,0 +1,48 @@
+{
+  "schema_version": "usdjpy_p4_residual_loss_elimination_001_authority_lineage_reconciliation_v1",
+  "work_id": "USDJPY-P4-RESIDUAL-LOSS-ELIMINATION-001",
+  "primary_economic_authority": "Dukascopy source-native Bid/Ask Tick",
+  "authority_2020_2022": {
+    "decision": "PASS_2020_2022_TICK_AUTHORITY_CERTIFIED",
+    "tick_count": 78737040,
+    "critical_gaps": 0,
+    "invalid_bid_ask": 0,
+    "status": "PASS"
+  },
+  "baseline_2023_2024": {
+    "latest_binding_total_trades": 1893,
+    "latest_binding_net_jpy": 52779,
+    "b02_trades": 429,
+    "f05_trades": 1464,
+    "superseded_total_trades": 1882,
+    "status": "AGGREGATE_ANCHOR_CONFIRMED"
+  },
+  "c2_historical_generation": {
+    "available_hyp043_hyp044_f05_trades": 1451,
+    "latest_binding_f05_trades": 1464,
+    "difference_trades": 13,
+    "frozen_c2_rule_changed": false,
+    "trade_level_latest_1464_ledger_located": false,
+    "trade_level_reapplication_completed": false,
+    "classification": "UNRESOLVED_AUTHORITY_GENERATION_GAP",
+    "reason": "The current repositories and retained Release package contain the 1,893-trade aggregate anchor but do not retain the corresponding 1,464-row F05 source-native ledger. The 13 events cannot be reconstructed from aggregate values without fabrication.",
+    "economic_use": "Do not claim exact latest-lineage Dukascopy 2023-2024 C2 row certification. Use the frozen HYP-044 result as provisional source-native evidence and the completed Rakuten MT4 replay as deployment-environment diagnostic evidence.",
+    "silent_mixing_performed": false
+  },
+  "rakuten_actual_2023_2024": {
+    "trades": 2386,
+    "net_jpy": 70455,
+    "profit_factor": 1.204625455981784,
+    "source_row_parity": false,
+    "absolute_profitability": true
+  },
+  "rakuten_actual_2025H1": {
+    "trades": 609,
+    "net_jpy": 609,
+    "profit_factor": 1.0056675942039774,
+    "aggregate_economic_parity": true,
+    "strategy_economic_parity": true
+  },
+  "final_authority_status": "PARTIAL_LATEST_LINEAGE_RECONCILIATION_NOT_CERTIFIED",
+  "2025H2_accessed": false
+}
