@@ -1,0 +1,35 @@
+{
+  "schema_version": "usdjpy_hyp044_research_release_inventory_v6",
+  "tag_name": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1",
+  "release_id": 362805909,
+  "target_commitish": "research/usdjpy-hyp044-integrated-profitability-stabilization-v1",
+  "assets": [
+    {
+      "id": 496119748,
+      "name": "publication-receipt.json",
+      "label": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1-publication-receipt.json",
+      "size": 1423,
+      "state": "uploaded",
+      "digest": "sha256:433cf9a0a65b4c86507bc7e72d288abe50c0edc75df904b79dcdec23c630ace5",
+      "content_type": "application/json",
+      "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/496119748",
+      "browser_download_url": "https://github.com/mitsuru93/usdjpyea-research/releases/download/usdjpy-hyp044-integrated-profitability-stabilization-research-v1/publication-receipt.json",
+      "created_at": "2026-07-31T02:18:02Z",
+      "updated_at": "2026-07-31T02:18:02Z"
+    },
+    {
+      "id": 496113218,
+      "name": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip",
+      "label": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip",
+      "size": 432070,
+      "state": "uploaded",
+      "digest": "sha256:85688dc48fb82941e30dbb07df929e2c99ba68c7d126eec75113dea154789462",
+      "content_type": "application/zip",
+      "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/496113218",
+      "browser_download_url": "https://github.com/mitsuru93/usdjpyea-research/releases/download/usdjpy-hyp044-integrated-profitability-stabilization-research-v1/usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip",
+      "created_at": "2026-07-31T02:09:37Z",
+      "updated_at": "2026-07-31T02:09:37Z"
+    }
+  ],
+  "2025H2_accessed": false
+}
