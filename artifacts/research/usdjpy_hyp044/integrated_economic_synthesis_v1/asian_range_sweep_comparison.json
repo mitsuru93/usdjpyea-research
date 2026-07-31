@@ -1,0 +1,53 @@
+{
+  "schema_version": "usdjpy_hyp044_asian_range_sweep_comparison_v1",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "selected_candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+  "comparison_constituent": "USDJPY-HYP-040 / A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+  "status": "PASS_DD_HEDGE_COMPARISON_COMPLETED",
+  "additive_path_validation": {
+    "immutable_hyp040_common_timestamps": 12259,
+    "pass": true,
+    "maximum_balance_difference_jpy": 0.0,
+    "maximum_equity_difference_jpy": 0.0,
+    "maximum_free_margin_difference_jpy": 1.4551915228366852e-11,
+    "maximum_margin_difference_jpy": 7.275957614183426e-12,
+    "maximum_open_order_difference": 0
+  },
+  "economics": {
+    "selected_B0": {"trades": 609, "net_jpy": 609.0, "profit_factor": 1.0056675942039774},
+    "ARS40": {"trades": 140, "net_jpy": -23.0, "profit_factor": 0.9988961412939144},
+    "B0_plus_ARS40": {"trades": 749, "net_jpy": 586.0, "profit_factor": 1.0045678117375614},
+    "net_change_jpy": -23.0
+  },
+  "risk": {
+    "selected_B0_full_equity_dd_jpy": 26756.0,
+    "B0_plus_ARS40_full_equity_dd_jpy": 21946.0,
+    "dd_improvement_jpy": 4810.0,
+    "dd_improvement_pct": 17.977276124981312,
+    "combined_minimum_equity_jpy": 78054.0,
+    "combined_minimum_free_margin_jpy": 38471.52,
+    "combined_minimum_margin_level_pct": 183.38633549850357,
+    "combined_maximum_open_orders": 8,
+    "combined_maximum_open_lots": 0.08,
+    "combined_stopout_breached": false
+  },
+  "correlation": {
+    "daily_close_pl": -0.1624927488360979,
+    "weekly_close_pl": -0.4995464076348015
+  },
+  "governance": {
+    "HYP040_formal_decision": "FAIL_RAKUTEN_2023_2024_PORTABILITY_WITH_2025H1_VALIDATION_COMPLETED",
+    "HYP040_common_portfolio_authorized_constituent": false,
+    "same_identity_rescue_or_retune_prohibited": true,
+    "HYP040_formal_decision_changed": false,
+    "candidate_rule_changed": false
+  },
+  "decision": "REJECT_ASIAN_RANGE_SWEEP_DIAGNOSTIC_ONLY_NO_AUTHORIZED_CONSTITUENT_AND_NET_WORSENS",
+  "adopted": false,
+  "selected_production_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
+  "reason": "ARS40 provides measurable DD and correlation benefit, but it reduces 2025H1 net by JPY 23 and is not an authorized constituent after its formal Rakuten portability failure. The DD benefit is retained only as mechanism evidence.",
+  "source_run_id": 30594512568,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
