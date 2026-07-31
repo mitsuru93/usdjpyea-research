@@ -1,0 +1,19 @@
+{
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "authority_count": 301,
+  "candidate_outcome_computed": false,
+  "core_source_sha": "cd0cfcdb72bc71c13be7e639d9de48d8e31dff3a",
+  "decision": "PARTIAL_FX2_ENVIRONMENT_CONSOLIDATION_WITH_REMAINING_LEGACY_WORKFLOWS",
+  "live_authorized": false,
+  "mandatory_retention_count": 34,
+  "missing_authority_type_count": 5,
+  "production_authorized": false,
+  "protected_period_accessed": false,
+  "reason": "Canonical infrastructure, authority catalog, retention contract, deterministic publication and remote readback are operational. Legacy workflows, five missing authority types and unbound post-recovery neutral-smoke receipts remain explicit.",
+  "research_authority_sha": "eb033fffadafc2dceca39bf2221c71881ff38900",
+  "runtime_status": "PARTIAL_FX2_ENVIRONMENT_CONSOLIDATION_WITH_TECHNICAL_RUNTIME_GAPS",
+  "schema_version": "fx2_environment_final_decision_v1",
+  "strategy_rule_changed": false,
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001"
+}

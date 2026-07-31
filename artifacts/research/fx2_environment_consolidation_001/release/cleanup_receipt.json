@@ -1,0 +1,16 @@
+{
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "candidate_outcome_computed": false,
+  "ephemeral_workspace_cleanup": "AUTOMATIC_AFTER_JOB",
+  "live_authorized": false,
+  "lock_release_required": false,
+  "production_authorized": false,
+  "protected_period_accessed": false,
+  "remote_readback_completed": true,
+  "schema_version": "fx2_cleanup_receipt_v1",
+  "status": "PASS",
+  "strategy_rule_changed": false,
+  "temporary_workflow_cleanup_pending": true,
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001"
+}
