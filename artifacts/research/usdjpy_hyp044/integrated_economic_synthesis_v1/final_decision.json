@@ -1,15 +1,102 @@
 {
+  "schema_version": "usdjpy_hyp044_final_decision_v2",
+  "hypothesis_id": "USDJPY-HYP-044",
   "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
-  "decision": "PASS_ECONOMIC_CONFIGURATION_PENDING_FINAL_RAKUTEN_EXECUTION_QUALIFICATION",
-  "economic_conditions": {
-    "2020_2024_pooled_net_positive": true,
-    "2025H1_PF_above_1": true,
-    "2025H1_net_positive": true
+  "selected_production_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
+  "rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
+  "decision": "PASS_PRODUCTION_CONFIGURATION_SELECTION_WITH_LIMITATIONS_AND_LIVE_AUTHORIZATION_WITHHELD",
+  "decision_basis": {
+    "period_role_compliance": {
+      "2020_2022": "ANALYSIS_PERIOD",
+      "2023_2024": "RESEARCH_CANDIDATE_PERIOD",
+      "2025H1": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT",
+      "2025H2": "PROHIBITED_NOT_ACCESSED"
+    },
+    "economics": {
+      "2020_2022_source_native": {
+        "trades": 3625,
+        "gross_profit_jpy": 412940.0,
+        "gross_loss_jpy": -390241.0,
+        "net_jpy": 22699.0,
+        "profit_factor": 1.058166620114239,
+        "full_equity_drawdown_jpy": 39650.0
+      },
+      "2023_2024_rakuten_mt4": {
+        "trades": 2386,
+        "gross_profit_jpy": 414767.0,
+        "gross_loss_jpy": -344312.0,
+        "net_jpy": 70455.0,
+        "profit_factor": 1.204625455981784,
+        "full_equity_drawdown_jpy": 27206.0
+      },
+      "2025H1_rakuten_mt4": {
+        "trades": 609,
+        "gross_profit_jpy": 108062.0,
+        "gross_loss_jpy": -107453.0,
+        "net_jpy": 609.0,
+        "profit_factor": 1.0056675942039774,
+        "full_equity_drawdown_jpy": 26756.0
+      },
+      "2020_2025H1_pooled_mixed_authority": {
+        "trades": 6620,
+        "gross_profit_jpy": 935769.0,
+        "gross_loss_jpy": -842006.0,
+        "net_jpy": 93763.0,
+        "profit_factor": 1.1113566886696769
+      }
+    },
+    "technical": {
+      "metaeditor_compile": "PASS_ZERO_ERRORS_ZERO_WARNINGS",
+      "research_core_rule_contract": "PASS",
+      "core_mt4_2025H1_economic_and_execution_parity": "PASS_WITH_ONE_EXPLAINED_SP39_FIRST_EXECUTABLE_TICK_TIMESTAMP_DIFFERENCE",
+      "rakuten_2023_2024_absolute_profitability": "PASS",
+      "rakuten_2023_2024_full_source_row_parity": "FAIL_RETAINED_AS_KNOWN_SOURCE_PORTABILITY_LIMITATION",
+      "f05_c2_exact_60s": "PASS_148_OF_148_2023_2024_AND_56_OF_56_2025H1",
+      "duplicate_prevention": "PASS",
+      "restart_restoration_compile_audit": "PASS",
+      "stopout": "NO_BREACH_ALL_REQUIRED_PERIODS"
+    },
+    "asian_range_sweep": {
+      "comparison_completed": true,
+      "adopted": false,
+      "selected_B0_net_jpy": 609.0,
+      "combined_net_jpy": 586.0,
+      "net_change_jpy": -23.0,
+      "selected_B0_dd_jpy": 26756.0,
+      "combined_dd_jpy": 21946.0,
+      "dd_improvement_jpy": 4810.0,
+      "dd_improvement_pct": 17.977276124981312,
+      "decision": "REJECT_ASIAN_RANGE_SWEEP_DIAGNOSTIC_ONLY_NO_AUTHORIZED_CONSTITUENT_AND_NET_WORSENS"
+    }
   },
-  "live_authorized": false,
-  "production_authorized": false,
-  "technical_conditions": {
-    "Core_MT4_parity": "PENDING",
-    "selected_Rakuten_execution": "PENDING"
-  }
+  "preregistered_success_conditions": {
+    "2025H1_net_above_zero": true,
+    "2025H1_profit_factor_above_one": true,
+    "2020_2024_pooled_net_positive": true,
+    "core_mt4_parity_pass_or_explained_executable": true,
+    "rakuten_portability_pass_or_explained_executable": true
+  },
+  "limitations": [
+    "2025H1 is a known-outcome validation reassessment, not an untouched external validation period.",
+    "2025H1 margin above zero is only JPY 609 and PF 1.005667594; the edge is economically thin.",
+    "F05 remains negative JPY 7,522 and LONG remains negative JPY 7,155 in 2025H1.",
+    "2021 remains negative JPY 1,190 in source-native analysis.",
+    "2023-2024 Rakuten MT4 is profitable but full source-row parity versus event replay is not achieved.",
+    "Asian Range Sweep improves DD but worsens net and is not an authorized constituent.",
+    "2025H2 and any later unseen forward period were not accessed."
+  ],
+  "authorization": {
+    "software_release_authorized": true,
+    "production_configuration_selected": true,
+    "production_authorized": false,
+    "live_authorized": false,
+    "forward_authorization_requirement": "Independent unseen forward/Rakuten evidence and explicit capital-risk approval are required before live deployment."
+  },
+  "release_publication": {
+    "core_release": "PENDING_BYTE_IDENTICAL_READBACK",
+    "research_release": "PENDING_BYTE_IDENTICAL_READBACK"
+  },
+  "formal_prior_hypothesis_decisions_changed": false,
+  "candidate_rule_changed_after_2025H1": false,
+  "2025H2_accessed": false
 }
