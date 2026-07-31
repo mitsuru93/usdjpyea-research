@@ -5,30 +5,30 @@
   "target_commitish": "research/usdjpy-hyp044-integrated-profitability-stabilization-v1",
   "assets": [
     {
-      "id": 496119748,
+      "id": 496121682,
       "name": "publication-receipt.json",
       "label": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1-publication-receipt.json",
       "size": 1423,
       "state": "uploaded",
-      "digest": "sha256:433cf9a0a65b4c86507bc7e72d288abe50c0edc75df904b79dcdec23c630ace5",
+      "digest": "sha256:7ecf54c240feac1c8602652843defd05d50bf19a7814a8be18c9b3a4b4312260",
       "content_type": "application/json",
-      "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/496119748",
+      "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/496121682",
       "browser_download_url": "https://github.com/mitsuru93/usdjpyea-research/releases/download/usdjpy-hyp044-integrated-profitability-stabilization-research-v1/publication-receipt.json",
-      "created_at": "2026-07-31T02:18:02Z",
-      "updated_at": "2026-07-31T02:18:02Z"
+      "created_at": "2026-07-31T02:21:06Z",
+      "updated_at": "2026-07-31T02:21:06Z"
     },
     {
-      "id": 496113218,
+      "id": 496121669,
       "name": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip",
       "label": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip",
-      "size": 432070,
+      "size": 432927,
       "state": "uploaded",
-      "digest": "sha256:85688dc48fb82941e30dbb07df929e2c99ba68c7d126eec75113dea154789462",
+      "digest": "sha256:0d78c9ce4a1ade3204eeda72cb394d3460c46312b78f6ec1b5d39edd016f8135",
       "content_type": "application/zip",
-      "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/496113218",
+      "url": "https://api.github.com/repos/mitsuru93/usdjpyea-research/releases/assets/496121669",
       "browser_download_url": "https://github.com/mitsuru93/usdjpyea-research/releases/download/usdjpy-hyp044-integrated-profitability-stabilization-research-v1/usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip",
-      "created_at": "2026-07-31T02:09:37Z",
-      "updated_at": "2026-07-31T02:09:37Z"
+      "created_at": "2026-07-31T02:21:05Z",
+      "updated_at": "2026-07-31T02:21:05Z"
     }
   ],
   "2025H2_accessed": false
