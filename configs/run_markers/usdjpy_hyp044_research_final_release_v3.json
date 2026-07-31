@@ -1,0 +1,9 @@
+{
+  "schema_version": "usdjpy_hyp044_research_final_release_trigger_v3",
+  "authority_branch": "research/usdjpy-hyp044-integrated-profitability-stabilization-v1",
+  "final_decision_schema": "usdjpy_hyp044_final_decision_v4",
+  "release_manifest_schema": "usdjpy_hyp044_integrated_release_manifest_v4",
+  "archive_identity_contract": "EXTERNALIZED_TO_CO_RELEASED_PUBLICATION_RECEIPT_TO_AVOID_SELF_REFERENCE",
+  "attempt": 1,
+  "2025H2_accessed": false
+}
