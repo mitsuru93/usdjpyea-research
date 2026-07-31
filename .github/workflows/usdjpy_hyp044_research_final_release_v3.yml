@@ -157,6 +157,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
+          fetch_release_json() {
+            local out="$1"
+            for attempt in $(seq 1 20); do
+              if gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" > "$out" 2>/dev/null; then
+                return 0
+              fi
+              sleep 2
+            done
+            echo "Release metadata unavailable after retries" >&2
+            return 1
+          }
+
           if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$AUTHORITY_BRANCH" \
               --title 'USDJPY HYP-044 Research Final Closure v1' \
@@ -168,10 +181,12 @@ jobs:
           fi
 
           gh release upload "$TAG" "$RELEASE_ARCHIVE#$ARCHIVE_NAME" --repo "$GITHUB_REPOSITORY" --clobber
-          RELEASE_JSON=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG")
+          fetch_release_json "$RELEASE_ROOT/release-after-archive.json"
+          RELEASE_JSON=$(cat "$RELEASE_ROOT/release-after-archive.json")
           RELEASE_ID=$(jq -r '.id' <<<"$RELEASE_JSON")
           ARCHIVE_ASSET_ID=$(jq -r --arg n "$ARCHIVE_NAME" '.assets[]|select(.name==$n)|.id' <<<"$RELEASE_JSON")
           ARCHIVE_BYTES=$(jq -r --arg n "$ARCHIVE_NAME" '.assets[]|select(.name==$n)|.size' <<<"$RELEASE_JSON")
+          test -n "$ARCHIVE_ASSET_ID" && test "$ARCHIVE_ASSET_ID" != "null"
           gh api -H 'Accept: application/octet-stream' \
             "repos/$GITHUB_REPOSITORY/releases/assets/$ARCHIVE_ASSET_ID" \
             > "$RELEASE_ROOT/archive-remote-readback.zip"
@@ -214,9 +229,11 @@ jobs:
             }' > "$RELEASE_ROOT/publication-receipt.json"
 
           gh release upload "$TAG" "$RELEASE_ROOT/publication-receipt.json#$RECEIPT_NAME" --repo "$GITHUB_REPOSITORY" --clobber
-          RELEASE_JSON=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG")
+          fetch_release_json "$RELEASE_ROOT/release-after-receipt.json"
+          RELEASE_JSON=$(cat "$RELEASE_ROOT/release-after-receipt.json")
           RECEIPT_ASSET_ID=$(jq -r --arg n "$RECEIPT_NAME" '.assets[]|select(.name==$n)|.id' <<<"$RELEASE_JSON")
           RECEIPT_BYTES=$(jq -r --arg n "$RECEIPT_NAME" '.assets[]|select(.name==$n)|.size' <<<"$RELEASE_JSON")
+          test -n "$RECEIPT_ASSET_ID" && test "$RECEIPT_ASSET_ID" != "null"
           RECEIPT_LOCAL_SHA=$(sha256sum "$RELEASE_ROOT/publication-receipt.json" | awk '{print $1}')
           gh api -H 'Accept: application/octet-stream' \
             "repos/$GITHUB_REPOSITORY/releases/assets/$RECEIPT_ASSET_ID" \
@@ -240,7 +257,7 @@ jobs:
 
           PATH_IN_REPO='artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/remote_readback_receipt.json'
           CONTENT=$(base64 -w0 "$RELEASE_ROOT/repository-receipt.json")
-          OLD_SHA=$(gh api "repos/$GITHUB_REPOSITORY/contents/$PATH_IN_REPO?ref=$AUTHORITY_BRANCH" --jq .sha 2>/dev/null || true)
+          OLD_SHA=$(gh api "repos/$GITHUB_REPOSITORY/contents/$PATH_IN_REPO?ref=$AUTHORITY_BRANCH" --jq .sha)
           gh api --method PUT "repos/$GITHUB_REPOSITORY/contents/$PATH_IN_REPO" \
             -f message='release(hyp044): bind final Research publication receipt v3' \
             -f content="$CONTENT" -f branch="$AUTHORITY_BRANCH" -f sha="$OLD_SHA" >/dev/null
