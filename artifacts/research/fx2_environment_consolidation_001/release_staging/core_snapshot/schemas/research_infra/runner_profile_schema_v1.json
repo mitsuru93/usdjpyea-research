@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fx2.local/schemas/runner_profile_v1.json",
+  "title": "FX2 Runner Profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "runner_id", "runner_class", "terminal_id",
+    "terminal_path", "metaeditor_path", "mt4_data_dir", "history_dir",
+    "portable_work_root", "lock_root", "evidence_root"
+  ],
+  "properties": {
+    "schema_version": {"const": "fx2_runner_profile_v1"},
+    "runner_id": {"type": "string", "minLength": 1},
+    "runner_class": {"enum": ["service", "interactive"]},
+    "terminal_id": {"type": "string", "minLength": 1},
+    "terminal_path": {"type": "string", "pattern": "^[A-Za-z]:\\\\"},
+    "metaeditor_path": {"type": "string", "pattern": "^[A-Za-z]:\\\\"},
+    "mt4_data_dir": {"type": "string", "pattern": "^[A-Za-z]:\\\\"},
+    "history_dir": {"type": "string", "pattern": "^[A-Za-z]:\\\\"},
+    "portable_work_root": {"type": "string", "pattern": "^[A-Za-z]:\\\\"},
+    "lock_root": {"type": "string", "pattern": "^[A-Za-z]:\\\\"},
+    "evidence_root": {"type": "string", "pattern": "^[A-Za-z]:\\\\"},
+    "scheduled_task_name": {"type": ["string", "null"]},
+    "smoke_ea_relative_path": {"type": "string"}
+  }
+}
