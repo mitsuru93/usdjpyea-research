@@ -1,5 +1,5 @@
 {
-  "schema_version": "usdjpy_hyp044_integrated_release_manifest_v3",
+  "schema_version": "usdjpy_hyp044_integrated_release_manifest_v4",
   "hypothesis_id": "USDJPY-HYP-044",
   "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
   "selected_production_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
@@ -58,16 +58,25 @@
   },
   "research_release": {
     "tag": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1",
-    "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
-    "release_id": 362805909,
-    "asset_id": 496089104,
-    "asset_bytes": 430650,
-    "sha256": "9314416b4bae4bde628de5b8d5c356dc5ae47fc608d6e73bd745e5993b75e935"
+    "status": "FINAL_ARCHIVE_IDENTITY_EXTERNALIZED_TO_CO_RELEASED_PUBLICATION_RECEIPT",
+    "archive_asset_name": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip",
+    "publication_receipt_asset_name": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1-publication-receipt.json",
+    "identity_contract": "Final archive identity is recorded outside the archive to avoid a self-referential digest."
   },
+  "co_released_publication_receipt_required_fields": [
+    "authority_commit_sha",
+    "release_id",
+    "archive_asset_id",
+    "archive_asset_bytes",
+    "archive_local_sha256",
+    "archive_remote_sha256",
+    "archive_byte_identical_readback",
+    "receipt_asset_name"
+  ],
   "software_release_authorized": true,
   "production_configuration_selected": true,
   "production_authorized": false,
   "live_authorized": false,
   "2025H2_accessed": false,
-  "status": "PASS_FINAL_RELEASES_AND_REMOTE_READBACK_COMPLETE"
+  "status": "PASS_FINAL_DECISION_AND_NON_SELF_REFERENTIAL_PUBLICATION_CONTRACT_FIXED"
 }
