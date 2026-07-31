@@ -226,8 +226,8 @@
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/core_mt4_parity.json",
-      "bytes": 2027,
-      "sha256": "4b17cdc91f6c32c5a3624a9d6ba751aab948eb051a43eb90e325ec646a103cf7"
+      "bytes": 64,
+      "sha256": "923ab5b32f93189da90d6bf9a2f83d72be32dfe9f4e398f64ebeb2032c5c356f"
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/current_best_portfolio_replay.json",
@@ -306,8 +306,8 @@
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/research_core_parity.json",
-      "bytes": 84,
-      "sha256": "bea55275f8c7eb684822b0bf4e78f0899858faacc72822ae4a6a2fd0251dc717"
+      "bytes": 1001,
+      "sha256": "c1059caec893abde34bb4d95994319a67e719c1532e741a48828c308d7571ffa"
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/residual_loss_decomposition.json",
