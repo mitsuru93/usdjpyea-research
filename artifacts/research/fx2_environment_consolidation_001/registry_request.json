@@ -1,0 +1,14 @@
+{
+  "schema_version": "fx2_authority_registry_request_v1",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "publisher_source_sha": "b1bb6b940e51d83cbc1e239d6f71ae7a403e116c",
+  "mode": "METADATA_ONLY",
+  "result_binding_pr_required": true,
+  "candidate_outcome_computed": false,
+  "strategy_rule_changed": false,
+  "protected_period_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
