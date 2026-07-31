@@ -1,0 +1,43 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v49",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v48.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v48.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-045",
+      "name": "B0_CROSS_REGIME_LOSS_MONTH_AND_LOSS_QUARTER_STABILITY_IMPROVEMENT",
+      "title": "USDJPY 2020–2025H1 B0 Cross-Regime Loss-Month and Loss-Quarter Stability Improvement Study",
+      "work_id": "USDJPY-B0-CROSS-REGIME-STABILITY-IMPROVEMENT-001",
+      "status": "ACTIVE_RESEARCH",
+      "research_branch": "research/usdjpy-b0-cross-regime-stability-improvement-v1",
+      "core_branch": "research/usdjpy-b0-cross-regime-stability-improvement-v1",
+      "formal_parent_hypotheses_reopened": false,
+      "primary_reference_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
+      "primary_reference_rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
+      "primary_objective": "Improve recurring loss-month, loss-quarter, rolling-loss and drawdown stability from 2020 onward without replacing the current B0 architecture or overfitting 2025H1.",
+      "period_roles": {
+        "2020_2024": "ANALYSIS_CAUSE_DECOMPOSITION_CANDIDATE_CONSTRUCTION_AND_SELECTION",
+        "2025H1": "VALIDATION_AFTER_CANDIDATE_FREEZE",
+        "2025H2": "PROHIBITED_NOT_ACCESSED"
+      },
+      "candidate_catalog_limits": {
+        "round_a_max": 5,
+        "round_b_max": 3
+      },
+      "selection_rule": "KEEP_CURRENT_B0_UNLESS_A_FINITE_CANDIDATE_IS_MATERIALLY_SUPERIOR_ON_2020_2024_AND_REMAINS_POSITIVE_WITH_PF_ABOVE_1_IN_2025H1",
+      "authority_limitation": {
+        "latest_binding_f05_trades": 1464,
+        "retained_row_certified_f05_c2_trades": 1451,
+        "unresolved_difference": 13,
+        "synthetic_reconstruction_permitted": false
+      },
+      "2025H2_accessed": false,
+      "production_authorized": false,
+      "live_authorized": false
+    }
+  ],
+  "hypothesis_status_updates": []
+}
