@@ -1,7 +1,8 @@
 {
-  "schema_version": "usdjpy_hyp044_full_equity_metrics_v2",
+  "schema_version": "usdjpy_hyp044_full_equity_metrics_v3",
   "hypothesis_id": "USDJPY-HYP-044",
   "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+  "selected_production_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
   "status": "PASS_FULL_EQUITY_NO_STOPOUT_ALL_REQUIRED_PERIODS",
   "periods": {
     "2020_2022": {
@@ -55,7 +56,26 @@
       "stopout_breached": false
     }
   },
-  "asian_range_sweep_dd_hedge_comparison": "PENDING_LOCAL_PATH_REPLAY",
+  "asian_range_sweep_dd_hedge_comparison": {
+    "status": "PASS_DD_HEDGE_COMPARISON_COMPLETED",
+    "adopted": false,
+    "selected_B0_net_jpy": 609.0,
+    "combined_net_jpy": 586.0,
+    "net_change_jpy": -23.0,
+    "selected_B0_full_equity_dd_jpy": 26756.0,
+    "combined_full_equity_dd_jpy": 21946.0,
+    "dd_improvement_jpy": 4810.0,
+    "dd_improvement_pct": 17.977276124981312,
+    "combined_minimum_equity_jpy": 78054.0,
+    "combined_minimum_free_margin_jpy": 38471.52,
+    "combined_minimum_margin_level_pct": 183.38633549850357,
+    "combined_maximum_open_orders": 8,
+    "combined_maximum_open_lots": 0.08,
+    "combined_stopout_breached": false,
+    "decision": "REJECT_ASIAN_RANGE_SWEEP_DIAGNOSTIC_ONLY_NO_AUTHORIZED_CONSTITUENT_AND_NET_WORSENS"
+  },
   "2025H2_accessed": false,
+  "software_release_authorized": true,
+  "production_authorized": false,
   "live_authorized": false
 }
