@@ -1,127 +1,13 @@
 name: USDJPY HYP-044 Research Final Release v1
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [main]
-    paths:
-      - '.github/workflows/usdjpy_hyp044_research_final_release_v1.yml'
-      - 'configs/run_markers/usdjpy_hyp044_research_final_release_v1.json'
+  workflow_dispatch:
 
 permissions:
-  contents: write
-  issues: write
+  contents: read
 
 jobs:
-  publish:
-    runs-on: [self-hosted, Windows, X64]
-    timeout-minutes: 120
-    env:
-      AUTHORITY_BRANCH: research/usdjpy-hyp044-integrated-profitability-stabilization-v1
-      TAG: usdjpy-hyp044-integrated-profitability-stabilization-research-v1
-      ASSET_NAME: usdjpy-hyp044-integrated-profitability-stabilization-research-v1.zip
+  retired:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-      - name: Materialize authority branch and build deterministic package
-        shell: powershell
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          $ErrorActionPreference='Stop'
-          $root="C:\h44-research-release-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-          Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
-          $srcDir=Join-Path $root 'src';$stage=Join-Path $root 'stage'
-          New-Item -ItemType Directory -Force -Path $srcDir,$stage|Out-Null
-          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28';'User-Agent'='FX2-HYP044-RESEARCH-RELEASE'}
-          $zip=Join-Path $root 'source.zip'
-          Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/zipball/$env:AUTHORITY_BRANCH" -OutFile $zip -UseBasicParsing
-          & tar.exe -xf $zip -C $srcDir;if($LASTEXITCODE-ne0){throw 'authority extraction failed'}
-          $src=(Get-ChildItem $srcDir -Directory|Select-Object -First 1).FullName
-          $copies=@(
-            'configs\research\usdjpy_hyp044_preregistration_v1.json',
-            'configs\research\usdjpy_hyp044_candidate_catalog_round_a_v1.json',
-            'configs\research\usdjpy_hyp044_candidate_catalog_round_b_v1.json',
-            'configs\research\usdjpy_hyp044_candidate_freeze_receipt_round_b_v1.json',
-            'configs\research\usdjpy_hyp044_candidate_rule_contracts_v1.json',
-            'configs\research\usdjpy_hyp044_period_role_receipt_v1.json',
-            'configs\research\usdjpy_hyp044_work_manifest_v1.json',
-            'artifacts\research\usdjpy_hyp044\integrated_economic_synthesis_v1',
-            'artifacts\research\usdjpy_hyp044\round_b_source_native_2020_2022_v1',
-            'artifacts\research\usdjpy_hyp044\source_native_full_equity_v2',
-            'artifacts\research\usdjpy_hyp044\source_native_ledger_tieout_v1.json'
-          )
-          foreach($rel in $copies){
-            $from=Join-Path $src $rel
-            if(-not(Test-Path $from)){throw "required research authority missing: $rel"}
-            $to=Join-Path $stage $rel
-            New-Item -ItemType Directory -Force -Path (Split-Path $to)|Out-Null
-            if(Test-Path $from -PathType Container){Copy-Item $from $to -Recurse -Force}else{Copy-Item $from $to -Force}
-          }
-          $final=Get-Content (Join-Path $stage 'artifacts\research\usdjpy_hyp044\integrated_economic_synthesis_v1\final_decision.json') -Raw|ConvertFrom-Json
-          $ars=Get-Content (Join-Path $stage 'artifacts\research\usdjpy_hyp044\integrated_economic_synthesis_v1\asian_range_sweep_comparison.json') -Raw|ConvertFrom-Json
-          if($final.decision-ne'PASS_PRODUCTION_CONFIGURATION_SELECTION_WITH_LIMITATIONS_AND_LIVE_AUTHORIZATION_WITHHELD'){throw "final decision not closed: $($final.decision)"}
-          if(-not$final.software_release_authorized-or$final.production_authorized-or$final.live_authorized){throw 'authorization split invalid'}
-          if($ars.adopted){throw 'Asian Range Sweep must be excluded'}
-          $manifest=[ordered]@{
-            schema_version='usdjpy_hyp044_research_release_manifest_v1'
-            hypothesis_id='USDJPY-HYP-044'
-            candidate_id='B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2'
-            decision=$final.decision
-            software_release_authorized=$true
-            production_configuration_selected=$true
-            production_authorized=$false
-            live_authorized=$false
-            asian_range_sweep_adopted=$false
-            authority_branch=$env:AUTHORITY_BRANCH
-            '2025H2_accessed'=$false
-          }
-          $manifest|ConvertTo-Json -Depth 10|Set-Content (Join-Path $stage 'RELEASE_MANIFEST.json') -Encoding UTF8
-          $script=Join-Path $root 'package.py'
-          @'
-          import hashlib, os, pathlib, zipfile
-          stage=pathlib.Path(os.environ['STAGE']); archive=pathlib.Path(os.environ['ARCHIVE'])
-          files=sorted(p for p in stage.rglob('*') if p.is_file())
-          (stage/'PACKAGE_SHA256SUMS').write_text('\n'.join(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.relative_to(stage).as_posix()}" for p in files)+'\n',encoding='utf-8')
-          files=sorted(p for p in stage.rglob('*') if p.is_file())
-          with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
-              for p in files:
-                  info=zipfile.ZipInfo(p.relative_to(stage).as_posix(),date_time=(1980,1,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o644<<16
-                  z.writestr(info,p.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
-          print(hashlib.sha256(archive.read_bytes()).hexdigest())
-          '@|Set-Content $script -Encoding UTF8
-          $archive=Join-Path $root $env:ASSET_NAME;$env:STAGE=$stage;$env:ARCHIVE=$archive
-          $archiveSha=(python $script).Trim();if($LASTEXITCODE-ne0-or$archiveSha-notmatch'^[0-9a-f]{64}$'){throw 'package build failed'}
-          "H44_RESEARCH_ROOT=$root"|Out-File $env:GITHUB_ENV -Encoding utf8 -Append
-          "H44_RESEARCH_ARCHIVE=$archive"|Out-File $env:GITHUB_ENV -Encoding utf8 -Append
-          "H44_RESEARCH_SHA=$archiveSha"|Out-File $env:GITHUB_ENV -Encoding utf8 -Append
-      - name: Publish Research Release and verify remote bytes
-        shell: powershell
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          $ErrorActionPreference='Stop'
-          $apiHeaders=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28';'User-Agent'='FX2-HYP044-RESEARCH-RELEASE'}
-          $assetHeaders=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/octet-stream';'X-GitHub-Api-Version'='2022-11-28';'User-Agent'='FX2-HYP044-RESEARCH-RELEASE'}
-          $release=$null
-          try{$release=Invoke-RestMethod -Headers $apiHeaders -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/releases/tags/$env:TAG"}catch{
-            if($_.Exception.Response.StatusCode.value__-ne404){throw}
-            $body=@{tag_name=$env:TAG;target_commitish=$env:AUTHORITY_BRANCH;name='USDJPY HYP-044 Research Final Closure v1';body='Final HYP-044 research archive. Selected B0 without ARS40. Software release authorized; production/live authorization withheld. 2025H2 was not accessed.';draft=$false;prerelease=$false}|ConvertTo-Json
-            $release=Invoke-RestMethod -Method Post -Headers $apiHeaders -ContentType 'application/json' -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/releases" -Body $body
-          }
-          foreach($old in @($release.assets|Where-Object{$_.name-eq$env:ASSET_NAME})){Invoke-RestMethod -Method Delete -Headers $apiHeaders -Uri $old.url|Out-Null}
-          $uploadBase=($release.upload_url-replace'\{\?name,label\}$','')
-          $asset=Invoke-RestMethod -Method Post -Headers $apiHeaders -ContentType 'application/zip' -InFile $env:H44_RESEARCH_ARCHIVE -Uri ($uploadBase+'?name='+[uri]::EscapeDataString($env:ASSET_NAME))
-          $remote=Join-Path $env:H44_RESEARCH_ROOT 'remote-readback.zip'
-          Invoke-WebRequest -Headers $assetHeaders -Uri $asset.url -OutFile $remote -UseBasicParsing
-          $remoteSha=(Get-FileHash $remote -Algorithm SHA256).Hash.ToLowerInvariant()
-          if($remoteSha-ne$env:H44_RESEARCH_SHA){throw "research readback mismatch local=$env:H44_RESEARCH_SHA remote=$remoteSha"}
-          $receipt=[ordered]@{schema_version='usdjpy_hyp044_research_release_readback_v1';status='PASS_BYTE_IDENTICAL_RELEASE_READBACK';tag=$env:TAG;release_id=[int64]$release.id;asset_id=[int64]$asset.id;asset_name=$asset.name;asset_bytes=[int64]$asset.size;local_sha256=$env:H44_RESEARCH_SHA;remote_sha256=$remoteSha;software_release_authorized=$true;production_authorized=$false;live_authorized=$false;'2025H2_accessed'=$false}
-          $json=$receipt|ConvertTo-Json -Depth 8
-          $branch=$env:AUTHORITY_BRANCH;$path='artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/remote_readback_receipt.json';$uri="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/$path"
-          $sha=$null;try{$old=Invoke-RestMethod -Headers $apiHeaders -Uri ($uri+'?ref='+[uri]::EscapeDataString($branch));$sha=$old.sha}catch{if($_.Exception.Response.StatusCode.value__-ne404){throw}}
-          $payload=@{message='release(hyp044): bind Research byte-identical readback';content=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($json));branch=$branch};if($sha){$payload.sha=$sha}
-          Invoke-RestMethod -Method Put -Headers $apiHeaders -ContentType 'application/json' -Uri $uri -Body ($payload|ConvertTo-Json -Depth 5)|Out-Null
-          $issuePayload=@{title="[HYP044-RESEARCH-FINAL-RELEASE] $env:TAG PASS";body=(@('```json',$json,'```')-join"`n")}|ConvertTo-Json -Depth 5
-          Invoke-RestMethod -Method Post -Headers $apiHeaders -ContentType 'application/json' -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/issues" -Body $issuePayload|Out-Null
+      - run: echo 'Superseded by GitHub-hosted Research Final Release v2.'
