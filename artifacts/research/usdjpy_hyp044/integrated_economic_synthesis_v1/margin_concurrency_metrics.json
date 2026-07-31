@@ -1,56 +1,20 @@
 {
-  "schema_version": "usdjpy_hyp044_margin_concurrency_metrics_v2",
-  "hypothesis_id": "USDJPY-HYP-044",
-  "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
-  "status": "PASS_MARGIN_CONCURRENCY_NO_STOPOUT",
-  "periods": {
-    "2020_2022": {
-      "max_concurrency": 10,
-      "max_same_direction_concurrency": 10,
-      "max_opposite_direction_concurrency": 3,
-      "minimum_free_margin_jpy": 62510.36,
-      "minimum_margin_level_pct": 231.11967639568135,
-      "virtual_leverage": 25.0,
-      "virtual_stopout_level_pct": 100.0,
-      "stopout_breached": false
-    },
-    "2023_2024": {
-      "maximum_open_orders": 9,
-      "maximum_open_lots": 0.09,
-      "minimum_free_margin_jpy": 36978.16,
-      "minimum_margin_level_pct": 177.6985,
-      "trough_open_orders": 4,
-      "trough_open_lots": 0.04,
-      "trough_margin_jpy": 23974.64,
-      "trough_free_margin_jpy": 54196.36,
-      "stopout_breached": false
-    },
-    "2025H1": {
-      "maximum_open_orders": 7,
-      "maximum_open_lots": 0.07,
-      "minimum_free_margin_jpy": 39506.54,
-      "minimum_margin_level_pct": 197.9012,
-      "trough_open_orders": 4,
-      "trough_open_lots": 0.04,
-      "trough_margin_jpy": 22870.96,
-      "trough_free_margin_jpy": 50438.04,
-      "stopout_breached": false
-    }
+  "2020_2022": {
+    "ending_balance_jpy": 122699.00000000071,
+    "full_equity_drawdown_jpy": 39650.00000000003,
+    "max_concurrency": 10,
+    "max_opposite_direction_concurrency": 3,
+    "max_same_direction_concurrency": 10,
+    "minimum_equity_jpy": 97316.00000000003,
+    "minimum_free_margin_jpy": 62510.359999999986,
+    "minimum_margin_level_pct": 231.11967639568135,
+    "peak": 155446.00000000081,
+    "stopout_breached": false,
+    "tick_count": 78737040,
+    "virtual_leverage": 25.0,
+    "virtual_stopout_level_pct": 100.0
   },
-  "duplicate_prevention": {
-    "duplicate_open_tickets_2023_2024": 0,
-    "duplicate_close_tickets_2023_2024": 0,
-    "duplicate_open_tickets_2025H1": 0,
-    "duplicate_close_tickets_2025H1": 0,
-    "status": "PASS"
-  },
-  "restart_restoration": {
-    "state_arrays_explicitly_initialized": true,
-    "compile_warnings": 0,
-    "state_reconstruction_contract_present": true,
-    "status": "PASS_IMPLEMENTATION_AND_COMPILE_AUDIT"
-  },
-  "asian_range_sweep_combined_concurrency": "PENDING_LOCAL_PATH_REPLAY",
-  "2025H2_accessed": false,
-  "live_authorized": false
+  "2023_2025H1": {
+    "status": "PENDING_SELECTED_MT4_MARGIN_CONCURRENCY_REPLAY"
+  }
 }
