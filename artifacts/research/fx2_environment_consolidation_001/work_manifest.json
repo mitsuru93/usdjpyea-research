@@ -1,0 +1,16 @@
+{
+  "schema_version": "fx2_work_manifest_v1",
+  "work_id": "FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001",
+  "formal_name": "FX2_RESEARCH_EXECUTION_ENVIRONMENT_CONSOLIDATION_AND_AUTHORITY_PRESERVATION",
+  "work_type": "INFRASTRUCTURE",
+  "hypothesis_id": null,
+  "research_start_sha": "524232a046f261168851188365f2acf18d35f176",
+  "core_start_sha": "0941c380156686a2e82d094e15a32a8b9afd0a88",
+  "candidate_outcome_computed": false,
+  "strategy_rule_changed": false,
+  "protected_period_accessed": false,
+  "2025H1_accessed": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}
