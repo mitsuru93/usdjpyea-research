@@ -1,0 +1,127 @@
+{
+  "2025H2_accessed": false,
+  "authority": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001",
+  "defect_corrected": "Pandas datetime unit mismatch in v1 searchsorted boundary conversion",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "ledger": {
+    "path": "artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/source_native_trade_ledger_2020_2022.csv",
+    "rows": 6471,
+    "sha256": "776b0f30d81072abcc947113b9c938b351f4699297bcba76bbc7ce7779c37058"
+  },
+  "metrics": {
+    "P0_B02_BASELINE_F05_BASELINE": {
+      "ending_balance_jpy": 121525.00000000052,
+      "full_equity_drawdown_jpy": 46342.00000000019,
+      "maximum_concurrency": 10,
+      "maximum_opposite_direction_concurrency": 3,
+      "maximum_same_direction_concurrency": 10,
+      "minimum_equity_jpy": 97356.00000000001,
+      "minimum_free_margin_jpy": 61357.20000000004,
+      "minimum_margin_level_pct": 238.22053218234416,
+      "net_jpy": 21525.000000000524,
+      "stopout_breached": false,
+      "tick_count": 78737040,
+      "virtual_initial_equity_jpy": 100000.0,
+      "virtual_leverage": 25.0,
+      "virtual_stopout_level_pct": 100.0
+    },
+    "P1_B02_BASELINE_F05_C2": {
+      "ending_balance_jpy": 126000.00000000057,
+      "full_equity_drawdown_jpy": 39961.000000000175,
+      "maximum_concurrency": 10,
+      "maximum_opposite_direction_concurrency": 3,
+      "maximum_same_direction_concurrency": 10,
+      "minimum_equity_jpy": 97356.00000000001,
+      "minimum_free_margin_jpy": 61357.20000000004,
+      "minimum_margin_level_pct": 238.22053218234416,
+      "net_jpy": 26000.000000000568,
+      "stopout_breached": false,
+      "tick_count": 78737040,
+      "virtual_initial_equity_jpy": 100000.0,
+      "virtual_leverage": 25.0,
+      "virtual_stopout_level_pct": 100.0
+    },
+    "P2_B02_C3_F05_BASELINE": {
+      "ending_balance_jpy": 112331.00000000065,
+      "full_equity_drawdown_jpy": 41136.000000000044,
+      "maximum_concurrency": 10,
+      "maximum_opposite_direction_concurrency": 3,
+      "maximum_same_direction_concurrency": 10,
+      "minimum_equity_jpy": 97628.00000000001,
+      "minimum_free_margin_jpy": 62283.0,
+      "minimum_margin_level_pct": 225.33537623425408,
+      "net_jpy": 12331.000000000655,
+      "stopout_breached": false,
+      "tick_count": 78737040,
+      "virtual_initial_equity_jpy": 100000.0,
+      "virtual_leverage": 25.0,
+      "virtual_stopout_level_pct": 100.0
+    },
+    "P3_B02_C3_F05_C2": {
+      "ending_balance_jpy": 116806.00000000064,
+      "full_equity_drawdown_jpy": 35125.00000000012,
+      "maximum_concurrency": 10,
+      "maximum_opposite_direction_concurrency": 3,
+      "maximum_same_direction_concurrency": 10,
+      "minimum_equity_jpy": 97628.00000000001,
+      "minimum_free_margin_jpy": 62283.0,
+      "minimum_margin_level_pct": 224.03132448076403,
+      "net_jpy": 16806.00000000064,
+      "stopout_breached": false,
+      "tick_count": 78737040,
+      "virtual_initial_equity_jpy": 100000.0,
+      "virtual_leverage": 25.0,
+      "virtual_stopout_level_pct": 100.0
+    },
+    "P4_B02_C3_F05_C2_SP39": {
+      "ending_balance_jpy": 113447.00000000074,
+      "full_equity_drawdown_jpy": 38609.000000000015,
+      "maximum_concurrency": 10,
+      "maximum_opposite_direction_concurrency": 3,
+      "maximum_same_direction_concurrency": 10,
+      "minimum_equity_jpy": 97588.00000000003,
+      "minimum_free_margin_jpy": 62475.999999999985,
+      "minimum_margin_level_pct": 217.7766428328241,
+      "net_jpy": 13447.000000000742,
+      "stopout_breached": false,
+      "tick_count": 78737040,
+      "virtual_initial_equity_jpy": 100000.0,
+      "virtual_leverage": 25.0,
+      "virtual_stopout_level_pct": 100.0
+    }
+  },
+  "realized_balance_tieout": {
+    "P0_B02_BASELINE_F05_BASELINE": {
+      "difference_jpy": 7.275957614183426e-12,
+      "expected_ledger_net_jpy": 21525.000000000517,
+      "pass": true,
+      "replayed_net_jpy": 21525.000000000524
+    },
+    "P1_B02_BASELINE_F05_C2": {
+      "difference_jpy": 2.1827872842550278e-11,
+      "expected_ledger_net_jpy": 26000.000000000546,
+      "pass": true,
+      "replayed_net_jpy": 26000.000000000568
+    },
+    "P2_B02_C3_F05_BASELINE": {
+      "difference_jpy": 3.092281986027956e-11,
+      "expected_ledger_net_jpy": 12331.000000000624,
+      "pass": true,
+      "replayed_net_jpy": 12331.000000000655
+    },
+    "P3_B02_C3_F05_C2": {
+      "difference_jpy": -7.275957614183426e-12,
+      "expected_ledger_net_jpy": 16806.000000000648,
+      "pass": true,
+      "replayed_net_jpy": 16806.00000000064
+    },
+    "P4_B02_C3_F05_C2_SP39": {
+      "difference_jpy": 1.4551915228366852e-11,
+      "expected_ledger_net_jpy": 13447.000000000728,
+      "pass": true,
+      "replayed_net_jpy": 13447.000000000742
+    }
+  },
+  "schema_version": "usdjpy_hyp044_source_native_full_equity_v2",
+  "status": "PASS_CORRECTED_TICK_FULL_EQUITY_REPLAY"
+}

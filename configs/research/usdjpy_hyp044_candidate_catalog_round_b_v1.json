@@ -1,0 +1,46 @@
+{
+  "schema_version": "usdjpy_hyp044_candidate_catalog_round_b_v1",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "status": "FROZEN_BEFORE_ROUND_B_2025H1_EXECUTION",
+  "round_a_closure": {
+    "A0_net_jpy": -2131,
+    "A1_net_jpy": -12007,
+    "A2_net_jpy": -514,
+    "A3_net_jpy": -1323,
+    "A4_net_jpy": -293,
+    "positive_candidate_found": false
+  },
+  "round_b_policy": {
+    "maximum_candidates": 3,
+    "actual_candidates": 1,
+    "additional_mechanism_families": 0,
+    "reason": "Round A isolated B02 winner preservation and session-loss persistence independently; Round B combines only those already-attributed mechanisms with unchanged F05 C2 and unchanged SP39.",
+    "no_grid_search": true,
+    "no_threshold_micro_adjustment": true,
+    "no_candidate_rescue": true
+  },
+  "candidates": [
+    {
+      "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+      "parent_architecture": {
+        "B02": "A2_B02_C3_EARLY_GIVEBACK_16BAR",
+        "F05": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+        "third_strategy": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED"
+      },
+      "rule": {
+        "B02": "Apply C3 only when the first profit-to-nonprofit giveback occurs at completed M15 boundary 1 through 16 after Entry; otherwise retain original 48-bar Exit.",
+        "F05": "Use frozen F05 C2 unchanged.",
+        "portfolio_control": "On the B02 A2 plus F05 C2 parent only, process matured closes before entries; reset at each UTC session boundary or realized winner; after two consecutive realized losses in the active UTC session, block subsequent parent entries until the next session boundary.",
+        "SP39": "Use unchanged SP39 and do not subject it to the session-loss control."
+      },
+      "information_time": "completed M15 boundaries and realized closes only; no future information",
+      "lot": 0.01,
+      "spread_points": 5,
+      "rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94"
+    }
+  ],
+  "2025H1_outcome_visibility": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT",
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

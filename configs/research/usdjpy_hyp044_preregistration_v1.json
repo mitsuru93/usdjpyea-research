@@ -1,0 +1,60 @@
+{
+  "schema_version": "usdjpy_hyp044_preregistration_v1",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "formal_name": "USDJPY-HYP-044 / INTEGRATED_PROFITABILITY_STABILIZATION_AND_RESIDUAL_LOSS_ELIMINATION",
+  "status": "PREREGISTERED_ACTIVE",
+  "objective": "Build and qualify a stable profitable Rakuten MT4 EA configuration across 2020–2025H1 using B02 C3, F05 C2 and unchanged Short Pullback as primary inputs, with Asian Range Sweep considered only as a DD hedge after net profitability is achieved.",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT",
+    "2025H2": "PROHIBITED_NOT_ACCESSED"
+  },
+  "authority": {
+    "work_id": "USDJPY-DATA-2020-2022-TICK-AUTHORITY-001",
+    "decision": "PASS_2020_2022_TICK_AUTHORITY_CERTIFIED",
+    "source": "Dukascopy source-native USDJPY Bid/Ask BI5",
+    "release": "usdjpy-2020-2022-source-native-bidask-tick-authority-v1",
+    "analysis_start": "2020-01-01",
+    "analysis_end": "2022-12-31",
+    "warmup_start": "2019-10-01",
+    "warmup_end": "2019-12-31",
+    "tick_count": 78737040
+  },
+  "primary_reference_portfolio": "B02_C3 + F05_C2 + SHORT_PULLBACK_UNCHANGED",
+  "round_a_candidates": [
+    "A0_CURRENT_BEST_UNCHANGED",
+    "A1_F05_C2_STABILITY_REFINEMENT",
+    "A2_B02_C3_WINNER_PRESERVATION_REFINEMENT",
+    "A3_SHORT_PULLBACK_PORTFOLIO_RISK_REFINEMENT",
+    "A4_RESIDUAL_LOSS_CLUSTER_CONTROL"
+  ],
+  "candidate_design_source_period": "2020-2024 only",
+  "candidate_freeze_before_2025H1": true,
+  "all_frozen_candidates_run_through_2025H1": true,
+  "baseline_relative_positive_effect_fold_gate_binding": false,
+  "success_conditions": {
+    "2025H1_portfolio_net_jpy": ">0",
+    "2025H1_profit_factor": ">1.0",
+    "2020_2024_pooled_net_jpy": ">0",
+    "core_mt4_parity": "PASS",
+    "rakuten_portability": "PASS_OR_EXPLAINED_EXECUTABLE"
+  },
+  "forbidden": [
+    "2025H2 access",
+    "future information",
+    "outcome labels",
+    "calendar-name permissions",
+    "exhaustive grids",
+    "unlimited retuning",
+    "candidate rescue after 2025H1 result",
+    "reopening or changing HYP-039/HYP-040/HYP-041/HYP-042/HYP-043 formal decisions"
+  ],
+  "outcome_visibility": {
+    "2025H1_aggregate_known": true,
+    "classification": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT",
+    "candidate_rule_change_after_freeze": false
+  },
+  "production_authorized": false,
+  "live_authorized": false
+}

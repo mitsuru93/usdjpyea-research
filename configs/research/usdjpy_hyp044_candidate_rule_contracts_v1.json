@@ -1,0 +1,88 @@
+{
+  "schema_version": "usdjpy_hyp044_candidate_rule_contracts_v1",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "status": "FROZEN",
+  "common_contract": {
+    "symbol": "USDJPY",
+    "lot": 0.01,
+    "pip_size": 0.01,
+    "JPY_per_pip_at_0_01_lot": 10,
+    "tester_spread_points": 5,
+    "currency": "JPY",
+    "same_timestamp_chronology": [
+      "matured owned-position closes",
+      "candidate state exits",
+      "B02 evaluation",
+      "F05 evaluation",
+      "SP39 evaluation",
+      "portfolio snapshot"
+    ],
+    "position_restoration": "owned positions restored by symbol, magic, comment signal identity and original lifecycle state",
+    "restart_behavior": "deterministic restoration before new signal evaluation",
+    "duplicate_prevention": "owned-position and accepted-signal identity checks",
+    "2025H1_outcome_visibility": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT"
+  },
+  "contracts": [
+    {
+      "candidate_id": "A0_CURRENT_BEST_UNCHANGED",
+      "entry": "Frozen parent Entry contracts",
+      "exit": "B02 C3; F05 C2 exact 60-second executable tick; SP39 16 M15 bars",
+      "permission": "Frozen parent permissions",
+      "state_variables": [],
+      "thresholds": {},
+      "information_time": "Parent contracts",
+      "source": "Dukascopy economic authority; Rakuten execution qualification",
+      "priority": 0,
+      "rule_hash_sha256": "942a8adbfcb29998f838eeff06341c110df7b29ae731eceb400f63e54b54ed38"
+    },
+    {
+      "candidate_id": "A1_F05_C2_NO_B02_OVERLAP",
+      "entry": "Unchanged F05 Entry",
+      "exit": "C2 exact 60-second executable tick only when B02 overlap_count=0; otherwise original F05 exit",
+      "permission": "No change to F05 Entry permission",
+      "state_variables": ["B02_overlap_count_at_F05_entry", "C2 frozen state at entry_plus_60_seconds"],
+      "thresholds": {"B02_overlap_count_equals": 0},
+      "information_time": "Entry-owned state and first executable tick at or after Entry+60 seconds",
+      "source": "Research/Core owned-position chronology",
+      "priority": 1,
+      "rule_hash_sha256": "230e451eefea478afd6a96e31c0cd6ed0227f24de634f54560370a370b2437b7"
+    },
+    {
+      "candidate_id": "A2_B02_C3_EARLY_GIVEBACK_16BAR",
+      "entry": "Unchanged B02 Entry",
+      "exit": "C3 only when first qualifying giveback occurs by completed boundary 16; otherwise original boundary 48 exit",
+      "permission": "No change to B02 Entry permission",
+      "state_variables": ["completed_boundary_count", "ever_positive_completed_boundary", "current_executable_gross_pips"],
+      "thresholds": {"latest_C3_boundary": 16, "original_exit_boundary": 48},
+      "information_time": "Completed M15 executable boundary only",
+      "source": "Research/Core M15 chronology",
+      "priority": 2,
+      "rule_hash_sha256": "b1d5272666c6546826bc8b3206e28d59cf1cee997d6e0b7aab9583ab0bdfd3bd"
+    },
+    {
+      "candidate_id": "A3_SP39_NEGATIVE_SAME_DIRECTION_CLUSTER_VETO",
+      "entry": "Unchanged SP39 signal and next-M15 first executable tick, subject to the narrow veto",
+      "exit": "Unchanged SP39 16-bar exit",
+      "permission": "Veto only when same-direction owned B02/F05 count>=2 and their aggregate executable floating P/L<0",
+      "state_variables": ["owned_short_parent_count", "aggregate_parent_short_floating_pl_jpy"],
+      "thresholds": {"owned_short_parent_count_min": 2, "aggregate_floating_pl_max_exclusive_jpy": 0},
+      "information_time": "Executable Entry tick",
+      "source": "Rakuten-owned position state; same logical state in Research replay",
+      "priority": 3,
+      "rule_hash_sha256": "2e6a916f74710a05575ed65d30edd45c52b891266f8f87c9cce50334688438a5"
+    },
+    {
+      "candidate_id": "A4_P3_SESSION_LOSS_PERSISTENCE_CAP_2",
+      "entry": "Parent B02/F05 Entry after matured-close state update",
+      "exit": "Unchanged B02 C3 and F05 C2 exits",
+      "permission": "Block B02/F05 Entry after two consecutive realized losses in active UTC session; reset at session boundary or realized winner; SP39 unaffected",
+      "state_variables": ["UTC_session_key", "consecutive_realized_loss_count"],
+      "thresholds": {"loss_count_cap": 2},
+      "information_time": "Matured owned-position closes before current Entry",
+      "source": "P3 event chronology",
+      "priority": 4,
+      "rule_hash_sha256": "fa4aa1ea3766285687f004dc2abd592ce351b25441e699e2adc2ee310497e6fc"
+    }
+  ],
+  "2025H2_accessed": false
+}

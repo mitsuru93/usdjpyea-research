@@ -1,0 +1,5 @@
+absolute_net_jpy,average_trade_jpy,gross_loss_jpy,gross_profit_jpy,longest_realized_underwater_hours,maximum_consecutive_losses,median_trade_jpy,minimum_realized_equity_jpy,modified_trades,net_jpy,period,profit_factor,realized_drawdown_jpy,scope,top_1_winner_removal_net_jpy,top_3_winner_removal_net_jpy,top_5_winner_removal_net_jpy,trades,win_rate
+85405,,-848614,934019,,,,,928,,2020-01_TO_2025-06,1.1006405739240692,,POOLED_2020_2025H1,,,,6577,
+,6.261793103448475,-390240.99999999907,412939.99999999977,9125.499765555556,20,-15.00000000001478,97517.00000000001,429,22699.00000000072,,1.058166620114239,38144.00000000019,2020_2022_SOURCE_NATIVE,19868.000000000702,15894.000000000713,12077.000000000706,3625,0.4281379310344828
+,,-350920,413017,,,,,386,62097,,1.176954861506896,,2023_2024_RAKUTEN,,,,2343,
+,,-107453,108062,,,,,113,609,,1.0056675942039865,,2025H1_RAKUTEN,,,,609,

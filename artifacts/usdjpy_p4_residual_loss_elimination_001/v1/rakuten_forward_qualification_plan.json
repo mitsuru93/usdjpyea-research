@@ -1,0 +1,46 @@
+{
+  "schema_version": "usdjpy_p4_residual_loss_elimination_001_rakuten_forward_qualification_plan_v1",
+  "work_id": "USDJPY-P4-RESIDUAL-LOSS-ELIMINATION-001",
+  "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+  "rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
+  "status": "READY_NOT_YET_CERTIFIED",
+  "qualification_mode": "RAKUTEN_FORWARD_RAW_TICK_SHADOW",
+  "required_logger_fields": [
+    "raw_bid",
+    "raw_ask",
+    "server_timestamp",
+    "local_timestamp",
+    "signal_timestamp",
+    "entry_timestamp",
+    "entry_price",
+    "evaluation_60_second_timestamp",
+    "MFE",
+    "MAE",
+    "current_profit_loss",
+    "candidate_state",
+    "expected_core_action",
+    "actual_ea_action",
+    "exit_timestamp",
+    "exit_price",
+    "restart_state",
+    "owned_position_restoration"
+  ],
+  "comparison_contract": {
+    "timestamp_normalization": "T1",
+    "canonical_bar_reconstruction_same_raw_input": "T2",
+    "chronology_holding_contract": "T4",
+    "historical_exact_T3_required": false,
+    "same_input_core_mt4_parity_required": true,
+    "rule_retuning_allowed": false
+  },
+  "pass_conditions": [
+    "All candidate state evaluations occur at the first executable Tick at or after 60 seconds.",
+    "Expected Core action equals actual EA action for every owned trade.",
+    "Restart restoration reconstructs all owned-position state without duplicate orders.",
+    "No unexplained signal, Entry, Exit, price, or chronology divergence remains.",
+    "No production authorization is granted before a signed forward qualification receipt is archived."
+  ],
+  "production_authorized": false,
+  "live_authorized": false,
+  "2025H2_historical_data_accessed": false
+}

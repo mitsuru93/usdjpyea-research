@@ -1,0 +1,15 @@
+{
+  "2023_2024_program_baseline": {
+    "B02_net_jpy": 12722,
+    "F05_net_jpy": 39151,
+    "net_jpy": 51627,
+    "trades": 1882
+  },
+  "2025H1_baseline": {
+    "full_equity_dd_jpy": 42737,
+    "net_jpy": -20808,
+    "profit_factor": 0.8294076655052265,
+    "trades": 463
+  },
+  "status": "PASS_WITH_KNOWN_2023_2024_AUTHORITY_GENERATION_LINEAGE_DIFFERENCE_SEPARATELY_PRESERVED"
+}

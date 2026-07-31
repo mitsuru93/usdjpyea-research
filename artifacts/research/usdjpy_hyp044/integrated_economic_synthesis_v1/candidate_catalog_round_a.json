@@ -1,0 +1,11 @@
+{
+  "maximum_candidates": 5,
+  "results_2025H1": {
+    "A0": -2131,
+    "A1": -12007,
+    "A2": -514,
+    "A3": -1323,
+    "A4": -293
+  },
+  "status": "COMPLETE_NO_POSITIVE_CANDIDATE"
+}

@@ -1,0 +1,682 @@
+{
+  "schema_version": "usdjpy_hyp044_source_native_schema_probe_v1",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "status": "PASS",
+  "authority_asset_id": 494940081,
+  "authority_asset_sha256": "4577c53f10f65f8998ce905dbd03e60f0a582b4f10a6a95722f4f2b07aec2108",
+  "records": [
+    {
+      "path": "bars/D1/ask.csv.gz",
+      "bytes": 981,
+      "sha256": "0866e717f88757de9c086e41102c8c48ce2c706d39c9580711c98afd69420a45",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 27,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T00:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "D1",
+          "open": "108.78600000",
+          "high": "108.79100000",
+          "low": "108.60800000",
+          "close": "108.72700000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T23:59:59.213000Z",
+          "tick_count": "3243"
+        },
+        {
+          "timestamp_utc": "2020-01-02T00:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "D1",
+          "open": "108.72400000",
+          "high": "108.86600000",
+          "low": "108.21300000",
+          "close": "108.54600000",
+          "first_tick_timestamp_utc": "2020-01-02T00:00:00.104000Z",
+          "last_tick_timestamp_utc": "2020-01-02T23:59:59.469000Z",
+          "tick_count": "45673"
+        },
+        {
+          "timestamp_utc": "2020-01-03T00:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "D1",
+          "open": "108.54600000",
+          "high": "108.56500000",
+          "low": "107.84300000",
+          "close": "108.15100000",
+          "first_tick_timestamp_utc": "2020-01-03T00:00:00.760000Z",
+          "last_tick_timestamp_utc": "2020-01-03T21:59:56.316000Z",
+          "tick_count": "80912"
+        }
+      ]
+    },
+    {
+      "path": "bars/D1/bid.csv.gz",
+      "bytes": 982,
+      "sha256": "c4fe989475bd3856359afbb52267a6a9a912bf67271c3e295312ac5128c11af8",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 27,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T00:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "D1",
+          "open": "108.73000000",
+          "high": "108.75900000",
+          "low": "108.57500000",
+          "close": "108.72300000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T23:59:59.213000Z",
+          "tick_count": "3243"
+        },
+        {
+          "timestamp_utc": "2020-01-02T00:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "D1",
+          "open": "108.72200000",
+          "high": "108.86400000",
+          "low": "108.21100000",
+          "close": "108.54400000",
+          "first_tick_timestamp_utc": "2020-01-02T00:00:00.104000Z",
+          "last_tick_timestamp_utc": "2020-01-02T23:59:59.469000Z",
+          "tick_count": "45673"
+        },
+        {
+          "timestamp_utc": "2020-01-03T00:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "D1",
+          "open": "108.54300000",
+          "high": "108.56200000",
+          "low": "107.83900000",
+          "close": "108.04700000",
+          "first_tick_timestamp_utc": "2020-01-03T00:00:00.760000Z",
+          "last_tick_timestamp_utc": "2020-01-03T21:59:56.316000Z",
+          "tick_count": "80912"
+        }
+      ]
+    },
+    {
+      "path": "bars/H1/ask.csv.gz",
+      "bytes": 14791,
+      "sha256": "3906ed5024375419ee1d5997bc798f12ef26a4fd1a9cdf821930a3c5b4b64f1c",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 528,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T22:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "H1",
+          "open": "108.78600000",
+          "high": "108.79100000",
+          "low": "108.67800000",
+          "close": "108.70800000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:59:33.430000Z",
+          "tick_count": "1789"
+        },
+        {
+          "timestamp_utc": "2020-01-01T23:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "H1",
+          "open": "108.70500000",
+          "high": "108.72700000",
+          "low": "108.60800000",
+          "close": "108.72700000",
+          "first_tick_timestamp_utc": "2020-01-01T23:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T23:59:59.213000Z",
+          "tick_count": "1454"
+        },
+        {
+          "timestamp_utc": "2020-01-02T00:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "H1",
+          "open": "108.72400000",
+          "high": "108.73700000",
+          "low": "108.68300000",
+          "close": "108.70400000",
+          "first_tick_timestamp_utc": "2020-01-02T00:00:00.104000Z",
+          "last_tick_timestamp_utc": "2020-01-02T00:59:45.351000Z",
+          "tick_count": "994"
+        }
+      ]
+    },
+    {
+      "path": "bars/H1/bid.csv.gz",
+      "bytes": 14749,
+      "sha256": "f29a5237a5e9913d56b4b24661bce1d336433f256e935a89d72a10d55e2ee876",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 528,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T22:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "H1",
+          "open": "108.73000000",
+          "high": "108.75900000",
+          "low": "108.57500000",
+          "close": "108.67700000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:59:33.430000Z",
+          "tick_count": "1789"
+        },
+        {
+          "timestamp_utc": "2020-01-01T23:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "H1",
+          "open": "108.67700000",
+          "high": "108.72500000",
+          "low": "108.60100000",
+          "close": "108.72300000",
+          "first_tick_timestamp_utc": "2020-01-01T23:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T23:59:59.213000Z",
+          "tick_count": "1454"
+        },
+        {
+          "timestamp_utc": "2020-01-02T00:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "H1",
+          "open": "108.72200000",
+          "high": "108.73500000",
+          "low": "108.68100000",
+          "close": "108.70100000",
+          "first_tick_timestamp_utc": "2020-01-02T00:00:00.104000Z",
+          "last_tick_timestamp_utc": "2020-01-02T00:59:45.351000Z",
+          "tick_count": "994"
+        }
+      ]
+    },
+    {
+      "path": "bars/H4/ask.csv.gz",
+      "bytes": 4163,
+      "sha256": "b7a8bb8b2a4f3738e739e72ff6f6f8eacc6593bdcadeca3d2ff718d8062996be",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 137,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T20:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "H4",
+          "open": "108.78600000",
+          "high": "108.79100000",
+          "low": "108.60800000",
+          "close": "108.72700000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T23:59:59.213000Z",
+          "tick_count": "3243"
+        },
+        {
+          "timestamp_utc": "2020-01-02T00:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "H4",
+          "open": "108.72400000",
+          "high": "108.73700000",
+          "low": "108.63900000",
+          "close": "108.70800000",
+          "first_tick_timestamp_utc": "2020-01-02T00:00:00.104000Z",
+          "last_tick_timestamp_utc": "2020-01-02T03:59:52.635000Z",
+          "tick_count": "4482"
+        },
+        {
+          "timestamp_utc": "2020-01-02T04:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "H4",
+          "open": "108.70900000",
+          "high": "108.80100000",
+          "low": "108.69400000",
+          "close": "108.78600000",
+          "first_tick_timestamp_utc": "2020-01-02T04:00:07.332000Z",
+          "last_tick_timestamp_utc": "2020-01-02T07:59:59.007000Z",
+          "tick_count": "5010"
+        }
+      ]
+    },
+    {
+      "path": "bars/H4/bid.csv.gz",
+      "bytes": 4177,
+      "sha256": "f0d11e93f4f71150e5916de23dbb46ff3c68fc74f4c907deaeb29d05e6bbe6e4",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 137,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T20:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "H4",
+          "open": "108.73000000",
+          "high": "108.75900000",
+          "low": "108.57500000",
+          "close": "108.72300000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T23:59:59.213000Z",
+          "tick_count": "3243"
+        },
+        {
+          "timestamp_utc": "2020-01-02T00:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "H4",
+          "open": "108.72200000",
+          "high": "108.73500000",
+          "low": "108.63700000",
+          "close": "108.70600000",
+          "first_tick_timestamp_utc": "2020-01-02T00:00:00.104000Z",
+          "last_tick_timestamp_utc": "2020-01-02T03:59:52.635000Z",
+          "tick_count": "4482"
+        },
+        {
+          "timestamp_utc": "2020-01-02T04:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "H4",
+          "open": "108.70700000",
+          "high": "108.80000000",
+          "low": "108.69300000",
+          "close": "108.78400000",
+          "first_tick_timestamp_utc": "2020-01-02T04:00:07.332000Z",
+          "last_tick_timestamp_utc": "2020-01-02T07:59:59.007000Z",
+          "tick_count": "5010"
+        }
+      ]
+    },
+    {
+      "path": "bars/M1/ask.csv.gz",
+      "bytes": 722256,
+      "sha256": "8ad4d1012292100be151881d31d9d4140cd8dd10c3207bf3ff19b8aa84df569a",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 31576,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T22:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "M1",
+          "open": "108.78600000",
+          "high": "108.79100000",
+          "low": "108.78600000",
+          "close": "108.79000000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:00:46.671000Z",
+          "tick_count": "6"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:01:00.000000Z",
+          "side": "ask",
+          "timeframe": "M1",
+          "open": "108.78600000",
+          "high": "108.79000000",
+          "low": "108.78400000",
+          "close": "108.78400000",
+          "first_tick_timestamp_utc": "2020-01-01T22:01:02.159000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:01:32.954000Z",
+          "tick_count": "9"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:02:00.000000Z",
+          "side": "ask",
+          "timeframe": "M1",
+          "open": "108.78000000",
+          "high": "108.78300000",
+          "low": "108.78000000",
+          "close": "108.78300000",
+          "first_tick_timestamp_utc": "2020-01-01T22:02:21.078000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:02:42.722000Z",
+          "tick_count": "3"
+        }
+      ]
+    },
+    {
+      "path": "bars/M1/bid.csv.gz",
+      "bytes": 722257,
+      "sha256": "e998d28b5fbf3af878ad65b767726a0bf81b208e39d6e4c18c54d10e95b4cc3e",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 31576,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T22:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "M1",
+          "open": "108.73000000",
+          "high": "108.73000000",
+          "low": "108.72800000",
+          "close": "108.72800000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:00:46.671000Z",
+          "tick_count": "6"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:01:00.000000Z",
+          "side": "bid",
+          "timeframe": "M1",
+          "open": "108.72800000",
+          "high": "108.73000000",
+          "low": "108.71500000",
+          "close": "108.71500000",
+          "first_tick_timestamp_utc": "2020-01-01T22:01:02.159000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:01:32.954000Z",
+          "tick_count": "9"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:02:00.000000Z",
+          "side": "bid",
+          "timeframe": "M1",
+          "open": "108.71900000",
+          "high": "108.72400000",
+          "low": "108.71900000",
+          "close": "108.72400000",
+          "first_tick_timestamp_utc": "2020-01-01T22:02:21.078000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:02:42.722000Z",
+          "tick_count": "3"
+        }
+      ]
+    },
+    {
+      "path": "bars/M15/ask.csv.gz",
+      "bytes": 55402,
+      "sha256": "40358240fd9172fa58fb8ab78261a9089f9ba7280acdc43a0713a94a25998052",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 2112,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T22:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "M15",
+          "open": "108.78600000",
+          "high": "108.79100000",
+          "low": "108.70900000",
+          "close": "108.76200000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:14:59.846000Z",
+          "tick_count": "1121"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:15:00.000000Z",
+          "side": "ask",
+          "timeframe": "M15",
+          "open": "108.76200000",
+          "high": "108.76500000",
+          "low": "108.67800000",
+          "close": "108.72300000",
+          "first_tick_timestamp_utc": "2020-01-01T22:15:00.071000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:29:41.465000Z",
+          "tick_count": "189"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:30:00.000000Z",
+          "side": "ask",
+          "timeframe": "M15",
+          "open": "108.72400000",
+          "high": "108.72600000",
+          "low": "108.68100000",
+          "close": "108.69600000",
+          "first_tick_timestamp_utc": "2020-01-01T22:30:00.041000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:44:59.456000Z",
+          "tick_count": "297"
+        }
+      ]
+    },
+    {
+      "path": "bars/M15/bid.csv.gz",
+      "bytes": 55360,
+      "sha256": "4cd534d3557827f95e6f6055e45fbb51200f815c318a1ef5650867ac2064be54",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 2112,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T22:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "M15",
+          "open": "108.73000000",
+          "high": "108.75900000",
+          "low": "108.59000000",
+          "close": "108.72800000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:14:59.846000Z",
+          "tick_count": "1121"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:15:00.000000Z",
+          "side": "bid",
+          "timeframe": "M15",
+          "open": "108.72800000",
+          "high": "108.73500000",
+          "low": "108.57500000",
+          "close": "108.70300000",
+          "first_tick_timestamp_utc": "2020-01-01T22:15:00.071000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:29:41.465000Z",
+          "tick_count": "189"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:30:00.000000Z",
+          "side": "bid",
+          "timeframe": "M15",
+          "open": "108.70300000",
+          "high": "108.70300000",
+          "low": "108.66000000",
+          "close": "108.66800000",
+          "first_tick_timestamp_utc": "2020-01-01T22:30:00.041000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:44:59.456000Z",
+          "tick_count": "297"
+        }
+      ]
+    },
+    {
+      "path": "bars/M5/ask.csv.gz",
+      "bytes": 157935,
+      "sha256": "52c38f70ba0735487dbf778ebb3926802a143e3f19d8503a8bb9c3dc98dbe5c4",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 6336,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T22:00:00.000000Z",
+          "side": "ask",
+          "timeframe": "M5",
+          "open": "108.78600000",
+          "high": "108.79100000",
+          "low": "108.77600000",
+          "close": "108.77900000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:04:33.991000Z",
+          "tick_count": "35"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:05:00.000000Z",
+          "side": "ask",
+          "timeframe": "M5",
+          "open": "108.78100000",
+          "high": "108.78800000",
+          "low": "108.75000000",
+          "close": "108.75400000",
+          "first_tick_timestamp_utc": "2020-01-01T22:05:01.982000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:09:52.955000Z",
+          "tick_count": "832"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:10:00.000000Z",
+          "side": "ask",
+          "timeframe": "M5",
+          "open": "108.75300000",
+          "high": "108.77200000",
+          "low": "108.70900000",
+          "close": "108.76200000",
+          "first_tick_timestamp_utc": "2020-01-01T22:10:14.405000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:14:59.846000Z",
+          "tick_count": "254"
+        }
+      ]
+    },
+    {
+      "path": "bars/M5/bid.csv.gz",
+      "bytes": 158217,
+      "sha256": "3f42ba0a99bee5e417d2256a0e450ff2f2df17255c982f156f74b704bdd58a49",
+      "columns": [
+        "timestamp_utc",
+        "side",
+        "timeframe",
+        "open",
+        "high",
+        "low",
+        "close",
+        "first_tick_timestamp_utc",
+        "last_tick_timestamp_utc",
+        "tick_count"
+      ],
+      "rows": 6336,
+      "samples": [
+        {
+          "timestamp_utc": "2020-01-01T22:00:00.000000Z",
+          "side": "bid",
+          "timeframe": "M5",
+          "open": "108.73000000",
+          "high": "108.75100000",
+          "low": "108.71500000",
+          "close": "108.75100000",
+          "first_tick_timestamp_utc": "2020-01-01T22:00:00.219000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:04:33.991000Z",
+          "tick_count": "35"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:05:00.000000Z",
+          "side": "bid",
+          "timeframe": "M5",
+          "open": "108.75900000",
+          "high": "108.75900000",
+          "low": "108.73600000",
+          "close": "108.73800000",
+          "first_tick_timestamp_utc": "2020-01-01T22:05:01.982000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:09:52.955000Z",
+          "tick_count": "832"
+        },
+        {
+          "timestamp_utc": "2020-01-01T22:10:00.000000Z",
+          "side": "bid",
+          "timeframe": "M5",
+          "open": "108.73800000",
+          "high": "108.75000000",
+          "low": "108.59000000",
+          "close": "108.72800000",
+          "first_tick_timestamp_utc": "2020-01-01T22:10:14.405000Z",
+          "last_tick_timestamp_utc": "2020-01-01T22:14:59.846000Z",
+          "tick_count": "254"
+        }
+      ]
+    }
+  ],
+  "2025H2_accessed": false
+}

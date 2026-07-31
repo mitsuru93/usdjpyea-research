@@ -1,0 +1,33 @@
+{
+  "2025H1_net_jpy": 609,
+  "2025H1_profit_factor": 1.0056675942039865,
+  "2025H2_accessed": false,
+  "expected_total_net_jpy": 85405,
+  "positive_halfyears": 8,
+  "positive_months": 41,
+  "positive_quarters": 12,
+  "positive_years": 5,
+  "rolling_minimum": {
+    "12": {
+      "end_period": "2023-06",
+      "net_jpy": -32000,
+      "start_period": "2022-07",
+      "window_months": 12
+    },
+    "3": {
+      "end_period": "2022-10",
+      "net_jpy": -19199,
+      "start_period": "2022-08",
+      "window_months": 3
+    },
+    "6": {
+      "end_period": "2023-01",
+      "net_jpy": -27731,
+      "start_period": "2022-08",
+      "window_months": 6
+    }
+  },
+  "status": "PASS_INTEGRATED_ECONOMIC_SYNTHESIS",
+  "total_net_jpy": 85405,
+  "total_profit_factor": 1.1006405739240692
+}

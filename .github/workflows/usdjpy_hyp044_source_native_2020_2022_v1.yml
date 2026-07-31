@@ -1,0 +1,81 @@
+name: USDJPY HYP-044 Source-Native 2020-2022 v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/run_usdjpy_hyp044_source_native_2020_2022_v1.py'
+      - '.github/workflows/usdjpy_hyp044_source_native_2020_2022_v1.yml'
+      - 'configs/research/usdjpy_hyp044_candidate_input_registry_v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      - name: Install analysis runtime
+        run: python -m pip install --disable-pip-version-check --quiet pandas numpy
+      - name: Select certified source-native assets
+        run: |
+          set -euo pipefail
+          rm -rf hyp044_source_native_data artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1
+          mkdir -p hyp044_source_native_data/downloads hyp044_source_native_data/months
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest=json.loads(Path('docs/data_authorities/usdjpy_2020_2022_tick_authority_v1/release_manifest.json').read_text())
+          rows=[]
+          for a in manifest['payload_assets']:
+              y=int(a['year']);m=int(a['month']);layer=a['layer']
+              if (y==2019 and m>=10 or 2020<=y<=2022) and layer in {'bars','normalized'}:
+                  rows.append([str(a['release_asset_id']),a['name'],a['sha256'],f'{y:04d}_{m:02d}',layer,str(a['bytes'])])
+          expected=39*2
+          if len(rows)!=expected: raise SystemExit(f'expected {expected} assets, got {len(rows)}')
+          Path('hyp044_source_native_data/assets.tsv').write_text('\n'.join('\t'.join(r) for r in rows)+'\n')
+          PY
+      - name: Download and verify certified assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          while IFS=$'\t' read -r id name sha ym layer bytes; do
+            d="hyp044_source_native_data/months/$ym"
+            mkdir -p "$d"
+            p="$d/$name"
+            gh api "repos/mitsuru93/usdjpyea-research/releases/assets/$id" -H 'Accept: application/octet-stream' > "$p"
+            actual="$(sha256sum "$p" | awk '{print $1}')"
+            [ "$actual" = "$sha" ] || { echo "sha mismatch $name"; exit 1; }
+            if [ "$layer" = bars ]; then
+              tar -xzf "$p" -C "$d"
+            fi
+          done < hyp044_source_native_data/assets.tsv
+      - name: Materialize frozen C2 thresholds
+        run: |
+          set -euo pipefail
+          jq -e '.status=="FROZEN_INPUT_REGISTRY" and .F05_C2.reproduction."2023_2024".modified_trades==154 and .F05_C2.reproduction."2025H1".modified_trades==63 and ."2025H2_accessed"==false' configs/research/usdjpy_hyp044_candidate_input_registry_v1.json
+          jq '{f05_c2:{thresholds:{low_upper_atr_pips:.F05_C2.thresholds.volatility_tertile_low_upper_atr_pips,medium_upper_atr_pips:.F05_C2.thresholds.volatility_tertile_medium_upper_atr_pips}}}' configs/research/usdjpy_hyp044_candidate_input_registry_v1.json > hyp044_source_native_data/c2_summary.json
+      - name: Execute source-native integrated replay
+        run: |
+          set -euo pipefail
+          python tools/run_usdjpy_hyp044_source_native_2020_2022_v1.py \
+            --data-root hyp044_source_native_data/months \
+            --c2-summary hyp044_source_native_data/c2_summary.json \
+            --out artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1
+          jq -e '.status=="PASS_SOURCE_NATIVE_2020_2022_ANALYSIS" and .authority=="USDJPY-DATA-2020-2022-TICK-AUTHORITY-001" and .period_role=="ANALYSIS_PERIOD" and ."2025H2_accessed"==false' artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1/source_native_result_2020_2022.json
+      - name: Commit source-native result
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add artifacts/research/usdjpy_hyp044/source_native_2020_2022_v1
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'research(hyp044): bind source-native 2020-2022 integrated replay'
+          git pull --rebase origin ${{ github.event.pull_request.head.ref || github.ref_name }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}

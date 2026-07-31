@@ -1,0 +1,25 @@
+{
+  "schema_version": "usdjpy_p4_residual_loss_elimination_001_work_manifest_v1",
+  "work_id": "USDJPY-P4-RESIDUAL-LOSS-ELIMINATION-001",
+  "formal_name": "P4_RESIDUAL_LOSS_ELIMINATION_AND_CROSS_REGIME_STABILITY_IMPROVEMENT",
+  "hypothesis_lineage": "USDJPY-HYP-044",
+  "new_hypothesis_id_issued": false,
+  "lineage_reason": "The frozen independent improvement candidate and all finite Round A/B evidence already belong to USDJPY-HYP-044. This Work ID closes the requested residual-loss qualification without duplicating the hypothesis.",
+  "primary_reference": "P4_B02_C3_F05_C2_SP39",
+  "selected_portfolio": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+  "research_branch": "research/usdjpy-p4-residual-loss-elimination-final-v1",
+  "core_branch": "feature/usdjpy-p4-residual-loss-elimination-final-v1",
+  "period_roles": {
+    "2020_2022": "ANALYSIS_PERIOD",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+    "2025H1": "VALIDATION_PERIOD_KNOWN_OUTCOME_REASSESSMENT",
+    "2025H2": "PROHIBITED"
+  },
+  "candidate_rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
+  "candidate_rule_changed_after_2025H1": false,
+  "2025H2_accessed": false,
+  "status": "CLOSED_PARTIAL",
+  "final_decision": "PARTIAL_RESIDUAL_LOSS_REDUCTION_WITH_REMAINING_WEAK_REGIME",
+  "production_authorized": false,
+  "live_authorized": false
+}

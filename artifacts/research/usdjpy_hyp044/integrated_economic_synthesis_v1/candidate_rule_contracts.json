@@ -1,0 +1,6 @@
+{
+  "B02": "A2 early giveback through boundary 16",
+  "F05": "C2 exact 60-second acceptance-failure Exit",
+  "SP39": "unchanged 16-bar Short Pullback",
+  "portfolio_control": "UTC-session consecutive realized loss cap 2 applied to B02/F05 parent only"
+}

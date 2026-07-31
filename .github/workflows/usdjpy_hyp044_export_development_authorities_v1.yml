@@ -1,0 +1,57 @@
+name: USDJPY HYP-044 Export Development Authorities v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp044_export_development_authorities_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      - name: Download immutable mirrored authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf hyp044_development_export
+          mkdir -p hyp044_development_export/source hyp044_development_export/output
+          gh release download f05-failed-reclaim-historical-authorities-v1 --repo mitsuru93/usdjpyea-research --dir hyp044_development_export/source
+          test "$(sha256sum hyp044_development_export/source/usdjpy-2023-canonical-baseline-prep-v1.zip | awk '{print $1}')" = '22d66bf76c60362b78e9badff2113bc196b80e3657f5083ae470d1d62df70c01'
+          test "$(sha256sum hyp044_development_export/source/mt4-usdjpy-2024h1-event-audit-v1.zip | awk '{print $1}')" = 'e078758343995c8254244dd36385c93a61a7124cb5037beb458afdf5d0e208e5'
+          test "$(sha256sum hyp044_development_export/source/mt4-usdjpy-f05-extatr-h2-validation-v1.zip | awk '{print $1}')" = '9c5846e8b6e47b4b981a3ceeec856391311d3864a8cd7c2bef7caf7d21e6375b'
+          for zip in hyp044_development_export/source/*.zip; do d="${zip%.zip}";mkdir -p "$d";unzip -q -o "$zip" -d "$d";done
+          gh release download usdjpy-hyp037-protocol-corrected-research-v2 --repo mitsuru93/usdjpyea-research --pattern 'usdjpy-hyp037-protocol-corrected-research-v2.zip' --dir hyp044_development_export/source
+          test "$(sha256sum hyp044_development_export/source/usdjpy-hyp037-protocol-corrected-research-v2.zip | awk '{print $1}')" = '2353f2f3b08f3b686a6244ce661ab043d7b488a41ca9f1d5e0f1cebaba6c44fd'
+          mkdir -p hyp044_development_export/source/hyp037;unzip -q -o hyp044_development_export/source/usdjpy-hyp037-protocol-corrected-research-v2.zip -d hyp044_development_export/source/hyp037
+      - name: Select and verify row-level files
+        run: |
+          set -euo pipefail
+          copy_one(){ pattern="$1"; expected="$2"; out="$3"; src="$(find hyp044_development_export/source -type f -path "*$pattern" | head -1)";test -n "$src";test "$(sha256sum "$src"|awk '{print $1}')" = "$expected";cp "$src" "hyp044_development_export/output/$out";}
+          copy_one 'baseline/usdjpy_2023_canonical_baseline_expected_trade_ledger_v1.csv' '33d08d580d584f533bc5f9dda510184fb86c668608f76f8e9b7c014924c5f1b8' 'baseline_2023.csv'
+          copy_one 'normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz' '4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78' 'm15_2023.csv.gz'
+          copy_one 'tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv' '9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a' 'audit_2024h1.csv'
+          copy_one 'h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv' 'a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd' 'audit_2024h2.csv'
+          copy_one 'short_source_native_executable_ledger.csv.gz' '806907743aa99b36097b0aac815cd34e71b0e82440546d5b2be031a1f58fd0b7' 'sp39_dukas_2023_2024.csv.gz'
+          (cd hyp044_development_export/output && sha256sum * > sha256sums.txt)
+      - uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: usdjpy-hyp044-development-authorities-${{ github.run_id }}
+          path: hyp044_development_export/output
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
+      - name: Record export summary
+        run: |
+          echo "artifact_id=${{ steps.upload.outputs.artifact-id }}"
+          echo "artifact_digest=${{ steps.upload.outputs.artifact-digest }}"

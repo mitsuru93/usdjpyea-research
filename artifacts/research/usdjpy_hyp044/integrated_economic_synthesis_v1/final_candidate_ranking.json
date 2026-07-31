@@ -1,0 +1,16 @@
+{
+  "positive_halfyears": 8,
+  "positive_months": 41,
+  "positive_quarters": 12,
+  "positive_years": 5,
+  "ranked": [
+    {
+      "2025H1_net_jpy": 609,
+      "2025H1_profit_factor": 1.0056675942039865,
+      "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+      "pooled_net_jpy": 85405,
+      "pooled_profit_factor": 1.1006405739240692,
+      "rank": 1
+    }
+  ]
+}

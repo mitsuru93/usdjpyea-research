@@ -1,0 +1,15 @@
+{
+  "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+  "decision": "PASS_ECONOMIC_CONFIGURATION_PENDING_FINAL_RAKUTEN_EXECUTION_QUALIFICATION",
+  "economic_conditions": {
+    "2020_2024_pooled_net_positive": true,
+    "2025H1_PF_above_1": true,
+    "2025H1_net_positive": true
+  },
+  "live_authorized": false,
+  "production_authorized": false,
+  "technical_conditions": {
+    "Core_MT4_parity": "PENDING",
+    "selected_Rakuten_execution": "PENDING"
+  }
+}

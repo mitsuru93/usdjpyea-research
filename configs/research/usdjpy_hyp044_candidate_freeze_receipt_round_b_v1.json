@@ -1,0 +1,48 @@
+{
+  "schema_version": "usdjpy_hyp044_candidate_freeze_receipt_round_b_v1",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+  "status": "PASS_RULE_FROZEN_BEFORE_ROUND_B_2025H1_EXECUTION",
+  "parent_architecture": {
+    "B02": "A2_B02_C3_EARLY_GIVEBACK_16BAR",
+    "F05": "C2_LOCALIZED_SHORT_ACCEPTANCE_COMPRESSION",
+    "third_strategy": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED"
+  },
+  "entry": "Each parent strategy retains its frozen Entry; SP39 retains unchanged Entry.",
+  "exit": {
+    "B02": "First completed M15 profit-to-nonprofit giveback only when boundary index is 1 through 16; otherwise original 48-bar Exit.",
+    "F05": "Frozen C2 exact 60-second Exit when its frozen state is true; otherwise original F05 Exit.",
+    "SP39": "Unchanged 16-M15-bar Exit."
+  },
+  "permission": "For B02 A2 and F05 C2 only, block a new Entry after two consecutive realized losses in the active UTC session; reset at UTC session boundary or realized winner. SP39 is not blocked by this control.",
+  "state_variables": [
+    "B02 completed-M15 boundary index",
+    "B02 positive-executable-P/L armed state",
+    "active UTC session key",
+    "consecutive realized parent loss count"
+  ],
+  "thresholds": {
+    "B02_max_early_giveback_boundary": 16,
+    "session_consecutive_loss_cap": 2,
+    "F05_C2": "UNCHANGED_FROZEN_THRESHOLDS"
+  },
+  "information_time": "Only completed M15 observations and realized closes available before the Entry decision; no future information or outcome label.",
+  "source": {
+    "B02_F05": "Rakuten MT4 immutable 2025H1 baseline audit plus frozen F05 C2 ledger",
+    "SP39": "Rakuten M15 HST frozen period contract at fixed spread 5 points"
+  },
+  "lot": 0.01,
+  "spread_points": 5,
+  "concurrency": "Existing strategy ownership and concurrency contracts retained; Round B session control affects parent Entry permission only.",
+  "priority": "Process matured closes before same-timestamp Entry decisions.",
+  "same_timestamp_chronology": "CLOSE_MATURED_THEN_RESET_OR_INCREMENT_SESSION_STATE_THEN_ENTRY_PERMISSION_THEN_ENTRY",
+  "position_restoration": "Required in selected Core implementation; not altered by economic replay.",
+  "restart_behavior": "Required to reconstruct owned parent positions and current session-loss state from owned order history.",
+  "rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
+  "freeze_timestamp_utc": "2026-07-30T13:00:00Z",
+  "2025H1_outcome_visibility": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT",
+  "candidate_result_accessed_before_freeze": false,
+  "2025H2_accessed": false,
+  "production_authorized": false,
+  "live_authorized": false
+}

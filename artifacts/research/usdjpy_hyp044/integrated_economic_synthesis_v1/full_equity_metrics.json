@@ -1,0 +1,20 @@
+{
+  "2020_2022": {
+    "ending_balance_jpy": 122699.00000000071,
+    "full_equity_drawdown_jpy": 39650.00000000003,
+    "max_concurrency": 10,
+    "max_opposite_direction_concurrency": 3,
+    "max_same_direction_concurrency": 10,
+    "minimum_equity_jpy": 97316.00000000003,
+    "minimum_free_margin_jpy": 62510.359999999986,
+    "minimum_margin_level_pct": 231.11967639568135,
+    "peak": 155446.00000000081,
+    "stopout_breached": false,
+    "tick_count": 78737040,
+    "virtual_leverage": 25.0,
+    "virtual_stopout_level_pct": 100.0
+  },
+  "2023_2025H1": {
+    "status": "PENDING_SELECTED_MT4_FULL_EQUITY_REPLAY"
+  }
+}

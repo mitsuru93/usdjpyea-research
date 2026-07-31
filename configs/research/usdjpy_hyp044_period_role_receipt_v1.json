@@ -1,0 +1,41 @@
+{
+  "schema_version": "usdjpy_hyp044_period_role_receipt_v1",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "status": "FROZEN",
+  "roles": {
+    "2020_2022": {
+      "role": "ANALYSIS_PERIOD",
+      "allowed": [
+        "long-horizon stability analysis",
+        "regime analysis",
+        "mechanism discovery",
+        "failure decomposition",
+        "candidate design input",
+        "source portability diagnosis",
+        "residual-loss analysis",
+        "long-horizon stress"
+      ],
+      "independent_validation_claim_allowed": false,
+      "candidate_judgment_use_allowed": true
+    },
+    "2023_2024": {
+      "role": "RESEARCH_AND_CANDIDATE_CONSTRUCTION_PERIOD",
+      "candidate_construction_allowed": true,
+      "research_core_reference": true
+    },
+    "2025H1": {
+      "role": "KNOWN_OUTCOME_VALIDATION_REASSESSMENT",
+      "aggregate_outcome_known": true,
+      "all_frozen_candidates_must_run": true,
+      "fully_unseen_validation_claim_allowed": false
+    },
+    "2025H2": {
+      "role": "PROHIBITED_NOT_ACCESSED",
+      "access_allowed": false
+    }
+  },
+  "baseline_relative_fold_breadth_binding": false,
+  "absolute_profitability_primary": true,
+  "frozen_timestamp_utc": "2026-07-30T11:11:00Z",
+  "2025H2_accessed": false
+}

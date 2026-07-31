@@ -1,0 +1,19 @@
+{
+  "economic_replay_2023_2024": {
+    "gross_loss_jpy": -350920,
+    "gross_profit_jpy": 413017,
+    "modified_trades": 386,
+    "net_jpy": 62097,
+    "profit_factor": 1.176954861506896,
+    "trades": 2343
+  },
+  "economic_replay_2025H1": {
+    "gross_loss_jpy": -107453,
+    "gross_profit_jpy": 108062,
+    "modified_trades": 113,
+    "net_jpy": 609,
+    "profit_factor": 1.0056675942039865,
+    "trades": 609
+  },
+  "selected_MT4_execution": "PENDING"
+}
