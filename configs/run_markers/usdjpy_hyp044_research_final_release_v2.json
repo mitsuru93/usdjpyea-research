@@ -1,0 +1,15 @@
+{
+  "schema_version": "usdjpy_hyp044_research_final_release_trigger_v2",
+  "runner": "ubuntu-latest",
+  "authority_branch": "research/usdjpy-hyp044-integrated-profitability-stabilization-v1",
+  "requires_final_decision": true,
+  "requires_asian_range_sweep_rejection": true,
+  "requires_core_release_receipt": true,
+  "actions_artifact_storage_used": false,
+  "direct_release_asset_upload": true,
+  "byte_identical_readback_required": true,
+  "software_release_authorized": true,
+  "production_authorized": false,
+  "live_authorized": false,
+  "2025H2_accessed": false
+}
