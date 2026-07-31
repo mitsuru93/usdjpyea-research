@@ -1,20 +1,61 @@
 {
-  "2020_2022": {
-    "ending_balance_jpy": 122699.00000000071,
-    "full_equity_drawdown_jpy": 39650.00000000003,
-    "max_concurrency": 10,
-    "max_opposite_direction_concurrency": 3,
-    "max_same_direction_concurrency": 10,
-    "minimum_equity_jpy": 97316.00000000003,
-    "minimum_free_margin_jpy": 62510.359999999986,
-    "minimum_margin_level_pct": 231.11967639568135,
-    "peak": 155446.00000000081,
-    "stopout_breached": false,
-    "tick_count": 78737040,
-    "virtual_leverage": 25.0,
-    "virtual_stopout_level_pct": 100.0
+  "schema_version": "usdjpy_hyp044_full_equity_metrics_v2",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+  "status": "PASS_FULL_EQUITY_NO_STOPOUT_ALL_REQUIRED_PERIODS",
+  "periods": {
+    "2020_2022": {
+      "source": "Dukascopy source-native Bid/Ask Tick",
+      "tick_count": 78737040,
+      "initial_balance_jpy": 100000.0,
+      "ending_balance_jpy": 122699.0,
+      "full_equity_drawdown_jpy": 39650.0,
+      "minimum_equity_jpy": 97316.0,
+      "minimum_free_margin_jpy": 62510.36,
+      "minimum_margin_level_pct": 231.11967639568135,
+      "max_concurrency": 10,
+      "max_same_direction_concurrency": 10,
+      "max_opposite_direction_concurrency": 3,
+      "stopout_breached": false,
+      "virtual_leverage": 25.0,
+      "virtual_stopout_level_pct": 100.0
+    },
+    "2023_2024": {
+      "source": "Rakuten MT4 Strategy Tester audit risk_tick path",
+      "initial_balance_jpy": 100000.0,
+      "final_balance_jpy": 170455.0,
+      "final_equity_jpy": 170268.0,
+      "full_equity_drawdown_jpy": 27206.0,
+      "full_equity_drawdown_pct": 25.8178,
+      "minimum_equity_jpy": 78171.0,
+      "minimum_free_margin_jpy": 36978.16,
+      "minimum_margin_level_pct": 177.6985,
+      "maximum_open_orders": 9,
+      "maximum_open_lots": 0.09,
+      "peak_utc": "2023-07-14T01:38:40Z",
+      "trough_utc": "2023-10-26T06:47:40Z",
+      "recovery_utc": "2023-12-07T14:51:40Z",
+      "stopout_breached": false
+    },
+    "2025H1": {
+      "source": "Rakuten MT4 Strategy Tester audit risk_tick path",
+      "initial_balance_jpy": 100000.0,
+      "final_balance_jpy": 100609.0,
+      "final_equity_jpy": 100609.0,
+      "full_equity_drawdown_jpy": 26756.0,
+      "full_equity_drawdown_pct": 26.7386,
+      "minimum_equity_jpy": 73309.0,
+      "minimum_free_margin_jpy": 39506.54,
+      "minimum_margin_level_pct": 197.9012,
+      "maximum_open_orders": 7,
+      "maximum_open_lots": 0.07,
+      "peak_utc": "2025-01-02T00:03:15Z",
+      "trough_utc": "2025-04-16T08:28:15Z",
+      "recovery_utc": "2025-06-02T07:15:36Z",
+      "stopout_breached": false
+    }
   },
-  "2023_2025H1": {
-    "status": "PENDING_SELECTED_MT4_FULL_EQUITY_REPLAY"
-  }
+  "asian_range_sweep_dd_hedge_comparison": "PENDING_LOCAL_PATH_REPLAY",
+  "2025H2_accessed": false,
+  "live_authorized": false
 }
