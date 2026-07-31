@@ -1,0 +1,41 @@
+name: USDJPY HYP-044 Research Release Inventory v6
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - '.github/workflows/usdjpy_hyp044_research_release_inventory_v6.yml'
+      - 'configs/run_markers/usdjpy_hyp044_research_release_inventory_v6.json'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      AUTHORITY_BRANCH: research/usdjpy-hyp044-integrated-profitability-stabilization-v1
+      TAG: usdjpy-hyp044-integrated-profitability-stabilization-research-v1
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Persist exact release asset inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/h44-release-inventory-$GITHUB_RUN_ID"
+          mkdir -p "$ROOT"
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" \
+            | jq '{schema_version:"usdjpy_hyp044_research_release_inventory_v6",tag_name:.tag_name,release_id:.id,target_commitish:.target_commitish,assets:[.assets[]|{id,name,label,size,state,digest,content_type,url,browser_download_url,created_at,updated_at}],"2025H2_accessed":false}' \
+            > "$ROOT/inventory.json"
+          PATH_IN_REPO='artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/release_asset_inventory.json'
+          CONTENT=$(base64 -w0 "$ROOT/inventory.json")
+          OLD_SHA=$(gh api "repos/$GITHUB_REPOSITORY/contents/$PATH_IN_REPO?ref=$AUTHORITY_BRANCH" --jq .sha 2>/dev/null || true)
+          ARGS=(--method PUT "repos/$GITHUB_REPOSITORY/contents/$PATH_IN_REPO" -f message='release(hyp044): bind final Research release asset inventory' -f content="$CONTENT" -f branch="$AUTHORITY_BRANCH")
+          if [ -n "$OLD_SHA" ]; then ARGS+=(-f sha="$OLD_SHA"); fi
+          gh api "${ARGS[@]}" >/dev/null
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "[HYP044-RESEARCH-RELEASE-INVENTORY] $TAG" --body "\`\`\`json
+          $(cat "$ROOT/inventory.json")
+          \`\`\`" >/dev/null
