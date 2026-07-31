@@ -21,7 +21,8 @@ jobs:
   prepare:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.issue.title == '[EURUSD] Archive 2020-2023 tick data v1' &&
+      (github.actor == github.repository_owner &&
+       github.event.issue.title == '[EURUSD] Archive 2020-2023 tick data v1' &&
        contains(github.event.issue.body, 'trigger: archive-eurusd-2020-2023-tick-v1'))
     runs-on: ubuntu-latest
     outputs:
@@ -291,7 +292,7 @@ jobs:
       - name: Upload validated monthly package
         uses: actions/upload-artifact@v4
         with:
-          name: eurusd-${{ matrix.year }}-raw-ticks-month-${{ matrix.month }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: eurusd-${{ matrix.year }}-raw-ticks-month-${{ matrix.month }}-${{ github.run_id }}
           path: out
           if-no-files-found: error
           retention-days: 90
@@ -312,7 +313,7 @@ jobs:
       - name: Download all validated monthly packages for year
         uses: actions/download-artifact@v4
         with:
-          pattern: eurusd-${{ matrix.year }}-raw-ticks-month-*-${{ github.run_id }}-${{ github.run_attempt }}
+          pattern: eurusd-${{ matrix.year }}-raw-ticks-month-*-${{ github.run_id }}
           path: release-assets
           merge-multiple: true
 
