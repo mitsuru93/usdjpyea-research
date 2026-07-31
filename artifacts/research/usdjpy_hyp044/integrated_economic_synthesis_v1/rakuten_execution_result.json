@@ -1,19 +1,68 @@
 {
-  "economic_replay_2023_2024": {
-    "gross_loss_jpy": -350920,
-    "gross_profit_jpy": 413017,
-    "modified_trades": 386,
-    "net_jpy": 62097,
-    "profit_factor": 1.176954861506896,
-    "trades": 2343
+  "schema_version": "usdjpy_hyp044_rakuten_execution_result_v2",
+  "hypothesis_id": "USDJPY-HYP-044",
+  "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
+  "rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
+  "status": "PASS_RAKUTEN_MT4_EXECUTION_MECHANICS_AND_ABSOLUTE_PROFITABILITY",
+  "qualification": {
+    "run_id": 30588133058,
+    "run_attempt": 3,
+    "runner_name": "onamae-mt4-ui-01",
+    "builder_schema": "usdjpy_hyp044_round_b_mt4_builder_v5",
+    "spread_points": 5,
+    "timeframe": "M15",
+    "model": 0,
+    "compile_ex4_sha256": "4ed7fecc0349cbe36db5b2884b0e470018bd141c52d078f6251e285718c0a493"
   },
-  "economic_replay_2025H1": {
-    "gross_loss_jpy": -107453,
-    "gross_profit_jpy": 108062,
-    "modified_trades": 113,
-    "net_jpy": 609,
-    "profit_factor": 1.0056675942039865,
-    "trades": 609
+  "periods": {
+    "2023_2024": {
+      "trades": 2386,
+      "net_jpy": 70455.0,
+      "gross_profit_jpy": 414767.0,
+      "gross_loss_jpy": -344312.0,
+      "profit_factor": 1.204625455981784,
+      "strategies": {
+        "B02": {"trades": 426, "net_jpy": 14665.0, "profit_factor": 1.321326058853174},
+        "F05": {"trades": 1455, "net_jpy": 38178.0, "profit_factor": 1.1626928829853875},
+        "SP39": {"trades": 505, "net_jpy": 17612.0, "profit_factor": 1.2751445086705202}
+      },
+      "c2_exact_60s": {"count": 148, "minimum_observed_seconds": 60, "maximum_observed_seconds": 60, "all_at_or_after_60_seconds": true},
+      "session_cap_blocked_count": 37,
+      "runtime_errors": 0,
+      "duplicate_open_tickets": 0,
+      "duplicate_close_tickets": 0
+    },
+    "2025H1": {
+      "trades": 609,
+      "net_jpy": 609.0,
+      "gross_profit_jpy": 108062.0,
+      "gross_loss_jpy": -107453.0,
+      "profit_factor": 1.0056675942039774,
+      "strategies": {
+        "B02": {"trades": 101, "net_jpy": 4648.0, "profit_factor": 1.3292251027057658},
+        "F05": {"trades": 336, "net_jpy": -7522.0, "profit_factor": 0.885555183641177},
+        "SP39": {"trades": 172, "net_jpy": 3483.0, "profit_factor": 1.12615451483212}
+      },
+      "sides": {
+        "LONG": {"trades": 203, "net_jpy": -7155.0, "profit_factor": 0.844497087716248},
+        "SHORT": {"trades": 406, "net_jpy": 7764.0, "profit_factor": 1.1263651307758662}
+      },
+      "c2_exact_60s": {"count": 56, "minimum_observed_seconds": 60, "maximum_observed_seconds": 60, "all_at_or_after_60_seconds": true},
+      "session_cap_blocked_count": 26,
+      "runtime_errors": 0,
+      "duplicate_open_tickets": 0,
+      "duplicate_close_tickets": 0
+    }
   },
-  "selected_MT4_execution": "PENDING"
+  "execution_checks": {
+    "B02_A2_executed_each_period": true,
+    "C2_exact_60s_observed_each_period": true,
+    "SP39_executed_each_period": true,
+    "session_cap_executed_each_period": true,
+    "no_duplicate_orders": true,
+    "no_runtime_errors": true
+  },
+  "2025H2_accessed": false,
+  "candidate_rule_changed_after_freeze": false,
+  "live_authorized": false
 }
