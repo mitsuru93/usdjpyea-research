@@ -1,0 +1,22 @@
+{
+  "schema_version": "usdjpy_p4_residual_loss_elimination_001_remote_readback_receipt_v1",
+  "status": "PASS",
+  "work_id": "USDJPY-P4-RESIDUAL-LOSS-ELIMINATION-001",
+  "tag": "usdjpy-p4-residual-loss-elimination-001-v1",
+  "release_id": 362813094,
+  "asset_id": 496110578,
+  "asset_name": "usdjpy-p4-residual-loss-elimination-001-v1.zip",
+  "asset_bytes": 58177,
+  "local_sha256": "5a6421b9b1533e5477cd37580f52ac268b4155ff95ff036eef43a45de8b85bdd",
+  "remote_sha256": "5a6421b9b1533e5477cd37580f52ac268b4155ff95ff036eef43a45de8b85bdd",
+  "byte_identical": true,
+  "zip_test_bad_file": null,
+  "internal_file_count": 28,
+  "run_id": 30598082681,
+  "run_attempt": 1,
+  "job_id": 91054732569,
+  "receipt_issue": 817,
+  "production_authorized": false,
+  "live_authorized": false,
+  "2025H2_accessed": false
+}
