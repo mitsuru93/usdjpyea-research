@@ -93,7 +93,7 @@ jobs:
           for token in ['362800814','496075894','39e3da6e8a8513d106c80113ac28d43f98a58465593e58d7d8b9a8a822ca3089','cannot contain its own final digest']:
               assert token in report
           top = {
-              'schema_version':'usdjpy_hyp044_research_archive_manifest_v7',
+              'schema_version':'usdjpy_hyp044_research_archive_manifest_v3',
               'hypothesis_id':'USDJPY-HYP-044',
               'candidate_id':'B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2',
               'selected_production_architecture':'B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP',
