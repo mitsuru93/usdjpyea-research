@@ -1,0 +1,53 @@
+name: FX2 Authority Registry CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - tools/research_infra/fx2_authority_registry_v1.py
+      - authority/**
+      - artifacts/research/fx2_environment_consolidation_001/**
+      - .github/workflows/fx2_authority_registry_*.yml
+      - docs/research_infrastructure/**
+      - templates/fx2_new_research_study_wrapper.yml
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: fx2-authority-registry-ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  metadata-only-registry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false, fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Generate metadata-only registry
+        env: {GITHUB_TOKEN: '${{ github.token }}'}
+        run: |
+          python -m py_compile tools/research_infra/fx2_authority_registry_v1.py
+          python tools/research_infra/fx2_authority_registry_v1.py --root . --out _test --repository '${{ github.repository }}' --source-sha '${{ github.event.pull_request.head.sha }}'
+      - name: Verify firewall and catalog schema
+        run: |
+          python - <<'PY'
+          import json
+          c=json.load(open('authority/authority_catalog.json'))
+          assert c['schema_version']=='fx2_authority_catalog_v1'
+          for k in ('candidate_outcome_computed','strategy_rule_changed','protected_period_accessed','2025H1_accessed','2025H2_accessed','production_authorized','live_authorized'): assert c[k] is False
+          a=json.load(open('_test/authority_integrity_audit.json'))
+          assert a['candidate_outcome_computed'] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: fx2-authority-registry-${{ github.run_id }}
+          path: |
+            authority/authority_catalog.json
+            _test
+          retention-days: 3
+          if-no-files-found: warn
