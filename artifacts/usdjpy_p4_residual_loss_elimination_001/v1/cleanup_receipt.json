@@ -1,0 +1,51 @@
+{
+  "schema_version": "usdjpy_p4_residual_loss_elimination_001_cleanup_receipt_v1",
+  "work_id": "USDJPY-P4-RESIDUAL-LOSS-ELIMINATION-001",
+  "status": "PASS_WITH_REMOTE_BRANCH_CLEANUP_DEBT",
+  "research": {
+    "primary_pr": 463,
+    "primary_pr_merged": true,
+    "primary_merge_sha": "efd771eb4d433225255867a3f3c385b6aee781ee",
+    "incorrect_kickoff_pr": 461,
+    "incorrect_kickoff_pr_closed_as_superseded": true,
+    "receipt_issue": 460
+  },
+  "core": {
+    "primary_pr": 810,
+    "primary_pr_merged": true,
+    "primary_merge_sha": "3a4caedf644d6f4ccf9df22cf7ee2159a968e078",
+    "release_trigger_pr": 816,
+    "release_trigger_pr_merged": false,
+    "release_trigger_pr_closed": true,
+    "superseded_release_trigger_prs_closed": [813, 814, 815],
+    "publisher_workflow_removed_from_main": true,
+    "publisher_scripts_removed_from_main": true,
+    "release_marker_removed_from_main": true,
+    "core_cleanup_receipt_path": "artifacts/research/usdjpy_p4_residual_loss_elimination_001/v1/cleanup_receipt.json"
+  },
+  "release": {
+    "tag": "usdjpy-p4-residual-loss-elimination-001-v1",
+    "run_id": 30598082681,
+    "run_attempt": 1,
+    "job_id": 91054732569,
+    "receipt_issue": 817,
+    "remote_readback": "PASS",
+    "sha256": "5a6421b9b1533e5477cd37580f52ac268b4155ff95ff036eef43a45de8b85bdd"
+  },
+  "notion": {
+    "research_current_state_updated": true,
+    "program_synthesis_updated": true,
+    "common_portfolio_integration_updated": true,
+    "candidate_ranking_updated": true,
+    "dedicated_archive_page_created": true,
+    "dedicated_archive_page_id": "3aec44d0-9973-812a-bd38-e5da417ca5b6"
+  },
+  "remaining_cleanup_debt": {
+    "temporary_remote_branches_may_remain": true,
+    "reason": "The connected GitHub action set does not expose branch deletion. No remote branch deletion is claimed.",
+    "economic_or_runtime_effect": false
+  },
+  "production_authorized": false,
+  "live_authorized": false,
+  "2025H2_accessed": false
+}
