@@ -1,5 +1,5 @@
 {
-  "schema_version": "usdjpy_hyp044_integrated_release_manifest_v2",
+  "schema_version": "usdjpy_hyp044_integrated_release_manifest_v3",
   "hypothesis_id": "USDJPY-HYP-044",
   "candidate_id": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2",
   "selected_production_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
@@ -19,6 +19,7 @@
     "candidate_results_2025h1.csv",
     "candidate_rule_contracts.json",
     "core_mt4_parity.json",
+    "core_release_readback_receipt.json",
     "current_best_portfolio_replay.json",
     "final_candidate_ranking.json",
     "final_decision.json",
@@ -31,6 +32,7 @@
     "portfolio_combination_matrix.csv",
     "quarterly_metrics.csv",
     "rakuten_execution_result.json",
+    "remote_readback_receipt.json",
     "research_core_parity.json",
     "residual_loss_decomposition.json",
     "residual_loss_event_ledger.csv",
@@ -48,15 +50,24 @@
   },
   "core_release": {
     "tag": "usdjpy-hyp044-integrated-profitability-stabilization-v1",
-    "status": "PENDING_BYTE_IDENTICAL_READBACK"
+    "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+    "release_id": 362800814,
+    "asset_id": 496075894,
+    "asset_bytes": 2981655,
+    "sha256": "39e3da6e8a8513d106c80113ac28d43f98a58465593e58d7d8b9a8a822ca3089"
   },
   "research_release": {
     "tag": "usdjpy-hyp044-integrated-profitability-stabilization-research-v1",
-    "status": "PENDING_BYTE_IDENTICAL_READBACK"
+    "status": "PASS_BYTE_IDENTICAL_RELEASE_READBACK",
+    "release_id": 362805909,
+    "asset_id": 496089104,
+    "asset_bytes": 430650,
+    "sha256": "9314416b4bae4bde628de5b8d5c356dc5ae47fc608d6e73bd745e5993b75e935"
   },
   "software_release_authorized": true,
   "production_configuration_selected": true,
   "production_authorized": false,
   "live_authorized": false,
-  "2025H2_accessed": false
+  "2025H2_accessed": false,
+  "status": "PASS_FINAL_RELEASES_AND_REMOTE_READBACK_COMPLETE"
 }
