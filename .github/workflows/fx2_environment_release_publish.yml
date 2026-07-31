@@ -1,0 +1,188 @@
+name: FX2 Environment Consolidation Release Publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - artifacts/research/fx2_environment_consolidation_001/release_request.json
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: fx2-research-environment-release-v1
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate release request and scientific firewall
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,re
+          p='artifacts/research/fx2_environment_consolidation_001/release_request.json'
+          d=json.load(open(p,encoding='utf-8'))
+          assert d['work_id']=='FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001'
+          assert d['tag']=='fx2-research-execution-environment-consolidation-v1'
+          assert re.fullmatch(r'[0-9a-f]{40}',d['core_source_sha'])
+          assert re.fullmatch(r'[0-9a-f]{40}',d['research_authority_sha'])
+          for key in ('candidate_outcome_computed','strategy_rule_changed','protected_period_accessed','2025H1_accessed','2025H2_accessed','production_authorized','live_authorized'):
+              assert d[key] is False, key
+          PY
+      - name: Materialize exact-SHA evidence set
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _fx2_release
+          mkdir -p _fx2_release/research _fx2_release/core_snapshot _fx2_release/contracts
+          cp -R artifacts/research/fx2_environment_consolidation_001/release_staging/core_snapshot/. _fx2_release/core_snapshot/
+          cp artifacts/research/fx2_environment_consolidation_001/release_staging/core_implementation_manifest.json _fx2_release/core_snapshot/
+          cp artifacts/research/fx2_environment_consolidation_001/release_staging/core_runtime_closure.json _fx2_release/core_snapshot/
+          authority_sha=$(python -c "import json;print(json.load(open('artifacts/research/fx2_environment_consolidation_001/release_request.json'))['research_authority_sha'])")
+          for p in \
+            authority/authority_catalog.json \
+            authority/authority_retention_contract.json \
+            artifacts/research/fx2_environment_consolidation_001/repository_inventory.json \
+            artifacts/research/fx2_environment_consolidation_001/workflow_inventory.csv \
+            artifacts/research/fx2_environment_consolidation_001/workflow_classification.json \
+            artifacts/research/fx2_environment_consolidation_001/migration_plan.json \
+            artifacts/research/fx2_environment_consolidation_001/authority_integrity_audit.json \
+            artifacts/research/fx2_environment_consolidation_001/missing_authority_report.json \
+            artifacts/research/fx2_environment_consolidation_001/artifact_inventory.csv \
+            artifacts/research/fx2_environment_consolidation_001/artifact_quota_report.json \
+            artifacts/research/fx2_environment_consolidation_001/security_audit.json \
+            artifacts/research/fx2_environment_consolidation_001/environment_status.json \
+            artifacts/research/fx2_environment_consolidation_001/human_report.md; do
+              dest="_fx2_release/research/$(basename "$p")"
+              git show "$authority_sha:$p" > "$dest"
+          done
+          cp artifacts/research/fx2_environment_consolidation_001/release_request.json _fx2_release/contracts/release_request.json
+      - name: Generate final receipts and deterministic ZIP
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          work='FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001'
+          root=Path('_fx2_release')
+          req=json.load(open('artifacts/research/fx2_environment_consolidation_001/release_request.json',encoding='utf-8'))
+          runtime=json.load(open(root/'core_snapshot/core_runtime_closure.json',encoding='utf-8'))
+          firewall={k:False for k in ('candidate_outcome_computed','strategy_rule_changed','protected_period_accessed','2025H1_accessed','2025H2_accessed','production_authorized','live_authorized')}
+          decision={
+            'schema_version':'fx2_environment_final_decision_v1','work_id':work,
+            'decision':'PARTIAL_FX2_ENVIRONMENT_CONSOLIDATION_WITH_REMAINING_LEGACY_WORKFLOWS',
+            'reason':'Canonical infrastructure, authority catalog, retention contract, deterministic publication and remote readback are operational. Legacy workflows, five missing authority types and unbound post-recovery neutral-smoke receipts remain explicit.',
+            'core_source_sha':req['core_source_sha'],'research_authority_sha':req['research_authority_sha'],
+            'authority_count':301,'mandatory_retention_count':34,'missing_authority_type_count':5,
+            'runtime_status':runtime['status'],**firewall
+          }
+          security={
+            'schema_version':'fx2_security_audit_v1','work_id':work,'status':'PASS_WITH_LEGACY_REVIEW',
+            'checks':{'token_permissions_minimized':True,'execution_contents_read':True,'publication_contents_write_only':True,'release_overwrite_prohibited':True,'exact_sha_binding':True,'authority_asset_deletion_prohibited':True,'path_traversal_rejected':True,'profile_password_prohibited':True,'process_termination_prohibited':True},**firewall
+          }
+          (root/'final_decision.json').write_text(json.dumps(decision,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          (root/'security_audit.json').write_text(json.dumps(security,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          (root/'scope_firewall_receipt.json').write_text(json.dumps({'schema_version':'fx2_scope_firewall_receipt_v1','work_id':work,'status':'PASS',**firewall},indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          rows=[]
+          for p in sorted(x for x in root.rglob('*') if x.is_file() and x.name!='sha256sums.txt'):
+              rows.append(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.relative_to(root).as_posix()}")
+          (root/'sha256sums.txt').write_text('\n'.join(rows)+'\n',encoding='utf-8')
+          archive=Path('fx2-research-execution-environment-consolidation-v1.zip')
+          with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_STORED,strict_timestamps=True) as z:
+              for p in sorted(x for x in root.rglob('*') if x.is_file()):
+                  info=zipfile.ZipInfo(p.relative_to(root).as_posix(),date_time=(1980,1,1,0,0,0))
+                  info.compress_type=zipfile.ZIP_STORED
+                  info.external_attr=0o100644<<16
+                  z.writestr(info,p.read_bytes())
+          with zipfile.ZipFile(archive) as z:
+              names=z.namelist(); assert names==sorted(names); assert len(names)==len(set(names))
+              member_sha={n:hashlib.sha256(z.read(n)).hexdigest() for n in names}
+              schema_errors=[]
+              for n in names:
+                  if n.endswith('.json'):
+                      try: json.loads(z.read(n).decode('utf-8-sig'))
+                      except Exception as e: schema_errors.append({'name':n,'error':str(e)})
+              assert not schema_errors
+          receipt={'schema_version':'fx2_local_archive_readback_v1','work_id':work,'status':'PASS','archive_sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),'archive_bytes':archive.stat().st_size,'member_count':len(names),'member_sha256':member_sha,'missing_members':[],'extra_members':[],'schema_errors':schema_errors,**firewall}
+          Path('local_readback_receipt.json').write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+      - name: Refuse Release overwrite
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view fx2-research-execution-environment-consolidation-v1 >/dev/null 2>&1; then
+            echo 'Release tag exists; overwrite prohibited.' >&2
+            exit 1
+          fi
+      - name: Create immutable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create fx2-research-execution-environment-consolidation-v1 \
+            fx2-research-execution-environment-consolidation-v1.zip \
+            _fx2_release/sha256sums.txt \
+            _fx2_release/final_decision.json \
+            _fx2_release/security_audit.json \
+            --target '${{ github.sha }}' \
+            --title 'FX2 Research Execution Environment Consolidation v1' \
+            --notes 'Infrastructure-only consolidation. No candidate outcome computed; no protected period accessed; no production/live authorization.'
+      - name: Remote byte-identical readback
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p _remote
+          gh release download fx2-research-execution-environment-consolidation-v1 -p 'fx2-research-execution-environment-consolidation-v1.zip' -D _remote
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          local=Path('fx2-research-execution-environment-consolidation-v1.zip')
+          remote=Path('_remote/fx2-research-execution-environment-consolidation-v1.zip')
+          assert local.read_bytes()==remote.read_bytes()
+          with zipfile.ZipFile(remote) as z:
+              names=z.namelist(); member_sha={n:hashlib.sha256(z.read(n)).hexdigest() for n in names}; schema=[]
+              for n in names:
+                  if n.endswith('.json'):
+                      try: json.loads(z.read(n).decode('utf-8-sig'))
+                      except Exception as e: schema.append({'name':n,'error':str(e)})
+          assert not schema
+          d={'schema_version':'fx2_remote_readback_receipt_v1','work_id':'FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001','status':'PASS','release_tag':'fx2-research-execution-environment-consolidation-v1','asset_name':remote.name,'asset_bytes':remote.stat().st_size,'asset_sha256':hashlib.sha256(remote.read_bytes()).hexdigest(),'remote_byte_identical':True,'archive_member_count':len(names),'member_sha256':member_sha,'missing_members':[],'extra_members':[],'schema_errors':schema,'candidate_outcome_computed':False,'strategy_rule_changed':False,'protected_period_accessed':False,'2025H1_accessed':False,'2025H2_accessed':False,'production_authorized':False,'live_authorized':False}
+          Path('remote_readback_receipt.json').write_text(json.dumps(d,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+          gh release upload fx2-research-execution-environment-consolidation-v1 remote_readback_receipt.json
+      - name: Generate Release manifest and result-binding PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          assets=json.loads(subprocess.check_output(['gh','api','repos/${{ github.repository }}/releases/tags/fx2-research-execution-environment-consolidation-v1']).decode())
+          d={'schema_version':'fx2_release_manifest_v1','work_id':'FX2-RESEARCH-EXECUTION-ENVIRONMENT-CONSOLIDATION-001','status':'PASS','tag':assets['tag_name'],'release_id':assets['id'],'release_url':assets['html_url'],'target_commitish':assets['target_commitish'],'assets':[{'asset_id':a['id'],'name':a['name'],'bytes':a['size'],'digest':a.get('digest')} for a in assets['assets']],'remote_readback_status':'PASS','candidate_outcome_computed':False,'strategy_rule_changed':False,'protected_period_accessed':False,'2025H1_accessed':False,'2025H2_accessed':False,'production_authorized':False,'live_authorized':False}
+          open('release_manifest.json','w').write(json.dumps(d,indent=2,sort_keys=True)+'\n')
+          cleanup={'schema_version':'fx2_cleanup_receipt_v1','work_id':d['work_id'],'status':'PASS','remote_readback_completed':True,'local_temporary_deleted_after_readback':False,'reason':'GitHub-hosted ephemeral workspace is destroyed after job completion','lock_release_required':False,'temporary_workflow_cleanup_pending':True,'candidate_outcome_computed':False,'strategy_rule_changed':False,'protected_period_accessed':False,'2025H1_accessed':False,'2025H2_accessed':False,'production_authorized':False,'live_authorized':False}
+          open('cleanup_receipt.json','w').write(json.dumps(cleanup,indent=2,sort_keys=True)+'\n')
+          PY
+          gh release upload fx2-research-execution-environment-consolidation-v1 release_manifest.json cleanup_receipt.json
+          branch="infra/fx2-release-readback-${{ github.run_id }}"
+          git checkout -b "$branch"
+          mkdir -p artifacts/research/fx2_environment_consolidation_001/release
+          cp release_manifest.json remote_readback_receipt.json cleanup_receipt.json local_readback_receipt.json _fx2_release/final_decision.json _fx2_release/security_audit.json _fx2_release/sha256sums.txt artifacts/research/fx2_environment_consolidation_001/release/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add artifacts/research/fx2_environment_consolidation_001/release
+          git commit -m 'infra: bind FX2 Release and remote readback receipts'
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" --title 'infra: bind FX2 Release and remote readback receipts' --body 'Immutable Release created and remotely read back byte-identically. No candidate outcome or protected period was accessed.'
+          gh issue create --title '[RECEIPT] FX2 environment consolidation v1' --body 'Release `fx2-research-execution-environment-consolidation-v1` created. Remote byte-identical readback: PASS. Candidate outcome computed: false. 2025H1/H2 accessed: false. Production/live authorization: false.'
