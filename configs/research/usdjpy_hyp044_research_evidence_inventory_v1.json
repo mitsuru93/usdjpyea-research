@@ -266,8 +266,8 @@
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/margin_concurrency_metrics.json",
-      "bytes": 1853,
-      "sha256": "9d87b1c07f68b93f056fc3daa1716759d8493d15351c2cb093097f59f1d547be"
+      "bytes": 631,
+      "sha256": "752389f457a34b50a47050ce79d462e8ad0ebca783486a2d349b4704c4ab4022"
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/monthly_metrics.csv",
@@ -336,8 +336,8 @@
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/source_portability_matrix.csv",
-      "bytes": 423,
-      "sha256": "a9f5cd6f9182b0cd01108de4c3dbb281e55190a982e1b618af1658cb5ab2c13e"
+      "bytes": 1418,
+      "sha256": "6a0754ee4296e18bce900c2a66d035928f7bd19550501fe43d06f5a2c002bbdd"
     },
     {
       "path": "artifacts/research/usdjpy_hyp044/integrated_economic_synthesis_v1/strategy_contribution.csv",
