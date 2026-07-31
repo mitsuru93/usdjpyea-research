@@ -1,0 +1,31 @@
+{
+  "schema_version": "usdjpy_b0_cross_regime_stability_improvement_001_work_manifest_v1",
+  "work_id": "USDJPY-B0-CROSS-REGIME-STABILITY-IMPROVEMENT-001",
+  "hypothesis_id": "USDJPY-HYP-045",
+  "formal_name": "B0_CROSS_REGIME_LOSS_MONTH_AND_LOSS_QUARTER_STABILITY_IMPROVEMENT",
+  "status": "ACTIVE_EXECUTION",
+  "primary_reference_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
+  "primary_reference_rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
+  "parent_formal_decisions_modified": false,
+  "asian_range_sweep_included": false,
+  "period_roles": {
+    "2020_2024": "ANALYSIS_AND_CANDIDATE_SELECTION",
+    "2025H1": "VALIDATION_ONLY_AFTER_FREEZE",
+    "2025H2": "PROHIBITED_NOT_ACCESSED"
+  },
+  "authority_lineage": {
+    "latest_binding_f05_trade_count": 1464,
+    "retained_row_certified_f05_c2_trade_count": 1451,
+    "unresolved_difference": 13,
+    "synthetic_rows_created": false
+  },
+  "execution": {
+    "core_pull_request": 818,
+    "core_analysis_run": 30606591440,
+    "repository_mutex": "usdjpy-b0-cross-regime-stability-improvement-v1",
+    "duplicate_dispatch_permitted": false
+  },
+  "production_authorized": false,
+  "live_authorized": false,
+  "2025H2_accessed": false
+}
