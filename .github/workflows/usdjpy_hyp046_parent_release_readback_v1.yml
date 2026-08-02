@@ -1,6 +1,12 @@
 name: USDJPY HYP-046 Parent Release Readback v1
 
 on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - scripts/ops/run_hyp046_parent_release_readback_v1.py
+      - .github/workflows/usdjpy_hyp046_parent_release_readback_v1.yml
   push:
     branches:
       - research/usdjpy-a2a-a3-integrated-f05-long-control-v1
@@ -23,6 +29,7 @@ jobs:
       - name: Checkout exact branch head
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
 
       - name: Read back immutable HYP-045 Release v5
