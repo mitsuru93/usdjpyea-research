@@ -3,15 +3,17 @@
   "work_id": "USDJPY-B0-CROSS-REGIME-STABILITY-IMPROVEMENT-001",
   "hypothesis_id": "USDJPY-HYP-045",
   "formal_name": "B0_CROSS_REGIME_LOSS_MONTH_AND_LOSS_QUARTER_STABILITY_IMPROVEMENT",
-  "status": "ECONOMIC_AND_SOURCE_NATIVE_QUALIFICATION_COMPLETE_MT4_QUALIFICATION_IN_PROGRESS",
+  "status": "COMPLETE_RELEASED_REMOTE_READBACK_AND_CLEANUP_VERIFIED",
   "primary_reference_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP",
   "primary_reference_rule_hash_sha256": "d8878f92e0641b10c4926966a03a46f238e4074335312003b7a6c058f8843f94",
   "selected_candidate": "A3_B0_LOCALIZED_F05_LONG_SESSION_CLUSTER_CONTROL",
   "selected_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP_PLUS_A3_B0_LOCALIZED_F05_LONG_SESSION_CLUSTER_CONTROL",
   "selected_rule_hash_sha256": "1425b4caf6c0a5e8c4f21be7efdf410442bbd6d24d329f87c9c4931eecbd4b7f",
   "economic_decision": "PARTIAL_B0_STABILITY_IMPROVEMENT_WITH_REMAINING_LOSS_PERIODS",
+  "technical_qualification_status": "PASS_CORE_MT4_SAME_INPUT_AND_RAKUTEN_QUALIFICATION",
   "parent_formal_decisions_modified": false,
   "asian_range_sweep_included": false,
+  "candidate_retuned_after_validation": false,
   "period_roles": {
     "2020_2024": "ANALYSIS_CAUSE_DECOMPOSITION_CANDIDATE_CONSTRUCTION_AND_FREEZE",
     "2025H1": "VALIDATION_ONLY_AFTER_FREEZE",
@@ -20,10 +22,16 @@
   "economic_metrics": {
     "current_b0_2020_2024_net_jpy": 84796.0000000007,
     "selected_2020_2024_net_jpy": 98762.00000000081,
+    "selected_2020_2024_profit_factor": 1.1372527492380806,
+    "selected_through_2025H1_net_jpy": 100161,
+    "selected_through_2025H1_profit_factor": 1.121227,
     "current_b0_2025H1_net_jpy": 609.0000000009604,
     "selected_2025H1_net_jpy": 1399.0000000009604,
     "selected_2025H1_profit_factor": 1.013116075865117,
+    "selected_2025Q1_net_jpy": -15339,
+    "selected_2025Q2_net_jpy": 16738,
     "current_b0_red_quarters_2020_2024": 9,
+    "selected_red_halfyears_2020_2024": 3,
     "selected_red_quarters_2020_2024": 8,
     "current_b0_red_months_2020_2024": 22,
     "selected_red_months_2020_2024": 20,
@@ -32,7 +40,9 @@
     "current_b0_rolling_12m_min_jpy": -32000.000000000047,
     "selected_rolling_12m_min_jpy": -23240.000000000073,
     "current_b0_realized_drawdown_jpy": 50884.000000000204,
-    "selected_realized_drawdown_jpy": 39562.000000000175
+    "selected_realized_drawdown_jpy": 39562.000000000175,
+    "controlled_trades_development": 62,
+    "controlled_trades_through_2025H1": 64
   },
   "authority_lineage": {
     "latest_binding_f05_trade_count": 1464,
@@ -50,37 +60,103 @@
     "core_authority_commit": "3612f88239a4934cc25a94be4a56622f7243e32c",
     "core_reconstruction_receipt_commit": "5759af30dc5658e6d7e47c2e010cae0d65b11d35"
   },
+  "implementation_authority": {
+    "compile_status": "PASS_0_ERRORS_0_WARNINGS",
+    "implementation_sha256": "fc9aa82e9ecd74951a00c0d06f260bca5ec54f91358152268dfd993f4f4157d2",
+    "core_source_sha256": "7bdcaa5eeed0b711edc44a155e3f485ee888c490d82eac951aaf2634e36f9089",
+    "ex4_sha256": "b5fba35009f3da131f3f3c12d49cc1a35338a6a0bf4bfa8fc0e0432b3c2fd09"
+  },
   "source_native_2020_2022": {
     "status": "PASS_SELECTED_CANDIDATE_SOURCE_NATIVE_TICK_FULL_EQUITY_2020_2022",
     "run_id": 30640088883,
     "tick_count": 78737040,
-    "net_jpy": 36073,
-    "full_equity_drawdown_jpy": 36626,
-    "minimum_equity_jpy": 97316,
-    "minimum_free_margin_jpy": 62510,
-    "minimum_margin_level_pct": 235.48518896833653,
+    "initial_balance_jpy": 100000,
+    "final_balance_jpy": 110530,
+    "net_jpy": 10530,
+    "minimum_equity_jpy": 67391,
+    "full_equity_drawdown_jpy": 48739,
+    "realized_drawdown_jpy": 40448,
+    "minimum_free_margin_jpy": 24837.08,
+    "minimum_margin_level_pct": 150.6512,
     "maximum_concurrency": 10,
-    "stopout_breached": false
+    "maximum_same_direction_concurrency": 6,
+    "maximum_opposite_direction_concurrency": 6,
+    "maximum_lots": 0.1,
+    "blocked_f05_long_trades": 33,
+    "improvement_jpy": 10274,
+    "stopout_breached": false,
+    "duplicate_order_prevention": "PASS"
+  },
+  "rakuten_mt4_qualification": {
+    "status": "PASS_CORE_MT4_SAME_INPUT_AND_RAKUTEN_QUALIFICATION",
+    "run_id": 30676863366,
+    "development_2023_2024": {
+      "baseline_net_jpy": 70455,
+      "candidate_net_jpy": 79984,
+      "improvement_jpy": 9529,
+      "blocked_trades": 29,
+      "exact_close_deltas": 0,
+      "minimum_equity_jpy": 79088,
+      "drawdown_jpy": 24881,
+      "minimum_free_margin_jpy": 50559.76,
+      "minimum_margin_level_pct": 275.812,
+      "maximum_concurrency": 7
+    },
+    "validation_2025H1": {
+      "baseline_net_jpy": 609,
+      "candidate_net_jpy": 1399,
+      "improvement_jpy": 790,
+      "trades": 607,
+      "profit_factor": 1.013116075865117,
+      "Q1_net_jpy": -15339,
+      "Q2_net_jpy": 16738,
+      "blocked_trades": 2,
+      "exact_close_deltas": 0,
+      "minimum_equity_jpy": 74732,
+      "drawdown_jpy": 25986,
+      "minimum_free_margin_jpy": 39205.32,
+      "minimum_margin_level_pct": 179.0064,
+      "maximum_concurrency": 8
+    }
+  },
+  "restart_restoration": {
+    "deterministic_receipt_status": "PASS",
+    "separate_strategy_tester_process_restart_with_account_continuity_executed": false,
+    "limitation_retained": true
+  },
+  "compressed_authority": {
+    "repair_commit": "dfeec7e27209845f0fb7e9773399c583d54f8c3e",
+    "csv_bytes": 45569,
+    "csv_sha256": "b59a5d547a9f68d56360a4d074f4cbea7c7c4034215ab27ea7e57bcc277257e4",
+    "crc32": "84a5f2f6",
+    "gzip_bytes": 12106,
+    "gzip_sha256": "fb361b2bf9b6611c8890a929723669de1ed8570e5b130d4c701214788931a2ab"
   },
   "execution": {
     "core_pull_request": 818,
+    "core_merge_commit": "06901e91a448ecb2f1afb9112253fdbfa018ac29",
     "core_economic_authority_commit": "3c02162ac52c929396be12217d0d8a4f8dbbc353",
-    "core_receipt_commit": "a0a434c4d5932cf9805534af765ad1eedad59a1a",
     "core_economic_source_archive_sha256": "0c0de1ea945229524b8525e9199b9d9c5341a6cc2a00a611ebfa97e53d2d5ac4",
-    "repository_mutex": "usdjpy-b0-cross-regime-stability-improvement-v1",
-    "duplicate_dispatch_permitted": false,
-    "runner_recovery": "PASS_BOTH_SELF_HOSTED_LANES_ACCEPTED_JOBS",
-    "hosted_runner_used_for_continuation": false,
-    "compile_status": {
-      "pinned_hyp044_baseline": "PASS_0_ERRORS_4_KNOWN_WARNING60",
-      "selected_a3_candidate": "PASS_0_ERRORS_0_WARNINGS",
-      "candidate_ex4_sha256": "c578b68e4598f528cfe888403eba7546be771537eab66bdc2487fea6f450c4f7"
+    "runner_recovery": "PASS_SERVICE_INTERACTIVE_AND_HEAVY_LANES",
+    "release": {
+      "tag": "usdjpy-hyp045-b0-cross-regime-stability-improvement-v5",
+      "release_id": 363909176,
+      "target_commit": "b2c742ffd7d31fcc5576afebf79bfcb2bc8fcd99",
+      "archive": "usdjpy-b0-cross-regime-stability-improvement-001-v5.zip",
+      "archive_sha256": "aa54091ed2149b2c8d6ce5da1f11c739ee0d213eb2dda2928e7dfa1c5c153065",
+      "deterministic_archive_members": 70,
+      "initial_remote_readback": "PASS",
+      "all_required_assets_remote_readback": "PASS",
+      "placeholder_versions_v1_v4_preserved": true
     },
-    "technical_qualification": "IN_PROGRESS_RAKUTEN_MT4_SAME_INPUT",
-    "mt4_run_id": 30642368081,
-    "mt4_job_id": 91195239054,
-    "mt4_current_stage": "BASELINE_2023_2024_STRATEGY_TESTER"
+    "cleanup": {
+      "status": "PASS_EXACT_OWNER_RETRY10_AND_FINALIZER_ROOTS_REMOVED",
+      "runner": "onamae-mt4-01",
+      "process_terminated": false,
+      "other_research_affected": false
+    }
   },
+  "exact_next_action": "START_INDEPENDENT_A2A_HIGHVOL_EXTENSION4_PERMISSION_PLUS_A3_F05_LONG_SESSION_CLUSTER_CONTROL_STUDY_WITHOUT_REOPENING_OR_RETUNING_HYP045",
   "production_authorized": false,
   "live_authorized": false,
   "2025H2_accessed": false
