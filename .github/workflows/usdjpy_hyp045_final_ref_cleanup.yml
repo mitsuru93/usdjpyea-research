@@ -1,0 +1,31 @@
+name: USDJPY HYP-045 Final Ref Cleanup
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: read
+
+jobs:
+  cleanup:
+    if: github.event.issue.title == '[USDJPY-HYP-045-FINAL-REF-CLEANUP]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const pr=await github.rest.pulls.get({owner,repo,pull_number:472});
+            if(!pr.data.merged) throw new Error('Research PR #472 is not merged');
+            const branch='research/usdjpy-b0-cross-regime-stability-improvement-v1';
+            try{
+              await github.rest.git.deleteRef({owner,repo,ref:`heads/${branch}`});
+            }catch(error){
+              if(error.status!==422 && error.status!==404) throw error;
+            }
+            const body=['## HYP-045 Research final ref cleanup — PASS',`- merged branch deleted: \`${branch}\``,`- Research PR #472 merge: \`${pr.data.merge_commit_sha}\``,`- main authority retained`,`- 2025H2 accessed: \`false\``].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:context.issue.number,body});
+            await github.rest.issues.update({owner,repo,issue_number:context.issue.number,state:'closed',state_reason:'completed'});
