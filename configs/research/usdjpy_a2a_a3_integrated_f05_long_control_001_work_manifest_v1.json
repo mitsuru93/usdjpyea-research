@@ -1,0 +1,56 @@
+{
+  "schema_version": "usdjpy_a2a_a3_integrated_f05_long_control_001_work_manifest_v1",
+  "work_id": "USDJPY-A2A-A3-INTEGRATED-F05-LONG-CONTROL-001",
+  "hypothesis_id": "USDJPY-HYP-046",
+  "formal_name": "A2A_HIGHVOL_EXTENSION4_PERMISSION_PLUS_A3_F05_LONG_SESSION_CLUSTER_CONTROL_INTEGRATION",
+  "title": "USDJPY A2A High-Volatility Extension Permission and A3 F05 Long Session-Cluster Control Integration Study",
+  "status": "IN_PROGRESS_AUTHORITY_PREFLIGHT",
+  "research_branch": "research/usdjpy-a2a-a3-integrated-f05-long-control-v1",
+  "core_branch": "research/usdjpy-a2a-a3-integrated-f05-long-control-v1",
+  "immutable_parent": {
+    "hypothesis_id": "USDJPY-HYP-045",
+    "release_tag": "usdjpy-hyp045-b0-cross-regime-stability-improvement-v5",
+    "release_id": 363909176,
+    "release_archive": "usdjpy-b0-cross-regime-stability-improvement-001-v5.zip",
+    "release_archive_sha256": "aa54091ed2149b2c8d6ce5da1f11c739ee0d213eb2dda2928e7dfa1c5c153065",
+    "selected_rule_hash_sha256": "1425b4caf6c0a5e8c4f21be7efdf410442bbd6d24d329f87c9c4931eecbd4b7f",
+    "implementation_sha256": "fc9aa82e9ecd74951a00c0d06f260bca5ec54f91358152268dfd993f4f4157d2",
+    "core_source_sha256": "7bdcaa5eeed0b711edc44a155e3f485ee888c490d82eac951aaf2634e36f9089",
+    "ex4_sha256": "b5fba35009f3da131f3f3c12d49cc1a35338a6a0bf4bfa8fc0e0432b3c2fd09f"
+  },
+  "primary_reference_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP_PLUS_A3_B0_LOCALIZED_F05_LONG_SESSION_CLUSTER_CONTROL",
+  "candidate_scope": [
+    "C0_HYP045_A3_REFERENCE",
+    "C1_A2A_HIGHVOL_EXTENSION4_PERMISSION",
+    "C2_A2A_HIGHVOL_EXTENSION4_PERMISSION_PLUS_A3_SESSION_CLUSTER_CONTROL"
+  ],
+  "frozen_rule_hashes": {
+    "A2A_F05_LONG_HIGHVOL_EXTENSION4_PERMISSION": "2ec036e50da92fd6c1280b63d0c2a2b2b60b2c875851b03544b0c9bcf2254cf8",
+    "A3_B0_LOCALIZED_F05_LONG_SESSION_CLUSTER_CONTROL": "1425b4caf6c0a5e8c4f21be7efdf410442bbd6d24d329f87c9c4931eecbd4b7f"
+  },
+  "period_roles": {
+    "2020_2024": "ANALYSIS_INTERACTION_REPLAY_CANDIDATE_COMPARISON_AND_SELECTION",
+    "2025H1": "VALIDATION_AFTER_RULE_FREEZE",
+    "2025H2": "PROHIBITED_NOT_ACCESSED"
+  },
+  "selection_priority": [
+    "MAINTAIN_OR_IMPROVE_2020_2024_NET",
+    "KEEP_2025H1_POSITIVE",
+    "MAINTAIN_OR_IMPROVE_PF",
+    "REDUCE_RED_MONTHS",
+    "REDUCE_RED_QUARTERS",
+    "IMPROVE_ROLLING_6M",
+    "IMPROVE_ROLLING_12M",
+    "IMPROVE_REALIZED_AND_FULL_EQUITY_DD",
+    "IMPROVE_2022H2",
+    "DO_NOT_MATERIALLY_WORSEN_2021",
+    "ACCEPTABLE_WINNER_SACRIFICE",
+    "RAKUTEN_MT4_EXECUTABLE",
+    "RESEARCH_CORE_MT4_PARITY",
+    "MATERIAL_IMPROVEMENT_JUSTIFIES_COMPLEXITY"
+  ],
+  "production_authorized": false,
+  "live_authorized": false,
+  "2025H2_accessed": false,
+  "exact_next_action": "RUN_PARENT_RELEASE_READBACK_AND_ROW_LEVEL_AUTHORITY_INVENTORY"
+}
