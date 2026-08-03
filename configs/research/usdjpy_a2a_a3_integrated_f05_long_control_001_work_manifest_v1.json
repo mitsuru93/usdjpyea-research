@@ -1,0 +1,96 @@
+{
+  "schema_version": "usdjpy_a2a_a3_integrated_f05_long_control_001_work_manifest_v2",
+  "work_id": "USDJPY-A2A-A3-INTEGRATED-F05-LONG-CONTROL-001",
+  "hypothesis_id": "USDJPY-HYP-046",
+  "formal_name": "A2A_HIGHVOL_EXTENSION4_PERMISSION_PLUS_A3_F05_LONG_SESSION_CLUSTER_CONTROL_INTEGRATION",
+  "title": "USDJPY A2A High-Volatility Extension Permission and A3 F05 Long Session-Cluster Control Integration Study",
+  "status": "COMPLETED_KEEP_HYP045_A3_NO_SUPERIOR_COMBINATION",
+  "final_decision": "KEEP_HYP045_A3_NO_SUPERIOR_COMBINATION",
+  "research_branch": "research/usdjpy-a2a-a3-integrated-f05-long-control-v1",
+  "core_branch": "research/usdjpy-a2a-a3-integrated-f05-long-control-v1",
+  "immutable_parent": {
+    "hypothesis_id": "USDJPY-HYP-045",
+    "release_tag": "usdjpy-hyp045-b0-cross-regime-stability-improvement-v5",
+    "release_id": 363909176,
+    "release_archive": "usdjpy-b0-cross-regime-stability-improvement-001-v5.zip",
+    "release_archive_sha256": "aa54091ed2149b2c8d6ce5da1f11c739ee0d213eb2dda2928e7dfa1c5c153065",
+    "selected_rule_hash_sha256": "1425b4caf6c0a5e8c4f21be7efdf410442bbd6d24d329f87c9c4931eecbd4b7f",
+    "implementation_sha256": "fc9aa82e9ecd74951a00c0d06f260bca5ec54f91358152268dfd993f4f4157d2",
+    "core_source_sha256": "7bdcaa5eeed0b711edc44a155e3f485ee888c490d82eac951aaf2634e36f9089",
+    "certified_ex4_sha256": "b5fba350835e7372c15e2fa79c578e4198c46fc0a5a14d4fb9d686419ae6c310"
+  },
+  "selected_candidate_id": "C0_HYP045_A3_REFERENCE",
+  "selected_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP_PLUS_A3_B0_LOCALIZED_F05_LONG_SESSION_CLUSTER_CONTROL",
+  "candidate_scope": [
+    "C0_HYP045_A3_REFERENCE",
+    "C1_A2A_HIGHVOL_EXTENSION4_PERMISSION",
+    "C2_A2A_HIGHVOL_EXTENSION4_PERMISSION_PLUS_A3_SESSION_CLUSTER_CONTROL"
+  ],
+  "rejected_integrated_candidate": {
+    "candidate_id": "C2_A2A_HIGHVOL_EXTENSION4_PERMISSION_PLUS_A3_SESSION_CLUSTER_CONTROL",
+    "rule_hash_sha256": "84e2a0258bab41d7c4bf10da2034f839341a25df24b6034a5bfe2bccbf2c7e1c",
+    "implementation_hash_sha256": "0ad7bbafff86914a11e772afca6366e37d3a309e30888b5651b2187414ff88ed",
+    "reason": "Rakuten MT4 C2 tied C0 in 2025H1, trailed C0 by JPY 2866 in 2023-2024, and observed zero A2A blocks versus 47 in frozen source-native validation."
+  },
+  "frozen_research_results": {
+    "2020_2024": {
+      "C0": {"net_jpy": 98762, "profit_factor": 1.137253, "realized_drawdown_jpy": 39562},
+      "C1": {"net_jpy": 93419, "profit_factor": 1.139252, "realized_drawdown_jpy": 38457},
+      "C2": {"net_jpy": 98374, "profit_factor": 1.148438, "realized_drawdown_jpy": 35622}
+    },
+    "2025H1": {
+      "C0": {"net_jpy": 1399, "profit_factor": 1.0131},
+      "C1": {"net_jpy": 6633, "profit_factor": 1.0728, "a2a_blocked_trades": 47},
+      "C2": {"net_jpy": 7423, "profit_factor": 1.0822, "blocked_trades": 49}
+    }
+  },
+  "rakuten_mt4_results": {
+    "technical_qualification": "PASS_HYP046_RAKUTEN_MT4_TECHNICAL_QUALIFICATION",
+    "core_mt4_parity": "FAIL_A2A_PERMISSION_STATE_AND_ECONOMIC_PARITY",
+    "2023_2024": {
+      "C0": {"trades": 2357, "net_jpy": 68868, "profit_factor": 1.202659},
+      "C1": {"trades": 2382, "net_jpy": 67589, "profit_factor": 1.196302},
+      "C2": {"trades": 2353, "net_jpy": 66002, "profit_factor": 1.194225}
+    },
+    "2025H1": {
+      "C0": {"trades": 607, "net_jpy": 1399, "profit_factor": 1.013116},
+      "C1": {"trades": 609, "net_jpy": 609, "profit_factor": 1.005668},
+      "C2": {"trades": 607, "net_jpy": 1399, "profit_factor": 1.013116, "a2a_blocked_events": 0}
+    },
+    "runtime_errors": 0,
+    "error_134_count": 0,
+    "duplicate_tickets": 0,
+    "stopout": false,
+    "c2_clean_restart_replay": "PASS_EXACT"
+  },
+  "core_source_native_reference": {
+    "tick_count": 78737040,
+    "net_jpy": 36469,
+    "full_equity_drawdown_jpy": 30190,
+    "minimum_equity_jpy": 97316,
+    "minimum_free_margin_jpy": 62510,
+    "minimum_margin_level_pct": 248.1733,
+    "maximum_concurrency": 10,
+    "stopout": false,
+    "authority_role": "RESEARCH_REFERENCE_ONLY_AFTER_RAKUTEN_PARITY_FAILURE"
+  },
+  "final_release": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "tag": "usdjpy-hyp046-a2a-a3-integrated-f05-long-control-v1",
+    "release_id": 364050060,
+    "asset_id": 499767977,
+    "asset_name": "usdjpy-hyp046-a2a-a3-integrated-f05-long-control-v1.zip",
+    "asset_sha256": "ca7b6efba6e6a0905e4e02be8f34bf1f7171d3050ed6661bbb2d85d90ce1eee7",
+    "asset_bytes": 7935461,
+    "remote_readback": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+  },
+  "period_roles": {
+    "2020_2024": "ANALYSIS_INTERACTION_REPLAY_CANDIDATE_COMPARISON_AND_SELECTION",
+    "2025H1": "VALIDATION_AFTER_RULE_FREEZE",
+    "2025H2": "PROHIBITED_NOT_ACCESSED"
+  },
+  "production_authorized": false,
+  "live_authorized": false,
+  "2025H2_accessed": false,
+  "exact_next_action": "NONE_STUDY_CLOSED_PARENT_HYP045_REMAINS_SELECTED"
+}
