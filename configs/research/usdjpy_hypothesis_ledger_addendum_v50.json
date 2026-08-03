@@ -11,30 +11,59 @@
       "name": "A2A_HIGHVOL_EXTENSION4_PERMISSION_PLUS_A3_F05_LONG_SESSION_CLUSTER_CONTROL_INTEGRATION",
       "title": "USDJPY A2A High-Volatility Extension Permission and A3 F05 Long Session-Cluster Control Integration Study",
       "work_id": "USDJPY-A2A-A3-INTEGRATED-F05-LONG-CONTROL-001",
-      "status": "IN_PROGRESS_AUTHORITY_PREFLIGHT",
+      "status": "COMPLETED_KEEP_HYP045_A3_NO_SUPERIOR_COMBINATION",
+      "final_decision": "KEEP_HYP045_A3_NO_SUPERIOR_COMBINATION",
       "research_branch": "research/usdjpy-a2a-a3-integrated-f05-long-control-v1",
       "core_branch": "research/usdjpy-a2a-a3-integrated-f05-long-control-v1",
       "immutable_parent_hypothesis": "USDJPY-HYP-045",
       "parent_release": "usdjpy-hyp045-b0-cross-regime-stability-improvement-v5",
-      "primary_reference_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP_PLUS_A3_B0_LOCALIZED_F05_LONG_SESSION_CLUSTER_CONTROL",
+      "selected_candidate_id": "C0_HYP045_A3_REFERENCE",
+      "selected_architecture": "B0_A2_EARLY_C3_PLUS_A4_SESSION_LOSS_CAP_2_WITHOUT_ASIAN_RANGE_SWEEP_PLUS_A3_B0_LOCALIZED_F05_LONG_SESSION_CLUSTER_CONTROL",
+      "selected_rule_hash_sha256": "1425b4caf6c0a5e8c4f21be7efdf410442bbd6d24d329f87c9c4931eecbd4b7f",
+      "selected_certified_ex4_sha256": "b5fba350835e7372c15e2fa79c578e4198c46fc0a5a14d4fb9d686419ae6c310",
       "candidate_scope": [
         "C0_HYP045_A3_REFERENCE",
         "C1_A2A_HIGHVOL_EXTENSION4_PERMISSION",
         "C2_A2A_HIGHVOL_EXTENSION4_PERMISSION_PLUS_A3_SESSION_CLUSTER_CONTROL"
       ],
+      "rejected_integrated_candidate_id": "C2_A2A_HIGHVOL_EXTENSION4_PERMISSION_PLUS_A3_SESSION_CLUSTER_CONTROL",
+      "rejected_integrated_rule_hash_sha256": "84e2a0258bab41d7c4bf10da2034f839341a25df24b6034a5bfe2bccbf2c7e1c",
+      "rejected_integrated_implementation_hash_sha256": "0ad7bbafff86914a11e772afca6366e37d3a309e30888b5651b2187414ff88ed",
+      "rakuten_mt4_technical_qualification": "PASS_HYP046_RAKUTEN_MT4_TECHNICAL_QUALIFICATION",
+      "core_mt4_parity": "FAIL_A2A_PERMISSION_STATE_AND_ECONOMIC_PARITY",
+      "decision_basis": {
+        "c2_delta_vs_c0_2023_2024_jpy": -2866,
+        "c2_delta_vs_c0_2025H1_jpy": 0,
+        "c2_delta_vs_c0_combined_jpy": -2866,
+        "source_native_expected_a2a_blocks_2025H1": 47,
+        "rakuten_mt4_observed_a2a_blocks_2025H1": 0
+      },
+      "final_release": {
+        "tag": "usdjpy-hyp046-a2a-a3-integrated-f05-long-control-v1",
+        "release_id": 364050060,
+        "asset_id": 499767977,
+        "asset_sha256": "ca7b6efba6e6a0905e4e02be8f34bf1f7171d3050ed6661bbb2d85d90ce1eee7",
+        "asset_bytes": 7935461,
+        "remote_readback": "PASS_BYTE_IDENTICAL_RELEASE_READBACK"
+      },
       "period_roles": {
         "2020_2024": "ANALYSIS_INTERACTION_REPLAY_CANDIDATE_COMPARISON_AND_SELECTION",
         "2025H1": "VALIDATION_AFTER_RULE_FREEZE",
         "2025H2": "PROHIBITED_NOT_ACCESSED"
       },
-      "a2a_rule_hash_sha256": "2ec036e50da92fd6c1280b63d0c2a2b2b60b2c875851b03544b0c9bcf2254cf8",
-      "a3_rule_hash_sha256": "1425b4caf6c0a5e8c4f21be7efdf410442bbd6d24d329f87c9c4931eecbd4b7f",
       "synthetic_reconstruction_permitted": false,
-      "2025H2_accessed": false,
       "production_authorized": false,
       "live_authorized": false,
-      "exact_next_action": "RUN_PARENT_RELEASE_READBACK_AND_ROW_LEVEL_AUTHORITY_INVENTORY"
+      "2025H2_accessed": false,
+      "exact_next_action": "NONE_STUDY_CLOSED_PARENT_HYP045_REMAINS_SELECTED"
     }
   ],
-  "hypothesis_status_updates": []
+  "hypothesis_status_updates": [
+    {
+      "hypothesis_id": "USDJPY-HYP-046",
+      "from_status": "IN_PROGRESS_AUTHORITY_PREFLIGHT",
+      "to_status": "COMPLETED_KEEP_HYP045_A3_NO_SUPERIOR_COMBINATION",
+      "reason": "Rakuten MT4 technical execution passed, but C2 did not outperform C0 and A2A permission-state parity failed."
+    }
+  ]
 }
