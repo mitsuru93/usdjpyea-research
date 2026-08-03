@@ -1,0 +1,26 @@
+{
+  "schema_version": "usdjpy_diagnostic_ledger_addendum_v1",
+  "diagnostics": [
+    {
+      "work_id": "USDJPY-PERSISTENT-RESIDUAL-LOSS-ATLAS-001",
+      "diagnostic_id": "USDJPY-DIAG-PERSISTENT-RESIDUAL-LOSS-ATLAS-001",
+      "title": "USDJPY Persistent Residual-Loss State Atlas Across Frozen Architectures Study",
+      "type": "READ_ONLY_ANALYTICAL_STUDY",
+      "hypothesis_ledger_entry": false,
+      "final_decision": "PASS_PERSISTENT_RESIDUAL_LOSS_ATLAS_COMPLETED",
+      "controller_source_sha": "0e7180ac8b93a0d20558dd7a64191699d3d9a4b5",
+      "controller_run_id": "30785834609",
+      "core_result_pr": 1003,
+      "core_release_tag": "usdjpy-persistent-residual-loss-atlas-v1",
+      "parent_relationships": [
+        "USDJPY-HYP-045 immutable Release authority",
+        "USDJPY-HYP-046 A1/A2 frozen economic checkpoint authority"
+      ],
+      "production_configuration_selected": false,
+      "production_authorized": false,
+      "live_authorized": false,
+      "2025H2_accessed": false,
+      "exact_next_action": "START_SEPARATE_F05_LONG_POST_ENTRY_LIFECYCLE_AUTHORITY_COMPLETION_AND_LONG_DURATION_STAGNATION_MECHANISM_STUDY_WITHOUT_DEFINING_A_RULE_UNTIL_MFE_MAE_AND_TIME_TO_EXCURSION_WINNER_CONTAMINATION_ARE_MEASURABLE"
+    }
+  ]
+}

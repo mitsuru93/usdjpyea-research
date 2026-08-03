@@ -1,0 +1,119 @@
+{
+  "schema_version": "usdjpy_diagnostic_work_manifest_v1",
+  "work_id": "USDJPY-PERSISTENT-RESIDUAL-LOSS-ATLAS-001",
+  "diagnostic_id": "USDJPY-DIAG-PERSISTENT-RESIDUAL-LOSS-ATLAS-001",
+  "record_type": "READ_ONLY_DIAGNOSTIC_STUDY",
+  "hypothesis_number_assigned": false,
+  "status": "COMPLETE_RELEASED_REMOTE_READBACK_AND_CLEANUP_VERIFIED",
+  "final_decision": "PASS_PERSISTENT_RESIDUAL_LOSS_ATLAS_COMPLETED",
+  "controller": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "workflow_path": ".github/workflows/fx2_supervised_research_controller.yml",
+    "caller_workflow_path": ".github/workflows/usdjpy_persistent_residual_loss_atlas_controller.yml",
+    "source_sha": "0e7180ac8b93a0d20558dd7a64191699d3d9a4b5",
+    "authoritative_run_id": "30785834609",
+    "v1_regression": "PASS",
+    "v2_read_only_validation": "PASS",
+    "partitions_total": 19,
+    "partitions_resumed": 0,
+    "partitions_retried": 0,
+    "partitions_failed": 0,
+    "checkpoint_disposition": "NEW_CHECKPOINT"
+  },
+  "contracts": {
+    "controller_manifest_sha256": "0b1f2c414f5b527bb775838529fc837d3a1f6406549ca77af2e382de734215a0",
+    "authority_bundle_sha256": "f9356dad353bf1c66deccefcf8813c78e44672db8c268a439845f5ea9e0ee82b",
+    "rule_set_contract_sha256": "2278793876cb81381d6fda982398be430989dc4f13501e817285dbb576b87ead"
+  },
+  "parent_authorities": {
+    "hyp045": {
+      "release_tag": "usdjpy-hyp045-b0-cross-regime-stability-improvement-v5",
+      "archive_sha256": "aa54091ed2149b2c8d6ce5da1f11c739ee0d213eb2dda2928e7dfa1c5c153065",
+      "architecture_id": "A0",
+      "rule_hash_sha256": "1425b4caf6c0a5e8c4f21be7efdf410442bbd6d24d329f87c9c4931eecbd4b7f"
+    },
+    "hyp046": {
+      "economic_snapshot_sha": "2905b6826e34830a5db3452b5afbfaeed74f3ae0",
+      "authority_class": "FROZEN_ECONOMIC_CHECKPOINT_AUTHORITY",
+      "core_pr": 918,
+      "research_pr": 492,
+      "technical_qualification_complete": false,
+      "architectures": [
+        "A1:C1_A2A_HIGHVOL_EXTENSION4_PERMISSION",
+        "A2:C2_A2A_HIGHVOL_EXTENSION4_PERMISSION_PLUS_A3_SESSION_CLUSTER_CONTROL"
+      ]
+    }
+  },
+  "period_contract": {
+    "mechanism_discovery_and_priority": ["2020", "2021", "2022", "2023", "2024"],
+    "recurrence_confirmation_only": ["2025H1"],
+    "prohibited": ["2025H2"]
+  },
+  "result_summary": {
+    "architecture_rows": 19012,
+    "unique_events": 6567,
+    "persistent_exact_loss_events": 3538,
+    "calendar_recurring_persistent_state_groups": 103,
+    "exact_level2_state_tuple_2025h1_recurrent_events": 0,
+    "top_mechanism_family_2025h1_loss_events": 89,
+    "top_mechanism_family_2025h1_recurrence_confirmed": true,
+    "top_mechanism": "strategy_side_path:F05|LONG|LONG_DURATION_STAGNATION",
+    "top_mechanism_architecture_persistence": 3,
+    "top_mechanism_years_observed": 5,
+    "theoretical_maximum_loss_capture_jpy": 294187,
+    "reported_exposed_winner_population": 0,
+    "reported_winner_contamination_ratio": 0.0,
+    "information_time_availability": "POST_ENTRY_ONLY",
+    "rakuten_execution_feasibility": "REQUIRES_EXIT_OR_LIFECYCLE_STUDY",
+    "source_portability_confidence": "MEDIUM"
+  },
+  "strategy_residuals": {
+    "F05_LONG": {"loss_events": 904, "gross_loss_jpy": -226269},
+    "F05_SHORT": {"loss_events": 959, "gross_loss_jpy": -212714},
+    "B02_LONG": {"loss_events": 448, "gross_loss_jpy": -60844},
+    "B02_SHORT": {"loss_events": 405, "gross_loss_jpy": -60160},
+    "SHORT_PULLBACK_SOURCE_LABEL_SP39": {"loss_events": 822, "gross_loss_jpy": -180915}
+  },
+  "red_period_recurrence": {
+    "2021": {"loss_events": 690, "gross_loss_jpy": -92767, "role": "MECHANISM_DISCOVERY"},
+    "2022H2": {"loss_events": 352, "gross_loss_jpy": -133961, "role": "MECHANISM_DISCOVERY"},
+    "2022-10": {"loss_events": 49, "gross_loss_jpy": -30062, "role": "MECHANISM_DISCOVERY"},
+    "2023Q1": {"loss_events": 174, "gross_loss_jpy": -62140, "role": "MECHANISM_DISCOVERY"},
+    "2025Q1": {"loss_events": 185, "gross_loss_jpy": -49181, "role": "VALIDATION_CONFIRMATION_ONLY"}
+  },
+  "authority_limitations": [
+    "MFE, MAE, time-to-MFE and time-to-MAE are unavailable in the accepted-event authorities; immediate-adverse versus giveback ratio is NOT_AVAILABLE and was not inferred.",
+    "Trend, higher-timeframe direction, concurrency, floating/realized drawdown and full A2A/A3 state fields are unavailable.",
+    "The rank-1 holding-path winner contamination ratio is an ex-post class property, not an implementable entry-time contamination estimate.",
+    "SP39 is the source label for frozen Short Pullback.",
+    "HYP-046 A1/A2 remain frozen economic checkpoints and are not represented as production or final MT4-qualified."
+  ],
+  "artifact_transport": {
+    "actions_artifact_upload": "FAILED_STORAGE_QUOTA_RECOVERED",
+    "failure_class": "artifact upload failure",
+    "successful_partitions_recomputed": false,
+    "persistent_mac_evidence_used": true
+  },
+  "release": {
+    "tag": "usdjpy-persistent-residual-loss-atlas-v1",
+    "url": "https://github.com/mitsuru93/usdjpyea-core/releases/tag/usdjpy-persistent-residual-loss-atlas-v1",
+    "archive": "usdjpy-persistent-residual-loss-atlas-v1.zip",
+    "archive_sha256": "a3ce3aad1e8aa52a27685fa041e3693ff19176d8fb196f42efad441a0292126d",
+    "member_count": 38,
+    "remote_readback": "PASS_RELEASE_REMOTE_READBACK"
+  },
+  "firewall": {
+    "new_candidate_created": false,
+    "new_candidate_outcome_computed": false,
+    "strategy_rule_changed": false,
+    "threshold_searched": false,
+    "metaeditor_compile_performed": false,
+    "mt4_execution_performed": false,
+    "2025H1_accessed": true,
+    "2025H1_role": "READ_ONLY_RECURRENCE_CONFIRMATION",
+    "2025H2_accessed": false,
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "exact_next_action": "START_SEPARATE_F05_LONG_POST_ENTRY_LIFECYCLE_AUTHORITY_COMPLETION_AND_LONG_DURATION_STAGNATION_MECHANISM_STUDY_WITHOUT_DEFINING_A_RULE_UNTIL_MFE_MAE_AND_TIME_TO_EXCURSION_WINNER_CONTAMINATION_ARE_MEASURABLE"
+}
