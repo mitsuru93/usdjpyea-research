@@ -1,0 +1,40 @@
+{
+  "schema_version": "usdjpy_read_only_diagnostic_work_manifest_v1",
+  "work_id": "USDJPY-F05-LONG-POST-ENTRY-LIFECYCLE-AUTHORITY-001",
+  "diagnostic_id": "USDJPY-DIAG-F05-LONG-POST-ENTRY-LIFECYCLE-001",
+  "hypothesis_id_assigned": false,
+  "work_type": "READ_ONLY_AUTHORITY_COMPLETION",
+  "status": "IN_PROGRESS_CONTROLLER_EXECUTION",
+  "objective": "Complete full Bid/Ask Tick post-entry lifecycle authority for the frozen HYP-045 A3 accepted F05 Long population before any rule study is opened.",
+  "parent_evidence": {
+    "persistent_residual_loss_atlas": "USDJPY-PERSISTENT-RESIDUAL-LOSS-ATLAS-001",
+    "top_mechanism_family": "strategy_side_path:F05|LONG|LONG_DURATION_STAGNATION",
+    "hyp045_rule_hash_sha256": "1425b4caf6c0a5e8c4f21be7efdf410442bbd6d24d329f87c9c4931eecbd4b7f",
+    "hyp046_final_decision": "KEEP_HYP045_A3_NO_SUPERIOR_COMBINATION"
+  },
+  "controller": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "implementation_pr": 1026,
+    "runtime_repair_pr": 1028,
+    "exact_source_sha": "ff8ac14b116fc254761320ba0f167e11dc80c404",
+    "artifact_transport_mode": "disabled",
+    "checkpoint_namespace": "usdjpy-f05-long-lifecycle-authority-001"
+  },
+  "fixed_horizons_seconds": [60, 300, 900, 1800, 3600, 7200, 14400],
+  "period_contract": {
+    "analysis_periods": ["2020", "2021", "2022", "2023", "2024"],
+    "validation_periods": ["2025H1"],
+    "prohibited_periods": ["2025H2"]
+  },
+  "firewall": {
+    "new_candidate_created": false,
+    "candidate_outcome_computed": false,
+    "strategy_rule_changed": false,
+    "threshold_searched": false,
+    "metaeditor_compile": false,
+    "mt4_execute": false,
+    "production_authorized": false,
+    "live_authorized": false
+  },
+  "result_binding": "PENDING_CONTROLLER_RELEASE_READBACK"
+}
