@@ -8,11 +8,18 @@
       "parent_diagnostic_id": "USDJPY-DIAG-PERSISTENT-RESIDUAL-LOSS-ATLAS-001",
       "parent_hypothesis_id": "USDJPY-HYP-045",
       "hypothesis_number_consumed": false,
-      "status": "IN_PROGRESS_CONTROLLER_EXECUTION",
+      "status": "COMPLETED_PASS_AUTHORITY",
+      "final_decision": "PASS_F05_LONG_LIFECYCLE_AUTHORITY_COMPLETED",
       "production_configuration_effect": "NONE",
-      "candidate_ranking_effect": "NONE_PENDING_AUTHORITY_COMPLETION",
-      "exact_source_sha": "ff8ac14b116fc254761320ba0f167e11dc80c404",
-      "2025H2_accessed": false
+      "candidate_ranking_effect": "NONE_AUTHORITY_ONLY",
+      "exact_source_sha": "aefa05b4e59c102c1ecc0cdc130886659d2c75f6",
+      "controller_run_id": 30875068408,
+      "release_tag": "usdjpy-f05-long-post-entry-lifecycle-authority-v1",
+      "remote_readback": "PASS_RELEASE_REMOTE_READBACK",
+      "top_observable_state": "14400s|GIVEBACK_TO_NONPOSITIVE",
+      "2025H1_recurrence": true,
+      "2025H2_accessed": false,
+      "exact_next_action": "PREREGISTER_A_SEPARATE_FINITE_F05_LONG_LIFECYCLE_CONTROL_STUDY_USING_ONLY_THIS_FIXED_DECISION_TIME_AUTHORITY_WITHOUT_REOPENING_HYP045_OR_USING_2025H1_FOR_SELECTION"
     }
   ]
 }
