@@ -1,0 +1,52 @@
+{
+  "schema_version": "usdjpy_f05_long_lifecycle_research_binding_receipt_v1",
+  "status": "PASS",
+  "work_id": "USDJPY-F05-LONG-POST-ENTRY-LIFECYCLE-AUTHORITY-001",
+  "diagnostic_id": "USDJPY-DIAG-F05-LONG-POST-ENTRY-LIFECYCLE-001",
+  "final_decision": "PASS_F05_LONG_LIFECYCLE_AUTHORITY_COMPLETED",
+  "core_repository": "mitsuru93/usdjpyea-core",
+  "core_exact_source_sha": "aefa05b4e59c102c1ecc0cdc130886659d2c75f6",
+  "core_result_merge_sha": "c949fc967cda42476657bf7f6a0d87c292b15dfe",
+  "controller_run_id": 30875068408,
+  "controller_run_attempt": 1,
+  "publisher_run_id": 30876492532,
+  "release_tag": "usdjpy-f05-long-post-entry-lifecycle-authority-v1",
+  "release_archive_sha256": "b3dde2925528ed6c93c956f339b195a82b734743a4b2adfa91937550ec0608ce",
+  "remote_readback": "PASS_RELEASE_REMOTE_READBACK",
+  "authority": {
+    "f05_long_events_total": 2214,
+    "tick_covered_events": 2214,
+    "missing_tick_events": 0,
+    "tick_coverage_ratio": 1.0,
+    "mfe_mae_authority_completed": true,
+    "time_to_excursion_authority_completed": true,
+    "winner_exposure_at_valid_decision_times_completed": true
+  },
+  "top_observable_mechanism_state": {
+    "horizon_seconds": 14400,
+    "decision_state": "GIVEBACK_TO_NONPOSITIVE",
+    "analysis_event_count": 928,
+    "analysis_loser_count": 710,
+    "theoretical_maximum_loss_capture_jpy": 213861.0,
+    "exposed_winner_population": 215,
+    "exposed_winner_profit_jpy": 37882.0,
+    "winner_contamination_ratio": 0.23168103448275862,
+    "years_observed": [2020, 2021, 2022, 2023, 2024],
+    "2025H1_recurrence": true,
+    "2025H1_loser_count": 64,
+    "2025H1_exposed_winner_population": 18,
+    "candidate_outcome_computed": false
+  },
+  "firewall": {
+    "new_candidate_created": false,
+    "candidate_outcome_computed": false,
+    "strategy_rule_changed": false,
+    "threshold_searched": false,
+    "metaeditor_compile": false,
+    "mt4_execute": false,
+    "production_authorized": false,
+    "live_authorized": false,
+    "2025H2_accessed": false
+  },
+  "exact_next_action": "PREREGISTER_A_SEPARATE_FINITE_F05_LONG_LIFECYCLE_CONTROL_STUDY_USING_ONLY_THIS_FIXED_DECISION_TIME_AUTHORITY_WITHOUT_REOPENING_HYP045_OR_USING_2025H1_FOR_SELECTION"
+}

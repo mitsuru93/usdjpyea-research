@@ -1,0 +1,68 @@
+{
+  "schema_version": "usdjpy_read_only_diagnostic_work_manifest_v1",
+  "work_id": "USDJPY-F05-LONG-POST-ENTRY-LIFECYCLE-AUTHORITY-001",
+  "diagnostic_id": "USDJPY-DIAG-F05-LONG-POST-ENTRY-LIFECYCLE-001",
+  "hypothesis_id_assigned": false,
+  "work_type": "READ_ONLY_AUTHORITY_COMPLETION",
+  "status": "COMPLETED_PASS_AUTHORITY",
+  "objective": "Complete full Bid/Ask Tick post-entry lifecycle authority for the frozen HYP-045 A3 accepted F05 Long population before any rule study is opened.",
+  "parent_evidence": {
+    "persistent_residual_loss_atlas": "USDJPY-PERSISTENT-RESIDUAL-LOSS-ATLAS-001",
+    "top_mechanism_family": "strategy_side_path:F05|LONG|LONG_DURATION_STAGNATION",
+    "hyp045_rule_hash_sha256": "1425b4caf6c0a5e8c4f21be7efdf410442bbd6d24d329f87c9c4931eecbd4b7f",
+    "hyp046_final_decision": "KEEP_HYP045_A3_NO_SUPERIOR_COMBINATION"
+  },
+  "controller": {
+    "repository": "mitsuru93/usdjpyea-core",
+    "implementation_pr": 1026,
+    "runtime_repair_pr": 1028,
+    "performance_route_pr": 1032,
+    "result_binding_pr": 1035,
+    "exact_source_sha": "aefa05b4e59c102c1ecc0cdc130886659d2c75f6",
+    "controller_run_id": 30875068408,
+    "controller_run_attempt": 1,
+    "publisher_run_id": 30876492532,
+    "artifact_transport_mode": "disabled",
+    "checkpoint_namespace": "usdjpy-f05-long-lifecycle-authority-001"
+  },
+  "fixed_horizons_seconds": [60, 300, 900, 1800, 3600, 7200, 14400],
+  "period_contract": {
+    "analysis_periods": ["2020", "2021", "2022", "2023", "2024"],
+    "validation_periods": ["2025H1"],
+    "prohibited_periods": ["2025H2"]
+  },
+  "firewall": {
+    "new_candidate_created": false,
+    "candidate_outcome_computed": false,
+    "strategy_rule_changed": false,
+    "threshold_searched": false,
+    "metaeditor_compile": false,
+    "mt4_execute": false,
+    "production_authorized": false,
+    "live_authorized": false,
+    "2025H2_accessed": false
+  },
+  "result_binding": {
+    "status": "PASS_RELEASE_REMOTE_READBACK",
+    "final_decision": "PASS_F05_LONG_LIFECYCLE_AUTHORITY_COMPLETED",
+    "release_tag": "usdjpy-f05-long-post-entry-lifecycle-authority-v1",
+    "release_archive_sha256": "b3dde2925528ed6c93c956f339b195a82b734743a4b2adfa91937550ec0608ce",
+    "core_result_merge_sha": "c949fc967cda42476657bf7f6a0d87c292b15dfe",
+    "f05_long_events_total": 2214,
+    "tick_covered_events": 2214,
+    "missing_tick_events": 0,
+    "top_observable_state": {
+      "horizon_seconds": 14400,
+      "decision_state": "GIVEBACK_TO_NONPOSITIVE",
+      "analysis_loser_count": 710,
+      "theoretical_maximum_loss_capture_jpy": 213861.0,
+      "exposed_winner_population": 215,
+      "winner_contamination_ratio": 0.23168103448275862,
+      "years_observed": 5,
+      "2025H1_recurrence": true,
+      "2025H1_loser_count": 64,
+      "2025H1_exposed_winner_population": 18
+    },
+    "exact_next_action": "PREREGISTER_A_SEPARATE_FINITE_F05_LONG_LIFECYCLE_CONTROL_STUDY_USING_ONLY_THIS_FIXED_DECISION_TIME_AUTHORITY_WITHOUT_REOPENING_HYP045_OR_USING_2025H1_FOR_SELECTION"
+  }
+}
