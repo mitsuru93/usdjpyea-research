@@ -1,0 +1,18 @@
+{
+  "schema_version": "usdjpy_diagnostic_registry_addendum_v1",
+  "diagnostics": [
+    {
+      "diagnostic_id": "USDJPY-DIAG-F05-LONG-POST-ENTRY-LIFECYCLE-001",
+      "work_id": "USDJPY-F05-LONG-POST-ENTRY-LIFECYCLE-AUTHORITY-001",
+      "type": "READ_ONLY_POST_ENTRY_LIFECYCLE_AUTHORITY_COMPLETION",
+      "parent_diagnostic_id": "USDJPY-DIAG-PERSISTENT-RESIDUAL-LOSS-ATLAS-001",
+      "parent_hypothesis_id": "USDJPY-HYP-045",
+      "hypothesis_number_consumed": false,
+      "status": "IN_PROGRESS_CONTROLLER_EXECUTION",
+      "production_configuration_effect": "NONE",
+      "candidate_ranking_effect": "NONE_PENDING_AUTHORITY_COMPLETION",
+      "exact_source_sha": "ff8ac14b116fc254761320ba0f167e11dc80c404",
+      "2025H2_accessed": false
+    }
+  ]
+}
