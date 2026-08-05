@@ -1,0 +1,39 @@
+{
+  "schema_version": "fx2_artifact_lifecycle_policy_v1",
+  "minimum_age_hours": 24,
+  "keep_latest_global": 20,
+  "keep_latest_per_family": 2,
+  "max_deletions_per_run": 500,
+  "default_retention_days": 30,
+  "never_delete_patterns": [
+    "do-not-delete",
+    "retain-forever"
+  ],
+  "categories": [
+    {
+      "id": "diagnostic",
+      "retention_days": 3,
+      "patterns": ["diagnostic", "probe", "audit", "inspection", "inventory", "status", "health", "heartbeat", "monitor"]
+    },
+    {
+      "id": "smoke",
+      "retention_days": 7,
+      "patterns": ["smoke", "compile-test", "runner-test", "environment-test"]
+    },
+    {
+      "id": "failed_technical_evidence",
+      "retention_days": 14,
+      "patterns": ["failed", "failure", "error", "technical-no-result", "no-result", "debug", "log"]
+    },
+    {
+      "id": "intermediate_checkpoint",
+      "retention_days": 14,
+      "patterns": ["checkpoint", "intermediate", "preflight", "stage", "replay", "export", "source-native"]
+    },
+    {
+      "id": "binding_duplicate",
+      "retention_days": 14,
+      "patterns": ["authority", "qualification", "selected", "portfolio", "final", "receipt", "readback", "archive"]
+    }
+  ]
+}
