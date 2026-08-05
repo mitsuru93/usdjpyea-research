@@ -1,0 +1,119 @@
+name: FX2 Artifact Lifecycle Controller v1
+
+on:
+  schedule:
+    - cron: '40 17 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: dry-run or apply
+        required: true
+        type: choice
+        default: dry-run
+        options: [dry-run, apply]
+      max_deletions:
+        description: Per-run deletion safety cap (maximum 800)
+        required: false
+        type: number
+        default: 500
+  issues:
+    types: [opened]
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: fx2-artifact-lifecycle-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  lifecycle:
+    if: >-
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' &&
+       (github.event.issue.title == '[FX2-ARTIFACT-LIFECYCLE] APPLY' ||
+        github.event.issue.title == '[FX2-ARTIFACT-LIFECYCLE] DRY-RUN'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Run lifecycle controller
+        id: lifecycle
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fetchText = async (path) => {
+              const response = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path,
+                ref: context.sha
+              });
+              return Buffer.from(response.data.content, response.data.encoding).toString('utf8');
+            };
+            let mode = 'apply';
+            let maxDeletions = 500;
+            if (context.eventName === 'workflow_dispatch') {
+              mode = context.payload.inputs.mode;
+              maxDeletions = Number(context.payload.inputs.max_deletions || 500);
+            } else if (context.eventName === 'issues') {
+              mode = context.payload.issue.title.endsWith('DRY-RUN') ? 'dry-run' : 'apply';
+              const match = String(context.payload.issue.body || '').match(/^\s*max_deletions:\s*(\d+)\s*$/im);
+              if (match) maxDeletions = Number(match[1]);
+            }
+            if (!['dry-run', 'apply'].includes(mode)) throw new Error(`unsupported mode: ${mode}`);
+            if (!Number.isInteger(maxDeletions) || maxDeletions < 0 || maxDeletions > 800) {
+              throw new Error('max_deletions must be an integer between 0 and 800');
+            }
+            core.setOutput('mode', mode);
+            core.setOutput('max_deletions', String(maxDeletions));
+            const source = await fetchText('.github/scripts/fx2_artifact_lifecycle_v1.js');
+            const loaded = { exports: {} };
+            new Function('require', 'module', 'exports', source)(require, loaded, loaded.exports);
+            const policy = JSON.parse(await fetchText('config/research_infra/fx2_artifact_lifecycle_policy_v1.json'));
+            loaded.exports.runSelfTest(policy);
+            await loaded.exports.run({ github, context, core, policy, mode, maxDeletions });
+
+      - name: Publish issue receipt
+        if: always() && github.event_name == 'issues'
+        uses: actions/github-script@v7
+        env:
+          MODE: ${{ steps.lifecycle.outputs.mode }}
+          MAX_DELETIONS: ${{ steps.lifecycle.outputs.max_deletions }}
+          RECEIPT_JSON: ${{ steps.lifecycle.outputs.receipt_json }}
+          DELETED_COUNT: ${{ steps.lifecycle.outputs.deleted_count }}
+          DELETED_BYTES: ${{ steps.lifecycle.outputs.deleted_bytes }}
+          ERROR_COUNT: ${{ steps.lifecycle.outputs.error_count }}
+          REMAINING_COUNT: ${{ steps.lifecycle.outputs.remaining_candidate_count }}
+          LIFECYCLE_OUTCOME: ${{ steps.lifecycle.outcome }}
+        with:
+          script: |
+            const body = [
+              '## FX2 Artifact Lifecycle receipt', '',
+              `- Mode: \`${process.env.MODE || 'unknown'}\``,
+              `- Safety cap: \`${process.env.MAX_DELETIONS || 'unknown'}\``,
+              `- Deleted artifacts: \`${process.env.DELETED_COUNT || '0'}\``,
+              `- Deleted bytes: \`${process.env.DELETED_BYTES || '0'}\``,
+              `- Deferred candidates: \`${process.env.REMAINING_COUNT || '0'}\``,
+              `- Errors: \`${process.env.ERROR_COUNT || '0'}\``,
+              `- Workflow run: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '', '<details><summary>Machine-readable receipt</summary>', '', '```json',
+              process.env.RECEIPT_JSON || '{}', '```', '</details>'
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
+            if (process.env.LIFECYCLE_OUTCOME === 'success' && Number(process.env.ERROR_COUNT || 0) === 0) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                state: 'closed',
+                state_reason: 'completed'
+              });
+            }
