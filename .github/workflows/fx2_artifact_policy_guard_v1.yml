@@ -1,0 +1,88 @@
+name: FX2 Artifact Retention Policy Guard v1
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - '.github/scripts/fx2_artifact_lifecycle_v1.js'
+      - 'config/research_infra/fx2_artifact_lifecycle_policy_v1.json'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/**'
+      - '.github/scripts/fx2_artifact_lifecycle_v1.js'
+      - 'config/research_infra/fx2_artifact_lifecycle_policy_v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: fx2-artifact-policy-guard-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Run self-test and audit changed workflows
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fetchText = async (path) => {
+              const response = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path,
+                ref: context.sha
+              });
+              return Buffer.from(response.data.content, response.data.encoding).toString('utf8');
+            };
+            const source = await fetchText('.github/scripts/fx2_artifact_lifecycle_v1.js');
+            const loaded = { exports: {} };
+            new Function('require', 'module', 'exports', source)(require, loaded, loaded.exports);
+            const lifecycle = loaded.exports;
+            const policy = JSON.parse(await fetchText('config/research_infra/fx2_artifact_lifecycle_policy_v1.json'));
+            const selfTest = lifecycle.runSelfTest(policy);
+            let files = [];
+            if (context.eventName === 'pull_request') {
+              files = (await github.paginate(github.rest.pulls.listFiles, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                per_page: 100
+              })).map((file) => file.filename);
+            } else if (context.eventName === 'push' && context.payload.before && !/^0+$/.test(context.payload.before)) {
+              const comparison = await github.rest.repos.compareCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base: context.payload.before,
+                head: context.sha
+              });
+              files = comparison.data.files.map((file) => file.filename);
+            } else {
+              const listing = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path: '.github/workflows',
+                ref: context.sha
+              });
+              files = listing.data.map((file) => file.path);
+            }
+            const workflowFiles = files.filter((file) => /^\.github\/workflows\/.*\.ya?ml$/i.test(file));
+            const violations = [];
+            for (const path of workflowFiles) {
+              try {
+                violations.push(...lifecycle.auditWorkflowText(await fetchText(path), path));
+              } catch (error) {
+                if (error.status !== 404) throw error;
+              }
+            }
+            await core.summary
+              .addHeading('FX2 Artifact Retention Policy Guard')
+              .addRaw(`Self-test: ${selfTest.status}; audited ${workflowFiles.length} changed workflow file(s).\n\n`)
+              .addCodeBlock(JSON.stringify(violations, null, 2), 'json')
+              .write();
+            if (violations.length) core.setFailed(`Artifact retention policy violations:\n${JSON.stringify(violations, null, 2)}`);
