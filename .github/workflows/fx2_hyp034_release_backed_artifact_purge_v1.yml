@@ -1,0 +1,81 @@
+name: FX2 HYP034 Release-backed Artifact purge v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: fx2-hyp034-release-backed-artifact-purge
+  cancel-in-progress: false
+
+jobs:
+  purge:
+    if: >-
+      github.actor == github.repository_owner &&
+      (github.event.issue.title == '[FX2-HYP034-ARTIFACT-PURGE] DRY-RUN' ||
+       github.event.issue.title == '[FX2-HYP034-ARTIFACT-PURGE] APPLY')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse bounded request
+        id: request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os,re
+          title=os.environ['ISSUE_TITLE']; body=os.environ.get('ISSUE_BODY','')
+          mode='apply' if title.endswith('APPLY') else 'dry-run'
+          m=re.search(r'^\s*candidate_digest:\s*([0-9a-f]{64})\s*$',body,re.I|re.M)
+          if mode=='apply' and not m: raise SystemExit('APPLY requires candidate_digest')
+          print(f'mode={mode}')
+          print(f'digest={m.group(1).lower() if m else ""}')
+          PY
+
+      - name: Validate controller
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/fx2_hyp034_release_backed_artifact_purge_v1.py
+
+      - name: Re-read Release authority and optionally remove redundant Actions copies
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(
+            --mode '${{ steps.request.outputs.mode }}'
+            --receipt "$RUNNER_TEMP/hyp034-artifact-purge-receipt.json"
+            --report "$RUNNER_TEMP/hyp034-artifact-purge-report.md"
+          )
+          if [ '${{ steps.request.outputs.mode }}' = apply ]; then
+            args+=(--expected-candidate-digest '${{ steps.request.outputs.digest }}')
+          fi
+          python3 tools/fx2_hyp034_release_backed_artifact_purge_v1.py "${args[@]}"
+
+      - name: Publish durable receipt without uploading a new Artifact
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f "$RUNNER_TEMP/hyp034-artifact-purge-report.md" ]; then
+            gh issue comment '${{ github.event.issue.number }}' --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/hyp034-artifact-purge-report.md"
+            cat "$RUNNER_TEMP/hyp034-artifact-purge-report.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh issue comment '${{ github.event.issue.number }}' --repo "$GITHUB_REPOSITORY" --body 'HYP034 Artifact purge failed before receipt generation. No deletion should be assumed.'
+            exit 1
+          fi
+          rm -f "$RUNNER_TEMP"/hyp034-artifact-purge-*.json "$RUNNER_TEMP"/hyp034-artifact-purge-*.md
