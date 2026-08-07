@@ -1,0 +1,76 @@
+name: FX2 Release Asset Inventory v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: fx2-release-asset-inventory
+  cancel-in-progress: true
+
+jobs:
+  inventory:
+    if: github.actor == github.repository_owner && github.event.issue.title == '[FX2-RELEASE-ASSET-INVENTORY]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Parse exact Release tag
+        id: request
+        env:
+          BODY: ${{ github.event.issue.body }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os,re
+          body=os.environ.get('BODY','')
+          match=re.search(r'^\s*tag:\s*([A-Za-z0-9._-]+)\s*$',body,re.I|re.M)
+          if not match:
+              raise SystemExit('body must contain one safe tag: value')
+          print(f'tag={match.group(1)}')
+          PY
+
+      - name: Fetch and validate exact Release inventory
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.request.outputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "/repos/$GITHUB_REPOSITORY/releases/tags/$TAG" > "$RUNNER_TEMP/release.json"
+          python3 - "$RUNNER_TEMP/release.json" "$RUNNER_TEMP/report.md" <<'PY'
+          import hashlib,json,re,sys
+          from pathlib import Path
+          release=json.loads(Path(sys.argv[1]).read_text())
+          if release.get('draft') or release.get('prerelease') or release.get('tag_name') is None:
+              raise SystemExit('Release is not a stable published Release')
+          assets=[]
+          for asset in release.get('assets',[]):
+              digest=str(asset.get('digest') or '').lower()
+              if asset.get('state')!='uploaded' or int(asset.get('size') or 0)<=0 or not re.fullmatch(r'sha256:[0-9a-f]{64}',digest):
+                  raise SystemExit(f'invalid asset identity: {asset.get("name")}')
+              assets.append({'id':int(asset['id']),'name':str(asset['name']),'size':int(asset['size']),'digest':digest})
+          assets.sort(key=lambda row: row['name'])
+          identity=hashlib.sha256(json.dumps(assets,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+          months=sorted({int(m.group(1)) for row in assets if (m:=re.search(r'-(0[1-9]|1[0-2])-raw-ticks-v1(?:\.|$)',row['name']))})
+          lines=['## FX2 Release Asset Inventory','',f"- Tag: `{release['tag_name']}`",f"- Release ID: `{release['id']}`",f"- Published: `{release.get('published_at')}`",f"- Target: `{release.get('target_commitish')}`",f"- Asset count: `{len(assets)}`",f"- Asset identity SHA-256: `{identity}`",f"- Raw Tick months: `{','.join(f'{month:02d}' for month in months)}`",'', '| Asset | ID | Size | SHA-256 |','|---|---:|---:|---|']
+          for row in assets:
+              lines.append(f"| `{row['name']}` | {row['id']} | {row['size']} | `{row['digest']}` |")
+          summary={'schema_version':'fx2_release_asset_inventory_v1','tag':release['tag_name'],'release_id':release['id'],'published_at':release.get('published_at'),'target_commitish':release.get('target_commitish'),'asset_count':len(assets),'asset_identity_sha256':identity,'raw_tick_months':months,'assets':assets}
+          lines+=['','<details><summary>Machine-readable inventory</summary>','','```json',json.dumps(summary,sort_keys=True,separators=(',',':')),'```','</details>']
+          Path(sys.argv[2]).write_text('\n'.join(lines)+'\n')
+          PY
+
+      - name: Publish inventory receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh issue comment '${{ github.event.issue.number }}' --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/report.md"
+          cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
+          rm -f "$RUNNER_TEMP/release.json" "$RUNNER_TEMP/report.md"
