@@ -1,4 +1,4 @@
-name: Finalize EURUSD 2024 Raw Ticks from Recovered Runs v1
+name: Audit EURUSD 2024 Raw Tick Release Authority v2
 
 on:
   workflow_dispatch:
@@ -9,118 +9,76 @@ on:
       - tools/build_eurusd_2024_raw_tick_annual_release_v1.py
 
 permissions:
-  actions: read
-  contents: write
+  contents: read
 
 concurrency:
-  group: finalize-eurusd-2024-raw-ticks-from-recovered-runs-v1
+  group: audit-eurusd-2024-raw-tick-release-authority-v2
   cancel-in-progress: true
 
 env:
-  SOURCE_RUN_ID: "29749870784"
-  SOURCE_RUN_ATTEMPT: "1"
-  SOURCE_HEAD_SHA: "b0999d9ddc0602ef9f5ed09a5f9327fa64f90703"
-  ELEVEN_MONTH_RUN_ID: "29783506646"
-  ELEVEN_MONTH_RUN_ATTEMPT: "1"
-  JUNE_RUN_ID: "29790935572"
-  JUNE_RUN_ATTEMPT: "1"
   RELEASE_TAG: eurusd-2024-raw-bidask-ticks-v1
 
 jobs:
-  finalize:
+  audit-release-authority:
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Download eleven validated monthly packages
-        uses: actions/download-artifact@v4
-        with:
-          pattern: eurusd-2024-raw-ticks-recovered-month-*-${{ env.ELEVEN_MONTH_RUN_ID }}-${{ env.ELEVEN_MONTH_RUN_ATTEMPT }}
-          run-id: ${{ env.ELEVEN_MONTH_RUN_ID }}
-          github-token: ${{ github.token }}
-          path: release
-          merge-multiple: true
-
-      - name: Download validated June package
-        uses: actions/download-artifact@v4
-        with:
-          name: eurusd-2024-raw-ticks-recovered-month-06-${{ env.JUNE_RUN_ID }}-${{ env.JUNE_RUN_ATTEMPT }}
-          run-id: ${{ env.JUNE_RUN_ID }}
-          github-token: ${{ github.token }}
-          path: release
-          merge-multiple: true
-
-      - name: Verify exact twelve-month inventory
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          root = Path('release')
-          expected = {f'{month:02d}' for month in range(1, 13)}
-          for suffix in ('raw-ticks-v1.tar.gz', 'raw-ticks-v1.manifest.json', 'source-artifacts.json'):
-              found = {
-                  path.name.split('-')[2]
-                  for path in root.glob(f'eurusd-2024-??-{suffix}')
-              }
-              if found != expected:
-                  raise SystemExit(f'inventory mismatch for {suffix}: found={sorted(found)} expected={sorted(expected)}')
-          print({'months': sorted(expected), 'files': len(list(root.iterdir()))})
-          PY
-
-      - name: Build and verify annual release inventory
-        shell: bash
-        run: |
-          set -euo pipefail
-          python tools/build_eurusd_2024_raw_tick_annual_release_v1.py \
-            --release-dir release \
-            --source-run-id "$SOURCE_RUN_ID" \
-            --source-run-attempt "$SOURCE_RUN_ATTEMPT" \
-            --source-head-sha "$SOURCE_HEAD_SHA" \
-            --package-run-id "$GITHUB_RUN_ID" \
-            --package-run-attempt "$GITHUB_RUN_ATTEMPT"
-
-      - name: Upload validated annual package artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: eurusd-2024-raw-ticks-recovered-annual-${{ github.run_id }}-${{ github.run_attempt }}
-          path: release
-          if-no-files-found: error
-          retention-days: 90
-          compression-level: 0
-
-      - name: Create or update durable GitHub Release
+      - name: Validate complete immutable Release inventory
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release create "$RELEASE_TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --title "EURUSD 2024 Raw Dukascopy Bid/Ask Ticks v1" \
-              --notes-file release/RELEASE_NOTES.md
-          fi
-          gh release upload "$RELEASE_TAG" release/* \
-            --repo "$GITHUB_REPOSITORY" \
-            --clobber
-
-      - name: Persist finalizer result
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          TARGET=docs/diagnostics/eurusd_2024_finalizer
-          mkdir -p "$TARGET"
-          printf '{"run_id":"%s","run_attempt":"%s","status":"%s","source_run_id":"%s","eleven_month_run_id":"%s","june_run_id":"%s"}\n' \
-            "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "${{ job.status }}" "$SOURCE_RUN_ID" "$ELEVEN_MONTH_RUN_ID" "$JUNE_RUN_ID" \
-            > "$TARGET/latest-run-summary.json"
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add "$TARGET/latest-run-summary.json"
-          git commit -m "diag: persist EURUSD 2024 finalizer result ${GITHUB_RUN_ID}"
-          git push
+          root="$RUNNER_TEMP/eurusd-2024-release-audit-$GITHUB_RUN_ID"
+          rm -rf "$root"
+          mkdir -p "$root"
+          gh api "/repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" > "$root/release.json"
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir "$root" \
+            --pattern 'SHA256SUMS' \
+            --pattern 'eurusd-2024-raw-ticks-v1.annual-manifest.json' \
+            --pattern 'RELEASE_NOTES.md'
+          python3 - "$root" <<'PY'
+          import hashlib,json,re,sys
+          from pathlib import Path
+          root=Path(sys.argv[1])
+          release=json.loads((root/'release.json').read_text())
+          assert release['tag_name']=='eurusd-2024-raw-bidask-ticks-v1'
+          assert not release['draft'] and not release['prerelease']
+          assets=release['assets']
+          expected={f'eurusd-2024-{m:02d}-raw-ticks-v1.{suffix}' for m in range(1,13) for suffix in ('tar.gz','manifest.json')}
+          expected|={f'eurusd-2024-{m:02d}-source-artifacts.json' for m in range(1,13)}
+          expected|={'eurusd-2024-raw-ticks-v1.annual-manifest.json','RELEASE_NOTES.md','SHA256SUMS'}
+          names={a['name'] for a in assets}
+          if names!=expected: raise SystemExit(f'Release inventory mismatch missing={sorted(expected-names)} extra={sorted(names-expected)}')
+          identities=[]
+          for asset in assets:
+              digest=str(asset.get('digest') or '')
+              if asset.get('state')!='uploaded' or int(asset.get('size') or 0)<=0 or not re.fullmatch(r'sha256:[0-9a-f]{64}',digest):
+                  raise SystemExit(f'invalid Release asset: {asset.get("name")}')
+              identities.append({'id':asset['id'],'name':asset['name'],'size':asset['size'],'digest':digest})
+          annual=json.loads((root/'eurusd-2024-raw-ticks-v1.annual-manifest.json').read_text())
+          assert annual['accepted'] is True
+          assert annual['expected_days']==366 and annual['expected_hours']==8784 and annual['resolved_hours']==8784
+          assert annual['package_workflow_run_id']==29791402217
+          assert annual['source_workflow_run_id']==29749870784
+          checksum=(root/'SHA256SUMS').read_text().splitlines()
+          listed={line.split(None,1)[1].lstrip(' *') for line in checksum if line.strip()}
+          if listed!=expected-{'SHA256SUMS'}: raise SystemExit('aggregate SHA256SUMS inventory mismatch')
+          receipt={
+            'schema_version':'eurusd_2024_release_authority_audit_v2',
+            'status':'PASS_RELEASE_AUTHORITY',
+            'release_id':release['id'],
+            'release_tag':release['tag_name'],
+            'published_at':release['published_at'],
+            'asset_count':len(assets),
+            'asset_identity_sha256':hashlib.sha256(json.dumps(sorted(identities,key=lambda x:x['name']),sort_keys=True,separators=(',',':')).encode()).hexdigest(),
+            'annual_manifest_sha256':hashlib.sha256((root/'eurusd-2024-raw-ticks-v1.annual-manifest.json').read_bytes()).hexdigest(),
+            'source_artifact_ids':[8477498593,8477440645,8477367327,8477474051,8477507450,8480213791,8478305114,8478602440,8478903697,8479255289,8479395926,8479506330,8480394478],
+            'actions_retention_dependency':False,
+          }
+          (root/'audit-receipt.json').write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(receipt,sort_keys=True))
+          PY
+          cat "$root/audit-receipt.json" >> "$GITHUB_STEP_SUMMARY"
+          rm -rf "$root"
