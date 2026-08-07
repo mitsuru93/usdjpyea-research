@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: fx2-release-backed-artifact-purge
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   purge:
@@ -20,7 +20,7 @@ jobs:
       (github.event.issue.title == '[FX2-RELEASE-BACKED-ARTIFACT-PURGE] DRY-RUN' ||
        github.event.issue.title == '[FX2-RELEASE-BACKED-ARTIFACT-PURGE] APPLY')
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,8 +57,8 @@ jobs:
           print(f'max_bytes={max_bytes}')
           PY
 
-      - name: Validate controller
-        run: python3 -m py_compile tools/fx2_release_backed_artifact_purge_v1.py
+      - name: Validate indexed controller
+        run: python3 -m py_compile tools/fx2_release_backed_artifact_purge_v1.py tools/fx2_release_backed_artifact_purge_v2.py
 
       - name: Inspect and optionally delete Release-backed Artifacts
         id: controller
@@ -79,7 +79,7 @@ jobs:
           if [ '${{ steps.request.outputs.mode }}' = 'apply' ]; then
             args+=(--expected-candidate-digest '${{ steps.request.outputs.candidate_digest }}')
           fi
-          python3 tools/fx2_release_backed_artifact_purge_v1.py "${args[@]}" | tee "$RUNNER_TEMP/release-backed-purge-summary.json"
+          python3 tools/fx2_release_backed_artifact_purge_v2.py "${args[@]}" | tee "$RUNNER_TEMP/release-backed-purge-summary.json"
 
       - name: Publish durable issue receipt
         if: always()
