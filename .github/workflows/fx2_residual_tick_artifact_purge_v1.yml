@@ -1,0 +1,101 @@
+name: FX2 residual Tick Artifact purge v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: fx2-residual-tick-artifact-purge
+  cancel-in-progress: false
+
+jobs:
+  purge:
+    if: >-
+      github.actor == github.repository_owner &&
+      (github.event.issue.title == '[FX2-RESIDUAL-TICK-PURGE] DRY-RUN' ||
+       github.event.issue.title == '[FX2-RESIDUAL-TICK-PURGE] APPLY')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse bounded request
+        id: request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os,re
+          title=os.environ['ISSUE_TITLE'];body=os.environ.get('ISSUE_BODY','')
+          mode='apply' if title.endswith('APPLY') else 'dry-run'
+          def value(name,default=''):
+              match=re.search(rf'^\s*{re.escape(name)}:\s*(\S+)\s*$',body,re.I|re.M)
+              return match.group(1) if match else default
+          digest=value('candidate_digest')
+          max_deletions=int(value('max_deletions','2000'))
+          max_bytes=int(value('max_bytes','4000000000'))
+          if not 1 <= max_deletions <= 2000: raise SystemExit('max_deletions must be 1..2000')
+          if not 1 <= max_bytes <= 4_000_000_000: raise SystemExit('max_bytes must be 1..4000000000')
+          if mode=='apply' and not re.fullmatch(r'[0-9a-f]{64}',digest): raise SystemExit('APPLY requires candidate_digest')
+          print(f'mode={mode}')
+          print(f'digest={digest}')
+          print(f'max_deletions={max_deletions}')
+          print(f'max_bytes={max_bytes}')
+          PY
+
+      - name: Validate controller
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile \
+            tools/fx2_residual_tick_artifact_purge_v1.py \
+            tools/fx2_release_backed_artifact_purge_v1.py \
+            tools/fx2_release_backed_artifact_purge_v3.py \
+            tools/fx2_eurusd_release_mirror_purge_v1.py \
+            tools/fx2_eurusd_2024_release_mirror_purge_v2.py \
+            tools/fx2_usdjpy_release_authority_purge_v3.py \
+            tools/fx2_usdjpy_release_authority_purge_v4.py
+
+      - name: Inspect and optionally delete residual Tick Artifacts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(
+            --mode '${{ steps.request.outputs.mode }}'
+            --repository "$GITHUB_REPOSITORY"
+            --root "$GITHUB_WORKSPACE"
+            --max-deletions '${{ steps.request.outputs.max_deletions }}'
+            --max-bytes '${{ steps.request.outputs.max_bytes }}'
+            --receipt "$RUNNER_TEMP/residual-tick-purge-receipt.json"
+            --report "$RUNNER_TEMP/residual-tick-purge-report.md"
+          )
+          if [ '${{ steps.request.outputs.mode }}' = apply ]; then
+            args+=(--expected-candidate-digest '${{ steps.request.outputs.digest }}')
+          fi
+          python3 tools/fx2_residual_tick_artifact_purge_v1.py "${args[@]}"
+
+      - name: Publish durable receipt without creating an Artifact
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f "$RUNNER_TEMP/residual-tick-purge-report.md" ]; then
+            gh issue comment '${{ github.event.issue.number }}' --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/residual-tick-purge-report.md"
+            cat "$RUNNER_TEMP/residual-tick-purge-report.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh issue comment '${{ github.event.issue.number }}' --repo "$GITHUB_REPOSITORY" --body 'Residual Tick purge failed before receipt production. No deletion should be assumed.'
+            exit 1
+          fi
+          rm -f "$RUNNER_TEMP"/residual-tick-purge-*.json "$RUNNER_TEMP"/residual-tick-purge-*.md
