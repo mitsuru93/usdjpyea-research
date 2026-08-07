@@ -12,8 +12,9 @@ permissions:
 jobs:
   purge:
     if: >-
-      github.event.issue.title == '[FX2-RELEASE-BOUND-ARTIFACT-PURGE] DRY-RUN' ||
-      github.event.issue.title == '[FX2-RELEASE-BOUND-ARTIFACT-PURGE] APPLY'
+      github.actor == github.repository_owner &&
+      (github.event.issue.title == '[FX2-RELEASE-BOUND-ARTIFACT-PURGE] DRY-RUN' ||
+      github.event.issue.title == '[FX2-RELEASE-BOUND-ARTIFACT-PURGE] APPLY')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
