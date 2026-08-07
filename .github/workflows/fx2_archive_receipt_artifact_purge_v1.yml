@@ -1,0 +1,113 @@
+name: FX2 Archive Receipt-backed Artifact Purge v1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: fx2-archive-receipt-artifact-purge
+  cancel-in-progress: true
+
+jobs:
+  purge:
+    if: >-
+      github.actor == github.repository_owner &&
+      (github.event.issue.title == '[FX2-ARCHIVE-RECEIPT-ARTIFACT-PURGE] DRY-RUN' ||
+       github.event.issue.title == '[FX2-ARCHIVE-RECEIPT-ARTIFACT-PURGE] APPLY')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Parse bounded receipt request
+        id: request
+        shell: bash
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os,re
+          title=os.environ['ISSUE_TITLE']
+          body=os.environ.get('ISSUE_BODY','')
+          mode='apply' if title.endswith('APPLY') else 'dry-run'
+          def one(name,default=''):
+              m=re.search(rf'^\s*{re.escape(name)}:\s*(\S+)\s*$',body,re.I|re.M)
+              return m.group(1) if m else default
+          paths=re.findall(r'^\s*receipt_path:\s*(\S+)\s*$',body,re.I|re.M)
+          digest=one('candidate_digest')
+          maximum=int(one('max_deletions','1000'))
+          max_bytes=int(one('max_bytes','20000000000'))
+          if not paths:
+              raise SystemExit('At least one receipt_path is required')
+          if any(not path.startswith('docs/') or '..' in path for path in paths):
+              raise SystemExit('receipt_path must be a safe docs/ path')
+          if not 1 <= maximum <= 1000:
+              raise SystemExit('max_deletions must be 1..1000')
+          if not 1 <= max_bytes <= 20_000_000_000:
+              raise SystemExit('max_bytes must be 1..20000000000')
+          if mode=='apply' and not re.fullmatch(r'[0-9a-f]{64}',digest):
+              raise SystemExit('APPLY requires reviewed candidate_digest')
+          print(f'mode={mode}')
+          print(f'candidate_digest={digest}')
+          print(f'max_deletions={maximum}')
+          print(f'max_bytes={max_bytes}')
+          print('receipt_paths<<EOF')
+          print('\n'.join(paths))
+          print('EOF')
+          PY
+
+      - name: Validate receipt-backed controller
+        run: |
+          python3 -m py_compile \
+            tools/fx2_release_backed_artifact_purge_v1.py \
+            tools/fx2_release_backed_artifact_purge_v2.py \
+            tools/fx2_release_backed_artifact_purge_v3.py \
+            tools/fx2_archive_receipt_artifact_purge_v1.py
+
+      - name: Inspect and optionally delete archive-receipt Artifacts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          RECEIPT_PATHS: ${{ steps.request.outputs.receipt_paths }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(
+            --mode '${{ steps.request.outputs.mode }}'
+            --repository "$GITHUB_REPOSITORY"
+            --root "$GITHUB_WORKSPACE"
+            --max-deletions '${{ steps.request.outputs.max_deletions }}'
+            --max-bytes '${{ steps.request.outputs.max_bytes }}'
+            --receipt "$RUNNER_TEMP/archive-receipt-purge-receipt.json"
+            --report "$RUNNER_TEMP/archive-receipt-purge-report.md"
+          )
+          while IFS= read -r path; do
+            [ -n "$path" ] && args+=(--receipt-path "$path")
+          done <<< "$RECEIPT_PATHS"
+          if [ '${{ steps.request.outputs.mode }}' = 'apply' ]; then
+            args+=(--expected-candidate-digest '${{ steps.request.outputs.candidate_digest }}')
+          fi
+          python3 tools/fx2_archive_receipt_artifact_purge_v1.py "${args[@]}" | tee "$RUNNER_TEMP/archive-receipt-purge-summary.json"
+
+      - name: Publish durable issue receipt
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f "$RUNNER_TEMP/archive-receipt-purge-report.md" ]; then
+            gh issue comment '${{ github.event.issue.number }}' --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/archive-receipt-purge-report.md"
+            cat "$RUNNER_TEMP/archive-receipt-purge-report.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh issue comment '${{ github.event.issue.number }}' --repo "$GITHUB_REPOSITORY" --body "Archive-receipt purge failed before receipt production. Inspect Run $GITHUB_RUN_ID. No deletion should be assumed."
+          fi
+          rm -f "$RUNNER_TEMP"/archive-receipt-purge-*.json "$RUNNER_TEMP"/archive-receipt-purge-*.md
