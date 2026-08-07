@@ -71,7 +71,8 @@ jobs:
             tools/fx2_release_backed_artifact_purge_v1.py \
             tools/fx2_release_backed_artifact_purge_v2.py \
             tools/fx2_release_backed_artifact_purge_v3.py \
-            tools/fx2_archive_receipt_artifact_purge_v1.py
+            tools/fx2_archive_receipt_artifact_purge_v1.py \
+            tools/fx2_archive_receipt_artifact_purge_v2.py
 
       - name: Inspect and optionally delete archive-receipt Artifacts
         env:
@@ -95,7 +96,7 @@ jobs:
           if [ '${{ steps.request.outputs.mode }}' = 'apply' ]; then
             args+=(--expected-candidate-digest '${{ steps.request.outputs.candidate_digest }}')
           fi
-          python3 tools/fx2_archive_receipt_artifact_purge_v1.py "${args[@]}" | tee "$RUNNER_TEMP/archive-receipt-purge-summary.json"
+          python3 tools/fx2_archive_receipt_artifact_purge_v2.py "${args[@]}" | tee "$RUNNER_TEMP/archive-receipt-purge-summary.json"
 
       - name: Publish durable issue receipt
         if: always()
