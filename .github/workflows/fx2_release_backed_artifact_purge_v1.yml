@@ -57,8 +57,8 @@ jobs:
           print(f'max_bytes={max_bytes}')
           PY
 
-      - name: Validate indexed controller
-        run: python3 -m py_compile tools/fx2_release_backed_artifact_purge_v1.py tools/fx2_release_backed_artifact_purge_v2.py
+      - name: Validate semantic dependency controller
+        run: python3 -m py_compile tools/fx2_release_backed_artifact_purge_v1.py tools/fx2_release_backed_artifact_purge_v2.py tools/fx2_release_backed_artifact_purge_v3.py
 
       - name: Inspect and optionally delete Release-backed Artifacts
         id: controller
@@ -79,7 +79,7 @@ jobs:
           if [ '${{ steps.request.outputs.mode }}' = 'apply' ]; then
             args+=(--expected-candidate-digest '${{ steps.request.outputs.candidate_digest }}')
           fi
-          python3 tools/fx2_release_backed_artifact_purge_v2.py "${args[@]}" | tee "$RUNNER_TEMP/release-backed-purge-summary.json"
+          python3 tools/fx2_release_backed_artifact_purge_v3.py "${args[@]}" | tee "$RUNNER_TEMP/release-backed-purge-summary.json"
 
       - name: Publish durable issue receipt
         if: always()
