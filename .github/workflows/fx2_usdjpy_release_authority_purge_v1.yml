@@ -54,17 +54,19 @@ jobs:
           print(f'max_bytes={max_bytes}')
           PY
 
-      - name: Validate compatibility wrapper
+      - name: Validate exact yearly contract wrapper
         run: |
           python3 -m py_compile \
             tools/fx2_release_backed_artifact_purge_v1.py \
             tools/fx2_release_backed_artifact_purge_v3.py \
-            tools/fx2_usdjpy_release_authority_purge_v3.py
+            tools/fx2_usdjpy_release_authority_purge_v3.py \
+            tools/fx2_usdjpy_release_authority_purge_v4.py
           python3 - <<'PY'
           from tools.fx2_usdjpy_release_authority_purge_v3 import load_fixed
+          from tools.fx2_usdjpy_release_authority_purge_v4 import exact_year_release
           module=load_fixed()
-          assert callable(module.main)
-          print('PASS_ISOLATED_COMPATIBILITY_REPAIRS')
+          assert callable(module.main) and callable(exact_year_release)
+          print('PASS_EXACT_YEARLY_RELEASE_CONTRACT_WRAPPER')
           PY
 
       - name: Inspect and optionally delete Release-authority copies
@@ -85,7 +87,7 @@ jobs:
           if [ '${{ steps.request.outputs.mode }}' = apply ]; then
             args+=(--expected-candidate-digest '${{ steps.request.outputs.digest }}')
           fi
-          python3 tools/fx2_usdjpy_release_authority_purge_v3.py "${args[@]}"
+          python3 tools/fx2_usdjpy_release_authority_purge_v4.py "${args[@]}"
 
       - name: Publish durable receipt
         if: always()
