@@ -58,6 +58,7 @@ jobs:
           python3 -m py_compile \
             tools/fx2_residual_tick_artifact_purge_v1.py \
             tools/fx2_residual_tick_artifact_purge_v2.py \
+            tools/fx2_residual_tick_artifact_purge_v3.py \
             tools/fx2_release_backed_artifact_purge_v1.py \
             tools/fx2_release_backed_artifact_purge_v3.py \
             tools/fx2_eurusd_release_mirror_purge_v1.py \
@@ -83,7 +84,7 @@ jobs:
           if [ '${{ steps.request.outputs.mode }}' = apply ]; then
             args+=(--expected-candidate-digest '${{ steps.request.outputs.digest }}')
           fi
-          python3 tools/fx2_residual_tick_artifact_purge_v2.py "${args[@]}"
+          python3 tools/fx2_residual_tick_artifact_purge_v3.py "${args[@]}"
 
       - name: Publish durable receipt without creating an Artifact
         if: always()
