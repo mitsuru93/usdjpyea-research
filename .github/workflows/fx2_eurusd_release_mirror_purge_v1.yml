@@ -38,7 +38,7 @@ jobs:
           print(f'mode={mode}');print(f'digest={digest}');print(f'run_id={run_id}');print(f'maxd={maxd}');print(f'maxb={maxb}')
           PY
       - name: Validate controller
-        run: python3 -m py_compile tools/fx2_release_backed_artifact_purge_v1.py tools/fx2_release_backed_artifact_purge_v3.py tools/fx2_eurusd_release_mirror_purge_v1.py
+        run: python3 -m py_compile tools/fx2_release_backed_artifact_purge_v1.py tools/fx2_release_backed_artifact_purge_v3.py tools/fx2_eurusd_release_mirror_purge_v1.py tools/fx2_eurusd_release_mirror_purge_v2.py
       - name: Inspect and optionally delete
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -46,7 +46,7 @@ jobs:
           set -euo pipefail
           args=(--mode '${{ steps.req.outputs.mode }}' --repository "$GITHUB_REPOSITORY" --root "$GITHUB_WORKSPACE" --run-id '${{ steps.req.outputs.run_id }}' --years 2020,2021,2022,2023 --max-deletions '${{ steps.req.outputs.maxd }}' --max-bytes '${{ steps.req.outputs.maxb }}' --receipt "$RUNNER_TEMP/receipt.json" --report "$RUNNER_TEMP/report.md")
           if [ '${{ steps.req.outputs.mode }}' = apply ]; then args+=(--expected-candidate-digest '${{ steps.req.outputs.digest }}'); fi
-          python3 tools/fx2_eurusd_release_mirror_purge_v1.py "${args[@]}"
+          python3 tools/fx2_eurusd_release_mirror_purge_v2.py "${args[@]}"
       - name: Publish receipt
         if: always()
         env:
