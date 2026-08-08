@@ -1,0 +1,226 @@
+name: USDJPY CSOS Opportunity Atlas v1
+
+on:
+  push:
+    branches:
+      - agent/csos-opportunity-atlas-v1
+    paths:
+      - '.github/workflows/usdjpy_csos_opportunity_atlas_v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  atlas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Assemble and commit canonical evaluator source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if compgen -G 'tools/csos_chunks/part_*.txt' >/dev/null; then
+            cat tools/csos_chunks/part_*.txt > tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py
+            git add tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py
+            git rm -r tools/csos_chunks
+            git commit -m 'research: assemble canonical CSOS evaluator v1'
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+          python -m py_compile tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py
+          echo "RESEARCH_SHA=$(git log -n 1 --format=%H -- tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py)" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install frozen dependencies
+        run: python -m pip install --disable-pip-version-check 'numpy==2.1.3' 'pandas==2.2.3'
+
+      - name: Enforce CSOS boundaries
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('configs/research/usdjpy_csos_opportunity_atlas_v1_prereg.json'))
+          assert p['development_folds']==['2023H1','2023H2','2024H1','2024H2']
+          assert set(p['forbidden_periods'])=={'2025H1','2025H2'}
+          b=p['selection_boundary']
+          assert b['2025_access'] is False
+          assert b['ea_implementation'] is False
+          assert b['mt4_execution'] is False
+          assert b['core_modification'] is False
+          assert b['parameter_optimization'] is False
+          assert b['threshold_grid_search'] is False
+          PY
+
+      - name: Download and verify historical authorities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inputs/historical inputs/2023 inputs/2024h1 inputs/2024h2 inputs/2024derived materialized
+          gh release download f05-failed-reclaim-historical-authorities-v1 \
+            --repo "$GITHUB_REPOSITORY" --dir inputs/historical \
+            --pattern 'usdjpy-2023-canonical-baseline-prep-v1.zip' \
+            --pattern 'mt4-usdjpy-2024h1-event-audit-v1.zip' \
+            --pattern 'mt4-usdjpy-f05-extatr-h2-validation-v1.zip' \
+            --pattern 'EXPECTED_SHA256SUMS'
+          (cd inputs/historical && sha256sum -c EXPECTED_SHA256SUMS)
+          unzip -q inputs/historical/usdjpy-2023-canonical-baseline-prep-v1.zip -d inputs/2023
+          unzip -q inputs/historical/mt4-usdjpy-2024h1-event-audit-v1.zip -d inputs/2024h1
+          unzip -q inputs/historical/mt4-usdjpy-f05-extatr-h2-validation-v1.zip -d inputs/2024h2
+          printf '%s  %s\n' \
+            '4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78' inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            '766be5ebba158e5b40f5da5d66929b4da8a25d42a8716b1e591d7c09dd87c2a3' inputs/2024h1/m15_utc_2024h1.csv \
+            '9560d6382e2457eaec83415316fb59d4989244d49c9977ce76cbdd717f32f09a' inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            'a5a871d7105c6e68548e804c9ab517ee6bc0b08553474b158799f47ebd32edcd' inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv > inputs/SELECTED_HISTORICAL_SHA256SUMS
+          sha256sum -c inputs/SELECTED_HISTORICAL_SHA256SUMS
+
+      - name: Download accepted 2024 full-market M15 bars
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release download usdjpy-2024-derived-bars-v1 \
+            --repo "$GITHUB_REPOSITORY" --dir inputs/2024derived \
+            --pattern 'USDJPY-2024-m15-derived-bars-v1.csv.gz'
+          printf '%s  %s\n' \
+            'd22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020' \
+            inputs/2024derived/USDJPY-2024-m15-derived-bars-v1.csv.gz > inputs/SELECTED_2024_DERIVED_SHA256SUMS
+          sha256sum -c inputs/SELECTED_2024_DERIVED_SHA256SUMS
+
+      - name: Materialize canonical B02 F05 baseline population
+        run: |
+          python tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m15-2024h1 inputs/2024h1/m15_utc_2024h1.csv \
+            --events-2024h1 inputs/2024h1/tester/fx2_usdjpy_2024h1_event_audit_fixed_001_each_v1.csv \
+            --events-2024h2 inputs/2024h2/h2_baseline/fx2_usdjpy_f05_extatr_h2_baseline_v1.csv \
+            --out-dir materialized
+          printf '%s  %s\n' \
+            '98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca' \
+            materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv > materialized/EXPECTED_SHA256SUMS
+          sha256sum -c materialized/EXPECTED_SHA256SUMS
+
+      - name: Run fixed-mechanism Opportunity Atlas
+        run: |
+          mkdir -p csos_output
+          python tools/evaluate_usdjpy_csos_opportunity_atlas_v1.py \
+            --m15-2023 inputs/2023/normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz \
+            --m15-2024 inputs/2024derived/USDJPY-2024-m15-derived-bars-v1.csv.gz \
+            --baseline-trades materialized/usdjpy_b02_f05_source_trade_ledger_v2.csv \
+            --family-catalog configs/research/usdjpy_csos_family_catalog_v1.json \
+            --prereg configs/research/usdjpy_csos_opportunity_atlas_v1_prereg.json \
+            --literature configs/research/usdjpy_csos_literature_basis_v1.json \
+            --out-dir csos_output \
+            --research-sha "$RESEARCH_SHA" \
+            --core-sha 'aca45ab891d9a6da272b5111a99142d99e874929' \
+            --run-id "$GITHUB_RUN_ID" | tee csos_output/run.log
+          jq -e '.status=="CSOS_OPPORTUNITY_ATLAS_COMPLETE_NO_EA_AUTHORIZATION" and .population.family_count==11 and .population.baseline_trades==1882 and .boundaries."2025_accessed"==false and .boundaries."EA_implemented"==false and .boundaries."Core_modified"==false and .boundaries."parameter_optimization"==false' csos_output/execution_receipt.json
+
+      - name: Commit canonical result summary and receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive='docs/research/artifact_archives/usdjpy_csos_opportunity_atlas_v1'
+          mkdir -p "$archive"
+          cp csos_output/opportunity_atlas_report.md docs/research/usdjpy_csos_opportunity_atlas_v1.md
+          cp csos_output/execution_receipt.json "$archive/receipt.json"
+          cp csos_output/family_comparison.csv "$archive/family_comparison.csv"
+          cp csos_output/variant_comparison.csv "$archive/variant_comparison.csv"
+          cp csos_output/expected_improvement_ranking.csv "$archive/expected_improvement_ranking.csv"
+          cp csos_output/complementarity_ranking.csv "$archive/complementarity_ranking.csv"
+          cp csos_output/top10_candidates.json "$archive/top10_candidates.json"
+          cp csos_output/top3_research_priorities.json "$archive/top3_research_priorities.json"
+          cp csos_output/artifact_manifest.json "$archive/artifact_manifest.json"
+          git add docs/research/usdjpy_csos_opportunity_atlas_v1.md "$archive"
+          git commit -m 'research: record CSOS Opportunity Atlas v1 results'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          echo "RELEASE_TARGET_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Package immutable evidence
+        run: |
+          find csos_output -type f ! -name 'PACKAGE_SHA256SUMS' -print0 | sort -z | xargs -0 sha256sum > csos_output/PACKAGE_SHA256SUMS
+          sha256sum -c csos_output/PACKAGE_SHA256SUMS
+          zip -q -X -r "usdjpy-csos-opportunity-atlas-v1-r1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" csos_output
+
+      - name: Upload Actions artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: usdjpy-csos-opportunity-atlas-v1-r1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            csos_output
+            usdjpy-csos-opportunity-atlas-v1-r1-${{ github.run_id }}-${{ github.run_attempt }}.zip
+          retention-days: 90
+          compression-level: 0
+
+      - name: Publish immutable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag='usdjpy-csos-opportunity-atlas-v1-r1'
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $tag already exists; refusing to overwrite immutable evidence" >&2
+            exit 1
+          fi
+          top_family=$(jq -r '.top_family.family_id + " — " + .top_family.family' csos_output/execution_receipt.json)
+          gh release create "$tag" \
+            "usdjpy-csos-opportunity-atlas-v1-r1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.zip" \
+            --target "$RELEASE_TARGET_SHA" \
+            --title 'USDJPY CSOS Opportunity Atlas v1 — evidence repair 1' \
+            --notes "Evidence-repaired immutable package superseding Run 30202064383; PACKAGE_SHA256SUMS excludes itself and is verified before upload. Scientific definitions and results are unchanged. 2023H1-2024H2 fixed-mechanism complementary-strategy Opportunity Atlas. Top research-priority family: ${top_family}. No 2025 access, B02/F05 modification, threshold optimization, EA implementation, MT4 execution, Core modification, or production authorization." \
+            --repo "$GITHUB_REPOSITORY"
+
+      - name: Publish execution receipt issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        shell: bash
+        run: |
+          status=$(jq -r '.status // "FAILED_BEFORE_RECEIPT"' csos_output/execution_receipt.json 2>/dev/null || echo FAILED_BEFORE_RECEIPT)
+          top_family=$(jq -r '(.top_family.family_id // "NA") + " — " + (.top_family.family // "NA")' csos_output/execution_receipt.json 2>/dev/null || echo NA)
+          top_score=$(jq -r '.top_family.overall_score // "NA"' csos_output/execution_receipt.json 2>/dev/null || echo NA)
+          cat > receipt.md <<EOF
+          workflow: usdjpy_csos_opportunity_atlas_v1.yml
+          run_id: ${GITHUB_RUN_ID}
+          run_attempt: ${GITHUB_RUN_ATTEMPT}
+          source_sha: ${RESEARCH_SHA}
+          result_sha: ${RELEASE_TARGET_SHA}
+          status: ${status}
+          top_family: ${top_family}
+          top_family_score: ${top_score}
+          artifact_id: ${ARTIFACT_ID}
+          artifact_digest: ${ARTIFACT_DIGEST}
+          release_tag: usdjpy-csos-opportunity-atlas-v1-r1
+          supersedes_run: 30202064383
+          evidence_repair: PACKAGE_SHA256SUMS excludes itself and passed sha256sum -c
+          analysis_periods: 2023H1,2023H2,2024H1,2024H2
+          2025_accessed: false
+          B02_F05_logic_changed: false
+          parameter_optimization: false
+          EA_implemented: false
+          MT4_accessed: false
+          Core_modified: false
+          production_authorized: false
+          run_url: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          EOF
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "[csos-opportunity-atlas-r1] ${GITHUB_RUN_ID} ${status}" \
+            --body-file receipt.md

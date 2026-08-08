@@ -1,0 +1,117 @@
+{
+  "2025_accessed": false,
+  "ea_implementation": false,
+  "files": [
+    {
+      "bytes": 8183,
+      "path": "complementarity_ranking.csv",
+      "sha256": "d9d236a386e7cc1fca797f222fefbd6c5053775b47bacb457c307385cad54549"
+    },
+    {
+      "bytes": 33579,
+      "path": "execution_receipt.json",
+      "sha256": "c0439b650e3583081844a868cac3e949849d35f397787a48170f354ee6ae778f"
+    },
+    {
+      "bytes": 8179,
+      "path": "expected_improvement_ranking.csv",
+      "sha256": "20531db33a4526f6acd9a93d476db3f7e3067491fb0540aa3236fa319d290969"
+    },
+    {
+      "bytes": 8138,
+      "path": "family_comparison.csv",
+      "sha256": "8d0b1f417fd16c67491817cd85188a336544fca3b2d63812d9006ce011f07141"
+    },
+    {
+      "bytes": 3393,
+      "path": "family_fold_metrics.csv",
+      "sha256": "95932606694bcc425e7deb6bec4d8c12c1477906f187a2c88b4ed22b44602d58"
+    },
+    {
+      "bytes": 7798,
+      "path": "family_market_state_metrics.csv",
+      "sha256": "e80e598f42092affc21286263e282c887b6088d4b7023c8f634467d984dd0d22"
+    },
+    {
+      "bytes": 485839,
+      "path": "family_nonoverlap_opportunity_ledger.csv.gz",
+      "sha256": "d7bc74abe76b3790409ad59b0f0748a5d1854a58885e28addd114ed272a54e2d"
+    },
+    {
+      "bytes": 2426,
+      "path": "family_overlap_correlation.csv",
+      "sha256": "b9b4a25a73111dba8201aaf70c78c60c44f935b46617ee78f6e0a9b9eba46372"
+    },
+    {
+      "bytes": 3019,
+      "path": "family_session_metrics.csv",
+      "sha256": "a6b61dceba626b012eb92da83f7cc34f120301096e24da5f0f018403121e3bb1"
+    },
+    {
+      "bytes": 242,
+      "path": "limitations.json",
+      "sha256": "58babb7896067cd0c6e70f164b5b5ffeba561919c2fa503baada9952bef0e4ce"
+    },
+    {
+      "bytes": 3219,
+      "path": "opportunity_atlas_report.md",
+      "sha256": "44e9ced449590df56f85f62bab6875d616d6ed1c3b5452c525164c6368d87734"
+    },
+    {
+      "bytes": 0,
+      "path": "run.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 489544,
+      "path": "strategy_opportunity_atlas.csv.gz",
+      "sha256": "0ef866993590ac9cd4712be2d23158341b66fb789898c42acbbe75f2cf01377c"
+    },
+    {
+      "bytes": 21406,
+      "path": "top10_candidates.json",
+      "sha256": "730f0510218359b92858a3c3ca5ce741e2563f5d640544f8bbe6ad2c2b84679e"
+    },
+    {
+      "bytes": 6505,
+      "path": "top3_research_priorities.json",
+      "sha256": "47fb2d6b2c798d8bfbb41e499903630980089b883ec311707d35f6c73e0b292f"
+    },
+    {
+      "bytes": 5323,
+      "path": "usdjpy_csos_family_catalog_v1.json",
+      "sha256": "f5286821416e400afe17bd46d99aa13248f6e2d26cf5264c756ec408293838a4"
+    },
+    {
+      "bytes": 2958,
+      "path": "usdjpy_csos_literature_basis_v1.json",
+      "sha256": "9f6bb6f14cd2bffe7a477f706490df6b1310e8169196ad56bb1e50a4bca7e066"
+    },
+    {
+      "bytes": 3120,
+      "path": "usdjpy_csos_opportunity_atlas_v1_prereg.json",
+      "sha256": "635f1ff12b0e332d56ac4c1d7df93caa65baf0898e5e40061ddd526c206ad0b1"
+    },
+    {
+      "bytes": 11591,
+      "path": "variant_comparison.csv",
+      "sha256": "ebff7f1e040fe5b5960d0d924c143ca1b89a6ca5cc235f028bd35ff53410ac44"
+    },
+    {
+      "bytes": 6159,
+      "path": "variant_fold_metrics.csv",
+      "sha256": "8eab3f188f116d3eab94fc4dbd74403215060af79765f62ef31ece6a37246afd"
+    },
+    {
+      "bytes": 15159,
+      "path": "variant_market_state_metrics.csv",
+      "sha256": "0aedbd3078be5e496fbcf0c27a0766effa20aded85adec35a3becd8a49978f1e"
+    },
+    {
+      "bytes": 4533,
+      "path": "variant_session_metrics.csv",
+      "sha256": "ad966fc19cab0c1d95487e270682e029472e00f895886b128cc8e07a0531c7d6"
+    }
+  ],
+  "schema_version": "usdjpy_csos_opportunity_atlas_manifest_v1"
+}

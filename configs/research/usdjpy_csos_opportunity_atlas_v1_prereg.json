@@ -1,0 +1,70 @@
+{
+  "schema_version": "usdjpy_csos_opportunity_atlas_prereg_v1",
+  "study_id": "USDJPY_CSOS_OPPORTUNITY_ATLAS_V1",
+  "title": "USDJPY Complementary Strategy Opportunity Study — Opportunity Atlas v1",
+  "purpose": "Identify independent return sources that B02 and F05 do not structurally cover. This study does not improve, filter, stop, route, or retune B02/F05.",
+  "development_folds": ["2023H1", "2023H2", "2024H1", "2024H2"],
+  "forbidden_periods": ["2025H1", "2025H2"],
+  "selection_boundary": {
+    "2025_access": false,
+    "ea_implementation": false,
+    "mt4_execution": false,
+    "core_modification": false,
+    "production_authorization": false,
+    "parameter_optimization": false,
+    "threshold_grid_search": false
+  },
+  "market_data": {
+    "2023_m15": {
+      "release_tag": "f05-failed-reclaim-historical-authorities-v1",
+      "archive": "usdjpy-2023-canonical-baseline-prep-v1.zip",
+      "member": "normalized/usdjpy_2023_m15_bid_utc_rakuten_mt4_v1.csv.gz",
+      "sha256": "4c10ab3244996d73d0955850675231a533f918da09a41ac642c9a3e287b7ac78",
+      "authority": "canonical Rakuten MT4 historical M15"
+    },
+    "2024_m15": {
+      "release_tag": "usdjpy-2024-derived-bars-v1",
+      "asset": "USDJPY-2024-m15-derived-bars-v1.csv.gz",
+      "sha256": "d22a008247e2a8bed49a5169648661ab21eff404a6bc2985bca0c3b5af290020",
+      "source_tick_rows": 40969081,
+      "authority": "accepted UTC Bid/Ask bars derived from durable public Bid/Ask ticks; not Rakuten quote history"
+    },
+    "baseline_trade_population": {
+      "builder": "tools/build_usdjpy_b02_f05_hyp024_inputs_v2.py",
+      "expected_trades": 1882,
+      "expected_trade_ledger_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca"
+    }
+  },
+  "execution_contract": {
+    "bar_interval": "M15 UTC left-closed right-open",
+    "signal_timing": "completed bar only; entry at next available M15 Bid open",
+    "exit_timing": "fixed family-specific holding horizon; no stop, target, trailing rule, or optimized exit",
+    "cost_pips": 0.5,
+    "pip_size": 0.01,
+    "normalized_jpy_per_pip": 10.0,
+    "candidate_overlap_policy": "one active position per variant; family aggregate uses deterministic first-signal priority and one active position per family",
+    "baseline_comparison": "entry-date daily realized P/L; additive unconstrained portfolio estimate without margin or capital suppression"
+  },
+  "primary_metrics": [
+    "Opportunity Count",
+    "Expected Coverage",
+    "Expected Profit Contribution",
+    "Correlation to B02",
+    "Correlation to F05",
+    "Winner Damage Risk",
+    "Portfolio Diversification",
+    "Fold Portability",
+    "Long/Short symmetry",
+    "Session robustness",
+    "Practical Implementability"
+  ],
+  "ranking_weights": {
+    "Improvement Potential": 0.30,
+    "Independence": 0.20,
+    "Coverage": 0.15,
+    "Robustness": 0.15,
+    "Simplicity": 0.10,
+    "Data Authority": 0.10
+  },
+  "interpretation_boundary": "All opportunity and portfolio values are historical research estimates. No family, threshold, rule, EA, or production deployment is authorized by this atlas."
+}

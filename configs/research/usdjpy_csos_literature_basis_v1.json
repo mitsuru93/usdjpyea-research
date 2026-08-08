@@ -1,0 +1,59 @@
+{
+  "schema_version": "usdjpy_csos_literature_basis_v1",
+  "scope": "Primary research used only to justify a broad fixed mechanism catalog. No paper is treated as evidence that a family is profitable in the CSOS dataset.",
+  "references": [
+    {
+      "authors": "Tobias J. Moskowitz; Yao Hua Ooi; Lasse Heje Pedersen",
+      "year": 2012,
+      "title": "Time Series Momentum",
+      "publication": "Journal of Financial Economics 104(2)",
+      "doi": "10.1016/j.jfineco.2011.11.003",
+      "supports": ["Shock Continuation", "Volatility Compression Breakout", "Pullback Continuation", "Daily Time-Series Momentum"]
+    },
+    {
+      "authors": "Lukas Menkhoff; Lucio Sarno; Maik Schmeling; Andreas Schrimpf",
+      "year": 2012,
+      "title": "Currency Momentum Strategies",
+      "publication": "Journal of Financial Economics 106(3)",
+      "doi": "10.1016/j.jfineco.2012.06.009",
+      "supports": ["Trend continuation", "Time-series and cross-sectional momentum as distinct FX return sources"]
+    },
+    {
+      "authors": "Carol L. Osler",
+      "year": 2003,
+      "title": "Currency Orders and Exchange-Rate Dynamics: An Explanation for the Predictive Success of Technical Analysis",
+      "publication": "Journal of Finance 58(5)",
+      "supports": ["Liquidity Sweep", "False Breakout Reversal", "Trend Continuation", "Round-Number Rejection"]
+    },
+    {
+      "authors": "Carol L. Osler",
+      "year": 2005,
+      "title": "Stop-Loss Orders and Price Cascades in Currency Markets",
+      "publication": "Journal of International Money and Finance 24(2)",
+      "supports": ["Shock Continuation", "Liquidity-driven cascades"]
+    },
+    {
+      "authors": "Carol L. Osler",
+      "year": 2000,
+      "title": "Support for Resistance: Technical Analysis and Intraday Exchange Rates",
+      "publication": "Federal Reserve Bank of New York Economic Policy Review 6(2)",
+      "supports": ["False Breakout Reversal", "Liquidity Sweep", "Opening Range / support-resistance interaction"]
+    },
+    {
+      "authors": "Lukas Menkhoff; Lucio Sarno; Maik Schmeling; Andreas Schrimpf",
+      "year": 2016,
+      "title": "Information Flows in Foreign Exchange Markets: Dissecting Customer Currency Trades",
+      "publication": "Journal of Finance 71(2); BIS Working Paper No. 405",
+      "supports": ["Order-flow mechanisms", "Session and participant-transition hypotheses"],
+      "quantification_status": "NOT_QUANTIFIED_WITHOUT_SIGNED_ORDER_FLOW"
+    }
+  ],
+  "practice_led_mechanisms": [
+    "Asian-range and previous-day high/low liquidity sweeps",
+    "Tokyo-London, London-New York and New-York-Tokyo transition effects",
+    "Opening-range breakouts",
+    "Half-yen round-number rejection",
+    "Shock failure after midpoint re-entry"
+  ],
+  "boundary": "The atlas tests frozen price/session proxies. It does not claim direct observation of dealer inventories, stop orders, CTA positions, macro surprises, or institutional order flow."
+}
