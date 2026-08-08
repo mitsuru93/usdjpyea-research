@@ -1,0 +1,32 @@
+name: USDJPY Integrated Long-Horizon Qualification Package Verify v1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'artifacts/research/usdjpy_integrated_long_horizon_qualification_001/release_parts/**'
+      - 'configs/research/usdjpy_integrated_long_horizon_qualification_001_final_decision_v1.json'
+      - 'docs/research/USDJPY_INTEGRATED_LONG_HORIZON_QUALIFICATION_001_FINAL_REPORT.md'
+      - '.github/workflows/usdjpy_integrated_long_horizon_qualification_package_verify_v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify deterministic package and visible authorities
+        shell: bash
+        run: |
+          set -euo pipefail
+          root='artifacts/research/usdjpy_integrated_long_horizon_qualification_001'
+          cat "$root"/release_parts/part_*.b64 | tr -d '\r\n' | base64 --decode > "$RUNNER_TEMP/package.zip"
+          actual=$(sha256sum "$RUNNER_TEMP/package.zip" | cut -d' ' -f1)
+          test "$actual" = 'a7aab67e55cdd3365484a39dc0dc043c5d0c540e55727b16c417a7e984b5ef00'
+          unzip -t "$RUNNER_TEMP/package.zip"
+          test "$(unzip -Z1 "$RUNNER_TEMP/package.zip" | wc -l | tr -d ' ')" -eq 38
+          unzip -p "$RUNNER_TEMP/package.zip" final_decision.json | jq -e '.work_id=="USDJPY-INTEGRATED-LONG-HORIZON-QUALIFICATION-001" and .final_decision=="PARTIAL_LONG_HORIZON_RECOVERY_WITH_RESIDUAL_LOSS" and .economic_summary."2020_2024_pooled_net_jpy"==80674 and .economic_summary."2025H1_net_jpy"==(-2131) and .production_authorization==false and ."2025H2_accessed"==false'
+          jq -e '.final_decision=="PARTIAL_LONG_HORIZON_RECOVERY_WITH_RESIDUAL_LOSS" and .production_authorization==false and ."2025H2_accessed"==false' configs/research/usdjpy_integrated_long_horizon_qualification_001_final_decision_v1.json

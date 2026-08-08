@@ -1,0 +1,126 @@
+name: USDJPY Integrated Long-Horizon Qualification Release v1
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - 'configs/run_markers/usdjpy_integrated_long_horizon_qualification_001_release_dispatch.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: usdjpy-integrated-long-horizon-qualification-001-release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      WORK_ID: USDJPY-INTEGRATED-LONG-HORIZON-QUALIFICATION-001
+      RELEASE_TAG: usdjpy-integrated-long-horizon-qualification-001-v1
+      RELEASE_ASSET: usdjpy-integrated-long-horizon-qualification-001-v1.zip
+      EXPECTED_SHA256: a7aab67e55cdd3365484a39dc0dc043c5d0c540e55727b16c417a7e984b5ef00
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reconstruct deterministic package
+        shell: bash
+        run: |
+          set -euo pipefail
+          root='artifacts/research/usdjpy_integrated_long_horizon_qualification_001'
+          test -d "$root/release_parts"
+          cat "$root"/release_parts/part_*.b64 | tr -d '\r\n' | base64 --decode > "$RUNNER_TEMP/$RELEASE_ASSET"
+          actual=$(sha256sum "$RUNNER_TEMP/$RELEASE_ASSET" | cut -d' ' -f1)
+          test "$actual" = "$EXPECTED_SHA256"
+          unzip -t "$RUNNER_TEMP/$RELEASE_ASSET"
+          count=$(unzip -Z1 "$RUNNER_TEMP/$RELEASE_ASSET" | wc -l | tr -d ' ')
+          test "$count" -eq 38
+          unzip -p "$RUNNER_TEMP/$RELEASE_ASSET" final_decision.json | jq -e '.final_decision=="PARTIAL_LONG_HORIZON_RECOVERY_WITH_RESIDUAL_LOSS" and .production_authorization==false and .live_authorization==false and ."2025H2_accessed"==false'
+          echo "PACKAGE_SHA256=$actual" >> "$GITHUB_ENV"
+          echo "PACKAGE_PATH=$RUNNER_TEMP/$RELEASE_ASSET" >> "$GITHUB_ENV"
+
+      - name: Publish or verify immutable Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            mkdir -p "$RUNNER_TEMP/existing"
+            gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir "$RUNNER_TEMP/existing" --pattern "$RELEASE_ASSET"
+            test -f "$RUNNER_TEMP/existing/$RELEASE_ASSET"
+            existing=$(sha256sum "$RUNNER_TEMP/existing/$RELEASE_ASSET" | cut -d' ' -f1)
+            test "$existing" = "$EXPECTED_SHA256"
+          else
+            gh release create "$RELEASE_TAG" "$PACKAGE_PATH#complete qualification package" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target main \
+              --title 'USDJPY 2020–2025H1 Integrated Long-Horizon Qualification v1' \
+              --notes "Work ID: $WORK_ID
+Final decision: PARTIAL_LONG_HORIZON_RECOVERY_WITH_RESIDUAL_LOSS
+Selected portfolio: P4_B02_C3_F05_C2_SP39
+2020–2024 pooled net: +JPY 80,674
+2025H1 net: -JPY 2,131
+2025H1 PF: 0.9807602022390755
+Production authorization: false
+2025H2 accessed: false
+Archive SHA-256: $PACKAGE_SHA256"
+          fi
+
+      - name: Remote byte-identical readback
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          readback="$RUNNER_TEMP/readback"
+          rm -rf "$readback"
+          mkdir -p "$readback"
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir "$readback" --pattern "$RELEASE_ASSET"
+          remote=$(sha256sum "$readback/$RELEASE_ASSET" | cut -d' ' -f1)
+          test "$remote" = "$EXPECTED_SHA256"
+          cat > "$RUNNER_TEMP/remote_readback_receipt.json" <<JSON
+          {
+            "schema_version": "usdjpy_integrated_long_horizon_qualification_001_remote_readback_receipt_v1",
+            "work_id": "$WORK_ID",
+            "status": "PASS_REMOTE_BYTE_IDENTICAL_READBACK",
+            "run_id": $GITHUB_RUN_ID,
+            "run_attempt": $GITHUB_RUN_ATTEMPT,
+            "release_tag": "$RELEASE_TAG",
+            "asset_name": "$RELEASE_ASSET",
+            "local_sha256": "$EXPECTED_SHA256",
+            "remote_sha256": "$remote",
+            "final_decision": "PARTIAL_LONG_HORIZON_RECOVERY_WITH_RESIDUAL_LOSS",
+            "production_authorization": false,
+            "2025H2_accessed": false
+          }
+          JSON
+          gh release upload "$RELEASE_TAG" "$RUNNER_TEMP/remote_readback_receipt.json#remote byte-identical readback receipt" --repo "$GITHUB_REPOSITORY" --clobber
+
+      - name: Record Issue and PR checkpoint
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="FINAL RELEASE PASS
+Work ID: $WORK_ID
+Run: $GITHUB_RUN_ID
+Release: $RELEASE_TAG
+SHA-256: $PACKAGE_SHA256
+Decision: PARTIAL_LONG_HORIZON_RECOVERY_WITH_RESIDUAL_LOSS
+P4 2020–2024 pooled net: +JPY 80,674
+P4 2025H1: -JPY 2,131 / PF 0.9807602022390755
+Production authorization: false
+2025H2 accessed: false"
+          gh issue comment 455 --repo "$GITHUB_REPOSITORY" --body "$body"
+          if [ -n "${PR_NUMBER:-}" ]; then gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$body"; fi
