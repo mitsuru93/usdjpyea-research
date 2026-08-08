@@ -1,0 +1,109 @@
+name: USDJPY EA Integration 001 Release v1
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "configs/integration/usdjpy_ea_integration_001_*.json"
+      - "schemas/usdjpy_common_trade_ledger_v1.schema.json"
+      - "tools/usdjpy_common_portfolio/**"
+      - "tools/usdjpy_integration_001_*.py"
+      - "tools/evaluate_usdjpy_ea_integration_001_v1.py"
+      - "tests/test_usdjpy_ea_integration_001.py"
+      - "docs/research/USDJPY_EA_INTEGRATION_001_RESULT_V1.md"
+      - "docs/research/usdjpy_ea_integration_001_*.csv"
+      - ".github/workflows/usdjpy_ea_integration_001_release_v1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip pytest pandas numpy
+
+      - name: Verify framework
+        shell: bash
+        run: |
+          set -euo pipefail
+          pytest -q tests/test_usdjpy_ea_integration_001.py
+          python -m py_compile \
+            tools/evaluate_usdjpy_ea_integration_001_v1.py \
+            tools/usdjpy_common_portfolio/*.py \
+            tools/usdjpy_integration_001_*.py
+
+      - name: Build deterministic release archive
+        shell: python
+        run: |
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+
+          files = [
+              Path("configs/integration/usdjpy_ea_integration_001_contract_v1.json"),
+              Path("configs/integration/usdjpy_ea_integration_001_result_v1.json"),
+              Path("schemas/usdjpy_common_trade_ledger_v1.schema.json"),
+              Path("tools/usdjpy_common_portfolio/__init__.py"),
+              Path("tools/usdjpy_common_portfolio/base.py"),
+              Path("tools/usdjpy_common_portfolio/adapters.py"),
+              Path("tools/usdjpy_common_portfolio/engine.py"),
+              Path("tools/usdjpy_common_portfolio/framework.py"),
+              Path("tools/usdjpy_integration_001_support.py"),
+              Path("tools/usdjpy_integration_001_context.py"),
+              Path("tools/usdjpy_integration_001_matrices.py"),
+              Path("tools/usdjpy_integration_001_artifacts.py"),
+              Path("tools/evaluate_usdjpy_ea_integration_001_v1.py"),
+              Path("tests/test_usdjpy_ea_integration_001.py"),
+              Path("docs/research/USDJPY_EA_INTEGRATION_001_RESULT_V1.md"),
+              Path("docs/research/usdjpy_ea_integration_001_candidate_availability_v1.csv"),
+              Path("docs/research/usdjpy_ea_integration_001_combination_matrix_v1.csv"),
+              Path("docs/research/usdjpy_ea_integration_001_risk_tradeoff_matrix_v1.csv"),
+          ]
+          files = sorted(files, key=lambda p: p.as_posix())
+          out = Path("usdjpy-ea-integration-001-v1.zip")
+          with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+              for path in files:
+                  if not path.exists():
+                      raise SystemExit(f"missing release input: {path}")
+                  info = zipfile.ZipInfo(path.as_posix(), date_time=(1980, 1, 1, 0, 0, 0))
+                  info.compress_type = zipfile.ZIP_DEFLATED
+                  info.external_attr = 0o100644 << 16
+                  zf.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+          digest = hashlib.sha256(out.read_bytes()).hexdigest()
+          receipt = json.loads(Path("configs/integration/usdjpy_ea_integration_001_release_receipt_v1.json").read_text())
+          if digest != receipt["archive_sha256"]:
+              raise SystemExit(f"archive SHA mismatch: {digest} != {receipt['archive_sha256']}")
+          if out.stat().st_size != receipt["archive_bytes"]:
+              raise SystemExit(f"archive byte mismatch: {out.stat().st_size} != {receipt['archive_bytes']}")
+          print(f"archive={out} sha256={digest} bytes={out.stat().st_size}")
+
+      - name: Create immutable Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: usdjpy-ea-integration-001-v1
+          name: USDJPY EA Integration 001 v1
+          body: |
+            Common USDJPY portfolio evaluation and integration framework.
+
+            Baseline authority:
+            - 2023–2024: 1,882 trades, +JPY 51,627, PF 1.137713, common full-equity DD JPY 42,660
+            - 2025H1: 463 trades, -JPY 20,808, PF 0.829408, authority Tick-equity DD JPY 42,737
+            - N1/N2/F/B: PENDING_CANDIDATE_EVIDENCE
+            - Candidate rules changed: false
+          files: usdjpy-ea-integration-001-v1.zip
+          fail_on_unmatched_files: true

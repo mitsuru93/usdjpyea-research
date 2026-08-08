@@ -1,0 +1,200 @@
+{
+  "baseline_exact_reproduction": {
+    "2023_2024": {
+      "B02": {
+        "net_jpy": 12722,
+        "profit_factor": 1.1276015285704255,
+        "trades": 429
+      },
+      "F05": {
+        "net_jpy": 38905,
+        "profit_factor": 1.1413765911907177,
+        "trades": 1453
+      },
+      "common_basis_minimum_full_equity_jpy": 59118,
+      "currency_mismatch": 0,
+      "full_equity_drawdown_jpy": 42660,
+      "maximum_concurrent_lots": 0.09,
+      "maximum_concurrent_positions": 9,
+      "net_jpy": 51627,
+      "profit_factor": 1.1377131303215893,
+      "realized_equity_drawdown_jpy": 40487,
+      "source_basis_initial_capital_jpy": 1000000,
+      "source_basis_minimum_full_equity_jpy": 959118,
+      "trades": 1882
+    },
+    "2025H1": {
+      "B02": {
+        "net_jpy": -6964,
+        "profit_factor": 0.7929968491766245,
+        "trades": 105
+      },
+      "F05": {
+        "net_jpy": -13844,
+        "profit_factor": 0.8432748802825671,
+        "trades": 358
+      },
+      "authority_minimum_equity_jpy": 57328,
+      "authority_tick_equity_drawdown_jpy": 42737,
+      "classification": "NO_RECOVERY",
+      "maximum_concurrent_lots": 0.08,
+      "maximum_concurrent_positions": 8,
+      "minimum_margin_level_percent": 156.0535,
+      "net_jpy": -20808,
+      "profit_factor": 0.8294076655052265,
+      "trades": 463
+    },
+    "tests": {
+      "deterministic_release_archive_reproduction": true,
+      "local_pytest": "4 passed"
+    }
+  },
+  "candidate_availability": [
+    {
+      "availability": "PENDING_CANDIDATE_EVIDENCE",
+      "blocking": [
+        "formal_decision",
+        "common_trade_ledger",
+        "validation_artifact_digest",
+        "2025H1_result"
+      ],
+      "candidate_id": "C1_SHORT_DUKASCOPY_NATIVE_16BAR_UNCHANGED",
+      "slot": "N1",
+      "study_id": "USDJPY-HYP-039"
+    },
+    {
+      "availability": "PENDING_CANDIDATE_EVIDENCE",
+      "blocking": [
+        "Core_parity",
+        "MT4_result",
+        "common_trade_ledger",
+        "validation_artifact_digest",
+        "formal_decision"
+      ],
+      "candidate_id": "A_EXACT_EXECUTABLE_12BAR_UNCHANGED",
+      "slot": "N2",
+      "study_id": "USDJPY-HYP-040"
+    },
+    {
+      "availability": "PENDING_CANDIDATE_EVIDENCE",
+      "blocking": [
+        "candidate_id_or_no_change",
+        "formal_decision",
+        "common_trade_ledger",
+        "validation_artifact_digest"
+      ],
+      "candidate_id": null,
+      "slot": "F",
+      "study_id": "F05_V2"
+    },
+    {
+      "availability": "PENDING_CANDIDATE_EVIDENCE",
+      "blocking": [
+        "candidate_id_or_no_change",
+        "formal_decision",
+        "common_trade_ledger",
+        "validation_artifact_digest"
+      ],
+      "candidate_id": null,
+      "slot": "B",
+      "study_id": "B02_V2"
+    }
+  ],
+  "candidate_rules_changed": false,
+  "combination_evaluation": {
+    "BASELINE": {
+      "classification": "NO_RECOVERY",
+      "components": [
+        "B02",
+        "F05"
+      ],
+      "status": "CALCULATED"
+    },
+    "non_baseline_combinations": "NOT_CALCULATED_PENDING_CANDIDATE_EVIDENCE",
+    "pending_slots": [
+      "N1",
+      "N2",
+      "F",
+      "B"
+    ]
+  },
+  "common_contract": {
+    "baseline_spread_points": 5,
+    "chronology": [
+      "EXECUTABLE_MARKET_TICK",
+      "STRATEGY_LOCAL_EXIT_CONDITION_FINALIZED",
+      "CLOSE_EXECUTION",
+      "REALIZED_PL_APPLIED",
+      "STATE_AND_LOSS_COUNTER_UPDATED",
+      "ENTRY_PERMISSION",
+      "ENTRY_EXECUTION",
+      "MARGIN_UPDATED",
+      "EQUITY_SNAPSHOT"
+    ],
+    "comparison_initial_capital_jpy": 100000,
+    "default_lot_per_strategy": 0.01,
+    "missing_value_policy": "EXPLICIT_NULL_AND_STOP_DEPENDENT_GATE",
+    "reporting_currency": "JPY",
+    "schema": "usdjpy_common_trade_ledger_v1"
+  },
+  "exact_next_action": "Ingest the first candidate that reaches merged main, immutable Release, or a hash-pinned artifact with a complete common-ledger-compatible trade/equity/margin package. The nearest dependency is HYP-039 Core PR #505. Pin candidate ID/version, Research SHA, Core SHA, Run ID and artifact digest, validate null/chronology/accounting gates, and replay BASELINE+N1 without changing its rules. Apply the same adapter path to HYP-040, F05 v2 and B02 v2 as each becomes admissible.",
+  "final_architecture_recommendation": {
+    "pending_slots": [
+      "N1",
+      "N2",
+      "F",
+      "B"
+    ],
+    "production_architecture_selected": false,
+    "reason": "Baseline is exact but 2025H1 remains JPY -20,808 / PF 0.829. N1, N2, F and B lack admissible completed evidence.",
+    "recommendation": "RETAIN_B02_F05_AS_REFERENCE_ONLY_AND_DEFER_FINAL_EA_COMPOSITION"
+  },
+  "lot_allocation_changed": false,
+  "period_roles": {
+    "2020_2022": "OPTIONAL_REFERENCE",
+    "2023_2024": "RESEARCH_AND_CANDIDATE_RESULT_INTEGRATION_COMPARISON",
+    "2025H1": "VALIDATION_RESULT_INTEGRATION_COMPARISON"
+  },
+  "residual_loss_decomposition": {
+    "chronology_conflict": {
+      "decision_utc_trace": null,
+      "gate": "STOP_COMPLETE_DECISION_TRACE_PARITY",
+      "negative_holding_period_rows": 0,
+      "trade_failures": 0
+    },
+    "interpretation": "Strategy and exclusive exposure decompositions are separate internally additive views and must not be summed together.",
+    "margin_restriction": {
+      "attributed_net_effect_jpy": 0,
+      "blocked_entries": 0,
+      "stopout_breached": false
+    },
+    "period": "2025H1",
+    "remaining_net_loss_jpy": -20808,
+    "required_improvement_to_zero_jpy": 20808,
+    "strategy_attribution": {
+      "Asian_Range_Sweep_jpy": null,
+      "B02_jpy": -6964,
+      "F05_jpy": -13844,
+      "Short_Pullback_jpy": null
+    },
+    "transaction_cost": {
+      "basis": "463 trades x 0.5 pip x JPY 10/pip",
+      "commission_jpy": null,
+      "gate": "STOP_COMPLETE_COST_ATTRIBUTION",
+      "spread_cost_jpy": -2315,
+      "swap_jpy": null
+    }
+  },
+  "schema_version": "usdjpy_ea_integration_001_result_v1",
+  "scientific_decision_authority": false,
+  "source_identity": {
+    "2025H1_artifact_digest": "sha256:0867bb4d8bfb0be9f96e61dd1e9c73aadd56b2b217b514532596e644dc95a72a",
+    "2025H1_run_id": 29783855056,
+    "core_main": "f897b250b808207d960417b2306935dcb0655acf",
+    "historical_state_sha256": "2caddc38cdb16ce7504fe1e3b625f8425ccc6f7d579d02590f9ee92bbf013eda",
+    "historical_trade_sha256": "98c9c8cf57c62c23a94aa38efa6ee257e823dd0b68c413615197a48be00b08ca",
+    "research_main": "4a6cb16768bbacc0c9bbeabfd5817bb26318c81a"
+  },
+  "status": "FRAMEWORK_COMPLETE_BASELINE_ONLY_PENDING_CANDIDATES",
+  "work_id": "USDJPY-EA-INTEGRATION-001"
+}

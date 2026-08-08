@@ -1,0 +1,51 @@
+name: USDJPY EA Integration 001 Bootstrap
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.head_ref == 'agent/usdjpy-ea-integration-001'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout integration branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Materialize deterministic integration payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .integration_bootstrap/payload.part* | base64 --decode > /tmp/usdjpy-ea-integration-001.zip
+          echo "97ebbd6187851f2b99f30d9433c3f7088a831a018abae34e78efdcfbdbc601c0  /tmp/usdjpy-ea-integration-001.zip" | sha256sum -c -
+          unzip -o /tmp/usdjpy-ea-integration-001.zip -d .
+          rm -rf .integration_bootstrap
+          rm -f .github/workflows/usdjpy_ea_integration_001_bootstrap.yml
+
+      - name: Verify integration implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          pytest -q tests/test_usdjpy_ea_integration_001.py
+          python -m py_compile \
+            tools/evaluate_usdjpy_ea_integration_001_v1.py \
+            tools/usdjpy_common_portfolio/*.py \
+            tools/usdjpy_integration_001_*.py
+
+      - name: Commit materialized framework
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "research: implement USDJPY common portfolio integration framework"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}

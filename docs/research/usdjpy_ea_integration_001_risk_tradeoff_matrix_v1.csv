@@ -1,0 +1,2 @@
+combination_id,2023_2024_net_jpy,2023_2024_pf,2025H1_net_jpy,2025H1_pf,2025H1_tick_dd_jpy,2025H1_min_equity_jpy,2025H1_worst_20d_jpy,minimum_margin_level_percent,strategy_concentration,implementation_complexity,source_broker_portability,formal_status,classification
+BASELINE,51627.0,1.1377131303215893,-20808.0,0.8294076655052265,42737.0,57328.0,-16862.0,156.0535,F05 accounts for 66.53% of 2025H1 net loss,LOW_EXISTING_BASELINE,Rakuten MT4 authority; 2023 deterministic historical lineage,BASELINE_AUTHORITY,NO_RECOVERY
