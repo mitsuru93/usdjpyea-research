@@ -1,0 +1,74 @@
+{
+  "schema_version": "m_company_domain_ai_source_index_v1",
+  "index_id": "USDJPYYEA-RESEARCH-AI-SOURCE-INDEX-V1",
+  "repository": "mitsuru93/usdjpyea-research",
+  "role": "ROUTING_INDEX_ONLY",
+  "authoritative": false,
+  "conflict_rule": "CANONICAL_SOURCE_OR_FRESH_RUNTIME_EVIDENCE_WINS",
+  "repository_wide_search_policy": "FALLBACK_ONLY_AFTER_INDEXED_SOURCES",
+  "entries": [
+    {
+      "id": "research_startup_and_current_state",
+      "purpose": "Resolve mandatory startup order, current candidate/registry state, and exact next action without scanning historical hypothesis files.",
+      "fresh_observation_required": true,
+      "sources": [
+        {"role": "canonical_router", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_research_memory_manifest_v1.json"},
+        {"role": "canonical", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_research_candidate_registry_v67.json"},
+        {"role": "canonical", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_validation_operating_contract_v4.json"},
+        {"role": "canonical", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_period_role_policy_v6.json"},
+        {"role": "canonical_memory", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_hypothesis_ledger_v1.json"},
+        {"role": "canonical_memory", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v41.json"}
+      ],
+      "rules": [
+        "The research memory manifest remains the canonical routing authority for mandatory startup files and moving pointers.",
+        "If a pointer in this index disagrees with the manifest, follow the manifest and repair this routing index.",
+        "Never use this index to authorize protected-period access or reopen a closed hypothesis."
+      ]
+    },
+    {
+      "id": "research_period_firewall_and_novelty",
+      "purpose": "Find period roles, validation boundaries, novelty/duplicate-research memory, and recurrence-prevention safeguards.",
+      "fresh_observation_required": true,
+      "sources": [
+        {"role": "canonical", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_period_role_policy_v6.json"},
+        {"role": "canonical", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_validation_operating_contract_v4.json"},
+        {"role": "canonical_memory", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_hypothesis_ledger_v1.json"},
+        {"role": "canonical_memory", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_hypothesis_ledger_addendum_v41.json"},
+        {"role": "mandatory_safeguard", "ref": "main", "kind": "file", "path": "docs/operations/usdjpy_research_execution_recurrence_prevention_v1.md"}
+      ],
+      "rules": [
+        "Period access requires the current canonical policy and registry state, not filename inference or conversation memory.",
+        "Historical or closed candidates are read only when needed for novelty comparison, provenance, or explicit history questions."
+      ]
+    },
+    {
+      "id": "research_data_authority",
+      "purpose": "Find raw/derived data authority, lineage, retention, and reconstruction metadata before interpreting datasets.",
+      "fresh_observation_required": true,
+      "sources": [
+        {"role": "canonical_catalog", "ref": "main", "kind": "file", "path": "docs/data_authorities/USDJPY_TICK_AUTHORITY_CATALOG.md"},
+        {"role": "canonical_metadata_catalog", "ref": "main", "kind": "file", "path": "authority/authority_catalog.json"},
+        {"role": "catalog_contract", "ref": "main", "kind": "file", "path": "docs/research_infrastructure/fx2_authority_catalog_v1.md"}
+      ],
+      "rules": [
+        "Do not call HST bars tick data.",
+        "Verify exact source/release/readback identity before using a dataset as scientific authority."
+      ]
+    },
+    {
+      "id": "research_result_and_release_evidence",
+      "purpose": "Route from the current research state to binding result JSON, report, release receipt, and readback evidence.",
+      "fresh_observation_required": true,
+      "sources": [
+        {"role": "canonical_router", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_research_memory_manifest_v1.json"},
+        {"role": "canonical_registry", "ref": "main", "kind": "file", "path": "configs/research/usdjpy_research_candidate_registry_v67.json"},
+        {"role": "supporting_directory", "ref": "main", "kind": "directory", "path": "configs/research"},
+        {"role": "supporting_directory", "ref": "main", "kind": "directory", "path": "docs/research"}
+      ],
+      "rules": [
+        "Resolve the exact result/receipt paths from the current manifest or registry before opening similarly named historical versions.",
+        "A workflow success badge or artifact name alone is not binding scientific evidence."
+      ]
+    }
+  ]
+}
