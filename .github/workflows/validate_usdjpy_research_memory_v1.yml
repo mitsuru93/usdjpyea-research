@@ -5,6 +5,7 @@ on:
     paths:
       - AGENTS.md
       - README.md
+      - ai-source-index.json
       - configs/research/usdjpy_research_memory_manifest_v1.json
       - configs/research/usdjpy_hypothesis_ledger_v1.json
       - configs/research/usdjpy_hypothesis_ledger_addendum_v*.json
@@ -19,6 +20,7 @@ on:
     paths:
       - AGENTS.md
       - README.md
+      - ai-source-index.json
       - configs/research/usdjpy_research_memory_manifest_v1.json
       - configs/research/usdjpy_hypothesis_ledger_v1.json
       - configs/research/usdjpy_hypothesis_ledger_addendum_v*.json
@@ -44,6 +46,27 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Validate AI source routing index
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('ai-source-index.json')
+          data = json.loads(p.read_text(encoding='utf-8'))
+          assert data['role'] == 'ROUTING_INDEX_ONLY'
+          assert data['authoritative'] is False
+          assert data['repository'] == 'mitsuru93/usdjpyea-research'
+          entries = data.get('entries')
+          assert isinstance(entries, list) and entries
+          for entry in entries:
+              assert entry.get('fresh_observation_required') is True
+              for source in entry.get('sources', []):
+                  if source.get('ref') == 'main' and source.get('kind') == 'file':
+                      assert Path(source['path']).is_file(), source['path']
+                  if source.get('ref') == 'main' and source.get('kind') == 'directory':
+                      assert Path(source['path']).is_dir(), source['path']
+          print(f"RESEARCH_AI_SOURCE_INDEX_OK entries={len(entries)}")
+          PY
       - name: Run canonical memory validator
         id: memory
         continue-on-error: true
