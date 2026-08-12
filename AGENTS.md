@@ -13,6 +13,16 @@ This repository is for research and pre-MT4 simulation work for USDJPY EA develo
 - Do not add MT4 production code (`.mq4` / `.mqh`) here.
 - Do not include broker-specific live-trading logic or production secrets.
 
+## AI source discovery
+
+For repository architecture, current Research state, period authority, data lineage, result evidence, or execution-safeguard questions:
+
+1. Read `ai-source-index.json` before repository-wide search.
+2. Treat it as routing metadata only. It never overrides the Research memory manifest, candidate registry, period policy, operating contract, binding result/receipt, or fresh GitHub evidence.
+3. Use the indexed entry to reach the canonical source set first. Repository-wide grep/version-history exploration is fallback only when indexed sources are missing, contradictory, or insufficient.
+4. Do not infer the active registry/result/receipt from the highest filename version. Resolve moving pointers from `configs/research/usdjpy_research_memory_manifest_v1.json` and the current registry.
+5. The routing index does not relax or replace the mandatory start-up sequence below.
+
 ## Mandatory start-up sequence
 
 Before any USDJPY analysis, hypothesis proposal, candidate design, parameter grid, result interpretation, MT4 workflow design or period-access decision:
