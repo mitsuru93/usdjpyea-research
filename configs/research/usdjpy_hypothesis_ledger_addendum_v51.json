@@ -1,0 +1,40 @@
+{
+  "schema_version": "usdjpy_hypothesis_ledger_addendum_v51",
+  "status": "ACTIVE_APPEND_ONLY_DELTA",
+  "entry_mode": "DELTA_INHERIT_SUPERSEDES",
+  "base_ledger": "configs/research/usdjpy_hypothesis_ledger_v1.json",
+  "inherited_addendum": "configs/research/usdjpy_hypothesis_ledger_addendum_v50.json",
+  "supersedes": "configs/research/usdjpy_hypothesis_ledger_addendum_v50.json",
+  "entries": [
+    {
+      "hypothesis_id": "USDJPY-HYP-047",
+      "name": "F05_LONG_14400S_GIVEBACK_TO_NONPOSITIVE_OBSERVABLE_LIFECYCLE_CONTROL",
+      "title": "USDJPY F05 Long 14400s Giveback-to-Nonpositive Observable Lifecycle Control Study",
+      "work_id": "USDJPY-F05-LONG-14400S-GIVEBACK-LIFECYCLE-CONTROL-001",
+      "status": "IN_PROGRESS_PREREGISTERED",
+      "research_branch": "research/usdjpy-hyp047-f05-long-14400s-giveback-lifecycle-control-001",
+      "core_branch": "research/usdjpy-hyp047-f05-long-14400s-giveback-lifecycle-control-001",
+      "immutable_parent_hypothesis": "USDJPY-HYP-045",
+      "parent_release": "usdjpy-hyp045-b0-cross-regime-stability-improvement-v5",
+      "lifecycle_authority_release": "usdjpy-f05-long-post-entry-lifecycle-authority-v1",
+      "candidate_scope": [
+        "C0_UNCHANGED_HYP045_A3",
+        "C1_F05_LONG_EXIT_AT_14400S_IF_NONPOSITIVE",
+        "C2_F05_LONG_14400S_GIVEBACK_FILTERED_EXIT"
+      ],
+      "candidate_count_excluding_baseline": 2,
+      "selected_candidate_max": 1,
+      "period_roles": {
+        "2020_2024": "ANALYSIS_CANDIDATE_CONSTRUCTION_COMPARISON_AND_SELECTION",
+        "2025H1": "FROZEN_SELECTED_CANDIDATE_VALIDATION_ONLY",
+        "2025H2": "PROHIBITED_NOT_ACCESSED"
+      },
+      "a2a_reuse_prohibited": true,
+      "production_authorized": false,
+      "live_authorized": false,
+      "2025H2_accessed": false,
+      "exact_next_action": "RUN_PREREGISTERED_2020_2024_SOURCE_NATIVE_LIFECYCLE_REPLAY"
+    }
+  ],
+  "hypothesis_status_updates": []
+}
